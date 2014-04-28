@@ -60,7 +60,8 @@
 					<!-- Don't want these files inside the jar -->
 					<excludes>
 						<exclude>**/config/</exclude>
-						<exclude>startup.bat</exclude>
+						<exclude>*.bat</exclude>
+						<exclude>*.sh</exclude>
 						<exclude>version</exclude>
 					</excludes>
 				</configuration>
