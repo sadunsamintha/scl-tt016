@@ -24,7 +24,7 @@
     <value class="int">200</value>
   </PlcValueWithUnit>
   <PlcValueWithUnit varName=".com.stLine[1].stParameters.nPrinterDistance" unit="PULSE" unitVariable=".com.stLine[1].stParameters.bPrinterDistanceType">
-    <value class="int">1</value>
+    <value class="int">2000</value>
   </PlcValueWithUnit>
   <PlcValueWithUnit varName=".com.stLine[1].stParameters.nPrinterLength" unit="PULSE" unitVariable=".com.stLine[1].stParameters.bPrinterLengthType">
     <value class="int">200</value>
