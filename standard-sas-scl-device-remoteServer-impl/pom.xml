@@ -35,13 +35,13 @@
 		<dependency>
 			<groupId>com.sicpa.standard.standard-serverside-util</groupId>
 			<artifactId>standard-serverside-util</artifactId>
-			<version>1.2.2.1</version>
+			<version>3.1.0</version>
 		</dependency>
 
 		<dependency>
 			<groupId>com.sicpa.standard.standard-serverside-api</groupId>
 			<artifactId>standard-common-server-api</artifactId>
-			<version>1.2.2.1</version>
+			<version>3.1.0</version>
 			<exclusions>
 				<exclusion>
 					<artifactId>validation-api</artifactId>
