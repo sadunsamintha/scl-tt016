@@ -12,6 +12,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -163,16 +164,19 @@ public class UserIdStorage {
 	}
 	
 	public String[] readRecord() throws IOException {
-		String[] field = new String[0];
+		String[] fields = new String[0];
 		if (reader != null) {
 			String record = this.reader.readLine();
 			if (record != null) {
-				field = record.split(delimiter, -1);
+				fields = record.split(delimiter, -1);
 			} else {
 				return null;
 			}
+			for (int i=0; i< fields.length; i++) {
+				fields[i] = StringUtils.deleteWhitespace(fields[i]);
+			}
 		}
-		return field;
+		return fields;
 	}
 	
 	private static void setFieldsValue(Object object, Field[] fieldList, String[] values) throws IllegalArgumentException, IllegalAccessException {

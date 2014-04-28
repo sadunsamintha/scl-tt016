@@ -5,7 +5,7 @@ public class UserId {
 	private String firstname;
 	private String surname;	
 	private int userID;
-	private int userLevelAccess;
+	private String userLevelAccess;
 	/** there is possible to have the same login for several userIds */
 	private String login;
 	
@@ -17,7 +17,7 @@ public class UserId {
 	 * @param userID
 	 * @param userLevelAccess
 	 */
-	public UserId(String login, String firstName, String surname, int userId, int userLevelAccess) {
+	public UserId(String login, String firstName, String surname, int userId, String userLevelAccess) {
 		super();
 		this.login = login;
 		this.firstname = firstName;
@@ -55,10 +55,10 @@ public class UserId {
 	public void setUserID(int userId) {
 		this.userID = userId;
 	}
-	public int getUserLevelAccess() {
+	public String getUserLevelAccess() {
 		return userLevelAccess;
 	}
-	public void setUserLevelAccess(int userLevelAccess) {
+	public void setUserLevelAccess(String userLevelAccess) {
 		this.userLevelAccess = userLevelAccess;
 	}
 

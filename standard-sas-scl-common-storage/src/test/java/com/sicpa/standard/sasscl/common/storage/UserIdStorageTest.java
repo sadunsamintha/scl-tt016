@@ -29,8 +29,9 @@ public class UserIdStorageTest {
 		Assert.assertEquals(registry, loaded);
 	}
 	
+//	@Test
 	public void load() throws Exception {
-		storage.setFileName("UserDatabase2.csv");
+		storage.setFileName("Z:\\UserDatabase.csv");
 		UserIdRegistry loaded = storage.load();
 		System.out.println(loaded);
 	}
@@ -40,9 +41,9 @@ public class UserIdStorageTest {
 		String[] versionLine = {"Version", "1", "0", "0"};
 		registry.setVersion(versionLine );
 		List<UserId> userIdList = new ArrayList<UserId>();
-		UserId u1 = new UserId("login1", "name1", "surname1", 1, 1);
-		UserId u2 = new UserId("login2", "name2", "surname2", 1, 2);
-		UserId u3 = new UserId("login3", "name3", "surname3", 1, 3);
+		UserId u1 = new UserId("login1", "name1", "surname1", 1, "100");
+		UserId u2 = new UserId("login2", "name2", "surname2", 1, "200");
+		UserId u3 = new UserId("login3", "name3", "surname3", 1, "300");
 		userIdList.add(u1);
 		userIdList.add(u2);
 		userIdList.add(u3);
