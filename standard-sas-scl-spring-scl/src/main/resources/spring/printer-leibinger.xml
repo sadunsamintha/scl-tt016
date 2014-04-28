@@ -67,19 +67,19 @@
 <!-- 		p:dataMatrixEncoding		="${dataMatrixEncoding}" -->
 <!-- 		/> -->
 	
-	<bean id="driverLeibinger" class="com.sicpa.standard.printer.leibinger.driver.leibinger.LeibingerDriver">
-		<property name="listener" ref="stdPrinterAdaptor"/>
-		<property name="protocol" ref="protocol"/>
-		<property name="model" ref="printerModelLeibinger"/>
-		<property name="stateMachine" ref="stateMachineLeibinger"/>
-	</bean>
-	
 	<bean id="codeBuffer" class="com.sicpa.standard.printer.leibinger.controller.LeibingerCodeBuffer">
 		<property name="driver" ref="driverLeibinger" />
 		<property name="printerModel" ref="printerModelLeibinger"/>
 		<property name="listener" ref="stdPrinterAdaptor"/>
 	</bean>
 	
+	<bean id="driverLeibinger" class="com.sicpa.standard.printer.leibinger.driver.leibinger.LeibingerDriver">
+		<property name="protocol" ref="protocol"/>
+		<property name="model" ref="printerModelLeibinger"/>
+		<property name="stateMachine" ref="stateMachineLeibinger"/>
+		<property name="listener" ref="stdPrinterAdaptor"/>
+	</bean>
+		
 	<bean id="protocol" class="com.sicpa.standard.printer.leibinger.driver.leibinger.LeibingerProtocol">
 		<property name="connector" ref="connector"/>
 		<property name="model" ref="printerModelLeibinger"/>
