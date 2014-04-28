@@ -18,4 +18,5 @@ public interface IHardwareController {
 
 	Collection<IStartableDevice> getDevices();
 
+	void switchOff();
 }
