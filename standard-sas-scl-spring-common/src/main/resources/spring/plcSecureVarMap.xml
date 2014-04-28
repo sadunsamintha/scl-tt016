@@ -46,7 +46,9 @@
 	
 	<util:list id="plcSecureNotifications">
 		<bean c:_0="#{securePlcVarMap['NTF_USER_ID_AUTHENTICATED']}"				parent="PlcVariableInt32" 	/>
-		<bean c:_0="#{securePlcVarMap['NTF_USER_PROFILE_AUTHENTICATED']}"			parent="PlcVariableInt32" 	/>
+<!-- 		<bean c:_0="#{securePlcVarMap['NTF_USER_PROFILE_AUTHENTICATED']}"			parent="PlcVariableInt32" 	/> -->
+		<bean c:_0="#{securePlcVarMap['NTF_USER_PRINTER_ACCESS']}"	                parent="PlcVariableInt32" 	/>                                       
+		<bean c:_0="#{securePlcVarMap['NTF_USER_JAVA_ACCESS']}"   	                parent="PlcVariableInt32" 	/>
 		<bean c:_0="#{securePlcVarMap['NTF_USER_AUTHENTICATION']}"					parent="PlcVariableBool" 	/>
 		<bean c:_0="#{securePlcVarMap['NTF_USER_DATABASE_VERSION']}"	c:_1="10" 	parent="PlcVariableString" 	/>
 	</util:list>
@@ -83,6 +85,8 @@
 <!-- 	ExtGbl_stNtf.bDoorIJCError	BOOL -->
 		<entry key="NTF_USER_ID_AUTHENTICATED"          value=".ExtGbl_stNtf.nUserIDAuthenticated"           />
 		<entry key="NTF_USER_PROFILE_AUTHENTICATED"     value=".ExtGbl_stNtf.nUserProfileAuthenticated"      />
+		<entry key="NTF_USER_PRINTER_ACCESS"     		value=".ExtGbl_stNtf.nPrinterAccessLevel"            />                                               
+		<entry key="NTF_USER_JAVA_ACCESS"     			value=".ExtGbl_stNtf.nJAVAAccessLevel"               />
 		<entry key="NTF_USER_AUTHENTICATION"  			value=".ExtGbl_stNtf.bUserAuthenticatedDone" 	/>	
 		<entry key="NTF_USER_DATABASE_VERSION"  		value=".ExtGbl_stNtf.sDatabaseVersion" 	/>
 <!-- 	ExtGbl_stNtf.bSecureUPSAlarm		BOOL -->
