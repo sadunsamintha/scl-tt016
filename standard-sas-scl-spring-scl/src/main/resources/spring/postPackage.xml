@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:util="http://www.springframework.org/schema/util" xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
+
+	<bean id="postPackage" class="${postPackage}">
+		<property name="productionParameters" ref="productionParameters" />
+		<property name="productionConfigProvider" ref="productionConfigProvider" />
+	</bean>
+
+	<bean id="postPackageAutoRegistering" class="${postPackageAutoRegistering}">
+		<property name="postPackage" ref="postPackage" />
+		<property name="implementationProvider" ref="implementationProvider" />
+		<property name="productionConfigProvider" ref="productionConfigProvider" />
+	</bean>
+
+	<bean id="addCodeReceiverPostPackage" class="com.sicpa.standard.client.common.ioc.InjectByMethodBean">
+		<property name="target" ref="coding" />
+		<property name="methodName" value="addCodeReceiver" />
+		<property name="params" ref="postPackage" />
+	</bean>
+
+	<bean id="activationSetPostPackage" class="com.sicpa.standard.client.common.ioc.InjectByMethodBean">
+		<property name="target" ref="activation" />
+		<property name="methodName" value="setPostPackage" />
+		<property name="params" ref="postPackage" />
+	</bean>
+
+
+	<!-- module for 1 printer+camera -->
+	<bean id="postPackageBehavior" class="${postPackageBehavior}" scope="prototype">
+		<property name="batchIdProvider" ref="productionBatchProvider" />
+		<property name="config" ref="globalConfig" />
+		<property name="productionParameters" ref="productionParameters" />
+		<property name="authenticatorProvider" ref="authenticatorProvider" />
+		<property name="authenticatorModeProvider" ref="authenticatorModeProvider" />
+	</bean>
+
+</beans>

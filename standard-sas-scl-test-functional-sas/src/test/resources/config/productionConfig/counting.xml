@@ -1,0 +1,14 @@
+<ProductionConfig activationBehavior="countingActivationBehavior">
+
+	<CameraConfig deviceType="COGNEX" id="qc_1" />
+
+	<PlcConfig line1File="line1Config.xml" line1Index="1">
+		<property key=".com.stLine[1].bLine_is_active" value="true" />
+		<property key=".com.stLine[2].bLine_is_active" value="false" />
+
+		<property key=".com.stLine[1].stParameters.bExportModeEnabled" value="true" />
+		<property key=".com.stLine[1].stParameters.bMaintenanceModeEnabled" value="false" />
+		<property key=".com.stLine[1].stParameters.bRefeedModeEnabled" value="false" />
+	</PlcConfig>
+
+</ProductionConfig>

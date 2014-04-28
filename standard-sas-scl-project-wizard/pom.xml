@@ -1,0 +1,128 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<artifactId>parent</artifactId>
+		<groupId>com.sicpa.standard.sasscl</groupId>
+		<version>2.3-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>projectWizard</artifactId>
+	<packaging>jar</packaging>
+
+	<name>projectWizard</name>
+	<url>http://maven.apache.org</url>
+
+	<build>
+		<resources>
+
+			<resource>
+				<directory>${project.build.sourceDirectory}/../resources</directory>
+				<targetPath>.</targetPath>
+				<includes>
+					<include>*</include>
+				</includes>
+				<filtering>true</filtering>
+			</resource>
+
+			<resource>
+				<directory>../standard-sas-scl-test-functional-common/src/main/java</directory>
+				<targetPath>../../template/test-func/common</targetPath>
+				<includes>
+					<include>**/**/*.java</include>
+				</includes>
+			</resource>
+			<resource>
+				<directory>../standard-sas-scl-test-functional-sas/src/test/java</directory>
+				<targetPath>../../template/test-func/sas</targetPath>
+				<includes>
+					<include>**/**/*.java</include>
+				</includes>
+			</resource>
+			<resource>
+				<directory>../standard-sas-scl-test-functional-scl/src/test/java</directory>
+				<targetPath>../../template/test-func/scl</targetPath>
+				<includes>
+					<include>**/**/*.java</include>
+				</includes>
+			</resource>
+
+			<resource>
+				<directory>../standard-scl-app/src/main/resources/</directory>
+				<targetPath>../../template/resources</targetPath>
+				<includes>
+					<include>**/**/*</include>
+				</includes>
+				<excludes>
+					<exclude>version</exclude>
+				</excludes>
+			</resource>
+
+			<resource>
+				<directory>../standard-scl-app</directory>
+				<targetPath>../../template</targetPath>
+				<includes>
+					<include>assembly.xml</include>
+				</includes>
+			</resource>
+
+		</resources>
+
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.2</version>
+				<configuration>
+					<outputDirectory>${project.build.directory}/build/current</outputDirectory>
+					<useDefaultManifestFile>true</useDefaultManifestFile>
+					<archive>
+						<manifestEntries>
+							<Class-Path>./</Class-Path>
+						</manifestEntries>
+						<manifest>
+							<mainClass>com.sicpa.standard.sasscl.wizard.Main</mainClass>
+							<packageName>com.sicpa.standard.sasscl.wizard</packageName>
+							<addClasspath>true</addClasspath>
+							<classpathPrefix>lib</classpathPrefix>
+							<addExtensions>false</addExtensions>
+						</manifest>
+					</archive>
+					<!-- Don't want these files inside the jar -->
+					<excludes>
+						<exclude>startup.bat</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>2.1</version>
+				<configuration>
+					<descriptors>
+						<descriptor>assembly.xml</descriptor>
+					</descriptors>
+					<executions>
+						<execution>
+							<id>make-assembly</id>
+							<phase>package</phase>
+							<goals>
+								<goal>directory-inline</goal>
+							</goals>
+						</execution>
+					</executions>
+				</configuration>
+			</plugin>
+
+		</plugins>
+
+	</build>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+	<dependencies>
+
+	</dependencies>
+</project>

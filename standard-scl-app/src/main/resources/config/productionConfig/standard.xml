@@ -1,0 +1,22 @@
+<ProductionConfig activationBehavior="standardActivationBehavior" authenticatorMode="SCL">
+
+<!--     <PrinterConfig deviceType="DOMINO" id="pr_scl_1" validatedBy="qc_sas"/> -->
+    <PrinterConfig deviceType="LEIBINGER" id="pr_leibinger" validatedBy="qc_scl_1"/>
+
+    <CameraConfig deviceType="COGNEX" id="qc_scl_1"/>
+
+    <!-- uncomment to use the bis -->
+    <!-- 	<BisConfig /> -->
+
+
+    <PlcConfig line1File="line1Config.xml" line1Index="1">
+        <property key=".com.stLine[1].bLine_is_active" value="true"/>
+        <property key=".com.stLine[2].bLine_is_active" value="false"/>
+        <property key=".com.stLine[3].bLine_is_active" value="false"/>
+
+        <property key=".com.stLine[1].stParameters.bExportModeEnabled" value="false"/>
+        <property key=".com.stLine[1].stParameters.bMaintenanceModeEnabled" value="false"/>
+        <property key=".com.stLine[1].stParameters.bRefeedModeEnabled" value="false"/>
+    </PlcConfig>
+
+</ProductionConfig>

@@ -1,0 +1,111 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.sicpa.${projectName}</groupId>
+	<artifactId>${projectName}-${applicationType}</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+
+
+	<parent>
+		<groupId>com.sicpa.standard</groupId>
+		<artifactId>standard-pom</artifactId>
+		<version>7</version>
+	</parent>
+
+	<build>
+	
+<!-- ${resources} -->
+
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.2</version>
+				<configuration>
+					<outputDirectory>${project.build.directory}/build/current</outputDirectory>
+					<useDefaultManifestFile>true</useDefaultManifestFile>
+					<archive>
+						<manifestEntries>
+							<Class-Path>./</Class-Path>
+						</manifestEntries>
+						<manifest>
+							<mainClass>com.sicpa.${projectName}.${applicationType}.Main</mainClass>
+							<packageName>com.sicpa.${projectName}.${applicationType}</packageName>
+							<addClasspath>true</addClasspath>
+							<classpathPrefix>lib</classpathPrefix>
+							<addExtensions>false</addExtensions>
+						</manifest>
+					</archive>
+					<!-- Don't want these files inside the jar -->
+					<excludes>
+						<exclude>**/config/</exclude>
+						<exclude>startup.bat</exclude>
+						<exclude>version</exclude>
+						<exclude>auth.conf</exclude>
+						<exclude>standard.properties</exclude>
+						<exclude>language/*</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>2.1</version>
+				<configuration>
+					<descriptors>
+						<descriptor>assembly.xml</descriptor>
+					</descriptors>
+					<executions>
+						<execution>
+							<id>make-assembly</id>
+							<phase>package</phase>
+							<goals>
+								<goal>directory-inline</goal>
+							</goals>
+						</execution>
+					</executions>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>generate-resources</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<tasks>
+								<echo file="src/main/resources/version" message="${version}" />
+							</tasks>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+	
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.9</version>
+				<configuration>
+					<includes>
+						<include>**/*TestSAS.java</include>
+						<include>**/*TestSCL.java</include>
+						<include>**/*Test.java</include>
+					</includes>
+					<argLine>-Djava.awt.headless=true -Xmx256m</argLine>
+					<forkMode>pertest</forkMode>
+				</configuration>
+			</plugin>
+			
+			
+		</plugins>
+
+	</build>
+
+<!-- ${dependencies} -->
+
+</project>

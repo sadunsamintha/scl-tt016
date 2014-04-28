@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+
+	<bean id="reportScreen" class="${reportScreen}" />
+
+	<bean id="mainFrameController" class="${mainFrameController}">
+		<constructor-arg ref="skuListProvider" />
+		<property name="editablePropertyDescriptors" ref="modelEditableProperties" />
+		<property name="productionParameters" ref="productionParameters" />
+		<property name="globalConfig" ref="globalConfig" />
+		<property name="messageCodeMapper" ref="messagesMapping" />
+
+		<property name="securedPanels">
+			<util:list>
+				<ref bean="plcVariablesPanel" />
+				<ref bean="plcSecureVariablesPanel" />
+				<ref bean="productionStatisticsPanel" />
+				<ref bean="systemEventPanel" />
+				<ref bean="MBeanViewer" />
+				<ref bean="miscPanel" />
+				<ref bean="beanCallPanelGetter" />
+				<ref bean="encodersInfoViewGetter" />
+				<ref bean="reportScreen" />
+			</util:list>
+		</property>
+	</bean>
+
+	<bean id="mainFrame" class="${mainFrame}">		
+		<property name="viewController" ref="mainFrameController" />
+		<property name="startStopView" ref="startStopView" />
+		<property name="exitView" ref="exitView" />
+		<property name="optionsView" ref="optionsView" />
+		<property name="selectionChangeView" ref="selectionChangeView" />
+		<property name="messagesView" ref="messagesView" />
+		<property name="mainPanelGetter" ref="mainPanelGetter" />
+		<property name="snapshotView" ref="snapshotView" />
+		<property name="fingerPrintLogin" value="${fingerprint.login}" />
+	</bean>
+
+	<bean id="MBeanViewer" class="${MBeanViewer}">
+		<property name="bean" ref="statsMBean" />
+	</bean>
+
+	<bean id="plcVariablesPanel" class="${plcVariablesPanel}">
+		<property name="cabinetVariables" ref="cabinetEditablePlcVariables" />
+	</bean>
+	
+	<bean id="plcSecureVariablesPanel" class="com.sicpa.standard.sasscl.view.config.plc.PlcSecureVariablesPanelGetter">
+		<property name="cabinetVariables" ref="plcSecureEditablePlcVariables" />
+	</bean>
+
+	<bean id="productionStatisticsPanel" class="${productionStatisticsPanel}" />
+	<bean id="systemEventPanel" class="${systemEventPanel}" />
+	<bean id="miscPanel" class="${miscPanel}" />
+
+	<bean id="simulatorGui" class="com.sicpa.standard.sasscl.devices.simulator.gui.SimulatorControlView">
+		<property name="visible" value="#{globalConfig.displaySimulatorGui}" />
+	</bean>
+
+	<bean id="selectionModelFactory" class="${selectionModelFactory}" />
+
+	<bean id="beanCallPanelGetter" class="${beanCallPanelGetter}">
+		<property name="beancalls" ref="beanCallList" />
+	</bean>
+
+	<bean id="encodersInfoViewGetter" class="${encodersInfoViewGetter}">
+		<property name="storage" ref="storage" />
+	</bean>
+
+	<util:list id="beanCallList">
+		<bean class="com.sicpa.standard.sasscl.view.forceCall.BeanCall">
+			<property name="bean" ref="remoteServerSheduledJobs" />
+			<property name="methodName" value="getEncodersFromRemoteServer" />
+			<property name="description" value="job.getEncoders" />
+		</bean>
+		<bean class="com.sicpa.standard.sasscl.view.forceCall.BeanCall">
+			<property name="bean" ref="remoteServerSheduledJobs" />
+			<property name="methodName" value="getAuthenticatorFromRemoteServer" />
+			<property name="description" value="job.getAuthenticator" />
+		</bean>
+		<bean class="com.sicpa.standard.sasscl.view.forceCall.BeanCall">
+			<property name="bean" ref="remoteServerSheduledJobs" />
+			<property name="methodName" value="getProductionParametersFromRemoteServer" />
+			<property name="description" value="job.getProductionParameters" />
+		</bean>
+		<bean class="com.sicpa.standard.sasscl.view.forceCall.BeanCall">
+			<property name="bean" ref="remoteServerSheduledJobs" />
+			<property name="methodName" value="getLanguageFileFromRemoteServer" />
+			<property name="description" value="job.getLanguageFile" />
+		</bean>
+
+		<bean class="com.sicpa.standard.sasscl.view.forceCall.BeanCallGroup">
+			<property name="description" value="job.package" />
+			<property name="calls">
+				<util:list>
+					<bean class="com.sicpa.standard.sasscl.view.forceCall.BeanCall">
+						<property name="bean" ref="production" />
+						<property name="methodName" value="saveProductionData" />
+					</bean>
+					<bean class="com.sicpa.standard.sasscl.view.forceCall.BeanCall">
+						<property name="bean" ref="production" />
+						<property name="methodName" value="packageProduction" />
+					</bean>
+				</util:list>
+			</property>
+		</bean>
+
+		<bean class="com.sicpa.standard.sasscl.view.forceCall.BeanCallGroup">
+			<property name="description" value="job.packageAndSendProduction" />
+			<property name="calls">
+				<util:list>
+					<bean class="com.sicpa.standard.sasscl.view.forceCall.BeanCall">
+						<property name="bean" ref="production" />
+						<property name="methodName" value="saveProductionData" />
+					</bean>
+					<bean class="com.sicpa.standard.sasscl.view.forceCall.BeanCall">
+						<property name="bean" ref="production" />
+						<property name="methodName" value="packageProduction" />
+					</bean>
+					<bean class="com.sicpa.standard.sasscl.view.forceCall.BeanCall">
+						<property name="bean" ref="production" />
+						<property name="methodName" value="sendAllProductionData" />
+					</bean>
+				</util:list>
+			</property>
+		</bean>
+
+	</util:list>
+
+	<bean id="operatorLoggerBehavior" class="${operatorLoggerBehavior}" />
+
+
+	<bean id="screensFlow" class="${screensFlow}" init-method="buildScreensFlow">
+		<property name="initialScreen" ref="mainPanelGetter" />
+		<property name="selectionScreen" ref="selectProductionParametersViewController" />
+		<property name="mainScreen" ref="mainPanelGetter" />
+		<property name="exitScreen" ref="productionSendingViewController" />
+	</bean>
+
+
+	<!-- START STOP VIEW -->
+
+	<bean id="startStopView" class="${startStopView}">
+		<property name="controller" ref="startStopViewController" />
+		<property name="model" value="#{startStopViewController.model}" />
+	</bean>
+	<bean id="startStopViewController" class="${startStopViewController}">
+		<property name="flowControl" ref="flowControl" />
+	</bean>
+
+	<!-- SELECTION CHANGE -->
+	<bean id="selectionChangeView" class="${selectionChangeView}">
+		<property name="controller" ref="selectionChangeViewController" />
+		<property name="model" value="#{selectionChangeViewController.model}" />
+	</bean>
+	<bean id="selectionChangeViewController" class="${selectionChangeViewController}">
+		<property name="flowControl" ref="flowControl" />
+		<property name="skuListProvider" ref="skuListProvider" />
+	</bean>
+
+	<!-- EXIT / LOGOUT -->
+	<bean id="exitView" class="${exitView}">
+		<property name="controller" ref="exitViewController" />
+		<property name="model" value="#{exitViewController.model}" />
+	</bean>
+	<bean id="exitViewController" class="${exitViewController}">
+		<property name="flowControl" ref="flowControl" />
+		<property name="remoteServer" ref="remoteServer" />
+	</bean>
+
+	<!-- OPTIONS -->
+	<bean id="optionsView" class="${optionsView}">
+		<property name="controller" ref="optionsViewController" />
+		<property name="model" value="#{optionsViewController.model}" />
+	</bean>
+	<bean id="optionsViewController" class="${optionsViewController}" />
+
+	<!-- MESSAGES VIEW -->
+	<bean id="messagesView" class="${messagesView}" />
+	<bean id="messagesViewController" class="${messagesViewController}">
+		<property name="view" ref="messagesView" />
+		<property name="messageCodeMapper" ref="messagesMapping" />
+	</bean>
+
+	<!-- QUESTION VIEW -->
+	<bean id="questionView" class="${questionView}">
+		<property name="controller" ref="questionViewController" />
+		<property name="model" value="#{questionViewController.model}" />
+	</bean>
+	<bean id="questionViewController" class="${questionViewController}" />
+
+	<!-- SYSTEM INFO VIEW -->
+	<bean id="systemInfoView" class="${systemInfoView}">
+		<property name="controller" ref="systemInfoViewController" />
+		<property name="model" value="#{systemInfoViewController.model}" />
+	</bean>
+	<bean id="systemInfoViewController" class="com.sicpa.standard.sasscl.view.main.systemInfo.SystemInfoViewController">
+		<property name="remoteServer" ref="remoteServer" />
+		<property name="plcProvider" ref="plcProvider" />
+		<property name="plcSecure" ref="plcSecureAdaptor"/>
+	</bean>
+
+	<!-- STATISTICS VIEW -->
+	<bean id="statisticsView" class="${statisticsView}">
+		<property name="controller" ref="statisticsViewController" />
+		<property name="model" value="#{statisticsViewController.model}" />
+	</bean>
+	<bean id="statisticsViewController" class="${statisticsViewController}">
+		<property name="statistics" ref="statistics" />
+		<property name="descriptorMapping" ref="statisticsKeyToViewDescriptorMapping" />
+	</bean>
+
+	<!-- SELECTION DISPLAY -->
+	<bean id="selectionDisplayView" class="${selectionDisplayView}">
+		<property name="controller" ref="selectionDisplayViewController" />
+		<property name="model" value="#{selectionDisplayViewController.model}" />
+	</bean>
+	<bean id="selectionDisplayViewController" class="${selectionDisplayViewController}">
+		<property name="productionParameters" ref="productionParameters" />
+	</bean>
+
+	<!-- MAIN PANEL -->
+	<bean id="mainPanelGetter" class="${mainPanelGetter}">
+		<property name="systemInfoView" ref="systemInfoView" />
+		<property name="selectionDisplayView" ref="selectionDisplayView" />
+		<property name="statsView" ref="statisticsView" />
+		<property name="viewController" ref="mainFrameController" />
+	</bean>
+
+	<!-- SELECT PARAMETER -->
+
+	<bean id="selectProductionParametersHandPickingView" class="${selectProductionParametersHandPickingView}">
+		<property name="callback" ref="selectProductionParametersViewController" />
+		<property name="selectionModelFactory" ref="selectionModelFactory" />
+	</bean>
+	<bean id="selectProductionParametersBarcodeView" class="${selectProductionParametersBarcodeView}">
+		<property name="callback" ref="selectProductionParametersViewController" />
+	</bean>
+	<bean id="selectProductionParametersViewController" class="${selectProductionParametersViewController}">
+		<property name="handPickingview" ref="selectProductionParametersHandPickingView" />
+		<property name="barcodeView" ref="selectProductionParametersBarcodeView" />
+		<property name="viewController" ref="mainFrameController" />
+		<property name="skuListProvider" ref="skuListProvider" />
+		<property name="globalBean" ref="globalConfig" />
+		<property name="screensFlow" ref="screensFlow" />
+		<property name="mainFrameController" ref="mainFrameController" />
+	</bean>
+	<!-- snapshotView -->
+
+	<bean id="snapshotView" class="${snapshotView}">
+		<property name="controller" ref="snapshotViewController" />
+		<property name="model" value="#{snapshotViewController.model}" />
+	</bean>
+	<bean id="snapshotViewController" class="${snapshotViewController}" />
+
+	<!-- production sending on exit -->
+
+	<bean id="productionSendingView" class="${productionSendingView}">
+		<property name="controller" ref="productionSendingViewController" />
+		<property name="model" value="#{productionSendingViewController.model}" />
+	</bean>
+	<bean id="productionSendingViewController" class="${productionSendingViewController}">
+		<property name="view" ref="productionSendingView" />
+		<property name="production" ref="production" />
+		<property name="viewController" ref="mainFrameController" />
+	</bean>
+
+
+</beans>

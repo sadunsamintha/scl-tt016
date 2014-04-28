@@ -1,0 +1,5 @@
+<CameraSimulatorConfig>
+  <codeGetMethod>generated</codeGetMethod>
+  <percentageBadCode>2</percentageBadCode>
+  <readCodeInterval>5000</readCodeInterval>
+</CameraSimulatorConfig>

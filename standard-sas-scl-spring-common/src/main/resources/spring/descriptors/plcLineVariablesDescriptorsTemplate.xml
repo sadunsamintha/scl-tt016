@@ -1,0 +1,586 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+
+	<!-- ******************************************************* -->
+	<!-- LINE PARAMETERS TEMPLATE -->
+	<!-- ******************************************************* -->
+
+	<bean id="encoderResolutionPlcVarDesc" class="com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcVariablePulseParamDescriptor">
+		<property name="variable" ref="encoderResolutionParam" />
+		<property name="min" value="1" />
+		<property name="max" value="888888" />
+		<property name="plcProvider" ref="plcProvider" />
+	</bean>
+
+	<bean id="shapeDiameterPlcVarDesc" class="com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcVariablePulseParamDescriptor">
+		<property name="variable" ref="shapeDiameterParam" />
+		<property name="min" value="1" />
+		<property name="max" value="999999" />
+		<property name="plcProvider" ref="plcProvider" />
+	</bean>
+	
+		<!-- nEncoderModuleFoldEvaluation -->
+	<bean id="encoderModuleFoldEvaluationPlcVarDesc" class="com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcVariablePulseParamDescriptor">
+		<property name="variable" ref="encoderModuleFoldEvaluationParam" />
+		<property name="min" value="1" />
+		<property name="max" value="999999" />
+		<property name="plcProvider" ref="plcProvider" />
+	</bean>
+
+	<!-- nCounterFilter -->
+	<bean id="counterFilterPlcVarDesc" class="com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcPulseVariableDescriptor">
+		<property name="unitPlcVar" ref="counterFilterTypeParam" />
+		<property name="variable" ref="counterFilterParam" />
+		<property name="minMs" value="1" />
+		<property name="maxMs" value="999999" />
+		<property name="minPulse" value="1" />
+		<property name="maxPulse" value="999999" />
+		<property name="plcProvider" ref="plcProvider" />
+	</bean>
+
+	<!-- nProductDetectorFilter -->
+	<bean id="productDetectorFilterPlcVarDesc" class="com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcPulseVariableDescriptor">
+		<property name="unitPlcVar" ref="productDetectorFilterTypeParam" />
+		<property name="variable" ref="productDetectorFilterParam" />
+		<property name="minMs" value="1" />
+		<property name="maxMs" value="999999" />
+		<property name="minPulse" value="1" />
+		<property name="maxPulse" value="999999" />
+		<property name="plcProvider" ref="plcProvider" />
+	</bean>
+
+	<!-- nCameraDistance -->
+	<bean id="cameraDistancePlcVarDesc" class="com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcPulseVariableDescriptor">
+		<property name="unitPlcVar" ref="cameraDistanceTypeParam" />
+		<property name="variable" ref="cameraDistanceParam" />
+		<property name="minMs" value="1" />
+		<property name="maxMs" value="999999" />
+		<property name="minPulse" value="1" />
+		<property name="maxPulse" value="999999" />
+		<property name="plcProvider" ref="plcProvider" />
+	</bean>
+
+	<!-- nCameraLength -->
+	<bean id="cameraLengthPlcVarDesc" class="com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcPulseVariableDescriptor">
+		<property name="unitPlcVar" ref="cameraLengthTypeParam" />
+		<property name="variable" ref="cameraLengthParam" />
+		<property name="minMs" value="1" />
+		<property name="maxMs" value="999999" />
+		<property name="minPulse" value="1" />
+		<property name="maxPulse" value="999999" />
+		<property name="plcProvider" ref="plcProvider" />
+	</bean>
+
+	<!-- nValideCodeTimeout -->
+	<bean id="valideCodeTimeoutPlcVarDesc" class="com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcPulseVariableDescriptor">
+		<property name="unitPlcVar" ref="valideCodeTimeoutTypeParam" />
+		<property name="variable" ref="valideCodeTimeoutParam" />
+		<property name="minMs" value="1" />
+		<property name="maxMs" value="999999" />
+		<property name="minPulse" value="1" />
+		<property name="maxPulse" value="999999" />
+		<property name="plcProvider" ref="plcProvider" />
+	</bean>
+
+	<!-- nAudioVisualEmissionDistance -->
+	<bean id="audioVisualEmissionDistancePlcVarDesc" class="com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcPulseVariableDescriptor">
+		<property name="unitPlcVar" ref="audioVisualEmissionDistanceTypeParam" />
+		<property name="variable" ref="audioVisualEmissionDistanceParam" />
+		<property name="minMs" value="1" />
+		<property name="maxMs" value="999999" />
+		<property name="minPulse" value="1" />
+		<property name="maxPulse" value="999999" />
+		<property name="plcProvider" ref="plcProvider" />
+	</bean>
+
+	<!-- nAudioVisualEmissionLength -->
+	<bean id="audioVisualEmissionLengthPlcVarDesc" class="com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcPulseVariableDescriptor">
+		<property name="unitPlcVar" ref="audioVisualEmissionLengthTypeParam" />
+		<property name="variable" ref="audioVisualEmissionLengthParam" />
+		<property name="minMs" value="1" />
+		<property name="maxMs" value="999999" />
+		<property name="minPulse" value="1" />
+		<property name="maxPulse" value="999999" />
+		<property name="plcProvider" ref="plcProvider" />
+	</bean>
+
+	<!-- nPrinterDistance -->
+	<bean id="printerDistancePlcVarDesc" class="com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcPulseVariableDescriptor">
+		<property name="unitPlcVar" ref="printerDistanceTypeParam" />
+		<property name="variable" ref="printerDistanceParam" />
+		<property name="minMs" value="1" />
+		<property name="maxMs" value="999999" />
+		<property name="minPulse" value="1" />
+		<property name="maxPulse" value="999999" />
+		<property name="plcProvider" ref="plcProvider" />
+	</bean>
+
+	<!-- nPrinterLength -->
+	<bean id="printerLengthPlcVarDesc" class="com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcPulseVariableDescriptor">
+		<property name="unitPlcVar" ref="printerLengthTypeParam" />
+		<property name="variable" ref="printerLengthParam" />
+		<property name="minMs" value="1" />
+		<property name="maxMs" value="999999" />
+		<property name="minPulse" value="1" />
+		<property name="maxPulse" value="999999" />
+		<property name="plcProvider" ref="plcProvider" />
+	</bean>
+
+	<!-- nPCEjectionReceptionDistance -->
+	<bean id="pcEjectionReceptionDistancePlcVarDesc" class="com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcPulseVariableDescriptor">
+		<property name="unitPlcVar" ref="pcEjectionReceptionDistanceTypeParam" />
+		<property name="variable" ref="pcEjectionReceptionDistanceParam" />
+		<property name="minMs" value="1" />
+		<property name="maxMs" value="999999" />
+		<property name="minPulse" value="1" />
+		<property name="maxPulse" value="999999" />
+		<property name="plcProvider" ref="plcProvider" />
+	</bean>
+
+	<!-- nPCEjectionReceptionLength -->
+	<bean id="pcEjectionReceptionLengthPlcVarDesc" class="com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcPulseVariableDescriptor">
+		<property name="unitPlcVar" ref="pcEjectionReceptionLengthTypeParam" />
+		<property name="variable" ref="pcEjectionReceptionLengthParam" />
+		<property name="minMs" value="1" />
+		<property name="maxMs" value="999999" />
+		<property name="minPulse" value="1" />
+		<property name="maxPulse" value="999999" />
+		<property name="plcProvider" ref="plcProvider" />
+	</bean>
+
+	<!-- nProdControlDetectorFilter -->
+	<bean id="prodControlDetectorFilterPlcVarDesc" class="com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcPulseVariableDescriptor">
+		<property name="unitPlcVar" ref="prodControlDetectorFilterTypeParam" />
+		<property name="variable" ref="prodControlDetectorFilterParam" />
+		<property name="minMs" value="1" />
+		<property name="maxMs" value="999999" />
+		<property name="minPulse" value="1" />
+		<property name="maxPulse" value="999999" />
+		<property name="plcProvider" ref="plcProvider" />
+	</bean>
+
+	<!-- nEjectionEmissionDistance -->
+	<bean id="ejectionEmissionDistancePlcVarDesc" class="com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcPulseVariableDescriptor">
+		<property name="unitPlcVar" ref="ejectionEmissionDistanceTypeParam" />
+		<property name="variable" ref="ejectionEmissionDistanceParam" />
+		<property name="minMs" value="1" />
+		<property name="maxMs" value="999999" />
+		<property name="minPulse" value="1" />
+		<property name="maxPulse" value="999999" />
+		<property name="plcProvider" ref="plcProvider" />
+	</bean>
+
+	<!-- nEjectionEmissionLength -->
+	<bean id="ejectionEmissionLengthPlcVarDesc" class="com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcPulseVariableDescriptor">
+		<property name="unitPlcVar" ref="ejectionEmissionLengthTypeParam" />
+		<property name="variable" ref="ejectionEmissionLengthParam" />
+		<property name="minMs" value="1" />
+		<property name="maxMs" value="999999" />
+		<property name="minPulse" value="1" />
+		<property name="maxPulse" value="999999" />
+		<property name="plcProvider" ref="plcProvider" />
+	</bean>
+
+	<!-- nJavaNotificationDistance -->
+	<bean id="javaNtfDistancePlcVarDesc" class="com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcPulseVariableDescriptor">
+		<property name="unitPlcVar" ref="javaNtfDistanceTypeParam" />
+		<property name="variable" ref="javaNtfDistanceParam" />
+		<property name="minMs" value="1" />
+		<property name="maxMs" value="999999" />
+		<property name="minPulse" value="1" />
+		<property name="maxPulse" value="999999" />
+		<property name="plcProvider" ref="plcProvider" />
+	</bean>
+
+	<!-- nMaxConsecutiveInvalidCodes -->
+	<bean id="maxConsecutiveInvalidCodesPlcVarDesc" class="com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcIntegerVariableDescriptor">
+		<property name="variable" ref="maxConsecutiveInvalidCodesParam" />
+		<property name="min" value="0" />
+		<property name="max" value="999999" />
+		<property name="plcProvider" ref="plcProvider" />
+	</bean>
+
+	<!-- nStatsSmallThreshold -->
+	<bean id="statsSmallThresholdPlcVarDesc" class="com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcIntegerVariableDescriptor">
+		<property name="variable" ref="statsSmallThresholdParam" />
+		<property name="min" value="0" />
+		<property name="max" value="999999" />
+		<property name="plcProvider" ref="plcProvider" />
+	</bean>
+
+	<!-- nStatsSmallRejectionLimit -->
+	<bean id="statsSmallRejectionLimitPlcVarDesc" class="com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcIntegerVariableDescriptor">
+		<property name="variable" ref="statsSmallRejectionLimitParam" />
+		<property name="min" value="0" />
+		<property name="max" value="999999" />
+		<property name="plcProvider" ref="plcProvider" />
+	</bean>
+
+	<!-- nStatsLargeThreshold -->
+	<bean id="statsLargeThresholdPlcVarDesc" class="com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcIntegerVariableDescriptor">
+		<property name="variable" ref="statsLargeThresholdParam" />
+		<property name="min" value="0" />
+		<property name="max" value="999999" />
+		<property name="plcProvider" ref="plcProvider" />
+	</bean>
+
+	<!-- nStatsLargeRejectionLimit -->
+	<bean id="statsLargeRejectionLimitPlcVarDesc" class="com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcIntegerVariableDescriptor">
+		<property name="variable" ref="statsLargeRejectionLimitParam" />
+		<property name="min" value="0" />
+		<property name="max" value="999999" />
+		<property name="plcProvider" ref="plcProvider" />
+	</bean>
+
+	<!-- nTriggerControlMaxDiffValue -->
+	<bean id="triggerControlMaxDiffValuePlcVarDesc" class="com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcIntegerVariableDescriptor">
+		<property name="variable" ref="triggerControlMaxDiffValueParam" />
+		<property name="min" value="1" />
+		<property name="max" value="999999" />
+		<property name="plcProvider" ref="plcProvider" />
+	</bean>
+
+	<!-- nTriggerControlMaxChecksValue -->
+	<bean id="triggerControlMaxChecksValuePlcVarDesc" class="com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcIntegerVariableDescriptor">
+		<property name="variable" ref="triggerControlMaxChecksValueParam" />
+		<property name="min" value="1" />
+		<property name="max" value="999999" />
+		<property name="plcProvider" ref="plcProvider" />
+	</bean>
+
+	<!-- nTriggerControlMaxAbsErrors -->
+	<bean id="triggerControlMaxAbsErrorsPlcVarDesc" class="com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcIntegerVariableDescriptor">
+		<property name="variable" ref="triggerControlMaxAbsErrorsParam" />
+		<property name="min" value="1" />
+		<property name="max" value="999999" />
+		<property name="plcProvider" ref="plcProvider" />
+	</bean>
+
+
+	<!-- bTestAdditionalCheck -->
+	<bean id="testAdditionalCheckPlcVarDesc" class="com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcBooleanVariableDescriptor">
+		<property name="variable" ref="testAdditionalCheckParam" />
+		<property name="plcProvider" ref="plcProvider" />
+	</bean>
+
+	<!-- bTriggerActOnFallingEdge -->
+	<bean id="triggerActOnFallingEdgePlcVarDesc" class="com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcBooleanVariableDescriptor">
+		<property name="variable" ref="triggerActOnFailingEdgeParam" />
+		<property name="plcProvider" ref="plcProvider" />
+	</bean>
+
+	<!-- bSimulatePCEjectionIfAddCheck -->
+	<bean id="simulatePCEjectionIfAddCheckPlcVarDesc" class="com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcBooleanVariableDescriptor">
+		<property name="variable" ref="simulatePcEjectionIfAddCheckParam" />
+		<property name="plcProvider" ref="plcProvider" />
+	</bean>
+
+	<!-- bTrigCameraIfPCEjectionSimulated -->
+	<bean id="trigCameraIfPCEjectionSimulatedPlcVarDesc" class="com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcBooleanVariableDescriptor">
+		<property name="variable" ref="trigCameraIfPcEjectionSimulatedParam" />
+		<property name="plcProvider" ref="plcProvider" />
+	</bean>
+
+	<!-- bInhibitPCEjectionIfAddCheck -->
+	<bean id="inhibitPCEjectionIfAddCheckPlcVarDesc" class="com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcBooleanVariableDescriptor">
+		<property name="variable" ref="inhibitPcEjectionIfAddCheckParam" />
+		<property name="plcProvider" ref="plcProvider" />
+	</bean>
+
+	<!-- bTrigEjectionOnlyForSicpaEjections -->
+	<bean id="trigEjectionOnlyForSicpaEjectionsPlcVarDesc" class="com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcBooleanVariableDescriptor">
+		<property name="variable" ref="trigEjectionOnlyForSicpaEjectionsParam" />
+		<property name="plcProvider" ref="plcProvider" />
+	</bean>
+
+	<!-- bTrigAudioVisualOnlyForSicpaEjections -->
+	<bean id="trigAudioVisualOnlyForSicpaEjectionsPlcVarDesc" class="com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcBooleanVariableDescriptor">
+		<property name="variable" ref="trigAudioVisualOnlyForSicpaEjectionsParam" />
+		<property name="plcProvider" ref="plcProvider" />
+	</bean>
+
+	<!-- nSystemType -->
+	<bean id="systemTypePlcVarDesc" class="com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcShortVariableDescriptor">
+		<property name="variable" ref="systemTypeParam" />
+		<property name="min" value="0" />
+		<property name="max" value="30000" />
+		<property name="plcProvider" ref="plcProvider" />
+	</bean>
+
+	<!-- nEncoderUsed -->
+	<bean id="encoderUsedPlcVarDesc" class="com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcBooleanVariableDescriptor">
+		<property name="variable" ref="encoderUsedParam" />
+		<property name="plcProvider" ref="plcProvider" />
+	</bean>
+
+	<!-- bIndexedProducts -->
+	<bean id="indexedProductsPlcVarDesc" class="com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcBooleanVariableDescriptor">
+		<property name="variable" ref="indexedProductsParam" />
+		<property name="plcProvider" ref="plcProvider" />
+	</bean>
+
+	<!-- bInhibitPrinter -->
+	<bean id="inhibitPrinterPlcVarDesc" class="com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcBooleanVariableDescriptor">
+		<property name="variable" ref="inhibitPrinterParam" />
+		<property name="plcProvider" ref="plcProvider" />
+	</bean>
+
+	<!-- bInhibitCamera -->
+	<bean id="inhibitCameraPlcVarDesc" class="com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcBooleanVariableDescriptor">
+		<property name="variable" ref="inhibitCameraParam" />
+		<property name="plcProvider" ref="plcProvider" />
+	</bean>
+
+	<!-- bInhibitPCEjectionReception -->
+	<bean id="inhibitPCEjectionReceptionPlcVarDesc" class="com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcBooleanVariableDescriptor">
+		<property name="variable" ref="inhibitPcEjectionReceptionParam" />
+		<property name="plcProvider" ref="plcProvider" />
+	</bean>
+
+	<!-- bInhibitPCEjectionReception -->
+	<bean id="inhibitEjectionEmissionPlcVarDesc" class="com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcBooleanVariableDescriptor">
+		<property name="variable" ref="inhibitEjectionEmissionParam" />
+		<property name="plcProvider" ref="plcProvider" />
+	</bean>
+
+	<!-- bInhibitEjectionAudiovisuals -->
+	<bean id="inhibitEjectionAudiovisualsPlcVarDesc" class="com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcBooleanVariableDescriptor">
+		<property name="variable" ref="inhibitEjectionAudioVisualsParam" />
+		<property name="plcProvider" ref="plcProvider" />
+	</bean>
+
+	<!-- bInhibitPCEjectionSimulation -->
+	<bean id="inhibitPCEjectionSimulationPlcVarDesc" class="com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcBooleanVariableDescriptor">
+		<property name="variable" ref="inhibitPcEjectionSimulationParam" />
+		<property name="plcProvider" ref="plcProvider" />
+	</bean>
+
+	<!-- bInhibitJavaNtfEmission -->
+	<bean id="inhibitJavaNtfEmissionPlcVarDesc" class="com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcBooleanVariableDescriptor">
+		<property name="variable" ref="inhibitJavaNtfEmissionParam" />
+		<property name="plcProvider" ref="plcProvider" />
+	</bean>
+
+	<!-- bInhibitLblAppOrAirDryer -->
+	<bean id="inhibitLblAppOrAirDryerPlcVarDesc" class="com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcBooleanVariableDescriptor">
+		<property name="variable" ref="inhibitLblAppOrAirDryerParam" />
+		<property name="plcProvider" ref="plcProvider" />
+	</bean>
+
+	<!-- nDRS_Type -->
+	<bean id="DRS_TypePlcVarDesc" class="com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcShortVariableDescriptor">
+		<property name="variable" ref="drsTypeParam" />
+		<property name="min" value="0" />
+		<property name="max" value="30000" />
+		<property name="plcProvider" ref="plcProvider" />
+	</bean>
+
+	<!-- nEjectionType -->
+	<bean id="ejectionTypePlcVarDesc" class="com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcShortVariableDescriptor">
+		<property name="variable" ref="ejectionTypeParam" />
+		<property name="min" value="0" />
+		<property name="max" value="30000" />
+		<property name="plcProvider" ref="plcProvider" />
+	</bean>
+
+	<!-- nWar_Temperature_IJ_cabinet_level -->
+	<bean id="warTemperatureIJCabinetLevelPlcVarDesc" class="com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcShortVariableDescriptor">
+		<property name="variable" ref="warTempIjCabLvlParam" />
+		<property name="min" value="0" />
+		<property name="max" value="30000" />
+		<property name="plcProvider" ref="plcProvider" />
+	</bean>
+
+	<!-- nWar_Temperature_IJ_ink_level -->
+	<bean id="warTemperatureIJInkLevelPlcVarDesc" class="com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcShortVariableDescriptor">
+		<property name="variable" ref="warTempIjInkLvlParam" />
+		<property name="min" value="0" />
+		<property name="max" value="30000" />
+		<property name="plcProvider" ref="plcProvider" />
+	</bean>
+
+	<!-- nErr_Temperature_IJ_cabinet_level -->
+	<bean id="errTemperatureIJCabinetLevelPlcVarDesc" class="com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcShortVariableDescriptor">
+		<property name="variable" ref="errTempIjCabLvlParam" />
+		<property name="min" value="0" />
+		<property name="max" value="30000" />
+		<property name="plcProvider" ref="plcProvider" />
+	</bean>
+
+	<!-- nErr_Temperature_IJ_ink_level -->
+	<bean id="errTemperatureIJInkLevelPlcVarDesc" class="com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcShortVariableDescriptor">
+		<property name="variable" ref="errTempIjInkLvlParam" />
+		<property name="min" value="0" />
+		<property name="max" value="30000" />
+		<property name="plcProvider" ref="plcProvider" />
+	</bean>
+
+	<!-- nWar_Fans_Printer_cabinet_MIN_freq -->
+	<bean id="warFansPrinterCabintMINFreqPlcVarDesc" class="com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcShortVariableDescriptor">
+		<property name="variable" ref="warFansPrinterCabMinFreqParam" />
+		<property name="min" value="0" />
+		<property name="max" value="30000" />
+		<property name="plcProvider" ref="plcProvider" />
+	</bean>
+
+	<!-- nWar_Fans_Printer_cabinet_MAX_freq -->
+	<bean id="warFansPrinterCabintMAXFreqPlcVarDesc" class="com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcShortVariableDescriptor">
+		<property name="variable" ref="warFansPrinterCabMaxFreqParam" />
+		<property name="min" value="0" />
+		<property name="max" value="30000" />
+		<property name="plcProvider" ref="plcProvider" />
+	</bean>
+
+	<!-- nFans_Temp_ON_threshold_Printer -->
+	<bean id="fansTempONThresholdPrinterPlcVarDesc" class="com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcShortVariableDescriptor">
+		<property name="variable" ref="fansTempOnThresholdPrinterParam" />
+		<property name="min" value="0" />
+		<property name="max" value="30000" />
+		<property name="plcProvider" ref="plcProvider" />
+	</bean>
+
+	<!-- nFans_Temp_OFF_delta_hyst_Printer -->
+	<bean id="fansTempOFFDeltaHystPrinterPlcVarDesc" class="com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcShortVariableDescriptor">
+		<property name="variable" ref="fansTempOffDeltaHystPrinterParam" />
+		<property name="min" value="0" />
+		<property name="max" value="30000" />
+		<property name="plcProvider" ref="plcProvider" />
+	</bean>
+
+	<!-- nInk_Vortex_ON_threshold -->
+	<bean id="inkVortexONThresholdPlcVarDesc" class="com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcShortVariableDescriptor">
+		<property name="variable" ref="inkVortexOnThresholdParam" />
+		<property name="min" value="0" />
+		<property name="max" value="30000" />
+		<property name="plcProvider" ref="plcProvider" />
+	</bean>
+
+	<!-- nInk_Vortex_OFF_delta_hysteresis -->
+	<bean id="inkVortexOFFDeltaHysteresisPlcVarDesc" class="com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcShortVariableDescriptor">
+		<property name="variable" ref="inkVortextOffDeltaHysteresisParam" />
+		<property name="min" value="0" />
+		<property name="max" value="30000" />
+		<property name="plcProvider" ref="plcProvider" />
+	</bean>
+
+
+	<util:list id="lineVarGroups">
+
+		<bean class="com.sicpa.standard.sasscl.devices.plc.variable.PlcVariableGroup">
+			<constructor-arg>
+				<array>
+					<ref bean="encoderResolutionPlcVarDesc" />
+					<ref bean="shapeDiameterPlcVarDesc" />
+					<ref bean="encoderModuleFoldEvaluationPlcVarDesc" />
+					<ref bean="systemTypePlcVarDesc" />
+					<ref bean="encoderUsedPlcVarDesc" />
+				</array>
+			</constructor-arg>
+			<property name="description" value="plc.config.line.group.system" />
+		</bean>
+		<bean class="com.sicpa.standard.sasscl.devices.plc.variable.PlcVariableGroup">
+			<constructor-arg>
+				<array>
+					<ref bean="printerDistancePlcVarDesc" />
+					<ref bean="printerLengthPlcVarDesc" />
+					<ref bean="inhibitPrinterPlcVarDesc" />
+				</array>
+			</constructor-arg>
+			<property name="description" value="plc.config.line.group.printer" />
+		</bean>
+		<bean class="com.sicpa.standard.sasscl.devices.plc.variable.PlcVariableGroup">
+			<constructor-arg>
+				<array>
+					<ref bean="cameraDistancePlcVarDesc" />
+					<ref bean="cameraLengthPlcVarDesc" />
+					<ref bean="inhibitCameraPlcVarDesc" />
+				</array>
+			</constructor-arg>
+			<property name="description" value="plc.config.line.group.camera" />
+		</bean>
+		<bean class="com.sicpa.standard.sasscl.devices.plc.variable.PlcVariableGroup">
+			<constructor-arg>
+				<array>
+					<ref bean="warFansPrinterCabintMINFreqPlcVarDesc" />
+					<ref bean="warFansPrinterCabintMAXFreqPlcVarDesc" />
+					<ref bean="DRS_TypePlcVarDesc" />
+				</array>
+			</constructor-arg>
+			<property name="description" value="plc.config.line.group.fan" />
+		</bean>
+		<bean class="com.sicpa.standard.sasscl.devices.plc.variable.PlcVariableGroup">
+			<constructor-arg>
+				<array>
+					<ref bean="pcEjectionReceptionDistancePlcVarDesc" />
+					<ref bean="pcEjectionReceptionLengthPlcVarDesc" />
+					<ref bean="ejectionEmissionDistancePlcVarDesc" />
+					<ref bean="ejectionEmissionLengthPlcVarDesc" />
+					<ref bean="simulatePCEjectionIfAddCheckPlcVarDesc" />
+					<ref bean="trigCameraIfPCEjectionSimulatedPlcVarDesc" />
+					<ref bean="inhibitPCEjectionIfAddCheckPlcVarDesc" />
+					<ref bean="trigEjectionOnlyForSicpaEjectionsPlcVarDesc" />
+					<ref bean="trigAudioVisualOnlyForSicpaEjectionsPlcVarDesc" />
+					<ref bean="inhibitPCEjectionReceptionPlcVarDesc" />
+					<ref bean="inhibitEjectionEmissionPlcVarDesc" />
+					<ref bean="inhibitEjectionAudiovisualsPlcVarDesc" />
+					<ref bean="inhibitPCEjectionSimulationPlcVarDesc" />
+					<ref bean="ejectionTypePlcVarDesc" />
+				</array>
+			</constructor-arg>
+			<property name="description" value="plc.config.line.group.ejection" />
+		</bean>
+		<bean class="com.sicpa.standard.sasscl.devices.plc.variable.PlcVariableGroup">
+			<constructor-arg>
+				<array>
+					<ref bean="maxConsecutiveInvalidCodesPlcVarDesc" />
+					<ref bean="statsSmallThresholdPlcVarDesc" />
+					<ref bean="statsSmallRejectionLimitPlcVarDesc" />
+					<ref bean="statsLargeThresholdPlcVarDesc" />
+					<ref bean="statsLargeRejectionLimitPlcVarDesc" />
+				</array>
+			</constructor-arg>
+			<property name="description" value="plc.config.line.group.stats" />
+		</bean>
+		<bean class="com.sicpa.standard.sasscl.devices.plc.variable.PlcVariableGroup">
+			<constructor-arg>
+				<array>
+					<ref bean="fansTempONThresholdPrinterPlcVarDesc" />
+					<ref bean="fansTempOFFDeltaHystPrinterPlcVarDesc" />
+					<ref bean="warTemperatureIJCabinetLevelPlcVarDesc" />
+					<ref bean="warTemperatureIJInkLevelPlcVarDesc" />
+					<ref bean="errTemperatureIJCabinetLevelPlcVarDesc" />
+					<ref bean="errTemperatureIJInkLevelPlcVarDesc" />
+				</array>
+			</constructor-arg>
+			<property name="description" value="plc.config.line.group.temp" />
+		</bean>
+		<bean class="com.sicpa.standard.sasscl.devices.plc.variable.PlcVariableGroup">
+			<constructor-arg>
+				<array>
+					<ref bean="inhibitJavaNtfEmissionPlcVarDesc" />
+					<ref bean="inhibitLblAppOrAirDryerPlcVarDesc" />
+					<ref bean="audioVisualEmissionDistancePlcVarDesc" />
+					<ref bean="counterFilterPlcVarDesc" />
+					<ref bean="productDetectorFilterPlcVarDesc" />
+					<ref bean="valideCodeTimeoutPlcVarDesc" />
+					<ref bean="audioVisualEmissionLengthPlcVarDesc" />
+					<ref bean="prodControlDetectorFilterPlcVarDesc" />
+					<ref bean="javaNtfDistancePlcVarDesc" />
+					<ref bean="triggerControlMaxDiffValuePlcVarDesc" />
+					<ref bean="triggerControlMaxChecksValuePlcVarDesc" />
+					<ref bean="triggerControlMaxAbsErrorsPlcVarDesc" />
+					<ref bean="testAdditionalCheckPlcVarDesc" />
+					<ref bean="triggerActOnFallingEdgePlcVarDesc" />
+					<ref bean="indexedProductsPlcVarDesc" />
+					<ref bean="inkVortexONThresholdPlcVarDesc" />
+					<ref bean="inkVortexOFFDeltaHysteresisPlcVarDesc" />
+				</array>
+			</constructor-arg>
+			<property name="description" value="plc.config.line.misc" />
+		</bean>
+
+	</util:list>
+
+</beans>

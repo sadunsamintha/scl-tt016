@@ -1,0 +1,640 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.sicpa.standard.sasscl</groupId>
+	<artifactId>parent</artifactId>
+	<packaging>pom</packaging>
+	<name>parent std sas scl</name>
+	<version>2.3-SNAPSHOT</version>
+	<build>
+
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>findbugs-maven-plugin</artifactId>
+					<version>2.3.3</version>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+
+
+		<plugins>
+			<plugin>
+				<groupId>com.atlassian.maven.plugins</groupId>
+				<artifactId>maven-clover2-plugin</artifactId>
+				<version>2.5.1</version>
+				<configuration>
+					<excludes>
+
+						<!-- FILTER TO REMOVE WHEN MODULE ARE INTEGRATED -->
+						<exclude>**/**/skucheck/*.java</exclude>
+						<exclude>**/**/skucheck/**/*.java</exclude>
+
+						<!-- -->
+						<exclude>**/**/*Test.java</exclude>
+						<exclude>**/**benchmark/**/*.java</exclude>
+						<exclude>**/**sasscl/view/**/*.java</exclude>
+						<exclude>**/**sasscl/*.java</exclude>
+						<exclude>**/**ioc/**/*.java</exclude>
+						<exclude>**/**aspect/**/*.java</exclude>
+						<exclude>**/**simulator/**/*.java</exclude>
+						<exclude>**/**/*Renderer.java</exclude>
+						<exclude>**/**/DefaultConfigGenerator.java</exclude>
+						<exclude>**/**remoteControl/**/*.java</exclude>
+						<exclude>**/**/wizard/*.java</exclude>
+						<exclude>**/**/wizard/**/*.java</exclude>
+						<exclude>**/**/mbean/sas/*.java</exclude>
+						<exclude>**/**/mbean/scl/*.java</exclude>
+					</excludes>
+
+					<includesTestSourceRoots>false</includesTestSourceRoots>
+					<targetPercentage>75%</targetPercentage>
+					<generateXml>true</generateXml>
+					<generateHtml>true</generateHtml>
+					<license><![CDATA[rrnrwoooiOHWmxNIOrGjUobTnoMCslgTLSmfRRTlckFRDFV
+	mj2KVj2Lvhyy3NoXdo>p9xZL2L0L5GPAftJkg8IdCL9YTII
+	RmNNtXqpNnOPrqOoProWtMNNMoroqRpporSwVXxVTrTTTxU
+	wWQWTWWuUxTqwWtXPnmnmUUnopqotmummmmmUUnopqotmum
+	mmmmUUJfZmXWGolarZqWJbZrofqvWJ1UUn
+						]]></license>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.9</version>
+				<configuration>
+					<includes>
+						<include>**/*TestSAS.java</include>
+						<include>**/*TestSCL.java</include>
+						<include>**/*Test.java</include>
+					</includes>
+					<argLine>-Djava.awt.headless=true -Xmx256m</argLine>
+					<forkMode>pertest</forkMode>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+				</configuration>
+			</plugin>
+
+		</plugins>
+	</build>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.sicpa.standard</groupId>
+			<artifactId>common-client</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.sicpa.standard.common</groupId>
+			<artifactId>standard-common</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-core</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.sicpa.standard.sicpadata</groupId>
+			<artifactId>ext.business</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.sicpa.standard.sicpadata</groupId>
+			<artifactId>lib.impl</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.thoughtworks.xstream</groupId>
+			<artifactId>xstream</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.sicpa.standard.gui</groupId>
+			<artifactId>standard-gui-screen</artifactId>
+		</dependency>
+
+		<!--TEST -->
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-all</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.easytesting</groupId>
+			<artifactId>fest-bundle</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.powermock</groupId>
+			<artifactId>powermock-module-junit4</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.powermock</groupId>
+			<artifactId>powermock-api-mockito</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<modules>
+		<module>standard-sas-app</module>
+		<module>standard-scl-app</module>
+		<module>standard-sas-scl-business-activation</module>
+		<module>standard-sas-scl-business-alert</module>
+		<module>standard-sas-scl-business-coding</module>
+		<module>standard-sas-scl-business-production</module>
+		<module>standard-sas-scl-business-statistics</module>
+		<module>standard-sas-scl-business-skucheck</module>
+		<module>standard-sas-scl-business-offline-counting</module>
+		<module>standard-sas-scl-common-storage</module>
+		<module>standard-sas-scl-common-app</module>
+		<module>standard-sas-scl-common-model</module>
+		<module>standard-sas-scl-controller-process</module>
+		<module>standard-sas-scl-controller-scheduler</module>
+		<module>standard-sas-scl-device-barcodeReader</module>
+		<module>standard-sas-scl-device-camera</module>
+		<module>standard-sas-scl-device-printer</module>
+		<module>standard-sas-scl-device-plc</module>
+		<module>standard-sas-scl-device-brs</module>
+		<module>standard-sas-scl-device-remoteServer</module>
+		<module>standard-sas-scl-device-remoteServer-impl</module>
+		<module>standard-sas-scl-device-common</module>
+		<module>standard-sas-scl-spring-common</module>
+		<module>standard-sas-scl-spring-scl</module>
+		<module>standard-sas-scl-view</module>
+		<module>standard-sas-scl-benchmark</module>
+		<module>standard-sas-scl-monitoring</module>
+		<module>standard-sas-scl-remoteControl</module>
+		<module>standard-sas-scl-test-functional-common</module>
+		<module>standard-sas-scl-test-functional-sas</module>
+		<module>standard-sas-scl-test-functional-scl</module>
+		<module>standard-sas-scl-project-wizard</module>
+		<module>standard-sas-scl-device-context-console</module>
+		<module>standard-sas-scl-device-bis</module>
+		<module>standard-sas-scl-test-utils</module>
+	</modules>
+
+
+
+	<dependencyManagement>
+		<dependencies>
+
+			<!-- INTERNALS -->
+
+			<dependency>
+				<groupId>com.sicpa.standard.sasscl</groupId>
+				<artifactId>model</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+
+			<!--BUSINESS -->
+			<dependency>
+				<groupId>com.sicpa.standard.sasscl</groupId>
+				<artifactId>business-production</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.sicpa.standard.sasscl</groupId>
+				<artifactId>business-activation</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.sicpa.standard.sasscl</groupId>
+				<artifactId>business-alert</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.sicpa.standard.sasscl</groupId>
+				<artifactId>business-statistics</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.sicpa.standard.sasscl</groupId>
+				<artifactId>business-coding</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.sicpa.standard.sasscl</groupId>
+				<artifactId>test-utils</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+
+
+			<!--SERVICE/CONTROLLER -->
+			<dependency>
+				<groupId>com.sicpa.standard.sasscl</groupId>
+				<artifactId>service-monitoring</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.sicpa.standard.sasscl</groupId>
+				<artifactId>storage</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.sicpa.standard.sasscl</groupId>
+				<artifactId>controller-process</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.sicpa.standard.sasscl</groupId>
+				<artifactId>controller-scheduler</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.sicpa.standard.sasscl</groupId>
+				<artifactId>view</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+
+			<!--DEVICES -->
+			<dependency>
+				<groupId>com.sicpa.standard.sasscl</groupId>
+				<artifactId>device-printer</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.sicpa.standard.sasscl</groupId>
+				<artifactId>device-camera</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.sicpa.standard.sasscl</groupId>
+				<artifactId>device-remoteServer</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.sicpa.standard.sasscl</groupId>
+				<artifactId>device-barcodeReader</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.sicpa.standard.sasscl</groupId>
+				<artifactId>device-plc</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.sicpa.standard.sasscl</groupId>
+				<artifactId>device-common</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+
+			<!--SPRING -->
+			<dependency>
+				<groupId>com.sicpa.standard.sasscl</groupId>
+				<artifactId>spring-common</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.sicpa.standard.sasscl</groupId>
+				<artifactId>spring-scl</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.sicpa.standard.sasscl</groupId>
+				<artifactId>device-remoteServer-impl</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<!--MISC -->
+			<dependency>
+				<groupId>com.sicpa.standard.sasscl</groupId>
+				<artifactId>benchmark</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.sicpa.standard.sasscl</groupId>
+				<artifactId>common-app</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.sicpa.standard.sasscl</groupId>
+				<artifactId>parent</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.sicpa.standard.sasscl</groupId>
+				<artifactId>functional-test-common</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.sicpa.standard.sasscl</groupId>
+				<artifactId>business-skucheck</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.sicpa.standard.sasscl</groupId>
+				<artifactId>device-brs</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.sicpa.standard.sasscl</groupId>
+				<artifactId>business-offline-counting</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.sicpa.standard.sasscl</groupId>
+				<artifactId>device-bis</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.sicpa.standard.sasscl</groupId>
+				<artifactId>device-context-console</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+
+
+			<!-- EXTERNALS -->
+			<!--STD COMP -->
+			<dependency>
+				<groupId>com.sicpa.standard.bis2</groupId>
+				<artifactId>core</artifactId>
+				<version>0.0.1</version>
+			</dependency>
+			<dependency>
+				<groupId>com.sicpa.standard.bis2</groupId>
+				<artifactId>remote</artifactId>
+				<version>0.0.1</version>
+			</dependency>
+			<dependency>
+				<groupId>com.sicpa.standard</groupId>
+				<artifactId>common-client</artifactId>
+				<version>1.0.7-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>com.sicpa.standard.gui</groupId>
+				<artifactId>standard-gui-screen</artifactId>
+				<version>1.1.2</version>
+			</dependency>
+			<dependency>
+				<groupId>com.sicpa.standard.sicpadata</groupId>
+				<artifactId>ext.business</artifactId>
+				<version>0.0.1-RC2</version>
+			</dependency>
+			<dependency>
+				<groupId>com.sicpa.standard.sicpadata</groupId>
+				<artifactId>lib.impl</artifactId>
+				<version>0.0.1-RC2</version>
+			</dependency>
+			<dependency>
+				<groupId>com.sicpa.standard.sicpadata</groupId>
+				<artifactId>preset</artifactId>
+				<version>0.0.1-RC2</version>
+			</dependency>
+			<dependency>
+				<groupId>com.sicpa.standard.sicpadata</groupId>
+				<artifactId>crypto.bin.sw.keymanager</artifactId>
+				<version>0.0.1-RC2</version>
+			</dependency>
+			<dependency>
+				<groupId>com.sicpa.standard.common</groupId>
+				<artifactId>standard-common</artifactId>
+				<version>1.6.3</version>
+			</dependency>
+			<dependency>
+				<groupId>com.sicpa.standard.barcode.reader</groupId>
+				<artifactId>standard-barcode-reader</artifactId>
+				<version>1.1</version>
+			</dependency>
+			<dependency>
+				<groupId>com.sicpa.standard.barcode.reader</groupId>
+				<artifactId>standard-barcode-reader-gryphon130</artifactId>
+				<version>1.2</version>
+			</dependency>
+			<dependency>
+				<groupId>com.sicpa.standard.camera</groupId>
+				<artifactId>standard-camera-drs</artifactId>
+				<version>0.0.4</version>
+			</dependency>
+			<dependency>
+				<groupId>com.sicpa.standard.camera</groupId>
+				<artifactId>standard-camera-cognex</artifactId>
+				<version>1.6.1</version>
+			</dependency>
+			<dependency>
+				<groupId>com.sicpa.standard.camera</groupId>
+				<artifactId>standard-camera</artifactId>
+				<version>1.3.2</version>
+			</dependency>
+			<dependency>
+				<groupId>com.sicpa.standard.plc</groupId>
+				<artifactId>standard-plc</artifactId>
+				<version>1.1.6</version>
+			</dependency>
+			<dependency>
+				<groupId>com.sicpa.standard.printer</groupId>
+				<artifactId>standard-printer</artifactId>
+				<version>1.1.2-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>com.sicpa.standard.printer</groupId>
+				<artifactId>standard-printer-domino</artifactId>
+				<version>1.1.6-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+			<groupId>com.sicpa.standard.printer</groupId>
+				<artifactId>standard-printer-leibinger</artifactId>
+				<version>1.0.3-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>com.sicpa.standard.plc</groupId>
+				<artifactId>standard-plc-jbeckplc</artifactId>
+				<version>1.3.5-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>com.sicpa.standard.plc</groupId>
+				<artifactId>standard-plc-beckhoff</artifactId>
+				<version>1.0.6</version>
+			</dependency>
+			<dependency>
+				<groupId>com.sicpa.standard</groupId>
+				<artifactId>monitoring</artifactId>
+				<version>1.0.3</version>
+			</dependency>
+			<dependency>
+				<groupId>com.sicpa.standard</groupId>
+				<artifactId>skuCheck</artifactId>
+				<version>0.0.3</version>
+			</dependency>
+			<dependency>
+				<groupId>com.sicpa.standard.tools</groupId>
+				<artifactId>installer</artifactId>
+				<version>1.0.0</version>
+			</dependency>
+
+
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-context</artifactId>
+				<version>3.2.4.RELEASE</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jboss.client</groupId>
+				<artifactId>jbossall-client</artifactId>
+				<version>4.2.2.GA</version>
+			</dependency>
+			<dependency>
+				<groupId>ch.qos.logback</groupId>
+				<artifactId>logback-classic</artifactId>
+				<version>1.0.1</version>
+			</dependency>
+			<dependency>
+				<groupId>ch.qos.logback</groupId>
+				<artifactId>logback-core</artifactId>
+				<version>1.0.1</version>
+			</dependency>
+	        <dependency>
+	        	<groupId>org.slf4j</groupId>
+	        	<artifactId>slf4j-api</artifactId>
+	        	<version>1.7.5</version>
+	        </dependency>
+			<dependency>
+				<groupId>org.aspectj</groupId>
+				<artifactId>aspectjlib</artifactId>
+				<version>1.6.2</version>
+			</dependency>
+			<dependency>
+				<groupId>org.aspectj</groupId>
+				<artifactId>aspectjrt</artifactId>
+				<version>1.6.9</version>
+			</dependency>
+			<dependency>
+				<groupId>org.aspectj</groupId>
+				<artifactId>aspectjweaver</artifactId>
+				<version>1.6.9</version>
+			</dependency>
+			<dependency>
+				<groupId>cglib</groupId>
+				<artifactId>cglib</artifactId>
+				<version>2.2</version>
+			</dependency>
+			<dependency>
+				<groupId>jfree</groupId>
+				<artifactId>jfreechart</artifactId>
+				<version>1.0.9</version>
+			</dependency>
+			<dependency>
+				<groupId>jfree</groupId>
+				<artifactId>jcommon</artifactId>
+				<version>1.0.9</version>
+			</dependency>
+			<dependency>
+				<groupId>com.thoughtworks.xstream</groupId>
+				<version>1.4.2</version>
+				<artifactId>xstream</artifactId>
+			</dependency>
+			<dependency>
+				<groupId>commons-lang</groupId>
+				<artifactId>commons-lang</artifactId>
+				<version>2.5</version>
+			</dependency>
+			<dependency>
+				<groupId>commons-io</groupId>
+				<artifactId>commons-io</artifactId>
+				<version>1.3.2</version>
+			</dependency>
+
+			<dependency>
+				<groupId>commons-beanutils</groupId>
+				<artifactId>commons-beanutils</artifactId>
+				<version>1.8.3</version>
+			</dependency>
+
+			<!-- use version 1.6.1 so that the locale works correctly (calendar get refreshed when locale changed) -->
+			<!-- http://www.java.net/node/699875 -->
+			<dependency>
+				<groupId>org.swinglabs</groupId>
+				<artifactId>swingx</artifactId>
+				<version>1.6.1</version>
+			</dependency>
+
+			<!--TEST -->
+
+			<dependency>
+				<groupId>org.easytesting</groupId>
+				<artifactId>fest-bundle</artifactId>
+				<version>1.2</version>
+			</dependency>
+			<dependency>
+				<groupId>org.mockito</groupId>
+				<artifactId>mockito-all</artifactId>
+				<version>1.8.5</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.powermock</groupId>
+				<artifactId>powermock-module-junit4</artifactId>
+				<version>1.4.10</version>
+				<scope>test</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>org.powermock</groupId>
+				<artifactId>powermock-api-mockito</artifactId>
+				<version>1.4.10</version>
+				<scope>test</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<scm>
+		<connection>scm:svn:https://psdsvn.sicpa-net.ads/standard-framework/standard-sas-scl-modules/standard-sas-scl-parent/trunk</connection>
+		<developerConnection>scm:svn:https://psdsvn.sicpa-net.ads/standard-framework/standard-sas-scl-modules/standard-sas-scl-parent/trunk</developerConnection>
+		<url>http://psdfisheye.sicpa-net.ads/browse/standard-framework/standard-sas-scl-modules/standard-sas-scl-parent/trunk</url>
+	</scm>
+
+
+	<distributionManagement>
+		<repository>
+			<id>releases</id>
+			<url>
+				dav:http://psdartifactory.sicpa-net.ads:8081/artifactory/libs-releases-local
+			</url>
+		</repository>
+		<snapshotRepository>
+			<id>snapshots</id>
+			<url>
+				dav:http://psdartifactory.sicpa-net.ads:8081/artifactory/libs-snapshots-local
+			</url>
+			<uniqueVersion>false</uniqueVersion>
+		</snapshotRepository>
+	</distributionManagement>
+
+</project>

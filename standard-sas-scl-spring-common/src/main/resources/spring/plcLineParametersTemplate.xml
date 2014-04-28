@@ -1,0 +1,385 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+
+	<util:list id="plcLineParamsTemplate">
+		<ref bean="lineComStrucStoredInRamParam" />
+		<ref bean="counterFilterTypeParam" />
+		<ref bean="productDetectorFilterTypeParam" />
+		<ref bean="cameraDistanceTypeParam" />
+		<ref bean="cameraLengthTypeParam" />
+		<ref bean="valideCodeTimeoutTypeParam" />
+		<ref bean="audioVisualEmissionDistanceTypeParam" />
+		<ref bean="audioVisualEmissionLengthTypeParam" />
+		<ref bean="printerDistanceTypeParam" />
+		<ref bean="printerLengthTypeParam" />
+		<ref bean="pcEjectionReceptionDistanceTypeParam" />
+		<ref bean="pcEjectionReceptionLengthTypeParam" />
+		<ref bean="prodControlDetectorFilterTypeParam" />
+		<ref bean="ejectionEmissionDistanceTypeParam" />
+		<ref bean="ejectionEmissionLengthTypeParam" />
+		<ref bean="javaNtfDistanceTypeParam" />
+		<ref bean="counterFilterParam" />
+		<ref bean="productDetectorFilterParam" />
+		<ref bean="cameraDistanceParam" />
+		<ref bean="cameraLengthParam" />
+		<ref bean="valideCodeTimeoutParam" />
+		<ref bean="audioVisualEmissionDistanceParam" />
+		<ref bean="audioVisualEmissionLengthParam" />
+		<ref bean="printerDistanceParam" />
+		<ref bean="printerLengthParam" />
+		<ref bean="pcEjectionReceptionDistanceParam" />
+		<ref bean="pcEjectionReceptionLengthParam" />
+		<ref bean="prodControlDetectorFilterParam" />
+		<ref bean="ejectionEmissionDistanceParam" />
+		<ref bean="ejectionEmissionLengthParam" />
+		<ref bean="javaNtfDistanceParam" />
+		<ref bean="encoderResolutionParam" />
+		<ref bean="shapeDiameterParam" />
+		<ref bean="maxConsecutiveInvalidCodesParam" />
+		<ref bean="statsSmallThresholdParam" />
+		<ref bean="statsSmallRejectionLimitParam" />
+		<ref bean="statsLargeThresholdParam" />
+		<ref bean="statsLargeRejectionLimitParam" />
+		<ref bean="triggerControlMaxDiffValueParam" />
+		<ref bean="triggerControlMaxChecksValueParam" />
+		<ref bean="triggerControlMaxAbsErrorsParam" />
+		<ref bean="encoderModuleFoldEvaluationParam" />
+		<ref bean="testAdditionalCheckParam" />
+		<ref bean="triggerActOnFailingEdgeParam" />
+		<ref bean="simulatePcEjectionIfAddCheckParam" />
+		<ref bean="trigCameraIfPcEjectionSimulatedParam" />
+		<ref bean="inhibitPcEjectionIfAddCheckParam" />
+		<ref bean="trigEjectionOnlyForSicpaEjectionsParam" />
+		<ref bean="trigAudioVisualOnlyForSicpaEjectionsParam" />
+		<ref bean="systemTypeParam" />
+		<ref bean="encoderUsedParam" />
+		<ref bean="indexedProductsParam" />
+		<ref bean="inhibitPrinterParam" />
+		<ref bean="inhibitCameraParam" />
+		<ref bean="inhibitPcEjectionReceptionParam" />
+		<ref bean="inhibitEjectionEmissionParam" />
+		<ref bean="inhibitEjectionAudioVisualsParam" />
+		<ref bean="inhibitPcEjectionSimulationParam" />
+		<ref bean="inhibitJavaNtfEmissionParam" />
+		<ref bean="inhibitLblAppOrAirDryerParam" />
+		<ref bean="drsTypeParam" />
+		<ref bean="ejectionTypeParam" />
+		<ref bean="warTempIjCabLvlParam" />
+		<ref bean="warTempIjInkLvlParam" />
+		<ref bean="errTempIjCabLvlParam" />
+		<ref bean="errTempIjInkLvlParam" />
+		<ref bean="warFansPrinterCabMinFreqParam" />
+		<ref bean="warFansPrinterCabMaxFreqParam" />
+		<ref bean="fansTempOnThresholdPrinterParam" />
+		<ref bean="fansTempOffDeltaHystPrinterParam" />
+		<ref bean="inkVortexOnThresholdParam" />
+		<ref bean="inkVortextOffDeltaHysteresisParam" />
+	</util:list>
+
+	<bean id="lineComStrucStoredInRamParam" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createBooleanVar">
+		<constructor-arg value="#{plcVarMap['PARAM_LINE_COM_STRUC_STORED_IN_RAM']}" />
+	</bean>
+
+	<bean id="counterFilterTypeParam" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createBooleanVar">
+		<constructor-arg value="#{plcVarMap['PARAM_COUNTER_FILTER_TYPE']}" />
+	</bean>
+
+	<bean id="productDetectorFilterTypeParam" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createBooleanVar">
+		<constructor-arg value="#{plcVarMap['PARAM_PRODUCT_DETECTOR_FILTER_TYPE']}" />
+	</bean>
+
+	<bean id="cameraDistanceTypeParam" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createBooleanVar">
+		<constructor-arg value="#{plcVarMap['PARAM_CAMERA_DISTANCE_TYPE']}" />
+	</bean>
+
+	<bean id="cameraLengthTypeParam" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createBooleanVar">
+		<constructor-arg value="#{plcVarMap['PARAM_CAMERA_LENGTH_TYPE']}" />
+	</bean>
+
+	<bean id="valideCodeTimeoutTypeParam" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createBooleanVar">
+		<constructor-arg value="#{plcVarMap['PARAM_VALIDE_CODE_TIMEOUT_TYPE']}" />
+	</bean>
+
+	<bean id="audioVisualEmissionDistanceTypeParam" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createBooleanVar">
+		<constructor-arg value="#{plcVarMap['PARAM_AUDIO_VISUAL_EMISSION_DISTANCE_TYPE']}" />
+	</bean>
+
+	<bean id="audioVisualEmissionLengthTypeParam" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createBooleanVar">
+		<constructor-arg value="#{plcVarMap['PARAM_AUDIO_VISUAL_EMISSION_LENGTH_TYPE']}" />
+	</bean>
+
+	<bean id="printerDistanceTypeParam" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createBooleanVar">
+		<constructor-arg value="#{plcVarMap['PARAM_PRINTER_DISTANCE_TYPE']}" />
+	</bean>
+
+	<bean id="printerLengthTypeParam" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createBooleanVar">
+		<constructor-arg value="#{plcVarMap['PARAM_PRINTER_LENGTH_TYPE']}" />
+	</bean>
+
+	<bean id="pcEjectionReceptionDistanceTypeParam" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createBooleanVar">
+		<constructor-arg value="#{plcVarMap['PARAM_PC_EJECTION_RECEPTION_DISTANCE_TYPE']}" />
+	</bean>
+
+	<bean id="pcEjectionReceptionLengthTypeParam" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createBooleanVar">
+		<constructor-arg value="#{plcVarMap['PARAM_PC_EJECTION_RECEIPTION_LENGTH_TYPE']}" />
+	</bean>
+
+	<bean id="prodControlDetectorFilterTypeParam" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createBooleanVar">
+		<constructor-arg value="#{plcVarMap['PARAM_PROD_CONTROL_DETECTOR_FILTER_TYPE']}" />
+	</bean>
+
+	<bean id="ejectionEmissionDistanceTypeParam" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createBooleanVar">
+		<constructor-arg value="#{plcVarMap['PARAM_EJECTION_EMISSION_DISTANCE_TYPE']}" />
+	</bean>
+
+	<bean id="ejectionEmissionLengthTypeParam" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createBooleanVar">
+		<constructor-arg value="#{plcVarMap['PARAM_EJECTION_EMISSION_LENGTH_TYPE']}" />
+	</bean>
+
+	<bean id="javaNtfDistanceTypeParam" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createBooleanVar">
+		<constructor-arg value="#{plcVarMap['PARAM_JAVA_NTF_DISTANCE_TYPE']}" />
+	</bean>
+
+	<bean id="counterFilterParam" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createInt32Var">
+		<constructor-arg value="#{plcVarMap['PARAM_COUNTER_FILTER']}" />
+	</bean>
+
+	<bean id="productDetectorFilterParam" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createInt32Var">
+		<constructor-arg value="#{plcVarMap['PARAM_PRODUCT_DETECTOR_FILTER']}" />
+	</bean>
+
+	<bean id="cameraDistanceParam" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createInt32Var">
+		<constructor-arg value="#{plcVarMap['PARAM_CAMERA_DISTANCE']}" />
+	</bean>
+
+	<bean id="cameraLengthParam" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createInt32Var">
+		<constructor-arg value="#{plcVarMap['PARAM_CAMERA_LENGTH']}" />
+	</bean>
+
+	<bean id="valideCodeTimeoutParam" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createInt32Var">
+		<constructor-arg value="#{plcVarMap['PARAM_VALIDE_CODE_TIMEOUT']}" />
+	</bean>
+
+	<bean id="audioVisualEmissionDistanceParam" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createInt32Var">
+		<constructor-arg value="#{plcVarMap['PARAM_AUDIO_VISUAL_EMISSION_DISTANCE']}" />
+	</bean>
+
+	<bean id="audioVisualEmissionLengthParam" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createInt32Var">
+		<constructor-arg value="#{plcVarMap['PARAM_AUDIO_VISUAL_EMISSION_LENGTH']}" />
+	</bean>
+
+	<bean id="printerDistanceParam" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createInt32Var">
+		<constructor-arg value="#{plcVarMap['PARAM_PRINTER_DISTANCE']}" />
+	</bean>
+
+	<bean id="printerLengthParam" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createInt32Var">
+		<constructor-arg value="#{plcVarMap['PARAM_PRINTER_LENGTH']}" />
+	</bean>
+
+	<bean id="pcEjectionReceptionDistanceParam" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createInt32Var">
+		<constructor-arg value="#{plcVarMap['PARAM_PC_EJECTION_RECEPTION_DISTANCE']}" />
+	</bean>
+
+	<bean id="pcEjectionReceptionLengthParam" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createInt32Var">
+		<constructor-arg value="#{plcVarMap['PARAM_PC_EJECTION_RECEPTION_LENGTH']}" />
+	</bean>
+
+	<bean id="prodControlDetectorFilterParam" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createInt32Var">
+		<constructor-arg value="#{plcVarMap['PARAM_PROD_CONTROL_DETECTOR_FILTER']}" />
+	</bean>
+
+	<bean id="ejectionEmissionDistanceParam" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createInt32Var">
+		<constructor-arg value="#{plcVarMap['PARAM_EJECTION_EMISSION_DISTANCE']}" />
+	</bean>
+
+	<bean id="ejectionEmissionLengthParam" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createInt32Var">
+		<constructor-arg value="#{plcVarMap['PARAM_EJECTION_EMISSION_LENGTH']}" />
+	</bean>
+
+	<bean id="javaNtfDistanceParam" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createInt32Var">
+		<constructor-arg value="#{plcVarMap['PARAM_JAVA_NTF_DISTANCE']}" />
+	</bean>
+
+	<bean id="encoderResolutionParam" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createInt32Var">
+		<constructor-arg value="#{plcVarMap['PARAM_ENCODER_RESOLUTION']}" />
+	</bean>
+
+	<bean id="shapeDiameterParam" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createInt32Var">
+		<constructor-arg value="#{plcVarMap['PARAM_SHAPE_DIAMETER']}" />
+	</bean>
+
+	<bean id="maxConsecutiveInvalidCodesParam" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createInt32Var">
+		<constructor-arg value="#{plcVarMap['PARAM_MAX_CONSECUTIVE_INVALID_CODES']}" />
+	</bean>
+
+	<bean id="statsSmallThresholdParam" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createInt32Var">
+		<constructor-arg value="#{plcVarMap['PARAM_STATS_SMALL_THRESHOLD']}" />
+	</bean>
+
+	<bean id="statsSmallRejectionLimitParam" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createInt32Var">
+		<constructor-arg value="#{plcVarMap['PARAM_STATS_SMALL_REJECTION_LIMIT']}" />
+	</bean>
+
+	<bean id="statsLargeThresholdParam" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createInt32Var">
+		<constructor-arg value="#{plcVarMap['PARAM_STATS_LARGE_THRESHOLD']}" />
+	</bean>
+
+	<bean id="statsLargeRejectionLimitParam" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createInt32Var">
+		<constructor-arg value="#{plcVarMap['PARAM_STATS_LARGE_REJECTION_LIMIT']}" />
+	</bean>
+
+	<bean id="triggerControlMaxDiffValueParam" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createInt32Var">
+		<constructor-arg value="#{plcVarMap['PARAM_TRIGGER_CONTROL_MAX_DIFF_VALUE']}" />
+	</bean>
+
+	<bean id="triggerControlMaxChecksValueParam" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createInt32Var">
+		<constructor-arg value="#{plcVarMap['PARAM_TRIGGER_CONTROL_MAX_CHECKS_VALUE']}" />
+	</bean>
+
+	<bean id="triggerControlMaxAbsErrorsParam" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createInt32Var">
+		<constructor-arg value="#{plcVarMap['PARAM_TRIGGER_CONTROL_MAX_ABS_ERRORS']}" />
+	</bean>
+
+	<bean id="encoderModuleFoldEvaluationParam" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createInt32Var">
+		<constructor-arg value="#{plcVarMap['PARAM_ENCODER_MODULE_FOLD_EVALUATION']}" />
+	</bean>
+
+	<bean id="testAdditionalCheckParam" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createBooleanVar">
+		<constructor-arg value="#{plcVarMap['PARAM_TEST_ADDITIONAL_CHECK']}" />
+	</bean>
+
+	<bean id="triggerActOnFailingEdgeParam" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createBooleanVar">
+		<constructor-arg value="#{plcVarMap['PARAM_TRIGGER_ACT_ON_FAILING_EDGE']}" />
+	</bean>
+
+	<bean id="simulatePcEjectionIfAddCheckParam" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createBooleanVar">
+		<constructor-arg value="#{plcVarMap['PARAM_SIMULATE_PC_EJECTION_IF_ADD_CHECK']}" />
+	</bean>
+
+	<bean id="trigCameraIfPcEjectionSimulatedParam" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createBooleanVar">
+		<constructor-arg value="#{plcVarMap['PARAM_TRIG_CAMERA_IF_PC_EJECTION_SIMULATED']}" />
+	</bean>
+
+	<bean id="inhibitPcEjectionIfAddCheckParam" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createBooleanVar">
+		<constructor-arg value="#{plcVarMap['PARAM_INHIBIT_PC_EJECTION_IF_ADD_CHECK']}" />
+	</bean>
+
+	<bean id="trigEjectionOnlyForSicpaEjectionsParam" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createBooleanVar">
+		<constructor-arg value="#{plcVarMap['PARAM_TRIG_EJECTION_ONLY_FOR_SICPA_EJECTIONS']}" />
+	</bean>
+
+	<bean id="trigAudioVisualOnlyForSicpaEjectionsParam" class="com.sicpa.standard.plc.value.PlcVariable"
+		factory-method="createBooleanVar">
+		<constructor-arg value="#{plcVarMap['PARAM_TRIG_AUDIO_VISUAL_ONLY_FOR_SICPA_EJECTIONS']}" />
+	</bean>
+
+	<bean id="systemTypeParam" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createShortVar">
+		<constructor-arg value="#{plcVarMap['PARAM_SYSTEM_TYPE']}" />
+	</bean>
+
+	<bean id="encoderUsedParam" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createBooleanVar">
+		<constructor-arg value="#{plcVarMap['PARAM_ENCODER_USED']}" />
+	</bean>
+
+	<bean id="indexedProductsParam" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createBooleanVar">
+		<constructor-arg value="#{plcVarMap['PARAM_INDEXED_PRODUCTS']}" />
+	</bean>
+
+	<bean id="inhibitPrinterParam" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createBooleanVar">
+		<constructor-arg value="#{plcVarMap['PARAM_INHIBIT_PRINTER']}" />
+	</bean>
+
+	<bean id="inhibitCameraParam" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createBooleanVar">
+		<constructor-arg value="#{plcVarMap['PARAM_INHIBIT_CAMERA']}" />
+	</bean>
+
+	<bean id="inhibitPcEjectionReceptionParam" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createBooleanVar">
+		<constructor-arg value="#{plcVarMap['PARAM_INHIBIT_PC_EJECTION_RECEPTION']}" />
+	</bean>
+
+	<bean id="inhibitEjectionEmissionParam" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createBooleanVar">
+		<constructor-arg value="#{plcVarMap['PARAM_INHIBIT_EJECTION_EMISSION']}" />
+	</bean>
+
+	<bean id="inhibitEjectionAudioVisualsParam" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createBooleanVar">
+		<constructor-arg value="#{plcVarMap['PARAM_INHIBIT_EJECTION_AUDIO_VISUALS']}" />
+	</bean>
+
+	<bean id="inhibitPcEjectionSimulationParam" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createBooleanVar">
+		<constructor-arg value="#{plcVarMap['PARAM_INHIBIT_PC_EJECTION_SIMULATION']}" />
+	</bean>
+
+	<bean id="inhibitJavaNtfEmissionParam" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createBooleanVar">
+		<constructor-arg value="#{plcVarMap['PARAM_INHIBIT_JAVA_NTF_EMISSION']}" />
+	</bean>
+
+	<bean id="inhibitLblAppOrAirDryerParam" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createBooleanVar">
+		<constructor-arg value="#{plcVarMap['PARAM_INHIBIT_LBL_APP_OR_AIR_DRYER']}" />
+	</bean>
+
+	<bean id="exportModeEnabledParam" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createBooleanVar">
+		<constructor-arg value="#{plcVarMap['PARAM_EXPORT_MODE_ENABLED']}" />
+	</bean>
+
+	<bean id="mainteneanceModeEnabledParam" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createBooleanVar">
+		<constructor-arg value="#{plcVarMap['PARAM_MAINTENANCE_MODE_ENABLED']}" />
+	</bean>
+
+	<bean id="refeedModeEnabledParam" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createBooleanVar">
+		<constructor-arg value="#{plcVarMap['PARAM_REFEED_MODE_ENABLED']}" />
+	</bean>
+
+	<bean id="drsTypeParam" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createShortVar">
+		<constructor-arg value="#{plcVarMap['PARAM_DRS_TYPE']}" />
+	</bean>
+
+	<bean id="ejectionTypeParam" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createShortVar">
+		<constructor-arg value="#{plcVarMap['PARAM_EJECTION_TYPE']}" />
+	</bean>
+
+	<bean id="warTempIjCabLvlParam" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createShortVar">
+		<constructor-arg value="#{plcVarMap['PARAM_WAR_TEMP_IJ_CAB_LVL']}" />
+	</bean>
+
+	<bean id="warTempIjInkLvlParam" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createShortVar">
+		<constructor-arg value="#{plcVarMap['PARAM_WAR_TEMP_IJ_INK_LVL']}" />
+	</bean>
+
+	<bean id="errTempIjCabLvlParam" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createShortVar">
+		<constructor-arg value="#{plcVarMap['PARAM_ERR_TEMP_IJ_CAB_LVL']}" />
+	</bean>
+
+	<bean id="errTempIjInkLvlParam" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createShortVar">
+		<constructor-arg value="#{plcVarMap['PARAM_ERR_TEMP_IJ_INK_LVL']}" />
+	</bean>
+
+	<bean id="warFansPrinterCabMinFreqParam" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createShortVar">
+		<constructor-arg value="#{plcVarMap['PARAM_WAR_FANS_PRINTER_CAB_MIN_FREQ']}" />
+	</bean>
+
+	<bean id="warFansPrinterCabMaxFreqParam" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createShortVar">
+		<constructor-arg value="#{plcVarMap['PARAM_WAR_FANS_PRINTER_CAB_MAX_FREQ']}" />
+	</bean>
+
+	<bean id="fansTempOnThresholdPrinterParam" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createShortVar">
+		<constructor-arg value="#{plcVarMap['PARAM_FANS_TEMP_ON_THRESHOLD_PRINTER']}" />
+	</bean>
+
+	<bean id="fansTempOffDeltaHystPrinterParam" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createShortVar">
+		<constructor-arg value="#{plcVarMap['PARAM_FANS_TEMP_OFF_DELTA_HYST_PRINTER']}" />
+	</bean>
+
+	<bean id="inkVortexOnThresholdParam" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createShortVar">
+		<constructor-arg value="#{plcVarMap['PARAM_INK_VORTEX_ON_THRESHOLD']}" />
+	</bean>
+
+	<bean id="inkVortextOffDeltaHysteresisParam" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createShortVar">
+		<constructor-arg value="#{plcVarMap['PARAM_INK_VORTEX_OFF_DELTA_HYSTERESIS']}" />
+	</bean>
+
+
+</beans>

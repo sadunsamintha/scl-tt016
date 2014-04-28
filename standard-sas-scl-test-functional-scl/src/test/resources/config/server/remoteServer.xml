@@ -1,0 +1,5 @@
+<RemoteServerModel>
+	<username>scl_cli</username>
+	<password>pwd</password>
+	<lifeCheckSleep>20</lifeCheckSleep>
+</RemoteServerModel>

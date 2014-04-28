@@ -1,0 +1,245 @@
+package com.sicpa.standard.sasscl.messages;
+
+import static com.sicpa.standard.sasscl.messages.ActionMessageType.ERROR;
+import static com.sicpa.standard.sasscl.messages.ActionMessageType.ERROR_DEVICE;
+import static com.sicpa.standard.sasscl.messages.ActionMessageType.ERROR_DISPLAY;
+import static com.sicpa.standard.sasscl.messages.ActionMessageType.IGNORE;
+import static com.sicpa.standard.sasscl.messages.ActionMessageType.WARNING;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import com.sicpa.standard.client.common.messages.IMessageCodeMapper;
+import com.sicpa.standard.sasscl.messages.MessageEventKey.Activation;
+import com.sicpa.standard.sasscl.messages.MessageEventKey.Alert;
+import com.sicpa.standard.sasscl.messages.MessageEventKey.BIS;
+import com.sicpa.standard.sasscl.messages.MessageEventKey.BRS;
+import com.sicpa.standard.sasscl.messages.MessageEventKey.Camera;
+import com.sicpa.standard.sasscl.messages.MessageEventKey.Coding;
+import com.sicpa.standard.sasscl.messages.MessageEventKey.DevicesController;
+import com.sicpa.standard.sasscl.messages.MessageEventKey.FlowControl;
+import com.sicpa.standard.sasscl.messages.MessageEventKey.ModelEditing;
+import com.sicpa.standard.sasscl.messages.MessageEventKey.PLC;
+import com.sicpa.standard.sasscl.messages.MessageEventKey.Printer;
+import com.sicpa.standard.sasscl.messages.MessageEventKey.Production;
+import com.sicpa.standard.sasscl.messages.MessageEventKey.ProductionParameters;
+import com.sicpa.standard.sasscl.messages.MessageEventKey.RemoteServer;
+import com.sicpa.standard.sasscl.messages.MessageEventKey.Simulator;
+import com.sicpa.standard.sasscl.messages.MessageEventKey.SkuCheck;
+import com.sicpa.standard.sasscl.messages.MessageEventKey.Storage;
+import com.sicpa.standard.sasscl.messages.MessageEventKey.Validator;
+
+public class SASDefaultMessagesMapping implements IMessageCodeMapper {
+	
+	protected Map<String, ActionMessageType> typeMap;
+	protected Map<String, String> codeMap;
+
+	public SASDefaultMessagesMapping() {
+		this.typeMap = new HashMap<String, ActionMessageType>();
+		codeMap = new HashMap<String, String>();
+		populateMap();
+	}
+
+	public ActionMessageType getMessageType(final String key) {
+		return this.typeMap.get(key);
+	}
+
+	/**
+	 * @param langKey
+	 *            key for i18n
+	 * @param messageCode
+	 *            msg key, display as part of the message, must be unique
+	 * @param type
+	 */
+	public void addEntry(final String langKey, String messageCode, final ActionMessageType type) {
+
+		this.typeMap.put(langKey, type);
+		this.codeMap.put(langKey, messageCode);
+	}
+
+	public void addEntry(String langKey, String messageCode) {
+		this.codeMap.put(langKey, messageCode);
+	}
+
+	public String getMessageCode(String langKey) {
+		return codeMap.get(langKey);
+	}
+
+	public void add(String key, ActionMessageType type) {
+		typeMap.put(key, type);
+	}
+
+	public void add(String code, String langKey) {
+		this.codeMap.put(langKey, code);
+	}
+
+	protected void populateMap() {
+
+		addEntry(PLC.VALIDATOR_LOWER, "[PLC_01]", WARNING);
+		addEntry(PLC.VALIDATOR_NULL, "[PLC_02]", WARNING);
+		addEntry(PLC.VALIDATOR_RANGE, "[PLC_03]", WARNING);
+		addEntry(PLC.VALIDATOR_HIGHER, "[PLC_04]", WARNING);
+		addEntry(PLC.EXCEPTION_FAIL_SAVE_VARIABLE_TO_FILE, "[PLC_05]", WARNING);
+		addEntry(PLC.PLC_STATE_NOT_RUNNING, "[PLC_06]", ERROR);
+		addEntry(PLC.ERROR_SENDING_PARAM, "[PLC_07]", WARNING);
+		addEntry(PLC.PLC_WAR_JAVA_WARNING, "[PLC_08]", IGNORE);
+		addEntry(PLC.PLC_WAR_JAVA_CRITICAL_WARNING, "[PLC_09]", IGNORE);
+		addEntry(PLC.PLC_WAR_COOLING_NOT_ACTIVATED, "[PLC_10]", WARNING);
+		addEntry(PLC.PLC_WAR_SOFTWARE_VERSION_FAULT, "[PLC_11]", WARNING);
+		addEntry(PLC.PLC_WAR_PLC_TEMPERATURE_TO_HIGH, "[PLC_12]", WARNING);
+		addEntry(PLC.PLC_WAR_TEMPERATURE_EE_CABINET, "[PLC_13]", WARNING);
+		addEntry(PLC.PLC_WAR_TEMPERATURE_AMBIANT, "[PLC_14]", WARNING);
+		addEntry(PLC.PLC_WAR_RELATIVE_HUMIDITY_DEFAULT, "[PLC_15]", WARNING);
+		addEntry(PLC.PLC_WAR_POWER_SUPPLY_DEFAULT, "[PLC_16]", WARNING);
+		addEntry(PLC.PLC_WAR_BREAKER_CONTROL_DEFAULT, "[PLC_17]", WARNING);
+		addEntry(PLC.PLC_WAR_AIR_PRESSURE_DEFAULT, "[PLC_18]", WARNING);
+		addEntry(PLC.PLC_WAR_DOOR_SWITCH_OCS_OPEN, "[PLC_19]", WARNING);
+		addEntry(PLC.PLC_WAR_DOOR_SWITCH_EE_OPEN, "[PLC_20]", WARNING);
+		addEntry(PLC.PLC_WAR_COOLING_FAN1_EE_CAB_DEFAULT, "[PLC_21]", WARNING);
+		addEntry(PLC.PLC_WAR_COOLING_FAN2_EE_CAB_DEFAULT, "[PLC_22]", WARNING);
+		addEntry(PLC.PLC_WAR_PLC_FAULT, "[PLC_23]", WARNING);
+		addEntry(PLC.PLC_WAR_TRIGGER_SHIFT_FLAG, "[PLC_24]", WARNING);
+		addEntry(PLC.PLC_WAR_INVALID_PARAMETER, "[PLC_25]", WARNING);
+		addEntry(PLC.PLC_WAR_LABEL_APP_OR_AIR_DRYER_WARNING, "[PLC_26]", WARNING);
+		addEntry(PLC.PLC_WAR_DRS_ACQUISITION_ERROR, "[PLC_27]", WARNING);
+		addEntry(PLC.PLC_WAR_DRS_UNKNOWN_ANSWER, "[PLC_28]", WARNING);
+		addEntry(PLC.PLC_WAR_DRS_FIFOS_FAULT, "[PLC_29]", WARNING);
+		addEntry(PLC.PLC_WAR_DRS_NOT_CONNECTED, "[PLC_30]", WARNING);
+		addEntry(PLC.PLC_WAR_ENCODER_FAULT, "[PLC_31]", WARNING);
+		addEntry(PLC.PLC_WAR_TEMPERATURE_IJ_CABINET, "[PLC_32]", WARNING);
+		addEntry(PLC.PLC_WAR_TEMPERATURE_IJ_INK, "[PLC_33]", WARNING);
+		addEntry(PLC.PLC_WAR_EXT_AIR_DRYER_WARNING, "[PLC_34]", WARNING);
+		addEntry(PLC.PLC_WAR_DOOR_SWITCH_IJ_OPEN, "[PLC_35]", WARNING);
+		addEntry(PLC.PLC_WAR_COOLING_FAN1_PRINTER_DEFAULT, "[PLC_36]", WARNING);
+		addEntry(PLC.PLC_WAR_COOLING_FAN2_PRINTER_DEFAULT, "[PLC_37]", WARNING);
+		addEntry(PLC.PLC_ERR_JAVA_ERROR, "[PLC_38]", IGNORE);
+		addEntry(PLC.PLC_ERR_LIFE_CHECK, "[PLC_39]", ERROR);
+		addEntry(PLC.PLC_ERR_PLC_FAULT, "[PLC_40]", ERROR);
+		addEntry(PLC.PLC_ERR_COOLING_NOT_ACTIVATED, "[PLC_41]", ERROR);
+		addEntry(PLC.PLC_ERR_PLC_TEMPERATURE_TOO_HIGH, "[PLC_42]", ERROR);
+		addEntry(PLC.PLC_ERR_EMERGENCY_STOP, "[PLC_43]", ERROR);
+		addEntry(PLC.PLC_ERR_TEMPERATURE_EE_CABINET, "[PLC_44]", ERROR);
+		addEntry(PLC.PLC_ERR_TEMPERATURE_AMBIANT, "[PLC_45]", ERROR);
+		addEntry(PLC.PLC_ERR_POWER_SUPPLY_DEFAULT, "[PLC_46]", ERROR);
+		addEntry(PLC.PLC_ERR_BREAKER_CONTROL_DEFAULT, "[PLC_47]", ERROR);
+		addEntry(PLC.PLC_ERR_AIR_PRESSURE_DEFAULT, "[PLC_48]", ERROR);
+		addEntry(PLC.PLC_ERR_DOOR_SWITCH_OCS_OPEN, "[PLC_49]", ERROR);
+		addEntry(PLC.PLC_ERR_DOOR_SWITCH_EE_OPEN, "[PLC_50]", ERROR);
+		addEntry(PLC.PLC_ERR_TRIGGER_FAULT, "[PLC_51]", ERROR);
+		addEntry(PLC.PLC_ERR_MNFCT_LINE_ERROR, "[PLC_51]", ERROR);
+		addEntry(PLC.PLC_ERR_INVALID_PARAMETER, "[PLC_52]", ERROR);
+		addEntry(PLC.PLC_ERR_LABEL_APP_OR_AIR_DRYER_NOT_READY, "[PLC_53]", ERROR);
+		addEntry(PLC.PLC_ERR_LABEL_APP_OR_AIR_DRYER_FAULT, "[PLC_54]", ERROR);
+		addEntry(PLC.PLC_ERR_UNKNOWN_DRS, "[PLC_55]", WARNING);
+		addEntry(PLC.PLC_ERR_DRS_NOT_CONNECTED, "[PLC_56]", WARNING);
+		addEntry(PLC.PLC_ERR_TOO_CONSECUTIVE_INVALID_CODES, "[PLC_57]", ERROR);
+		addEntry(PLC.PLC_ERR_EJECTION_SMALL_RATE_TOO_HIGH, "[PLC_58]", ERROR);
+		addEntry(PLC.PLC_ERR_EJECTION_LARGE_RATE_TOO_HIGH, "[PLC_59]", ERROR);
+		addEntry(PLC.PLC_ERR_VALID_CODE_IN_EXPORT_MODE, "[PLC_60]", ERROR);
+		addEntry(PLC.PLC_ERR_TEMPERATURE_IJ_CABINET, "[PLC_61]", ERROR);
+		addEntry(PLC.PLC_ERR_TEMPERATURE_IJ_INK, "[PLC_62]", ERROR);
+		addEntry(PLC.PLC_ERR_DOOR_SWITCH_IJ_OPEN, "[PLC_63]", ERROR);
+
+		addEntry(Alert.TOO_MUCH_CAMERA_ERROR, "[ALT_01]", ERROR);
+		addEntry(Alert.DUPLICATED_CODE, "[ALT_03]", ERROR);
+		addEntry(Alert.CAMERA_TRIGGER_TOO_FAST, "[ALT_04]", WARNING);
+		addEntry(Alert.TOO_MUCH_CAMERA_IDLE_TIME, "[ALT_05]", ERROR);
+		addEntry(Alert.PLC_ACTIVATION_CROSS_CHECK_FAILED, "[ALT_06]", ERROR);
+
+		addEntry(Camera.CAMERA_FAIL_LOAD_JOB, "[CA_01]", ERROR);
+
+		addEntry(Activation.EXCEPTION_NOT_AUTHENTICATED, "[ACT_01]", ERROR);
+		addEntry(Activation.EXCEPTION_CODE_TYPE_MISMATCH, "[ACT_02]", ERROR);
+		addEntry(Activation.EXCEPTION_CODE_IN_EXPORT, "[ACT_03]", ERROR);
+		addEntry(Activation.EXCEPTION_NO_AUTHENTICATOR, "[ACT_04]", ERROR);
+
+		addEntry(SkuCheck.UNKOWN_SKU, "[SKC_01]", WARNING);
+		addEntry(SkuCheck.WRONG_SKU_CRITICAL, "[SKC_02]", WARNING);
+		addEntry(SkuCheck.WRONG_SKU_SMALL, "[SKC_03]", WARNING);
+		addEntry(SkuCheck.UNREAD, "[SKC_04]", IGNORE);
+		addEntry(SkuCheck.OK, "[SKC_05]", IGNORE);
+
+		addEntry(Simulator.CAMERA, "[SIMU1]", WARNING);
+		addEntry(Simulator.PLC, "[SIMU2]", WARNING);
+		addEntry(Simulator.REMOTE_SERVER, "[SIMU3]", WARNING);
+		addEntry(Simulator.PRINTER, "[SIMU4]", WARNING);
+		addEntry(Simulator.ENCODER, "[SIMU5]", WARNING);
+		addEntry(Simulator.AUTHENTICATOR, "[SIMU6]", WARNING);
+		addEntry(Simulator.CAMERA_READ_CODE_FROM_FILE, "[SIMU7]", WARNING);
+
+		addEntry(ProductionParameters.NO_LONGER_AVAILABLE, "[SKU_01]", WARNING);
+
+		// ------------------
+
+		addEntry(FlowControl.UNCAUGHT_EXCEPTION, "[EXC_GEN_001]", ERROR_DISPLAY);
+
+		addEntry(Validator.CONSTANT_PROP, "[MODEL_VAL_01]", WARNING);
+		addEntry(Validator.RANGE_PROP, "[MODEL_VAL_02]", WARNING);
+		addEntry(Validator.DATE_PROP, "[MODEL_VAL_03]", WARNING);
+		addEntry(Validator.NULL_PROP, "[MODEL_VAL_04]", WARNING);
+		addEntry(Validator.TEXT_MAX_LENGHT, "[MODEL_VAL_05]", WARNING);
+
+		addEntry(Storage.ERROR_CANNOT_SAVE, "[STOR_01]", ERROR);
+		addEntry(Storage.ERROR_CANNOT_LOAD, "[STOR_02]", ERROR);
+		addEntry(Storage.ERROR_PACKAGE_FAIL, "[STOR_03]", WARNING);
+		addEntry(Storage.ERROR_CLEANUP_FAIL, "[STOR_04]", WARNING);
+
+		addEntry(Production.ERROR_MAX_SERIALIZATION_ERRORS, "[PROD_01]", ERROR);
+
+		addEntry(RemoteServer.MAX_DOWNTIME, "[PROC_01]", ERROR);
+		addEntry(FlowControl.START_TIMEOUT, "[PROC_02]", ERROR);
+		addEntry(ProductionParameters.NO_LONGER_AVAILABLE, "[PROC_03]", ERROR);
+		addEntry(ProductionParameters.NONE_AVAILABLE, "[PROC_04]", ERROR);
+		addEntry(FlowControl.START_FAILED, "[PROC_05]", ERROR);
+		addEntry(FlowControl.START_TIMEOUT, "[PROC_06]", ERROR);
+
+		addEntry(ModelEditing.ERROR_FAILED_TO_SAVE_BEAN_PROPERTY, "[VW_01]");
+
+		addEntry(DevicesController.FAILED_TO_CONNECT_DEVICE, "[DEV_02]", ERROR);
+		addEntry(DevicesController.FAILED_TO_START_DEVICE, "[DEV_03]", ERROR);
+		addEntry(FlowControl.DEVICES_CONNECT_FAILED, "[DEV_01]", ERROR);
+
+		addEntry(BRS.BRS_PLC_ALL_CAMERAS_CONNECTED, "[BRS_01]", IGNORE);
+		addEntry(BRS.BRS_PLC_ALL_CAMERAS_DISCONNECTED, "[BRS_02]", WARNING);
+		addEntry(BRS.BRS_PLC_FRAUD_DETECTED, "[BRS_03]", IGNORE);
+		addEntry(BRS.BRS_PLC_JAM_DETECTED, "[BRS_04]", WARNING);
+		addEntry(BRS.BRS_PLC_ENCODER_PROBLEM, "[BRS_05]", WARNING);
+		addEntry(BRS.BRS_PLC_COMMUNICATION_PROBLEM, "[BRS_07]", WARNING);
+		addEntry(BRS.BRS_PLC_CAN_NOT_CONNECT, "[BRS_08]", WARNING);
+		addEntry(BRS.BRS_CAN_NOT_START, "[BRS_09]", WARNING);
+		addEntry(BRS.BRS_PLC_CAMERAS_DISCONNECTION, "[BRS_10]", WARNING);
+		addEntry(BRS.BRS_PLC_RECEIVED_EMPTY_SKU, "[BRS_11]", WARNING);
+		addEntry(BRS.BRS_COUNT_DIFFERENCE_HIGH, "[BRS_12]", WARNING);
+		addEntry(BRS.BRS_TOO_MANY_UNREAD, "[BRS_13]", WARNING);
+
+		addEntry(BIS.BIS_CONNECTED, "[BIS_01]", WARNING);
+		addEntry(BIS.BIS_DISCONNECTED, "[BIS_02]", WARNING);
+		addEntry(BIS.BIS_UNKNOWN_SKU, "[BIS_03]", WARNING);
+		addEntry(BIS.BIS_ALERT, "[BIS_04]", WARNING);
+		addEntry(BIS.BIS_UNKNOWN_SKU_EXCEED_THRESHOLD, "[BIS_05]", WARNING);
+
+		addEntry(Printer.CHARGE_FAULT, "[PR_01]", ERROR_DEVICE);
+		addEntry(Printer.GUTTER_FAULT, "[PR_02]", ERROR_DEVICE);
+		addEntry(Printer.HIGH_VOLTAGE_FAULT, "[PR_03]", ERROR_DEVICE);
+		addEntry(Printer.INK_CARTRIDGE_TOO_LOW, "[PR_04]", WARNING);
+		addEntry(Printer.INK_MAKE_UP_TOO_LOW, "[PR_05]", WARNING);
+		addEntry(Printer.INK_RESERVOIR_LESS_THAN_24_HOURS, "[PR_06]", WARNING);
+		addEntry(Printer.INK_RESERVOIR_LESS_THAN_2_HOURS, "[PR_07]", WARNING);
+		addEntry(Printer.INK_RESERVOIR_TIME_OUT, "[PR_08]", ERROR_DEVICE);
+		addEntry(Printer.INK_SYSTEM_FAULT, "[PR_09]", ERROR_DEVICE);
+		addEntry(Printer.INK_VISCOSITY_OUT_OF_RANGE, "[PR_10]", WARNING);
+		addEntry(Printer.MAKE_UP_CARTRIDGE_LOW, "[PR_11]", WARNING);
+		addEntry(Printer.PUMP_EXCEEDING_NORMAL_RANGE, "[PR_12]", ERROR_DEVICE);
+		addEntry(Printer.RESERVOIR_TOO_LOW, "[PR_13]", WARNING);
+		addEntry(Printer.SEQUENCE_OFF, "[PR_14]", ERROR_DEVICE);
+		addEntry(Printer.VISCOMETER_FAULT, "[PR_15]", WARNING);
+		addEntry(Printer.WATCHDOG_RESET, "[PR_16]", ERROR_DEVICE);
+		addEntry(Printer.NOT_READY_TO_PRINT, "[PR_17]", ERROR_DEVICE);
+		addEntry(Printer.BLANK_MESSAGE, "[PR_18]", WARNING);
+
+		addEntry(Coding.ERROR_NO_ENCODERS_IN_STORAGE, "[COD_01]", ERROR);
+		addEntry(Coding.ERROR_GETTING_CODES_FROM_ENCODER, "[COD_02]", ERROR);
+		addEntry(Coding.INVALID_ENCODER, "[COD_03]", ERROR);
+		addEntry(Coding.FAILED_TO_PROVIDE_CODES, "[COD_04]", ERROR);
+	}
+}

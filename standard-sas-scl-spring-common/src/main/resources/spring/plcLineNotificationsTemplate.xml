@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+
+
+	<util:list id="plcConveyorNtfTemplate">
+		<ref bean="lineSpeedNtf" />
+		<ref bean="lineStateNtf" />
+		<ref bean="lineWarErrRegisterNtf" />
+	</util:list>
+
+	<bean id="lineSpeedNtf" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createInt32Var">
+		<constructor-arg value="#{plcVarMap['NTF_LINE_SPEED']}" />
+	</bean>
+
+	<bean id="prodsPerSecondNtf" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createInt32Var">
+		<constructor-arg value="#{plcVarMap['NTF_PRODS_PER_SECOND']}" />
+	</bean>
+
+	<bean id="lineStateNtf" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createInt32Var">
+		<constructor-arg value="#{plcVarMap['NTF_LINE_STATE']}" />
+	</bean>
+
+	<bean id="goodTrigsNtf" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createInt32Var">
+		<constructor-arg value="#{plcVarMap['NTF_GOOD_TRIGS']}" />
+	</bean>
+
+	<bean id="badTrigsNtf" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createInt32Var">
+		<constructor-arg value="#{plcVarMap['NTF_BAD_TRIGS']}" />
+	</bean>
+
+	<bean id="noCapTrigsNtf" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createInt32Var">
+		<constructor-arg value="#{plcVarMap['NTF_NO_CAP_TRIGS']}" />
+	</bean>
+
+	<bean id="counterTrigsNtf" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createInt32Var">
+		<constructor-arg value="#{plcVarMap['NTF_COUNTER_TRIGS']}" />
+	</bean>
+
+	<bean id="productDetectorTrigsNtf" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createInt32Var">
+		<constructor-arg value="#{plcVarMap['NTF_PRODUCT_DETECTOR_TRIGS']}" />
+	</bean>
+
+	<bean id="productsFreqNtf" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createInt32Var">
+		<constructor-arg value="#{plcVarMap['NTF_PRODUCTS_FREQ']}" />
+	</bean>
+
+	<bean id="lineTrilightGreenNtf" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createInt32Var">
+		<constructor-arg value="#{plcVarMap['NTF_LINE_TRILIGHT_GREEN']}" />
+	</bean>
+
+	<bean id="lineTrilightYellowNtf" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createInt32Var">
+		<constructor-arg value="#{plcVarMap['NTF_LINE_TRILIGHT_YELLOW']}" />
+	</bean>
+
+	<bean id="lineTrilightRedNtf" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createInt32Var">
+		<constructor-arg value="#{plcVarMap['NTF_LINE_TRILIGHT_RED']}" />
+	</bean>
+
+	<bean id="cptProductsEjectionsNtf" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createInt32Var">
+		<constructor-arg value="#{plcVarMap['NTF_CPT_PRODUCTS_EJECTIONS']}" />
+	</bean>
+
+	<bean id="cptProducerEjectionsNtf" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createInt32Var">
+		<constructor-arg value="#{plcVarMap['NTF_CPT_PRODUCER_EJECTIONS']}" />
+	</bean>
+
+	<bean id="javaFifoBufferSizeNtf" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createInt32Var">
+		<constructor-arg value="#{plcVarMap['NTF_JAVA_FIFO_BUFFER_SIZE']}" />
+	</bean>
+
+	<bean id="javaSicpaFifoReadIdxNtf" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createInt32Var">
+		<constructor-arg value="#{plcVarMap['NTF_JAVA_SICPA_FIFO_READ_IDX']}" />
+	</bean>
+
+	<bean id="javaSicpaFifoWriteIdxNtf" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createInt32Var">
+		<constructor-arg value="#{plcVarMap['NTF_JAVA_SICPA_FIFO_WRITE_IDX']}" />
+	</bean>
+
+	<bean id="javaProdFifoReadIdxNtf" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createInt32Var">
+		<constructor-arg value="#{plcVarMap['NTF_JAVA_PROD_FIFO_READ_IDX']}" />
+	</bean>
+
+	<bean id="javaProdFifoWriteIdxNtf" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createInt32Var">
+		<constructor-arg value="#{plcVarMap['NTF_JAVA_PROD_FIFO_WRITE_IDX']}" />
+	</bean>
+
+	<bean id="javaProdStatusNtf" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createInt32Var">
+		<constructor-arg value="#{plcVarMap['NTF_JAVA_PROD_STATUS_NTF']}" />
+	</bean>
+
+	<bean id="tempIjCabNtf" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createShortVar">
+		<constructor-arg value="#{plcVarMap['NTF_TEMP_IJ_CAB']}" />
+	</bean>
+
+	<bean id="tempIjInkNtf" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createShortVar">
+		<constructor-arg value="#{plcVarMap['NTF_TEMP_IJ_INK']}" />
+	</bean>
+
+	<bean id="lineRelHumidityAmbiantNtf" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createInt32Var">
+		<constructor-arg value="#{plcVarMap['NTF_LINE_REL_HUMIDITY_AMBIANT']}" />
+	</bean>
+
+	<bean id="lineRelHumidityVoltageLvlNtf" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createInt32Var">
+		<constructor-arg value="#{plcVarMap['NTF_LINE_REL_HUMIDITY_VOLTAGE_LVL']}" />
+	</bean>
+
+	<bean id="lineAirPressLvlNtf" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createInt32Var">
+		<constructor-arg value="#{plcVarMap['NTF_LINE_AIR_PRESS_LVL']}" />
+	</bean>
+
+	<bean id="lineAirPressVoltageLvlNtf" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createInt32Var">
+		<constructor-arg value="#{plcVarMap['NTF_LINE_AIR_PRESS_VOLTAGE_LVL']}" />
+	</bean>
+
+
+	<bean id="lineWarErrRegisterNtf" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createInt32Var">
+		<constructor-arg value="#{plcVarMap['NTF_LINE_WAR_ERR_REGISTER']}" />
+	</bean>
+
+	<bean id="cptPrinterTrigsNtf" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createInt32Var">
+		<constructor-arg value="#{plcVarMap['NTF_CPT_PRINTER_TRIGS']}" />
+	</bean>
+
+	<bean id="cptCameraTrigsNtf" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createInt32Var">
+		<constructor-arg value="#{plcVarMap['NTF_CPT_CAMERA_TRIGS']}" />
+	</bean>
+
+	<bean id="javaCptGoodProductsNtf" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createInt32Var">
+		<constructor-arg value="#{plcVarMap['NTF_JAVA_CPT_GOOD_PRODUCTS']}" />
+	</bean>
+
+	<bean id="javaCptUnreadablesNtf" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createInt32Var">
+		<constructor-arg value="#{plcVarMap['NTF_JAVA_CPT_UNREADABLES']}" />
+	</bean>
+
+	<bean id="javaCptNoInkDetectedNtf" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createInt32Var">
+		<constructor-arg value="#{plcVarMap['NTF_JAVA_CPT_NO_INK_DETECTED']}" />
+	</bean>
+
+	<bean id="javaCptAcqErrorsNtf" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createInt32Var">
+		<constructor-arg value="#{plcVarMap['NTF_JAVA_CPT_ACQ_ERRORS']}" />
+	</bean>
+
+
+</beans>

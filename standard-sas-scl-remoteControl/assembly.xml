@@ -1,0 +1,75 @@
+<assembly>
+	<id>dist</id>
+	<formats>
+		<format>zip</format>
+	</formats>
+	<fileSets>
+		<fileSet>
+			<directory>src/main/resources</directory>
+			<includes>
+				<include>*</include>
+			</includes>
+			<outputDirectory>.</outputDirectory>
+		</fileSet>
+		<fileSet>
+			<directory>src/main/resources/config</directory>
+			<includes>
+				<include>*</include>
+			</includes>
+			<outputDirectory>config</outputDirectory>
+		</fileSet>
+		<fileSet>
+			<directory>src/main/resources/config/images</directory>
+			<includes>
+				<include>*</include>
+			</includes>
+			<outputDirectory>config/images</outputDirectory>
+		</fileSet>
+		<fileSet>
+			<directory>target/classes</directory>
+			<includes>
+				<include>startup.bat</include>
+				<include>version</include>
+			</includes>
+			<outputDirectory></outputDirectory>
+		</fileSet>
+
+		<fileSet>
+			<directory>src/main/resources/language/</directory>
+			<outputDirectory>language</outputDirectory>
+			<includes>
+				<include>*</include>
+			</includes>
+		</fileSet>
+
+		<fileSet>
+			<directory>target/build/current</directory>
+			<includes>
+				<include>*</include>
+			</includes>
+			<outputDirectory></outputDirectory>
+		</fileSet>
+
+		<fileSet>
+			<directory>src/main/java/com/sicpa/standard/sasscl/devices/remote/simulator/stdcrypto/config
+			</directory>
+			<includes>
+				<include>*</include>
+			</includes>
+			<outputDirectory>config</outputDirectory>
+		</fileSet>
+	</fileSets>
+
+
+
+	<dependencySets>
+		<dependencySet>
+			<outputDirectory>lib</outputDirectory>
+			<unpack>false</unpack>
+			<scope>runtime</scope>
+			<excludes>
+				<exclude>${artifact.groupId}:${artifact.artifactId}</exclude>
+			</excludes>
+		</dependencySet>
+	</dependencySets>
+</assembly>

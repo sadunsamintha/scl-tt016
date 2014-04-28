@@ -1,0 +1,13 @@
+<com.sicpa.standard.barcode.reader.model.BarcodeReaderModel>
+	<mName>Barcode</mName>
+	<mPort>COM13</mPort>
+	<mDriverName>Gryphon130Driver</mDriverName>
+	<mParserName>Gryphon130BarcodeParser</mParserName>
+	<mLifeCheckInterval>5000</mLifeCheckInterval>
+	<isSimulator>false</isSimulator>
+	<mSimulatorHost>127.0.0.1</mSimulatorHost>
+	<mBarcodeReaderParameters
+		class="com.sicpa.standard.barcode.reader.driver.model.Gryphon130DriverCommands"/>
+</com.sicpa.standard.barcode.reader.model.BarcodeReaderModel>
+
+

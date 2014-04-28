@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+
+	<util:list id="plcCabinetNtf">
+		<ref bean="warErrRegisterNtf" />
+	</util:list>
+
+
+	<bean id="cabTrilightGreenNtf" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createInt32Var">
+		<constructor-arg value="#{plcVarMap['NTF_CAB_TRILIGHT_GREEN']}" />
+	</bean>
+
+	<bean id="cabTrilightYellowNtf" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createInt32Var">
+		<constructor-arg value="#{plcVarMap['NTF_CAB_TRILIGHT_YELLOW']}" />
+	</bean>
+
+	<bean id="cabTrilightRedNtf" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createInt32Var">
+		<constructor-arg value="#{plcVarMap['NTF_CAB_TRILIGHT_RED']}" />
+	</bean>
+
+	<bean id="cxBoardTemperatureNtf" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createByteVar">
+		<constructor-arg value="#{plcVarMap['NTF_CX_BOARD_TEMPERATURE']}" />
+	</bean>
+
+	<bean id="cxCpuTemperatureNtf" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createByteVar">
+		<constructor-arg value="#{plcVarMap['NTF_CX_CPU_TEMPERATURE']}" />
+	</bean>
+
+	<bean id="temperatureEeCabNtf" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createShortVar">
+		<constructor-arg value="#{plcVarMap['NTF_TEMPERATURE_EE_CAB']}" />
+	</bean>
+
+	<bean id="temperatureAmbiantNtf" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createShortVar">
+		<constructor-arg value="#{plcVarMap['NTF_TEMPERATURE_AMBIANT']}" />
+	</bean>
+
+	<bean id="temperatureBypassNtf" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createShortVar">
+		<constructor-arg value="#{plcVarMap['NTF_TEMPERATURE_BYPASS']}" />
+	</bean>
+
+	<bean id="relHumidityAmbiantNtf" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createInt32Var">
+		<constructor-arg value="#{plcVarMap['NTF_REL_HUMIDITY_AMBIANT']}" />
+	</bean>
+
+	<bean id="relHumidityVoltageLvlNtf" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createInt32Var">
+		<constructor-arg value="#{plcVarMap['NTF_REL_HUMIDITY_VOLTAGE_LVL']}" />
+	</bean>
+
+	<bean id="airPressLvlNtf" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createInt32Var">
+		<constructor-arg value="#{plcVarMap['NTF_AIR_PRESS_LVL']}" />
+	</bean>
+
+	<bean id="airPressVoltageLvlNtf" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createInt32Var">
+		<constructor-arg value="#{plcVarMap['NTF_AIR_PRESS_VOLTAGE_LVL']}" />
+	</bean>
+
+	<bean id="warErrRegisterNtf" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createInt32Var">
+		<constructor-arg value="#{plcVarMap['NTF_WAR_ERR_REGISTER']}" />
+	</bean>
+
+
+</beans>

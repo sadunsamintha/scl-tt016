@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+
+	<bean id="remoteLogLevelPanelGetter" class="${remoteLogLevelPanelGetter}">
+		<property name="controlBean" ref="controlBean" />
+	</bean>
+
+	<bean id="controlBean" factory-bean="connector" factory-method="createControlBean" />
+
+	<bean id="connector" class="${connector}" />
+
+	<bean id="beanViewerGetter" class="${beanViewerGetter}">
+		<property name="bean" ref="controlBean" />
+	</bean>
+
+	<bean id="systemEventGetter" class="${systemEventGetter}">
+		<property name="controlBean" ref="controlBean" />
+	</bean>
+
+	<bean id="productionStatisticsGetter" class="${productionStatisticsGetter}">
+		<property name="controlBean" ref="controlBean" />
+	</bean>
+
+	<bean id="reportGetter" class="${reportGetter}">
+		<property name="controlBean" ref="controlBean" />
+	</bean>
+
+	<bean id="storageExplorerGetter" class="${storageExplorerGetter}">
+		<property name="controlBean" ref="controlBean" />
+	</bean>
+
+	<bean id="logExplorerGetter" class="${logExplorerGetter}">
+		<property name="controlBean" ref="controlBean" />
+	</bean>
+
+	<bean id="mainFrameGetter" class="${mainFrameGetter}" />
+
+	<bean id="threadDumpGetter" class="${threadDumpGetter}">
+		<property name="controlBean" ref="controlBean" />
+	</bean>
+
+
+</beans>

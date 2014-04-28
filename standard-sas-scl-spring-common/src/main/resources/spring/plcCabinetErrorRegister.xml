@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+
+
+	<!-- Setting PLC warning and error in property sequence. Sequence is important! -->
+	<bean id="setCabinetWarningAndErrors" class="com.sicpa.standard.client.common.ioc.InjectByMethodBean">
+		<property name="target" ref="plcRegisterHandler" />
+		<property name="methodName" value="setCabinetErrorsList" />
+		<property name="param">
+			<util:list>
+				<util:constant static-field="com.sicpa.standard.sasscl.messages.MessageEventKey.PLC.PLC_WAR_JAVA_WARNING" />
+				<util:constant static-field="com.sicpa.standard.sasscl.messages.MessageEventKey.PLC.PLC_WAR_JAVA_CRITICAL_WARNING" />
+				<util:constant static-field="com.sicpa.standard.sasscl.messages.MessageEventKey.PLC.PLC_WAR_COOLING_NOT_ACTIVATED" />
+				<util:constant static-field="com.sicpa.standard.sasscl.messages.MessageEventKey.PLC.PLC_WAR_SOFTWARE_VERSION_FAULT" />
+				<util:constant static-field="com.sicpa.standard.sasscl.messages.MessageEventKey.PLC.PLC_WAR_PLC_TEMPERATURE_TO_HIGH" />
+				<util:constant static-field="com.sicpa.standard.sasscl.messages.MessageEventKey.PLC.PLC_WAR_TEMPERATURE_EE_CABINET" />
+				<util:constant static-field="com.sicpa.standard.sasscl.messages.MessageEventKey.PLC.PLC_WAR_TEMPERATURE_AMBIANT" />
+				<util:constant static-field="com.sicpa.standard.sasscl.messages.MessageEventKey.PLC.PLC_WAR_RELATIVE_HUMIDITY_DEFAULT" />
+				<util:constant static-field="com.sicpa.standard.sasscl.messages.MessageEventKey.PLC.PLC_WAR_POWER_SUPPLY_DEFAULT" />
+				<util:constant static-field="com.sicpa.standard.sasscl.messages.MessageEventKey.PLC.PLC_WAR_BREAKER_CONTROL_DEFAULT" />
+				<util:constant static-field="com.sicpa.standard.sasscl.messages.MessageEventKey.PLC.PLC_WAR_AIR_PRESSURE_DEFAULT" />
+				<util:constant static-field="com.sicpa.standard.sasscl.messages.MessageEventKey.PLC.PLC_WAR_DOOR_SWITCH_OCS_OPEN" />
+				<util:constant static-field="com.sicpa.standard.sasscl.messages.MessageEventKey.PLC.PLC_WAR_DOOR_SWITCH_EE_OPEN" />
+				<util:constant static-field="com.sicpa.standard.sasscl.messages.MessageEventKey.PLC.PLC_WAR_COOLING_FAN1_EE_CAB_DEFAULT" />
+				<util:constant static-field="com.sicpa.standard.sasscl.messages.MessageEventKey.PLC.PLC_WAR_COOLING_FAN2_EE_CAB_DEFAULT" />
+				<util:constant static-field="com.sicpa.standard.sasscl.messages.MessageEventKey.PLC.PLC_WAR_PLC_FAULT" />
+				<util:constant static-field="com.sicpa.standard.sasscl.messages.MessageEventKey.PLC.PLC_ERR_JAVA_ERROR" />
+				<util:constant static-field="com.sicpa.standard.sasscl.messages.MessageEventKey.PLC.PLC_ERR_LIFE_CHECK" />
+				<util:constant static-field="com.sicpa.standard.sasscl.messages.MessageEventKey.PLC.PLC_ERR_PLC_FAULT" />
+				<util:constant static-field="com.sicpa.standard.sasscl.messages.MessageEventKey.PLC.PLC_ERR_COOLING_NOT_ACTIVATED" />
+				<util:constant static-field="com.sicpa.standard.sasscl.messages.MessageEventKey.PLC.PLC_ERR_PLC_TEMPERATURE_TOO_HIGH" />
+				<util:constant static-field="com.sicpa.standard.sasscl.messages.MessageEventKey.PLC.PLC_ERR_EMERGENCY_STOP" />
+				<util:constant static-field="com.sicpa.standard.sasscl.messages.MessageEventKey.PLC.PLC_ERR_TEMPERATURE_EE_CABINET" />
+				<util:constant static-field="com.sicpa.standard.sasscl.messages.MessageEventKey.PLC.PLC_ERR_TEMPERATURE_AMBIANT" />
+				<util:constant static-field="com.sicpa.standard.sasscl.messages.MessageEventKey.PLC.PLC_ERR_POWER_SUPPLY_DEFAULT" />
+				<util:constant static-field="com.sicpa.standard.sasscl.messages.MessageEventKey.PLC.PLC_ERR_BREAKER_CONTROL_DEFAULT" />
+				<util:constant static-field="com.sicpa.standard.sasscl.messages.MessageEventKey.PLC.PLC_ERR_AIR_PRESSURE_DEFAULT" />
+				<util:constant static-field="com.sicpa.standard.sasscl.messages.MessageEventKey.PLC.PLC_ERR_DOOR_SWITCH_OCS_OPEN" />
+				<util:constant static-field="com.sicpa.standard.sasscl.messages.MessageEventKey.PLC.PLC_ERR_DOOR_SWITCH_EE_OPEN" />
+			</util:list>
+		</property>
+	</bean>
+
+</beans>

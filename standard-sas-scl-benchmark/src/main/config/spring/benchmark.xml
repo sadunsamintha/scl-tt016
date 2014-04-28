@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
+
+	<bean id="benchmarkAspect" class="com.sicpa.standard.sasscl.benchmark.BenchmarkAspect"
+		destroy-method="destroy">
+		<constructor-arg value="log/benchmark" />
+	</bean>
+
+	<aop:config>
+
+		<aop:aspect ref="benchmarkAspect">
+			<aop:around method="log"
+				pointcut="execution(* com.sicpa.standard.sasscl.devices.camera.CameraController.onValidCameraCodeReceived(..))" />
+		</aop:aspect>
+
+<!--		<aop:aspect ref="benchmarkAspect">-->
+<!--			<aop:around method="log"-->
+<!--				pointcut="execution(* com.sicpa.standard.sasscl.business.activation.impl.StandardActivationBehavior.receiveCode(..))" />-->
+<!--		</aop:aspect>-->
+
+<!--		<aop:aspect ref="benchmarkAspect">-->
+<!--			<aop:around method="log"-->
+<!--				pointcut="execution(* com.sicpa.standard.sasscl.common.storage.AbstractFileStorageBehavior.*(..))" />-->
+<!--		</aop:aspect>-->
+
+<!--		<aop:aspect ref="benchmarkAspect">-->
+<!--			<aop:around method="log"-->
+<!--				pointcut="execution(* com.sicpa.standard.sasscl.devices.remote.AbstractRemoteServer.*(..))" />-->
+<!--		</aop:aspect>-->
+		
+	</aop:config>
+</beans>

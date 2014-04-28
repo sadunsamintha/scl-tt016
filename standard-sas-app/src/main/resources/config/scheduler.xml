@@ -1,0 +1,13 @@
+<com.sicpa.standard.sasscl.controller.scheduling.SchedulerConfig>
+	<productionSerializationTimer_sec>3</productionSerializationTimer_sec>
+	<productionSendTimer_sec>300</productionSendTimer_sec>
+	<getProductionParametersTimer_sec>500</getProductionParametersTimer_sec>
+	<getAuthenticathorTimer_sec>300</getAuthenticathorTimer_sec>
+	<packagedProductTimer_sec>100</packagedProductTimer_sec>
+	<storageProductionCleanUp_sec>3000</storageProductionCleanUp_sec>
+	<getLanguageFilesTimer_sec>1000</getLanguageFilesTimer_sec>
+	<maxRemoteServerDownTimeTimer_sec>600</maxRemoteServerDownTimeTimer_sec>
+	<saveStatisticsTimer_sec>60</saveStatisticsTimer_sec>
+	<monitoringSaveIncrementalStatisticsTimer_sec>300</monitoringSaveIncrementalStatisticsTimer_sec>
+	<globalMonitoringToolSendInfoTimer_sec>600</globalMonitoringToolSendInfoTimer_sec>
+</com.sicpa.standard.sasscl.controller.scheduling.SchedulerConfig>

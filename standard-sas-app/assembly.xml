@@ -1,0 +1,77 @@
+<assembly>
+	<id>dist</id>
+	<formats>
+		<format>zip</format>
+	</formats>
+	<fileSets>
+
+		<!-- Application config files -->
+		<fileSet>
+			<directory>src/main/resources/config</directory>
+			<outputDirectory>config</outputDirectory>
+			<includes>
+				<include>**/*</include>
+			</includes>
+		</fileSet>
+
+		<!-- Languages Files -->
+		<fileSet>
+			<directory>src/main/resources/language/</directory>
+			<outputDirectory>language</outputDirectory>
+			<includes>
+				<include>*</include>
+			</includes>
+		</fileSet>
+
+		<!-- Dependencies -->
+		<fileSet>
+			<directory>target/lib</directory>
+			<outputDirectory>lib</outputDirectory>
+			<includes>
+				<include>*</include>
+			</includes>
+		</fileSet>
+
+		<!-- Launchers for built version -->
+		<fileSet>
+			<directory>target/classes</directory>
+			<outputDirectory></outputDirectory>
+			<includes>
+				<include>*.bat</include>
+				<include>*.sh</include>
+				<include>version</include>
+				<include>log4j.properties</include>
+			</includes>
+			<lineEnding>unix</lineEnding>
+		</fileSet>
+
+		<fileSet>
+			<directory>target/build/current</directory>
+			<outputDirectory></outputDirectory>
+			<includes>
+				<include>*</include>
+			</includes>
+		</fileSet>
+		
+		<fileSet>
+			<directory>certificates</directory>
+			<includes>
+				<include>*/**</include>
+			</includes>
+			<outputDirectory>certificates</outputDirectory>
+		</fileSet>
+	</fileSets>
+
+
+
+	<dependencySets>
+		<dependencySet>
+			<outputDirectory>lib</outputDirectory>
+			<unpack>false</unpack>
+			<scope>runtime</scope>
+			<excludes>
+				<exclude>${artifact.groupId}:${artifact.artifactId}</exclude>
+			</excludes>
+		</dependencySet>
+	</dependencySets>
+</assembly>

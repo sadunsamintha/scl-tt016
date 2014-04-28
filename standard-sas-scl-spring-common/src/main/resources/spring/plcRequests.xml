@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+
+
+	<!-- define sending error and warning action -->
+	<bean id="javaWarningAndErrorVar" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createStringVar">
+		<constructor-arg value="#{plcVarMap['REQUEST_JAVA_WARNINGS_AND_ERRORS_REGISTER']}" />
+		<constructor-arg value="32" />
+	</bean>
+
+	<bean id="javaWarningAndErrorAction" class="com.sicpa.standard.plc.controller.actions.PlcAction" factory-method="request">
+		<constructor-arg ref="javaWarningAndErrorVar" />
+	</bean>
+
+	<!-- define start action -->
+	<bean id="startVar" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createBooleanVar">
+		<constructor-arg value="#{plcVarMap['REQUEST_START']}" />
+	</bean>
+
+	<bean id="startAction" class="com.sicpa.standard.plc.controller.actions.PlcAction" factory-method="request">
+		<constructor-arg value="#{startVar.getVariableName()}" />
+		<constructor-arg value="true" />
+	</bean>
+
+	<!-- define run action -->
+	<bean id="runVar" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createBooleanVar">
+		<constructor-arg value="#{plcVarMap['REQUEST_RUN']}" />
+	</bean>
+
+	<bean id="runAction" class="com.sicpa.standard.plc.controller.actions.PlcAction" factory-method="request">
+		<constructor-arg value="#{runVar.getVariableName()}" />
+		<constructor-arg value="true" />
+	</bean>
+
+	<!-- define stop action -->
+	<bean id="stopVar" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createBooleanVar">
+		<constructor-arg value="#{plcVarMap['REQUEST_STOP']}" />
+	</bean>
+
+	<bean id="stopAction" class="com.sicpa.standard.plc.controller.actions.PlcAction" factory-method="request">
+		<constructor-arg value="#{stopVar.getVariableName()}" />
+		<constructor-arg value="true" />
+	</bean>
+
+
+	<!-- define reload param action -->
+	<bean id="reloadParamVar" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createBooleanVar">
+		<constructor-arg value="#{plcVarMap['REQUEST_RELOAD_CONFIG']}" />
+		<constructor-arg value="true" />
+	</bean>
+
+	<bean id="reloadParamAction" class="com.sicpa.standard.plc.controller.actions.PlcAction" factory-method="request">
+		<constructor-arg value="#{reloadParamVar.getVariableName()}" />
+		<constructor-arg value="true" />
+	</bean>
+
+	<!-- define life check request -->
+	<bean id="lifeCheckVar" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createBooleanVar">
+		<constructor-arg value="#{plcVarMap['REQUEST_LIFE_CHECK']}" />
+		<constructor-arg value="true" />
+	</bean>
+
+	<!-- send java warning and error Command -->
+	<bean id="javaWarningAndErrorRequest" class="com.sicpa.standard.sasscl.devices.plc.DefaultPlcRequestExecutor">
+		<property name="plcActions">
+			<array>
+				<ref bean="javaWarningAndErrorAction" />
+			</array>
+		</property>
+	</bean>
+
+	<!-- start PLC Command -->
+	<bean id="startPlcRequest" class="com.sicpa.standard.sasscl.devices.plc.DefaultPlcRequestExecutor">
+		<property name="plcActions">
+			<array>
+				<ref bean="startAction" />
+				<ref bean="runAction" />
+			</array>
+		</property>
+	</bean>
+
+	<!-- stop PLC Command -->
+	<bean id="stopPlcRequest" class="com.sicpa.standard.sasscl.devices.plc.DefaultPlcRequestExecutor">
+		<property name="plcActions">
+			<array>
+				<ref bean="stopAction" />
+			</array>
+		</property>
+	</bean>
+
+	<!-- reload PLC param in all production mode -->
+	<bean id="reloadPlcParamRequest" class="com.sicpa.standard.sasscl.devices.plc.DefaultPlcRequestExecutor">
+		<property name="plcActions">
+			<array>
+				<ref bean="reloadParamAction" />
+			</array>
+		</property>
+	</bean>
+
+	<!-- Request & Action map -->
+	<util:map id="mapPlcRequestAction">
+		<entry>
+			<key>
+				<util:constant static-field="com.sicpa.standard.sasscl.devices.plc.PlcRequest.START" />
+			</key>
+			<ref bean="startPlcRequest" />
+		</entry>
+		<entry>
+			<key>
+				<util:constant static-field="com.sicpa.standard.sasscl.devices.plc.PlcRequest.STOP" />
+			</key>
+			<ref bean="stopPlcRequest" />
+		</entry>
+		<entry>
+			<key>
+				<util:constant static-field="com.sicpa.standard.sasscl.devices.plc.PlcRequest.RELOAD_PLC_PARAM" />
+			</key>
+			<ref bean="reloadPlcParamRequest" />
+		</entry>
+		<entry>
+			<key>
+				<util:constant static-field="com.sicpa.standard.sasscl.devices.plc.PlcRequest.SEND_JAVA_WARNING_ERROR" />
+			</key>
+			<ref bean="javaWarningAndErrorRequest" />
+		</entry>
+	</util:map>
+
+
+	<!-- used by simulator only - list of Requests to be added into simulator model -->
+	<util:list id="plcRequests">
+		<ref bean="startVar" />
+		<ref bean="runVar" />
+		<ref bean="stopVar" />
+		<ref bean="reloadParamVar" />
+		<ref bean="javaWarningAndErrorVar" />
+	</util:list>
+
+
+
+
+</beans>

@@ -1,0 +1,105 @@
+<com.sicpa.standard.sasscl.devices.plc.simulator.PlcSimulatorConfig>
+	<notificationVariables>
+		<com.sicpa.standard.sasscl.devices.plc.simulator.PlcSimulatorNotificationConfig>
+			<notificationInterval>1000</notificationInterval>
+			<varName>.com.stLine[1].stNotifications.nLineSpeed</varName>
+			<initialValue class="int">100</initialValue>
+			<valuePattern>RANDOM</valuePattern>
+			<incrementalValue>0</incrementalValue>
+			<minValue>50</minValue>
+			<maxValue>80</maxValue>
+		</com.sicpa.standard.sasscl.devices.plc.simulator.PlcSimulatorNotificationConfig>
+		<com.sicpa.standard.sasscl.devices.plc.simulator.PlcSimulatorNotificationConfig>
+			<notificationInterval>900</notificationInterval>
+			<varName>.com.stLine[2].stNotifications.nLineSpeed</varName>
+			<initialValue class="int">100</initialValue>
+			<valuePattern>RANDOM</valuePattern>
+			<incrementalValue>0</incrementalValue>
+			<minValue>10</minValue>
+			<maxValue>100</maxValue>
+		</com.sicpa.standard.sasscl.devices.plc.simulator.PlcSimulatorNotificationConfig>
+		<com.sicpa.standard.sasscl.devices.plc.simulator.PlcSimulatorNotificationConfig>
+			<notificationInterval>900</notificationInterval>
+			<varName>.com.stLine[3].stNotifications.nLineSpeed</varName>
+			<initialValue class="int">100</initialValue>
+			<valuePattern>RANDOM</valuePattern>
+			<incrementalValue>0</incrementalValue>
+			<minValue>10</minValue>
+			<maxValue>100</maxValue>
+		</com.sicpa.standard.sasscl.devices.plc.simulator.PlcSimulatorNotificationConfig>
+		<com.sicpa.standard.sasscl.devices.plc.simulator.PlcSimulatorNotificationConfig>
+			<notificationInterval>500</notificationInterval>
+			<varName>.ntf.productDetectorTrigs</varName>
+			<initialValue class="int">100</initialValue>
+			<valuePattern>RANDOM</valuePattern>
+			<incrementalValue>0</incrementalValue>
+			<minValue>0</minValue>
+			<maxValue>200</maxValue>
+		</com.sicpa.standard.sasscl.devices.plc.simulator.PlcSimulatorNotificationConfig>
+		<com.sicpa.standard.sasscl.devices.plc.simulator.PlcSimulatorNotificationConfig>
+			<notificationInterval>2000</notificationInterval>
+			<varName>.com.stCabinet.stNotifications.nVersionHigh</varName>
+			<initialValue class="int">1</initialValue>
+			<valuePattern>STATIC</valuePattern>			
+		</com.sicpa.standard.sasscl.devices.plc.simulator.PlcSimulatorNotificationConfig>
+		<com.sicpa.standard.sasscl.devices.plc.simulator.PlcSimulatorNotificationConfig>
+			<notificationInterval>3000</notificationInterval>
+			<varName>.com.stCabinet.stNotifications.nVersionMedium</varName>
+			<initialValue class="int">2</initialValue>
+			<valuePattern>STATIC</valuePattern>			
+		</com.sicpa.standard.sasscl.devices.plc.simulator.PlcSimulatorNotificationConfig>
+		<com.sicpa.standard.sasscl.devices.plc.simulator.PlcSimulatorNotificationConfig>
+			<notificationInterval>4000</notificationInterval>
+			<varName>.com.stCabinet.stNotifications.nVersionLow</varName>
+			<initialValue class="int">3</initialValue>
+			<valuePattern>STATIC</valuePattern>			
+		</com.sicpa.standard.sasscl.devices.plc.simulator.PlcSimulatorNotificationConfig>
+		
+		<!-- 
+		<com.sicpa.standard.sasscl.devices.plc.simulator.PlcSimulatorNotificationConfig>
+			<notificationInterval>5000</notificationInterval>
+			<varName>.com.stCabinet.stNotifications.nWar_err_register</varName>
+			<initialValue class="int">4</initialValue>
+			<valuePattern>STATIC</valuePattern>			
+		</com.sicpa.standard.sasscl.devices.plc.simulator.PlcSimulatorNotificationConfig>
+		 -->
+				 
+		<!-- 		
+		<com.sicpa.standard.sasscl.devices.plc.simulator.PlcSimulatorNotificationConfig>
+			<notificationInterval>1000</notificationInterval>
+			<varName>.com.stLine[1].stNotifications.nWar_err_register</varName>
+			<initialValue class="int">8</initialValue>
+			<valuePattern>STATIC</valuePattern>		
+		</com.sicpa.standard.sasscl.devices.plc.simulator.PlcSimulatorNotificationConfig>	
+		 -->
+		
+		<com.sicpa.standard.sasscl.devices.plc.simulator.PlcSimulatorNotificationConfig>
+			<notificationInterval>1000</notificationInterval>
+			<varName>.ntf.goodTrigs</varName>
+			<initialValue class="int">0</initialValue>
+			<valuePattern>STATIC</valuePattern>
+			<incrementalValue>0</incrementalValue>
+			<minValue>0</minValue>
+			<maxValue>0</maxValue>
+		</com.sicpa.standard.sasscl.devices.plc.simulator.PlcSimulatorNotificationConfig>
+		<com.sicpa.standard.sasscl.devices.plc.simulator.PlcSimulatorNotificationConfig>
+			<notificationInterval>1000</notificationInterval>
+			<varName>.ntf.badTrigs</varName>
+			<initialValue class="int">0</initialValue>
+			<valuePattern>STATIC</valuePattern>
+			<incrementalValue>0</incrementalValue>
+			<minValue>0</minValue>
+			<maxValue>0</maxValue>
+		</com.sicpa.standard.sasscl.devices.plc.simulator.PlcSimulatorNotificationConfig>
+		<com.sicpa.standard.sasscl.devices.plc.simulator.PlcSimulatorNotificationConfig>
+			<notificationInterval>1000</notificationInterval>
+			<varName>.war.wrongStateRequest</varName>
+			<initialValue class="boolean">false</initialValue>
+			<valuePattern>UI</valuePattern>
+			<incrementalValue>0</incrementalValue>
+			<minValue>0</minValue>
+			<maxValue>0</maxValue>
+		</com.sicpa.standard.sasscl.devices.plc.simulator.PlcSimulatorNotificationConfig>
+	</notificationVariables>
+	<plcVariables />
+</com.sicpa.standard.sasscl.devices.plc.simulator.PlcSimulatorConfig>

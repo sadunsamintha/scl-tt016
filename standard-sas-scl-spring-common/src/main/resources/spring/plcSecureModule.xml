@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:c="http://www.springframework.org/schema/c"
+	xsi:schemaLocation="http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.3.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.3.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.3.xsd">
+
+	<import resource="plcSecureVarMap.xml" />
+	<import resource="descriptors/plcSecureVariablesDescriptors.xml" />
+
+	<beans profile="plcSecure.behavior.standard">
+	
+		<bean id="plcSecureAdaptor" class="com.sicpa.standard.sasscl.devices.plc.impl.PlcSecureAdaptor"
+			c:controller-ref="plcSecureController" 
+			p:notificationVariables-ref="plcSecureNotifications"
+			p:plcSecureRequestMap-ref="plcSecureRequestAction"
+			p:parameterLine-ref="plcSecureParameters" 
+			p:userIdStorage-ref="userIdStorage"
+			p:model-ref="plcSecureModel" 
+			p:securityModel-ref="securityModel"/>
+
+		<bean id="plcSecureController" class="com.sicpa.standard.plc.controller.internal.PlcControllerImpl">
+			<property name="model" ref="plcSecureModel" />
+		</bean>
+
+		<bean id="plcSecureModel" class="com.sicpa.standard.client.common.utils.ConfigUtils" factory-method="load">
+			<constructor-arg value="config/plc/plcSecure.xml" />
+			<property name="parameters">
+				<map />
+			</property>
+			<property name="lifeCheckRequest" ref="secureModuleLifecheckVariable" />
+		</bean>
+
+	</beans>
+	
+	<beans profile="plcSecure.behavior.simulator">
+
+		<bean id="plcSecureAdaptor"	class="com.sicpa.standard.sasscl.devices.plc.simulator.PlcSecureAdaptorSimulator"
+			c:controller-ref="plcSecureController"
+			p:userIdStorage-ref="userIdStorage"
+			p:securityModel-ref="securityModel"/>
+
+		<bean id="plcSecureController" class="${plcSimulatorController}">
+			<constructor-arg ref="plcSimulatorModel" />
+			<property name="simulatorGui" ref="simulatorGui" />
+		</bean>
+	</beans>
+	
+</beans>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+		
+	<bean id="deviceIncidentContextPanelGetter" class="com.sicpa.standard.sasscl.deviceIncidentContext.view.DeviceIncidentContextPanelGetter">		
+		<property name="errorsRepository" ref="errorsRepository" />
+	</bean>
+				
+	<bean id="addDeviceIncidentContextPanel" class="com.sicpa.standard.client.common.ioc.InjectByMethodBean">
+		<property name="target" ref="mainFrameController" />
+		<property name="methodName" value="addSecuredPanel" />
+		<property name="params" ref="deviceIncidentContextPanelGetter" />
+	</bean>
+		
+</beans>
+

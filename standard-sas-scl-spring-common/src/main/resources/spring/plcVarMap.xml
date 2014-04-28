@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+
+
+	<util:map id="plcVarMap">
+
+		<!-- LINE -->
+		<entry key="PARAM_LINE_IS_ACTIVE" value=".com.stLine[#x].bLine_is_active" />
+		<entry key="PARAM_LINE_COM_STRUC_STORED_IN_RAM" value=".com.stLine[#x].stParameters.bComStructureStoredInRAM" />
+		<entry key="PARAM_COUNTER_FILTER_TYPE" value=".com.stLine[#x].stParameters.bCounterFilterType" />
+		<entry key="PARAM_PRODUCT_DETECTOR_FILTER_TYPE" value=".com.stLine[#x].stParameters.bProductDetectorFilterType" />
+		<entry key="PARAM_CAMERA_DISTANCE_TYPE" value=".com.stLine[#x].stParameters.bCameraDistanceType" />
+		<entry key="PARAM_CAMERA_LENGTH_TYPE" value=".com.stLine[#x].stParameters.bCameraLengthType" />
+		<entry key="PARAM_VALIDE_CODE_TIMEOUT_TYPE" value=".com.stLine[#x].stParameters.bValideCodeTimeoutType" />
+		<entry key="PARAM_AUDIO_VISUAL_EMISSION_DISTANCE_TYPE" value=".com.stLine[#x].stParameters.bAudioVisualEmissionDistanceType" />
+		<entry key="PARAM_AUDIO_VISUAL_EMISSION_LENGTH_TYPE" value=".com.stLine[#x].stParameters.bAudioVisualEmissionLengthType" />
+		<entry key="PARAM_PRINTER_DISTANCE_TYPE" value=".com.stLine[#x].stParameters.bPrinterDistanceType" />
+		<entry key="PARAM_PRINTER_LENGTH_TYPE" value=".com.stLine[#x].stParameters.bPrinterLengthType" />
+		<entry key="PARAM_PC_EJECTION_RECEPTION_DISTANCE_TYPE" value=".com.stLine[#x].stParameters.bPCEjectionReceptionDistanceType" />
+		<entry key="PARAM_PC_EJECTION_RECEIPTION_LENGTH_TYPE" value=".com.stLine[#x].stParameters.bPCEjectionReceptionLengthType" />
+		<entry key="PARAM_PROD_CONTROL_DETECTOR_FILTER_TYPE" value=".com.stLine[#x].stParameters.bProdControlDetectorFilterType" />
+		<entry key="PARAM_EJECTION_EMISSION_DISTANCE_TYPE" value=".com.stLine[#x].stParameters.bEjectionEmissionDistanceType" />
+		<entry key="PARAM_EJECTION_EMISSION_LENGTH_TYPE" value=".com.stLine[#x].stParameters.bEjectionEmissionLengthType" />
+		<entry key="PARAM_JAVA_NTF_DISTANCE_TYPE" value=".com.stLine[#x].stParameters.bJavaNotificationDistanceType" />
+		<entry key="PARAM_COUNTER_FILTER" value=".com.stLine[#x].stParameters.nCounterFilter" />
+		<entry key="PARAM_PRODUCT_DETECTOR_FILTER" value=".com.stLine[#x].stParameters.nProductDetectorFilter" />
+		<entry key="PARAM_CAMERA_DISTANCE" value=".com.stLine[#x].stParameters.nCameraDistance" />
+		<entry key="PARAM_CAMERA_LENGTH" value=".com.stLine[#x].stParameters.nCameraLength" />
+		<entry key="PARAM_VALIDE_CODE_TIMEOUT" value=".com.stLine[#x].stParameters.nValideCodeTimeout" />
+		<entry key="PARAM_AUDIO_VISUAL_EMISSION_DISTANCE" value=".com.stLine[#x].stParameters.nAudioVisualEmissionDistance" />
+		<entry key="PARAM_AUDIO_VISUAL_EMISSION_LENGTH" value=".com.stLine[#x].stParameters.nAudioVisualEmissionLength" />
+		<entry key="PARAM_PRINTER_DISTANCE" value=".com.stLine[#x].stParameters.nPrinterDistance" />
+		<entry key="PARAM_PRINTER_LENGTH" value=".com.stLine[#x].stParameters.nPrinterLength" />
+		<entry key="PARAM_PC_EJECTION_RECEPTION_DISTANCE" value=".com.stLine[#x].stParameters.nPCEjectionReceptionDistance" />
+		<entry key="PARAM_PC_EJECTION_RECEPTION_LENGTH" value=".com.stLine[#x].stParameters.nPCEjectionReceptionLength" />
+		<entry key="PARAM_PROD_CONTROL_DETECTOR_FILTER" value=".com.stLine[#x].stParameters.nProdControlDetectorFilter" />
+		<entry key="PARAM_EJECTION_EMISSION_DISTANCE" value=".com.stLine[#x].stParameters.nEjectionEmissionDistance" />
+		<entry key="PARAM_EJECTION_EMISSION_LENGTH" value=".com.stLine[#x].stParameters.nEjectionEmissionLength" />
+		<entry key="PARAM_JAVA_NTF_DISTANCE" value=".com.stLine[#x].stParameters.nJavaNotificationDistance" />
+		<entry key="PARAM_ENCODER_RESOLUTION" value=".com.stLine[#x].stParameters.nEncoderResolution" />
+		<entry key="PARAM_SHAPE_DIAMETER" value=".com.stLine[#x].stParameters.nShapeDiameter" />
+		<entry key="PARAM_MAX_CONSECUTIVE_INVALID_CODES" value=".com.stLine[#x].stParameters.nMaxConsecutiveInvalidCodes" />
+		<entry key="PARAM_STATS_SMALL_THRESHOLD" value=".com.stLine[#x].stParameters.nStatsSmallThreshold" />
+		<entry key="PARAM_STATS_SMALL_REJECTION_LIMIT" value=".com.stLine[#x].stParameters.nStatsSmallRejectionLimit" />
+		<entry key="PARAM_STATS_LARGE_THRESHOLD" value=".com.stLine[#x].stParameters.nStatsLargeThreshold" />
+		<entry key="PARAM_STATS_LARGE_REJECTION_LIMIT" value=".com.stLine[#x].stParameters.nStatsLargeRejectionLimit" />
+		<entry key="PARAM_TRIGGER_CONTROL_MAX_DIFF_VALUE" value=".com.stLine[#x].stParameters.nTriggerControlMaxDiffValue" />
+		<entry key="PARAM_TRIGGER_CONTROL_MAX_CHECKS_VALUE" value=".com.stLine[#x].stParameters.nTriggerControlMaxChecksValue" />
+		<entry key="PARAM_TRIGGER_CONTROL_MAX_ABS_ERRORS" value=".com.stLine[#x].stParameters.nTriggerControlMaxAbsErrors" />
+		<entry key="PARAM_ENCODER_MODULE_FOLD_EVALUATION" value=".com.stLine[#x].stParameters.nEncoderModuleFoldEvaluation" />
+		<entry key="PARAM_TEST_ADDITIONAL_CHECK" value=".com.stLine[#x].stParameters.bTestAdditionalCheck" />
+		<entry key="PARAM_TRIGGER_ACT_ON_FAILING_EDGE" value=".com.stLine[#x].stParameters.bTriggerActOnFallingEdge" />
+		<entry key="PARAM_SIMULATE_PC_EJECTION_IF_ADD_CHECK" value=".com.stLine[#x].stParameters.bSimulatePCEjectionIfAddCheck" />
+		<entry key="PARAM_TRIG_CAMERA_IF_PC_EJECTION_SIMULATED" value=".com.stLine[#x].stParameters.bTrigCameraIfPCEjectionSimulated" />
+		<entry key="PARAM_INHIBIT_PC_EJECTION_IF_ADD_CHECK" value=".com.stLine[#x].stParameters.bInhibitPCEjectionIfAddCheck" />
+		<entry key="PARAM_TRIG_EJECTION_ONLY_FOR_SICPA_EJECTIONS" value=".com.stLine[#x].stParameters.bTrigEjectionOnlyForSicpaEjections" />
+		<entry key="PARAM_TRIG_AUDIO_VISUAL_ONLY_FOR_SICPA_EJECTIONS" value=".com.stLine[#x].stParameters.bTrigAudioVisualOnlyForSicpaEjections" />
+		<entry key="PARAM_SYSTEM_TYPE" value=".com.stLine[#x].stParameters.nSystemType" />
+		<entry key="PARAM_ENCODER_USED" value=".com.stLine[#x].stParameters.bEncoderUsed" />
+		<entry key="PARAM_INDEXED_PRODUCTS" value=".com.stLine[#x].stParameters.bIndexedProducts" />
+		<entry key="PARAM_INHIBIT_PRINTER" value=".com.stLine[#x].stParameters.bInhibitPrinter" />
+		<entry key="PARAM_INHIBIT_CAMERA" value=".com.stLine[#x].stParameters.bInhibitCamera" />
+		<entry key="PARAM_INHIBIT_PC_EJECTION_RECEPTION" value=".com.stLine[#x].stParameters.bInhibitPCEjectionReception" />
+		<entry key="PARAM_INHIBIT_EJECTION_EMISSION" value=".com.stLine[#x].stParameters.bInhibitEjectionEmission" />
+		<entry key="PARAM_INHIBIT_EJECTION_AUDIO_VISUALS" value=".com.stLine[#x].stParameters.bInhibitEjectionAudiovisuals" />
+		<entry key="PARAM_INHIBIT_PC_EJECTION_SIMULATION" value=".com.stLine[#x].stParameters.bInhibitPCEjectionSimulation" />
+		<entry key="PARAM_INHIBIT_JAVA_NTF_EMISSION" value=".com.stLine[#x].stParameters.bInhibitJavaNtfEmission" />
+		<entry key="PARAM_INHIBIT_LBL_APP_OR_AIR_DRYER" value=".com.stLine[#x].stParameters.bInhibitLblAppOrAirDryer" />
+		<entry key="PARAM_EXPORT_MODE_ENABLED" value=".com.stLine[#x].stParameters.bExportModeEnabled" />
+		<entry key="PARAM_MAINTENANCE_MODE_ENABLED" value=".com.stLine[#x].stParameters.bMaintenanceModeEnabled" />
+		<entry key="PARAM_REFEED_MODE_ENABLED" value=".com.stLine[#x].stParameters.bRefeedModeEnabled" />
+		<entry key="PARAM_DRS_TYPE" value=".com.stLine[#x].stParameters.nDRS_Type" />
+		<entry key="PARAM_EJECTION_TYPE" value=".com.stLine[#x].stParameters.nEjectionType" />
+		<entry key="PARAM_WAR_TEMP_IJ_CAB_LVL" value=".com.stLine[#x].stParameters.nWar_Temperature_IJ_cabinet_level" />
+		<entry key="PARAM_WAR_TEMP_IJ_INK_LVL" value=".com.stLine[#x].stParameters.nWar_Temperature_IJ_ink_level" />
+		<entry key="PARAM_ERR_TEMP_IJ_CAB_LVL" value=".com.stLine[#x].stParameters.nErr_Temperature_IJ_cabinet_level" />
+		<entry key="PARAM_ERR_TEMP_IJ_INK_LVL" value=".com.stLine[#x].stParameters.nErr_Temperature_IJ_ink_level" />
+		<entry key="PARAM_WAR_FANS_PRINTER_CAB_MIN_FREQ" value=".com.stLine[#x].stParameters.nWar_Fans_Printer_cabinet_MIN_freq" />
+		<entry key="PARAM_WAR_FANS_PRINTER_CAB_MAX_FREQ" value=".com.stLine[#x].stParameters.nWar_Fans_Printer_cabinet_MAX_freq" />
+		<entry key="PARAM_FANS_TEMP_ON_THRESHOLD_PRINTER" value=".com.stLine[#x].stParameters.nFans_Temp_ON_threshold_Printer" />
+		<entry key="PARAM_FANS_TEMP_OFF_DELTA_HYST_PRINTER" value=".com.stLine[#x].stParameters.nFans_Temp_OFF_delta_hyst_Printer" />
+		<entry key="PARAM_INK_VORTEX_ON_THRESHOLD" value=".com.stLine[#x].stParameters.nInk_Vortex_ON_threshold" />
+		<entry key="PARAM_INK_VORTEX_OFF_DELTA_HYSTERESIS" value=".com.stLine[#x].stParameters.nInk_Vortex_OFF_delta_hysteresis" />
+
+
+
+		<entry key="NTF_LINE_SPEED" value=".com.stLine[#x].stNotifications.nLineSpeed" />
+		<entry key="NTF_PRODS_PER_SECOND" value=".com.stLine[#x].stNotifications.nProdsPerSecond" />
+		<entry key="NTF_LINE_STATE" value=".com.stLine[#x].stNotifications.nState" />
+		<entry key="NTF_GOOD_TRIGS" value=".com.stLine[#x].stNotifications.nGoodTrigs" />
+		<entry key="NTF_BAD_TRIGS" value=".com.stLine[#x].stNotifications.nBadTrigs" />
+		<entry key="NTF_NO_CAP_TRIGS" value=".com.stLine[#x].stNotifications.nNoCapTrigs" />
+		<entry key="NTF_COUNTER_TRIGS" value=".com.stLine[#x].stNotifications.nCounterTrigs" />
+		<entry key="NTF_PRODUCT_DETECTOR_TRIGS" value=".com.stLine[#x].stNotifications.nProductDetectorTrigs" />
+		<entry key="NTF_PRODUCTS_FREQ" value=".com.stLine[#x].stNotifications.nProductsFrequency" />
+		<entry key="NTF_LINE_TRILIGHT_GREEN" value=".com.stLine[#x].stNotifications.nLineTrilightGreen" />
+		<entry key="NTF_LINE_TRILIGHT_YELLOW" value=".com.stLine[#x].stNotifications.nLineTrilightYellow" />
+		<entry key="NTF_LINE_TRILIGHT_RED" value=".com.stLine[#x].stNotifications.nLineTrilightRed" />
+		<entry key="NTF_CPT_PRODUCTS_EJECTIONS" value=".com.stLine[#x].stNotifications.nCptProductsEjections" />
+		<entry key="NTF_CPT_PRODUCER_EJECTIONS" value=".com.stLine[#x].stNotifications.nCptProducerEjections" />
+		<entry key="NTF_JAVA_FIFO_BUFFER_SIZE" value=".com.stLine[#x].stNotifications.nJavaFifoBufferSize" />
+		<entry key="NTF_JAVA_SICPA_FIFO_READ_IDX" value=".com.stLine[#x].stNotifications.nJavaSicpaFifoReadIndex" />
+		<entry key="NTF_JAVA_SICPA_FIFO_WRITE_IDX" value=".com.stLine[#x].stNotifications.nJavaSicpaFifoWriteIndex" />
+		<entry key="NTF_JAVA_PROD_FIFO_READ_IDX" value=".com.stLine[#x].stNotifications.nJavaProdFifoReadIndex" />
+		<entry key="NTF_JAVA_PROD_FIFO_WRITE_IDX" value=".com.stLine[#x].stNotifications.nJavaProdFifoWriteIndex" />
+		<entry key="NTF_JAVA_PROD_STATUS_NTF" value=".com.stLine[#x].stNotifications.nJavaProdStatusNotification" />
+		<entry key="NTF_TEMP_IJ_CAB" value=".com.stLine[#x].stNotifications.nTemperature_IJ_cabinet" />
+		<entry key="NTF_TEMP_IJ_INK" value=".com.stLine[#x].stNotifications.nTemperature_IJ_ink" />
+		<entry key="NTF_LINE_REL_HUMIDITY_AMBIANT" value=".com.stLine[#x].stNotifications.nRelative_humidity_ambiant" />
+		<entry key="NTF_LINE_REL_HUMIDITY_VOLTAGE_LVL" value=".com.stLine[#x].stNotifications.nRel_humidity_voltage_level" />
+		<entry key="NTF_LINE_AIR_PRESS_LVL" value=".com.stLine[#x].stNotifications.nAir_pressure_level" />
+		<entry key="NTF_LINE_AIR_PRESS_VOLTAGE_LVL" value=".com.stLine[#x].stNotifications.nAir_pressure_voltage_level" />
+		<entry key="NTF_LINE_WAR_ERR_REGISTER" value=".com.stLine[#x].stNotifications.nWar_err_register" />
+		<entry key="NTF_CPT_PRINTER_TRIGS" value=".com.stLine[#x].stNotifications.nCptPrinterTrigs" />
+		<entry key="NTF_CPT_CAMERA_TRIGS" value=".com.stLine[#x].stNotifications.nCptCameraTrigs" />
+		<entry key="NTF_JAVA_CPT_GOOD_PRODUCTS" value=".com.stLine[#x].stNotifications.nJavaCpt_GoodProducts" />
+		<entry key="NTF_JAVA_CPT_UNREADABLES" value=".com.stLine[#x].stNotifications.nJavaCpt_Unreadables" />
+		<entry key="NTF_JAVA_CPT_NO_INK_DETECTED" value=".com.stLine[#x].stNotifications.nJavaCpt_NoInkDetected" />
+		<entry key="NTF_JAVA_CPT_ACQ_ERRORS" value=".com.stLine[#x].stNotifications.nJavaCpt_AcquisitionErrors" />
+
+
+		<!-- CABINET -->
+		<entry key="PARAM_TIMEOUT_LIFECHECK" value=".com.stCabinet.stParameters.nTimeoutLifeCheck" />
+		<entry key="PARAM_COOLING_ERR_ACTIVATION_TIMEOUT" value=".com.stCabinet.stParameters.nCoolingErrorActivationTimeout" />
+		<entry key="PARAM_COM_STRUC_STORED_IN_RAM" value=".com.stCabinet.stParameters.bComStructureStoredInRAM" />
+		<entry key="PARAM_INHIBIT_RAM_WRITING" value=".com.stCabinet.stParameters.bInhibitRamWriting" />
+		<entry key="PARAM_MULTILINE_REQ_MODE_ENABLED" value=".com.stCabinet.stParameters.bMultiLineRequestsModeEnabled" />
+		<entry key="PARAM_WAR_TEMP_EE_CAB_LVL" value=".com.stCabinet.stParameters.nWar_Temperature_EE_cabinet_level" />
+		<entry key="PARAM_WAR_TEMP_AMBIANT_LVL" value=".com.stCabinet.stParameters.nWar_Temperature_ambiant_level" />
+		<entry key="PARAM_WAR_TEMP_BYPASS_LVL" value=".com.stCabinet.stParameters.nWar_Temperature_bypass_level" />
+		<entry key="PARAM_ERR_TEMP_EE_CAB_LVL" value=".com.stCabinet.stParameters.nErr_Temperature_EE_cabinet_level" />
+		<entry key="PARAM_ERR_TEMP_AMBIANT_LVL" value=".com.stCabinet.stParameters.nErr_Temperature_ambiant_level" />
+		<entry key="PARAM_ERR_TEMP_BYPASS_LVL" value=".com.stCabinet.stParameters.nErr_Temperature_bypass_level" />
+		<entry key="PARAM_WAR_AIR_PRESS_LVL" value=".com.stCabinet.stParameters.nWar_air_pressure_level" />
+		<entry key="PARAM_ERR_AIR_PRESS_LVL" value=".com.stCabinet.stParameters.nErr_air_pressure_level" />
+		<entry key="PARAM_WAR_FANS_EE_CAB_MIN_FREQ" value=".com.stCabinet.stParameters.nWar_Fans_EE_cabinet_MIN_freq" />
+		<entry key="PARAM_WAR_FANS_EE_CAB_MAX_FREQ" value=".com.stCabinet.stParameters.nWar_Fans_EE_cabinet_MAX_freq" />
+		<entry key="PARAM_WAR_FANS_BYPASS_CAB_MIN_FREQ" value=".com.stCabinet.stParameters.nWar_Fans_Bypass_cabinet_MIN_freq" />
+		<entry key="PARAM_WAR_FANS_BYPASS_CAB_MAX_FREQ" value=".com.stCabinet.stParameters.nWar_Fans_Bypass_cabinet_MAX_freq" />
+		<entry key="PARAM_FANS_TEMP_ON_THRESHOLD_EE" value=".com.stCabinet.stParameters.nFans_Temp_ON_threshold_EE" />
+		<entry key="PARAM_FANS_TEMP_OFF_DELTA_HYST_EE" value=".com.stCabinet.stParameters.nFans_Temp_OFF_delta_hyst_EE" />
+		<entry key="PARAM_FANS_TEMP_ON_THRESHOLD_BYPASS" value=".com.stCabinet.stParameters.nFans_Temp_ON_threshold_Bypass" />
+		<entry key="PARAM_FANS_TEMP_OFF_DELTA_HYST_BYPASS" value=".com.stCabinet.stParameters.nFans_Temp_OFF_delta_hyst_Bypass" />
+
+
+		<entry key="NTF_VERSION_HIGH" value=".com.stCabinet.stNotifications.nVersionHigh" />
+		<entry key="NTF_VERSION_MEDIUM" value=".com.stCabinet.stNotifications.nVersionMedium" />
+		<entry key="NTF_VERSION_LOW" value=".com.stCabinet.stNotifications.nVersionLow" />
+		<entry key="NTF_CAB_TRILIGHT_GREEN" value=".com.stCabinet.stNotifications.nCabTrilightGreen" />
+		<entry key="NTF_CAB_TRILIGHT_YELLOW" value=".com.stCabinet.stNotifications.nCabTrilightYellow" />
+		<entry key="NTF_CAB_TRILIGHT_RED" value=".com.stCabinet.stNotifications.nCabTrilightRed" />
+		<entry key="NTF_CX_BOARD_TEMPERATURE" value=".com.stCabinet.stNotifications.nCX_Board_temperature" />
+		<entry key="NTF_CX_CPU_TEMPERATURE" value=".com.stCabinet.stNotifications.nCX_CPU_temperature" />
+		<entry key="NTF_TEMPERATURE_EE_CAB" value=".com.stCabinet.stNotifications.nTemperature_EE_cabinet" />
+		<entry key="NTF_TEMPERATURE_AMBIANT" value=".com.stCabinet.stNotifications.nTemperature_ambiant" />
+		<entry key="NTF_TEMPERATURE_BYPASS" value=".com.stCabinet.stNotifications.nTemperature_bypass" />
+		<entry key="NTF_REL_HUMIDITY_AMBIANT" value=".com.stCabinet.stNotifications.nRelative_humidity_ambiant" />
+		<entry key="NTF_REL_HUMIDITY_VOLTAGE_LVL" value=".com.stCabinet.stNotifications.nRel_humidity_voltage_level" />
+		<entry key="NTF_AIR_PRESS_LVL" value=".com.stCabinet.stNotifications.nAir_pressure_level" />
+		<entry key="NTF_AIR_PRESS_VOLTAGE_LVL" value=".com.stCabinet.stNotifications.nAir_pressure_voltage_level" />
+		<entry key="NTF_WAR_ERR_REGISTER" value=".com.stCabinet.stNotifications.nWar_err_register" />
+
+
+		<!-- REQUEST -->
+		<entry key="REQUEST_START" value=".com.stMultilineRequests.bStart" />
+		<entry key="REQUEST_RUN" value=".com.stMultilineRequests.bRun" />
+		<entry key="REQUEST_STOP" value=".com.stMultilineRequests.bStop" />
+		<entry key="REQUEST_RELOAD_CONFIG" value=".com.stMultilineRequests.bReloadConfig" />
+		<entry key="REQUEST_LIFE_CHECK" value=".com.stCabinet.stRequests.bLifeCheck" />
+		<entry key="REQUEST_JAVA_WARNINGS_AND_ERRORS_REGISTER" value=".com.nJavaWarningsAndErrorsRegister" />
+
+
+
+		<!-- BRS -->
+		<!-- PARAMETER -->
+		<entry key="PARAM_BRS_LINE_TYPE" value=".ExtGbl_stBRSconfig.nTypeOfLine" />
+		<entry key="PARAM_BRS_DISTANCE1" value=".ExtGbl_stBRSconfig.nCamDistance1" />
+		<entry key="PARAM_BRS_DISTANCE2" value=".ExtGbl_stBRSconfig.nCamDistance2" />
+		<entry key="PARAM_BRS_DISTANCE_TYPE1" value=".ExtGbl_stBRSconfig.bDistanceType1" />
+		<entry key="PARAM_BRS_DISTANCE_TYPE2" value=".ExtGbl_stBRSconfig.bDistanceType2" />
+		<entry key="PARAM_BRS_CODER_SIGNAL1" value=".ExtGbl_stBRSconfig.nCoderSignal1" />
+		<entry key="PARAM_BRS_CODER_SIGNAL2" value=".ExtGbl_stBRSconfig.nCoderSignal2" />
+		<entry key="PARAM_BRS_SAMPLING_PERIOD" value=".ExtGbl_stBRSconfig.nSamplingPeriod" />
+		<entry key="PARAM_BRS_NOTIFICATION_COUNTER" value=".ExtGbl_stBRSconfig.nNtfCounter" />
+		<entry key="PARAM_BRS_OFFLINE_ENABLED" value=".ExtGbl_stBRSconfig.bOfflineEnabled" />
+
+		<!-- NOTIFICATION -->
+		<entry key="NTF_BRS_FRAUD1" value=".ExtGbl_stBRSntf.bFraud1" />
+		<entry key="NTF_BRS_FRAUD2" value=".ExtGbl_stBRSntf.bFraud2" />
+		<entry key="NTF_BRS_JAM_DETECTED1" value=".ExtGbl_stBRSntf.bJamDetected1" />
+		<entry key="NTF_BRS_JAM_DETECTED2" value=".ExtGbl_stBRSntf.bJamDetected2" />
+		<entry key="NTF_BRS_CAMERAS_CONNECTED" value=".ExtGbl_stBRSntf.BcamerasConnected" />
+		<entry key="NTF_BRS_SKU_INFO" value=".ExtGbl_stBRSntf.sSKUinfo" />
+		<entry key="NTF_BRS_PRODUCT_COUNTER1" value=".ExtGbl_stBRSntf.nProductCounter1" />
+		<entry key="NTF_BRS_PRODUCT_COUNTER2" value=".ExtGbl_stBRSntf.nProductCounter2" />
+
+		<entry key="NTF_BRS_VERSION" value=".ExtGbl_stBRSntf.sBRSversion" />
+
+		<!-- REQUEST -->
+		<entry key="BRS_LINE_ENABLE" value=".ExtGbl_stBRScom.bBRSenable" />
+		<entry key="REQUEST_RELOAD_BRS_CONFIG" value=".ExtGbl_stBRScom.bReloadConfig" />
+		<entry key="BRS_SET_SKU_CHECK_MODE" value=".ExtGbl_stBRSconfig.bSKUcheckMode" />
+		<entry key="BRS_SELECTED_SKU" value=".ExtGbl_stBRSconfig.sExpectedSKU" />
+
+
+		<!-- OFFLINE -->
+		<entry key="OFFLINE_COUNTING_QTY" value=".offline.counting.qty" />
+		<entry key="OFFLINE_COUNTING_LAST_STOP" value=".offline.counting.last.stop" />
+		<entry key="OFFLINE_COUNTING_LAST_PRODUCT" value=".offline.counting.last.product" />
+
+	</util:map>
+
+</beans>

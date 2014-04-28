@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/util
+		http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+
+	<util:list id="brsPlcNotifications">
+		<ref bean="brsPlcCamerasConnectedNtf" />
+		<ref bean="brsPlcSkuInfoNtf" />
+		<ref bean="brsPlcErrorFraudDetected1Ntf" />
+		<ref bean="brsPlcErrorFraudDetected2Ntf" />
+		<ref bean="brsPlcJamDetected1Ntf" />
+		<ref bean="brsPlcJamDetected2Ntf" />
+	</util:list>
+
+	<bean id="brsPlcCamerasConnectedNtf" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="create">
+		<constructor-arg value="#{plcVarMap['NTF_BRS_CAMERAS_CONNECTED']}" />
+		<constructor-arg value="com.sicpa.standard.plc.value.PlcUInt8" />
+	</bean>
+
+	<bean id="brsPlcSkuInfoNtf" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createStringVar">
+		<constructor-arg value="#{plcVarMap['NTF_BRS_SKU_INFO']}" />
+		<constructor-arg value="${brsBufferSize}" />
+	</bean>
+
+	<bean id="brsPlcProductCounter1Ntf" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createInt32Var">
+		<constructor-arg value="#{plcVarMap['NTF_BRS_PRODUCT_COUNTER1']}" />
+	</bean>
+
+	<bean id="brsPlcProductCounter2Ntf" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createInt32Var">
+		<constructor-arg value="#{plcVarMap['NTF_BRS_PRODUCT_COUNTER2']}" />
+	</bean>
+
+	<bean id="brsPlcErrorFraudDetected1Ntf" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createBooleanVar">
+		<constructor-arg value="#{plcVarMap['NTF_BRS_FRAUD1']}" />
+	</bean>
+
+	<bean id="brsPlcErrorFraudDetected2Ntf" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createBooleanVar">
+		<constructor-arg value="#{plcVarMap['NTF_BRS_FRAUD2']}" />
+	</bean>
+
+	<bean id="brsPlcJamDetected1Ntf" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createBooleanVar">
+		<constructor-arg value="#{plcVarMap['NTF_BRS_JAM_DETECTED1']}" />
+	</bean>
+
+	<bean id="brsPlcJamDetected2Ntf" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createBooleanVar">
+		<constructor-arg value="#{plcVarMap['NTF_BRS_JAM_DETECTED2']}" />
+	</bean>
+
+</beans>

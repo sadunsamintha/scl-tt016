@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	       http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+	<bean id="globalConfig" class="${globalConfig}">
+		<constructor-arg type="java.lang.String" value="config/global.xml" />
+	</bean>
+
+	<bean id="cameraJobFilesConfig" class="${cameraJobFilesConfig}">
+		<constructor-arg type="java.lang.String" value="config/camera/cameraJobConfig.xml" />
+	</bean>
+
+	<!-- section to setup ConfigUtils ignored fields -->
+
+	<!-- ignore parameters in standard plc model -->
+	<bean id="ignorePlcParamsInStandardPlcModel" class="com.sicpa.standard.client.common.utils.ConfigUtils"
+		factory-method="addSerializationOmittedField">
+		<constructor-arg value="com.sicpa.standard.plc.controller.model.PlcModel" />
+		<constructor-arg value="mParameters" />
+	</bean>
+
+	<bean id="ignoreReloadConfigRequestInStandardPlcModel" class="com.sicpa.standard.client.common.utils.ConfigUtils"
+		factory-method="addSerializationOmittedField">
+		<constructor-arg value="com.sicpa.standard.plc.controller.model.PlcModel" />
+		<constructor-arg value="mReloadConfigRequest" />
+	</bean>
+
+	<bean id="ignoreLifeCheckRequestInStandardPlcModel" class="com.sicpa.standard.client.common.utils.ConfigUtils"
+		factory-method="addSerializationOmittedField">
+		<constructor-arg value="com.sicpa.standard.plc.controller.model.PlcModel" />
+		<constructor-arg value="mLifeCheckRequest" />
+	</bean>
+
+
+	<bean id="beanHistoryManager" class="${beanHistoryManager}" />
+
+
+</beans>
+
+

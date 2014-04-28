@@ -1,0 +1,50 @@
+<assembly>
+	<id>dist</id>
+	<formats>
+		<format>zip</format>
+	</formats>
+	<fileSets>
+		<fileSet>
+			<directory>template</directory>
+			<includes>
+				<include>**/**/*</include>
+			</includes>
+			<outputDirectory>template</outputDirectory>
+		</fileSet>
+		<fileSet>
+			<directory>target/classes</directory>
+			<includes>
+				<include>startup.bat</include>
+			</includes>
+			<outputDirectory></outputDirectory>
+		</fileSet>
+
+		<fileSet>
+			<directory>target/build/current</directory>
+			<includes>
+				<include>*</include>
+			</includes>
+			<outputDirectory></outputDirectory>
+		</fileSet>
+		
+		<fileSet>
+			<directory>plc-beckhoff-dll</directory>
+			<includes>
+				<include>*</include>
+			</includes>
+			<outputDirectory>plc-beckhoff-dll</outputDirectory>
+		</fileSet>
+		
+	</fileSets>
+
+	<dependencySets>
+		<dependencySet>
+			<outputDirectory>lib</outputDirectory>
+			<unpack>false</unpack>
+			<scope>runtime</scope>
+			<excludes>
+				<exclude>${artifact.groupId}:${artifact.artifactId}</exclude>
+			</excludes>
+		</dependencySet>
+	</dependencySets>
+</assembly>

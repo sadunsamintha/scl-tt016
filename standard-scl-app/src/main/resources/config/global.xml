@@ -1,0 +1,21 @@
+<GlobalConfigSCL language="en_GB">
+  <cleanUpSendDataThreshold__day>30</cleanUpSendDataThreshold__day>
+  <productionSendBatchSize>5000</productionSendBatchSize>
+  <useBarcodeReader>false</useBarcodeReader>
+  <displaySimulatorGui>true</displaySimulatorGui>
+  <remoteServerMaxDownTime__day>30</remoteServerMaxDownTime__day>
+  <productionDataSerializationErrorThreshold>3</productionDataSerializationErrorThreshold>
+  <remoteServerTimeoutCall__sec>60</remoteServerTimeoutCall__sec>
+  <lineId>0</lineId>
+  <subsystemId>123456</subsystemId>
+  <sicpadataPassword>admin</sicpadataPassword>
+  <alertModel>
+    <cameraCountModel enabled="true" maxUnreadCount="5" sampleSize="100" delayInSec="5000"/>
+    <duplicatedCodeModel enabled="true" threshold="5"/>
+    <cameraIddleModel enabled="true" maxInactiveTimeInSec="60" delayInSec="5"/>
+    <plcActivationCrossCheckModel maxDelta="10" enabled="false"/>
+  </alertModel>
+  <minEncodersThreshold>0</minEncodersThreshold>
+  <requestNumberEncoders>2</requestNumberEncoders>
+  <countryCode>CH</countryCode>
+</GlobalConfigSCL>

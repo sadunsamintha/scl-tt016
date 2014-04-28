@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+
+	<bean id="otherDevicesController" class="${otherDevicesController}" />
+
+	<bean id="startupDevicesGroup" class="com.sicpa.standard.sasscl.controller.device.group.impl.SimpleGroupDevicesController" />
+
+	<bean id="selectionScreenDevicesGroup" class="com.sicpa.standard.sasscl.controller.device.group.impl.SimpleGroupDevicesController" />
+
+	<bean id="deviceControllerAddRemoteGroup" class="com.sicpa.standard.client.common.ioc.InjectByMethodBean">
+		<property name="target" ref="otherDevicesController" />
+		<property name="methodName" value="addControllerToGroup" />
+		<property name="params">
+			<array>
+				<ref bean="startupDevicesGroup" />
+				<value>startup</value>
+			</array>
+		</property>
+	</bean>
+
+	<bean id="deviceControllerAddSelectionScreenGroup" class="com.sicpa.standard.client.common.ioc.InjectByMethodBean">
+		<property name="target" ref="otherDevicesController" />
+		<property name="methodName" value="addControllerToGroup" />
+		<property name="params">
+			<array>
+				<ref bean="selectionScreenDevicesGroup" />
+				<value>selectionScreen</value>
+			</array>
+		</property>
+	</bean>
+
+</beans>

@@ -1,0 +1,7 @@
+<com.sicpa.standard.sasscl.skucheck.SkuCheckConfig>
+	<trigValue>10</trigValue>
+	<bufferSize>50</bufferSize>
+	<devicesCount>1</devicesCount>
+	<confidenceLevelCritical>50</confidenceLevelCritical>
+	<confidenceLevelOk>95</confidenceLevelOk>
+</com.sicpa.standard.sasscl.skucheck.SkuCheckConfig>

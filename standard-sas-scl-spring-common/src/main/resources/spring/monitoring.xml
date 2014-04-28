@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+
+	<bean id="monitoring" class="${monitoring}">
+		<constructor-arg ref="monitoringModel" />
+		<property name="saveIncrPeriod" value="#{schedulerConfig.monitoringSaveIncrementalStatisticsTimer_sec}" />
+		<property name="config" ref="globalConfig" />
+		<property name="mbeanStatistics" ref="MBeanStatsDelegate" />
+		<property name="productionParameters" ref="productionParameters" />
+	</bean>
+
+	<bean id="monitoringModel" class="${monitoringModel}" />
+
+	<bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+		<property name="staticMethod" value="com.sicpa.standard.sasscl.monitoring.MonitoringService.set" />
+		<property name="arguments">
+			<list>
+				<ref bean="monitoring" />
+			</list>
+		</property>
+	</bean>
+
+	<bean id="statsMBean" class="${statsMBean}">
+		<property name="stats" ref="MBeanStatsDelegate" />
+		<property name="errorsRepository" ref="errorsRepository" />
+		<property name="plcJmxInfo" ref="plcJmxInfo" />
+		<property name="productionConfigProvider" ref="productionConfigProvider" />
+	</bean>
+
+	<bean id="remoteControlMBean" class="${remoteControlMBean}">
+		<property name="appBean" ref="statsMBean" />
+		<property name="defaultSaveTask">
+			<ref bean="defaultSaveRemotelyChangedBeanTask" />
+		</property>
+	</bean>
+
+	<bean id="defaultSaveRemotelyChangedBeanTask" class="${defaultSaveRemotelyChangedBeanTask}" />
+
+	<bean id="MBeanStatsDelegate" class="${MBeanStatsDelegate}">
+		<property name="storage" ref="storage" />
+		<property name="productionParameters" ref="productionParameters" />
+	</bean>
+
+
+	<bean id="injectSavePlcVarRemotely" class="com.sicpa.standard.client.common.ioc.InjectByMethodBean">
+		<property name="target" ref="remoteControlMBean" />
+		<property name="methodName" value="addSaveTask" />
+		<property name="params">
+			<array>
+				<value>plcVarSaving</value>
+				<ref bean="plcVarSaveRemotelyChangedBeanTask" />
+			</array>
+		</property>
+	</bean>
+
+	<bean id="plcVarSaveRemotelyChangedBeanTask" class="${plcVarSaveRemotelyChangedBeanTask}">
+		<property name="plcProvider" ref="plcProvider" />
+	</bean>
+
+</beans>
+
+

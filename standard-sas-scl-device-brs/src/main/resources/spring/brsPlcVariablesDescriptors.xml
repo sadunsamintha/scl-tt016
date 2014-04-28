@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+
+	<bean id="brsPlcLineTypeVarDesc" class="com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcIntegerVariableDescriptor">
+		<property name="variable" ref="brsPlcLineTypeVar" />
+		<property name="min" value="0" />
+		<property name="max" value="5" />
+		<property name="plcProvider" ref="plcProvider" />
+	</bean>
+
+	<bean id="brsPlcDistance1VarDesc" class="com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcPulseVariableDescriptor">
+		<property name="unitPlcVar" ref="brsPlcDistanceType1Var" />
+		<property name="variable" ref="brsPlcDistance1Var" />
+		<property name="minMs" value="1" />
+		<property name="maxMs" value="999999" />
+		<property name="minPulse" value="1" />
+		<property name="maxPulse" value="888888" />
+		<property name="plcProvider" ref="plcProvider" />
+	</bean>
+
+	<bean id="brsPlcDistance2VarDesc" class="com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcPulseVariableDescriptor">
+		<property name="unitPlcVar" ref="brsPlcDistanceType2Var" />
+		<property name="variable" ref="brsPlcDistance2Var" />
+		<property name="minMs" value="1" />
+		<property name="maxMs" value="999999" />
+		<property name="minPulse" value="1" />
+		<property name="maxPulse" value="888888" />
+		<property name="plcProvider" ref="plcProvider" />
+	</bean>
+
+	<bean id="brsPlcCoderSignal1VarDesc" class="com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcIntegerVariableDescriptor">
+		<property name="variable" ref="brsPlcCoderSignal1Var" />
+		<property name="min" value="1" />
+		<property name="max" value="3" />
+		<property name="plcProvider" ref="plcProvider" />
+	</bean>
+
+	<bean id="brsPlcCoderSignal2VarDesc" class="com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcIntegerVariableDescriptor">
+		<property name="variable" ref="brsPlcCoderSignal2Var" />
+		<property name="min" value="1" />
+		<property name="max" value="3" />
+		<property name="plcProvider" ref="plcProvider" />
+	</bean>
+
+
+	<bean id="brsPlcSamplingPeriodVarDesc" class="com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcIntegerVariableDescriptor">
+		<property name="variable" ref="brsPlcSamplingPeriodVar" />
+		<property name="min" value="1" />
+		<property name="max" value="100" />
+		<property name="plcProvider" ref="plcProvider" />
+	</bean>
+
+	<bean id="brsPlcNotificationCntVarDesc" class="com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcIntegerVariableDescriptor">
+		<property name="variable" ref="brsPlcNotificationCntVar" />
+		<property name="min" value="1" />
+		<property name="max" value="100" />
+		<property name="plcProvider" ref="plcProvider" />
+	</bean>
+
+	<bean id="brsPlcOfflineEnabledVarDesc" class="com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcBooleanVariableDescriptor">
+		<property name="variable" ref="brsPlcOfflineEnabledVar" />
+		<property name="plcProvider" ref="plcProvider" />
+	</bean>
+
+	<bean id="addPlcVariableGroupToEditablePlcVariables" class="com.sicpa.standard.client.common.ioc.InjectByMethodBean">
+		<property name="target" ref="cabinetEditablePlcVariables" />
+		<property name="methodName" value="addGroup" />
+		<property name="params" ref="brsPlcVariableGroup" />
+	</bean>
+
+	<bean id="brsPlcVariableGroup" class="com.sicpa.standard.sasscl.devices.plc.variable.PlcVariableGroup">
+		<constructor-arg>
+			<array>
+				<ref bean="brsPlcLineTypeVarDesc" />
+				<ref bean="brsPlcDistance1VarDesc" />
+				<ref bean="brsPlcDistance2VarDesc" />
+				<ref bean="brsPlcCoderSignal1VarDesc" />
+				<ref bean="brsPlcCoderSignal2VarDesc" />
+				<ref bean="brsPlcSamplingPeriodVarDesc" />
+				<ref bean="brsPlcNotificationCntVarDesc" />
+				<ref bean="brsPlcOfflineEnabledVarDesc" />
+			</array>
+		</constructor-arg>
+		<property name="description" value="plc.brs" />
+	</bean>
+
+</beans>

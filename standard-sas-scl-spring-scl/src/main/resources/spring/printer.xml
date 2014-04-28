@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:util="http://www.springframework.org/schema/util" xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
+
+	<bean id="mapPrinterAdaptor" class="com.sicpa.standard.client.common.ioc.GenericMapping">
+		<constructor-arg>
+			<map>
+				<entry key="standard" value-ref="stdPrinterAdaptor" />
+				<entry key="simulator" value-ref="printerSimulatorAdaptor" />
+			</map>
+		</constructor-arg>
+	</bean>
+
+	<bean id="printer" factory-bean="mapPrinterAdaptor" factory-method="get">
+		<constructor-arg value="${printer.behavior}" />
+	</bean>
+
+	<bean id="stdPrinterAdaptor" class="${stdPrinterAdaptor}">
+		<property name="controller" ref="stdPrinterController" />
+	</bean>
+
+	<bean id="printerSimulatorAdaptor" class="com.sicpa.standard.sasscl.devices.printer.simulator.PrinterAdaptorSimulator">
+		<property name="controller" ref="printerSimulatorController" />
+	</bean>
+
+	<bean id="printerSimulatorModel" class="com.sicpa.standard.client.common.utils.ConfigUtils" factory-method="load">
+		<constructor-arg value="config/printer/simulator/printerSimulator_pr_scl_1.xml" />
+<!-- 		<constructor-arg ref="deviceModelNamePostfixProperty" /> -->
+	</bean>
+	
+	<bean id="mapPrinterController" class="com.sicpa.standard.client.common.ioc.GenericMapping">
+		<constructor-arg>
+			<map>
+				<entry key="leibinger" value-ref="printerControllerLeibinger" />
+				<entry key="domino" value-ref="printerControllerDomino" />
+			</map>
+		</constructor-arg>
+	</bean>
+	<bean id="stdPrinterController" factory-bean="mapPrinterController" factory-method="get">
+		<constructor-arg value="${printer.type}" />
+	</bean>
+
+	<bean id="printerSimulatorController" class="com.sicpa.standard.sasscl.devices.printer.simulator.PrinterSimulator">
+		<constructor-arg ref="printerSimulatorModel" />
+		<property name="listener" ref="printerSimulatorAdaptor"/>
+		<property name="simulatorGui" ref="simulatorGui" />
+	</bean>
+
+</beans>

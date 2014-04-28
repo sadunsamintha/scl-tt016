@@ -1,0 +1,19 @@
+<com.sicpa.standard.sasscl.config.GlobalConfig>
+	<language>en</language>
+	<cleanUpSendDataThreshold_day>30</cleanUpSendDataThreshold_day>
+	<productionSendBatchSize>100</productionSendBatchSize>
+	<useBarcodeReader>false</useBarcodeReader>
+	<displaySimulatorGui>true</displaySimulatorGui>
+	<remoteServerMaxDownTime_day>30</remoteServerMaxDownTime_day>
+	<productionDataSerializationErrorThreshold>3</productionDataSerializationErrorThreshold>
+	<remoteServerTimeoutCall_sec>60</remoteServerTimeoutCall_sec>
+	<subsystemId>17</subsystemId>
+	<sicpadataPassword>admin</sicpadataPassword>
+	<alertModel>
+		<cameraCountModel enabled="true" maxUnreadCount="5" sampleSize="100" delayInSec="5000" />
+		<duplicatedCodeModel enabled="true" threshold="5" />
+		<cameraIddleModel enabled="true" maxInactiveTimeInSec="60" delayInSec="0" />
+		<plcActivationCrossCheckModel maxDelta="10" enabled="true" />
+	</alertModel>
+</com.sicpa.standard.sasscl.config.GlobalConfig>
+

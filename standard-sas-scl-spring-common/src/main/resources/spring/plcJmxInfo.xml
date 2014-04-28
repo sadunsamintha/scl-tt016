@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+
+
+	<bean id="plcJmxInfo" class="${plcJmxInfo}">
+		<property name="plcProvider" ref="plcProvider" />
+		<property name="plcCabinetVars" ref="cabinetVarForJmxInfo" />
+		<property name="plcLineVars" ref="lineVarsForJmxInfo" />
+	</bean>
+	<!-- plc cabinet info -->
+
+	<util:list id="cabinetVarForJmxInfo">
+		<ref bean="cxBoardTemperatureNtf" />
+		<ref bean="cxCpuTemperatureNtf" />
+		<ref bean="temperatureEeCabNtf" />
+		<ref bean="temperatureAmbiantNtf" />
+		<ref bean="temperatureBypassNtf" />
+		<ref bean="relHumidityAmbiantNtf" />
+		<ref bean="relHumidityVoltageLvlNtf" />
+		<ref bean="airPressLvlNtf" />
+		<ref bean="airPressVoltageLvlNtf" />
+		<ref bean="warErrRegisterNtf" />
+	</util:list>
+
+	<!-- plc line info -->
+	<util:list id="lineVarsForJmxInfo">
+		<ref bean="lineSpeedNtf" />
+		<ref bean="prodsPerSecondNtf" />
+		<ref bean="lineStateNtf" />
+		<ref bean="goodTrigsNtf" />
+		<ref bean="badTrigsNtf" />
+		<ref bean="noCapTrigsNtf" />
+		<ref bean="counterTrigsNtf" />
+		<ref bean="productDetectorTrigsNtf" />
+		<ref bean="productsFreqNtf" />
+		<ref bean="cptProductsEjectionsNtf" />
+		<ref bean="tempIjCabNtf" />
+		<ref bean="tempIjInkNtf" />
+		<ref bean="lineRelHumidityAmbiantNtf" />
+		<ref bean="lineRelHumidityVoltageLvlNtf" />
+		<ref bean="lineAirPressLvlNtf" />
+		<ref bean="lineAirPressVoltageLvlNtf" />
+		<ref bean="lineWarErrRegisterNtf" />
+	</util:list>
+
+	<!-- <bean id="injectPlcLineParamfIntoJmxInfo" class="com.sicpa.standard.client.common.ioc.InjectByMethodBean"> -->
+	<!-- <property name="target" ref="plcJmxInfo" /> -->
+	<!-- <property name="methodName" value="addPlcLineVars" /> -->
+	<!-- <property name="param" ref="plcLineParamsTemplate" /> -->
+	<!-- </bean> -->
+</beans>
+
+

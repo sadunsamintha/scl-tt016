@@ -1,0 +1,5 @@
+<com.sicpa.standard.sasscl.devices.brs.BrsConfigBean>
+	<differenceCountThreshold>345</differenceCountThreshold>
+	<unreadThreshold>90</unreadThreshold>
+	<unreadWindowSize>200</unreadWindowSize>
+</com.sicpa.standard.sasscl.devices.brs.BrsConfigBean>
