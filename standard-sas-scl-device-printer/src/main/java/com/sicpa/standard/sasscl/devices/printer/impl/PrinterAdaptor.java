@@ -43,6 +43,10 @@ public class PrinterAdaptor extends AbstractPrinterAdaptor implements IPrinterCo
 	protected IPrinterController controller;
 
 	protected boolean initialized = false;
+	
+	protected boolean codeSent = false;
+	
+	protected SequenceStatus lastSequence = SequenceStatus.UNKNOWN;
 
 //	public PrinterAdaptor(final IPrinterController controller) {
 //		this.controller = controller;
@@ -83,6 +87,7 @@ public class PrinterAdaptor extends AbstractPrinterAdaptor implements IPrinterCo
 		} catch (PrinterException e) {
 			logger.error(e.getMessage());
 		}
+		lastSequence = SequenceStatus.UNKNOWN;
 		fireDeviceStatusChanged(DeviceStatus.DISCONNECTED);
 	}
 
@@ -106,12 +111,6 @@ public class PrinterAdaptor extends AbstractPrinterAdaptor implements IPrinterCo
 			fireDeviceStatusChanged(DeviceStatus.DISCONNECTED);
 		}
 	}
-
-
-	
-
-
-	protected boolean codeSent = false;
 
 	@Override
 	public void onPrinterCodesNeeded(final Object sender, long nbCodes) {
@@ -152,12 +151,6 @@ public class PrinterAdaptor extends AbstractPrinterAdaptor implements IPrinterCo
 	private void fireIssueSolved(PrinterMessageId printerMessageId) {
 		fireIssueSolved(printerMessageId.getKey());
 	}
-
-
-
-
-
-	protected SequenceStatus lastSequence = SequenceStatus.UNKNOWN;
 
 //	@Override
 //	public void onStatisticsReceived(final IPrinterController sender, final PrinterStatisticsEventArgs args) {
