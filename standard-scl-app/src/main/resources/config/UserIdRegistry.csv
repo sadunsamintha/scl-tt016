@@ -1,9 +1,0 @@
-Version;1;0;2
-Firstname;Surname;UserID;UserLevelAccess;Login
-Erika;Mustermann;1000;115;emustermann
-Michel;Martin;1001;123;mmartin
-Antoine;Dupont;1002;225;adupont
-John;Doe;1003;0;jdoe
-Joe;Smith;1004;12;jsmith
-Fabrice ;Durant;1005;42;fdurant
-EndFile;;;

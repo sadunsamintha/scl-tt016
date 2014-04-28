@@ -1,11 +1,23 @@
 <SecurityModel loginDefaultUser="OPERATOR">
 
 <!-- FULL ADMIN -->
+  <User login="0" password="">
+    <Permission name=".*"/>
+  </User>
+  <User login="1" password="">
+    <Permission name=".*"/>
+  </User>
+  <User login="2" password="">
+    <Permission name=".*"/>
+  </User>
   <User login="3" password="">
     <Permission name=".*"/>
   </User>
+  <User login="4" password="">
+    <Permission name=".*"/>
+  </User>
   
-  <User login="1" password="">
+  <User login="5" password="">
     <Permission name="PRODUCTION_CHANGE_PARAMETERS"/>
     <Permission name="PRODUCTION_MODE_STANDARD"/>
     <Permission name="PRODUCTION_START"/>
