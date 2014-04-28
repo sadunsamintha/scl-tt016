@@ -18,7 +18,7 @@
 			c:controller-ref="plcSecureController" 
 			p:notificationVariables-ref="plcSecureNotifications"
 			p:plcSecureRequestMap-ref="plcSecureRequestAction"
-			p:parameterLine-ref="plcSecureParameters" 
+			p:parameters-ref="plcSecureParameters" 
 			p:userIdStorage-ref="userIdStorage"
 			p:model-ref="plcSecureModel" 
 			p:securityModel-ref="securityModel"/>
