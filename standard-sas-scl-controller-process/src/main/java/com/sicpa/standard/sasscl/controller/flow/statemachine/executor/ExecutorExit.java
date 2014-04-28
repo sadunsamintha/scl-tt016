@@ -68,6 +68,7 @@ public class ExecutorExit implements Runnable {
 	protected void executeShutdownHook() {
 		logger.info("executing shutdownhook");
 		try {
+			hardwareController.switchOff();
 			hardwareController.disconnect();
 		} catch (Exception e) {
 		}

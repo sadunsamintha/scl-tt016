@@ -7,6 +7,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.common.util.Messages;
@@ -17,6 +20,8 @@ import com.sicpa.standard.sasscl.devices.IDevice;
 import com.sicpa.standard.sasscl.devices.IDeviceStatusListener;
 import com.sicpa.standard.sasscl.devices.IStartableDevice;
 import com.sicpa.standard.sasscl.devices.plc.IPlcAdaptor;
+import com.sicpa.standard.sasscl.devices.printer.IPrinterAdaptor;
+import com.sicpa.standard.sasscl.devices.printer.PrinterAdaptorException;
 import com.sicpa.standard.sasscl.messages.ActionEventDeviceError;
 import com.sicpa.standard.sasscl.messages.IssueSolvedMessage;
 import com.sicpa.standard.sasscl.monitoring.MonitoringService;
@@ -26,6 +31,8 @@ import com.sicpa.standard.sasscl.monitoring.system.event.BasicSystemEvent;
 import com.sicpa.standard.sasscl.provider.impl.PlcProvider;
 
 public class HardwareController implements IHardwareController, IHardwareControllerStateSetter, IDeviceStatusListener {
+	
+	private static Logger logger = LoggerFactory.getLogger(HardwareController.class);
 
 	protected IHardwareControllerState currentState;
 
@@ -63,6 +70,21 @@ public class HardwareController implements IHardwareController, IHardwareControl
 	public void stop() {
 		synchronized (lock) {
 			currentState.stop();
+		}
+	}
+	
+	@Override
+	public void switchOff() {
+		synchronized (lock) {
+			for (IStartableDevice dev : allStartableDevices) {
+				if (dev instanceof IPrinterAdaptor) {
+					try {
+						((IPrinterAdaptor) dev).switchOff();
+					} catch (PrinterAdaptorException e) {
+						logger.error(e.getMessage());
+					}
+				}
+			}
 		}
 	}
 
