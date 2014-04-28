@@ -81,7 +81,7 @@
     <value class="int">4</value>
   </PlcValue>
   <PlcValue varName=".com.stLine[2].stParameters.bTestAdditionalCheck">
-    <value class="boolean">false</value>
+    <value class="boolean">true</value>
   </PlcValue>
   <PlcValue varName=".com.stLine[2].stParameters.bTriggerActOnFallingEdge">
     <value class="boolean">false</value>
