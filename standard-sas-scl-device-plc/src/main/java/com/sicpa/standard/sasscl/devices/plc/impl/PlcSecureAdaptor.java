@@ -1,14 +1,10 @@
 package com.sicpa.standard.sasscl.devices.plc.impl;
 
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.net.ftp.FTPClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,7 +28,6 @@ import com.sicpa.standard.sasscl.event.LoginAttemptEvent;
 import com.sicpa.standard.sasscl.event.PlcLoginEvent;
 import com.sicpa.standard.sasscl.event.PrinterProfileEvent;
 import com.sicpa.standard.sasscl.security.UserId;
-import com.sicpa.standard.sasscl.security.UserIdRegistry;
 
 public class PlcSecureAdaptor extends PlcAdaptor {
 	
@@ -46,11 +41,14 @@ public class PlcSecureAdaptor extends PlcAdaptor {
 	
 	private PlcModel model;
 	
+	private boolean fileReloadSent;
+	
 	/** Stores the user coming from GUI login attempts, null for the finger print case*/
 	protected UserId currentUserId;
 
 	public PlcSecureAdaptor(IPlcController<?> controller) {
 		super(controller);
+		setName("PLC Secure");
 		EventBusService.register(this);
 	}
 
@@ -102,8 +100,21 @@ public class PlcSecureAdaptor extends PlcAdaptor {
 		createNotifications();
 
 		fireDeviceStatusChanged(DeviceStatus.CONNECTED);
+		
+		sendReloadUserDataFile();
 
 //		checkUserDbVersion();
+	}
+
+	private void sendReloadUserDataFile() {
+		if (fileReloadSent)
+			return;
+		try {
+			executeRequest(SecurePlcRequest.RELOAD_USER_DATA_FILE, true);
+			fileReloadSent = true;
+		} catch (PlcException e) {
+			logger.error(e.getMessage());
+		}
 	}
 	
 	/**
@@ -209,12 +220,15 @@ public class PlcSecureAdaptor extends PlcAdaptor {
 	protected UserId checkPlcUser() throws PlcAdaptorException {
 		
 		int intuserId;
-		int userProfile;
+		int printerAccess;
+		int javaAccess;
+		
 		try {
 			intuserId = read(PlcVariable.createInt32Var(PlcSecureVariables.NTF_USER_ID_AUTHENTICATED.getVariableName()));
 			OperatorLogger.log("Plc User id received: {}", intuserId);
-			
-			userProfile = read(PlcVariable.createInt32Var(PlcSecureVariables.NTF_USER_PROFILE_AUTHENTICATED.getVariableName()));			
+
+			javaAccess = read(PlcVariable.createInt32Var(PlcSecureVariables.NTF_USER_JAVA_ACCESS.getVariableName()));
+			printerAccess = read(PlcVariable.createInt32Var(PlcSecureVariables.NTF_USER_PRINTER_ACCESS.getVariableName()));
 			
 		} catch (PlcAdaptorException e) {
 			throw new PlcAdaptorException("Authentication notification received but unable to read user id", e);
@@ -222,8 +236,12 @@ public class PlcSecureAdaptor extends PlcAdaptor {
 		
 		UserId userId;
 		if (currentUserId != null) {
-			if(intuserId != currentUserId.getUserID() || userProfile != currentUserId.getUserLevelAccess())
+			if(intuserId != currentUserId.getUserID() 
+					|| javaAccess != getAppLevelAccess(currentUserId.getUserLevelAccess())
+					|| printerAccess != getPrinterProfileId(currentUserId.getUserLevelAccess())) {
+				
 				throw new PlcAdaptorException("Different user id received from the PLC: id=" + intuserId);
+			}
 			
 			userId = currentUserId;
 			
@@ -233,12 +251,10 @@ public class PlcSecureAdaptor extends PlcAdaptor {
 		
 		if (userId == null)
 			throw new PlcAdaptorException("User not found");
-		if (userProfile != userId.getUserLevelAccess())
-			throw new PlcAdaptorException("Different user level access received from the PLC: levelAccess=" + userProfile);
 		
 		return userId;
 	}
-	
+
 //	/**
 //	 * Checks the user db file version on the PLC and if outdated uploads it with the local file
 //	 */
@@ -401,22 +417,20 @@ public class PlcSecureAdaptor extends PlcAdaptor {
 		return null;
 	}
 	
-	private int getAppLevelAccess(int userLevelAccess) throws PlcAdaptorException {
+	private int getAppLevelAccess(String userLevelAccess) throws PlcAdaptorException {
 		
-		String str = String.valueOf(userLevelAccess);
-		if (str == null || str.length() != 3) {
-			throw new PlcAdaptorException("Invalid level access received form the PLC : " + userLevelAccess);
+		if (userLevelAccess == null || userLevelAccess.length() != 3) {
+			throw new PlcAdaptorException("Invalid level access received from the PLC : " + userLevelAccess);
 		}
-		return Integer.valueOf(str.substring(2));
+		return Integer.valueOf(userLevelAccess.substring(2));
 	}
 	
-	private int getPrinterProfileId(int userLevelAccess) throws PlcAdaptorException {
+	private int getPrinterProfileId(String userLevelAccess) throws PlcAdaptorException {
 		
-		String str = String.valueOf(userLevelAccess);
-		if (str == null || str.length() != 3) {
-			throw new PlcAdaptorException("Invalid level access received form the PLC : " + userLevelAccess);
+		if (userLevelAccess == null || userLevelAccess.length() != 3) {
+			throw new PlcAdaptorException("Invalid level access received from the PLC : " + userLevelAccess);
 		}
-		return Integer.valueOf(str.substring(1,2));
+		return Integer.valueOf(userLevelAccess.substring(1,2));
 	}
 
 	protected UserId getUserId(String login) {

@@ -181,7 +181,7 @@ public class PlcAdaptor extends AbstractPlcAdaptor implements IPlcControllerList
 	@Override
 	public void onPlcEventReceived(final IPlcController<?> controller, final PlcEventArgs eventArgs) {
 
-		logger.debug("PLC - event status changed: {}", eventArgs.getEventCode().name());
+		logger.debug("{} - event status changed: {}", getName(), eventArgs.getEventCode().name());
 
 		switch (eventArgs.getEventCode()) {
 		case CONNECTED:
