@@ -1,0 +1,1 @@
+java -Djavax.net.ssl.trustStore=certificates/cacerts -Djavax.net.ssl.trustStorePassword=password -Xmx256m -Xms256m -jar ${project.build.finalName}.jar
