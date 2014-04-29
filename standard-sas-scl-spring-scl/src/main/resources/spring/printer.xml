@@ -21,7 +21,7 @@
 	</bean>
 
 	<bean id="printerSimulatorAdaptor" class="com.sicpa.standard.sasscl.devices.printer.simulator.PrinterAdaptorSimulator">
-		<property name="controller" ref="printerSimulatorController" />
+<!-- 		<property name="controller" ref="printerSimulatorController" /> -->
 	</bean>
 
 	<bean id="printerSimulatorModel" class="com.sicpa.standard.client.common.utils.ConfigUtils" factory-method="load">
@@ -41,10 +41,10 @@
 		<constructor-arg value="${printer.type}" />
 	</bean>
 
-	<bean id="printerSimulatorController" class="com.sicpa.standard.sasscl.devices.printer.simulator.PrinterSimulator">
-		<constructor-arg ref="printerSimulatorModel" />
-		<property name="listener" ref="printerSimulatorAdaptor"/>
-		<property name="simulatorGui" ref="simulatorGui" />
-	</bean>
+<!-- 	<bean id="printerSimulatorController" class="com.sicpa.standard.sasscl.devices.printer.simulator.PrinterSimulator"> -->
+<!-- 		<constructor-arg ref="printerSimulatorModel" /> -->
+<!-- 		<property name="listener" ref="printerSimulatorAdaptor"/> -->
+<!-- 		<property name="simulatorGui" ref="simulatorGui" /> -->
+<!-- 	</bean> -->
 
 </beans>
