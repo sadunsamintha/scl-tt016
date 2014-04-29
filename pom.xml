@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.sicpa.standard.sasscl</groupId>
@@ -220,39 +219,39 @@
 			<dependency>
 				<groupId>com.sicpa.standard.sasscl</groupId>
 				<artifactId>model</artifactId>
-				<version>2.3.1-SNAPSHOT</version>
+				<version>${project.version}</version>
 			</dependency>
 
 			<!--BUSINESS -->
 			<dependency>
 				<groupId>com.sicpa.standard.sasscl</groupId>
 				<artifactId>business-production</artifactId>
-				<version>2.3.1-SNAPSHOT</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.sicpa.standard.sasscl</groupId>
 				<artifactId>business-activation</artifactId>
-				<version>2.3.1-SNAPSHOT</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.sicpa.standard.sasscl</groupId>
 				<artifactId>business-alert</artifactId>
-				<version>2.3.1-SNAPSHOT</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.sicpa.standard.sasscl</groupId>
 				<artifactId>business-statistics</artifactId>
-				<version>2.3.1-SNAPSHOT</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.sicpa.standard.sasscl</groupId>
 				<artifactId>business-coding</artifactId>
-				<version>2.3.1-SNAPSHOT</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.sicpa.standard.sasscl</groupId>
 				<artifactId>test-utils</artifactId>
-				<version>2.3.1-SNAPSHOT</version>
+				<version>${project.version}</version>
 			</dependency>
 
 
@@ -260,125 +259,125 @@
 			<dependency>
 				<groupId>com.sicpa.standard.sasscl</groupId>
 				<artifactId>service-monitoring</artifactId>
-				<version>2.3.1-SNAPSHOT</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.sicpa.standard.sasscl</groupId>
 				<artifactId>storage</artifactId>
-				<version>2.3.1-SNAPSHOT</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.sicpa.standard.sasscl</groupId>
 				<artifactId>controller-process</artifactId>
-				<version>2.3.1-SNAPSHOT</version>
+				<version>${project.version}</version>
 			</dependency>
 
 			<dependency>
 				<groupId>com.sicpa.standard.sasscl</groupId>
 				<artifactId>controller-scheduler</artifactId>
-				<version>2.3.1-SNAPSHOT</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.sicpa.standard.sasscl</groupId>
 				<artifactId>view</artifactId>
-				<version>2.3.1-SNAPSHOT</version>
+				<version>${project.version}</version>
 			</dependency>
 
 			<!--DEVICES -->
 			<dependency>
 				<groupId>com.sicpa.standard.sasscl</groupId>
 				<artifactId>device-printer</artifactId>
-				<version>2.3.1-SNAPSHOT</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.sicpa.standard.sasscl</groupId>
 				<artifactId>device-camera</artifactId>
-				<version>2.3.1-SNAPSHOT</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.sicpa.standard.sasscl</groupId>
 				<artifactId>device-remoteServer</artifactId>
-				<version>2.3.1-SNAPSHOT</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.sicpa.standard.sasscl</groupId>
 				<artifactId>device-barcodeReader</artifactId>
-				<version>2.3.1-SNAPSHOT</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.sicpa.standard.sasscl</groupId>
 				<artifactId>device-plc</artifactId>
-				<version>2.3.1-SNAPSHOT</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.sicpa.standard.sasscl</groupId>
 				<artifactId>device-common</artifactId>
-				<version>2.3.1-SNAPSHOT</version>
+				<version>${project.version}</version>
 			</dependency>
 
 			<!--SPRING -->
 			<dependency>
 				<groupId>com.sicpa.standard.sasscl</groupId>
 				<artifactId>spring-common</artifactId>
-				<version>2.3.1-SNAPSHOT</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.sicpa.standard.sasscl</groupId>
 				<artifactId>spring-scl</artifactId>
-				<version>2.3.1-SNAPSHOT</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.sicpa.standard.sasscl</groupId>
 				<artifactId>device-remoteServer-impl</artifactId>
-				<version>2.3.1-SNAPSHOT</version>
+				<version>${project.version}</version>
 			</dependency>
 			<!--MISC -->
 			<dependency>
 				<groupId>com.sicpa.standard.sasscl</groupId>
 				<artifactId>benchmark</artifactId>
-				<version>2.3.1-SNAPSHOT</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.sicpa.standard.sasscl</groupId>
 				<artifactId>common-app</artifactId>
-				<version>2.3.1-SNAPSHOT</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.sicpa.standard.sasscl</groupId>
 				<artifactId>parent</artifactId>
-				<version>2.3.1-SNAPSHOT</version>
+				<version>${project.version}</version>
 			</dependency>
 
 			<dependency>
 				<groupId>com.sicpa.standard.sasscl</groupId>
 				<artifactId>functional-test-common</artifactId>
-				<version>2.3.1-SNAPSHOT</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.sicpa.standard.sasscl</groupId>
 				<artifactId>business-skucheck</artifactId>
-				<version>2.3.1-SNAPSHOT</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.sicpa.standard.sasscl</groupId>
 				<artifactId>device-brs</artifactId>
-				<version>2.3.1-SNAPSHOT</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.sicpa.standard.sasscl</groupId>
 				<artifactId>business-offline-counting</artifactId>
-				<version>2.3.1-SNAPSHOT</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.sicpa.standard.sasscl</groupId>
 				<artifactId>device-bis</artifactId>
-				<version>2.3.1-SNAPSHOT</version>
+				<version>${project.version}</version>
 			</dependency>
 
 			<dependency>
 				<groupId>com.sicpa.standard.sasscl</groupId>
 				<artifactId>device-context-console</artifactId>
-				<version>2.3.1-SNAPSHOT</version>
+				<version>${project.version}</version>
 			</dependency>
 
 
@@ -618,7 +617,7 @@
 	<scm>
 		<connection>scm:svn:https://psdsvn.sicpa-net.ads/standard-framework/standard-sas-scl-modules/standard-sas-scl-parent/trunk</connection>
 		<developerConnection>scm:svn:https://psdsvn.sicpa-net.ads/standard-framework/standard-sas-scl-modules/standard-sas-scl-parent/trunk</developerConnection>
-		<url>https://psdsvn.sicpa-net.ads/standard-framework/standard-sas-scl-modules/standard-sas-scl-parent/trunk</url>
+		<url>http://psdfisheye.sicpa-net.ads/browse/standard-framework/standard-sas-scl-modules/standard-sas-scl-parent/trunk</url>
 	</scm>
 
 
