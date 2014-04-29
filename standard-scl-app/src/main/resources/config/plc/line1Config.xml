@@ -168,7 +168,7 @@
     <value class="short">42</value>
   </PlcValue>
   <PlcValue varName=".com.stLine[1].stParameters.nFans_Temp_ON_threshold_Printer">
-    <value class="short">35</value>
+    <value class="short">0</value>
   </PlcValue>
   <PlcValue varName=".com.stLine[1].stParameters.nFans_Temp_OFF_delta_hyst_Printer">
     <value class="short">5</value>
@@ -178,5 +178,8 @@
   </PlcValue>
   <PlcValue varName=".com.stLine[1].stParameters.nInk_Vortex_OFF_delta_hysteresis">
     <value class="short">5</value>
+  </PlcValue>
+  <PlcValue varName=".com.stLine[1].stParameters.bProductDetectorIsActiveLow">
+  	<value class="boolean">true</value>
   </PlcValue>
 </PlcValuesForAllVar>
