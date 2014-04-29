@@ -63,9 +63,9 @@ public class PrinterAdaptor extends AbstractPrinterAdaptor implements IPrinterCo
 		this.controller = controller;
 	}
 
-	protected IPrinterController getController() {
-		return controller;
-	}
+//	protected IPrinterController getController() {
+//		return controller;
+//	}
 
 	@Override
 	protected void doConnect() throws PrinterAdaptorException {

@@ -18,8 +18,8 @@ import com.sicpa.standard.sasscl.controller.productionconfig.config.PrinterConfi
 import com.sicpa.standard.sasscl.devices.IStartableDevice;
 import com.sicpa.standard.sasscl.devices.camera.ICameraAdaptor;
 import com.sicpa.standard.sasscl.devices.camera.simulator.ICameraAdaptorSimulator;
+import com.sicpa.standard.sasscl.devices.camera.simulator.ICodeProvider;
 import com.sicpa.standard.sasscl.devices.plc.PlcVariableMap;
-import com.sicpa.standard.sasscl.devices.printer.simulator.IPrinterAdaptorSimulator;
 import com.sicpa.standard.sasscl.provider.impl.ActivationBehaviorProvider;
 import com.sicpa.standard.sasscl.provider.impl.AuthenticatorModeProvider;
 import com.sicpa.standard.sasscl.provider.impl.PlcProvider;
@@ -83,11 +83,11 @@ public class ProductionInitiator implements IProductionInitiator {
 
 	protected void prepareSimulator() {
 		for (IStartableDevice dev : printers.values()) {
-			if (dev instanceof IPrinterAdaptorSimulator) {
+			if (dev instanceof ICodeProvider) {
 				ICameraAdaptor camera = getCameraAssociatedWithPrinter(dev.getName());
 				if (camera instanceof ICameraAdaptorSimulator) {
 					((ICameraAdaptorSimulator) camera).getSimulatorController().setCodeProvider(
-							((IPrinterAdaptorSimulator) dev).getSimulatorController());
+							((ICodeProvider) dev));
 				}
 			}
 		}
