@@ -44,8 +44,8 @@ public class PrinterErrorTestSCL extends AbstractFunctionnalTest {
 		cameraModel.setCodeGetMethod(CodeGetMethod.requested);
 
 		PrinterAdaptorSimulator printerDevice = (PrinterAdaptorSimulator) devicesMap.get("pr_scl_1");
-		printerSimul = (PrinterSimulatorThatProvidesCodes) printerDevice.getSimulatorController();
-		printerSimul.setCodeByRequest(1);
+//		printerSimul = (PrinterSimulatorThatProvidesCodes) printerDevice.getSimulatorController();
+//		printerSimul.setCodeByRequest(1);
 	}
 
 	@Override
