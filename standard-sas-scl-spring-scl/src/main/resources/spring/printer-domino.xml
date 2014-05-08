@@ -12,6 +12,7 @@
 
 	<bean id="printerControllerDomino" class="com.sicpa.standard.printer.controller.internal.DominoPrinterController" scope="prototype">
 		<property name="model" ref="printerModelDomino"/>
+		<property name="listener" ref="stdPrinterAdaptor"/>
 	</bean>
 	
 	<bean id="printerModelDomino" class="com.sicpa.standard.client.common.utils.ConfigUtils" factory-method="load" scope="prototype">
