@@ -1,10 +1,17 @@
 package com.sicpa.standard.sasscl.devices.remote.stdCrypto;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import junit.framework.Assert;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import com.sicpa.standard.printer.xcode.ExtendedCode;
+import com.sicpa.standard.printer.xcode.ExtendedCodeFactory;
+import com.sicpa.standard.sasscl.model.CodeType;
 import com.sicpa.standard.sasscl.sicpadata.CryptographyException;
 import com.sicpa.standard.sasscl.sicpadata.generator.AbstractEncoder;
 import com.sicpa.standard.sasscl.sicpadata.generator.EncoderEmptyException;
@@ -24,6 +31,8 @@ public class StdCryptoEncoderWrapper extends AbstractEncoder {
 	protected IBSicpadataGenerator encoder;
 
 	protected ICryptoFieldsConfig cryptoFieldsConfig;
+	
+	private ExtendedCodeFactory extendedCodeFactory;
 
 	public StdCryptoEncoderWrapper(final long batchid, final int id, final IBSicpadataGenerator encoder,
 			final int year, final long subsystemId, final ICryptoFieldsConfig cryptoFieldsConfig, int codeTypeId) {
@@ -31,6 +40,14 @@ public class StdCryptoEncoderWrapper extends AbstractEncoder {
 		this.encoder = encoder;
 		encoder.setId(Long.valueOf(id));
 		this.cryptoFieldsConfig = cryptoFieldsConfig;
+
+		if(codeTypeId >= CodeType.ExtendedCodeId){
+			ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("extended-code.xml");
+			
+			this.extendedCodeFactory = (ExtendedCodeFactory)ctx.getBean(String.valueOf(codeTypeId));
+			Assert.assertNotNull(extendedCodeFactory);
+			ctx.close();
+		}
 	}
 
 	@Override
@@ -49,9 +66,60 @@ public class StdCryptoEncoderWrapper extends AbstractEncoder {
 			if (numberCodesToGenerate == 0) {
 				throw new EncoderEmptyException();
 			}
-			List<String> code = encoder.generate((int) numberCodesToGenerate, cryptoFieldsConfig.getFields(this));
+			Object[] dummy = new Object[]{cryptoFieldsConfig.getFields(this)};
+			List<String> code = encoder.generate((int) numberCodesToGenerate, dummy);
+//			List<String> code = encoder.generate((int) numberCodesToGenerate, cryptoFieldsConfig.getFields(this));
 
 			return code;
+
+		} catch (GeneratorCapacityException e) {
+			throw new EncoderEmptyException("", e);
+		} catch (SicpadataException e) {
+			logger.error("Failed to generate code.", e);
+			throw new CryptographyException(e, "Failed to generate encrypted code");
+		}
+	}
+
+	@Override
+	@Deprecated
+	public final ExtendedCode getExtendedCode() throws CryptographyException {
+		throw new CryptographyException("Deprecated");
+	}
+
+	@Override
+	public synchronized List<ExtendedCode> getExtendedCodes(long numberCodes) throws CryptographyException {
+		try {
+
+			updateDateOfUse();
+
+			long numberCodesToGenerate = Math.min(getRemainingCodes(), numberCodes);
+			if (numberCodesToGenerate == 0) {
+				throw new EncoderEmptyException();
+			}
+			
+			Object[] dummy = new Object[]{cryptoFieldsConfig.getFields(this)};
+			List<String> code = encoder.generate((int) numberCodesToGenerate, dummy);
+			
+			final List<ExtendedCode> codes = new ArrayList<ExtendedCode>();
+
+			for (int i = 0; i < numberCodesToGenerate; i++) {
+				
+				List<Object> compositeCode = new ArrayList<Object>();
+				compositeCode.add(code.get(i));
+				if(i == 0){
+					compositeCode.add("ABC|DEF");
+					int[] bmp = new int[] {0xFF,0x81,0x81,0x81,0x81,0x81,0x81,0xFF,0x00};
+					compositeCode.add(bmp);
+				}else{
+					compositeCode.add(null);
+					compositeCode.add(null);
+				}
+				ExtendedCode xcode = extendedCodeFactory.create(compositeCode);
+				codes.add(xcode);
+			}
+
+
+			return codes;
 
 		} catch (GeneratorCapacityException e) {
 			throw new EncoderEmptyException("", e);

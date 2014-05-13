@@ -8,6 +8,7 @@ import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.sicpa.standard.printer.xcode.ExtendedCode;
 import com.sicpa.standard.sasscl.sicpadata.CryptographyException;
 
 public class TextFileEncoder extends CodeListEncoder {
@@ -29,6 +30,10 @@ public class TextFileEncoder extends CodeListEncoder {
 			init = true;
 		}
 		return super.getEncryptedCode();
+	}
+	@Override
+	public ExtendedCode getExtendedCode() throws CryptographyException {
+		return null;
 	}
 
 	@SuppressWarnings("unchecked")

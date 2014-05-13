@@ -9,6 +9,9 @@ import com.sicpa.standard.sasscl.model.custom.Customizable;
 public class CodeType extends Customizable implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+	
+	public static final long ExtendedCodeId = 100;
+	
 	protected long id;
 	protected String description;
 	protected ImageIcon image;

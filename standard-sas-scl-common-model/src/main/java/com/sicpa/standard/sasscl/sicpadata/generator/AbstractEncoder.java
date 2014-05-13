@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.messages.MessageEvent;
+import com.sicpa.standard.printer.xcode.ExtendedCode;
 import com.sicpa.standard.sasscl.messages.MessageEventKey;
 import com.sicpa.standard.sasscl.sicpadata.CryptographyException;
 
@@ -42,6 +43,8 @@ public abstract class AbstractEncoder implements IEncoder {
 	}
 
 	protected abstract String getEncryptedCode() throws CryptographyException;
+	protected abstract ExtendedCode getExtendedCode() throws CryptographyException;
+
 
 	protected void updateDateOfUse() {
 		if (firstCodeDate == null) {
@@ -67,6 +70,33 @@ public abstract class AbstractEncoder implements IEncoder {
 			} catch (Exception e) {
 				logger.error("fail to get code from the encoder:" + id, e);
 				EventBusService.post(new MessageEvent(MessageEventKey.Coding.ERROR_GETTING_CODES_FROM_ENCODER));
+				break;
+			}
+			if (code == null) {
+				break;
+			}
+			codes.add(code);
+		}
+		return codes;
+	}
+
+	@Override
+	public synchronized List<ExtendedCode> getExtendedCodes(final long numberCodes) throws CryptographyException {
+		List<ExtendedCode> codes = new ArrayList<ExtendedCode>();
+		ExtendedCode code = null;
+		for (int i = 0; i < numberCodes; i++) {
+
+			try {
+				code = this.getExtendedCode();
+			} catch (EncoderEmptyException e) {
+				if (codes.isEmpty()) {
+					throw e;
+				} else {
+					return codes;
+				}
+			} catch (Exception e) {
+				logger.error("fail to get code from the encoder:" + id, e);
+				EventBusService.post(new MessageEvent(MessageEventKey.Coding.ERROR_GETTING_EXTENDED_CODES_FROM_ENCODER));
 				break;
 			}
 			if (code == null) {

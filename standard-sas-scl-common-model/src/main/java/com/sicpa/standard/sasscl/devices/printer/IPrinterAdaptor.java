@@ -4,11 +4,14 @@ import java.util.List;
 
 import com.sicpa.standard.sasscl.business.coding.ICodeReceiver;
 import com.sicpa.standard.sasscl.devices.IStartableDevice;
+import com.sicpa.standard.printer.xcode.ExtendedCode;
 
 public interface IPrinterAdaptor extends IStartableDevice, ICodeReceiver {
 
 	void sendCodesToPrint(List<String> codes) throws PrinterAdaptorException;
 
+	void sendExtendedCodesToPrint(List<ExtendedCode> codes) throws PrinterAdaptorException;
+	
 	/**
 	 * start printing
 	 */

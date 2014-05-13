@@ -202,8 +202,10 @@ public interface MessageEventKey {
 	public static interface Coding {
 		String ERROR_NO_ENCODERS_IN_STORAGE = "coding.no.encoder";
 		String ERROR_GETTING_CODES_FROM_ENCODER = "coding.getCode.fail";
+		String ERROR_GETTING_EXTENDED_CODES_FROM_ENCODER = "coding.getExtendedCode.fail";
 		String INVALID_ENCODER = "encoder.invalid.move.quarantine";
 		String FAILED_TO_PROVIDE_CODES = "encoder.code.provide.fail";
+		String FAILED_TO_PROVIDE_EXTENDED_CODES = "encoder.xcode.provide.fail";
 
 	}
 

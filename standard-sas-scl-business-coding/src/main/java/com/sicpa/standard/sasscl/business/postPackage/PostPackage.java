@@ -8,6 +8,8 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.sicpa.standard.printer.xcode.ExtendedCode;
+import com.sicpa.standard.sasscl.business.coding.CodeReceivedFailedException;
 import com.sicpa.standard.sasscl.devices.IStartableDevice;
 import com.sicpa.standard.sasscl.model.Code;
 import com.sicpa.standard.sasscl.model.Product;
@@ -40,13 +42,27 @@ public class PostPackage implements IPostPackage {
 	 * called by the coding module to notify which codes have been sent to the printer
 	 */
 	@Override
-	public void provideCode(final List<String> codes, Object requestor) {
+	public void provideCode(final List<String> codes, Object requestor) 
+			 throws CodeReceivedFailedException {
 		if (!isEnabled()) {
 			return;
 		}
 		IPostPackageBehavior behavior = getModule(requestor);
 		if (behavior != null) {
 			behavior.addCodes(codes);
+		} else {
+			logger.error("no postpackage behavior found for {}", requestor);
+		}
+	}
+	@Override
+	public void provideExtendedCode(List<ExtendedCode> codes,Object requestor) 
+			 throws CodeReceivedFailedException {
+		if (!isEnabled()) {
+			return;
+		}
+		IPostPackageBehavior behavior = getModule(requestor);
+		if (behavior != null) {
+			behavior.addExtendedCodes(codes);
 		} else {
 			logger.error("no postpackage behavior found for {}", requestor);
 		}

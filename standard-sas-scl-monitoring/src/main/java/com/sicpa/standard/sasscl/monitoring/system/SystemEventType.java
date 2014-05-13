@@ -29,6 +29,7 @@ public class SystemEventType implements Serializable {
 
 	public static final SystemEventType PRODUCT_SCANNED = new SystemEventType("PRODUCT_SCANNED");
 	public static final SystemEventType GET_CODE_FROM_ENCODER = new SystemEventType("GET_CODE_FROM_ENCODER");
+	public static final SystemEventType GET_EXTENDED_CODE_FROM_ENCODER = new SystemEventType("GET_EXTENDED_CODE_FROM_ENCODER");
 
 	// total of product last sent to remote server
 	public static final SystemEventType LAST_SENT_TO_REMOTE_SERVER = new SystemEventType("LAST_SENT_TO_REMOTE_SERVER");

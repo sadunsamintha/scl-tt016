@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.sicpa.standard.client.common.provider.IProviderGetter;
+import com.sicpa.standard.printer.xcode.ExtendedCode;
 import com.sicpa.standard.sasscl.config.GlobalBean;
 import com.sicpa.standard.sasscl.model.Code;
 import com.sicpa.standard.sasscl.model.DecodedCameraCode;
@@ -25,6 +26,7 @@ public class PostPackageBehavior implements IPostPackageBehavior {
 	private static final Logger logger = LoggerFactory.getLogger(PostPackage.class);
 
 	protected final List<Code> codes = Collections.synchronizedList(new LinkedList<Code>());
+	protected final List<ExtendedCode> xcodes = Collections.synchronizedList(new LinkedList<ExtendedCode>());
 	protected ProductionBatchProvider batchIdProvider;
 	protected GlobalBean config;
 	protected ProductionParameters productionParameters;
@@ -47,6 +49,14 @@ public class PostPackageBehavior implements IPostPackageBehavior {
 		for (String aCode : codes) {
 			this.codes.add(new Code(aCode));
 		}
+	}
+
+	@Override
+	public void addExtendedCodes(List<ExtendedCode> codes) {
+		for (ExtendedCode aCode : codes) {
+			this.xcodes.add(aCode);
+		}
+		
 	}
 
 	/**

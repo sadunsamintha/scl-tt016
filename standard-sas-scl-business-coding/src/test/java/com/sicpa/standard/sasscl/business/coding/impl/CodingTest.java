@@ -14,6 +14,7 @@ import org.junit.Test;
 import org.mockito.Mockito;
 
 import com.sicpa.standard.client.common.storage.StorageException;
+import com.sicpa.standard.printer.xcode.ExtendedCode;
 import com.sicpa.standard.sasscl.business.coding.CodeReceivedFailedException;
 import com.sicpa.standard.sasscl.business.coding.ICodeReceiver;
 import com.sicpa.standard.sasscl.business.coding.RequestCodesEvent;
@@ -289,6 +290,7 @@ public class CodingTest {
 	private static class TestPrinter extends AbstractPrinterAdaptor {
 
 		List<String> codes;
+		List<ExtendedCode> xcodes;
 
 		boolean crash = false;
 
@@ -347,6 +349,22 @@ public class CodingTest {
 		public boolean isBlockProductionStart() {
 			return true;
 		}
+
+		@Override
+		public void sendExtendedCodesToPrint(List<ExtendedCode> codes) {
+			this.xcodes = codes;
+		}
+
+		@Override
+		public void provideExtendedCode(List<ExtendedCode> codes,
+				Object requestor) throws CodeReceivedFailedException {
+			if (crash) {
+				crash = false;
+				throw new CodeReceivedFailedException();
+			}
+			sendExtendedCodesToPrint(codes);
+			
+		}
 	}
 
 	private static int encoderCount = 0;
@@ -367,6 +385,14 @@ public class CodingTest {
 				throw new CryptographyException();
 			}
 			return super.getEncryptedCode();
+		}
+		@Override
+		public ExtendedCode getExtendedCode() throws CryptographyException {
+
+			if (getSequence() > 20020) {
+				throw new CryptographyException();
+			}
+			return super.getExtendedCode();
 		}
 	}
 }

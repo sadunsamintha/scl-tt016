@@ -23,4 +23,6 @@ public interface ICoding {
 	 *            the number of code to send to the <code>ICodeReceiver</code>
 	 */
 	void askCodes(int number,ICodeReceiver target);
+
+	void askExtendedCodes(int number, ICodeReceiver target);
 }

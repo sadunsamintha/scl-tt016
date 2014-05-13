@@ -16,6 +16,7 @@ import com.sicpa.standard.printer.controller.model.PrinterBufferStatus;
 import com.sicpa.standard.printer.controller.model.SequenceStatus;
 import com.sicpa.standard.printer.driver.IPrinterDriver;
 import com.sicpa.standard.printer.driver.event.PrinterBufferStatusChangedEventArgs;
+import com.sicpa.standard.printer.xcode.ExtendedCode;
 import com.sicpa.standard.sasscl.devices.DeviceStatus;
 import com.sicpa.standard.sasscl.devices.printer.simulator.IPrinterControllerSimulator;
 import com.sicpa.standard.sasscl.devices.printer.simulator.PrinterSimulatorConfig;
@@ -267,6 +268,13 @@ public class PrinterSimulatorController implements IPrinterController, IPrinterC
 
 	@Override
 	public void sendSpecificSettings(int settingID, Object... args) throws PrinterException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void sendExtendedCodes(List<ExtendedCode> extendedCodeList)
+			throws PrinterException {
 		// TODO Auto-generated method stub
 		
 	}

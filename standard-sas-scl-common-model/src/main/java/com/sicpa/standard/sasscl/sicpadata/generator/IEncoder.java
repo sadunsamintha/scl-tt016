@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
+import com.sicpa.standard.printer.xcode.ExtendedCode;
 import com.sicpa.standard.sasscl.sicpadata.CryptographyException;
 
 /**
@@ -80,5 +81,8 @@ public interface IEncoder extends Serializable {
 	Date getOnClientDate();
 	
 	void setOnClientDate(Date onClientDate);
+
+	List<ExtendedCode> getExtendedCodes(long numberCodes)
+			throws CryptographyException;
 
 }
