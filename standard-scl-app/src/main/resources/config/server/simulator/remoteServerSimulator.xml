@@ -29,7 +29,7 @@
 					<SKUNode text="SKU #2" fileImage="config/images/sku2.png">
 						<children />
 						<value class="com.sicpa.standard.sasscl.model.SKU" id="2"
-							description="SKU #2SKKU #2SKU #2SKU #2">
+							description="SKU #2">
 							<customProperties />
 							<codeType id="1" />
 							<barcodes>
@@ -67,6 +67,18 @@
 							<codeType id="5" />
 							<barcodes>
 								<string>0005</string>
+							</barcodes>
+						</value>
+					</SKUNode>
+					<SKUNode text="SKU #6" fileImage="config/images/skux.png">
+						<children />
+						<value class="com.sicpa.standard.sasscl.model.SKU" id="6"
+							description="SKU #6">
+							<customProperties />
+							<!-- Extended code ID starts at 100 -->
+							<codeType id="100" />
+							<barcodes>
+								<string>0006</string>
 							</barcodes>
 						</value>
 					</SKUNode>
