@@ -17,6 +17,7 @@
 	
 	<bean id="printerModelDomino" class="com.sicpa.standard.client.common.utils.ConfigUtils" factory-method="load" scope="prototype">
 		<constructor-arg value="config/printer/printer_pr_scl_1.xml" />
+<!-- 		<constructor-arg value="config/printer/printer_pr_scl_x.xml" /> -->
 <!-- 		<constructor-arg ref="deviceModelNamePostfixProperty" /> -->
 	</bean>
 		
