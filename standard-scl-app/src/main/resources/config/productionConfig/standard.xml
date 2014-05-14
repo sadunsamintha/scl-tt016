@@ -1,7 +1,8 @@
 <ProductionConfig activationBehavior="standardActivationBehavior" authenticatorMode="SCL">
 
-<!--     <PrinterConfig deviceType="DOMINO" id="pr_scl_1" validatedBy="qc_sas"/> -->
-    <PrinterConfig deviceType="LEIBINGER" id="pr_leibinger" validatedBy="qc_scl_1"/>
+<!--     <PrinterConfig deviceType="DOMINO" id="pr_scl_x" validatedBy="qc_scl_x"/> -->
+<!--     <PrinterConfig deviceType="DOMINO" id="pr_scl_1" validatedBy="qc_scl_1"/> -->
+	<PrinterConfig deviceType="LEIBINGER" id="pr_leibinger" validatedBy="qc_scl_1"/>
 
     <CameraConfig deviceType="COGNEX" id="qc_scl_1"/>
 
