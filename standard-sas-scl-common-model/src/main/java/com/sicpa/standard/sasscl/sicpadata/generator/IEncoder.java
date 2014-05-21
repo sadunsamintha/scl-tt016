@@ -82,7 +82,6 @@ public interface IEncoder extends Serializable {
 	
 	void setOnClientDate(Date onClientDate);
 
-	List<ExtendedCode> getExtendedCodes(long numberCodes)
-			throws CryptographyException;
+	List<ExtendedCode> getExtendedCodes(long numberCodes) throws CryptographyException;
 
 }
