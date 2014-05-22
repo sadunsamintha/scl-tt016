@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import com.sicpa.standard.printer.xcode.BlockFactory;
 import com.sicpa.standard.printer.xcode.ExtendedCode;
 import com.sicpa.standard.printer.xcode.ExtendedCodeFactory;
 import com.sicpa.standard.sasscl.model.CodeType;
@@ -100,20 +101,41 @@ public class StdCryptoEncoderWrapper extends AbstractEncoder {
 			Object[] dummy = new Object[]{cryptoFieldsConfig.getFields(this)};
 			List<String> code = encoder.generate((int) numberCodesToGenerate, dummy);
 			
+			
 			final List<ExtendedCode> codes = new ArrayList<ExtendedCode>();
 
-			for (int i = 0; i < numberCodesToGenerate; i++) {
+			for (int i = 0; i < code.size(); i++) {
 				
 				List<Object> compositeCode = new ArrayList<Object>();
-				compositeCode.add(code.get(i));
-				if(i == 0){
-					compositeCode.add("ABC|DEF");
-					int[] bmp = new int[] {0xFF,0x81,0x81,0x81,0x81,0x81,0x81,0xFF,0x00};
-					compositeCode.add(bmp);
-				}else{
-					compositeCode.add(null);
-					compositeCode.add(null);
+				
+				int numBlock = extendedCodeFactory.getBlockFactories().size();
+				for(int j=0; j<numBlock; j++)
+				{
+					BlockFactory bf = extendedCodeFactory.getBlockFactories().get(j);
+					if(bf.getOptions().contains(ExtendedCode.Option.STATIC) && i != 0)
+						compositeCode.add(null);
+					
+					else switch(bf.getType())
+					{
+						case DMTX:
+							String strCode = code.get(i);
+							compositeCode.add(strCode);
+							break;
+						case ASCII_TEXT:
+							String strText = "AAA|123"; 
+//							String strText = getText(bf);
+							
+							compositeCode.add(strText);
+							break;
+						case BITMAP_LOGO:
+							int[] bmp = new int[] {0xFF,0x81,0x81,0x81,0x81,0x81,0x81,0xFF,0x00};
+//							int[] bmp = getBitmapLogo(bf);
+							compositeCode.add(bmp);
+							break;						
+					}
+					
 				}
+
 				ExtendedCode xcode = extendedCodeFactory.create(compositeCode);
 				codes.add(xcode);
 			}
