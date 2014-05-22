@@ -91,7 +91,7 @@ public class EncoderNoEncryptionSimulator extends AbstractEncoder {
 						compositeCode.add(strText);
 						break;
 					case BITMAP_LOGO:
-						int[] bmp = getBitmapLogo(bf);
+						long[] bmp = getBitmapLogo(bf);
 						compositeCode.add(bmp);
 						break;						
 				}
@@ -103,8 +103,8 @@ public class EncoderNoEncryptionSimulator extends AbstractEncoder {
 		}
 	}
 
-	private int[] getBitmapLogo(BlockFactory bf) {
-		int bmp[] = new int[] {0xFF,0x81,0x81,0x81,0x81,0x81,0x81,0xFF,0x00};
+	private long[] getBitmapLogo(BlockFactory bf) {
+		long[] bmp = new long[] {0xFF,0x81,0x81,0x81,0x81,0x81,0x81,0xFF,0x00};
 		int height = ((BitmapBlockFactory)bf).getHeight();
 		for(int i=0; i<bmp.length-1;i++)
 			bmp[i] |= ((this.sequence-1) >> i) & 0xFF;
