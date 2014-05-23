@@ -9,6 +9,7 @@ package com.sicpa.standard.sasscl.sicpadata.generator.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import junit.framework.Assert;
 
@@ -87,15 +88,13 @@ public class EncoderNoEncryptionSimulator extends AbstractEncoder {
 						break;
 					case ASCII_TEXT:
 						String strText = getText(bf);
-						
 						compositeCode.add(strText);
 						break;
 					case BITMAP_LOGO:
 						long[] bmp = getBitmapLogo(bf);
 						compositeCode.add(bmp);
 						break;						
-				}
-				
+				}				
 			}
 			ExtendedCode xcode = extendedCodeFactory.create(compositeCode);
 
@@ -104,23 +103,37 @@ public class EncoderNoEncryptionSimulator extends AbstractEncoder {
 	}
 
 	private long[] getBitmapLogo(BlockFactory bf) {
-		long[] bmp = new long[] {0xFF,0x81,0x81,0x81,0x81,0x81,0x81,0xFF,0x00};
+		long[] bmp = new long[5];
+		
 		int height = ((BitmapBlockFactory)bf).getHeight();
-		for(int i=0; i<bmp.length-1;i++)
-			bmp[i] |= ((this.sequence-1) >> i) & 0xFF;
+		
+		long mask = (((long)-1) & ~Long.highestOneBit(-1) >> (64-height-1));
+		long vert = Long.highestOneBit(mask) | 1;
+		bmp[0] = mask;
+		bmp[1] = vert;
+		bmp[2] = vert | ((mask >> height/4) & (mask << height/4));
+		bmp[3] = vert;		
+		bmp[4] = mask;
 		
 		return bmp;
 	}
 
 	private String getText(BlockFactory bf) {
-		String text = String.valueOf(this.sequence-1);
-		while(text.length() < 6)
-			text = "0" + text;
+		final int LEN = ((TextBlockFactory)bf).getLength();
+		String _text = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"; //abcdefghijklmnopqrstuvwxyz
 		
-		if(bf.getOptions().contains(Option.TWO_LINES) && !text.contains("|"))
-			text = text.substring(0, text.length()/2) + "|" + text.substring(text.length()/2, text.length());
+		Random rand = new Random();
+		String sr = "";
+		while (sr.length() < LEN)
+		{
+			int _at = Math.abs(rand.nextInt())% (_text.length() - 1);
+			sr = sr + _text.substring(_at,_at+1);
+		}   					
+
+		if(bf.getOptions().contains(Option.TWO_LINES) && !sr.contains("|"))
+			sr = sr.substring(0, sr.length()/2) + "|" + sr.substring(sr.length()/2, sr.length());
 					
-		return text;
+		return sr;
 	}
 
 	public long getNumberOfAvailableEncryptedCode() {
