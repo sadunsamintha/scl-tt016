@@ -61,6 +61,25 @@ public abstract class AbstractHardwareControllerState implements IHardwareContro
 			startDevice(plc);
 		}
 	}
+	
+
+
+	protected void runPlc() {
+		if (plc.isConnected()) {
+			logger.debug("Running plc");
+			TaskExecutor.execute(new Runnable() {
+				@Override
+				public void run() {
+					try {
+						plc.doRun();
+					} catch (DeviceException e) {
+						logger.error("", e);
+						EventBusService.post(new MessageEvent(MessageEventKey.DevicesController.FAILED_TO_START_DEVICE));
+					}
+				}
+			});
+		}
+	}
 
 	protected void stopDevices() {
 		// stop the plc first and directly in this thread

@@ -163,6 +163,18 @@ public class PlcAdaptor extends AbstractPlcAdaptor implements IPlcControllerList
 
 		fireDeviceStatusChanged(DeviceStatus.STARTED);
 	}
+	
+	@Override
+	public void doRun() throws PlcAdaptorException {
+
+		if (!isConnected()) {
+			throw new PlcAdaptorException("PLC is not connected");
+		}
+
+		executeRequest(PlcRequest.RUN);
+
+		fireDeviceStatusChanged(DeviceStatus.STARTED);
+	}
 
 	/**
 	 * send stop request

@@ -14,9 +14,10 @@ public class PlcRequest implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	public final static PlcRequest START = new PlcRequest(1, "start");
-	public final static PlcRequest STOP = new PlcRequest(2, "stop");
-	public final static PlcRequest RELOAD_PLC_PARAM = new PlcRequest(3, "reload PLC parameters");
-	public final static PlcRequest SEND_JAVA_WARNING_ERROR = new PlcRequest(4, "send java warning and error");      
+	public final static PlcRequest RUN = new PlcRequest(2, "run");
+	public final static PlcRequest STOP = new PlcRequest(3, "stop");
+	public final static PlcRequest RELOAD_PLC_PARAM = new PlcRequest(4, "reload PLC parameters");
+	public final static PlcRequest SEND_JAVA_WARNING_ERROR = new PlcRequest(5, "send java warning and error");      
 	
 	protected final int id;
 

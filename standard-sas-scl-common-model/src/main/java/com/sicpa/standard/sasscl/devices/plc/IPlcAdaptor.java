@@ -12,6 +12,8 @@ public interface IPlcAdaptor extends IStartableDevice {
 	 */
 	@Override
 	void start() throws PlcAdaptorException;
+	
+	void doRun() throws PlcAdaptorException;
 
 	/**
 	 * send stop request

@@ -78,6 +78,12 @@
 		<property name="plcActions">
 			<array>
 				<ref bean="startAction" />
+			</array>
+		</property>
+	</bean>
+	<bean id="runPlcRequest" class="com.sicpa.standard.sasscl.devices.plc.DefaultPlcRequestExecutor">
+		<property name="plcActions">
+			<array>
 				<ref bean="runAction" />
 			</array>
 		</property>
@@ -108,6 +114,12 @@
 				<util:constant static-field="com.sicpa.standard.sasscl.devices.plc.PlcRequest.START" />
 			</key>
 			<ref bean="startPlcRequest" />
+		</entry>
+		<entry>
+			<key>
+				<util:constant static-field="com.sicpa.standard.sasscl.devices.plc.PlcRequest.RUN" />
+			</key>
+			<ref bean="runPlcRequest" />
 		</entry>
 		<entry>
 			<key>
