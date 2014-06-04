@@ -98,20 +98,34 @@ public class StdCryptoEncoderWrapper extends AbstractEncoder {
 				throw new EncoderEmptyException();
 			}
 			
-			Object[] dummy = new Object[]{cryptoFieldsConfig.getFields(this)};
+			Object[] 					dummy = new Object[]{cryptoFieldsConfig.getFields(this)};
+			
+			final List<ExtendedCode> 	codes = new ArrayList<ExtendedCode>();
+			List<BlockFactory> 			lbf = extendedCodeFactory.getBlockFactories();
+			// Encoder generates a list of composite code. Each composite code is a list of Object
+			// each one corresponding to the block type of the extended code.
+			// TODO
+			//List<List<Object>> listOfCompositeCode = encoder.generate((int) numberCodesToGenerate, dummy, lbf);
+			// When the above is working the following code will work
+			//
+			//for (int i = 0; i < code.size(); i++) {
+			//	ExtendedCode xcode = extendedCodeFactory.create(compositeCode);
+			//	codes.add(xcode);
+			//}
+			//return codes;
+			//
+			
+			// For now we use encoder to generate the code for the datamatrix and static text + bitmap
 			List<String> code = encoder.generate((int) numberCodesToGenerate, dummy);
 			
-			
-			final List<ExtendedCode> codes = new ArrayList<ExtendedCode>();
-
 			for (int i = 0; i < code.size(); i++) {
 				
 				List<Object> compositeCode = new ArrayList<Object>();
 				
-				int numBlock = extendedCodeFactory.getBlockFactories().size();
+				int numBlock = lbf.size();
 				for(int j=0; j<numBlock; j++)
 				{
-					BlockFactory bf = extendedCodeFactory.getBlockFactories().get(j);
+					BlockFactory bf = lbf.get(j);
 					if(bf.getOptions().contains(ExtendedCode.Option.STATIC) && i != 0)
 						compositeCode.add(null);
 					
@@ -128,7 +142,7 @@ public class StdCryptoEncoderWrapper extends AbstractEncoder {
 							compositeCode.add(strText);
 							break;
 						case BITMAP_LOGO:
-							int[] bmp = new int[] {0xFF,0x81,0x81,0x81,0x81,0x81,0x81,0xFF,0x00};
+							long[] bmp = new long[] {0xFF,0x81,0x81,0x81,0x81,0x81,0x81,0xFF,0x00};
 //							int[] bmp = getBitmapLogo(bf);
 							compositeCode.add(bmp);
 							break;						
@@ -139,15 +153,14 @@ public class StdCryptoEncoderWrapper extends AbstractEncoder {
 				ExtendedCode xcode = extendedCodeFactory.create(compositeCode);
 				codes.add(xcode);
 			}
-
-
 			return codes;
+			// cut above up to here
 
 		} catch (GeneratorCapacityException e) {
 			throw new EncoderEmptyException("", e);
 		} catch (SicpadataException e) {
-			logger.error("Failed to generate code.", e);
-			throw new CryptographyException(e, "Failed to generate encrypted code");
+			logger.error("Failed to generate extended code.", e);
+			throw new CryptographyException(e, "Failed to generate extended code");
 		}
 	}
 
