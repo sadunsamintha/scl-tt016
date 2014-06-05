@@ -70,15 +70,27 @@
 							</barcodes>
 						</value>
 					</SKUNode>
-					<SKUNode text="SKU #6" fileImage="config/images/skux.png">
+					<SKUNode text="DUTY FREE" fileImage="config/images/skux.png">
 						<children />
 						<value class="com.sicpa.standard.sasscl.model.SKU" id="6"
-							description="SKU #6">
+							description="DUTY FREE">
 							<customProperties />
 							<!-- Extended code ID starts at 100 -->
 							<codeType id="100" />
 							<barcodes>
 								<string>0006</string>
+							</barcodes>
+						</value>
+					</SKUNode>
+					<SKUNode text="DUTY PAID" fileImage="config/images/skux.png">
+						<children />
+						<value class="com.sicpa.standard.sasscl.model.SKU" id="7"
+							description="DUTY PAID">
+							<customProperties />
+							<!-- Extended code ID starts at 100 -->
+							<codeType id="101" />
+							<barcodes>
+								<string>0007</string>
 							</barcodes>
 						</value>
 					</SKUNode>
