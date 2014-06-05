@@ -7,20 +7,12 @@
  */
 package com.sicpa.standard.sasscl.sicpadata.generator.impl;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 import junit.framework.Assert;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.sicpa.standard.printer.xcode.BitmapBlockFactory;
@@ -28,10 +20,9 @@ import com.sicpa.standard.printer.xcode.BlockFactory;
 import com.sicpa.standard.printer.xcode.ExtendedCode;
 import com.sicpa.standard.printer.xcode.ExtendedCode.Option;
 import com.sicpa.standard.printer.xcode.ExtendedCodeFactory;
+import com.sicpa.standard.printer.xcode.ExtendedCodeFileFactory;
 import com.sicpa.standard.printer.xcode.TextBlockFactory;
 import com.sicpa.standard.sasscl.model.CodeType;
-import com.sicpa.standard.sasscl.model.custom.CustomProperty;
-import com.sicpa.standard.sasscl.model.custom.StringCustomProperty;
 import com.sicpa.standard.sasscl.sicpadata.CryptographyException;
 import com.sicpa.standard.sasscl.sicpadata.generator.AbstractEncoder;
 import com.sicpa.standard.sasscl.sicpadata.generator.EncoderEmptyException;
@@ -49,9 +40,6 @@ public class EncoderNoEncryptionSimulator extends AbstractEncoder {
 	protected long sequence;
 	
 	private ExtendedCodeFactory extendedCodeFactory;
-//	private BufferedReader 		extendedCodeFileBuffer = null;
-//	private String 				extendedCodeFileNamePrefix = null;
-//	private int					extendedCodeFileNameIndex = 0;
 
 
 	public EncoderNoEncryptionSimulator(final long batchid,int id, final int min, final int max, int year, long subsystemId, int codeTypeId) {
@@ -62,49 +50,15 @@ public class EncoderNoEncryptionSimulator extends AbstractEncoder {
 		if(codeTypeId >= CodeType.ExtendedCodeId){
 			ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("extended-code.xml");
 			
-			this.extendedCodeFactory = (ExtendedCodeFactory)ctx.getBean(String.valueOf(codeTypeId));
+			this.extendedCodeFactory = (ExtendedCodeFactory) ctx.getBean(String.valueOf(codeTypeId));
 			Assert.assertNotNull(extendedCodeFactory);
 			ctx.close();
-//			if(!extendedCodeFactory.getExtendedCodeFileNamePrefix().isEmpty()){
-//				extendedCodeFileNamePrefix = extendedCodeFactory.getExtendedCodeFileNamePrefix();
-//				if(!openNextExtendedCodeFile())
-//					System.out.printf("Cannot open extended code file starting with: "+extendedCodeFileNamePrefix);
-//			}
-				
+			if(extendedCodeFactory.isFileFactory()){
+				((ExtendedCodeFileFactory)extendedCodeFactory).setRewindAllowed(true);
+			}
 		}
 	}
 
-//	private boolean openNextExtendedCodeFile()
-//	{
-//		if(extendedCodeFileNamePrefix != null)
-//		{
-//			try {
-//				if(extendedCodeFileBuffer != null)
-//					extendedCodeFileBuffer.close();
-//				extendedCodeFileBuffer = new BufferedReader(new FileReader(extendedCodeFileNamePrefix + extendedCodeFileNameIndex));
-//			} catch (FileNotFoundException e) {
-//				try {
-//					if(extendedCodeFileNameIndex == 0)
-//					{
-//						throw new FileNotFoundException("File not found: " + extendedCodeFileNamePrefix + extendedCodeFileNameIndex);
-//					}
-//					extendedCodeFileNameIndex = 0;
-//					extendedCodeFileBuffer = new BufferedReader(new FileReader(extendedCodeFileNamePrefix + extendedCodeFileNameIndex));
-//				} catch (FileNotFoundException e1) {
-//					e1.printStackTrace();
-//					extendedCodeFileBuffer = null;
-//					return false;
-//				}
-//				extendedCodeFileNameIndex++;
-//				return true;
-//			} catch (IOException e) {
-//				e.printStackTrace();
-//				return false;
-//			}
-//		}
-//		extendedCodeFileNameIndex++;
-//		return true;
-//	}
 	public EncoderNoEncryptionSimulator(final long batchid,int id, final int min, final int max, int year, int codeTypeId) {
 		this(batchid,id, min, max, year, 0, codeTypeId);
 	}
@@ -118,12 +72,17 @@ public class EncoderNoEncryptionSimulator extends AbstractEncoder {
 			return String.valueOf(this.sequence++);
 		}
 	}
+
 	@Override
 	public ExtendedCode getExtendedCode() throws CryptographyException {
 		
-//		if(extendedCodeFileBuffer != null)
-//			return getExtendedCodeFromFile();
-		
+		if(extendedCodeFactory.isFileFactory()){
+			ExtendedCode xCode = ((ExtendedCodeFileFactory)extendedCodeFactory).getNext();
+			if(xCode == null)
+				throw new EncoderEmptyException();
+			return xCode;
+		}
+			
 		if (this.sequence > this.max) {
 			throw new EncoderEmptyException();
 		} else {
@@ -156,37 +115,6 @@ public class EncoderNoEncryptionSimulator extends AbstractEncoder {
 		}
 	}
 
-//	private ExtendedCode getExtendedCodeFromFile() throws EncoderEmptyException {
-//		List<Object> compositeCode = new ArrayList<Object>();
-//
-//		String xLine = "";
-//		try {
-//			xLine = extendedCodeFileBuffer.readLine();
-//		} catch (IOException e) {
-//			openNextExtendedCodeFile();
-//			try {
-//				xLine = extendedCodeFileBuffer.readLine();
-//			} catch (IOException e1) {
-//				throw new EncoderEmptyException();				
-//			}
-//		}
-//		int numBlock = extendedCodeFactory.getBlockFactories().size();
-//		
-//		String[] list = StringUtils.split(xLine, "/");
-//		
-//		if(list.length != numBlock){
-//			System.out.printf("Extended code file: Wrong number of field expected %d found %d", numBlock, list.length);
-//			throw new EncoderEmptyException();				
-//		}
-//		
-//		for(int i=0; i<numBlock; i++)
-//		{
-//			compositeCode.add(list[i]);
-//		}
-//		ExtendedCode xcode = extendedCodeFactory.create(compositeCode);
-//
-//		return xcode;
-//	}
 
 	private long[] getBitmapLogo(BlockFactory bf) {
 		long[] bmp = new long[5];
