@@ -15,7 +15,7 @@
 	<mImageRetrievalType>TIMER_TASK</mImageRetrievalType>
 	<mLoadJob>false</mLoadJob>
 <!-- TODO Create new job for Cognex camera for extended code -->
-	<mJobFileName>dummyjobUpdated1.job</mJobFileName>
+	<mJobFileName>MY_RENEW_PILOT.job</mJobFileName>
 	<mNoCodeReceivedIteration>1000</mNoCodeReceivedIteration>
 	<mImagePollingInterval>1000</mImagePollingInterval>
 	<mSaveImage>false</mSaveImage>
