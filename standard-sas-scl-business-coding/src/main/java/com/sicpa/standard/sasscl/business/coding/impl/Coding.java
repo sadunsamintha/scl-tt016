@@ -72,7 +72,8 @@ public class Coding implements ICoding {
 
 	@Subscribe
 	public void requestCodes(final RequestCodesEvent evt) {
-		logger.debug("Request codes to print: {}", (int) evt.getNumberCodes());
+		logger.debug("Request codes to print: {} for codeType {}", (int) evt.getNumberCodes(), 
+				productionParameters.getSku().getCodeType().getId());
 		if(productionParameters.getSku().getCodeType().getId() >= CodeType.ExtendedCodeId)
 			askExtendedCodes((int) evt.getNumberCodes(), evt.getTarget());
 		else
