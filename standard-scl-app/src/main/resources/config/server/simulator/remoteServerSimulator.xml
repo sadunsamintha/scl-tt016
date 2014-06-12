@@ -59,12 +59,12 @@
 							</barcodes>
 						</value>
 					</SKUNode>
-					<SKUNode text="SKU #5" fileImage="config/images/sku1.png">
+					<SKUNode text="MY_DUTY_PAID_ALT" fileImage="config/images/skux.png">
 						<children />
 						<value class="com.sicpa.standard.sasscl.model.SKU" id="5"
-							description="SKU #5">
+							description="MY_DUTY_PAID_ALT">
 							<customProperties />
-							<codeType id="5" />
+							<codeType id="111" />
 							<barcodes>
 								<string>0005</string>
 							</barcodes>
