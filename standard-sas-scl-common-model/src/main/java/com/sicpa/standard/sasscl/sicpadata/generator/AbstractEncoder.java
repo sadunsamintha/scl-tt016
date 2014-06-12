@@ -95,7 +95,7 @@ public abstract class AbstractEncoder implements IEncoder {
 					return codes;
 				}
 			} catch (Exception e) {
-				logger.error("fail to get code from the encoder:" + id, e);
+				logger.error("fail to get extended code from the encoder:" + id, e);
 				EventBusService.post(new MessageEvent(MessageEventKey.Coding.ERROR_GETTING_EXTENDED_CODES_FROM_ENCODER));
 				break;
 			}
