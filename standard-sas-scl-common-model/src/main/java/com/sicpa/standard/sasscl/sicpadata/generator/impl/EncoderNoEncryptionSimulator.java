@@ -15,6 +15,7 @@ import junit.framework.Assert;
 
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import com.sicpa.standard.common.log.StdLogger;
 import com.sicpa.standard.printer.xcode.BitmapBlockFactory;
 import com.sicpa.standard.printer.xcode.BlockFactory;
 import com.sicpa.standard.printer.xcode.ExtendedCode;
@@ -35,6 +36,9 @@ public class EncoderNoEncryptionSimulator extends AbstractEncoder {
 
 	private static final long serialVersionUID = 1L;
 
+	private static final StdLogger LOGGER = StdLogger.getLogger(EncoderNoEncryptionSimulator.class);
+	
+
 	protected int max;
 
 	protected long sequence;
@@ -49,13 +53,17 @@ public class EncoderNoEncryptionSimulator extends AbstractEncoder {
 		
 		if(codeTypeId >= CodeType.ExtendedCodeId){
 			ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("extended-code.xml");
-			
+
 			this.extendedCodeFactory = (ExtendedCodeFactory) ctx.getBean(String.valueOf(codeTypeId));
+			if(extendedCodeFactory == null)
+				LOGGER.error("********************EncoderNoEncryptionSimulator: cannot load bean:  {}", codeTypeId);
+
 			Assert.assertNotNull(extendedCodeFactory);
 			ctx.close();
 			if(extendedCodeFactory.isFileFactory()){
 				((ExtendedCodeFileFactory)extendedCodeFactory).setRewindAllowed(true);
 			}
+			LOGGER.info("********************EncoderNoEncryptionSimulator: bean:  {} loaded from extended-code.xml", codeTypeId);
 		}
 	}
 
@@ -76,10 +84,13 @@ public class EncoderNoEncryptionSimulator extends AbstractEncoder {
 	@Override
 	public ExtendedCode getExtendedCode() throws CryptographyException {
 		
+//		LOGGER.info("******************** getExtendedCode");
+
 		if(extendedCodeFactory.isFileFactory()){
 			ExtendedCode xCode = ((ExtendedCodeFileFactory)extendedCodeFactory).getNext();
 			if(xCode == null)
 				throw new EncoderEmptyException();
+//			LOGGER.info("******************** got ExtendedCode from file: {}", (String)(xCode.getBlock(0).getData()));
 			return xCode;
 		}
 			
