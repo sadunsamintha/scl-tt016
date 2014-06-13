@@ -2,7 +2,7 @@
 	<mId>2</mId>
 	<mDriverName>CognexCameraDriver</mDriverName>
 	<mPort>3000</mPort>
-	<mIp>192.168.1.21</mIp>
+	<mIp>192.168.1.2</mIp>
 	<mConnectionTimeout>2000</mConnectionTimeout>
 	<mLifeCheckInterval>1000</mLifeCheckInterval>
 	<mTelnetPort>23</mTelnetPort>
@@ -15,12 +15,12 @@
 	<mImageRetrievalType>TIMER_TASK</mImageRetrievalType>
 	<mLoadJob>false</mLoadJob>
 <!-- TODO Create new job for Cognex camera for extended code -->
-	<mJobFileName>MY_RENEW_PILOT.job</mJobFileName>
+	<mJobFileName>MY_V102.job</mJobFileName>
 	<mNoCodeReceivedIteration>1000</mNoCodeReceivedIteration>
 	<mImagePollingInterval>1000</mImagePollingInterval>
 	<mSaveImage>false</mSaveImage>
 	<mImageRepositoryPath>c:\</mImageRepositoryPath>
 	<mNumberOfImageToKeep>0</mNumberOfImageToKeep>
 	<mSaveImageType>ALL</mSaveImageType>
-	<mCameraParserClass>com.sicpa.standard.camera.parser.CameraCodeParser</mCameraParserClass>
+	<mCameraParserClass>com.sicpa.standard.camera.parser.CameraExtendedCodeParser</mCameraParserClass>
 </com.sicpa.standard.camera.controller.model.CameraModel>
