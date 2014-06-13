@@ -12,6 +12,8 @@ public class AcceptAllAuthenticator implements IAuthenticator {
 
 	protected transient ProductionParameters productionParameters;
 
+    protected long counter = 0;
+
 	public AcceptAllAuthenticator() {
 	}
 
@@ -22,7 +24,11 @@ public class AcceptAllAuthenticator implements IAuthenticator {
 		res.setCodeType(productionParameters.getSku().getCodeType());
 		res.setBatchId(-1);
 		res.setAuthenticated(true);
-		res.setSequence(Long.parseLong(encryptedCode.trim()));
+        try {
+            res.setSequence(Long.parseLong(encryptedCode.trim()));
+        } catch (Exception e) {
+            res.setSequence(counter++);
+        }
 
 		return res;
 	}
