@@ -1,15 +1,5 @@
 package com.sicpa.standard.sasscl.view.selection.display;
 
-import java.awt.Image;
-
-import javax.swing.ImageIcon;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JSeparator;
-
-import net.miginfocom.swing.MigLayout;
-
 import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.view.mvc.AbstractView;
 import com.sicpa.standard.common.util.Messages;
@@ -20,6 +10,10 @@ import com.sicpa.standard.sasscl.model.ProductionMode;
 import com.sicpa.standard.sasscl.model.ProductionParameters;
 import com.sicpa.standard.sasscl.model.SKU;
 import com.sicpa.standard.sasscl.view.LanguageSwitchEvent;
+import net.miginfocom.swing.MigLayout;
+
+import javax.swing.*;
+import java.awt.*;
 
 @SuppressWarnings("serial")
 public class SelectionDisplayView extends AbstractView<ISelectionDisplayViewListener, SelectionDisplayModel> {
@@ -74,13 +68,13 @@ public class SelectionDisplayView extends AbstractView<ISelectionDisplayViewList
 		}
 
 		if (codeType != null) {
-			getMainPanel().add(new MultiLineLabel(codeType.getDescription()), "grow, w 200, h 45 , spanx");
+			getMainPanel().add(new MultiLineLabel(Messages.get(codeType.getDescription())), "grow, w 200, h 45 , spanx");
 		}
 		if (sku != null) {
 			if (sku.getImage() != null) {
 				getMainPanel().add(toScaledImage(sku.getImage().getImage()), "grow,wrap");
 			}
-			getMainPanel().add(new MultiLineLabel(sku.getDescription()), "grow, w 200, h 135 , spanx");
+			getMainPanel().add(new MultiLineLabel(Messages.get(sku.getDescription())), "grow, w 200, h 135 , spanx");
 		}
 
 		if (barcode != null) {
