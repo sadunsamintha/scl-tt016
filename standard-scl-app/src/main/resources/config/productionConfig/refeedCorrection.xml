@@ -1,4 +1,4 @@
-<ProductionConfig activationBehavior="refeedActivationBehavior" authenticatorMode="SCL_EXPORT">
+<ProductionConfig activationBehavior="refeedActivationBehavior" authenticatorMode="SCL">
 
     <CameraConfig deviceType="COGNEX" id="qc_scl_1"/>
     <CameraConfig deviceType="COGNEX" id="qc_scl_2"/>
