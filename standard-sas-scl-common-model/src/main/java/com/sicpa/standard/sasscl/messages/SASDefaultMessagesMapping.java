@@ -1,33 +1,12 @@
 package com.sicpa.standard.sasscl.messages;
 
-import static com.sicpa.standard.sasscl.messages.ActionMessageType.ERROR;
-import static com.sicpa.standard.sasscl.messages.ActionMessageType.ERROR_DEVICE;
-import static com.sicpa.standard.sasscl.messages.ActionMessageType.ERROR_DISPLAY;
-import static com.sicpa.standard.sasscl.messages.ActionMessageType.IGNORE;
-import static com.sicpa.standard.sasscl.messages.ActionMessageType.WARNING;
+import com.sicpa.standard.client.common.messages.IMessageCodeMapper;
+import com.sicpa.standard.sasscl.messages.MessageEventKey.*;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import com.sicpa.standard.client.common.messages.IMessageCodeMapper;
-import com.sicpa.standard.sasscl.messages.MessageEventKey.Activation;
-import com.sicpa.standard.sasscl.messages.MessageEventKey.Alert;
-import com.sicpa.standard.sasscl.messages.MessageEventKey.BIS;
-import com.sicpa.standard.sasscl.messages.MessageEventKey.BRS;
-import com.sicpa.standard.sasscl.messages.MessageEventKey.Camera;
-import com.sicpa.standard.sasscl.messages.MessageEventKey.Coding;
-import com.sicpa.standard.sasscl.messages.MessageEventKey.DevicesController;
-import com.sicpa.standard.sasscl.messages.MessageEventKey.FlowControl;
-import com.sicpa.standard.sasscl.messages.MessageEventKey.ModelEditing;
-import com.sicpa.standard.sasscl.messages.MessageEventKey.PLC;
-import com.sicpa.standard.sasscl.messages.MessageEventKey.Printer;
-import com.sicpa.standard.sasscl.messages.MessageEventKey.Production;
-import com.sicpa.standard.sasscl.messages.MessageEventKey.ProductionParameters;
-import com.sicpa.standard.sasscl.messages.MessageEventKey.RemoteServer;
-import com.sicpa.standard.sasscl.messages.MessageEventKey.Simulator;
-import com.sicpa.standard.sasscl.messages.MessageEventKey.SkuCheck;
-import com.sicpa.standard.sasscl.messages.MessageEventKey.Storage;
-import com.sicpa.standard.sasscl.messages.MessageEventKey.Validator;
+import static com.sicpa.standard.sasscl.messages.ActionMessageType.*;
 
 public class SASDefaultMessagesMapping implements IMessageCodeMapper {
 	
@@ -236,8 +215,27 @@ public class SASDefaultMessagesMapping implements IMessageCodeMapper {
 		addEntry(Printer.WATCHDOG_RESET, "[PR_16]", ERROR_DEVICE);
 		addEntry(Printer.NOT_READY_TO_PRINT, "[PR_17]", ERROR_DEVICE);
 		addEntry(Printer.BLANK_MESSAGE, "[PR_18]", WARNING);
+        addEntry(Printer.MAKE_UP_EMPTY, "[PR_19]", WARNING);
+        addEntry(Printer.STROKE_RATE_TOO_FAST, "[PR_20]", WARNING);
+        addEntry(Printer.INVALID_CONTROL_CHARACTER, "[PR_21]", WARNING);
+        addEntry(Printer.MESSAGE_LONGER_THAN_APERTURE, "[PR_22]", WARNING);
+        addEntry(Printer.PRINT_RATE_TOO_FAST, "[PR_23]", WARNING);
+        addEntry(Printer.INVALID_LOGO, "[PR_24]", WARNING);
+        addEntry(Printer.MESSAGE_NUMBER_NOT_IN_SEQUENCE, "[PR_25]", WARNING);
+        addEntry(Printer.MESSAGE_CHECKSUM_INCORRECT, "[PR_26]", WARNING);
+        addEntry(Printer.READY_TO_PRINT, "[PR_27]", WARNING);
+        addEntry(Printer.NO_FAULT, "[PR_28]", WARNING);
+        //Leibinger messages
+        addEntry(Printer.PHASING_ERROR, "[PR_29]", WARNING);
+        addEntry(Printer.SOLVENT_TANK_LOW, "[PR_30]", WARNING);
+        addEntry(Printer.MAILING_BUFFER_FULL, "[PR_31]", WARNING);
+        addEntry(Printer.HEAD_COVER_OPEN, "[PR_32]", WARNING);
+        addEntry(Printer.INK_FLOW_SENSOR, "[PR_33]", WARNING);
+        addEntry(Printer.NOZZLE_ALREADY_OPEN, "[PR_34]", WARNING);
+        addEntry(Printer.INTERNAL_COMM_ERROR, "[PR_35]", WARNING);
 
-		addEntry(Coding.ERROR_NO_ENCODERS_IN_STORAGE, "[COD_01]", ERROR);
+
+        addEntry(Coding.ERROR_NO_ENCODERS_IN_STORAGE, "[COD_01]", ERROR);
 		addEntry(Coding.ERROR_GETTING_CODES_FROM_ENCODER, "[COD_02]", ERROR);
 		addEntry(Coding.INVALID_ENCODER, "[COD_03]", ERROR);
 		addEntry(Coding.FAILED_TO_PROVIDE_CODES, "[COD_04]", ERROR);

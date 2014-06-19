@@ -1,12 +1,5 @@
 package com.sicpa.standard.sasscl.controller.message;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.messages.MessageEvent;
@@ -14,6 +7,12 @@ import com.sicpa.standard.client.common.messages.MessagesUtils;
 import com.sicpa.standard.sasscl.messages.ActionEvent;
 import com.sicpa.standard.sasscl.messages.ActionMessageType;
 import com.sicpa.standard.sasscl.messages.SASDefaultMessagesMapping;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * responsible to received <code>MessageEvent</code> convert it to a more specific event and post it in the event bus
@@ -77,7 +76,7 @@ public class MessagesHandler {
 	 */
 	private ActionMessageType getType(String key) {
 		
-		String[] keySplit = StringUtils.split(key, ".",2);
+		String[] keySplit = StringUtils.split(key, ".", 3);
 		
 		ActionMessageType type = messagesMapping.getMessageType(key);
 
@@ -88,7 +87,7 @@ public class MessagesHandler {
 			} catch (Exception e) {
 			}
 			
-			if (type == null || keySplit.length != 2) {
+			if (type == null || keySplit.length != 3) {
 				return null;
 			}
 			
