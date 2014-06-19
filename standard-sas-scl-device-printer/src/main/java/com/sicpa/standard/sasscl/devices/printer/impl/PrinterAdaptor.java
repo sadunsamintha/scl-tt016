@@ -1,12 +1,5 @@
 package com.sicpa.standard.sasscl.devices.printer.impl;
 
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.messages.MessageEvent;
@@ -33,6 +26,8 @@ import com.sicpa.standard.sasscl.messages.ActionMessageType;
 import com.sicpa.standard.sasscl.monitoring.MonitoringService;
 import com.sicpa.standard.sasscl.monitoring.system.SystemEventType;
 import com.sicpa.standard.sasscl.monitoring.system.event.BasicSystemEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Handles the communication with the <code>Standard Printer</code> component.
@@ -154,13 +149,13 @@ public class PrinterAdaptor extends AbstractPrinterAdaptor implements IPrinterCo
 
 		} else if (status.isConnected()) {
 			// if connected and the sequence is not ready
-			fireMessage(PrinterMessageId.NOT_READY_TO_PRINT.getKey(), args.name());
+			fireMessage(PrinterMessageId.NOT_READY_TO_PRINT, args.name());
 		}
 		lastSequence = args;
 	}
 
 	private void fireIssueSolved(PrinterMessageId printerMessageId) {
-		fireIssueSolved(printerMessageId.getKey());
+		fireIssueSolved(printerMessageId);
 	}
 
 //	@Override
@@ -278,6 +273,7 @@ public class PrinterAdaptor extends AbstractPrinterAdaptor implements IPrinterCo
 		for  (PrinterMessage msg : messages) {
 			
 			String[] keySplit = StringUtils.split(msg.getKey(), '.');
+            msg.setSource(this);
 			
 			// for the moment a specific case for the PrinterMessage
 			if (keySplit.length == 3 && keySplit[0].equals(ActionMessageType.MONITORING.name())) {

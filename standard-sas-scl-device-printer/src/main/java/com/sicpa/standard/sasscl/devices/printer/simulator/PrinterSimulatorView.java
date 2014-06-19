@@ -1,17 +1,5 @@
 package com.sicpa.standard.sasscl.devices.printer.simulator;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.Enumeration;
-
-import javax.swing.AbstractButton;
-import javax.swing.ButtonGroup;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.Timer;
-
 import com.sicpa.standard.printer.controller.model.FaultStatus;
 import com.sicpa.standard.printer.controller.model.PrinterBufferStatus;
 import com.sicpa.standard.printer.controller.model.SequenceStatus;
@@ -19,6 +7,11 @@ import com.sicpa.standard.printer.controller.model.command.PrinterMessage;
 import com.sicpa.standard.printer.controller.model.command.PrinterMessageId;
 import com.sicpa.standard.printer.driver.event.PrinterBufferStatusChangedEventArgs;
 import com.sicpa.standard.sasscl.devices.simulator.gui.AbstractSimulatorView;
+
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Enumeration;
 
 public class PrinterSimulatorView extends AbstractSimulatorView {
 
@@ -206,7 +199,7 @@ public class PrinterSimulatorView extends AbstractSimulatorView {
 	}
 
 	protected void buttonSendFaultActionPerformed() {
-		this.simulator.messageReceived(new PrinterMessage(PrinterMessageId.CHARGE_FAULT.getKey()));
+		this.simulator.messageReceived(new PrinterMessage(PrinterMessageId.CHARGE_FAULT));
 	}
 
 	public JButton getButtonNeedCodes() {
