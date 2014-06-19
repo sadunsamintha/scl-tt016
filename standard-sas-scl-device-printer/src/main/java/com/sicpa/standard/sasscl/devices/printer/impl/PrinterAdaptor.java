@@ -26,8 +26,12 @@ import com.sicpa.standard.sasscl.messages.ActionMessageType;
 import com.sicpa.standard.sasscl.monitoring.MonitoringService;
 import com.sicpa.standard.sasscl.monitoring.system.SystemEventType;
 import com.sicpa.standard.sasscl.monitoring.system.event.BasicSystemEvent;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * Handles the communication with the <code>Standard Printer</code> component.
@@ -44,10 +48,10 @@ public class PrinterAdaptor extends AbstractPrinterAdaptor implements IPrinterCo
 	
 	protected SequenceStatus lastSequence = SequenceStatus.UNKNOWN;
 
-//	public PrinterAdaptor(final IPrinterController controller) {
-//		this.controller = controller;
-//		this.controller.setListener(this);
-//	}
+	public PrinterAdaptor(final IPrinterController controller) {
+		this.controller = controller;
+		this.controller.setListener(this);
+	}
 
 	public PrinterAdaptor() {
 		EventBusService.register(this);
@@ -59,9 +63,9 @@ public class PrinterAdaptor extends AbstractPrinterAdaptor implements IPrinterCo
 		this.controller = controller;
 	}
 
-//	protected IPrinterController getController() {
-//		return controller;
-//	}
+	protected IPrinterController getController() {
+		return controller;
+	}
 
 	@Override
 	protected void doConnect() throws PrinterAdaptorException {
