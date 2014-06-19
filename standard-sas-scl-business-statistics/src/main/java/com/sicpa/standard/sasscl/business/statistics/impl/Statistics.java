@@ -1,10 +1,5 @@
 package com.sicpa.standard.sasscl.business.statistics.impl;
 
-import java.util.Collection;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.utils.listener.CoalescentPeriodicListener;
@@ -23,6 +18,10 @@ import com.sicpa.standard.sasscl.model.statistics.StatisticsValues;
 import com.sicpa.standard.sasscl.monitoring.MonitoringService;
 import com.sicpa.standard.sasscl.monitoring.system.event.StatisticsSystemEvent;
 import com.sicpa.standard.sasscl.provider.impl.ProductionConfigProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Collection;
 
 /**
  * Statistics based on products created
@@ -59,7 +58,6 @@ public class Statistics implements IStatistics {
 	public synchronized void notifyNewProduct(final NewProductEvent evt) {
 		Product product = evt.getProduct();
 		if (product != null) {
-			logger.debug("Add new product");
 			if (isProductStatusHandled(product.getStatus())) {
 				handleNewProduct(product);
 			}

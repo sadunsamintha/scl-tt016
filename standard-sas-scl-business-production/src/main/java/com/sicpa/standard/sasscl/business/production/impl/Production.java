@@ -1,14 +1,5 @@
 package com.sicpa.standard.sasscl.business.production.impl;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.messages.MessageEvent;
@@ -27,6 +18,14 @@ import com.sicpa.standard.sasscl.model.SKU;
 import com.sicpa.standard.sasscl.monitoring.MonitoringService;
 import com.sicpa.standard.sasscl.monitoring.system.SystemEventType;
 import com.sicpa.standard.sasscl.monitoring.system.event.BasicSystemEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Production implements IProduction {
 
@@ -66,7 +65,6 @@ public class Production implements IProduction {
 	public void notifyNewProduct(final NewProductEvent evt) {
 		Product product = evt.getProduct();
 		if (product != null) {
-			logger.debug("Add new product");
 
 			product.setSubsystem(globalConfig.getSubsystemId());
 
