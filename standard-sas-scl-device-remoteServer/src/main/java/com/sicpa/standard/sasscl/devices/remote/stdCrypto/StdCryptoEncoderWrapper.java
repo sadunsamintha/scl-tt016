@@ -12,6 +12,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import com.sicpa.standard.printer.xcode.BlockFactory;
 import com.sicpa.standard.printer.xcode.ExtendedCode;
 import com.sicpa.standard.printer.xcode.ExtendedCodeFactory;
+import com.sicpa.standard.printer.xcode.Option;
 import com.sicpa.standard.sasscl.model.CodeType;
 import com.sicpa.standard.sasscl.sicpadata.CryptographyException;
 import com.sicpa.standard.sasscl.sicpadata.generator.AbstractEncoder;
@@ -126,7 +127,7 @@ public class StdCryptoEncoderWrapper extends AbstractEncoder {
 				for(int j=0; j<numBlock; j++)
 				{
 					BlockFactory bf = lbf.get(j);
-					if(bf.getOptions().contains(ExtendedCode.Option.STATIC) && i != 0)
+					if(bf.getOptions().contains(Option.STATIC) && i != 0)
 						compositeCode.add(null);
 					
 					else switch(bf.getType())
