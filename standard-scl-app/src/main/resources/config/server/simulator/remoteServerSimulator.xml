@@ -59,21 +59,22 @@
 							</barcodes>
 						</value>
 					</SKUNode>
-					<SKUNode text="MY_DUTY_PAID_ALT" fileImage="config/images/skux.png">
+					<SKUNode text="MY_DUTY_FREE_ALT" fileImage="config/images/skux.png">
 						<children />
 						<value class="com.sicpa.standard.sasscl.model.SKU" id="5"
-							description="MY_DUTY_PAID_ALT">
+							description="MY_DUTY_FREE_ALT">
 							<customProperties />
+							<!-- Extended code ID starts at 100 -->
 							<codeType id="111" />
 							<barcodes>
 								<string>0005</string>
 							</barcodes>
 						</value>
 					</SKUNode>
-					<SKUNode text="DUTY FREE" fileImage="config/images/skux.png">
+					<SKUNode text="DUTY PAID" fileImage="config/images/skux.png">
 						<children />
 						<value class="com.sicpa.standard.sasscl.model.SKU" id="6"
-							description="DUTY FREE">
+							description="DUTY PAID">
 							<customProperties />
 							<!-- Extended code ID starts at 100 -->
 							<codeType id="100" />
@@ -82,13 +83,13 @@
 							</barcodes>
 						</value>
 					</SKUNode>
-					<SKUNode text="DUTY PAID" fileImage="config/images/skux.png">
+					<SKUNode text="DUTY FREE" fileImage="config/images/skux.png">
 						<children />
 						<value class="com.sicpa.standard.sasscl.model.SKU" id="7"
-							description="DUTY PAID">
+							description="DUTY FREE">
 							<customProperties />
 							<!-- Extended code ID starts at 100 -->
-							<codeType id="101" />
+							<codeType id="102" />
 							<barcodes>
 								<string>0007</string>
 							</barcodes>
