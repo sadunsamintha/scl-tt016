@@ -7,26 +7,18 @@
  */
 package com.sicpa.standard.sasscl.sicpadata.generator.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-
-import junit.framework.Assert;
-
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-
 import com.sicpa.standard.common.log.StdLogger;
-import com.sicpa.standard.printer.xcode.BitmapBlockFactory;
-import com.sicpa.standard.printer.xcode.BlockFactory;
-import com.sicpa.standard.printer.xcode.ExtendedCode;
-import com.sicpa.standard.printer.xcode.Option;
-import com.sicpa.standard.printer.xcode.ExtendedCodeFactory;
-import com.sicpa.standard.printer.xcode.ExtendedCodeFileFactory;
-import com.sicpa.standard.printer.xcode.TextBlockFactory;
+import com.sicpa.standard.printer.xcode.*;
 import com.sicpa.standard.sasscl.model.CodeType;
 import com.sicpa.standard.sasscl.sicpadata.CryptographyException;
 import com.sicpa.standard.sasscl.sicpadata.generator.AbstractEncoder;
 import com.sicpa.standard.sasscl.sicpadata.generator.EncoderEmptyException;
+import junit.framework.Assert;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 /**
  * @author CDeAlmeida
@@ -60,7 +52,7 @@ public class EncoderNoEncryptionSimulator extends AbstractEncoder {
 
 			Assert.assertNotNull(extendedCodeFactory);
 			ctx.close();
-			if(extendedCodeFactory.isFileFactory()){
+			if(extendedCodeFactory instanceof ExtendedCodeFileFactory){
 				((ExtendedCodeFileFactory)extendedCodeFactory).setRewindAllowed(true);
 			}
 			LOGGER.info("********************EncoderNoEncryptionSimulator: bean:  {} loaded from extended-code.xml", codeTypeId);
@@ -86,7 +78,7 @@ public class EncoderNoEncryptionSimulator extends AbstractEncoder {
 		
 //		LOGGER.info("******************** getExtendedCode");
 
-		if(extendedCodeFactory.isFileFactory()){
+		if(extendedCodeFactory instanceof ExtendedCodeFileFactory){
 			ExtendedCode xCode = ((ExtendedCodeFileFactory)extendedCodeFactory).getNext();
 			if(xCode == null)
 				throw new EncoderEmptyException();
