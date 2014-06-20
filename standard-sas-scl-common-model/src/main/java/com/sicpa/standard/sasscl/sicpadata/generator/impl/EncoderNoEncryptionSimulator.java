@@ -19,7 +19,7 @@ import com.sicpa.standard.common.log.StdLogger;
 import com.sicpa.standard.printer.xcode.BitmapBlockFactory;
 import com.sicpa.standard.printer.xcode.BlockFactory;
 import com.sicpa.standard.printer.xcode.ExtendedCode;
-import com.sicpa.standard.printer.xcode.ExtendedCode.Option;
+import com.sicpa.standard.printer.xcode.Option;
 import com.sicpa.standard.printer.xcode.ExtendedCodeFactory;
 import com.sicpa.standard.printer.xcode.ExtendedCodeFileFactory;
 import com.sicpa.standard.printer.xcode.TextBlockFactory;
