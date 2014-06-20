@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+	<!-- 	Properties and placeholders -->
+	
+	<util:list id="DM16x16_TXT2L">
+		<bean class="com.sicpa.standard.printer.xcode.DatamatrixBlockFactory"
+			p:modelDatamatrixFormat = "DM_16x16"
+			p:modelDatamatrixEncoding = "C40"
+		/>
+		<bean class="com.sicpa.standard.printer.xcode.TextBlockFactory" 
+			p:relativePosition="RIGHT"
+			p:options="TWO_LINES"
+			p:length="6"
+		/>
+	</util:list>
+	<util:list id="TXT2L_DM16x16">
+		<bean class="com.sicpa.standard.printer.xcode.TextBlockFactory" 
+			p:options="TWO_LINES"
+			p:length="6"
+		/>
+		<bean class="com.sicpa.standard.printer.xcode.DatamatrixBlockFactory"
+			p:relativePosition="RIGHT"
+			p:modelDatamatrixFormat = "DM_16x16"
+			p:modelDatamatrixEncoding = "C40"
+		/>
+	</util:list>
+	<util:list id="MY_PROP_0">
+		<bean class="com.sicpa.standard.printer.xcode.DatamatrixBlockFactory"
+			p:modelDatamatrixFormat = "DM_8x18"
+			p:modelDatamatrixEncoding = "C40"
+			p:options=""
+		/>
+		<bean class="com.sicpa.standard.printer.xcode.TextBlockFactory" 
+			p:relativePosition="RIGHT"
+			p:options=""
+			p:length="2"
+		/>
+		<bean class="com.sicpa.standard.printer.xcode.TextBlockFactory" 
+			p:relativePosition="ABOVE"
+			p:options=""
+			p:length="6"
+		/>
+	</util:list>
+	<util:list id="MY_PROP_1">
+		<bean class="com.sicpa.standard.printer.xcode.DatamatrixBlockFactory"
+			p:modelDatamatrixFormat = "DM_8x18"
+			p:modelDatamatrixEncoding = "C40"
+			p:options=""
+		/>
+		<bean class="com.sicpa.standard.printer.xcode.TextBlockFactory" 
+			p:relativePosition="RIGHT"
+			p:options=""
+			p:length="2"
+		/>
+		<bean class="com.sicpa.standard.printer.xcode.TextBlockFactory" 
+			p:relativePosition="BELOW"
+			p:options=""
+			p:length="6"
+		/>
+	</util:list>
+	<util:list id="MY_PROP_2">
+		<bean class="com.sicpa.standard.printer.xcode.TextBlockFactory" 
+			p:options=""
+			p:length="2"
+		/>
+		<bean class="com.sicpa.standard.printer.xcode.DatamatrixBlockFactory"
+			p:relativePosition="RIGHT"
+			p:modelDatamatrixFormat = "DM_8x18"
+			p:modelDatamatrixEncoding = "C40"
+			p:options=""
+		/>
+		<bean class="com.sicpa.standard.printer.xcode.TextBlockFactory" 
+			p:relativePosition="ABOVE"
+			p:options=""
+			p:length="6"
+		/>
+	</util:list>
+	<util:list id="MY_PROP_3">
+		<bean class="com.sicpa.standard.printer.xcode.TextBlockFactory" 
+			p:options=""
+			p:length="2"
+		/>
+		<bean class="com.sicpa.standard.printer.xcode.DatamatrixBlockFactory"
+			p:relativePosition="RIGHT"
+			p:modelDatamatrixFormat = "DM_8x18"
+			p:modelDatamatrixEncoding = "C40"
+			p:options=""
+		/>
+		<bean class="com.sicpa.standard.printer.xcode.TextBlockFactory" 
+			p:relativePosition="BELOW"
+			p:options=""
+			p:length="6"
+		/>
+	</util:list>
+	
+	<util:list id="TextBlock">
+		<bean class="com.sicpa.standard.printer.xcode.TextBlockFactory" 
+			p:relativePosition="RIGHT"
+			p:options="TWO_LINES"
+			p:length="12"
+		/>
+	</util:list>
+	
+	<util:list id="threeMixedBlocks">
+		<bean class="com.sicpa.standard.printer.xcode.DatamatrixBlockFactory"
+			p:modelDatamatrixFormat = "DM_16x16"
+			p:modelDatamatrixEncoding = "C40"
+		/>
+		<bean class="com.sicpa.standard.printer.xcode.TextBlockFactory" 
+			p:relativePosition="RIGHT"
+			p:options="TWO_LINES"
+			p:length="4"
+		/>
+		<bean class="com.sicpa.standard.printer.xcode.BitmapBlockFactory" 
+			p:relativePosition="RIGHT"
+			p:options="STATIC"
+			p:height="16"
+		/>
+	</util:list>
+	<util:list id="threeTextBlocks">
+		<bean class="com.sicpa.standard.printer.xcode.TextBlockFactory" 
+			p:length="3"
+		/>
+		<bean class="com.sicpa.standard.printer.xcode.TextBlockFactory" 
+			p:relativePosition="RIGHT"
+			p:length="3"
+		/>
+		<bean class="com.sicpa.standard.printer.xcode.TextBlockFactory" 
+			p:relativePosition="RIGHT"
+			p:length="3"
+		/>
+	</util:list>
+
+	<bean id="100"
+		class="com.sicpa.standard.printer.xcode.ExtendedCodeFileFactory"
+		p:blockFactories-ref="DM16x16_TXT2L"
+		p:extendedCodeFileNamePrefix="MY_DATA/MY_PILOT_DUTY_PAID_51CHAR_"/>
+	<bean id="101"
+		class="com.sicpa.standard.printer.xcode.ExtendedCodeFileFactory"
+		p:blockFactories-ref="DM16x16_TXT2L"
+		p:extendedCodeFileNamePrefix="MY_DATA/MY_PILOT_DUTY_PAID_DIGITS_"/>
+	<bean id="102"
+		class="com.sicpa.standard.printer.xcode.ExtendedCodeFileFactory"
+		p:blockFactories-ref="TXT2L_DM16x16" 
+		p:extendedCodeFileNamePrefix="MY_DATA/MY_PILOT_DUTY_FREE_51CHAR_"/>
+	<bean id="103"
+		class="com.sicpa.standard.printer.xcode.ExtendedCodeFileFactory"
+		p:blockFactories-ref="TXT2L_DM16x16" 
+		p:extendedCodeFileNamePrefix="MY_DATA/MY_PILOT_DUTY_FREE_DIGITS_"/>
+	<bean id="110"
+		class="com.sicpa.standard.printer.xcode.ExtendedCodeFactory"
+		p:blockFactories-ref="MY_PROP_0" />
+	<bean id="111"
+		class="com.sicpa.standard.printer.xcode.ExtendedCodeFactory"
+		p:blockFactories-ref="MY_PROP_1" />
+	<bean id="112"
+		class="com.sicpa.standard.printer.xcode.ExtendedCodeFactory"
+		p:blockFactories-ref="MY_PROP_2" />
+	<bean id="113"
+		class="com.sicpa.standard.printer.xcode.ExtendedCodeFactory"
+		p:blockFactories-ref="MY_PROP_3" />
+
+</beans>
