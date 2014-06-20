@@ -150,8 +150,27 @@ public class PrinterAdaptor extends AbstractPrinterAdaptor implements IPrinterCo
 			fireIssueSolved(PrinterMessageId.INK_SYSTEM_FAULT);
 			fireIssueSolved(PrinterMessageId.VISCOMETER_FAULT);
 			fireIssueSolved(PrinterMessageId.WATCHDOG_RESET);
+            fireIssueSolved(PrinterMessageId.POWER_IN_OVERLOAD);
+            fireIssueSolved(PrinterMessageId.INK_PRESSURE_FAULT);
+            fireIssueSolved(PrinterMessageId.PRESSURE_FAULT);
+            fireIssueSolved(PrinterMessageId.HYDRAULIC_LEAKAGE);
+            fireIssueSolved(PrinterMessageId.CHARGE_DIRTY);
+            fireIssueSolved(PrinterMessageId.PHASING_ERROR);
+            fireIssueSolved(PrinterMessageId.NOZZLE_OC_ERROR);
+            fireIssueSolved(PrinterMessageId.MOTOR_DIRECTION_ERROR);
+            fireIssueSolved(PrinterMessageId.HV_CURRENT_TOO_HIGH);
+            fireIssueSolved(PrinterMessageId.MAILING_BUFFER_EMPTY);
+            fireIssueSolved(PrinterMessageId.CHARGE_VOLTAGE_OVERLOAD);
+            fireIssueSolved(PrinterMessageId.PIEZO_VOLTAGE_OVERLOAD);
+            fireIssueSolved(PrinterMessageId.HEAD_COVER_OPEN);
+            fireIssueSolved(PrinterMessageId.NOZZLE_MOVES_UNCONTROLLED);
+            fireIssueSolved(PrinterMessageId.CANT_OPEN_NOZZLE);
+            fireIssueSolved(PrinterMessageId.CANT_LOAD_JOB);
+            fireIssueSolved(PrinterMessageId.NO_PHASING);
+            fireIssueSolved(PrinterMessageId.PRINTSTART_NOT_POSSIBLE);
+            fireIssueSolved(PrinterMessageId.INK_JET_LOCKED);
 
-		} else if (status.isConnected()) {
+        } else if (status.isConnected()) {
 			// if connected and the sequence is not ready
 			fireMessage(PrinterMessageId.NOT_READY_TO_PRINT, args.name());
 		}
