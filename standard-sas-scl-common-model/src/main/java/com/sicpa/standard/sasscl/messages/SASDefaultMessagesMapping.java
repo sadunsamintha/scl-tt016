@@ -226,7 +226,7 @@ public class SASDefaultMessagesMapping implements IMessageCodeMapper {
         addEntry(Printer.READY_TO_PRINT, "[PR_27]", WARNING);
         //Leibinger messages
         addEntry(Printer.NO_FAULT, "[PR_28]", WARNING);
-        addEntry(Printer.MAILING_BUFFER_FULL, "[PR_29]", ERROR_DEVICE);
+        addEntry(Printer.MAILING_BUFFER_FULL, "[PR_29]", WARNING);
         addEntry(Printer.LOW_BATTERY_VOLTAGE, "[PR_30]", WARNING);
         addEntry(Printer.PRINTGO_ERROR, "[PR_31]", WARNING);
         addEntry(Printer.TOO_MUCH_STROKE, "[PR_32]", WARNING);
