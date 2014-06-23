@@ -247,7 +247,7 @@ public class SASDefaultMessagesMapping implements IMessageCodeMapper {
         addEntry(Printer.PHASING_WARNING, "[PR_47]", WARNING);
         addEntry(Printer.NOZZLE_OC_ERROR, "[PR_48]", ERROR_DEVICE);
         addEntry(Printer.MOTOR_DIRECTION_ERROR, "[PR_49]", ERROR_DEVICE);
-        addEntry(Printer.NOZZLE_ALREADY_OPEN, "[PR_50]", WARNING);
+        addEntry(Printer.NOZZLE_ALREADY_OPEN, "[PR_50]", ERROR_DEVICE);
         addEntry(Printer.HV_CURRENT_TOO_HIGH, "[PR_51]", ERROR_DEVICE);
         addEntry(Printer.STROKE_GO, "[PR_52]", WARNING);
         addEntry(Printer.PRINTING_SPEED_TOO_HIGH, "[PR_53]", WARNING);
