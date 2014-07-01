@@ -18,10 +18,10 @@ public class PrinterSimulatorConfig implements IPrinterModel, Serializable {
 		this.port = port;
 	}
 
-	@Override
-	public int getTcpTimeout() {
-		
-		return 1000;
-	}
+//	@Override
+//	public int getTcpTimeout() {
+//		
+//		return 1000;
+//	}
 
 }
