@@ -301,8 +301,9 @@ public class PrinterAdaptor extends AbstractPrinterAdaptor implements IPrinterCo
 			// for the moment a specific case for the PrinterMessage
 			if (keySplit.length == 3 && keySplit[0].equals(ActionMessageType.MONITORING.name())) {
 				
+				SystemEventType sEvent = new SystemEventType(msg.getKey());
 				MonitoringService.addSystemEvent(
-						new BasicSystemEvent(new SystemEventType(keySplit[1]), msg.getDescription()));
+						new BasicSystemEvent(sEvent, String.valueOf(msg.getParams()[0])));
 				return;
 			}
 			
