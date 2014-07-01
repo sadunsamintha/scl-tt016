@@ -272,7 +272,8 @@ public class SASDefaultMessagesMapping implements IMessageCodeMapper {
         addEntry(Printer.SOLVENT_REFILLED_WITHOUT_ACTIVATION, "[PR_72]", WARNING);
         addEntry(Printer.INK_ACTIVATION_OK, "[PR_73]", WARNING);
         addEntry(Printer.SOLVENT_ACTIVATION_OK, "[PR_74]", WARNING);
-
+        addEntry(Printer.NOZZLE_NOT_OPENED, "[PR_75]", ERROR_DEVICE);
+        
         addEntry(Coding.ERROR_NO_ENCODERS_IN_STORAGE, "[COD_01]", ERROR);
 		addEntry(Coding.ERROR_GETTING_CODES_FROM_ENCODER, "[COD_02]", ERROR);
 		addEntry(Coding.INVALID_ENCODER, "[COD_03]", ERROR);
