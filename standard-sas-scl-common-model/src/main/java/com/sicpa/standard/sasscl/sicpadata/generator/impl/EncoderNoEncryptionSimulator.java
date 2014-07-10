@@ -44,7 +44,7 @@ public class EncoderNoEncryptionSimulator extends AbstractEncoder {
 		this.sequence = min;
 		
 		if(codeTypeId >= CodeType.ExtendedCodeId){
-			ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("extended-code.xml");
+			ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("config/productionConfig/extended-code.xml");
 
 			this.extendedCodeFactory = (ExtendedCodeFactory) ctx.getBean(String.valueOf(codeTypeId));
 			if(extendedCodeFactory == null)
@@ -55,7 +55,7 @@ public class EncoderNoEncryptionSimulator extends AbstractEncoder {
 			if(extendedCodeFactory instanceof ExtendedCodeFileFactory){
 				((ExtendedCodeFileFactory)extendedCodeFactory).setRewindAllowed(true);
 			}
-			LOGGER.info("********************EncoderNoEncryptionSimulator: bean:  {} loaded from extended-code.xml", codeTypeId);
+			LOGGER.info("********************EncoderNoEncryptionSimulator: bean:  {} loaded from config/productionConfig/extended-code.xml", codeTypeId);
 		}
 	}
 

@@ -44,7 +44,7 @@ public class StdCryptoEncoderWrapper extends AbstractEncoder {
 		this.cryptoFieldsConfig = cryptoFieldsConfig;
 
 		if(codeTypeId >= CodeType.ExtendedCodeId){
-			ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("extended-code.xml");
+			ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("config/productionConfig/extended-code.xml");
 			
 			this.extendedCodeFactory = (ExtendedCodeFactory)ctx.getBean(String.valueOf(codeTypeId));
 			Assert.assertNotNull(extendedCodeFactory);
