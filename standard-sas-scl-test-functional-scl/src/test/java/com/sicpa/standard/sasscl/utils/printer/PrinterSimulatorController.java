@@ -10,8 +10,8 @@ import com.sicpa.standard.client.common.utils.TaskExecutor;
 import com.sicpa.standard.printer.controller.IPrinterController;
 import com.sicpa.standard.printer.controller.IPrinterControllerListener;
 import com.sicpa.standard.printer.controller.PrinterException;
+import com.sicpa.standard.printer.controller.model.AbstractPrinterModel;
 import com.sicpa.standard.printer.controller.model.FaultStatus;
-import com.sicpa.standard.printer.controller.model.IPrinterModel;
 import com.sicpa.standard.printer.controller.model.PrinterBufferStatus;
 import com.sicpa.standard.printer.controller.model.SequenceStatus;
 import com.sicpa.standard.printer.driver.IPrinterDriver;
@@ -254,8 +254,7 @@ public class PrinterSimulatorController implements IPrinterController, IPrinterC
 		
 	}
 
-//	@Override
-	public void setModel(IPrinterModel printerModel) {
+	public void setModel(AbstractPrinterModel printerModel) {
 		// TODO Auto-generated method stub
 		
 	}
