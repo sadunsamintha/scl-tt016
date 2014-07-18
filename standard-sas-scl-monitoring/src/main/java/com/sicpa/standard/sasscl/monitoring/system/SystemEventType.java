@@ -38,8 +38,8 @@ public class SystemEventType implements Serializable {
 	public static final SystemEventType SENT_TO_REMOTE_SERVER_OK = new SystemEventType("SENT_TO_REMOTE_MASTER");
 	public static final SystemEventType SENT_TO_REMOTE_SERVER_ERROR = new SystemEventType("SENT_TO_REMOTE_MASTER");
 
-	public static final SystemEventType PRINTER_INK_LEVEL = new SystemEventType(PrinterMessageId.INK_LEVEL);
-	public static final SystemEventType PRINTER_MAKEUP_LEVEL = new SystemEventType(PrinterMessageId.MAKEUP_LEVEL);
+	public static final SystemEventType PRINTER_INK_LEVEL = new SystemEventType("PRINTER_INK_LEVEL");
+	public static final SystemEventType PRINTER_MAKEUP_LEVEL = new SystemEventType("PRINTER_MAKEUP_LEVEL");
 
 	public static final SystemEventType CAMERA_TRIGGER_TOO_FAST = new SystemEventType("CAMERA_TRIGGER_TOO_FAST");
 
