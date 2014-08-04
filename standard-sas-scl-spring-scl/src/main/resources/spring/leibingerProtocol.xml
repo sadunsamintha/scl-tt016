@@ -14,7 +14,7 @@
 	
 	<util:properties id="leibingerErrors" location="language/leibinger-errors-english.properties"/>
 	
-	<bean id="commandMap" class="com.sicpa.standard.printer.leibinger.driver.leibinger.CommandMap">
+	<bean id="commandMapLeibinger" class="com.sicpa.standard.printer.leibinger.driver.leibinger.CommandMap">
 		
 		<property name="errorList" ref="leibingerErrors"/>
 		
@@ -214,10 +214,10 @@
       	<property name="params">
 			<util:list>
 		        <bean p:key="1"  p:value="${printHeight}" 		
-		        									p:description="Print Height Y (0 ... 100) : "				parent="CommandParameter"/>    
-		        <bean p:key="2"  p:value="${printGoSignal}" 		p:description="PrintGo-signal (0 - 2) : "								parent="CommandParameter"/>   
+		        									p:description="Print Height Y (0 ... 100) : "							parent="CommandParameter"/>    
+		        <bean p:key="2"  p:value="${printGoSignal}" 		p:description="PrintGo-signal (0 - 2) : "				parent="CommandParameter"/>   
 		        <bean p:key="3"  p:value="0" 		p:description="PrintGo-Gate (0 - 2)   : "								parent="CommandParameter"/>   
-		        <bean p:key="4"  p:value="${encoderSignal}" 		p:description="Encoder-signal (0 - 3) : "								parent="CommandParameter"/>   
+		        <bean p:key="4"  p:value="${encoderSignal}" 		p:description="Encoder-signal (0 - 3) : "				parent="CommandParameter"/>   
 		        <bean p:key="5"  p:value="140" 		p:description="Speed 1 – 1000 dm/min, (for int. Encoder-Signal) : "		parent="CommandParameter"/>     
 		        <bean p:key="6"  p:value="${rotation}" 		
 		        									p:description="Rotation (0 90 180 270 Degree, anticlockwise) : "		parent="CommandParameter"/>     
@@ -247,26 +247,26 @@
       	<property name="params">
 			<util:list>
 		        <bean p:key="1"  p:value="${printGoDelayMicrometers}" 		
-		        									p:description="PrintGo-delay (0 - MAXINT micrometers)) : "					parent="CommandParameter"/> 
-		        <bean p:key="2"  p:value="0" 		p:description="PG-repetition (0 - 65535) : "								parent="CommandParameter"/> 
+		        									p:description="PrintGo-delay (0 - MAXINT micrometers)) : "							parent="CommandParameter"/> 
+		        <bean p:key="2"  p:value="0" 		p:description="PG-repetition (0 - 65535) : "										parent="CommandParameter"/> 
 		        <bean p:key="3"  p:value="0" 		p:description="PG-distance (0 - MAXINT micrometers), only for PGrepetition > 0) : "	parent="CommandParameter"/> 
 		        <bean p:key="4"  p:value="${strokeDistanceMicrometers}" 		
-		        									p:description="Stroke distance (0 – MAXINT micrometers)) : "				parent="CommandParameter"/>  
+		        									p:description="Stroke distance (0 – MAXINT micrometers)) : "						parent="CommandParameter"/>  
 		        <bean p:key="5"  p:value="${printMode}" 		
-		        									p:description="Print Mode (0-10 optional) : "								parent="CommandParameter"/> 
+		        									p:description="Print Mode (0-10 optional) : "										parent="CommandParameter"/> 
 		        <bean p:key="6"  p:value="${flightTimeCompensationMicrometers}" 		
-		        									p:description="Flight time compensation (0–MAXINT) : "						parent="CommandParameter"/> 
-		        <bean p:key="7"  p:value="0" 		p:description="Reserved - Leave that 0 : "									parent="CommandParameter"/> 
-		        <bean p:key="8"  p:value="0" 		p:description="Stroke monitoring (0 1) : "									parent="CommandParameter"/> 
-		        <bean p:key="9"  p:value="0" 		p:description="PrintGo monitoring (0 1) : "									parent="CommandParameter"/> 
-		        <bean p:key="10" p:value="10000" 	p:description="PGHoldOff (0-MAXINT micrometers) : "							parent="CommandParameter"/>    
-		        <bean p:key="11" p:value="-1" 		p:description="IdentNr CameraJob ((-1) – 2^31) : "							parent="CommandParameter"/> 
-		        <bean p:key="12" p:value="()" 		p:description="CameraJob Name (alphanumeric text) : "						parent="CommandParameter"/> 
-		        <bean p:key="13" p:value="1" 		p:description="Max. products between LJ3 and Camera (1 - 1000) : "			parent="CommandParameter"/> 
-		        <bean p:key="14" p:value="0" 		p:description="Product offset between LJ3 and Camera : "					parent="CommandParameter"/> 
-		        <bean p:key="15" p:value="55000"	p:description="Cameratrigger-delay (0-MAXINT Nm) : "						parent="CommandParameter"/>    
-		        <bean p:key="16" p:value="1" 		p:description="Print stop reacts after TextEnd (0 1) : "					parent="CommandParameter"/> 
-		        <bean p:key="17" p:value="0" 		p:description="Indexcounter of previous&#x9;camera job data (0 - 65535) : "	parent="CommandParameter"/> 
+		        									p:description="Flight time compensation (0–MAXINT) : "								parent="CommandParameter"/> 
+		        <bean p:key="7"  p:value="0" 		p:description="Reserved - Leave that 0 : "											parent="CommandParameter"/> 
+		        <bean p:key="8"  p:value="0" 		p:description="Stroke monitoring (0 1) : "											parent="CommandParameter"/> 
+		        <bean p:key="9"  p:value="0" 		p:description="PrintGo monitoring (0 1) : "											parent="CommandParameter"/> 
+		        <bean p:key="10" p:value="10000" 	p:description="PGHoldOff (0-MAXINT micrometers) : "									parent="CommandParameter"/>    
+		        <bean p:key="11" p:value="-1" 		p:description="IdentNr CameraJob ((-1) – 2^31) : "									parent="CommandParameter"/> 
+		        <bean p:key="12" p:value="()" 		p:description="CameraJob Name (alphanumeric text) : "								parent="CommandParameter"/> 
+		        <bean p:key="13" p:value="1" 		p:description="Max. products between LJ3 and Camera (1 - 1000) : "					parent="CommandParameter"/> 
+		        <bean p:key="14" p:value="0" 		p:description="Product offset between LJ3 and Camera : "							parent="CommandParameter"/> 
+		        <bean p:key="15" p:value="55000"	p:description="Cameratrigger-delay (0-MAXINT Nm) : "								parent="CommandParameter"/>    
+		        <bean p:key="16" p:value="1" 		p:description="Print stop reacts after TextEnd (0 1) : "							parent="CommandParameter"/> 
+		        <bean p:key="17" p:value="0" 		p:description="Indexcounter of previous&#x9;camera job data (0 - 65535) : "			parent="CommandParameter"/> 
 			</util:list>
 		</property>
 	</bean>
