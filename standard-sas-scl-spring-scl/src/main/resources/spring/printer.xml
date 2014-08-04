@@ -32,8 +32,9 @@
 	<bean id="mapPrinterController" class="com.sicpa.standard.client.common.ioc.GenericMapping">
 		<constructor-arg>
 			<map>
-				<entry key="leibinger" value-ref="printerControllerLeibinger" />
-				<entry key="domino" value-ref="printerControllerDomino" />
+				<entry key="domino" 	value-ref="printerControllerDomino"/>
+ 				<entry key="leibinger" 	value-ref="printerControllerLeibinger"/>
+				<entry key="oi2jet" 	value-ref="printerControllerOi2jet"/>
 			</map>
 		</constructor-arg>
 	</bean>
