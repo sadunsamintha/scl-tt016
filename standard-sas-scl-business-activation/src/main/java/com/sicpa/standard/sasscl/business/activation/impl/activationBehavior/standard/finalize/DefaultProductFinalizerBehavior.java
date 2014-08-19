@@ -32,7 +32,6 @@ public class DefaultProductFinalizerBehavior implements IProductFinalizerBehavio
 	public void finalize(final Product product) {
 
 		if (product != null && product.getStatus() != null) {
-			logger.debug("Finalize product = {}", product);
 			if (product.getStatus().equals(ProductStatus.TYPE_MISMATCH)) {
 				EventBusService.post(new MessageEvent(MessageEventKey.Activation.EXCEPTION_CODE_TYPE_MISMATCH));
 			} else if (product.getStatus().equals(ProductStatus.NOT_AUTHENTICATED)) {
