@@ -1,5 +1,6 @@
 package com.sicpa.standard.sasscl.business.activation.impl;
 
+import com.sicpa.standard.sasscl.model.ProductStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -113,7 +114,9 @@ public class Activation implements IActivation {
 	 *            true if code read is good, false otherwise
 	 */
 	protected void fireNewProduct(final Product product) {
-		logger.debug("New product = {}", product);
+        if(!product.getStatus().equals(ProductStatus.SENT_TO_PRINTER_WASTED)) {
+            logger.debug("New product = {}", product);
+        }
 		MonitoringService.addSystemEvent(new BasicSystemEvent(SystemEventType.PRODUCT_SCANNED));
 		EventBusService.post(new NewProductEvent(product));
 	}
