@@ -1,20 +1,19 @@
 package com.sicpa.standard.sasscl;
 
+import com.sicpa.standard.client.common.launcher.LoaderConfig;
+import com.sicpa.standard.gui.plaf.SicpaLookAndFeel;
+import com.sicpa.standard.sasscl.ioc.SpringConfig;
+import com.sicpa.standard.sasscl.ioc.SpringConfigSCL;
+import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Properties;
-
-import org.apache.commons.io.IOUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.sicpa.standard.client.common.launcher.LoaderConfig;
-import com.sicpa.standard.gui.plaf.SicpaLookAndFeel;
-import com.sicpa.standard.sasscl.ioc.SpringConfig;
-import com.sicpa.standard.sasscl.ioc.SpringConfigSCL;
 
 public class Main {
 
@@ -36,9 +35,6 @@ public class Main {
 		SicpaLookAndFeel.install();
 		SpringConfig config = new SpringConfigSCL();
 		
-		config.put("printer-domino", "spring/printer-domino.xml");
-		config.put("printer-leibinger", "spring/printer-leibinger.xml");
-
 		// config.put("deviceIncidentContext", "spring/deviceIncidentConsole.xml");
 		config.put("postPackage", "spring/postPackage.xml");
 		// config.put(SpringConfig.OFFLINE_COUNTING, "spring" + File.separator + "offlineCounting.xml");
@@ -49,16 +45,16 @@ public class Main {
 		// config.put(SpringConfig.SKU_CHECK_VIEW, SkuCheckSpringConfig.SKU_CHECK_VIEW_FILE);
 
 		// ------ Adding BRS ---------//
-		// config.put("brs", "spring/brs.xml");
-		// config.put("brsConfigParameterDescriptors", "spring/brsConfigParameterDescriptors.xml");
-		// config.put("brsPlc", "spring/brsPlc.xml");
-		// config.put("brsPlcNotifications", "spring/brsPlcNotifications.xml");
-		// config.put("brsPlcParameters", "spring/brsPlcParameters.xml");
-		// config.put("brsPlcRequests", "spring/brsPlcRequests.xml");
-		// config.put("brsPlcVariablesDescriptors", "spring/brsPlcVariablesDescriptors.xml");
-		// config.put("brsPlcVariablesMapping", "spring/brsPlcVariablesMapping.xml");
-		// config.put("skuCheck", "spring/skuCheck.xml");
-		// config.put("skuCheckView", "spring/skuCheckView.xml");
+		config.put("brs", "spring/brs.xml");
+		config.put("brsConfigParameterDescriptors", "spring/brsConfigParameterDescriptors.xml");
+		config.put("brsPlc", "spring/brsPlc.xml");
+		config.put("brsPlcNotifications", "spring/brsPlcNotifications.xml");
+		config.put("brsPlcParameters", "spring/brsPlcParameters.xml");
+		config.put("brsPlcRequests", "spring/brsPlcRequests.xml");
+		config.put("brsPlcVariablesDescriptors", "spring/brsPlcVariablesDescriptors.xml");
+		config.put("brsPlcVariablesMapping", "spring/brsPlcVariablesMapping.xml");
+		config.put("skuCheck", "spring/skuCheck.xml");
+		config.put("skuCheckView", "spring/skuCheckView.xml");
 		
 		String[] profiles = new String[1];
 		try {

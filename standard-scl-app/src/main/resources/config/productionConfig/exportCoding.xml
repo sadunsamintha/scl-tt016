@@ -4,7 +4,7 @@
     <CameraConfig deviceType="COGNEX" id="qc_scl_2"/>
 
     <PrinterConfig deviceType="DOMINO" id="pr_scl_1" validatedBy="qc_scl_1"/>
-    <PrinterConfig deviceType="DOMINO2" id="pr_scl_2" validatedBy="qc_scl_2"/>
+    <PrinterConfig deviceType="DOMINO" id="pr_scl_2" validatedBy="qc_scl_2"/>
 
     <plcConfig line1File="line1Config.xml" line2File="line2Config.xml" line1Index="1" line2Index="2">
         <property key=".com.stLine[1].bLine_is_active" value="true"/>

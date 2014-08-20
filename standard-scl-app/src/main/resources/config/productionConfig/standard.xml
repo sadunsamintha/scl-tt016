@@ -1,13 +1,13 @@
 <ProductionConfig activationBehavior="standardActivationBehavior" authenticatorMode="SCL">
 
 <!--    <PrinterConfig deviceType="DOMINO" id="pr_scl_x" validatedBy="qc_scl_x"/> -->
-<!--    <PrinterConfig deviceType="DOMINO" id="pr_scl_1" validatedBy="qc_scl_1"/> -->
-	<PrinterConfig deviceType="LEIBINGER" id="pr_leibinger" validatedBy="qc_scl_1"/>
-<!--  	<PrinterConfig deviceType="LEIBINGER" id="pr_leibinger" validatedBy="qc_scl_x"/> -->
-<!-- 	<PrinterConfig deviceType="OI2JET" id="pr_oi2jet_model" validatedBy="qc_scl_1"/> -->
+	<PrinterConfig deviceType="LEIBINGER" id="pr_lb_1" validatedBy="qc_scl_1"/>
+    <PrinterConfig deviceType="LEIBINGER" id="pr_lb_2" validatedBy="qc_scl_2"/>
 
-<!--    <CameraConfig deviceType="COGNEX" id="qc_scl_x"/> -->
+    <!-- 	<PrinterConfig deviceType="OI2JET" id="pr_oi2jet_model" validatedBy="qc_scl_1"/> -->
+
     <CameraConfig deviceType="COGNEX" id="qc_scl_1"/>
+    <CameraConfig deviceType="COGNEX" id="qc_scl_2"/>
 
     <!-- uncomment to use the bis -->
     <!-- 	<BisConfig /> -->

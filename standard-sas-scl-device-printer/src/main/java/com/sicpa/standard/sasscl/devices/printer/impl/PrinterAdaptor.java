@@ -49,6 +49,7 @@ public class PrinterAdaptor extends AbstractPrinterAdaptor implements IPrinterCo
 	protected SequenceStatus lastSequence = SequenceStatus.UNKNOWN;
 
 	public PrinterAdaptor(final IPrinterController controller) {
+        this();
 		this.controller = controller;
 		this.controller.setListener(this);
 	}

@@ -20,7 +20,7 @@
 		p:buffer-ref		="codeBufferOi2jet"
 		p:listener-ref		="stdPrinterAdaptor"
 	/>
-	
+
 	<bean id="printerProtocolOi2jet" class="com.sicpa.standard.printer.oi2jet.driver.Oi2jetProtocol"
 		p:commander-ref		="printerCommanderOi2jet"
 	/>
@@ -28,13 +28,13 @@
 	<bean id="printerCommanderOi2jet" class="com.sicpa.standard.printer.oi2jet.driver.Oi2jetCommander"
 		p:connector-ref		="connectorOi2jet"
 	/>
-	
+
 	<bean id="printerControllerOi2jet" class="com.sicpa.standard.printer.oi2jet.controller.Oi2jetPrinterController"
 		p:driver-ref		="driverOi2jet"
 		p:codeBuffer-ref	="codeBufferOi2jet"
 		p:listener-ref		="stdPrinterAdaptor"
 	/>
-	
+
 	<bean id="codeBufferOi2jet" class="com.sicpa.standard.printer.oi2jet.controller.Oi2jetCodeBuffer"
 		p:driver-ref		="driverOi2jet"
 		p:params-ref		="printerParameterOi2jet"
@@ -46,13 +46,13 @@
 		p:model-ref			="printerModelOi2jet"
 		p:listener-ref		="printerControllerOi2jet"
 	/>
-	
+
 	<bean id="usbAdaptorOi2jet" class="com.sicpa.standard.printer.oi2jet.connector.impl.UsbAdaptor"
 		p:model-ref			="printerModelOi2jet"
 		p:listener-ref		="driverOi2jet"
 	/>
-	
-	
+
+
 	<bean id="printerModelOi2jet" class="com.sicpa.standard.client.common.utils.ConfigUtils" factory-method="load" scope="prototype">
 		<constructor-arg value="config/printer/printer_pr_oi2jet_model.xml" />
 	</bean>

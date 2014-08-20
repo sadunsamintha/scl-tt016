@@ -32,98 +32,55 @@
 	
 <!-- 	Beans created for each printer model -->
 
-	<bean id="printerControllerLeibinger" class="com.sicpa.standard.printer.leibinger.controller.LeibingerPrinterController">
-		<property name="driver" 		ref="driverLeibinger" />
-		<property name="codeBuffer" 	ref="codeBufferLeibinger" />
-		<property name="connector" 		ref="connectorLeibinger" />
-		<property name="listener" 		ref="stdPrinterAdaptor"/>
+	<bean id="printerControllerLeibinger" class="com.sicpa.standard.printer.leibinger.controller.LeibingerPrinterController" scope="prototype">
+        <constructor-arg ref="printerModelLeibinger" />
+        <constructor-arg ref="driverLeibinger" />
+        <constructor-arg ref="codeBuffer" />
+        <constructor-arg ref="connector" />
+        <constructor-arg ref="protocol" />
+        <constructor-arg ref="stateMachineLeibinger" />
+        <constructor-arg ref="commander" />
 	</bean>
-	
-	<bean id="printerModelLeibinger" class="com.sicpa.standard.client.common.utils.ConfigUtils" factory-method="load" scope="prototype">
-		<constructor-arg value="config/printer/printer_pr_leibinger.xml" />
-	</bean>
-	
-<!-- 	<bean id="printerModelLeibinger" class="com.sicpa.standard.printer.leibinger.model.LeibingerPrinterModel" -->
-<!-- 		p:name=								"${name}" -->
-<!-- 		p:ipAdress=							"${ipAdress}" -->
-<!-- 		p:deviceId=							"${deviceId}" -->
-<!-- 		p:udpPort=							"${udpPort}" -->
-<!-- 		p:tcpTimeout=						"${tcpTimeout}" -->
-<!-- 		p:tcpPort=							"${tcpPort}" -->
-<!-- 		p:tcpMaxExpiredRequests=			"${tcpMaxExpiredRequests}"		 -->
-<!-- 		p:resetOnStop=						"${resetOnStop}" -->
-<!-- 		p:printerBufferLowThreshold=		"${printerBufferLowThreshold}" -->
-<!-- 		p:nbCodesPerSending=				"${nbCodesPerSending}" -->
-<!-- 		p:requestBufferStatusPeriod=		"${requestBufferStatusPeriod}" -->
-<!-- 		p:requestParamPeriod=				"${requestParamPeriod}" -->
-<!-- 		p:transitionMaxExpiredRequests=		"${transitionMaxExpiredRequests}" -->
-		
-<!-- 		p:printerParameters-ref="printerParametersLeibinger" -->
-<!-- 		/> -->
-	
-<!-- 	<bean id="printerParametersLeibinger" class="com.sicpa.standard.printer.leibinger.model.LeibingerParameter"  -->
-<!-- 		p:codeType					="${codeType}" -->
-<!-- 		p:dataMatrixFormat			="${dataMatrixFormat}" -->
-<!-- 		p:dataMatrixEncoding		="${dataMatrixEncoding}" -->
-<!-- 		/> -->
-	
-	<bean id="codeBufferLeibinger" class="com.sicpa.standard.printer.leibinger.controller.LeibingerCodeBuffer">
-		<property name="driver" 		ref="driverLeibinger" />
-		<property name="printerModel" 	ref="printerModelLeibinger"/>
-		<property name="listener" 		ref="stdPrinterAdaptor"/>
-	</bean>
-	
-	<bean id="driverLeibinger" class="com.sicpa.standard.printer.leibinger.driver.leibinger.LeibingerDriver">
-		<property name="protocol" 		ref="protocolLeibinger"/>
-		<property name="model" 			ref="printerModelLeibinger"/>
-		<property name="stateMachine" 	ref="stateMachineLeibinger"/>
-		<property name="listener" 		ref="stdPrinterAdaptor"/>
-	</bean>
-		
-	<bean id="protocolLeibinger" class="com.sicpa.standard.printer.leibinger.driver.leibinger.LeibingerProtocol">
-		<property name="connector" 		ref="connectorLeibinger"/>
-		<property name="model" 			ref="printerModelLeibinger"/>
-		<property name="commander" 		ref="commanderLeibinger"/>
-		<property name="buffer" 		ref="codeBufferLeibinger" />
-		<property name="listener" 		ref="stdPrinterAdaptor"/>
-	</bean>
-	
-	<bean id="stateMachineLeibinger" class="com.sicpa.standard.printer.leibinger.driver.leibinger.StateMachine">
-		<property name="commander" 		ref="commanderLeibinger"/>
-		<property name="model" 			ref="printerModelLeibinger"/>
-	</bean>
-	
-	<bean id="commanderLeibinger" class="com.sicpa.standard.printer.leibinger.driver.leibinger.LeibingerCommander">
-		<property name="connector" 		ref="connectorLeibinger"/>
-		<property name="commandMap" 	ref="commandMapLeibinger"/>
-	</bean>
-	
-	<bean id="connectorLeibinger" factory-bean="mapEthernetConnectorLeibinger" factory-method="get">
-		<constructor-arg value="${printer.leibinger.ethernet}"/>
-	</bean>
-	
-	<bean id="mapEthernetConnectorLeibinger" class="com.sicpa.standard.client.common.ioc.GenericMapping">
-		<constructor-arg>
-			<map>
-				<entry key="standard" 	value-ref="connectorStdLeibinger" />
-				<entry key="simulator" 	value-ref="connectorSimulatorLeibinger" />
-			</map>
-		</constructor-arg>
-	</bean>
-	
-	<bean id="connectorStdLeibinger" class="com.sicpa.standard.printer.connector.Connector">
-		<property name="adaptor" 		ref="ethernetAdaptorLeibinger"/>
-		<property name="model" 			ref="printerModelLeibinger"/>
-		<property name="listener" 		ref="printerControllerLeibinger"/>
-	</bean>
-	
-	<bean id="ethernetAdaptorLeibinger" class="com.sicpa.standard.printer.leibinger.connector.impl.EthernetAdaptor">
-		<property name="model" 			ref="printerModelLeibinger"/>
-	</bean>
-	
-	<bean id="connectorSimulatorLeibinger" class="com.sicpa.standard.printer.leibinger.connector.impl.ConnectorSimulator" parent="connectorStdLeibinger">
-		<property name="protocol" 		ref="protocolLeibinger"/>
-		<property name="commandMap" 	ref="commandMapLeibinger"/>
-	</bean>
+
+    <bean id="printerModelLeibinger" class="com.sicpa.standard.sasscl.utils.ConfigUtilEx" factory-method="load" scope="prototype">
+        <constructor-arg value="config/printer/printer_leibinger_####.xml" />
+        <constructor-arg ref="deviceModelNamePostfixProperty" />
+    </bean>
+
+    <bean id="codeBuffer" class="com.sicpa.standard.printer.leibinger.controller.LeibingerCodeBuffer"  scope="prototype"/>
+
+    <bean id="driverLeibinger" class="com.sicpa.standard.printer.leibinger.driver.leibinger.LeibingerDriver"  scope="prototype"/>
+
+    <bean id="protocol" class="com.sicpa.standard.printer.leibinger.driver.leibinger.LeibingerProtocol"  scope="prototype"/>
+
+    <bean id="stateMachineLeibinger" class="com.sicpa.standard.printer.leibinger.driver.leibinger.StateMachine"  scope="prototype"/>
+
+    <bean id="commander" class="com.sicpa.standard.printer.leibinger.driver.leibinger.LeibingerCommander" scope="prototype">
+        <property name="commandMap" ref="commandMap"/>
+    </bean>
+
+    <bean id="connector" factory-bean="mapEthernetConnector" factory-method="get" scope="prototype">
+        <constructor-arg value="${printer.leibinger.ethernet}"/>
+    </bean>
+
+    <bean id="mapEthernetConnector" class="com.sicpa.standard.client.common.ioc.GenericMapping" scope="prototype">
+        <constructor-arg>
+            <map>
+                <entry key="standard" value-ref="connectorStd" />
+                <entry key="simulator" value-ref="connectorSimulator" />
+            </map>
+        </constructor-arg>
+    </bean>
+
+    <bean id="connectorStd" class="com.sicpa.standard.printer.connector.Connector" scope="prototype">
+        <property name="adaptor" ref="ethernetAdaptor"/>
+    </bean>
+
+    <bean id="ethernetAdaptor" class="com.sicpa.standard.printer.leibinger.connector.impl.EthernetAdaptor" scope="prototype"/>
+
+    <bean id="connectorSimulator" class="com.sicpa.standard.printer.leibinger.connector.impl.ConnectorSimulator" parent="connectorStd" scope="prototype">
+        <property name="protocol" ref="protocol"/>
+        <property name="commandMap" ref="commandMapLeibinger"/>
+    </bean>
 
 </beans>

@@ -3,7 +3,7 @@
 	xmlns:util="http://www.springframework.org/schema/util" xmlns:aop="http://www.springframework.org/schema/aop"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
 
-	<bean id="mapPrinterAdaptor" class="com.sicpa.standard.client.common.ioc.GenericMapping">
+	<bean id="mapPrinterAdaptor" class="com.sicpa.standard.client.common.ioc.GenericMapping" scope="prototype">
 		<constructor-arg>
 			<map>
 				<entry key="standard" value-ref="stdPrinterAdaptor" />
@@ -12,24 +12,25 @@
 		</constructor-arg>
 	</bean>
 
-	<bean id="printer" factory-bean="mapPrinterAdaptor" factory-method="get">
+	<bean id="printer" factory-bean="mapPrinterAdaptor" factory-method="get" scope="prototype">
 		<constructor-arg value="${printer.behavior}" />
 	</bean>
 
-	<bean id="stdPrinterAdaptor" class="${stdPrinterAdaptor}">
-		<property name="controller" ref="stdPrinterController" />
+	<bean id="stdPrinterAdaptor" class="${stdPrinterAdaptor}" scope="prototype">
+		<constructor-arg ref="stdPrinterController" />
 	</bean>
 
-	<bean id="printerSimulatorAdaptor" class="com.sicpa.standard.sasscl.devices.printer.simulator.PrinterAdaptorSimulator">
-<!-- 		<property name="controller" ref="printerSimulatorController" /> -->
+
+	<bean id="printerSimulatorAdaptor" class="com.sicpa.standard.sasscl.devices.printer.simulator.PrinterAdaptorSimulator" scope="prototype">
+ 		<constructor-arg ref="printerSimulatorController" />
 	</bean>
 
-	<bean id="printerSimulatorModel" class="com.sicpa.standard.client.common.utils.ConfigUtils" factory-method="load">
-		<constructor-arg value="config/printer/simulator/printerSimulator_pr_scl_1.xml" />
-<!-- 		<constructor-arg ref="deviceModelNamePostfixProperty" /> -->
-	</bean>
-	
-	<bean id="mapPrinterController" class="com.sicpa.standard.client.common.ioc.GenericMapping">
+    <bean id="printerSimulatorModel" class="com.sicpa.standard.sasscl.utils.ConfigUtilEx" factory-method="load" scope="prototype">
+        <constructor-arg value="config/printer/simulator/printerSimulator_####.xml" />
+        <constructor-arg ref="deviceModelNamePostfixProperty" />
+    </bean>
+
+	<bean id="mapPrinterController" class="com.sicpa.standard.client.common.ioc.GenericMapping" scope="prototype">
 		<constructor-arg>
 			<map>
 				<entry key="domino" 	value-ref="printerControllerDomino"/>
@@ -38,14 +39,14 @@
 			</map>
 		</constructor-arg>
 	</bean>
-	<bean id="stdPrinterController" factory-bean="mapPrinterController" factory-method="get">
+
+	<bean id="stdPrinterController" factory-bean="mapPrinterController" factory-method="get" scope="prototype">
 		<constructor-arg value="${printer.type}" />
 	</bean>
 
-<!-- 	<bean id="printerSimulatorController" class="com.sicpa.standard.sasscl.devices.printer.simulator.PrinterSimulator"> -->
-<!-- 		<constructor-arg ref="printerSimulatorModel" /> -->
-<!-- 		<property name="listener" ref="printerSimulatorAdaptor"/> -->
-<!-- 		<property name="simulatorGui" ref="simulatorGui" /> -->
-<!-- 	</bean> -->
+    <bean id="printerSimulatorController" class="com.sicpa.standard.sasscl.devices.printer.simulator.PrinterSimulator" scope="prototype">
+        <constructor-arg ref="printerSimulatorModel" />
+        <property name="simulatorGui" ref="simulatorGui" />
+    </bean>
 
 </beans>

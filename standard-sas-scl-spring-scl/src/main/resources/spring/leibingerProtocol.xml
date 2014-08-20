@@ -14,7 +14,7 @@
 	
 	<util:properties id="leibingerErrors" location="language/leibinger-errors-english.properties"/>
 	
-	<bean id="commandMapLeibinger" class="com.sicpa.standard.printer.leibinger.driver.leibinger.CommandMap">
+	<bean id="commandMapLeibinger" class="com.sicpa.standard.printer.leibinger.driver.leibinger.CommandMap" scope="prototype">
 		
 		<property name="errorList" ref="leibingerErrors"/>
 		
@@ -64,9 +64,9 @@
 		</property>
 	</bean>
 	
-	<bean id="Command" class="com.sicpa.standard.printer.controller.model.command.Command" abstract="true"/>
+	<bean id="Command" class="com.sicpa.standard.printer.controller.model.command.Command" abstract="true" scope="prototype"/>
 	
-	<bean id="CommandParameter" class="com.sicpa.standard.printer.controller.model.command.CommandParameter" abstract="true"/>
+	<bean id="CommandParameter" class="com.sicpa.standard.printer.controller.model.command.CommandParameter" abstract="true" scope="prototype"/>
 
 	<bean id="HS" p:key="HS" p:description="Hydraulic State" parent="Command">
 		<property name="params">
