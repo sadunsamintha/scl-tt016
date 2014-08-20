@@ -188,7 +188,7 @@ public class Production implements IProduction {
 			PackagedProducts batch;
 
 			while ((batch = storage.getABatchOfProducts()) != null && !cancelSending) {
-				sendABatctOfProducts(batch, totalBatchCount, currentIndex, totalProductsCount);
+				sendABatchOfProducts(batch, totalBatchCount, currentIndex, totalProductsCount);
 			}
 
 			// Reset cancelSending flag
@@ -203,8 +203,8 @@ public class Production implements IProduction {
 	}
 	
 	
-	protected void sendABatctOfProducts(final PackagedProducts batch, int totalBatchCount,
-			final AtomicInteger currentIndex, final AtomicInteger productCount) {
+	protected void sendABatchOfProducts(final PackagedProducts batch, int totalBatchCount,
+                                        final AtomicInteger currentIndex, final AtomicInteger productCount) {
 
 		currentIndex.incrementAndGet();
 		productCount.addAndGet(batch.getProducts().size());
