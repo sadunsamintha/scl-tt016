@@ -7,7 +7,7 @@
 					<SKUNode text="SKU #0" fileImage="config/images/sku1.png">
 						<children />
 						<value class="com.sicpa.standard.sasscl.model.SKU" id="0"
-							description="SKU #0">
+							description="codetype.value.beer_coded">
 							<customProperties />
 							<codeType id="1" />
 							<barcodes>
