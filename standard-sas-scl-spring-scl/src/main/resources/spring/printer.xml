@@ -35,7 +35,8 @@
 			<map>
 				<entry key="domino" 	value-ref="printerControllerDomino"/>
  				<entry key="leibinger" 	value-ref="printerControllerLeibinger"/>
-				<entry key="oi2jet" 	value-ref="printerControllerOi2jet"/>
+                <!-- 0i2jet not implemented yet -->
+				<!--<entry key="oi2jet" 	value-ref="printerControllerOi2jet"/>-->
 			</map>
 		</constructor-arg>
 	</bean>
