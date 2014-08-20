@@ -463,17 +463,17 @@
 			<dependency>
 				<groupId>com.sicpa.standard.printer</groupId>
 				<artifactId>standard-printer</artifactId>
-				<version>1.2.2-SNAPSHOT</version>
+				<version>1.2.3</version>
 			</dependency>
 			<dependency>
 				<groupId>com.sicpa.standard.printer</groupId>
 				<artifactId>standard-printer-domino</artifactId>
-				<version>1.2.2-SNAPSHOT</version>
+				<version>1.2.2</version>
 			</dependency>
 			<dependency>
 			<groupId>com.sicpa.standard.printer</groupId>
 				<artifactId>standard-printer-leibinger</artifactId>
-				<version>1.0.7-SNAPSHOT</version>
+				<version>1.0.7</version>
 			</dependency>
 			
 			<dependency>
