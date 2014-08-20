@@ -43,7 +43,7 @@
 	</bean>
 
     <bean id="printerModelLeibinger" class="com.sicpa.standard.sasscl.utils.ConfigUtilEx" factory-method="load" scope="prototype">
-        <constructor-arg value="config/printer/printer_leibinger_####.xml" />
+        <constructor-arg value="config/printer/printer_####.xml" />
         <constructor-arg ref="deviceModelNamePostfixProperty" />
     </bean>
 
@@ -56,7 +56,7 @@
     <bean id="stateMachineLeibinger" class="com.sicpa.standard.printer.leibinger.driver.leibinger.StateMachine"  scope="prototype"/>
 
     <bean id="commander" class="com.sicpa.standard.printer.leibinger.driver.leibinger.LeibingerCommander" scope="prototype">
-        <property name="commandMap" ref="commandMap"/>
+        <property name="commandMap" ref="commandMapLeibinger"/>
     </bean>
 
     <bean id="connector" factory-bean="mapEthernetConnector" factory-method="get" scope="prototype">
