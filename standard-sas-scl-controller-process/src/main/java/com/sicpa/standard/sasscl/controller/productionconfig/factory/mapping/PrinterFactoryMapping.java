@@ -7,11 +7,13 @@ public class PrinterFactoryMapping implements IPrinterFactoryMapping {
 
 	@Override
 	public String getPrinterBeanName(PrinterType printerType) {
-//		if (printerType.equals(PrinterType.DOMINO)) {
-			return "printer";
-//		}
-
-//		throw new IllegalArgumentException(printerType + " not handled");
+		if (printerType.equals(PrinterType.DOMINO) || printerType.equals(PrinterType.DOMINO2)) {
+			return "printerDomino";
+		} else if(printerType.equals(PrinterType.LEIBINGER)) {
+            return"printerLeibinger";
+        } else {
+             throw new IllegalArgumentException(printerType + " not handled");
+        }
 	}
 
 }

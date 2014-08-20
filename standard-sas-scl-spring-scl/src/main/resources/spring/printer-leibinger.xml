@@ -28,8 +28,24 @@
 	<bean id="listenerLockAspect" class="com.sicpa.standard.printer.controller.aspect.ListenerLockAspect" />
 	
 	<bean class="com.sicpa.standard.printer.leibinger.driver.leibinger.Scheduler"/>
-	
-	
+
+    <bean id="mapPrinterLeibingerAdaptor" class="com.sicpa.standard.client.common.ioc.GenericMapping" scope="prototype">
+        <constructor-arg>
+            <map>
+                <entry key="standard" value-ref="stdPrinterLeibingerAdaptor" />
+                <entry key="simulator" value-ref="printerSimulatorAdaptor" />
+            </map>
+        </constructor-arg>
+    </bean>
+
+    <bean id="stdPrinterLeibingerAdaptor" class="${stdPrinterAdaptor}" scope="prototype">
+        <constructor-arg ref="printerControllerLeibinger" />
+    </bean>
+
+    <bean id="printerLeibinger" factory-bean="mapPrinterLeibingerAdaptor" factory-method="get" scope="prototype">
+        <constructor-arg value="${printer.behavior}" />
+    </bean>
+
 <!-- 	Beans created for each printer model -->
 
 	<bean id="printerControllerLeibinger" class="com.sicpa.standard.printer.leibinger.controller.LeibingerPrinterController" scope="prototype">
