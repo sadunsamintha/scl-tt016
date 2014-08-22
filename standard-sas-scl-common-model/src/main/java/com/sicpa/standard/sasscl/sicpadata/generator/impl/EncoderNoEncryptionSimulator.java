@@ -110,6 +110,14 @@ public class EncoderNoEncryptionSimulator extends AbstractEncoder {
 						long[] bmp = getBitmapLogo(bf);
 						compositeCode.add(bmp);
 						break;						
+					case DSL: // Assuming first param is a datamatrix other are texts of length 6
+						String strCodeDsl = getEncryptedCode();
+						TextBlockFactory bft= new TextBlockFactory();
+						bft.setLength(10);
+						for(int k=0; k<((DslBlockFactory)bf).getDslParamNumber()-1; k++)
+							strCodeDsl += "|"+getText(bft);
+						compositeCode.add(strCodeDsl);
+						break;
 				}				
 			}
 			ExtendedCode xcode = extendedCodeFactory.create(compositeCode);
@@ -137,7 +145,7 @@ public class EncoderNoEncryptionSimulator extends AbstractEncoder {
 
 	private String getText(BlockFactory bf) {
 		final int LEN = ((TextBlockFactory)bf).getLength();
-		String _text = "023456789BCDFGHJKLMNPQRSTVWXYZbcdfghjklmnpqrstvwxyz"; //abcdefghijklmnopqrstuvwxyz //ABCDEFGHIJKLMNOPQRSTUVWXYZ //0123456789
+		String _text = "023456789BCDFGHJKLMNPQRSTVWXYZ";//bcdfghjklmnpqrstvwxyz"; //abcdefghijklmnopqrstuvwxyz //ABCDEFGHIJKLMNOPQRSTUVWXYZ //0123456789
 		
 		Random rand = new Random();
 		String sr = "";
