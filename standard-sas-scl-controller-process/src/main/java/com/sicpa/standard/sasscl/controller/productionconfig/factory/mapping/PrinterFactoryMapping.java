@@ -11,6 +11,8 @@ public class PrinterFactoryMapping implements IPrinterFactoryMapping {
 			return "printerDomino";
 		} else if(printerType.equals(PrinterType.LEIBINGER)) {
             return"printerLeibinger";
+        } else if(printerType.equals(PrinterType.OI2JET)) {
+            return"printerOi2Jet";
         } else {
              throw new IllegalArgumentException(printerType + " not handled");
         }

@@ -18,7 +18,7 @@ public class SpringConfigSCL extends SpringConfig {
         config.put(PRINTER_DOMINO, "spring/printer-domino.xml");
         config.put(PRINTER_LEIBINGER, "spring/printer-leibinger.xml");
 //        Oi2Jet not immplemented yet
-//        config.put(PRINTER_OI2JET, "spring/printer-oi2jet.xml");
+        config.put(PRINTER_OI2JET, "spring/printer-oi2jet.xml");
 
 
         this.config.put(SCHEDULER_SCL_ADDITIONAL_TASKS, "spring" + File.separator + "schedulerSCL.xml");
