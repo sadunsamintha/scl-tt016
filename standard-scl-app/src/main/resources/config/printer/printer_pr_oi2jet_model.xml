@@ -2,9 +2,9 @@
 	<name>OI2JET</name>
 	<VID>0x0b3c</VID>
 	<PID>0x9501</PID>
-	<resetOnStop>true</resetOnStop>
+	<resetOnStop>false</resetOnStop>
 	<headType>AURIGA</headType>
-	<headSimulated>true</headSimulated>
+	<headSimulated>false</headSimulated>
 <!-- 	<triggerType>OI2PM_EXTERNAL_TRIGGER_FALLING_EDGE</triggerType> -->
 	<triggerType>OI2PM_EXTERNAL_TRIGGER_RISING_EDGE</triggerType>
 	<printSense>OI2PM_PRINT_LEFT_TO_RIGHT</printSense>
@@ -12,6 +12,6 @@
 <!-- 	<encoder>OI2PM_EXTERNAL_ENCODER</encoder> -->
 	<encoder>OI2PM_INTERNAL_GENERATED_FREQUENCY</encoder>
 	<encoderType>OI2PM_ENCODER_TYPE_CHA</encoderType>
-	<encoderDistancePerTurn>50800</encoderDistancePerTurn>
-	<encoderPulsesPerTurn>1200</encoderPulsesPerTurn>
+	<encoderDistancePerTurn>145894</encoderDistancePerTurn>
+	<encoderPulsesPerTurn>5000</encoderPulsesPerTurn>
 </com.sicpa.standard.printer.oi2jet.model.Oi2jetPrinterModel>
