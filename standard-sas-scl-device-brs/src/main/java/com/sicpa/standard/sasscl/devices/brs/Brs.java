@@ -1,12 +1,29 @@
 package com.sicpa.standard.sasscl.devices.brs;
 
-import static com.sicpa.standard.sasscl.messages.MessageEventKey.BRS.BRS_COUNT_DIFFERENCE_HIGH;
-import static com.sicpa.standard.sasscl.messages.MessageEventKey.BRS.BRS_PLC_ALL_CAMERAS_CONNECTED;
-import static com.sicpa.standard.sasscl.messages.MessageEventKey.BRS.BRS_PLC_ALL_CAMERAS_DISCONNECTED;
-import static com.sicpa.standard.sasscl.messages.MessageEventKey.BRS.BRS_PLC_CAMERAS_DISCONNECTION;
-import static com.sicpa.standard.sasscl.messages.MessageEventKey.BRS.BRS_PLC_FRAUD_DETECTED;
-import static com.sicpa.standard.sasscl.messages.MessageEventKey.BRS.BRS_PLC_JAM_DETECTED;
-import static com.sicpa.standard.sasscl.messages.MessageEventKey.BRS.BRS_TOO_MANY_UNREAD;
+import com.google.common.eventbus.Subscribe;
+import com.sicpa.standard.client.common.eventbus.service.EventBusService;
+import com.sicpa.standard.client.common.messages.MessageEvent;
+import com.sicpa.standard.plc.value.IPlcVariable;
+import com.sicpa.standard.sasscl.business.statistics.IStatistics;
+import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState;
+import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowStateChangedEvent;
+import com.sicpa.standard.sasscl.devices.camera.CameraBadCodeEvent;
+import com.sicpa.standard.sasscl.devices.camera.CameraGoodCodeEvent;
+import com.sicpa.standard.sasscl.devices.plc.PlcBrsStateListener;
+import com.sicpa.standard.sasscl.devices.plc.PlcListenerAdaptor;
+import com.sicpa.standard.sasscl.devices.plc.PlcVariableMap;
+import com.sicpa.standard.sasscl.devices.plc.event.PlcEvent;
+import com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcIntegerVariableDescriptor;
+import com.sicpa.standard.sasscl.messages.MessageEventKey;
+import com.sicpa.standard.sasscl.model.SkuCode;
+import com.sicpa.standard.sasscl.model.statistics.StatisticsKey;
+import com.sicpa.standard.sasscl.provider.impl.PlcProvider;
+import com.sicpa.standard.sasscl.provider.impl.ProductionConfigProvider;
+import com.sicpa.standard.sasscl.skucheck.acquisition.GroupAcquisitionType;
+import com.sicpa.standard.sasscl.skucheck.acquisition.statistics.IAcquisitionStatistics;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -20,26 +37,7 @@ import java.util.concurrent.ThreadFactory;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.google.common.eventbus.Subscribe;
-import com.sicpa.standard.client.common.eventbus.service.EventBusService;
-import com.sicpa.standard.client.common.messages.MessageEvent;
-import com.sicpa.standard.plc.value.IPlcVariable;
-import com.sicpa.standard.sasscl.business.statistics.IStatistics;
-import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState;
-import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowStateChangedEvent;
-import com.sicpa.standard.sasscl.devices.plc.PlcListenerAdaptor;
-import com.sicpa.standard.sasscl.devices.plc.PlcVariableMap;
-import com.sicpa.standard.sasscl.devices.plc.event.PlcEvent;
-import com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcIntegerVariableDescriptor;
-import com.sicpa.standard.sasscl.model.SkuCode;
-import com.sicpa.standard.sasscl.model.statistics.StatisticsKey;
-import com.sicpa.standard.sasscl.provider.impl.PlcProvider;
-import com.sicpa.standard.sasscl.skucheck.acquisition.GroupAcquisitionType;
-import com.sicpa.standard.sasscl.skucheck.acquisition.statistics.IAcquisitionStatistics;
+import static com.sicpa.standard.sasscl.messages.MessageEventKey.BRS.*;
 
 public class Brs extends PlcListenerAdaptor {
 
@@ -56,6 +54,9 @@ public class Brs extends PlcListenerAdaptor {
 	public static final String NTF_BRS_FRAUD2 = "NTF_BRS_FRAUD2";
 	public static final String NTF_BRS_JAM_DETECTED1 = "NTF_BRS_JAM_DETECTED1";
 	public static final String NTF_BRS_JAM_DETECTED2 = "NTF_BRS_JAM_DETECTED2";
+    public static final String NTF_BRS_CONSECUTIVE_BAD_CODE = "NTF_BRS_CONSECUTIVE_BAD_CODE";
+    public static final String NTF_BRS_TOO_MANY_UNREAD_WAR = "NTF_BRS_TOO_MANY_UNREAD_WAR";
+    public static final String NTF_BRS_TOO_MANY_UNREAD_ERR = "NTF_BRS_TOO_MANY_UNREAD_ERR";
 
 	protected final BrsConfigBean config;
 	protected final SkuCheckFacadeProvider skuCheckFacadeProvider;
@@ -64,9 +65,11 @@ public class Brs extends PlcListenerAdaptor {
 	protected final PlcIntegerVariableDescriptor brsPlcNotificationCntVarDesc;
 	protected final IAcquisitionStatistics skuCheckStats;
 	protected final IStatistics productionStats;
-	protected final BrsStateListener brsStateListener;
+	protected final PlcBrsStateListener brsStateListener;
 	protected final BrsAggregateModel brsAggregateModel;
 	protected final ITooManyUnreadHandler tooManyUnreadHandler;
+    private BrsAdaptor adaptor;
+    protected ProductionConfigProvider productionConfigProvider;
 
 	protected static final String BARCODE_PATTERN = "^((\\w+):(\\d+):([01]):(\\d+);).*";
 	protected static final Pattern pattern = Pattern.compile(BARCODE_PATTERN);
@@ -77,7 +80,7 @@ public class Brs extends PlcListenerAdaptor {
 			final PlcProvider plcProvider, final PlcIntegerVariableDescriptor brsPlcLineTypeVarDesc,
 			final PlcIntegerVariableDescriptor brsPlcNotificationCntVarDesc,
 			final IAcquisitionStatistics skuCheckStats, IStatistics productionStats,
-			final BrsStateListener brsStateListener, final BrsAggregateModel brsAggregateModel,
+			final PlcBrsStateListener brsStateListener, final BrsAggregateModel brsAggregateModel,
 			final ITooManyUnreadHandler tooManyUnreadHandler) {
 
 		this.tooManyUnreadHandler = tooManyUnreadHandler;
@@ -103,6 +106,14 @@ public class Brs extends PlcListenerAdaptor {
 		notificationCounter = -1; // initialize, must be different from 0 or 1,
 									// that is set by the PLC.
 
+        this.plcProvider.addChangeListener(new PropertyChangeListener() {
+
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                plcProvider.get().addPlcListener(Brs.this);
+                brsStateListener.setPlcAdaptor(plcProvider.get());
+            }
+        });
 	}
 
 	@Override
@@ -124,7 +135,7 @@ public class Brs extends PlcListenerAdaptor {
 		if (PlcVariableMap.get(NTF_BRS_FRAUD1).equals(event.getVarName())) {
 			if ((Boolean) event.getValue()) {
 				logger.info("[BRS] Notification: Fraud detected at camera set 1.");
-				EventBusService.post(new MessageEvent(this, BRS_PLC_FRAUD_DETECTED));
+                postEvent(new MessageEvent(this, BRS_PLC_FRAUD_DETECTED));
 			}
 			return;
 		}
@@ -132,7 +143,7 @@ public class Brs extends PlcListenerAdaptor {
 		if (PlcVariableMap.get(NTF_BRS_FRAUD2).equals(event.getVarName())) {
 			if ((Boolean) event.getValue()) {
 				logger.info("[BRS] Notification: Fraud detected at camera set 2.");
-				EventBusService.post(new MessageEvent(this, BRS_PLC_FRAUD_DETECTED));
+                postEvent(new MessageEvent(this, BRS_PLC_FRAUD_DETECTED));
 			}
 			return;
 		}
@@ -140,7 +151,7 @@ public class Brs extends PlcListenerAdaptor {
 		if (PlcVariableMap.get(NTF_BRS_JAM_DETECTED1).equals(event.getVarName())) {
 			if ((Boolean) event.getValue()) {
 				logger.info("[BRS] Notification: Jam detected at camera set 1.");
-				EventBusService.post(new MessageEvent(this, BRS_PLC_JAM_DETECTED));
+                postEvent(new MessageEvent(this, BRS_PLC_JAM_DETECTED));
 			}
 			return;
 		}
@@ -148,13 +159,56 @@ public class Brs extends PlcListenerAdaptor {
 		if (PlcVariableMap.get(NTF_BRS_JAM_DETECTED2).equals(event.getVarName())) {
 			if ((Boolean) event.getValue()) {
 				logger.info("[BRS] Notification: Jam detected at camera set 2.");
-				EventBusService.post(new MessageEvent(this, BRS_PLC_JAM_DETECTED));
+                postEvent(new MessageEvent(this, BRS_PLC_JAM_DETECTED));
 			}
 			return;
 		}
 
+        if (PlcVariableMap.get(NTF_BRS_CONSECUTIVE_BAD_CODE).equals(event.getVarName())) {
+            if ((Boolean) event.getValue()) {
+                logger.info("[BRS] Notification: Too many bad codes detected.");
+                postEvent(new MessageEvent(this, MessageEventKey.BRS.NTF_BRS_CONSECUTIVE_BAD_CODE_DETECTED));
+            }
+            return;
+        }
+
+        if (PlcVariableMap.get(NTF_BRS_TOO_MANY_UNREAD_WAR).equals(event.getVarName())) {
+            if ((Boolean) event.getValue()) {
+                logger.info("[BRS] Notification: Too many bad codes detected.");
+                postEvent(new MessageEvent(this, MessageEventKey.BRS.NTF_BRS_TOO_MANY_UNREAD_WAR_DETECTED));
+            }
+            return;
+        }
+
+        if (PlcVariableMap.get(NTF_BRS_TOO_MANY_UNREAD_ERR).equals(event.getVarName())) {
+            if ((Boolean) event.getValue()) {
+                logger.info("[BRS] Notification: Too many bad codes detected.");
+                postEvent(new MessageEvent(this, MessageEventKey.BRS.NTF_BRS_TOO_MANY_UNREAD_ERR_DETECTED));
+            }
+            return;
+        }
+
 		logger.debug("[BRS] Event Unknown, variable notification: {}", event.getVarName());
 	}
+
+    private void postEvent(MessageEvent evt){
+        // Check that BRS notifications are needed or not
+        if( productionConfigProvider.get().getBrsConfig() != null ){
+            EventBusService.post(evt);
+        }
+    }
+
+    @Subscribe
+    public void onCameraGoodCode(CameraGoodCodeEvent cameraGoodCodeEvent)
+    {
+        checkAndSignalDifferenceStatisticsWarning();
+    }
+
+    @Subscribe
+    public void onCameraBadCode(CameraBadCodeEvent cameraBadCodeEvent)
+    {
+        checkAndSignalDifferenceStatisticsWarning();
+    }
 
 	protected int notificationCounter;
 
@@ -497,39 +551,38 @@ public class Brs extends PlcListenerAdaptor {
 	 * @return
 	 */
 	protected void checkAndSignalDifferenceStatisticsWarning() {
-		int totalAcquisitions = 0;
+        int totalAcquisitions = 0;
 
-		for (GroupAcquisitionType type : GroupAcquisitionType.values()) {
-			totalAcquisitions += (skuCheckStats.getStatistics().containsKey(type) ? skuCheckStats.getStatistics().get(
-					type) : 0);
-		}
+        for (GroupAcquisitionType type : GroupAcquisitionType.values()) {
+            totalAcquisitions += (skuCheckStats.getStatistics().containsKey(type) ? skuCheckStats.getStatistics().get(
+                    type) : 0);
+        }
 
-		// Initialization of previous production cannot be done in constructor
-		// so it must be checked here.
-		if (previousProductionCount == 0) {
-			previousProductionCount = productionStats.getValues().get(StatisticsKey.TOTAL);
-		}
+        // Initialization of previous production cannot be done in constructor
+        // so it must be checked here.
+        if (previousProductionCount == 0) {
+            previousProductionCount = productionStats.getValues().get(StatisticsKey.TOTAL);
+        }
 
-		int totalProduction = productionStats.getValues().get(StatisticsKey.TOTAL);
-		int currentProduction = totalProduction - previousProductionCount;
-		int difference = Math.abs(totalAcquisitions - currentProduction);
+        int totalProduction = productionStats.getValues().get(StatisticsKey.TOTAL);
+        int currentProduction = totalProduction;// - previousProductionCount;
+        int difference = Math.abs(totalAcquisitions - currentProduction);
 
-		int brsDifferenceCountThreshold = config.getDifferenceCountThreshold();
-		// get propertie "brs.count.diff.threshold";
+        int brsDifferenceCountThreshold = config.getDifferenceCountThreshold();
 
-		logger.debug(
-				"[BRS] COUNTS: totalProduction: {}; previousProduction: {}; currentProd: {}; Acquisitions: {}; Difference prod-acq: {}; Threshold: {}",
-				new Object[] { totalProduction, previousProductionCount, currentProduction, totalAcquisitions,
-						difference, brsDifferenceCountThreshold });
+        logger.debug(
+                "[BRS] COUNTS: totalProduction: {}; previousProduction: {}; currentProd: {}; Acquisitions: {}; Difference prod-acq: {}; Threshold: {}",
+                new Object[] { totalProduction, previousProductionCount, currentProduction, totalAcquisitions,
+                        difference, brsDifferenceCountThreshold });
 
-		if (difference > brsDifferenceCountThreshold) {
-			logger.info(
-					"[BRS] BRS/Production count difference too high. brs_acquistions={}; production={}; difference={}; threshold={};",
-					new Object[] { totalAcquisitions, currentProduction, difference, brsDifferenceCountThreshold });
-			EventBusService.post(new MessageEvent(this, BRS_COUNT_DIFFERENCE_HIGH));
-		}
+        if (difference > brsDifferenceCountThreshold) {
+            logger.debug(
+                    "[BRS] BRS/Production count difference too high. brs_acquistions={}; production={}; difference={}; threshold={};",
+                    new Object[]{totalAcquisitions, currentProduction, difference, brsDifferenceCountThreshold});
+            postEvent(new MessageEvent(this, BRS_COUNT_DIFFERENCE_HIGH));
+        }
 
-	}
+    }
 
 	protected void checkTooManyUnread() {
 		if (tooManyUnreadHandler.isThresholdReached()) {
@@ -537,51 +590,38 @@ public class Brs extends PlcListenerAdaptor {
 		}
 	}
 
-	protected void onCamerasConnected(PlcEvent event) {
+    protected void onCamerasConnected(PlcEvent event) {
 
-		int value = (Short) event.getValue();
+        int value = (Short) event.getValue();
 
-		if (isOnCamerasConnectedEventValueNegative(value)) {
-			logger.error("[BRS] Plc On Cameras connected value is negative {}", value);
-			return;
-		}
+        if (isOnCamerasConnectedEventValueNegative(value)) {
+            logger.error("[BRS] Plc On Cameras connected value is negative {}", value);
+            return;
+        }
 
-		if (areAllCamerasConnected(value, LineType.cameraCount(lineType()))) {
-			MessageEvent evt = new MessageEvent(plcProvider, BRS_PLC_ALL_CAMERAS_CONNECTED);
-			EventBusService.post(evt);
-			logger.info(evt.toString());
+        if (areAllCamerasConnected(value, LineType.cameraCount(lineType()))) {
+            MessageEvent evt = new MessageEvent(plcProvider, BRS_PLC_ALL_CAMERAS_CONNECTED);
+            postEvent(evt);
+            logger.info(evt.toString());
+            adaptor.onBrsConnected(true);
+            return;
+        }
 
-			if (previousCameraError) {
-				// update cameras disconnection message
-				String cameraDisconnected = toDisconnectedCameras(value);
-				if (!cameraDisconnected.isEmpty()) {
-					MessageEvent evtmsg = new MessageEvent(plcProvider, BRS_PLC_CAMERAS_DISCONNECTION,
-							cameraDisconnected);
-					EventBusService.post(evtmsg);
-					logger.warn(evtmsg.toString());
-					previousCameraError = false;
-				}
-			}
+        if (areAllCamerasDisconnected(value)) {
+            MessageEvent evt = new MessageEvent(plcProvider, BRS_PLC_ALL_CAMERAS_DISCONNECTED);
+            postEvent(evt);
+            logger.warn(evt.toString());
+        }
 
-			return;
-		}
+        String cameraDisconnected = toDisconnectedCameras(value);
+        if (!cameraDisconnected.isEmpty()) {
+            MessageEvent evtmsg = new MessageEvent(plcProvider, BRS_PLC_CAMERAS_DISCONNECTION, cameraDisconnected);
+            postEvent(evtmsg);
+            logger.warn(evtmsg.toString());
+        }
+        adaptor.onBrsConnected(false);
 
-		// Some camera error happened, signal it.
-		previousCameraError = true;
-
-		if (areAllCamerasDisconnected(value)) {
-			MessageEvent evt = new MessageEvent(plcProvider, BRS_PLC_ALL_CAMERAS_DISCONNECTED);
-			EventBusService.post(evt);
-			logger.warn(evt.toString());
-		}
-
-		// Some cameras are disconnected, print which ones.
-		// Notify message with the disconnected cameras.
-		MessageEvent evt = new MessageEvent(plcProvider, BRS_PLC_CAMERAS_DISCONNECTION, toDisconnectedCameras(value));
-		EventBusService.post(evt);
-		logger.warn(evt.toString());
-
-	}
+    }
 
 	protected boolean isOnCamerasConnectedEventValueNegative(int value) {
 
@@ -658,15 +698,15 @@ public class Brs extends PlcListenerAdaptor {
 	}
 
 	public void registerPlcChanged(final PlcProvider plcProvider) {
-		plcProvider.addChangeListener(new PropertyChangeListener() {
-			@Override
-			public void propertyChange(PropertyChangeEvent evt) {
-				plcProvider.get().addPlcListener(Brs.this);
-				for (IPlcVariable<?> notif : notifications) {
-					plcProvider.get().registerNotification(notif);
-				}
-			}
-		});
+        plcProvider.addChangeListener(new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                plcProvider.get().addPlcListener(Brs.this);
+                for (IPlcVariable<?> notif : notifications) {
+                    plcProvider.get().registerNotification(notif);
+                }
+            }
+        });
 	}
 
 	protected final Collection<IPlcVariable<?>> notifications = new ArrayList<IPlcVariable<?>>();
@@ -678,4 +718,15 @@ public class Brs extends PlcListenerAdaptor {
 		}
 	}
 
+    public BrsAdaptor getAdaptor() {
+        return adaptor;
+    }
+
+    public void setAdaptor(BrsAdaptor adaptor) {
+        this.adaptor = adaptor;
+    }
+
+    public void setProductionConfigProvider(ProductionConfigProvider productionConfigProvider) {
+        this.productionConfigProvider = productionConfigProvider;
+    }
 }

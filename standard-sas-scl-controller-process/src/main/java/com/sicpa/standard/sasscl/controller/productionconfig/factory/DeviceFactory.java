@@ -1,27 +1,15 @@
 package com.sicpa.standard.sasscl.controller.productionconfig.factory;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.sicpa.standard.client.common.utils.Cache;
+import com.sicpa.standard.sasscl.controller.productionconfig.*;
+import com.sicpa.standard.sasscl.controller.productionconfig.config.*;
+import com.sicpa.standard.sasscl.devices.IStartableDevice;
+import com.sicpa.standard.sasscl.devices.plc.IPlcAdaptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sicpa.standard.client.common.utils.Cache;
-import com.sicpa.standard.sasscl.controller.productionconfig.ConfigurationAction;
-import com.sicpa.standard.sasscl.controller.productionconfig.ICameraFactoryMapping;
-import com.sicpa.standard.sasscl.controller.productionconfig.IConfigurable;
-import com.sicpa.standard.sasscl.controller.productionconfig.IConfigurator;
-import com.sicpa.standard.sasscl.controller.productionconfig.IDeviceFactory;
-import com.sicpa.standard.sasscl.controller.productionconfig.IDeviceModelNamePostfixProperty;
-import com.sicpa.standard.sasscl.controller.productionconfig.IImplementationProvider;
-import com.sicpa.standard.sasscl.controller.productionconfig.IPrinterFactoryMapping;
-import com.sicpa.standard.sasscl.controller.productionconfig.config.AbstractLayoutConfig;
-import com.sicpa.standard.sasscl.controller.productionconfig.config.BisConfig;
-import com.sicpa.standard.sasscl.controller.productionconfig.config.CameraConfig;
-import com.sicpa.standard.sasscl.controller.productionconfig.config.PlcConfig;
-import com.sicpa.standard.sasscl.controller.productionconfig.config.PrinterConfig;
-import com.sicpa.standard.sasscl.devices.IStartableDevice;
-import com.sicpa.standard.sasscl.devices.plc.IPlcAdaptor;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DeviceFactory implements IDeviceFactory {
 
@@ -80,6 +68,20 @@ public class DeviceFactory implements IDeviceFactory {
 		}
 		return value;
 	}
+
+    @Override
+    public IStartableDevice getBrs(BrsConfig brsConfig) {
+        IStartableDevice value = cache.get(brsConfig.getId(), IStartableDevice.class);
+        if (value == null) {
+            deviceModelNamePostfixProperty.set(brsConfig.getId());
+            String beanName = "brsAdaptor";
+            logger.info("retrieving BRS from implProvider {} - {}", beanName, brsConfig.getId());
+            value = (IStartableDevice) implementationProvider.getImplementation(beanName);
+            cache.put(brsConfig.getId(), IStartableDevice.class, value);
+            createConfigurator(value, brsConfig);
+        }
+        return value;
+    }
 
 	@Override
 	public IPlcAdaptor getPlc(PlcConfig config) {

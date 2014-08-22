@@ -13,6 +13,23 @@
 		<property name="methodName" value="set" />
 		<property name="params" ref="skuCheckFacade" />
 	</bean>
+	
+	<bean id="mapBrsAdaptor" class="com.sicpa.standard.client.common.ioc.GenericMapping" scope="prototype">
+		<constructor-arg>
+			<map>
+				<entry key="standard" value-ref="brsAdaptorStd" />
+				<entry key="simulator" value-ref="brsAdaptorSimulator" />
+			</map>
+		</constructor-arg>
+	</bean>
+
+	<bean id="brsAdaptor" factory-bean="mapBrsAdaptor" factory-method="get" scope="prototype">
+		<constructor-arg value="${plc.behavior}" />
+	</bean>
+	
+	<bean id="brsAdaptorStd" class="${brsAdaptor}"/>
+	
+	<bean id="brsAdaptorSimulator" class="${brsAdaptorSimulator}"/>
 
 	<bean id="brs" class="${brs}">
 		<constructor-arg ref="brsConfigParametersValues" />
@@ -22,24 +39,22 @@
 		<constructor-arg ref="brsPlcNotificationCntVarDesc" />
 		<constructor-arg ref="skuAcquisitionStatistics" />
 		<constructor-arg ref="statistics" />
-		<constructor-arg ref="brsStateListener" />
+		<constructor-arg ref="plcBrsStateListener" />
 		<constructor-arg ref="brsAggregateModel" />
 		<constructor-arg ref="tooManyUnreadHandler" />
 		<property name="notifications" ref="brsPlcNotifications" />
+		<property name="adaptor" ref="brsAdaptor"/>
+		<property name="productionConfigProvider" ref="productionConfigProvider" />
 	</bean>
 
 	<bean id="tooManyUnreadHandler" class="${tooManyUnreadHandler}">
 		<property name="configBean" ref="brsConfigParametersValues" />
 	</bean>
 
-	<bean id="brsStateListener" class="com.sicpa.standard.sasscl.devices.brs.BrsStateListener">
-		<property name="versionVarName" value="#{plcVarMap['NTF_BRS_VERSION']}" />
-	</bean>
-
 	<bean id="brsAggregateModel" class="com.sicpa.standard.sasscl.devices.brs.BrsAggregateModel" />
 
 	<bean id="injectBrsRequestMapToBrsStateListener" class="com.sicpa.standard.client.common.ioc.InjectByMethodBean">
-		<property name="target" ref="brsStateListener" />
+		<property name="target" ref="plcBrsStateListener" />
 		<property name="methodName" value="setBrsRequestMap" />
 		<property name="params" ref="mapBrsPlcRequestAction" />
 	</bean>

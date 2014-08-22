@@ -1,18 +1,5 @@
 package com.sicpa.standard.sasscl.devices.plc.impl;
 
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.concurrent.atomic.AtomicBoolean;
-
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.utils.ConfigUtils;
 import com.sicpa.standard.plc.controller.IPlcController;
@@ -30,13 +17,7 @@ import com.sicpa.standard.sasscl.controller.productionconfig.IConfigurator;
 import com.sicpa.standard.sasscl.controller.productionconfig.config.PlcConfig;
 import com.sicpa.standard.sasscl.controller.view.event.LineSpeedEvent;
 import com.sicpa.standard.sasscl.devices.DeviceStatus;
-import com.sicpa.standard.sasscl.devices.plc.AbstractPlcAdaptor;
-import com.sicpa.standard.sasscl.devices.plc.IPlcListener;
-import com.sicpa.standard.sasscl.devices.plc.IPlcRequestExecutor;
-import com.sicpa.standard.sasscl.devices.plc.PlcAdaptorException;
-import com.sicpa.standard.sasscl.devices.plc.PlcRequest;
-import com.sicpa.standard.sasscl.devices.plc.PlcUtils;
-import com.sicpa.standard.sasscl.devices.plc.PlcVariableMap;
+import com.sicpa.standard.sasscl.devices.plc.*;
 import com.sicpa.standard.sasscl.devices.plc.event.PlcEvent;
 import com.sicpa.standard.sasscl.devices.plc.variable.EditablePlcVariables;
 import com.sicpa.standard.sasscl.devices.plc.variable.PlcVariableGroup;
@@ -45,6 +26,14 @@ import com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcPulseVariabl
 import com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcVariableDescriptor;
 import com.sicpa.standard.sasscl.devices.plc.variable.serialisation.IPlcValuesLoader;
 import com.sicpa.standard.sasscl.devices.plc.variable.serialisation.PlcValuesForAllVar;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.text.MessageFormat;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @SuppressWarnings("rawtypes")
 public class PlcAdaptor extends AbstractPlcAdaptor implements IPlcControllerListener,
@@ -74,7 +63,10 @@ public class PlcAdaptor extends AbstractPlcAdaptor implements IPlcControllerList
 	
 	private static final short SYSTEM_TYPE_TOBACCO = 3;
 
-	/**
+    protected PlcBrsStateListener brsStateListener;
+
+
+    /**
 	 * 
 	 * @param plcVariablesMap
 	 */
@@ -84,6 +76,10 @@ public class PlcAdaptor extends AbstractPlcAdaptor implements IPlcControllerList
 
 	public PlcAdaptor() {
 	}
+
+    public void setBrsStateListener(PlcBrsStateListener brsStateListener) {
+        this.brsStateListener = brsStateListener;
+    }
 
 	public PlcAdaptor(final IPlcController<?> controller) {
 		this.controller = controller;
@@ -240,6 +236,16 @@ public class PlcAdaptor extends AbstractPlcAdaptor implements IPlcControllerList
 				logger.error("failed to write plc param:" + var.getVariableName() + " value:" + var.getValue(), e);
 			}
 		}
+
+        // Send Expected SKU to BRS
+        if(this.brsStateListener != null) {
+            try {
+                brsStateListener.sendSkuConfig();
+            } catch (Exception e) {
+                logger.error("Failed to send sku config to BRS", e);
+            }
+        }
+
 		try {
 			sendReloadPlcParametersRequest();
 		} catch (PlcAdaptorException e) {

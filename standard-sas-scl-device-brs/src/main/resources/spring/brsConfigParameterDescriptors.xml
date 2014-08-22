@@ -6,8 +6,8 @@
 	<!-- variables list -->
 	<util:list id="brsConfigDescriptorsList">
 		<ref bean="configBrsDifferenceCountThresholdDescriptor" />
-		<ref bean="configBrsUnreadThresholdDescriptor" />
-		<ref bean="configBrsUnreadWindowSizeDescriptor" />
+<!-- 		<ref bean="configBrsUnreadThresholdDescriptor" /> -->
+<!-- 		<ref bean="configBrsUnreadWindowSizeDescriptor" /> -->
 	</util:list>
 
 	<!-- descriptors -->
@@ -20,23 +20,23 @@
 		<property name="enabledWhenProductionRunning" value="true" />
 	</bean>
 
-	<bean id="configBrsUnreadThresholdDescriptor" class="com.sicpa.standard.client.common.descriptor.impl.RangeIntegerPropertyDescriptor">
-		<property name="min" value="0" />
-		<property name="max" value="999999" />
-		<property name="step" value="1" />
-		<property name="property" value="unreadThreshold" />
-		<property name="propertyDescription" value="unreadThreshold %" />
-		<property name="enabledWhenProductionRunning" value="true" />
-	</bean>
+<!-- 	<bean id="configBrsUnreadThresholdDescriptor" class="com.sicpa.standard.client.common.descriptor.impl.RangeIntegerPropertyDescriptor"> -->
+<!-- 		<property name="min" value="0" /> -->
+<!-- 		<property name="max" value="999999" /> -->
+<!-- 		<property name="step" value="1" /> -->
+<!-- 		<property name="property" value="unreadThreshold" /> -->
+<!-- 		<property name="propertyDescription" value="unreadThreshold %" /> -->
+<!-- 		<property name="enabledWhenProductionRunning" value="true" /> -->
+<!-- 	</bean> -->
 
-	<bean id="configBrsUnreadWindowSizeDescriptor" class="com.sicpa.standard.client.common.descriptor.impl.RangeIntegerPropertyDescriptor">
-		<property name="min" value="0" />
-		<property name="max" value="999999" />
-		<property name="step" value="1" />
-		<property name="property" value="unreadWindowSize" />
-		<property name="propertyDescription" value="unreadWindowSize" />
-		<property name="enabledWhenProductionRunning" value="true" />
-	</bean>
+<!-- 	<bean id="configBrsUnreadWindowSizeDescriptor" class="com.sicpa.standard.client.common.descriptor.impl.RangeIntegerPropertyDescriptor"> -->
+<!-- 		<property name="min" value="0" /> -->
+<!-- 		<property name="max" value="999999" /> -->
+<!-- 		<property name="step" value="1" /> -->
+<!-- 		<property name="property" value="unreadWindowSize" /> -->
+<!-- 		<property name="propertyDescription" value="unreadWindowSize" /> -->
+<!-- 		<property name="enabledWhenProductionRunning" value="true" /> -->
+<!-- 	</bean> -->
 
 	<bean id="brsConfigParametersValues" class="com.sicpa.standard.client.common.utils.ConfigUtils" factory-method="load">
 		<constructor-arg value="config/skuCheck/brs.xml" />

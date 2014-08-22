@@ -1,41 +1,11 @@
 package com.sicpa.standard.sasscl.devices.brs;
 
-import static com.sicpa.standard.client.common.eventbus.service.EventBusService.post;
-import static com.sicpa.standard.sasscl.devices.brs.Brs.NTF_BRS_CAMERAS_CONNECTED;
-import static com.sicpa.standard.sasscl.devices.brs.Brs.NTF_BRS_FRAUD1;
-import static com.sicpa.standard.sasscl.devices.brs.Brs.NTF_BRS_FRAUD2;
-import static com.sicpa.standard.sasscl.devices.brs.Brs.NTF_BRS_JAM_DETECTED1;
-import static com.sicpa.standard.sasscl.devices.brs.Brs.NTF_BRS_JAM_DETECTED2;
-import static com.sicpa.standard.sasscl.devices.brs.Brs.NTF_BRS_PRODUCT_COUNTER1;
-import static com.sicpa.standard.sasscl.devices.brs.Brs.NTF_BRS_PRODUCT_COUNTER2;
-import static com.sicpa.standard.sasscl.devices.brs.Brs.NTF_BRS_SKU_INFO;
-import static com.sicpa.standard.sasscl.devices.brs.Brs.UNREAD;
-import static org.apache.commons.lang.StringUtils.EMPTY;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.powermock.api.mockito.PowerMockito.verifyZeroInteractions;
-import static org.powermock.api.mockito.PowerMockito.when;
-
-import java.util.HashMap;
-import java.util.concurrent.ExecutorService;
-
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mockito;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
-
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.messages.MessageEvent;
 import com.sicpa.standard.sasscl.business.statistics.IStatistics;
 import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState;
 import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowStateChangedEvent;
+import com.sicpa.standard.sasscl.devices.plc.PlcBrsStateListener;
 import com.sicpa.standard.sasscl.devices.plc.PlcVariableMap;
 import com.sicpa.standard.sasscl.devices.plc.event.PlcEvent;
 import com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcIntegerVariableDescriptor;
@@ -48,6 +18,26 @@ import com.sicpa.standard.sasscl.model.statistics.StatisticsValues;
 import com.sicpa.standard.sasscl.provider.impl.PlcProvider;
 import com.sicpa.standard.sasscl.skucheck.SkuCheckFacade;
 import com.sicpa.standard.sasscl.skucheck.acquisition.statistics.IAcquisitionStatistics;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mockito;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
+
+import java.util.HashMap;
+import java.util.concurrent.ExecutorService;
+
+import static com.sicpa.standard.client.common.eventbus.service.EventBusService.post;
+import static com.sicpa.standard.sasscl.devices.brs.Brs.*;
+import static org.apache.commons.lang.StringUtils.EMPTY;
+import static org.mockito.Mockito.*;
+import static org.powermock.api.mockito.PowerMockito.verifyZeroInteractions;
+import static org.powermock.api.mockito.PowerMockito.when;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(EventBusService.class)
@@ -59,7 +49,7 @@ public class BrsTest {
 	private PlcIntegerVariableDescriptor brsPlcLineTypeVarDesc;
 	private PlcIntegerVariableDescriptor brsPlcNotificationCntVarDesc;
 	private IStatistics productionStatistics;
-	private BrsStateListener brsStateListener;
+	private PlcBrsStateListener brsStateListener;
 	private BrsAggregateModel brsAggregateModel;
 
 	@SuppressWarnings("serial")
@@ -85,7 +75,7 @@ public class BrsTest {
 		skuCheckFacade = Mockito.mock(SkuCheckFacade.class);
 		when(skuCheckFacadeProvider.get()).thenReturn(skuCheckFacade);
 
-		brsStateListener = Mockito.mock(BrsStateListener.class);
+		brsStateListener = Mockito.mock(PlcBrsStateListener.class);
 		brsStateListener.setPlcAdaptor(plcProvider.get());
 
 		brsAggregateModel = new BrsAggregateModel();

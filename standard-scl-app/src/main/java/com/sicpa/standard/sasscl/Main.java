@@ -4,6 +4,7 @@ import com.sicpa.standard.client.common.launcher.LoaderConfig;
 import com.sicpa.standard.gui.plaf.SicpaLookAndFeel;
 import com.sicpa.standard.sasscl.ioc.SpringConfig;
 import com.sicpa.standard.sasscl.ioc.SpringConfigSCL;
+import com.sicpa.standard.sasscl.skucheck.SkuCheckSpringConfig;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,8 +42,8 @@ public class Main {
 
 		// ------ Adding BIS ---------//
 		// config.put(SpringConfig.BIS, "spring" + File.separator + "bis.xml");
-		// config.put(SpringConfig.SKU_CHECK, SkuCheckSpringConfig.SKU_CHECK_CORE_FILE);
-		// config.put(SpringConfig.SKU_CHECK_VIEW, SkuCheckSpringConfig.SKU_CHECK_VIEW_FILE);
+		config.put(SpringConfig.SKU_CHECK, SkuCheckSpringConfig.SKU_CHECK_CORE_FILE);
+		config.put(SpringConfig.SKU_CHECK_VIEW, SkuCheckSpringConfig.SKU_CHECK_VIEW_FILE);
 
 		// ------ Adding BRS ---------//
 		config.put("brs", "spring/brs.xml");

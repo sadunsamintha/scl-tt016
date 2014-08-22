@@ -1,13 +1,10 @@
 package com.sicpa.standard.sasscl.controller.productionconfig;
 
-import java.util.List;
-
-import com.sicpa.standard.sasscl.controller.productionconfig.config.BisConfig;
-import com.sicpa.standard.sasscl.controller.productionconfig.config.CameraConfig;
-import com.sicpa.standard.sasscl.controller.productionconfig.config.PlcConfig;
-import com.sicpa.standard.sasscl.controller.productionconfig.config.PrinterConfig;
+import com.sicpa.standard.sasscl.controller.productionconfig.config.*;
 import com.sicpa.standard.sasscl.devices.IStartableDevice;
 import com.sicpa.standard.sasscl.devices.plc.IPlcAdaptor;
+
+import java.util.List;
 
 public interface IDeviceFactory {
 
@@ -19,7 +16,9 @@ public interface IDeviceFactory {
 
 	IStartableDevice getBis(BisConfig bisConfig);
 
-	/**
+    IStartableDevice getBrs(BrsConfig bisConfig);
+
+    /**
 	 * 
 	 * @return the printer that correspond to the printerConfig, called during the connecting phase
 	 */

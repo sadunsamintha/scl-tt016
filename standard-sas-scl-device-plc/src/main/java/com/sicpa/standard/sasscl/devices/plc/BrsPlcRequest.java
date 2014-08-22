@@ -1,6 +1,4 @@
-package com.sicpa.standard.sasscl.devices.brs;
-
-import com.sicpa.standard.sasscl.devices.plc.PlcRequest;
+package com.sicpa.standard.sasscl.devices.plc;
 
 @SuppressWarnings("serial")
 public class BrsPlcRequest extends PlcRequest {

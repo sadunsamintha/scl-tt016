@@ -1,30 +1,36 @@
 package com.sicpa.standard.sasscl.skucheck.view;
 
-import java.awt.Color;
+import com.google.common.eventbus.Subscribe;
+import com.sicpa.standard.common.util.Messages;
+import com.sicpa.standard.gui.plaf.SicpaColor;
+import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState;
+import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowStateChangedEvent;
+import com.sicpa.standard.sasscl.skucheck.SkuCheckFacade;
+import com.sicpa.standard.sasscl.skucheck.SkuCheckStatisticsResetEvent;
+import com.sicpa.standard.sasscl.skucheck.acquisition.GroupAcquisitionType;
+import com.sicpa.standard.sasscl.skucheck.acquisition.SingleAcquisitionType;
+import net.miginfocom.swing.MigLayout;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
-
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.Timer;
-
-import net.miginfocom.swing.MigLayout;
-
-import com.sicpa.standard.common.util.Messages;
-import com.sicpa.standard.gui.plaf.SicpaColor;
-import com.sicpa.standard.sasscl.skucheck.SkuCheckFacade;
-import com.sicpa.standard.sasscl.skucheck.acquisition.GroupAcquisitionType;
 
 public class StatisticsPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 
-	protected int devicesCount;
+    private static Logger logger = LoggerFactory.getLogger(StatisticsPanel.class);
+
+    protected int devicesCount;
 	protected List<DeviceStatisticsPanel> devicesPanels;
 	protected JLabel labelQuality;
 	protected JLabel labelTotal;
@@ -162,6 +168,42 @@ public class StatisticsPanel extends JPanel {
 			return true;
 		}
 	}
+
+    @Subscribe
+    public void onSkuCheckkResetStatisticsEvent(final SkuCheckStatisticsResetEvent evt) {
+        update();
+    }
+
+    @Subscribe
+    public void processStateChanged(ApplicationFlowStateChangedEvent evt) {
+
+        if (evt.getCurrentState() == ApplicationFlowState.STT_SELECT_WITH_PREVIOUS
+                || evt.getCurrentState() == ApplicationFlowState.STT_EXIT) {
+
+            String log = "BRS Statistics ";
+
+            for (int i = 0; i < devicesPanels.size(); i++) {
+
+                Map<SingleAcquisitionType, Integer> stats = facade.getStatistics(i);
+
+                for (Entry<SingleAcquisitionType, Integer> entry : stats.entrySet()) {
+
+                    log += " ; " + entry.getKey();
+
+                    if (entry.getValue() != null) {
+
+                        log += " ; " + entry.getValue();
+                    }
+                    else {
+                        log += " ; 0 ";
+                    }
+                }
+            }
+
+            logger.info(log);
+
+        }
+    }
 
 	public void setFacade(SkuCheckFacade facade) {
 		this.facade = facade;

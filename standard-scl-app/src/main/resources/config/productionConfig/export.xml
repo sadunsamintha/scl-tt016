@@ -10,6 +10,7 @@
 		<property key=".com.stLine[1].stParameters.bExportModeEnabled" value="false" />
 		<property key=".com.stLine[1].stParameters.bMaintenanceModeEnabled" value="false" />
 		<property key=".com.stLine[1].stParameters.bRefeedModeEnabled" value="false" />
-	</plcConfig>
+        <property key=".ExtGbl_stBRScom.bBRSenable" value="false"/>
+    </plcConfig>
 
 </ProductionConfig>

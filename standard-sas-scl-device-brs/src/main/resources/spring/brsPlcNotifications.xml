@@ -13,6 +13,9 @@
 		<ref bean="brsPlcErrorFraudDetected2Ntf" />
 		<ref bean="brsPlcJamDetected1Ntf" />
 		<ref bean="brsPlcJamDetected2Ntf" />
+		<ref bean="brsPlcErrorConsecutiveBadCodeNtf"/>
+		<ref bean="brsTooManyUnreadWarNtf"/>
+		<ref bean="brsTooManyUnreadErrNtf"/>
 	</util:list>
 
 	<bean id="brsPlcCamerasConnectedNtf" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="create">
@@ -47,6 +50,18 @@
 
 	<bean id="brsPlcJamDetected2Ntf" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createBooleanVar">
 		<constructor-arg value="#{plcVarMap['NTF_BRS_JAM_DETECTED2']}" />
+	</bean>
+	
+	<bean id="brsPlcErrorConsecutiveBadCodeNtf" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createBooleanVar">
+		<constructor-arg value="#{plcVarMap['NTF_BRS_CONSECUTIVE_BAD_CODE']}" />
+	</bean>
+	
+	<bean id="brsTooManyUnreadWarNtf" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createBooleanVar">
+		<constructor-arg value="#{plcVarMap['NTF_BRS_TOO_MANY_UNREAD_WAR']}" />
+	</bean>
+	
+	<bean id="brsTooManyUnreadErrNtf" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createBooleanVar">
+		<constructor-arg value="#{plcVarMap['NTF_BRS_TOO_MANY_UNREAD_ERR']}" />
 	</bean>
 
 </beans>

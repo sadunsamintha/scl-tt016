@@ -16,9 +16,19 @@
 		<ref bean="brsPlcCoderSignal2Var" />
 		<ref bean="brsPlcSamplingPeriodVar" />
 		<ref bean="brsPlcNotificationCntVar" />
-		<ref bean="brsPlcOfflineEnabledVar" />		
+		<ref bean="brsPlcOfflineEnabledVar" />
+		<ref bean="brsPlcSensorLow1Var" />
+		<ref bean="brsPlcSensorLow2Var" />
+		<ref bean="brsConsecutiveBadCodeParam" />
+		<ref bean="brsPercentUnreadWarParam" />
+		<ref bean="brsPercentUnreadErrParam" />
+		<ref bean="brsNbSamplesUnreadParam" />
+		<ref bean="brsNCoderDiameter1"/>
+		<ref bean="brsNCoderDiameter2"/>
+		<ref bean="brsNCoderResolution1"/>
+		<ref bean="brsNCoderResolution2"/>
 	</util:list>
-	
+
 	<bean id="brsPlcLineTypeVar" class="com.sicpa.standard.plc.value.PlcVariable"
 		factory-method="createInt32Var">
 		<constructor-arg value="#{plcVarMap['PARAM_BRS_LINE_TYPE']}" />
@@ -43,15 +53,25 @@
 		factory-method="createBooleanVar">
 		<constructor-arg value="#{plcVarMap['PARAM_BRS_DISTANCE_TYPE2']}" />
 	</bean>
-	
+
 	<bean id="brsPlcCoderSignal1Var" class="com.sicpa.standard.plc.value.PlcVariable"
 		factory-method="createInt32Var">
 		<constructor-arg value="#{plcVarMap['PARAM_BRS_CODER_SIGNAL1']}" />
 	</bean>
-	
+
 	<bean id="brsPlcCoderSignal2Var" class="com.sicpa.standard.plc.value.PlcVariable"
 		factory-method="createInt32Var">
 		<constructor-arg value="#{plcVarMap['PARAM_BRS_CODER_SIGNAL2']}" />
+	</bean>
+
+	<bean id="brsPlcSensorLow1Var" class="com.sicpa.standard.plc.value.PlcVariable"
+		factory-method="createBooleanVar">
+		<constructor-arg value="#{plcVarMap['PARAM_BRS_SENSOR_LOW1']}" />
+	</bean>
+
+	<bean id="brsPlcSensorLow2Var" class="com.sicpa.standard.plc.value.PlcVariable"
+		factory-method="createBooleanVar">
+		<constructor-arg value="#{plcVarMap['PARAM_BRS_SENSOR_LOW2']}" />
 	</bean>
 
 	<bean id="brsPlcSamplingPeriodVar" class="com.sicpa.standard.plc.value.PlcVariable"
@@ -67,6 +87,43 @@
 	<bean id="brsPlcOfflineEnabledVar" class="com.sicpa.standard.plc.value.PlcVariable"
 		factory-method="createBooleanVar">
 		<constructor-arg value="#{plcVarMap['PARAM_BRS_OFFLINE_ENABLED']}" />
+	</bean>
+
+	<bean id="brsConsecutiveBadCodeParam" class="com.sicpa.standard.plc.value.PlcVariable"
+		factory-method="createShortVar">
+		<constructor-arg value="#{plcVarMap['PARAM_BRS_NB_CONSECUTIVE_BAD_CODE']}" />
+	</bean>
+
+	<bean id="brsPercentUnreadWarParam" class="com.sicpa.standard.plc.value.PlcVariable"
+		factory-method="createShortVar">
+		<constructor-arg value="#{plcVarMap['PARAM_BRS_PERCENT_UNREAD_WAR']}" />
+	</bean>
+
+	<bean id="brsPercentUnreadErrParam" class="com.sicpa.standard.plc.value.PlcVariable"
+		factory-method="createShortVar">
+		<constructor-arg value="#{plcVarMap['PARAM_BRS_PERCENT_UNREAD_ERR']}" />
+	</bean>
+
+	<bean id="brsNbSamplesUnreadParam" class="com.sicpa.standard.plc.value.PlcVariable"
+		factory-method="createShortVar">
+		<constructor-arg value="#{plcVarMap['PARAM_BRS_NB_SAMPLES_UNREAD']}" />
+	</bean>
+	
+	<bean id="brsNCoderDiameter1" class="com.sicpa.standard.plc.value.PlcVariable"
+		factory-method="createShortVar">
+		<constructor-arg value="#{plcVarMap['PARAM_BRS_NCODER_DIAM_1']}" />
+	</bean>
+	<bean id="brsNCoderDiameter2" class="com.sicpa.standard.plc.value.PlcVariable"
+		factory-method="createShortVar">
+		<constructor-arg value="#{plcVarMap['PARAM_BRS_NCODER_DIAM_2']}" />
+	</bean>
+	<bean id="brsNCoderResolution1" class="com.sicpa.standard.plc.value.PlcVariable"
+		factory-method="createShortVar">
+		<constructor-arg value="#{plcVarMap['PARAM_BRS_NCODER_RESOLUTION_1']}" />
+	</bean>
+	<bean id="brsNCoderResolution2" class="com.sicpa.standard.plc.value.PlcVariable"
+		factory-method="createShortVar">
+		<constructor-arg value="#{plcVarMap['PARAM_BRS_NCODER_RESOLUTION_2']}" />
 	</bean>
 
 </beans>

@@ -15,7 +15,8 @@ public class ProductionConfigXstreamConfigurator implements IXStreamConfigurator
 		x.alias("CameraConfig", CameraConfig.class);
 		x.aliasField("PlcConfig", ProductionConfig.class, "plcConfig");
 		x.aliasField("BisConfig", ProductionConfig.class, "bisConfig");
-		x.useAttributeFor(ProductionConfig.class, "authenticatorMode");
+        x.aliasField("BrsConfig", ProductionConfig.class, "brsConfig");
+        x.useAttributeFor(ProductionConfig.class, "authenticatorMode");
 		x.useAttributeFor(ProductionConfig.class, "activationBehavior");
 
 		x.addImplicitCollection(ProductionConfig.class, "cameraConfigs", CameraConfig.class);

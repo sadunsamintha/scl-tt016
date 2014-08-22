@@ -1,12 +1,9 @@
 package com.sicpa.standard.sasscl.controller.productionconfig;
 
+import com.sicpa.standard.sasscl.controller.productionconfig.config.*;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import com.sicpa.standard.sasscl.controller.productionconfig.config.BisConfig;
-import com.sicpa.standard.sasscl.controller.productionconfig.config.CameraConfig;
-import com.sicpa.standard.sasscl.controller.productionconfig.config.PlcConfig;
-import com.sicpa.standard.sasscl.controller.productionconfig.config.PrinterConfig;
 
 /**
  * represent the config to use for a production
@@ -18,6 +15,8 @@ public class ProductionConfig implements IProductionConfig {
 
 	protected final List<CameraConfig> cameraConfigs = new ArrayList<CameraConfig>();
 	protected final List<PrinterConfig> printerConfigs = new ArrayList<PrinterConfig>();
+
+    protected BrsConfig brsConfig;
 	protected BisConfig bisConfig;
 
 	protected PlcConfig plcConfig;
@@ -50,7 +49,16 @@ public class ProductionConfig implements IProductionConfig {
 		this.bisConfig = bisConfig;
 	}
 
-	@Override
+    @Override
+    public BrsConfig getBrsConfig() {
+        return brsConfig;
+    }
+
+    public void setBrsConfig(BrsConfig brsConfig) {
+        this.brsConfig = brsConfig;
+    }
+
+    @Override
 	public String getAuthenticatorMode() {
 		return authenticatorMode;
 	}

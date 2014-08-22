@@ -1,5 +1,6 @@
 package com.sicpa.standard.sasscl.devices.brs;
 
+import com.sicpa.standard.sasscl.devices.plc.BrsPlcRequest;
 import org.hamcrest.core.IsEqual;
 import org.junit.Assert;
 import org.junit.Test;

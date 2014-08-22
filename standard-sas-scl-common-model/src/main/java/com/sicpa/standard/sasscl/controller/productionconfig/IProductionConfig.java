@@ -1,11 +1,8 @@
 package com.sicpa.standard.sasscl.controller.productionconfig;
 
-import java.util.Collection;
+import com.sicpa.standard.sasscl.controller.productionconfig.config.*;
 
-import com.sicpa.standard.sasscl.controller.productionconfig.config.BisConfig;
-import com.sicpa.standard.sasscl.controller.productionconfig.config.CameraConfig;
-import com.sicpa.standard.sasscl.controller.productionconfig.config.PlcConfig;
-import com.sicpa.standard.sasscl.controller.productionconfig.config.PrinterConfig;
+import java.util.Collection;
 
 /**
  * represent the config to use for a production
@@ -31,8 +28,9 @@ public interface IProductionConfig {
 
 	BisConfig getBisConfig();
 
+    BrsConfig getBrsConfig();
+
 	String getAuthenticatorMode();
 
 	String getActivationBehavior();
-
 }

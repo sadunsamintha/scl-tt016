@@ -36,9 +36,12 @@ public class ProductionInitiator implements IProductionInitiator {
 	protected IProductionConfig productionConfig;
 
 	protected PlcProvider plcProvider;
+
 	protected IStartableDevice bis;
 
-	protected IHardwareController hardwareController;
+    protected IStartableDevice brs;
+
+    protected IHardwareController hardwareController;
 
 	protected AuthenticatorModeProvider authenticatorModeProvider;
 
@@ -50,6 +53,8 @@ public class ProductionInitiator implements IProductionInitiator {
 		deviceFactory.reset();
 		cameras.clear();
 		printers.clear();
+        bis = null;
+        brs = null;
 	}
 
 	@Override
@@ -109,6 +114,7 @@ public class ProductionInitiator implements IProductionInitiator {
 		createPrinter();
 		createPlc();
 		createBis();
+        createBrs();
 	}
 
 	protected void createPlc() {
@@ -132,9 +138,15 @@ public class ProductionInitiator implements IProductionInitiator {
 		Set<IStartableDevice> devices = new HashSet<IStartableDevice>();
 		devices.addAll(cameras.values());
 		devices.addAll(printers.values());
+
 		if (bis != null) {
 			devices.add(bis);
 		}
+
+        if(brs != null) {
+            devices.add(brs);
+        }
+
 		String devicesName = "";
 		for (IStartableDevice dev : devices) {
 			devicesName += dev.getName() + " ";
@@ -152,6 +164,14 @@ public class ProductionInitiator implements IProductionInitiator {
 			logger.debug("camera created:{}", bis.getName());
 		}
 	}
+
+    protected void createBrs() {
+        if (productionConfig.getBrsConfig() != null) {
+            logger.debug("creating BRS");
+            brs = deviceFactory.getBrs(productionConfig.getBrsConfig());
+            logger.debug("BRS created:{}", brs.getName());
+        }
+    }
 
 	protected void createCamera() {
 		logger.debug("creating cameras");

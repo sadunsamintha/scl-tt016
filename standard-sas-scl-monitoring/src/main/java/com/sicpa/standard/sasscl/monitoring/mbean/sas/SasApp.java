@@ -1,27 +1,8 @@
 package com.sicpa.standard.sasscl.monitoring.mbean.sas;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import javax.management.AttributeChangeNotification;
-import javax.management.MBeanNotificationInfo;
-import javax.management.Notification;
-import javax.management.NotificationBroadcasterSupport;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.google.common.eventbus.Subscribe;
+import com.sicpa.standard.client.common.eventbus.service.EventBusService;
+import com.sicpa.standard.client.common.messages.MessageEvent;
 import com.sicpa.standard.client.common.utils.DateUtils;
 import com.sicpa.standard.client.common.utils.ReflectionUtils;
 import com.sicpa.standard.gui.state.State;
@@ -31,6 +12,7 @@ import com.sicpa.standard.sasscl.controller.productionconfig.IProductionConfig;
 import com.sicpa.standard.sasscl.controller.productionconfig.config.CameraConfig;
 import com.sicpa.standard.sasscl.devices.DeviceStatus;
 import com.sicpa.standard.sasscl.devices.plc.IPlcJmxInfo;
+import com.sicpa.standard.sasscl.messages.MessageEventKey;
 import com.sicpa.standard.sasscl.model.ProductionParameters;
 import com.sicpa.standard.sasscl.model.statistics.StatisticsKey;
 import com.sicpa.standard.sasscl.model.statistics.StatisticsKeyBad;
@@ -39,6 +21,18 @@ import com.sicpa.standard.sasscl.monitoring.mbean.StandardMonitoringMBeanConstan
 import com.sicpa.standard.sasscl.provider.impl.ProductionConfigProvider;
 import com.sicpa.standard.sasscl.repository.errors.AppMessage;
 import com.sicpa.standard.sasscl.repository.errors.IErrorsRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.management.AttributeChangeNotification;
+import javax.management.MBeanNotificationInfo;
+import javax.management.Notification;
+import javax.management.NotificationBroadcasterSupport;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.io.File;
+import java.util.*;
+import java.util.Map.Entry;
 
 public class SasApp extends NotificationBroadcasterSupport implements SasAppMBean {
 
@@ -50,11 +44,39 @@ public class SasApp extends NotificationBroadcasterSupport implements SasAppMBea
 	protected IPlcJmxInfo plcJmxInfo;
 	protected ProductionConfigProvider productionConfigProvider;
 
+    private String cameraDisconnected = "[]";
+
+    private String NO_CAMERAS = "No Cameras configured";
+
 	public SasApp() {
 		populateMapProperties();
-	}
+        EventBusService.register(this);
+    }
 
-	@Override
+    @Subscribe
+    public void handleMessageEvent(final MessageEvent event)
+    {
+        if (MessageEventKey.BRS.BRS_PLC_ALL_CAMERAS_DISCONNECTED.equals(event.getKey()))
+        {
+            cameraDisconnected = "<all>";
+        }
+        else if (MessageEventKey.BRS.BRS_PLC_CAMERAS_DISCONNECTION.equals(event.getKey()))
+        {
+            cameraDisconnected = "[";
+            try {
+                cameraDisconnected += event.getParams()[0].toString();
+            } catch (Exception e) {
+                cameraDisconnected += "UNKNOWN";
+            }
+            cameraDisconnected+= "]";
+        }
+        else if (MessageEventKey.BRS.BRS_PLC_ALL_CAMERAS_CONNECTED.equals(event.getKey()))
+        {
+            cameraDisconnected = "[]";
+        }
+    }
+
+    @Override
 	public boolean isRunning() {
 		return stats.isRunning();
 	}
@@ -150,10 +172,35 @@ public class SasApp extends NotificationBroadcasterSupport implements SasAppMBea
 		}
 	}
 
-	@Override
-	public String getDeviceDisconnected() {
-		return stats.getDevicesDisconnected();
-	}
+    @Override
+    public String getDeviceDisconnected()
+    {
+        String returnString = "[";
+        if(getDevicePlcStatus() == 2)
+        {
+            returnString += "PLC";
+        }
+        if((!getDeviceCameraStatus().contains(":1"))
+                && (!getDeviceCameraStatus().equals(NO_CAMERAS)))
+        {
+            if(returnString.length() > 1)
+            {
+                returnString+=" - ";
+            }
+            returnString += "Camera qc_sas";
+        }
+        if(getDeviceMasterStatus() == 2)
+        {
+            if(returnString.length() > 1)
+            {
+                returnString+=" - ";
+            }
+            returnString += "Master";
+        }
+
+        returnString+="]";
+        return returnString;
+    }
 
 	@Override
 	public String getStatistics() {
@@ -512,4 +559,16 @@ public class SasApp extends NotificationBroadcasterSupport implements SasAppMBea
 	public void setProductionConfigProvider(ProductionConfigProvider productionConfigProvider) {
 		this.productionConfigProvider = productionConfigProvider;
 	}
+
+    /**
+     * Return list Of Brs Camera Disconnected.
+     *
+     * @return String<br>
+     *         <b>[]</b>No<br>
+     *         <b>[X,Y,..]</b>X, Y Camera Id<br>
+     */
+    public String getDeviceBrsDisconnected()
+    {
+        return cameraDisconnected;
+    }
 }

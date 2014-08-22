@@ -86,4 +86,34 @@
   <PlcValue varName=".ExtGbl_stBRSconfig.nCoderSignal2">
     <value class="int">1</value>
   </PlcValue>
+    <PlcValue varName=".ExtGbl_stBRSconfig.bSensor1NormallyLow">
+        <value class="boolean">false</value>
+    </PlcValue>
+    <PlcValue varName=".ExtGbl_stBRSconfig.bSensor2NormallyLow">
+        <value class="boolean">false</value>
+    </PlcValue>
+    <PlcValue varName=".ExtGbl_stBRSconfig.nConsecWrongBC">
+        <value class="short">5</value>
+    </PlcValue>
+    <PlcValue varName=".ExtGbl_stBRSconfig.nPercentUnreadWar">
+        <value class="short">30</value>
+    </PlcValue>
+    <PlcValue varName=".ExtGbl_stBRSconfig.nPercentUnreadErr">
+        <value class="short">50</value>
+    </PlcValue>
+    <PlcValue varName=".ExtGbl_stBRSconfig.nNbSamplesUnread">
+        <value class="short">100</value>
+    </PlcValue>
+    <PlcValue varName=".ExtGbl_stBRSconfig.nCoderDiameter1">
+        <value class="short">42</value>
+    </PlcValue>
+    <PlcValue varName=".ExtGbl_stBRSconfig.nCoderDiameter2">
+        <value class="short">20</value>
+    </PlcValue>
+    <PlcValue varName=".ExtGbl_stBRSconfig.nCoderResolution1">
+        <value class="short">8192</value>
+    </PlcValue>
+    <PlcValue varName=".ExtGbl_stBRSconfig.nCoderResolution2">
+        <value class="short">20</value>
+    </PlcValue>
 </PlcValuesForAllVar>

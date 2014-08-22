@@ -63,7 +63,13 @@
 		<property name="parameterLine" ref="plcLineParamsTemplate" />
 		<property name="notificationLine" ref="plcConveyorNtfTemplate" />
 		<property name="lineVarGroups" ref="lineVarGroups" />
-	</bean>
+        <property name="brsStateListener" ref="plcBrsStateListener" />
+    </bean>
+
+    <bean id="plcBrsStateListener" class="com.sicpa.standard.sasscl.devices.plc.PlcBrsStateListener">
+        <property name="versionVarName" value="#{plcVarMap['NTF_BRS_VERSION']}" />
+        <property name="productionParameters" ref="productionParameters" />
+    </bean>
 	
 	<bean id="plcSimulatorAdaptor" class="${plcAdaptor}" scope="prototype">
 		<constructor-arg ref="plcSimulatorController" />

@@ -1,79 +1,81 @@
 package com.sicpa.standard.sasscl.devices.brs;
 
-import static org.apache.commons.lang.StringUtils.EMPTY;
-
-import java.util.concurrent.atomic.AtomicBoolean;
-
 import com.sicpa.standard.plc.value.IPlcValue;
 import com.sicpa.standard.plc.value.IPlcVariable;
 import com.sicpa.standard.plc.value.PlcString;
 import com.sicpa.standard.sasscl.model.ProductionParameters;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import static org.apache.commons.lang.StringUtils.EMPTY;
+
 public class SkuPlcVariable implements IPlcVariable<String> {
 
-	protected final ProductionParameters productionParameters;
-	protected final String variableName;
+    protected final ProductionParameters productionParameters;
+    protected final String variableName;
 
-	protected AtomicBoolean forwardProvidedSkuId = new AtomicBoolean(true);
+    protected AtomicBoolean forwardProvidedSkuId = new AtomicBoolean(true);
 
-	public SkuPlcVariable(ProductionParameters productionParameters, String variableName) {
+    public SkuPlcVariable(ProductionParameters productionParameters, String variableName) {
 
-		this.productionParameters = productionParameters;
-		this.variableName = variableName;
-	}
+        this.productionParameters = productionParameters;
+        this.variableName = variableName;
+    }
 
-	@Override
-	public String getVariableName() {
+    @Override
+    public String getVariableName() {
 
-		return variableName;
-	}
+        return variableName;
+    }
 
-	@Override
-	public Class<? extends IPlcValue<String>> getVariableType() {
+    @Override
+    public Class<? extends IPlcValue<String>> getVariableType() {
 
-		return PlcString.class;
-	}
+        return PlcString.class;
+    }
 
-	@Override
-	public Class<String> getValueType() {
+    @Override
+    public Class<String> getValueType() {
 
-		return String.class;
-	}
+        return String.class;
+    }
 
-	@Override
-	public IPlcValue<String> getPlcValue() {
+    @Override
+    public IPlcValue<String> getPlcValue() {
 
-		String sku = getProvidedValue();
-		return new PlcString(sku, sku.length());
-	}
+        String sku = getProvidedValue() + '\0';
+        return new PlcString(sku, sku.length());
+    }
 
-	protected String getProvidedValue() {
+    protected String getProvidedValue() {
 
-		return isBarCodeAvailable() ? productionParameters.getSku().getBarCodes().iterator().next() : EMPTY;
-	}
+        return isBarCodeAvailable() ? productionParameters.getSku().getBarCodes().iterator().next() : EMPTY;
+    }
 
-	protected boolean isBarCodeAvailable() {
+    protected boolean isBarCodeAvailable() {
 
-		return forwardProvidedSkuId.get() && null != productionParameters.getSku().getBarCodes()
-				&& !productionParameters.getSku().getBarCodes().isEmpty();
-	}
+        return forwardProvidedSkuId.get()
+                && productionParameters.getSku()!= null
+                && productionParameters.getSku().getBarCodes() != null
+                && !productionParameters.getSku().getBarCodes().isEmpty();
+    }
 
-	@Override
-	public void setPlcValue(IPlcValue<String> stringIPlcValue) {
+    @Override
+    public void setPlcValue(IPlcValue<String> stringIPlcValue) {
 
-		throw new IllegalStateException("Trying to set the PLC value of selected SKU");
-	}
+        throw new IllegalStateException("Trying to set the PLC value of selected SKU");
+    }
 
-	@Override
-	public String getValue() {
+    @Override
+    public String getValue() {
 
-		return getProvidedValue();
-	}
+        return getProvidedValue();
+    }
 
-	@Override
-	public void setValue(String value) {
+    @Override
+    public void setValue(String value) {
 
-		boolean reset = EMPTY.equals(value);
-		forwardProvidedSkuId.compareAndSet(reset, !reset);
-	}
+        boolean reset = EMPTY.equals(value);
+        forwardProvidedSkuId.compareAndSet(reset, !reset);
+    }
 }

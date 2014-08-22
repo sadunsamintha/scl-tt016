@@ -190,6 +190,9 @@ public interface MessageEventKey {
 		String BRS_CAN_NOT_START = "brs.plc.can.not.start";
 		String BRS_COUNT_DIFFERENCE_HIGH = "brs.count.difference.high";
 		String BRS_TOO_MANY_UNREAD = "brs.unread.toomany";
+        String NTF_BRS_CONSECUTIVE_BAD_CODE_DETECTED = "brs.plc.consecutive.bad.code.detected";
+        String NTF_BRS_TOO_MANY_UNREAD_WAR_DETECTED= "brs.plc.too.many.unread.war";
+        String NTF_BRS_TOO_MANY_UNREAD_ERR_DETECTED= "brs.plc.too.many.unread.err";
 	}
 
 	public static interface SkuCheck {

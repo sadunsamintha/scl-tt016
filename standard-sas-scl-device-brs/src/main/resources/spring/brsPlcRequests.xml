@@ -60,37 +60,37 @@
 	<util:map id="mapBrsPlcRequestAction">
 		<entry>
 			<key>
-				<util:constant static-field="com.sicpa.standard.sasscl.devices.brs.BrsPlcRequest.LINE_ENABLE" />
+				<util:constant static-field="com.sicpa.standard.sasscl.devices.plc.BrsPlcRequest.LINE_ENABLE" />
 			</key>
 			<ref bean="brsPlcLineEnableVar" />
 		</entry>
 		<entry>
 			<key>
-				<util:constant static-field="com.sicpa.standard.sasscl.devices.brs.BrsPlcRequest.LINE_DISABLE" />
+				<util:constant static-field="com.sicpa.standard.sasscl.devices.plc.BrsPlcRequest.LINE_DISABLE" />
 			</key>
 			<ref bean="brsPlcLineDisableVar" />
 		</entry>
 		<entry>
 			<key>
-				<util:constant static-field="com.sicpa.standard.sasscl.devices.brs.BrsPlcRequest.SET_EXPECTED_SKU" />
+				<util:constant static-field="com.sicpa.standard.sasscl.devices.plc.BrsPlcRequest.SET_EXPECTED_SKU" />
 			</key>
 			<ref bean="brsPlcSelectedSkuVar" />
 		</entry>
 		<entry>
 			<key>
-				<util:constant static-field="com.sicpa.standard.sasscl.devices.brs.BrsPlcRequest.RESET_EXPECTED_SKU" />
+				<util:constant static-field="com.sicpa.standard.sasscl.devices.plc.BrsPlcRequest.RESET_EXPECTED_SKU" />
 			</key>
 			<ref bean="brsPlcSelectedSkuVar" />
 		</entry>
 		<entry>
 			<key>
-				<util:constant static-field="com.sicpa.standard.sasscl.devices.brs.BrsPlcRequest.SET_SKU_CHECK_MODE" />
+				<util:constant static-field="com.sicpa.standard.sasscl.devices.plc.BrsPlcRequest.SET_SKU_CHECK_MODE" />
 			</key>
 			<ref bean="brsPlcSetSkuCheckModeVar" />
 		</entry>
 		<entry>
 			<key>
-				<util:constant static-field="com.sicpa.standard.sasscl.devices.brs.BrsPlcRequest.RESET_SKU_CHECK_MODE" />
+				<util:constant static-field="com.sicpa.standard.sasscl.devices.plc.BrsPlcRequest.RESET_SKU_CHECK_MODE" />
 			</key>
 			<ref bean="brsPlcResetSkuCheckModeVar" />
 		</entry>

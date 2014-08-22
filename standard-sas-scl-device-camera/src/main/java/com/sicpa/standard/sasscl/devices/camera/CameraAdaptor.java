@@ -1,13 +1,5 @@
 package com.sicpa.standard.sasscl.devices.camera;
 
-import java.awt.Image;
-import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.sicpa.standard.camera.controller.CameraException;
 import com.sicpa.standard.camera.controller.ICameraController;
 import com.sicpa.standard.camera.controller.ICameraControllerListener;
@@ -24,6 +16,7 @@ import com.sicpa.standard.camera.parser.event.UnknownCodeEventArgs;
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.messages.MessageEvent;
 import com.sicpa.standard.client.common.utils.StringMap;
+import com.sicpa.standard.common.util.ThreadUtils;
 import com.sicpa.standard.gui.utils.ImageUtils;
 import com.sicpa.standard.sasscl.controller.productionconfig.ConfigurationFailedException;
 import com.sicpa.standard.sasscl.controller.productionconfig.IConfigurable;
@@ -39,6 +32,13 @@ import com.sicpa.standard.sasscl.devices.camera.transformer.ICameraImageTransfor
 import com.sicpa.standard.sasscl.devices.camera.transformer.IRoiCameraImageTransformer;
 import com.sicpa.standard.sasscl.messages.MessageEventKey;
 import com.sicpa.standard.sasscl.model.ProductionParameters;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CameraAdaptor extends AbstractCameraAdaptor implements ICameraControllerListener,
 		IConfigurable<CameraConfig, CameraAdaptor> {
@@ -94,24 +94,27 @@ public class CameraAdaptor extends AbstractCameraAdaptor implements ICameraContr
 		}
 	}
 
-	/**
-	 * Request camera to stop reading result
-	 * 
-	 * @throws CameraAdaptorException
-	 */
-
-	@Override
-	public void doStop() throws CameraAdaptorException {
-		try {
-			if (status == DeviceStatus.STARTED) {
-				controller.stopReading();
-			}
-		} catch (com.sicpa.standard.camera.controller.CameraException e) {
-			throw new CameraAdaptorException("Camera error when stop reading", e);
-		} finally {
-			fireDeviceStatusChanged(DeviceStatus.STOPPED);
-		}
-	}
+    /**
+     * Request camera to stop reading result
+     *
+     * fix for mismatch between BRS and LS counters
+     * - camera codes received after camera required to stop
+     * - Added sleepQuietly
+     * @throws CameraAdaptorException
+     */
+    @Override
+    public void doStop() throws CameraAdaptorException {
+        try {
+            ThreadUtils.sleepQuietly(100);
+            if (status == DeviceStatus.STARTED) {
+                controller.stopReading();
+            }
+        } catch (com.sicpa.standard.camera.controller.CameraException e) {
+            throw new CameraAdaptorException("Camera error when stop reading", e);
+        } finally {
+            fireDeviceStatusChanged(DeviceStatus.STOPPED);
+        }
+    }
 
 	@Override
 	public void onCameraCodeReceived(final ICameraController<?> sender, final CodeReceivedEventArgs codeReceivedEvent) {
