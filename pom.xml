@@ -479,7 +479,7 @@
             <dependency>
                 <groupId>com.sicpa.standard.printer</groupId>
                 <artifactId>standard-printer-oi2jet</artifactId>
-                <version>0.1.0-SNAPSHOT</version>
+                <version>0.1.1</version>
             </dependency>
 
 
