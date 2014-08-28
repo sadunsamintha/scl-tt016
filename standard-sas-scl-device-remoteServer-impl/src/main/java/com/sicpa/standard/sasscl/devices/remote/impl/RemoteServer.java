@@ -1,26 +1,5 @@
 package com.sicpa.standard.sasscl.devices.remote.impl;
 
-import java.net.URL;
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.ResourceBundle;
-
-import javax.security.auth.callback.CallbackHandler;
-import javax.security.auth.login.LoginContext;
-import javax.security.auth.login.LoginException;
-
-import org.jboss.aop.standalone.SystemClassLoader;
-import org.jboss.security.SecurityContextAssociation;
-import org.jboss.security.auth.callback.UsernamePasswordHandler;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.exception.InitializationRuntimeException;
 import com.sicpa.standard.client.common.messages.MessageEvent;
@@ -37,23 +16,13 @@ import com.sicpa.standard.sasscl.devices.remote.impl.sicpadata.ISicpaDataGenerat
 import com.sicpa.standard.sasscl.devices.remote.mapping.IProductionModeMapping;
 import com.sicpa.standard.sasscl.devices.remote.mapping.IRemoteServerProductStatusMapping;
 import com.sicpa.standard.sasscl.devices.remote.stdCrypto.StdCryptoAuthenticatorWrapper;
-import com.sicpa.standard.sasscl.model.CodeType;
-import com.sicpa.standard.sasscl.model.EncoderInfo;
-import com.sicpa.standard.sasscl.model.PackagedProducts;
-import com.sicpa.standard.sasscl.model.Product;
-import com.sicpa.standard.sasscl.model.ProductStatus;
-import com.sicpa.standard.sasscl.model.ProductionMode;
-import com.sicpa.standard.sasscl.model.SKU;
+import com.sicpa.standard.sasscl.model.*;
 import com.sicpa.standard.sasscl.monitoring.MonitoringService;
 import com.sicpa.standard.sasscl.monitoring.system.SystemEventType;
 import com.sicpa.standard.sasscl.monitoring.system.event.BasicSystemEvent;
 import com.sicpa.standard.sasscl.productionParameterSelection.node.AbstractProductionParametersNode;
 import com.sicpa.standard.sasscl.productionParameterSelection.node.IProductionParametersNode;
-import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.CodeTypeNode;
-import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.NavigationNode;
-import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.ProductionModeNode;
-import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.ProductionParameterRootNode;
-import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.SKUNode;
+import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.*;
 import com.sicpa.standard.sasscl.sicpadata.CryptoServiceProviderManager;
 import com.sicpa.standard.sasscl.sicpadata.reader.IAuthenticator;
 import com.sicpa.std.common.api.activation.business.ActivationServiceHandler;
@@ -89,6 +58,18 @@ import com.sicpa.std.common.api.util.PropertyNames;
 import com.sicpa.std.server.util.lifechecker.LifeChecker;
 import com.sicpa.std.server.util.locator.PropertyUtil;
 import com.sicpa.std.server.util.locator.ServiceLocator;
+import org.jboss.aop.standalone.SystemClassLoader;
+import org.jboss.security.SecurityContextAssociation;
+import org.jboss.security.auth.callback.UsernamePasswordHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.security.auth.callback.CallbackHandler;
+import javax.security.auth.login.LoginContext;
+import javax.security.auth.login.LoginException;
+import java.net.URL;
+import java.text.MessageFormat;
+import java.util.*;
 
 public class RemoteServer extends AbstractRemoteServer {
 
@@ -538,7 +519,7 @@ public class RemoteServer extends AbstractRemoteServer {
 				statusDto = new ProcessedProductsStatusDto();
 				statusDto.setValue(remoteId);
 			}
-			authenticatedProductsDto.add(new AuthenticatedProductDto((long) product.getSku().getId(), product.getSku()
+			authenticatedProductsDto.add(new AuthenticatedProductDto((long) product.getSku().getId(), product.getCode()
 					.getCodeType().getId(), product.getCode().getEncoderId(), product.getCode().getSequence(), product
 					.getActivationDate()));
 		}
