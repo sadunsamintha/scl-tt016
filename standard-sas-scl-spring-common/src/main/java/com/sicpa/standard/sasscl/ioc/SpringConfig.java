@@ -117,6 +117,7 @@ public class SpringConfig extends AbstractSpringConfig {
 		config.put(BARCODE, "spring/barcode.xml");
 		config.put(ASPECT, "spring/aop.xml");
 		config.put("aopLifeChecker", "spring/aopLifeChecker.xml");
+        config.put(ALERT_PLC_ACTIVATION_CROSSCHECK, "spring/alertPlcActivationCrossCheckTask.xml");
 
 		// PLC variables descriptors for cabinet
 		config.put(EDITABLE_PLC_CABINET_VARIABLES, "spring/descriptors/plcCabinetVariablesDescriptors.xml");

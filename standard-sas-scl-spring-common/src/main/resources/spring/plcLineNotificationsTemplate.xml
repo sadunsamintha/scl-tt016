@@ -6,11 +6,12 @@
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 
 
-	<util:list id="plcConveyorNtfTemplate">
-		<ref bean="lineSpeedNtf" />
-		<ref bean="lineStateNtf" />
-		<ref bean="lineWarErrRegisterNtf" />
-	</util:list>
+    <util:list id="plcConveyorNtfTemplate">
+        <ref bean="lineSpeedNtf" />
+        <ref bean="lineStateNtf" />
+        <ref bean="lineWarErrRegisterNtf" />
+        <ref bean="productDetectorTrigsNtf" />
+    </util:list>
 
 	<bean id="lineSpeedNtf" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createInt32Var">
 		<constructor-arg value="#{plcVarMap['NTF_LINE_SPEED']}" />
