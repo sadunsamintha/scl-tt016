@@ -1,5 +1,19 @@
 package com.sicpa.standard.sasscl.business.activation;
 
+import com.google.common.eventbus.Subscribe;
+import com.sicpa.standard.client.common.messages.MessageEvent;
+import com.sicpa.standard.sasscl.business.alert.task.AbstractAlertTask;
+import com.sicpa.standard.sasscl.business.alert.task.model.PlcActivationCounterCheckModel;
+import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState;
+import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowStateChangedEvent;
+import com.sicpa.standard.sasscl.devices.plc.IPlcListener;
+import com.sicpa.standard.sasscl.devices.plc.event.PlcEvent;
+import com.sicpa.standard.sasscl.devices.plc.impl.PlcVariables;
+import com.sicpa.standard.sasscl.messages.MessageEventKey;
+import com.sicpa.standard.sasscl.provider.impl.PlcProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.HashMap;
@@ -7,19 +21,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.google.common.eventbus.Subscribe;
-import com.sicpa.standard.client.common.messages.MessageEvent;
-import com.sicpa.standard.sasscl.business.alert.task.AbstractAlertTask;
-import com.sicpa.standard.sasscl.business.alert.task.model.PlcActivationCounterCheckModel;
-import com.sicpa.standard.sasscl.devices.plc.IPlcListener;
-import com.sicpa.standard.sasscl.devices.plc.event.PlcEvent;
-import com.sicpa.standard.sasscl.devices.plc.impl.PlcVariables;
-import com.sicpa.standard.sasscl.messages.MessageEventKey;
-import com.sicpa.standard.sasscl.provider.impl.PlcProvider;
 
 public class PlcActivationCounterCheck extends AbstractAlertTask implements IPlcListener {
 
@@ -40,7 +41,7 @@ public class PlcActivationCounterCheck extends AbstractAlertTask implements IPlc
 
 	public void onPlcEvent(PlcEvent event) {
 
-		// THIS IS A BAD IDEA TO DO THAT FOR EACH NOTIFICATIOB
+		// THIS IS A BAD IDEA TO DO THAT FOR EACH NOTIFICATION
 		// TOO MANY NOTIFICATION BETWEEN PLC AND JAVA FOR A HIGH SPEED LINE
 		// THIS MODULE IS NOT ACTIVE BY DEFAULT
 
@@ -101,7 +102,7 @@ public class PlcActivationCounterCheck extends AbstractAlertTask implements IPlc
 	@Override
 	protected boolean isAlertPresent() {
 		if (Math.abs(totalCount - counterFromActivation.get()) > getModel().getMaxDelta()) {
-			logger.error("counter from plc={}, counter from the activation{1}", totalCount,
+			logger.error("counter from plc={}, counter from the activation={}", totalCount,
 					counterFromActivation.get());
 			return true;
 		}
@@ -139,4 +140,12 @@ public class PlcActivationCounterCheck extends AbstractAlertTask implements IPlc
 			}
 		});
 	}
+
+    // Products trigs counter is reset in PLC at each start also
+    @Subscribe
+    public void handleApplicationStateChange(ApplicationFlowStateChangedEvent evt) {
+        if(evt.getCurrentState().equals(ApplicationFlowState.STT_STARTING)) {
+            counterFromActivation.set(0);
+        }
+    }
 }
