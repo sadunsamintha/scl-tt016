@@ -63,7 +63,6 @@ import org.slf4j.LoggerFactory;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.security.auth.login.LoginException;
 import java.text.MessageFormat;
 import java.util.*;
 
