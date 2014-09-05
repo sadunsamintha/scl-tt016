@@ -18,7 +18,6 @@ import com.sicpa.standard.sasscl.devices.remote.mapping.IRemoteServerProductStat
 import com.sicpa.standard.sasscl.devices.remote.stdCrypto.StdCryptoAuthenticatorWrapper;
 import com.sicpa.standard.sasscl.model.*;
 import com.sicpa.standard.sasscl.monitoring.MonitoringService;
-import com.sicpa.standard.sasscl.monitoring.system.SystemEventType;
 import com.sicpa.standard.sasscl.monitoring.system.event.BasicSystemEvent;
 import com.sicpa.standard.sasscl.productionParameterSelection.node.AbstractProductionParametersNode;
 import com.sicpa.standard.sasscl.productionParameterSelection.node.IProductionParametersNode;
@@ -57,19 +56,24 @@ import com.sicpa.std.common.api.staticdata.sku.dto.SkuProductDto;
 import com.sicpa.std.common.api.util.PropertyNames;
 import com.sicpa.std.server.util.lifechecker.LifeChecker;
 import com.sicpa.std.server.util.locator.PropertyUtil;
-import com.sicpa.std.server.util.locator.ServiceLocator;
-import org.jboss.aop.standalone.SystemClassLoader;
-import org.jboss.security.SecurityContextAssociation;
-import org.jboss.security.auth.callback.UsernamePasswordHandler;
+import org.jboss.ejb.client.EJBClientContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.security.auth.callback.CallbackHandler;
-import javax.security.auth.login.LoginContext;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.security.auth.login.LoginException;
-import java.net.URL;
 import java.text.MessageFormat;
 import java.util.*;
+
+import static com.sicpa.standard.sasscl.model.ProductionMode.REFEED_CORRECTION;
+import static com.sicpa.standard.sasscl.model.ProductionMode.REFEED_NORMAL;
+import static com.sicpa.standard.sasscl.monitoring.system.SystemEventType.LAST_SENT_TO_REMOTE_SERVER;
+import static com.sicpa.std.common.api.activation.business.ActivationServiceHandler.COUNTING_PRODUCT_TYPE;
+import static com.sicpa.std.common.api.activation.business.ActivationServiceHandler.LABELED_PRODUCT_TYPE;
+import static com.sicpa.std.common.api.activation.business.ActivationServiceHandler.MARKED_PRODUCT_TYPE;
+import static com.sicpa.std.server.util.locator.ServiceLocator.*;
 
 public class RemoteServer extends AbstractRemoteServer {
 
@@ -95,63 +99,66 @@ public class RemoteServer extends AbstractRemoteServer {
 
 	protected String serverPropertieFile = "config/server/standard-server.properties";
 
+    protected Context context;
+
+    private final Properties properties = new Properties();
+
 	public RemoteServer(final String configFile) {
-		init();
+
 		try {
 			model = ConfigUtils.load(configFile);
 		} catch (Exception e) {
 			throw new InitializationRuntimeException("Failed to load remote server model", e);
 		}
 
-		try {
-			login();
-		} catch (Exception e) {
-			logger.error("failed to login", e);
-		}
+        init();
 	}
 
 	public RemoteServer(final RemoteServerModel remoteServerModel) {
-		init();
+
 		model = remoteServerModel;
-
-		try {
-			login();
-		} catch (Exception e) {
-			logger.error("failed to login", e);
-		}
+        init();
 	}
 
-	protected void init() {
-		lifeChecker = new LifeChecker();
-		initAuthFile();
-		initPackageSenders();
+    protected void init() {
 
-		try {
-			Properties prop = new Properties();
-			prop.load(SystemClassLoader.getSystemResourceAsStream(serverPropertieFile));
-			PropertyUtil.setClientProperties(prop);
-		} catch (Exception e) {
-			logger.error("failed to load " + serverPropertieFile, e);
-		}
+        lifeChecker = new LifeChecker();
+        initPackageSenders();
 
-	}
+        if (isPropertiesFileLoaded()) {
+            initClientSecurityContext();
+            setupContext();
+        }
+    }
 
-	protected void initAuthFile() {
-		try {
-			URL url = ClassLoader.getSystemClassLoader().getResource("config/server/auth.conf");
+    protected void setupContext()  {
 
-			if (url != null) {
-				System.setProperty("java.security.auth.login.config", url.toURI().getPath());
-				logger.debug("auth.conf file used: {}", url);
-			} else {
-				logger.error("auth.conf file not found");
-			}
-		} catch (Exception e) {
-			logger.error("", e);
-		}
-	}
+        try {
+            context = new InitialContext(properties);
+        } catch (NamingException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-	protected void initPackageSenders() {
+    private void initClientSecurityContext() {
+
+        EJBClientContext.getCurrent().registerInterceptor(1, new BasicClientSecurityInterceptor());
+        BasicClientSecurityInterceptor.setPrincipal(model.getUsername(), model.getPassword().toCharArray());
+    }
+
+    private boolean isPropertiesFileLoaded() {
+
+        try {
+
+            properties.load(PropertyUtil.class.getResourceAsStream(serverPropertieFile));
+            return true;
+        } catch (Exception e) {
+            logger.error("failed to load " + serverPropertieFile, e);
+        }
+        return false;
+    }
+
+    protected void initPackageSenders() {
 		IPackageSender senderActivated = new IPackageSender() {
 			@Override
 			public void sendPackage(PackagedProducts products) throws ActivationException {
@@ -208,9 +215,7 @@ public class RemoteServer extends AbstractRemoteServer {
 
 		getAndSaveCryptoPassword();
 
-		ActivationServiceHandler activation = getActivationBean();
-
-		SicpadataReaderDto auth = activation.provideSicpadataReader();
+        SicpadataReaderDto auth = getActivationBean().provideSicpadataReader();
 
 		return new StdCryptoAuthenticatorWrapper(auth.getSicpadataReader(), cryptoFieldsConfig);
 	}
@@ -230,16 +235,22 @@ public class RemoteServer extends AbstractRemoteServer {
 	}
 
 	protected ConfigurationBusinessHandler getConfigBean() {
-		return (ConfigurationBusinessHandler) ServiceLocator.getInstance().getService(
-				ServiceLocator.SERVICE_CONFIG_BUSINESS_SERVICE);
+		return getService(SERVICE_CONFIG_BUSINESS_SERVICE);
 	}
+
+    @SuppressWarnings("unchecked")
+    protected <T> T getService(String name) {
+
+        try {
+            return (T) context.lookup(name);
+        } catch (NamingException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 	protected void getAndSaveCryptoPassword() {
 		try {
-			ConfigurationBusinessHandler configService = getConfigBean();
-
-			Map<String, String> serverconfig = configService.getConfiguration(null);
-			String pwd = serverconfig.get(PropertyNames.SICPADATA_ADMIN_PWD);
+            String pwd = fetchCryptoPassword();
 
 			cryptoServiceProviderManager.setPassword(pwd);
 
@@ -254,7 +265,16 @@ public class RemoteServer extends AbstractRemoteServer {
 
 	}
 
-	public void doDownloadEncoder(final int quantity, final CodeType codeType, final int year) {
+    private String fetchCryptoPassword() {
+
+        ConfigurationBusinessHandler configService = getConfigBean();
+
+        Map<String, String> serverConfiguration = configService.getConfiguration(null);
+
+        return serverConfiguration.get(PropertyNames.SICPADATA_ADMIN_PWD);
+    }
+
+    public void doDownloadEncoder(final int quantity, final CodeType codeType, final int year) {
 		if (quantity <= 0) {
 			return;
 		}
@@ -262,13 +282,7 @@ public class RemoteServer extends AbstractRemoteServer {
 				new Object[] { quantity, codeType.getId(), year });
 		try {
 
-			CodingServiceHandler senderCodingServiceHandler = getCodingBean();
-
-			SicpadataGeneratorOrderDto dto = new SicpadataGeneratorOrderDto();
-			dto.setQuantity(quantity);
-			dto.setCodeTypeId(codeType.getId());
-			dto.setYear(year);
-			sdGenReceiver.requestSicpadataGenerators(dto, senderCodingServiceHandler);
+            sdGenReceiver.requestSicpadataGenerators(newSdGenOrder(quantity, codeType, year), getCodingBean());
 		} catch (Exception e) {
 			logger.error(MessageFormat.format(
 					"request SicpadataGenerator, quantity:{0} codeType:{1}  year:{2}, failed", quantity,
@@ -277,15 +291,23 @@ public class RemoteServer extends AbstractRemoteServer {
 		}
 	}
 
-	@Override
+    private SicpadataGeneratorOrderDto newSdGenOrder(int quantity, CodeType codeType, int year) {
+
+        SicpadataGeneratorOrderDto dto = new SicpadataGeneratorOrderDto();
+        dto.setQuantity(quantity);
+        dto.setCodeTypeId(codeType.getId());
+        dto.setYear(year);
+        return dto;
+    }
+
+    @Override
 	public final ProductionParameterRootNode getTreeProductionParameters() throws RemoteServerException {
 		if (!isConnected()) {
 			return null;
 		}
 		try {
 
-			ProductionParameterRootNode res = doGetTreeProductionParameters();
-			return res;
+            return doGetTreeProductionParameters();
 		} catch (Exception e) {
 			throw new RemoteServerException(e);
 		}
@@ -309,41 +331,51 @@ public class RemoteServer extends AbstractRemoteServer {
 	}
 
 	/**
-	 * 
+	 *
 	 * expected structure :
-	 * 
+	 *
 	 * <code>
-	 * 
+	 *
 	 * MarketTypeDto
 	 * |
 	 * |- CodeTypeDto
 	 * 		|
 	 * 		|- SKUTypeDto
-	 * 
+	 *
 	 * </code>
-	 * 
+	 *
 	 * @param parentDTO
 	 * @param convertedParentRoot
 	 */
-	protected void convertDMSProductionParameter(final ComponentBehaviorDto<? extends BaseDto<Long>> parentDTO,
-			final AbstractProductionParametersNode<?> convertedParentRoot) {
+    protected void convertDMSProductionParameter(final ComponentBehaviorDto<? extends BaseDto<Long>> parentDTO,
+                                                 final AbstractProductionParametersNode<?> convertedParentRoot) {
 
-		if (parentDTO.getChildren() != null) {
-			for (ComponentBehaviorDto<? extends BaseDto<Long>> child : parentDTO.getChildren()) {
-				if (child.getNodeValue() instanceof MarketTypeDto) {
-					convertMarketTypeDto(child, convertedParentRoot);
-				} else if (child.getNodeValue() instanceof SkuProductDto) {
-					convertSkuProductDto(child, convertedParentRoot);
-				} else if (child.getNodeValue() instanceof CodeTypeDto) {
-					convertCodeTypeDto(child, convertedParentRoot);
-				} else {
-					convertNavigationDto(child, convertedParentRoot);
-				}
-			}
-		}
-	}
+        if (parentDTO.getChildren() == null)
+            return;
 
-	protected void convertNavigationDto(ComponentBehaviorDto<? extends BaseDto<Long>> child,
+        for (ComponentBehaviorDto<? extends BaseDto<Long>> child : parentDTO.getChildren())
+            convert(convertedParentRoot, child);
+    }
+
+    private void convert(AbstractProductionParametersNode<?> convertedParentRoot,
+                         ComponentBehaviorDto<? extends BaseDto<Long>> child) {
+
+        if (child.getNodeValue() instanceof MarketTypeDto) {
+            convertMarketTypeDto(child, convertedParentRoot);
+            return;
+        }
+        if (child.getNodeValue() instanceof SkuProductDto) {
+            convertSkuProductDto(child, convertedParentRoot);
+            return;
+        }
+        if (child.getNodeValue() instanceof CodeTypeDto) {
+            convertCodeTypeDto(child, convertedParentRoot);
+            return;
+        }
+        convertNavigationDto(child, convertedParentRoot);
+    }
+
+    protected void convertNavigationDto(ComponentBehaviorDto<? extends BaseDto<Long>> child,
 			final AbstractProductionParametersNode<?> convertedParentRoot) {
 		// navigation node only
 		NavigationNode navigationNode = new NavigationNode(child.getNodeValue().getId() + "");
@@ -379,30 +411,27 @@ public class RemoteServer extends AbstractRemoteServer {
 		convertDMSProductionParameter(child, skuConverted);
 	}
 
-	protected void convertMarketTypeDto(ComponentBehaviorDto<? extends BaseDto<Long>> child,
-			final AbstractProductionParametersNode<?> convertedParentRoot) {
+    protected void convertMarketTypeDto(ComponentBehaviorDto<? extends BaseDto<Long>> child,
+                                        final AbstractProductionParametersNode<?> convertedParentRoot) {
 
-		MarketTypeDto marketDto = (MarketTypeDto) child.getNodeValue();
-		ProductionMode productionMode = productionModeMapping.getProductionModeFromRemoteId(marketDto.getId()
-				.intValue());
-		if (productionMode != null) {
+        MarketTypeDto marketDto = (MarketTypeDto) child.getNodeValue();
+        ProductionMode productionMode = productionModeMapping.getProductionModeFromRemoteId(marketDto.getId()
+                .intValue());
+        if (productionMode == null) {
 
-			ProductionModeNode productionModeConverted = new ProductionModeNode(productionMode);
-			convertedParentRoot.addChildren(productionModeConverted);
-			convertDMSProductionParameter(child, productionModeConverted);
+            logger.error("no production mode for {}", marketDto.toString());
+            return;
+        }
+        ProductionModeNode productionModeConverted = new ProductionModeNode(productionMode);
+        convertedParentRoot.addChildren(productionModeConverted);
+        convertDMSProductionParameter(child, productionModeConverted);
 
-			if (productionMode.equals(ProductionMode.STANDARD)) {
-				// if standard mode duplicate the tree for refeed
-				copyTree(productionModeConverted, new ProductionModeNode(ProductionMode.REFEED_NORMAL),
-						convertedParentRoot);
-				copyTree(productionModeConverted, new ProductionModeNode(ProductionMode.REFEED_CORRECTION),
-						convertedParentRoot);
-			}
-
-		} else {
-			logger.error("no production mode for {}", marketDto.toString());
-		}
-	}
+        if (ProductionMode.STANDARD.equals(productionMode)) {
+            // if standard mode duplicate the tree for refeed
+            copyTree(productionModeConverted, new ProductionModeNode(REFEED_NORMAL), convertedParentRoot);
+            copyTree(productionModeConverted, new ProductionModeNode(REFEED_CORRECTION), convertedParentRoot);
+        }
+    }
 
 	protected void copyTree(ProductionModeNode from, ProductionModeNode to,
 			final AbstractProductionParametersNode<?> convertedParentRoot) {
@@ -411,19 +440,20 @@ public class RemoteServer extends AbstractRemoteServer {
 	}
 
 	protected CodeType getCodeTypeForSku(final ComponentBehaviorDto<? extends BaseDto<Long>> skuDto) {
-		if (skuDto != null) {
-			if (skuDto.getParent().getNodeValue() instanceof CodeTypeDto) {
-				CodeTypeDto codeTypeDto = (CodeTypeDto) skuDto.getParent().getNodeValue();
-				CodeType codeType = new CodeType(codeTypeDto.getId().intValue());
-				codeType.setDescription(codeTypeDto.getTranslationCode());
-				return codeType;
-			} else {
-				return getCodeTypeForSku(skuDto.getParent());
-			}
-		} else {
-			return null;
-		}
-	}
+
+        if (skuDto == null)
+            return null;
+
+        if (skuDto.getParent().getNodeValue() instanceof CodeTypeDto) {
+
+            CodeTypeDto codeTypeDto = (CodeTypeDto) skuDto.getParent().getNodeValue();
+            CodeType codeType = new CodeType(codeTypeDto.getId().intValue());
+            codeType.setDescription(codeTypeDto.getTranslationCode());
+            return codeType;
+        }
+
+        return getCodeTypeForSku(skuDto.getParent());
+    }
 
 	@Override
 	public void sendEncoderInfos(List<EncoderInfo> infos) throws RemoteServerException {
@@ -444,10 +474,10 @@ public class RemoteServer extends AbstractRemoteServer {
 			dtos.add(dto);
 		}
 		logger.debug("sending encoder info {}", infos);
-		SicpadataGeneratorInfoResultDto res = getCodingBean().registerGeneratorsCicle(dtos);
+		SicpadataGeneratorInfoResultDto res = getCodingBean().registerGeneratorsCycle(dtos);
 		for (InfoResult ir : res.getInfoResult()) {
 			if (!ir.isInfoSavedOk()) {
-				storage.quarantineEncoder(ir.getId().longValue());
+				storage.quarantineEncoder(ir.getId());
 				throw new RemoteServerException(MessageFormat.format(
 						"master failed to save encoder info for id={0} , msg={1}", ir.getId() + "",
 						ir.getErrorMessage()));
@@ -466,8 +496,9 @@ public class RemoteServer extends AbstractRemoteServer {
 		}
 		try {
 
-			MonitoringService.addSystemEvent(new BasicSystemEvent(SystemEventType.LAST_SENT_TO_REMOTE_SERVER, products
-					.getProducts().size() + ""));
+			MonitoringService.addSystemEvent(
+                    new BasicSystemEvent(LAST_SENT_TO_REMOTE_SERVER, String.valueOf(products.getProducts().size()))
+            );
 
 			doSendProductionData(products);
 
@@ -479,12 +510,13 @@ public class RemoteServer extends AbstractRemoteServer {
 	}
 
 	public void doSendProductionData(final PackagedProducts products) throws ActivationException {
-		if (null != packageSenders.get(products.getProductStatus())) {
-			packageSenders.get(products.getProductStatus()).sendPackage(products);
-		} else {
-			logger.error("No sender found for the package type in file: " + products.getFileName());
-		}
-	}
+
+        if (null == packageSenders.get(products.getProductStatus())) {
+            logger.error("No sender found for the package type in file: " + products.getFileName());
+            return;
+        }
+        packageSenders.get(products.getProductStatus()).sendPackage(products);
+    }
 
 	protected void processActivatedProducts(final PackagedProducts products) throws ActivationException {
 
@@ -493,23 +525,22 @@ public class RemoteServer extends AbstractRemoteServer {
 		String key = getActivationServiceKey(products);
 
 		// call remote
-		ActivationServiceHandler activationBusinessServiceDMS = getActivationBean();
-		activationBusinessServiceDMS.registerProductionCycle(authenticatedProductsResultDto, key);
+        getActivationBean().registerProductionCycle(authenticatedProductsResultDto, key);
 	}
 
 	protected String getActivationServiceKey(PackagedProducts products) {
-		if (products.isPrinted()) {
-			// if SCL
-			return ActivationServiceHandler.MARKED_PRODUCT_TYPE;
-		} else {
-			// if SAS
-			return ActivationServiceHandler.LABELED_PRODUCT_TYPE;
-		}
-	}
+
+        if (products.isPrinted()) {
+            // if SCL
+            return MARKED_PRODUCT_TYPE;
+        }
+        // if SAS
+        return LABELED_PRODUCT_TYPE;
+    }
 
 	protected AuthenticatedProductsResultDto generateAuthenticatedProductsResultDto(PackagedProducts products) {
 
-		AuthenticatedProductsResultDto authenticatedProductsResultDto = new AuthenticatedProductsResultDto();
+
 		ArrayList<AuthenticatedProductDto> authenticatedProductsDto = new ArrayList<AuthenticatedProductDto>();
 		ProcessedProductsStatusDto statusDto = null;
 		// create a product dto for each product
@@ -524,6 +555,7 @@ public class RemoteServer extends AbstractRemoteServer {
 					.getActivationDate()));
 		}
 
+        AuthenticatedProductsResultDto authenticatedProductsResultDto = new AuthenticatedProductsResultDto();
 		populateResultDtoInfo(authenticatedProductsResultDto, products);
 		authenticatedProductsResultDto.setProcessedProducts(authenticatedProductsDto);
 
@@ -583,10 +615,7 @@ public class RemoteServer extends AbstractRemoteServer {
 			return;
 		}
 
-		// get the service
-		ActivationServiceHandler activationBusinessServiceDMS = getActivationBean();
-
-		// create product dto
+        // create product dto
 
 		CountedProductsResultDto countedProductsResultDto = new CountedProductsResultDto();
 		ArrayList<CountedProductsDto> countedProductsDto = new ArrayList<CountedProductsDto>();
@@ -597,16 +626,12 @@ public class RemoteServer extends AbstractRemoteServer {
 		countedProductsResultDto.setProcessedProducts(countedProductsDto);
 
 		ProcessedProductsStatusDto processedProductStatusDto = new ProcessedProductsStatusDto();
-		processedProductStatusDto.setValue(this.productStatusMapping.getRemoteServerProdutcStatus(products
-				.getProductStatus()));
+		processedProductStatusDto.setValue(productStatusMapping.getRemoteServerProdutcStatus(products.getProductStatus()));
 		countedProductsResultDto.setProcessedProductsStatusDto(processedProductStatusDto);
 
 		// call remote
-		activationBusinessServiceDMS.registerProductionCycle(countedProductsResultDto,
-				ActivationServiceHandler.COUNTING_PRODUCT_TYPE);
+		getActivationBean().registerProductionCycle(countedProductsResultDto, COUNTING_PRODUCT_TYPE);
 	}
-
-	protected LoginContext loginContext;
 
 	protected void checkConnection() throws RemoteServerException {
 		try {
@@ -618,18 +643,6 @@ public class RemoteServer extends AbstractRemoteServer {
 
 	protected RemoteServerModel getModel() {
 		return model;
-	}
-
-	protected LoginContext createLoginContext(CallbackHandler callbackHandler) throws LoginException {
-		return new LoginContext("client-security", callbackHandler);
-	}
-
-	protected void login() throws LoginException {
-		UsernamePasswordHandler cbHandler = new UsernamePasswordHandler(model.getUsername(), model.getPassword());
-
-		SecurityContextAssociation.setClient();
-		loginContext = createLoginContext(cbHandler);
-		loginContext.login();
 	}
 
 	@Override
@@ -644,9 +657,8 @@ public class RemoteServer extends AbstractRemoteServer {
 	}
 
 	protected LoginServiceHandler getLoginBean() {
-		LoginServiceHandler codingBusinessServiceDMS = (LoginServiceHandler) ServiceLocator.getInstance().getService(
-				ServiceLocator.SERVICE_LOGIN_BUSINESS_SERVICE);
-		return codingBusinessServiceDMS;
+
+        return getService(SERVICE_LOGIN_BUSINESS_SERVICE);
 	}
 
 	protected class RemoteServerLifeChecker {
@@ -719,33 +731,30 @@ public class RemoteServer extends AbstractRemoteServer {
 	}
 
 	/**
-	 * 
+	 *
 	 * Get activation service handler from remote server
-	 * 
+	 *
 	 * @return instance of ActivationServiceHandler get from remote server
 	 */
 	protected ActivationServiceHandler getActivationBean() {
-		ActivationServiceHandler activationBusinessServiceDMS = (ActivationServiceHandler) ServiceLocator.getInstance()
-				.getService(ServiceLocator.SERVICE_ACTIVATION_BUSINESS_SERVICE);
-		return activationBusinessServiceDMS;
+
+        return getService(SERVICE_ACTIVATION_BUSINESS_SERVICE);
 	}
 
 	/**
-	 * 
+	 *
 	 * Get coding service handler from remote server
-	 * 
-	 * @return instance of CodingServerHanlder get from remote server
+	 *
+	 * @return instance of CodingServerHandler get from remote server
 	 */
 	protected CodingServiceHandler getCodingBean() {
-		CodingServiceHandler codingBusinessServiceDMS = (CodingServiceHandler) ServiceLocator.getInstance().getService(
-				ServiceLocator.SERVICE_COMMON_CODING_BUSINESS_SERVICE);
-		return codingBusinessServiceDMS;
+
+        return getService(SERVICE_COMMON_CODING_BUSINESS_SERVICE);
 	}
 
 	protected ProvideTranslationBusinessHandler getTranslationBean() {
-		ProvideTranslationBusinessHandler provideTranslationBusinessHandler = (ProvideTranslationBusinessHandler) ServiceLocator
-				.getInstance().getService(ServiceLocator.SERVICE_PROVIDE_TRANSLATION_BUSINESS_SERVICE);
-		return provideTranslationBusinessHandler;
+
+        return getService(SERVICE_PROVIDE_TRANSLATION_BUSINESS_SERVICE);
 	}
 
 	public IRemoteServerProductStatusMapping getProductStatusMapping() {
@@ -763,7 +772,7 @@ public class RemoteServer extends AbstractRemoteServer {
 	/**
 	 * Trim the branches of the tree that do not contain at least one ProductionModeNode and one SKUNode in the path
 	 * starting in the root node.
-	 * 
+	 *
 	 * @param tree
 	 */
 	protected void pruneParametersTree(ProductionParameterRootNode tree) {
@@ -773,7 +782,7 @@ public class RemoteServer extends AbstractRemoteServer {
 	/**
 	 * This method trims the branches of the tree given the root node. It trims branches that don't contain at least one
 	 * ProductionModeNode and one SKUNode in the path starting from the given node.
-	 * 
+	 *
 	 * @param node
 	 *            the node to prune.
 	 * @param ancestorWithProdMode
@@ -797,16 +806,16 @@ public class RemoteServer extends AbstractRemoteServer {
 			return false;
 
 		// search for child nodes to trim
-		List<IProductionParametersNode> trimmedChilds = new ArrayList<IProductionParametersNode>();
+		List<IProductionParametersNode> trimmedChildren = new ArrayList<IProductionParametersNode>();
 
 		for (IProductionParametersNode childNode : node.getChildren()) {
 
 			if (pruneParametersTree(childNode, isProdModeNode || ancestorWithProdMode, isSKUNode || ancestorWithSKU))
-				trimmedChilds.add(childNode);
+				trimmedChildren.add(childNode);
 		}
 
 		// trim the found nodes
-		for (IProductionParametersNode child : trimmedChilds) {
+		for (IProductionParametersNode child : trimmedChildren) {
 			node.getChildren().remove(child);
 		}
 
@@ -826,9 +835,8 @@ public class RemoteServer extends AbstractRemoteServer {
 	}
 
 	protected EventServiceHandler getEventBean() {
-		EventServiceHandler codingBusinessServiceDMS = (EventServiceHandler) ServiceLocator.getInstance().getService(
-				ServiceLocator.SERVICE_DMS_EVENT_BUSINESS_SERVICE);
-		return codingBusinessServiceDMS;
+
+        return getService(SERVICE_DMS_EVENT_BUSINESS_SERVICE);
 	}
 
 	@Override
@@ -857,10 +865,10 @@ public class RemoteServer extends AbstractRemoteServer {
 
 		return event;
 	}
-	
+
 	/**
 	 * Set Life Checker
-	 * 
+	 *
 	 * @param lifeChecker the lifeChecker to set
 	 */
 	public void setLifeChecker(LifeChecker lifeChecker) {

@@ -6,6 +6,7 @@
 	<packaging>pom</packaging>
 	<name>parent std sas scl</name>
 	<version>2.3.5-SNAPSHOT</version>
+
 	<build>
 
 		<pluginManagement>
@@ -17,7 +18,6 @@
 				</plugin>
 			</plugins>
 		</pluginManagement>
-
 
 		<plugins>
 			<plugin>
@@ -460,7 +460,7 @@
 				<artifactId>standard-plc</artifactId>
 				<version>1.1.6</version>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>com.sicpa.standard.printer</groupId>
 				<artifactId>standard-printer</artifactId>
@@ -515,12 +515,13 @@
 				<artifactId>spring-context</artifactId>
 				<version>3.2.4.RELEASE</version>
 			</dependency>
-			<dependency>
-				<groupId>org.jboss.client</groupId>
-				<artifactId>jbossall-client</artifactId>
-				<version>4.2.2.GA</version>
-			</dependency>
-			<dependency>
+            <dependency>
+                <groupId>org.wildfly</groupId>
+                <artifactId>wildfly-ejb-client-bom</artifactId>
+                <version>8.1.0.Final</version>
+                <type>pom</type>
+            </dependency>
+            <dependency>
 				<groupId>ch.qos.logback</groupId>
 				<artifactId>logback-classic</artifactId>
 				<version>1.0.1</version>

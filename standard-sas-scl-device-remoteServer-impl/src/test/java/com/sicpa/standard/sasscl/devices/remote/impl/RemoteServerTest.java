@@ -114,11 +114,6 @@ public class RemoteServerTest {
 			public boolean isConnected() {
 				return true;
 			}
-
-			@Override
-			protected LoginContext createLoginContext(CallbackHandler callbackHandler) throws LoginException {
-				return login;
-			}
 		};
 
 		productStatusMapping = new DefaultRemoteServerProductStatusMapping();
@@ -346,7 +341,7 @@ public class RemoteServerTest {
 
 		/*
 		 * Tree structure to test:
-		 * 
+		 *
 		 * +RootNode (Level 0) | \___+Market1: Prod standard (Level 1) | | | \___+CodeType1 (Level 2) | | \___Sku1
 		 * (Level 3) | | \___Sku2 | | | \___+CodeType2 | \___Sku3 | | \___+Market2: Prod Export | \___+CodeType1 |
 		 * \___Sku4 | \___+CodeType3 \___Sku5 \___Sku6
@@ -592,14 +587,14 @@ public class RemoteServerTest {
 	public void testProductionTreePrune() throws RemoteServerException, LoginException {
 		/*
 		 * Tree structure to test:
-		 * 
+		 *
 		 * +RootNode (Level 0) | \___+Market1: Prod standard (Level 1) | | | \___+CodeType1 (Level 2) | | \___Sku1
 		 * (Level 3) | | | \___+CodeType2 | \___Sku2 | | \___NAV2 (Not prune) (level4) | | | | | \___Sku3 | \___NAV1 (TO
 		 * PRUNE) | | \___+Market2: Prod Export (TO PRUNE) | | | \___+CodeType3 | | \___+Market3: Prod Maintenance |
 		 * \___+CodeType4 (TO PRUNE) | \___+Sku 998 \___Sku999
-		 * 
+		 *
 		 * expected structure after tree prune:
-		 * 
+		 *
 		 * +RootNode (Level 0) | \___+Market1: Prod standard (Level 1) | | | \___+CodeType1 (Level 2) | | \___Sku1
 		 * (Level 3) | | | \___+CodeType2 | \___Sku2 | | \___NAV2 (Not prune) (level4) | | | | | \___Sku3 | |
 		 * \___+Market3: Prod Maintenance | \___+Sku 998 \___Sku999
