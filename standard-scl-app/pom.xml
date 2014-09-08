@@ -7,6 +7,12 @@
 		<groupId>com.sicpa.standard.sasscl</groupId>
 		<version>2.3.5-SNAPSHOT</version>
 	</parent>
+
+    <properties>
+        <license.timestamp>${maven.build.timestamp}</license.timestamp>
+        <maven.build.timestamp.format>yyyy</maven.build.timestamp.format>
+    </properties>
+
 	<build>
 		<resources>
             <!-- Root folder -->
@@ -63,6 +69,7 @@
 						<exclude>**/config/</exclude>
 						<exclude>*.bat</exclude>
 						<exclude>*.sh</exclude>
+                        <exclude>license</exclude>
 						<exclude>version</exclude>
 					</excludes>
 				</configuration>

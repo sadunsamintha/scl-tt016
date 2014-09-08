@@ -1,25 +1,5 @@
 package com.sicpa.standard.sasscl.view;
 
-import java.awt.Component;
-import java.awt.Point;
-import java.awt.event.ActionEvent;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import javax.swing.AbstractAction;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JSeparator;
-import javax.swing.SwingUtilities;
-
-import net.miginfocom.swing.MigLayout;
-
 import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.descriptor.IPropertyDescriptor;
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
@@ -41,6 +21,23 @@ import com.sicpa.standard.sasscl.view.config.GenericConfigPanel;
 import com.sicpa.standard.sasscl.view.config.plc.MultiEditablePlcVariablesSet;
 import com.sicpa.standard.sasscl.view.lineid.LineIdWithAuthenticateButton;
 import com.sicpa.standard.sasscl.view.messages.I18nableLockingErrorModel;
+import net.miginfocom.swing.MigLayout;
+import org.jdesktop.swingx.graphics.GraphicsUtilities;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Scanner;
 
 @SuppressWarnings("serial")
 public class MainFrame extends AbstractMachineFrame {
@@ -52,6 +49,7 @@ public class MainFrame extends AbstractMachineFrame {
 	protected JComponent messagesView;
 	protected JComponent mainPanel;
 	protected JComponent snapshotView;
+    protected JComponent licenceInfoPanel;
 
 	public MainFrame(final MainFrameController controller, JComponent startStopView, JComponent changeSelectionView,
 			JComponent exitView, JComponent optionsView, JComponent messagesView, JComponent mainPanel,
@@ -353,7 +351,115 @@ public class MainFrame extends AbstractMachineFrame {
 		});
 	}
 
-	public void displayOptionsPreviewScreen() {
+    @Override
+    public JComponent getHeader() {
+        if (this.header == null) {
+            this.header = new JPanel(new MigLayout("fill,inset 0 0 0 0, hidemode 3,gap 0 0 0 0"));
+            this.header.add(getLineIdPanel(), "growx");
+            this.header.add(getLicenceInfoPanel(), "growx, gapright 20, wrap");
+            this.header.add(getConfigPasswordPanel(), "wrap,growx");
+            this.header.add(getApplicationStatusPanel(), "grow");
+            getConfigPasswordPanel().setVisible(false);
+            this.header.add(getHeaderInfoPanel(), "south");
+        }
+        return this.header;
+    }
+
+    public JComponent getLicenceInfoPanel() {
+        if(this.licenceInfoPanel == null) {
+            licenceInfoPanel = new JPanel(new BorderLayout());
+            licenceInfoPanel.setBackground(SicpaColor.BLUE_DARK);
+            licenceInfoPanel.add(getInfoLicenseLabel(), BorderLayout.EAST);
+        }
+        return licenceInfoPanel;
+    }
+
+    private JDialog dialog;
+
+    private JLabel getInfoLicenseLabel() {
+
+        JLabel licenseIcon = new JLabel(getLicenseIcon());
+        licenseIcon.addMouseListener(new MouseAdapter() {
+
+            @Override
+            public void mousePressed(MouseEvent arg0) {
+                mouseClicked(arg0);
+            }
+
+            @Override
+            public void mouseClicked(MouseEvent arg0) {
+                Scanner scanner = null;
+                try {
+                    URL url = ClassLoader.getSystemResource("license");
+                    scanner =  new Scanner(new FileInputStream(new File(url.toURI())), "UTF-8");
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (URISyntaxException e) {
+                    e.printStackTrace();
+                }
+
+                if (dialog == null) {
+                    dialog = new JDialog();
+                    dialog.setLayout(new MigLayout("fill"));
+                    dialog.setMinimumSize(new Dimension(650, 300));
+
+                    String firstMessage = null;
+                    String custoMessage = null;
+
+                    if(scanner != null) {
+                        firstMessage = scanner.nextLine();
+                        custoMessage = scanner.nextLine();
+                    }
+                    JLabel headLabel = new JLabel(firstMessage);
+                    headLabel.setForeground(SicpaColor.BLUE_DARK);
+
+                    int innerBoundsx = 40;
+                    int innerBoundsy = 100;
+
+                    int jtextWidth = dialog.getWidth() - innerBoundsx;
+                    int jtextHeight = dialog.getHeight() - innerBoundsy;
+                    Dimension textAreaDim = new Dimension(jtextWidth,
+                            jtextHeight);
+
+                    JTextArea mainLabel = new JTextArea(custoMessage);
+                    mainLabel.setForeground(SicpaColor.BLUE_DARK);
+                    mainLabel.setMinimumSize(textAreaDim);
+                    mainLabel.setMaximumSize(textAreaDim);
+                    mainLabel.setWrapStyleWord(true);
+                    mainLabel.setLineWrap(true);
+                    mainLabel.setEditable(false);
+                    mainLabel.setRequestFocusEnabled(false);
+                    mainLabel.setFocusable(false);
+                    mainLabel.setOpaque(false);
+                    mainLabel.putClientProperty("Synthetica.opaque", false);
+
+                    JPanel panel = new JPanel(new MigLayout("fill"));
+                    panel.add(headLabel, "wrap");
+                    panel.add(mainLabel);
+                    dialog.add(panel, "grow");
+
+                }
+                dialog.setVisible(true);
+            }
+        });
+        return licenseIcon;
+    }
+
+    public ImageIcon getLicenseIcon() {
+        String resourceName = "config/images/licenseIcon.png";
+        ImageIcon licenceIcon = null;
+        URL url = ClassLoader.getSystemResource(resourceName);
+        if (url != null) {
+            try {
+                licenceIcon = new ImageIcon((GraphicsUtilities.loadCompatibleImage(url)));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return licenceIcon;
+    }
+
+    public void displayOptionsPreviewScreen() {
 		if (getConfigPanel().getSelectedIndex() != 0) {
 			getConfigPanel().showPanel(0);
 		} else {
