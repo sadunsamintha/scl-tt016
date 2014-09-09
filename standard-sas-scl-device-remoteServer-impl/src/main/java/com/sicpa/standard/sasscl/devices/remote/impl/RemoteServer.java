@@ -55,7 +55,6 @@ import com.sicpa.std.common.api.staticdata.codetype.dto.CodeTypeDto;
 import com.sicpa.std.common.api.staticdata.sku.dto.SkuProductDto;
 import com.sicpa.std.common.api.util.PropertyNames;
 import com.sicpa.std.server.util.lifechecker.LifeChecker;
-import com.sicpa.std.server.util.locator.PropertyUtil;
 import org.jboss.ejb.client.EJBClientContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,15 +62,16 @@ import org.slf4j.LoggerFactory;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import java.io.File;
+import java.io.FileInputStream;
+import java.net.URL;
 import java.text.MessageFormat;
 import java.util.*;
 
 import static com.sicpa.standard.sasscl.model.ProductionMode.REFEED_CORRECTION;
 import static com.sicpa.standard.sasscl.model.ProductionMode.REFEED_NORMAL;
 import static com.sicpa.standard.sasscl.monitoring.system.SystemEventType.LAST_SENT_TO_REMOTE_SERVER;
-import static com.sicpa.std.common.api.activation.business.ActivationServiceHandler.COUNTING_PRODUCT_TYPE;
-import static com.sicpa.std.common.api.activation.business.ActivationServiceHandler.LABELED_PRODUCT_TYPE;
-import static com.sicpa.std.common.api.activation.business.ActivationServiceHandler.MARKED_PRODUCT_TYPE;
+import static com.sicpa.std.common.api.activation.business.ActivationServiceHandler.*;
 import static com.sicpa.std.server.util.locator.ServiceLocator.*;
 
 public class RemoteServer extends AbstractRemoteServer {
@@ -96,7 +96,7 @@ public class RemoteServer extends AbstractRemoteServer {
 
 	protected IStorage storage;
 
-	protected String serverPropertieFile = "config/server/standard-server.properties";
+	protected String serverPropertiesFile = "config/server/standard-server.properties";
 
     protected Context context;
 
@@ -148,11 +148,12 @@ public class RemoteServer extends AbstractRemoteServer {
     private boolean isPropertiesFileLoaded() {
 
         try {
+            URL url = ClassLoader.getSystemResource(serverPropertiesFile);
+            properties.load(new FileInputStream(new File(url.toURI())));
 
-            properties.load(PropertyUtil.class.getResourceAsStream(serverPropertieFile));
             return true;
         } catch (Exception e) {
-            logger.error("failed to load " + serverPropertieFile, e);
+            logger.error("failed to load " + serverPropertiesFile, e);
         }
         return false;
     }
@@ -634,7 +635,7 @@ public class RemoteServer extends AbstractRemoteServer {
 
 	protected void checkConnection() throws RemoteServerException {
 		try {
-			lifeChecker.checkServicesAvailability(serverPropertieFile);
+			lifeChecker.checkServicesAvailability(serverPropertiesFile);
 		} catch (Exception e) {
 			throw new RemoteServerException(e);
 		}
