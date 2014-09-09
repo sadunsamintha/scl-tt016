@@ -39,7 +39,8 @@
 			<includes>
 				<include>*.bat</include>
 				<include>*.sh</include>
-				<include>version</include>
+                <include>license</include>
+                <include>version</include>
 				<include>log4j.properties</include>
 			</includes>
 			<lineEnding>unix</lineEnding>

@@ -9,6 +9,11 @@
 
 	<artifactId>sas-app</artifactId>
 
+    <properties>
+        <license.timestamp>${maven.build.timestamp}</license.timestamp>
+        <maven.build.timestamp.format>yyyy</maven.build.timestamp.format>
+    </properties>
+
 	<build>
 		<resources>
             <!-- Root folder -->
@@ -63,8 +68,9 @@
 					<!-- Don't want these files inside the jar -->
 					<excludes>
 						<exclude>**/config/</exclude>
-						<exclude>startup.bat</exclude>
-						<exclude>version</exclude>
+                        <exclude>*.bat</exclude>
+                        <exclude>license</exclude>
+                        <exclude>version</exclude>
 					</excludes>
 				</configuration>
 			</plugin>
