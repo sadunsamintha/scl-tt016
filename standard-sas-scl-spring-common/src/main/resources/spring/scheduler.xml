@@ -50,8 +50,8 @@
 
 	<task:scheduler id="SchedulerSasScl" pool-size="10" />
 
-	<bean id="schedulerConfig" class="${schedulerConfig}">
-		<constructor-arg name="file" value="config/scheduler.xml" />
+	<bean id="schedulerConfig" class="${schedulerConfig}" scope="prototype">
+		<constructor-arg value="config/scheduler.xml" />
 	</bean>
 	
 </beans>

@@ -47,12 +47,10 @@
 			<groupId>cglib</groupId>
 			<artifactId>cglib</artifactId>
 		</dependency>
-
 		<dependency>
 			<groupId>com.sicpa.standard.sasscl</groupId>
 			<artifactId>business-activation</artifactId>
 		</dependency>
-
 		<dependency>
 			<groupId>com.sicpa.standard.sasscl</groupId>
 			<artifactId>device-plc</artifactId>
