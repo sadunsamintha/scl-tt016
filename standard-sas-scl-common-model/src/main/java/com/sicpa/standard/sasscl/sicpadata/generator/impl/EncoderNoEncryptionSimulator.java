@@ -13,7 +13,6 @@ import com.sicpa.standard.sasscl.model.CodeType;
 import com.sicpa.standard.sasscl.sicpadata.CryptographyException;
 import com.sicpa.standard.sasscl.sicpadata.generator.AbstractEncoder;
 import com.sicpa.standard.sasscl.sicpadata.generator.EncoderEmptyException;
-import junit.framework.Assert;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.util.ArrayList;
@@ -47,17 +46,17 @@ public class EncoderNoEncryptionSimulator extends AbstractEncoder {
 			ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("config/productionConfig/extended-code.xml");
 
 			this.extendedCodeFactory = (ExtendedCodeFactory) ctx.getBean(String.valueOf(codeTypeId));
-			if(extendedCodeFactory == null)
-				LOGGER.error("********************EncoderNoEncryptionSimulator: cannot load bean:  {}", codeTypeId);
+            if(extendedCodeFactory == null) {
+                LOGGER.error("********************EncoderNoEncryptionSimulator: cannot load bean:  {}", codeTypeId);
+            }
 
-			Assert.assertNotNull(extendedCodeFactory);
-			ctx.close();
-			if(extendedCodeFactory instanceof ExtendedCodeFileFactory){
-				((ExtendedCodeFileFactory)extendedCodeFactory).setRewindAllowed(true);
-			}
-			LOGGER.info("********************EncoderNoEncryptionSimulator: bean:  {} loaded from config/productionConfig/extended-code.xml", codeTypeId);
-		}
-	}
+            ctx.close();
+            if(extendedCodeFactory instanceof ExtendedCodeFileFactory){
+                ((ExtendedCodeFileFactory)extendedCodeFactory).setRewindAllowed(true);
+            }
+            LOGGER.info("********************EncoderNoEncryptionSimulator: bean:  {} loaded from config/productionConfig/extended-code.xml", codeTypeId);
+        }
+    }
 
 	public EncoderNoEncryptionSimulator(final long batchid,int id, final int min, final int max, int year, int codeTypeId) {
 		this(batchid,id, min, max, year, 0, codeTypeId);
