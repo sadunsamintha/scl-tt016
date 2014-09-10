@@ -13,7 +13,7 @@
 
 	<beans profile="plcSecure.behavior.standard">
 
-		<bean id="plcSecureAdaptor" class="${plcSecureAdaptor}" scope="prototype">
+		<bean id="plcSecureAdaptor" class="${plcSecureAdaptor}">
             <constructor-arg ref="plcSecureController" />
             <property name="notificationVariables" ref="plcSecureNotifications" />
             <property name="plcSecureRequestMap" ref="plcSecureRequestAction" />
@@ -23,11 +23,11 @@
             <property name="securityModel" ref="securityModel" />
         </bean>
 
-		<bean id="plcSecureController" class="${plcSecureController}" scope="prototype">
+		<bean id="plcSecureController" class="${plcSecureController}">
 			<property name="model" ref="plcSecureModel" />
 		</bean>
 
-		<bean id="plcSecureModel" class="com.sicpa.standard.client.common.utils.ConfigUtils" factory-method="load" scope="prototype">
+		<bean id="plcSecureModel" class="com.sicpa.standard.client.common.utils.ConfigUtils" factory-method="load">
 			<constructor-arg value="config/plc/plcSecure.xml" />
 			<property name="parameters">
 				<map />
@@ -39,13 +39,13 @@
 
 	<beans profile="plcSecure.behavior.simulator">
 
-        <bean id="plcSecureAdaptor" class="${plcSecureAdaptorSimulator}"  scope="prototype">
+        <bean id="plcSecureAdaptor" class="${plcSecureAdaptorSimulator}">
             <constructor-arg ref="plcSecureController" />
             <property name="userIdStorage" ref="userIdStorage" />
             <property name="securityModel" ref="securityModel" />
         </bean>
 
-		<bean id="plcSecureController" class="${plcSimulatorController}" scope="prototype">
+		<bean id="plcSecureController" class="${plcSimulatorController}">
 			<constructor-arg ref="plcSimulatorModel" />
 			<property name="simulatorGui" ref="simulatorGui" />
 		</bean>
