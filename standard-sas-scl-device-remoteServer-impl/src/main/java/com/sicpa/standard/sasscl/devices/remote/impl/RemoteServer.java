@@ -550,9 +550,11 @@ public class RemoteServer extends AbstractRemoteServer {
 				statusDto = new ProcessedProductsStatusDto();
 				statusDto.setValue(remoteId);
 			}
-			authenticatedProductsDto.add(new AuthenticatedProductDto((long) product.getSku().getId(), product.getCode()
-					.getCodeType().getId(), product.getCode().getEncoderId(), product.getCode().getSequence(), product
-					.getActivationDate()));
+
+            // Product Code Type is null for marked products so get it from selected SKU
+            long codeTypeId = products.isPrinted() ? product.getSku().getCodeType().getId() : product.getCode().getCodeType().getId();
+			authenticatedProductsDto.add(new AuthenticatedProductDto((long) product.getSku().getId(), codeTypeId,
+                    product.getCode().getEncoderId(), product.getCode().getSequence(), product.getActivationDate()));
 		}
 
         AuthenticatedProductsResultDto authenticatedProductsResultDto = new AuthenticatedProductsResultDto();
