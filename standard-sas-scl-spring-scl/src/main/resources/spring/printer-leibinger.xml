@@ -70,7 +70,7 @@
     </bean>
 
     <bean id="connector" factory-bean="mapEthernetConnector" factory-method="get" scope="prototype">
-        <constructor-arg value="#{leibingerProperties.printer.leibinger.ethernet}"/>
+        <constructor-arg value="#{leibingerProperties['printer.leibinger.ethernet']}"/>
     </bean>
 
     <bean id="mapEthernetConnector" class="com.sicpa.standard.client.common.ioc.GenericMapping" scope="prototype">
