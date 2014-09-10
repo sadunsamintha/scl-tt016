@@ -13,14 +13,7 @@
 	<context:annotation-config/>
 	
 	<aop:aspectj-autoproxy />
-	
-	<import resource="leibingerProtocol.xml"/>
-	
-<!-- 	Properties and placeholders -->
-	
-	<context:property-placeholder location="config/printer/printer-leibinger.properties,
- 				config/printer/jobConfig-leibinger.properties"/>
-	
+
 <!-- 	Singletons -->
 
 	<bean id="connectionAspect" class="com.sicpa.standard.printer.controller.aspect.ConnectionAspect"/>
@@ -77,7 +70,7 @@
     </bean>
 
     <bean id="connector" factory-bean="mapEthernetConnector" factory-method="get" scope="prototype">
-        <constructor-arg value="${printer.leibinger.ethernet}"/>
+        <constructor-arg value="#{leibingerProperties.printer.leibinger.ethernet}"/>
     </bean>
 
     <bean id="mapEthernetConnector" class="com.sicpa.standard.client.common.ioc.GenericMapping" scope="prototype">

@@ -13,8 +13,10 @@
 	
 	
 	<util:properties id="leibingerErrors" location="language/leibinger-errors-english.properties"/>
-	
-	<bean id="commandMapLeibinger" class="com.sicpa.standard.printer.leibinger.driver.leibinger.CommandMap" scope="prototype">
+    <util:properties id="leibingerJobProperties" location="config/printer/jobConfig-leibinger.properties"/>
+    <util:properties id="leibingerProperties" location="config/printer/printer-leibinger.properties"/>
+
+    <bean id="commandMapLeibinger" class="com.sicpa.standard.printer.leibinger.driver.leibinger.CommandMap" scope="prototype">
 		
 		<property name="errorList" ref="leibingerErrors"/>
 		
@@ -213,17 +215,17 @@
     <bean id="JLPAR" p:key="JLPAR" p:description="Layout of parameter lists" parent="Command">
       	<property name="params">
 			<util:list>
-		        <bean p:key="1"  p:value="${printHeight}" 		
+		        <bean p:key="1"  p:value="#{leibingerJobProperties.printHeight}" 		
 		        									p:description="Print Height Y (0 ... 100) : "							parent="CommandParameter"/>    
-		        <bean p:key="2"  p:value="${printGoSignal}" 		p:description="PrintGo-signal (0 - 2) : "				parent="CommandParameter"/>   
+		        <bean p:key="2"  p:value="#{leibingerJobProperties.printGoSignal}" 		p:description="PrintGo-signal (0 - 2) : "				parent="CommandParameter"/>   
 		        <bean p:key="3"  p:value="0" 		p:description="PrintGo-Gate (0 - 2)   : "								parent="CommandParameter"/>   
-		        <bean p:key="4"  p:value="${encoderSignal}" 		p:description="Encoder-signal (0 - 3) : "				parent="CommandParameter"/>   
+		        <bean p:key="4"  p:value="#{leibingerJobProperties.encoderSignal}" 		p:description="Encoder-signal (0 - 3) : "				parent="CommandParameter"/>   
 		        <bean p:key="5"  p:value="140" 		p:description="Speed 1 – 1000 dm/min, (for int. Encoder-Signal) : "		parent="CommandParameter"/>     
-		        <bean p:key="6"  p:value="${rotation}" 		
+		        <bean p:key="6"  p:value="#{leibingerJobProperties.rotation}" 		
 		        									p:description="Rotation (0 90 180 270 Degree, anticlockwise) : "		parent="CommandParameter"/>     
-		        <bean p:key="7"  p:value="${inverted}" 		
+		        <bean p:key="7"  p:value="#{leibingerJobProperties.inverted}" 		
 		        									p:description="Mirror-inverted (0 1) : "								parent="CommandParameter"/>   
-		        <bean p:key="8"  p:value="${encoderResolution}" 	
+		        <bean p:key="8"  p:value="#{leibingerJobProperties.encoderResolution}" 	
 		        									p:description="Encoder resolution (1 - 2000000000 pulse / m) :"			parent="CommandParameter"/>       
 		        <bean p:key="9"  p:value="00:00" 	p:description="Shifting Change of date (00–23:0-59 hours:minutes) : "	parent="CommandParameter"/>       
 		        <bean p:key="10" p:value="0" 		p:description="Backward Lock (0 1) : "									parent="CommandParameter"/>   
@@ -246,15 +248,15 @@
     <bean id="JOBPAR" p:key="JOBPAR" p:description="Job parameter" parent="Command">
       	<property name="params">
 			<util:list>
-		        <bean p:key="1"  p:value="${printGoDelayMicrometers}" 		
+		        <bean p:key="1"  p:value="#{leibingerJobProperties.printGoDelayMicrometers}" 		
 		        									p:description="PrintGo-delay (0 - MAXINT micrometers)) : "							parent="CommandParameter"/> 
 		        <bean p:key="2"  p:value="0" 		p:description="PG-repetition (0 - 65535) : "										parent="CommandParameter"/> 
 		        <bean p:key="3"  p:value="0" 		p:description="PG-distance (0 - MAXINT micrometers), only for PGrepetition > 0) : "	parent="CommandParameter"/> 
-		        <bean p:key="4"  p:value="${strokeDistanceMicrometers}" 		
+		        <bean p:key="4"  p:value="#{leibingerJobProperties.strokeDistanceMicrometers}" 		
 		        									p:description="Stroke distance (0 – MAXINT micrometers)) : "						parent="CommandParameter"/>  
-		        <bean p:key="5"  p:value="${printMode}" 		
+		        <bean p:key="5"  p:value="#{leibingerJobProperties.printMode}" 		
 		        									p:description="Print Mode (0-10 optional) : "										parent="CommandParameter"/> 
-		        <bean p:key="6"  p:value="${flightTimeCompensationMicrometers}" 		
+		        <bean p:key="6"  p:value="#{leibingerJobProperties.flightTimeCompensationMicrometers}" 		
 		        									p:description="Flight time compensation (0–MAXINT) : "								parent="CommandParameter"/> 
 		        <bean p:key="7"  p:value="0" 		p:description="Reserved - Leave that 0 : "											parent="CommandParameter"/> 
 		        <bean p:key="8"  p:value="0" 		p:description="Stroke monitoring (0 1) : "											parent="CommandParameter"/> 
@@ -286,9 +288,9 @@
 		        <bean p:key="7"  p:value="1" 		p:description="Character gap (0 – 7 Strokes)"									parent="CommandParameter"/>          
 		        <bean p:key="8"  p:value="0" 		p:description="Reserved 0 (Leave it 0)"											parent="CommandParameter"/>          
 		        <bean p:key="9"  p:value="0" 		p:description="Reserved 0 (Leave it 0)"											parent="CommandParameter"/>          
-		        <bean p:key="10" p:value="${rotation}" 		
+		        <bean p:key="10" p:value="#{leibingerJobProperties.rotation}" 		
 		        									p:description="Rotation (0 90 180 270 Degrees, anticlockwise)"					parent="CommandParameter"/>          
-		        <bean p:key="11" p:value="${inverted}" 		
+		        <bean p:key="11" p:value="#{leibingerJobProperties.inverted}" 		
 		        									p:description="Mirror-inverted (0 1)"											parent="CommandParameter"/>          
 		        <bean p:key="12" p:value="0" 		p:description="Proportional (0 1)"												parent="CommandParameter"/>          
 		        <bean p:key="13" p:value="0" 		p:description="Bold text (0 - 7)"												parent="CommandParameter"/>          
