@@ -13,8 +13,7 @@
 	
 	
 	<util:properties id="leibingerErrors" location="language/leibinger-errors-english.properties"/>
-    <util:properties id="leibingerJobProperties" location="config/printer/jobConfig-leibinger.properties"/>
-    <util:properties id="leibingerProperties" location="config/printer/printer-leibinger.properties"/>
+    <util:properties id="leibingerJobProperties" location="config/printer/defaultParams-leibinger.properties"/>
 
     <bean id="commandMapLeibinger" class="com.sicpa.standard.printer.leibinger.driver.leibinger.CommandMap" scope="prototype">
 		

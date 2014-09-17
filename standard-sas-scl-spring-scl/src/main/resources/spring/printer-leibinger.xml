@@ -20,7 +20,7 @@
 	
 	<bean id="listenerLockAspect" class="com.sicpa.standard.printer.controller.aspect.ListenerLockAspect" />
 	
-	<bean class="com.sicpa.standard.printer.leibinger.driver.leibinger.Scheduler"/>
+	<bean id="schedulerLeibinger" class="com.sicpa.standard.printer.leibinger.driver.leibinger.Scheduler"/>
 
     <bean id="mapPrinterLeibingerAdaptor" class="com.sicpa.standard.client.common.ioc.GenericMapping" scope="prototype">
         <constructor-arg>
@@ -61,16 +61,20 @@
 
     <bean id="driverLeibinger" class="com.sicpa.standard.printer.leibinger.driver.leibinger.LeibingerDriver"  scope="prototype"/>
 
-    <bean id="protocol" class="com.sicpa.standard.printer.leibinger.driver.leibinger.LeibingerProtocol"  scope="prototype"/>
+    <bean id="protocol" class="com.sicpa.standard.printer.leibinger.driver.leibinger.LeibingerProtocol"  scope="prototype">
+        <property name="scheduler" ref="schedulerLeibinger" />
+    </bean>
 
-    <bean id="stateMachineLeibinger" class="com.sicpa.standard.printer.leibinger.driver.leibinger.StateMachine"  scope="prototype"/>
+    <bean id="stateMachineLeibinger" class="com.sicpa.standard.printer.leibinger.driver.leibinger.StateMachine"  scope="prototype">
+            <property name="scheduler" ref="schedulerLeibinger" />
+    </bean>
 
     <bean id="commander" class="com.sicpa.standard.printer.leibinger.driver.leibinger.LeibingerCommander" scope="prototype">
         <property name="commandMap" ref="commandMapLeibinger"/>
     </bean>
 
     <bean id="connector" factory-bean="mapEthernetConnector" factory-method="get" scope="prototype">
-        <constructor-arg value="#{leibingerProperties['printer.leibinger.ethernet']}"/>
+        <constructor-arg value="${printer.behavior}"/>
     </bean>
 
     <bean id="mapEthernetConnector" class="com.sicpa.standard.client.common.ioc.GenericMapping" scope="prototype">
