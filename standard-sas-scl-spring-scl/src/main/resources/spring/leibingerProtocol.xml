@@ -78,7 +78,8 @@
 		        <bean p:key="4" p:description="Par4: Diaphragm Position (int) : "	parent="CommandParameter"/>
 		        <bean p:key="5" p:description="Par5: Mix-Value (int) : " 			parent="CommandParameter"/>
 		        <bean p:key="6" p:description="Par6: State : "						parent="CommandParameter"/>
-			</util:list>
+                <bean p:key="7" p:description="Par7: State 2: "						parent="CommandParameter"/>
+            </util:list>
 		</property>
 	</bean>
 	

@@ -57,27 +57,27 @@
         <constructor-arg ref="deviceModelNamePostfixProperty" />
     </bean>
 
-    <bean id="codeBuffer" class="com.sicpa.standard.printer.leibinger.controller.LeibingerCodeBuffer"  scope="prototype"/>
+    <bean id="codeBuffer" class="com.sicpa.standard.printer.leibinger.controller.LeibingerCodeBuffer"  scope="singleton"/>
 
-    <bean id="driverLeibinger" class="com.sicpa.standard.printer.leibinger.driver.leibinger.LeibingerDriver"  scope="prototype"/>
+    <bean id="driverLeibinger" class="com.sicpa.standard.printer.leibinger.driver.leibinger.LeibingerDriver"  scope="singleton"/>
 
-    <bean id="protocol" class="com.sicpa.standard.printer.leibinger.driver.leibinger.LeibingerProtocol"  scope="prototype">
+    <bean id="protocol" class="com.sicpa.standard.printer.leibinger.driver.leibinger.LeibingerProtocol"  scope="singleton">
         <property name="scheduler" ref="schedulerLeibinger" />
     </bean>
 
-    <bean id="stateMachineLeibinger" class="com.sicpa.standard.printer.leibinger.driver.leibinger.StateMachine"  scope="prototype">
+    <bean id="stateMachineLeibinger" class="com.sicpa.standard.printer.leibinger.driver.leibinger.StateMachine"  scope="singleton">
             <property name="scheduler" ref="schedulerLeibinger" />
     </bean>
 
-    <bean id="commander" class="com.sicpa.standard.printer.leibinger.driver.leibinger.LeibingerCommander" scope="prototype">
+    <bean id="commander" class="com.sicpa.standard.printer.leibinger.driver.leibinger.LeibingerCommander" scope="singleton">
         <property name="commandMap" ref="commandMapLeibinger"/>
     </bean>
 
-    <bean id="connector" factory-bean="mapEthernetConnector" factory-method="get" scope="prototype">
+    <bean id="connector" factory-bean="mapEthernetConnector" factory-method="get" scope="singleton">
         <constructor-arg value="${printer.behavior}"/>
     </bean>
 
-    <bean id="mapEthernetConnector" class="com.sicpa.standard.client.common.ioc.GenericMapping" scope="prototype">
+    <bean id="mapEthernetConnector" class="com.sicpa.standard.client.common.ioc.GenericMapping"  scope="singleton">
         <constructor-arg>
             <map>
                 <entry key="standard" value-ref="connectorStd" />
@@ -86,11 +86,11 @@
         </constructor-arg>
     </bean>
 
-    <bean id="connectorStd" class="com.sicpa.standard.printer.connector.Connector" scope="prototype" />
+    <bean id="connectorStd" class="com.sicpa.standard.printer.connector.Connector" scope="singleton"/>
 
-    <bean id="ethernetAdaptor" class="com.sicpa.standard.printer.leibinger.connector.impl.EthernetAdaptor" scope="prototype"/>
+    <bean id="ethernetAdaptor" class="com.sicpa.standard.printer.leibinger.connector.impl.EthernetAdaptor" scope="singleton"/>
 
-    <bean id="connectorSimulator" class="com.sicpa.standard.printer.leibinger.connector.impl.ConnectorSimulator" parent="connectorStd" scope="prototype">
+    <bean id="connectorSimulator" class="com.sicpa.standard.printer.leibinger.connector.impl.ConnectorSimulator" parent="connectorStd" scope="singleton">
         <property name="protocol" ref="protocol"/>
         <property name="commandMap" ref="commandMapLeibinger"/>
     </bean>
