@@ -242,7 +242,7 @@ public class RemoteServer extends AbstractRemoteServer {
     protected <T> T getService(String name) {
 
         try {
-            return (T) context.lookup(name);
+            return (T) context.lookup(properties.getProperty(name));
         } catch (NamingException e) {
             throw new RuntimeException(e);
         }
