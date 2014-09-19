@@ -637,7 +637,7 @@ public class RemoteServer extends AbstractRemoteServer {
 
 	protected void checkConnection() throws RemoteServerException {
 		try {
-			lifeChecker.checkServicesAvailability(serverPropertiesFile);
+			//lifeChecker.checkServicesAvailability(serverPropertiesFile);
 		} catch (Exception e) {
 			throw new RemoteServerException(e);
 		}
