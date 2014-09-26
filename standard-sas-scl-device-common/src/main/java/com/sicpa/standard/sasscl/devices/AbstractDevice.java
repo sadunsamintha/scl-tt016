@@ -13,9 +13,9 @@ import com.sicpa.standard.sasscl.messages.IssueSolvedMessage;
 
 /**
  * abstract class for all devices
- * 
+ *
  * @author DIelsch
- * 
+ *
  */
 public abstract class AbstractDevice implements IDevice {
 
@@ -33,13 +33,15 @@ public abstract class AbstractDevice implements IDevice {
 		status = DeviceStatus.DISCONNECTED;
 	}
 
-	public void addDeviceStatusListener(final IDeviceStatusListener listener) {
+	@Override
+    public void addDeviceStatusListener(final IDeviceStatusListener listener) {
 		synchronized (statusListeners) {
 			statusListeners.add(listener);
 		}
 	}
 
-	public void removeDeviceStatusListener(final IDeviceStatusListener listener) {
+	@Override
+    public void removeDeviceStatusListener(final IDeviceStatusListener listener) {
 		synchronized (statusListeners) {
 			statusListeners.remove(listener);
 		}
