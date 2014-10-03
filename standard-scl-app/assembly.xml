@@ -62,13 +62,6 @@
 			</includes>
 			<outputDirectory>config</outputDirectory>
 		</fileSet>
-		<fileSet>
-			<directory>certificates</directory>
-			<includes>
-				<include>*/**</include>
-			</includes>
-			<outputDirectory>certificates</outputDirectory>
-		</fileSet>
 	</fileSets>
 
 

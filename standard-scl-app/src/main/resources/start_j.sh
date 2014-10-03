@@ -1,1 +1,1 @@
-java -Djavax.net.ssl.trustStore=certificates/cacerts -Djavax.net.ssl.trustStorePassword=password -Xmx256m -Xms256m -jar ${project.build.finalName}.jar
+java -Xmx256m -Xms256m -Dcom.sun.management.jmxremote=true -Dcom.sun.management.jmxremote.port=9999 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Djava.rmi.server.hostname=localhost -jar ${project.build.finalName}.jar
