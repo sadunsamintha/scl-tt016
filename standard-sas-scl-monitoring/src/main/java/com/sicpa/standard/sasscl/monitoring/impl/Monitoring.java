@@ -32,7 +32,7 @@ public class Monitoring implements IMonitoring {
 
     private static Logger logger = LoggerFactory.getLogger(Monitoring.class);
 
-    protected IncrementalStatistics incremantalStatistics;
+    protected IncrementalStatistics incrementalStatistics;
     protected ProductionStatistics productionStatistics;
 
     protected MonitoringStatistics mbeanStatistics;
@@ -216,8 +216,8 @@ public class Monitoring implements IMonitoring {
                 addSystemEventInternal(new BasicSystemEvent(event.getLevel(), event.getType(), event.getMessage() + ""));
             }
         }
-        if (incremantalStatistics != null) {
-            incremantalStatistics.handleSystemEvent(event);
+        if (incrementalStatistics != null) {
+            incrementalStatistics.handleSystemEvent(event);
         }
         if (productionStatistics != null) {
             productionStatistics.handleSystemEvent(event);
@@ -249,22 +249,22 @@ public class Monitoring implements IMonitoring {
     }
 
     protected void createNewIncrementalStatistics() {
-        IncrementalStatistics previous = incremantalStatistics;
-        incremantalStatistics = new IncrementalStatistics();
-        incremantalStatistics.setSubsystemId(config.getSubsystemId());
-        incremantalStatistics.setProductionParameters(productionParameters);
+        IncrementalStatistics previous = incrementalStatistics;
+        incrementalStatistics = new IncrementalStatistics();
+        incrementalStatistics.setSubsystemId(config.getSubsystemId());
+        incrementalStatistics.setProductionParameters(productionParameters);
         if (previous != null) {
             // if statistics value is not set (there is not statistic event
             // during the save internal), use the offset value from previous
             // instance
             if (previous.getProductsStatistics().getValues().size() == 0) {
-                incremantalStatistics.getProductsStatistics().setMapOffset(
+                incrementalStatistics.getProductsStatistics().setMapOffset(
                         previous.getProductsStatistics().getMapOffset());
             } else {
-                incremantalStatistics.getProductsStatistics()
+                incrementalStatistics.getProductsStatistics()
                         .setMapOffset(previous.getProductsStatistics().getValues());
             }
-            incremantalStatistics.setStartTime(new Date());
+            incrementalStatistics.setStartTime(new Date());
         }
     }
 
@@ -299,9 +299,9 @@ public class Monitoring implements IMonitoring {
     }
 
     public synchronized void saveIncrementalStatistics() {
-        if (incremantalStatistics != null) {
-            if(incremantalStatistics.getProductsStatistics().getValues().size() != 0) {
-                IncrementalStatistics toSave = incremantalStatistics;
+        if (incrementalStatistics != null) {
+            if(incrementalStatistics.getProductsStatistics().getValues().size() != 0) {
+                IncrementalStatistics toSave = incrementalStatistics;
                 toSave.setStopTime(new Date());
                 createNewIncrementalStatistics();
                 MonitorService.addEvent(MonitorType.INCREMENTAL_STATISTICS, toSave);
