@@ -39,8 +39,6 @@ public class ExecutorStarting implements Runnable {
 
 	@Override
 	public void run() {
-		MonitoringService.addSystemEvent(new StatisticsSystemEvent(statistics.getValues(),
-				SystemEventType.STATISTICS_OFFSET_CHANGED));
 		TaskExecutor.execute(new Runnable() {
 			@Override
 			public void run() {

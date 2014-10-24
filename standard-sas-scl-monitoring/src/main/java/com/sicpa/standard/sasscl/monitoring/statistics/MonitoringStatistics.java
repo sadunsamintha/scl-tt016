@@ -89,8 +89,6 @@ public abstract class MonitoringStatistics implements IMonitorObject, Serializab
 		} else if (event instanceof StatisticsSystemEvent) {
 			if (event.getType().equals(SystemEventType.STATISTICS_CHANGED)) {
 				setProductsStatisticsValues(((StatisticsSystemEvent) event).getMessage());
-			} else if (event.getType().equals(SystemEventType.STATISTICS_OFFSET_CHANGED)) {
-				setProductsStatisticsOffset(((StatisticsSystemEvent) event).getMessage().getMapValues());
 			}
 		}
 		if (event.getLevel().equals(SystemEventLevel.ERROR)) {

@@ -45,6 +45,11 @@ public class Monitoring implements IMonitoring {
 
     protected ProductionParameters productionParameters;
 
+    protected Timer saveIncrTimer = new Timer("saveIncrTimer");
+
+    protected Object lockIncremental = new Object();
+    protected Object lockProduction = new Object();
+
     @SuppressWarnings("rawtypes")
     public Monitoring(final IMonitorTypesMapping mapping) {
         MonitorService.setMonitorTypesMapping(mapping);
@@ -198,7 +203,6 @@ public class Monitoring implements IMonitoring {
 
     protected void populateDoNotSaveEventList() {
         doNotSaveEvents.add(SystemEventType.STATISTICS_CHANGED);
-        doNotSaveEvents.add(SystemEventType.STATISTICS_OFFSET_CHANGED);
         doNotSaveEvents.add(SystemEventType.PRODUCT_SCANNED);
         doNotSaveEvents.add(SystemEventType.GET_CODE_FROM_ENCODER);
         doNotSaveEvents.add(SystemEventType.PRINTER_INK_LEVEL);
@@ -217,10 +221,14 @@ public class Monitoring implements IMonitoring {
             }
         }
         if (incrementalStatistics != null) {
-            incrementalStatistics.handleSystemEvent(event);
+            synchronized (lockIncremental) {
+                incrementalStatistics.handleSystemEvent(event);
+            }
         }
         if (productionStatistics != null) {
-            productionStatistics.handleSystemEvent(event);
+            synchronized (lockProduction) {
+                productionStatistics.handleSystemEvent(event);
+            }
         }
         if (mbeanStatistics != null) {
             mbeanStatistics.handleSystemEvent(event);
@@ -230,21 +238,58 @@ public class Monitoring implements IMonitoring {
 
             if (event.getMessage().equals(ApplicationFlowState.STT_CONNECTED.getName())
                     || event.getMessage().equals(ApplicationFlowState.STT_CONNECTING.getName())) {
-                createNewProductionStatistics();
-                createNewIncrementalStatistics();
-                saveIncrTimer.cancel();
-            }
-
-            else if(event.getMessage().equals(ApplicationFlowState.STT_STOPPING.getName())) {
                 saveIncrementalStatistics();
                 saveProductionStatistics();
+                saveIncrTimer.cancel();
             }
 
             else if (event.getMessage().equals(ApplicationFlowState.STT_STARTING.getName())) {
                 saveIncrTimer = new Timer("saveIncrTimer");
                 saveIncrTimer.scheduleAtFixedRate(createSaveIncrTask(), 1000L * saveIncrPeriod, 1000L * saveIncrPeriod);
             }
+        } else if (event.getType().equals(SystemEventType.SELECT_PROD_PARAMETERS)) {
+            incrementalStatistics = null;
+            productionStatistics = null;
+        }
+    }
 
+    public void saveProductionStatistics() {
+        synchronized (lockProduction) {
+
+            if (productionStatistics != null && !productionStatistics.getProductsStatistics().getValues().isEmpty()) {
+                productionStatistics.setStopTime(new Date());
+                MonitorService.addEvent(MonitorType.PRODUCTION_STATISTICS, productionStatistics);
+            }
+            createNewProductionStatistics();
+        }
+    }
+
+    public synchronized void saveIncrementalStatistics() {
+        synchronized (lockIncremental) {
+            if (incrementalStatistics != null && !incrementalStatistics.getProductsStatistics().getValues().isEmpty()) {
+                incrementalStatistics.setStopTime(new Date());
+                MonitorService.addEvent(MonitorType.INCREMENTAL_STATISTICS, incrementalStatistics);
+            }
+            createNewIncrementalStatistics();
+        }
+    }
+
+    protected void createNewProductionStatistics() {
+        ProductionStatistics previous = productionStatistics;
+        productionStatistics = new ProductionStatistics();
+        productionStatistics.setSubsystemId(config.getSubsystemId());
+        productionStatistics.setProductionParameters(productionParameters);
+        productionStatistics.setStartTime(new Date());
+
+        if(previous != null) {
+
+            Map<StatisticsKey, Integer> mapValues;
+            if (previous.getProductsStatistics().getValues().size() == 0) {
+                mapValues = previous.getProductsStatistics().getMapOffset();
+            } else {
+                mapValues = previous.getProductsStatistics().getValues();
+            }
+            productionStatistics.getProductsStatistics().setMapOffset(mapValues);
         }
     }
 
@@ -253,28 +298,18 @@ public class Monitoring implements IMonitoring {
         incrementalStatistics = new IncrementalStatistics();
         incrementalStatistics.setSubsystemId(config.getSubsystemId());
         incrementalStatistics.setProductionParameters(productionParameters);
-        if (previous != null) {
-            // if statistics value is not set (there is not statistic event
-            // during the save internal), use the offset value from previous
-            // instance
+        incrementalStatistics.setStartTime(new Date());
+
+        if(previous != null) {
+            Map<StatisticsKey, Integer> mapValues;
             if (previous.getProductsStatistics().getValues().size() == 0) {
-                incrementalStatistics.getProductsStatistics().setMapOffset(
-                        previous.getProductsStatistics().getMapOffset());
+                mapValues = previous.getProductsStatistics().getMapOffset();
             } else {
-                incrementalStatistics.getProductsStatistics()
-                        .setMapOffset(previous.getProductsStatistics().getValues());
+                mapValues = previous.getProductsStatistics().getValues();
             }
-            incrementalStatistics.setStartTime(new Date());
+            incrementalStatistics.getProductsStatistics().setMapOffset(mapValues);
         }
     }
-
-    protected void createNewProductionStatistics() {
-        productionStatistics = new ProductionStatistics();
-        productionStatistics.setSubsystemId(config.getSubsystemId());
-        productionStatistics.setProductionParameters(productionParameters);
-    }
-
-    protected Timer saveIncrTimer = new Timer("saveIncrTimer");
 
     protected TimerTask createSaveIncrTask() {
         return new TimerTask() {
@@ -287,26 +322,6 @@ public class Monitoring implements IMonitoring {
 
     protected void addSystemEventInternal(final BasicSystemEvent event) {
         MonitorService.addEvent(MonitorType.SYSTEM_EVENT, event);
-    }
-
-    public synchronized void saveProductionStatistics() {
-        if (productionStatistics != null ) {
-            if(productionStatistics.getProductsStatistics().getValues().size() != 0) {
-                productionStatistics.setStopTime(new Date());
-                MonitorService.addEvent(MonitorType.PRODUCTION_STATISTICS, productionStatistics);
-            }
-        }
-    }
-
-    public synchronized void saveIncrementalStatistics() {
-        if (incrementalStatistics != null) {
-            if(incrementalStatistics.getProductsStatistics().getValues().size() != 0) {
-                IncrementalStatistics toSave = incrementalStatistics;
-                toSave.setStopTime(new Date());
-                createNewIncrementalStatistics();
-                MonitorService.addEvent(MonitorType.INCREMENTAL_STATISTICS, toSave);
-            }
-        }
     }
 
     public void setSaveIncrPeriod(final int saveIncrPeriod) {

@@ -27,7 +27,6 @@ public class SystemEventType implements Serializable {
 	public static final SystemEventType UNCAUGHT_EXCEPTION = new SystemEventType("UNCAUGHT_EXCEPTION");
 
 	public static final SystemEventType STATISTICS_CHANGED = new SystemEventType("STATISTICS_CHANGED");
-	public static final SystemEventType STATISTICS_OFFSET_CHANGED = new SystemEventType("STATISTICS_OFFSET_CHANGED");
 
 	public static final SystemEventType PRODUCT_SCANNED = new SystemEventType("PRODUCT_SCANNED");
 	public static final SystemEventType GET_CODE_FROM_ENCODER = new SystemEventType("GET_CODE_FROM_ENCODER");
