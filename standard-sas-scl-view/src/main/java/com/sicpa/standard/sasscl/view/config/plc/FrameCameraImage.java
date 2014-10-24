@@ -9,6 +9,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import com.sicpa.standard.gui.plaf.SicpaColor;
 import net.miginfocom.swing.MigLayout;
 
 import com.sicpa.standard.gui.components.dialog.dropShadow.DialogWithDropShadow;
@@ -28,6 +29,7 @@ public class FrameCameraImage extends DialogWithDropShadow {
 	private void initGUI() {
 		setAlwaysOnTop(true);
 		getContentPane().setLayout(new MigLayout("fill"));
+        getContentPane().setBackground(SicpaColor.BLUE_DARK);
 		setSize(300, 300);
 	}
 
@@ -44,6 +46,19 @@ public class FrameCameraImage extends DialogWithDropShadow {
 					add(panel, "grow,push");
 				}
 				panel.setImage(evt.getCameraImage());
+
+                if(labels.size() > 1) {
+                    // Resize images
+                    int targetWidth = (int) (evt.getCameraImage().getWidth(null)/2.5);
+                    int targetHeight = (int) (evt.getCameraImage().getHeight(null)/2.5);
+                    for (CameraImagePanel imgPanel : labels.values()) {
+                        Image img = imgPanel.getImage().getImage();
+                        Image scaledImg = img.getScaledInstance(targetWidth,
+                                targetHeight,
+                                Image.SCALE_SMOOTH);
+                        imgPanel.setImage(scaledImg);
+                    }
+                }
 
 				updateSize();
 			}
@@ -70,6 +85,7 @@ public class FrameCameraImage extends DialogWithDropShadow {
 
 		public CameraImagePanel(String name) {
 			setLayout(new MigLayout("fill"));
+            setBackground(SicpaColor.BLUE_DARK);
 			add(new JLabel(name), "wrap");
 			labelImage = new JLabel();
 			add(labelImage, "grow , push");
@@ -79,5 +95,9 @@ public class FrameCameraImage extends DialogWithDropShadow {
 			this.image = new ImageIcon(image);
 			labelImage.setIcon(this.image);
 		}
-	}
+
+        public ImageIcon getImage() {
+            return image;
+        }
+    }
 }
