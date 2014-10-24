@@ -21,6 +21,7 @@ import com.sicpa.standard.sasscl.monitoring.system.SystemEventType;
 import com.sicpa.standard.sasscl.monitoring.system.event.BasicSystemEvent;
 import com.sicpa.standard.util.FieldToString;
 import com.sicpa.standard.util.IConverter;
+import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -246,6 +247,16 @@ public class Monitoring implements IMonitoring {
             else if (event.getMessage().equals(ApplicationFlowState.STT_STARTING.getName())) {
                 saveIncrTimer = new Timer("saveIncrTimer");
                 saveIncrTimer.scheduleAtFixedRate(createSaveIncrTask(), 1000L * saveIncrPeriod, 1000L * saveIncrPeriod);
+
+
+                /** Production can last multiple days without interruption,
+                 * it is necessary to schedule statistics saving at midnight for consistency
+                 */
+                Date firstSavingDate  = DateUtils.truncate(new Date(), Calendar.DAY_OF_MONTH);
+                firstSavingDate = DateUtils.addDays(firstSavingDate, 1);
+                firstSavingDate = DateUtils.addSeconds(firstSavingDate, -1);
+                saveIncrTimer.schedule(createSaveIncrTask(), firstSavingDate, DateUtils.MILLIS_PER_DAY);
+                saveIncrTimer.schedule(createSaveStatTask(), firstSavingDate, DateUtils.MILLIS_PER_DAY);
             }
         } else if (event.getType().equals(SystemEventType.SELECT_PROD_PARAMETERS)) {
             incrementalStatistics = null;
@@ -316,6 +327,15 @@ public class Monitoring implements IMonitoring {
             @Override
             public void run() {
                 saveIncrementalStatistics();
+            }
+        };
+    }
+
+    protected TimerTask createSaveStatTask() {
+        return new TimerTask() {
+            @Override
+            public void run() {
+                saveProductionStatistics();
             }
         };
     }
