@@ -51,12 +51,12 @@ import com.sicpa.std.common.api.multilingual.exception.MultilingualException;
 import com.sicpa.std.common.api.security.business.LoginServiceHandler;
 import com.sicpa.std.common.api.security.dto.LoginDto;
 import com.sicpa.std.common.api.sku.dto.MarketTypeDto;
+import com.sicpa.std.common.api.sku.dto.PackagingTypeSkuDto;
 import com.sicpa.std.common.api.staticdata.codetype.dto.CodeTypeDto;
 import com.sicpa.std.common.api.staticdata.sku.dto.SkuProductDto;
 import com.sicpa.std.common.api.util.PropertyNames;
 import com.sicpa.std.server.util.lifechecker.LifeChecker;
 import org.jboss.ejb.client.EJBClientContext;
-import org.jboss.ejb.client.EJBClientInterceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,8 +65,6 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import java.io.File;
 import java.io.FileInputStream;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.text.MessageFormat;
 import java.util.*;
@@ -379,7 +377,21 @@ public class RemoteServer extends AbstractRemoteServer {
             convertCodeTypeDto(child, convertedParentRoot);
             return;
         }
+        if (child.getNodeValue() instanceof PackagingTypeSkuDto) {
+            convertPackagingTypeSkuDto(child, convertedParentRoot);
+            return;
+        }
         convertNavigationDto(child, convertedParentRoot);
+    }
+
+    protected void convertPackagingTypeSkuDto(ComponentBehaviorDto<? extends BaseDto<Long>> child,
+                                              final AbstractProductionParametersNode<?> convertedParentRoot) {
+        PackagingTypeSkuDto packagingTypeSkuDto = (PackagingTypeSkuDto) child.getNodeValue();
+
+        // For Packaging Type we need to get the business code, not the ID
+        NavigationNode navigationNode = new NavigationNode(packagingTypeSkuDto.getBusinessCode());
+        convertedParentRoot.addChildren(navigationNode);
+        convertDMSProductionParameter(child, navigationNode);
     }
 
     protected void convertNavigationDto(ComponentBehaviorDto<? extends BaseDto<Long>> child,
