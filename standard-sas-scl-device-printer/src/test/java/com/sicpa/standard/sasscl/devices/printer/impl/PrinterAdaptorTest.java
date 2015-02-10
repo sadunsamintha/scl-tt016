@@ -1,16 +1,5 @@
 package com.sicpa.standard.sasscl.devices.printer.impl;
 
-import static org.junit.Assert.assertEquals;
-
-import java.util.Arrays;
-
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Mockito;
-
 import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.messages.MessageEvent;
 import com.sicpa.standard.gui.utils.ThreadUtils;
@@ -22,6 +11,16 @@ import com.sicpa.standard.sasscl.devices.IDeviceStatusListener;
 import com.sicpa.standard.sasscl.devices.printer.PrinterAdaptorException;
 import com.sicpa.standard.sasscl.devices.printer.simulator.PrinterSimulator;
 import com.sicpa.standard.sasscl.devices.printer.simulator.PrinterSimulatorConfig;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Mockito;
+
+import java.util.Arrays;
+
+import static org.junit.Assert.assertEquals;
 
 public class PrinterAdaptorTest {
 
@@ -44,8 +43,8 @@ public class PrinterAdaptorTest {
 		// start without connect
 		try {
 			printerAdaptor.start();
-			Assert.fail();
 		} catch (PrinterAdaptorException e) {
+			Assert.assertTrue(e.getMessage().contains("error when start printing"));
 		}
 	}
 
