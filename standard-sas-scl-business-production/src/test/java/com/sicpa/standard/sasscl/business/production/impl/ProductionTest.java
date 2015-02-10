@@ -1,22 +1,5 @@
 package com.sicpa.standard.sasscl.business.production.impl;
 
-import static org.mockito.Matchers.anyObject;
-import static org.mockito.Mockito.atLeast;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.List;
-
-import org.fest.reflect.core.Reflection;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.ArgumentCaptor;
-
 import com.sicpa.standard.client.common.storage.StorageException;
 import com.sicpa.standard.sasscl.business.activation.NewProductEvent;
 import com.sicpa.standard.sasscl.common.storage.IStorage;
@@ -27,6 +10,17 @@ import com.sicpa.standard.sasscl.devices.remote.RemoteServerException;
 import com.sicpa.standard.sasscl.model.PackagedProducts;
 import com.sicpa.standard.sasscl.model.Product;
 import com.sicpa.standard.sasscl.model.ProductStatus;
+import org.fest.reflect.core.Reflection;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.ArgumentCaptor;
+
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Mockito.*;
 
 @SuppressWarnings("unchecked")
 public class ProductionTest {
@@ -208,18 +202,17 @@ public class ProductionTest {
 	 * @throws Exception
 	 */
 	@Test
-	public void sendProductionDataFails() throws Exception {
+	public void sendProductionDataFailsAfter3TimesSentToQuarantine() throws Exception {
 		List<Product> c = mock(List.class);
 
-		when(c.size()).thenReturn(3);
-		when(storage.getABatchOfProducts()).thenReturn(
-				new PackagedProducts(c, 1l, ProductStatus.AUTHENTICATED, "147", 123l,false));
 		doThrow(new RemoteServerException()).when(remoteServer).sendProductionData((PackagedProducts) anyObject());
 
-		production.sendAllProductionData();
+		production.sendABatchOfProducts(new PackagedProducts(c, 1l, ProductStatus.AUTHENTICATED, "147", 123l,false),
+				10, new AtomicInteger(0), new AtomicInteger(3));
 
-		verify(remoteServer, times(1)).sendProductionData((PackagedProducts) anyObject());
+		verify(remoteServer, times(3)).sendProductionData((PackagedProducts) anyObject());
 		verify(storage, never()).notifyDataSentToRemoteServer();
+		verify(storage, times(1)).notifyDataErrorSendingToRemoteServer();
 	}
 
 	/**
