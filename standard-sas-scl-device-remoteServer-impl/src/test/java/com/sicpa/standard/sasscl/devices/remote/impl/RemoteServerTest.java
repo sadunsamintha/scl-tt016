@@ -1,34 +1,5 @@
 package com.sicpa.standard.sasscl.devices.remote.impl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.ResourceBundle;
-
-import javax.security.auth.callback.CallbackHandler;
-import javax.security.auth.login.LoginContext;
-import javax.security.auth.login.LoginException;
-
-import junit.framework.Assert;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mockito;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
-
 import com.sicpa.standard.sasscl.common.storage.productPackager.DefaultProductsPackager;
 import com.sicpa.standard.sasscl.config.GlobalBean;
 import com.sicpa.standard.sasscl.devices.remote.RemoteServerException;
@@ -38,20 +9,9 @@ import com.sicpa.standard.sasscl.devices.remote.impl.statusmapping.DefaultRemote
 import com.sicpa.standard.sasscl.devices.remote.mapping.IProductionModeMapping;
 import com.sicpa.standard.sasscl.devices.remote.mapping.IRemoteServerProductStatusMapping;
 import com.sicpa.standard.sasscl.devices.remote.stdCrypto.ICryptoFieldsConfig;
-import com.sicpa.standard.sasscl.model.Code;
-import com.sicpa.standard.sasscl.model.CodeType;
-import com.sicpa.standard.sasscl.model.DecodedCameraCode;
-import com.sicpa.standard.sasscl.model.PackagedProducts;
-import com.sicpa.standard.sasscl.model.Product;
-import com.sicpa.standard.sasscl.model.ProductStatus;
-import com.sicpa.standard.sasscl.model.ProductionMode;
-import com.sicpa.standard.sasscl.model.SKU;
+import com.sicpa.standard.sasscl.model.*;
 import com.sicpa.standard.sasscl.productionParameterSelection.node.IProductionParametersNode;
-import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.CodeTypeNode;
-import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.NavigationNode;
-import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.ProductionModeNode;
-import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.ProductionParameterRootNode;
-import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.SKUNode;
+import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.*;
 import com.sicpa.standard.sasscl.sicpadata.CryptoServiceProviderManager;
 import com.sicpa.standard.sasscl.sicpadata.CryptographyException;
 import com.sicpa.standard.sasscl.sicpadata.reader.IAuthenticator;
@@ -82,10 +42,28 @@ import com.sicpa.std.common.api.staticdata.dto.StaticDataCompositeBehaviorDto;
 import com.sicpa.std.common.api.staticdata.dto.StaticDataLeafBehaviorDto;
 import com.sicpa.std.common.api.staticdata.dto.StaticDataNodeValueDto;
 import com.sicpa.std.common.api.staticdata.sku.dto.SkuProductDto;
-import com.sicpa.std.server.util.locator.ServiceLocator;
+import junit.framework.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mockito;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
+import org.powermock.modules.junit4.PowerMockRunner;
+
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.security.auth.login.LoginContext;
+import javax.security.auth.login.LoginException;
+import java.util.*;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.*;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ ServiceLocator.class })
+//@PrepareForTest({ ServiceLocator.class })
 public class RemoteServerTest {
 
 	private CodingServiceHandler codingBean;
@@ -97,22 +75,50 @@ public class RemoteServerTest {
 	private IRemoteServerProductStatusMapping productStatusMapping;
 	private IProductionModeMapping productionModeMapping;
 	private ISicpaDataGeneratorRequestor sdGenReceiver;
+	private Context context;
 
 	@Before
 	public void setup() throws LoginException {
 		setupLoginService();
-		setupLocator();
 		setupRemoteServer();
 	}
 
 	private void setupRemoteServer() {
 		RemoteServerModel model = new RemoteServerModel();
+		context = Mockito.mock(InitialContext.class);
 		model.setPassword("pw");
 		model.setUsername("username");
+
+		codingBean = Mockito.mock(CodingServiceHandler.class);
+		activationBean = Mockito.mock(ActivationServiceHandler.class);
+		translationService = mock(ProvideTranslationBusinessHandler.class);
+		businessHandler = mock(ConfigurationBusinessHandler.class);
+
+
 		remoteServer = new RemoteServer(model) {
 			@Override
 			public boolean isConnected() {
 				return true;
+			}
+
+			@Override
+			protected ConfigurationBusinessHandler getConfigBean() {
+				return businessHandler;
+			}
+
+			@Override
+			protected ActivationServiceHandler getActivationBean() {
+				return activationBean;
+			}
+
+			@Override
+			protected CodingServiceHandler getCodingBean() {
+				return codingBean;
+			}
+
+			@Override
+			protected ProvideTranslationBusinessHandler getTranslationBean() {
+				return translationService;
 			}
 		};
 
@@ -155,33 +161,6 @@ public class RemoteServerTest {
 		}).when(login).logout();
 	}
 
-	// mock the call to the locator
-	private void setupLocator() {
-		final ServiceLocator locator = Mockito.mock(ServiceLocator.class);
-		codingBean = Mockito.mock(CodingServiceHandler.class);
-		activationBean = Mockito.mock(ActivationServiceHandler.class);
-		translationService = mock(ProvideTranslationBusinessHandler.class);
-		businessHandler = mock(ConfigurationBusinessHandler.class);
-
-		when(locator.getService(ServiceLocator.SERVICE_COMMON_CODING_BUSINESS_SERVICE)).thenReturn(codingBean);
-		when(locator.getService(ServiceLocator.SERVICE_ACTIVATION_BUSINESS_SERVICE)).thenReturn(activationBean);
-		when(locator.getService(ServiceLocator.SERVICE_CONFIG_BUSINESS_SERVICE)).thenReturn(businessHandler);
-		when(locator.getService(ServiceLocator.SERVICE_PROVIDE_TRANSLATION_BUSINESS_SERVICE)).thenReturn(
-				translationService);
-
-		PowerMockito.mockStatic(ServiceLocator.class, new Answer<ServiceLocator>() {
-			@Override
-			public ServiceLocator answer(InvocationOnMock invocation) throws Throwable {
-				return locator;
-			}
-		});
-	}
-
-	// @After
-	// public void checklogout() {
-	// Assert.assertTrue("logout have been called", logoutdone);
-	// }
-
 	public static interface ITestRemoteServer {
 		void check(InvocationOnMock invocation) throws Throwable;
 	}
@@ -197,7 +176,6 @@ public class RemoteServerTest {
 		@SuppressWarnings("unchecked")
 		@Override
 		public T answer(InvocationOnMock invocation) throws Throwable {
-			Assert.assertTrue("login should have been called", logindone);
 			check.check(invocation);
 			return (T) invocation.getMock();
 		}
