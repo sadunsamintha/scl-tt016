@@ -43,19 +43,23 @@ public class EncoderNoEncryptionSimulator extends AbstractEncoder {
 		this.sequence = min;
 		
 		if(codeTypeId >= CodeType.ExtendedCodeId){
-			ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("config/productionConfig/extended-code.xml");
+			try {
+				ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("config/productionConfig/extended-code.xml");
 
-			this.extendedCodeFactory = (ExtendedCodeFactory) ctx.getBean(String.valueOf(codeTypeId));
-            if(extendedCodeFactory == null) {
-                LOGGER.error("********************EncoderNoEncryptionSimulator: cannot load bean:  {}", codeTypeId);
-            }
+				this.extendedCodeFactory = (ExtendedCodeFactory) ctx.getBean(String.valueOf(codeTypeId));
+				if(extendedCodeFactory == null) {
+					LOGGER.error("********************EncoderNoEncryptionSimulator: cannot load bean:  {}", codeTypeId);
+				}
 
-            ctx.close();
-            if(extendedCodeFactory instanceof ExtendedCodeFileFactory){
-                ((ExtendedCodeFileFactory)extendedCodeFactory).setRewindAllowed(true);
-            }
-            LOGGER.info("********************EncoderNoEncryptionSimulator: bean:  {} loaded from config/productionConfig/extended-code.xml", codeTypeId);
-        }
+				ctx.close();
+				if(extendedCodeFactory instanceof ExtendedCodeFileFactory){
+					((ExtendedCodeFileFactory)extendedCodeFactory).setRewindAllowed(true);
+				}
+				LOGGER.info("********************EncoderNoEncryptionSimulator: bean:  {} loaded from config/productionConfig/extended-code.xml", codeTypeId);
+			} catch (Exception e) {
+				LOGGER.error("Could not load extended codes factory", e);
+			}
+		}
     }
 
 	public EncoderNoEncryptionSimulator(final long batchid,int id, final int min, final int max, int year, int codeTypeId) {
