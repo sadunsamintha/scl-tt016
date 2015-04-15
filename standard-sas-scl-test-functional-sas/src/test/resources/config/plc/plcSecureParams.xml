@@ -1,0 +1,26 @@
+<PlcValuesForAllVar>
+  <PlcValue varName=".ExtGbl_stParam.nLSMIntervalTimeForEvidences">
+    <value class="int">600</value>
+  </PlcValue>
+  <PlcValue varName=".ExtGbl_stParam.bActiveIJC">
+    <value class="boolean">true</value>
+  </PlcValue>
+  <PlcValue varName=".ExtGbl_stParam.bActiveIJCD2">
+    <value class="boolean">false</value>
+  </PlcValue>
+  <PlcValue varName=".ExtGbl_stParam.bActiveIJCD3">
+    <value class="boolean">false</value>
+  </PlcValue>
+  <PlcValue varName=".ExtGbl_stParam.nTimeUnlockEC">
+    <value class="int">10000</value>
+  </PlcValue>
+  <PlcValue varName=".ExtGbl_stParam.nTimeUnlockIJC">
+    <value class="int">10000</value>
+  </PlcValue>
+  <PlcValue varName=".ExtGbl_stParam.nTimeUnlockIJCD2">
+    <value class="int">10000</value>
+  </PlcValue>
+  <PlcValue varName=".ExtGbl_stParam.nTimeUnlockIJCD3">
+    <value class="int">10000</value>
+  </PlcValue>
+</PlcValuesForAllVar>

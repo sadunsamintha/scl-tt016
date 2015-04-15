@@ -1,18 +1,5 @@
 package com.sicpa.standard.sasscl;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import junit.framework.Assert;
-import junit.framework.TestCase;
-
-import org.apache.commons.io.FileUtils;
-
 import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.camera.driver.CameraDriverEventCode;
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
@@ -58,6 +45,17 @@ import com.sicpa.standard.sasscl.repository.errors.AppMessage;
 import com.sicpa.standard.sasscl.repository.errors.IErrorsRepository;
 import com.sicpa.standard.sasscl.sicpadata.generator.IEncoder;
 import com.sicpa.standard.sasscl.test.utils.TestHelper;
+import junit.framework.Assert;
+import junit.framework.TestCase;
+import org.apache.commons.io.FileUtils;
+
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.net.URL;
+import java.util.*;
 
 public abstract class AbstractFunctionnalTest extends TestCase {
 
@@ -113,7 +111,7 @@ public abstract class AbstractFunctionnalTest extends TestCase {
 			@Override
 			public AbstractApplicationLoader createLoader(LoaderConfig config, String ... profiles) {
 				return super.createLoader(new LoaderConfig(getSpringConfig(), "functional test:\n"
-						+ getClass().getSimpleName(), null));
+						+ getClass().getSimpleName(), null), profiles);
 			}
 		};
 	}
@@ -229,8 +227,25 @@ public abstract class AbstractFunctionnalTest extends TestCase {
 	@SuppressWarnings("rawtypes")
 	protected void loadSpring() {
 		SingleAppInstanceUtils.releaseLock();
+
+		String[] profiles = new String[1];
+		try {
+			String fileName = "config/devices.properties";
+			URL url = ClassLoader.getSystemResource(fileName);
+			File f = (url == null) ?  new File(fileName) : new File(url.toURI());
+			Properties properties = new Properties();
+			properties.load(new BufferedReader(new FileReader(f)));
+
+			String key = "plcSecure.behavior";
+			profiles[0] = key + "." + (String) properties.get(key);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return;
+		}
+
 		final Loader loader = (Loader) mainApp.createLoader(new LoaderConfig(getSpringConfig(), "functional test:\n"
-				+ getClass().getSimpleName(), null));
+				+ getClass().getSimpleName(), null), profiles);
 		loader.loadApplication();
 		ThreadUtils.invokeAndWait(new Runnable() {
 			@Override
