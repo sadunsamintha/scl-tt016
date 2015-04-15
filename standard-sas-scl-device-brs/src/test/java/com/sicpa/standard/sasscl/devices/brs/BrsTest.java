@@ -5,6 +5,8 @@ import com.sicpa.standard.client.common.messages.MessageEvent;
 import com.sicpa.standard.sasscl.business.statistics.IStatistics;
 import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState;
 import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowStateChangedEvent;
+import com.sicpa.standard.sasscl.controller.productionconfig.IProductionConfig;
+import com.sicpa.standard.sasscl.controller.productionconfig.config.*;
 import com.sicpa.standard.sasscl.devices.plc.PlcBrsStateListener;
 import com.sicpa.standard.sasscl.devices.plc.PlcVariableMap;
 import com.sicpa.standard.sasscl.devices.plc.event.PlcEvent;
@@ -16,6 +18,7 @@ import com.sicpa.standard.sasscl.model.statistics.StatisticsKeyBad;
 import com.sicpa.standard.sasscl.model.statistics.StatisticsKeyGood;
 import com.sicpa.standard.sasscl.model.statistics.StatisticsValues;
 import com.sicpa.standard.sasscl.provider.impl.PlcProvider;
+import com.sicpa.standard.sasscl.provider.impl.ProductionConfigProvider;
 import com.sicpa.standard.sasscl.skucheck.SkuCheckFacade;
 import com.sicpa.standard.sasscl.skucheck.acquisition.statistics.IAcquisitionStatistics;
 import org.junit.Before;
@@ -29,12 +32,12 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
 
 import static com.sicpa.standard.client.common.eventbus.service.EventBusService.post;
 import static com.sicpa.standard.sasscl.devices.brs.Brs.*;
-import static org.apache.commons.lang.StringUtils.EMPTY;
 import static org.mockito.Mockito.*;
 import static org.powermock.api.mockito.PowerMockito.verifyZeroInteractions;
 import static org.powermock.api.mockito.PowerMockito.when;
@@ -83,6 +86,45 @@ public class BrsTest {
 		brs = new Brs(Mockito.mock(BrsConfigBean.class), skuCheckFacadeProvider, plcProvider, brsPlcLineTypeVarDesc,
 				brsPlcNotificationCntVarDesc, Mockito.mock(IAcquisitionStatistics.class), productionStatistics,
 				brsStateListener, brsAggregateModel, Mockito.mock(ITooManyUnreadHandler.class));
+		brs.setAdaptor(new BrsAdaptor());
+		ProductionConfigProvider productionConfigProvider = new ProductionConfigProvider();
+		productionConfigProvider.set(new IProductionConfig() {
+			@Override
+			public Collection<CameraConfig> getCameraConfigs() {
+				return null;
+			}
+
+			@Override
+			public Collection<PrinterConfig> getPrinterConfigs() {
+				return null;
+			}
+
+			@Override
+			public PlcConfig getPlcConfig() {
+				return null;
+			}
+
+			@Override
+			public BisConfig getBisConfig() {
+				return null;
+			}
+
+			@Override
+			public BrsConfig getBrsConfig() {
+				return new BrsConfig();
+			}
+
+			@Override
+			public String getAuthenticatorMode() {
+				return null;
+			}
+
+			@Override
+			public String getActivationBehavior() {
+				return null;
+			}
+		});
+		brs.setProductionConfigProvider(productionConfigProvider);
 
 		// Inject the executor to be able to run the test in the same thread.
 		ExecutorService executor = Mockito.mock(ExecutorService.class);
@@ -108,17 +150,13 @@ public class BrsTest {
 				put(NTF_BRS_FRAUD2, NTF_BRS_FRAUD2);
 				put(NTF_BRS_JAM_DETECTED1, NTF_BRS_JAM_DETECTED1);
 				put(NTF_BRS_JAM_DETECTED2, NTF_BRS_JAM_DETECTED2);
+				put(NTF_BRS_CONSECUTIVE_BAD_CODE, NTF_BRS_CONSECUTIVE_BAD_CODE);
+				put(NTF_BRS_TOO_MANY_UNREAD_ERR, NTF_BRS_TOO_MANY_UNREAD_ERR);
+				put(NTF_BRS_TOO_MANY_UNREAD_WAR, NTF_BRS_TOO_MANY_UNREAD_WAR);
 			}
 		});
 	}
 
-	@Test
-	public void wrongConfigurationOfLineTypeVar() throws Exception {
-
-		when(brsPlcLineTypeVarDesc.getValue()).thenReturn(1);
-
-		onCamerasConnected(11, EMPTY);
-	}
 
 	@Test
 	public void onAllCamerasConnected() throws Exception {
