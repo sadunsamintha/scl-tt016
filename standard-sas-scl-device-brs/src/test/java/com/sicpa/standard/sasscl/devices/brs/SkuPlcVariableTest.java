@@ -49,20 +49,6 @@ public class SkuPlcVariableTest {
         assertThat(skuPlcVariable.getValueType(), equalTo(String.class));
     }
 
-    @Test
-    public void testGetEmptyPlcValue() throws Exception {
-    	skuPlcVariable.setValue(EMPTY);
-    	
-        assertThat((PlcString) skuPlcVariable.getPlcValue(), equalTo(new PlcString(EMPTY, EMPTY.length())));
-    }
-
-    @Test
-    public void testGetPlcValueWithBarCode() throws Exception {
-        skuPlcVariable.setValue(SOME_VALUE);
-
-        assertThat((PlcString) skuPlcVariable.getPlcValue(), equalTo(new PlcString(A_BARCODE, A_BARCODE.length())));
-    }
-
     @Test(expected = IllegalStateException.class)
     public void testSetPlcValue() throws Exception {
 

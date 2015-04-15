@@ -12,6 +12,9 @@ import com.sicpa.standard.sasscl.devices.plc.PlcBrsStateListener;
 import com.sicpa.standard.sasscl.devices.plc.PlcRequest;
 import com.sicpa.standard.sasscl.devices.plc.impl.PlcAdaptor;
 import com.sicpa.standard.sasscl.messages.MessageEventKey;
+import com.sicpa.standard.sasscl.model.ProductionMode;
+import com.sicpa.standard.sasscl.model.ProductionParameters;
+import com.sicpa.standard.sasscl.model.SKU;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -49,7 +52,8 @@ public class BrsStateListenerTest {
 		plcAdaptor = Mockito.mock(PlcAdaptor.class);
 		brsStateListener = new PlcBrsStateListener();
 		brsStateListener.setPlcAdaptor(plcAdaptor);	
-		brsStateListener.setBrsRequestMap(brsRequestMap);		
+		brsStateListener.setBrsRequestMap(brsRequestMap);
+		brsStateListener.setProductionParameters(new ProductionParameters(ProductionMode.STANDARD, new SKU(1), ""));
 	}
 
 	@Ignore
@@ -77,9 +81,8 @@ public class BrsStateListenerTest {
 	public void onStateStarted() throws Exception {
 
 		brsStateListener.processStateChanged(new ApplicationFlowStateChangedEvent(ApplicationFlowState.STT_STARTING, ApplicationFlowState.STT_STARTED, ""));
-						
-		verify(plcAdaptor, times(1)).write(brsRequestMap.get(BrsPlcRequest.SET_EXPECTED_SKU));
-		verify(plcAdaptor, times(1)).write(brsRequestMap.get(BrsPlcRequest.SET_SKU_CHECK_MODE));
+
+		verify(plcAdaptor, times(1)).write(brsRequestMap.get(BrsPlcRequest.LINE_ENABLE));
 
 		assertThat(brsStateListener.isStopped(), equalTo(false));
 	}
