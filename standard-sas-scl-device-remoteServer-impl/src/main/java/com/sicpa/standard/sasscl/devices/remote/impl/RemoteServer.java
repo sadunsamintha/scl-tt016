@@ -389,7 +389,7 @@ public class RemoteServer extends AbstractRemoteServer {
         PackagingTypeSkuDto packagingTypeSkuDto = (PackagingTypeSkuDto) child.getNodeValue();
 
         // For Packaging Type we need to get the business code, not the ID
-        NavigationNode navigationNode = new NavigationNode(packagingTypeSkuDto.getBusinessCode());
+        NavigationNode navigationNode = new NavigationNode(packagingTypeSkuDto.getDescription());
         convertedParentRoot.addChildren(navigationNode);
         convertDMSProductionParameter(child, navigationNode);
     }
@@ -406,7 +406,7 @@ public class RemoteServer extends AbstractRemoteServer {
                                       final AbstractProductionParametersNode<?> convertedParentRoot) {
         CodeTypeDto codeDto = (CodeTypeDto) child.getNodeValue();
         CodeType codeType = new CodeType(codeDto.getId().intValue());
-        codeType.setDescription(codeDto.getTranslationCode());
+        codeType.setDescription(codeDto.getInternalDescription());
         CodeTypeNode codeTypeConverted = new CodeTypeNode(codeType);
         convertedParentRoot.addChildren(codeTypeConverted);
         convertDMSProductionParameter(child, codeTypeConverted);
@@ -415,7 +415,7 @@ public class RemoteServer extends AbstractRemoteServer {
     protected void convertSkuProductDto(ComponentBehaviorDto<? extends BaseDto<Long>> child,
                                         final AbstractProductionParametersNode<?> convertedParentRoot) {
         SkuProductDto skuDto = (SkuProductDto) child.getNodeValue();
-        SKU sku = new SKU(skuDto.getId().intValue(), skuDto.getTranslationCode(), Arrays.asList(skuDto
+        SKU sku = new SKU(skuDto.getId().intValue(), skuDto.getInternalDescription(), Arrays.asList(skuDto
                 .getSkuBarcode()));
         CodeType codeType = this.getCodeTypeForSku(child);
 
@@ -467,7 +467,7 @@ public class RemoteServer extends AbstractRemoteServer {
 
             CodeTypeDto codeTypeDto = (CodeTypeDto) skuDto.getParent().getNodeValue();
             CodeType codeType = new CodeType(codeTypeDto.getId().intValue());
-            codeType.setDescription(codeTypeDto.getTranslationCode());
+            codeType.setDescription(codeTypeDto.getInternalDescription());
             return codeType;
         }
 

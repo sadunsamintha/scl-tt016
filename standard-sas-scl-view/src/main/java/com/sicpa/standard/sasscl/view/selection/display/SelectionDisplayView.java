@@ -68,13 +68,13 @@ public class SelectionDisplayView extends AbstractView<ISelectionDisplayViewList
 		}
 
 		if (codeType != null) {
-			getMainPanel().add(new MultiLineLabel(Messages.get(codeType.getDescription())), "grow, w 200, h 45 , spanx");
+			getMainPanel().add(new MultiLineLabel(codeType.getDescription()), "grow, w 200, h 45 , spanx");
 		}
 		if (sku != null) {
 			if (sku.getImage() != null) {
 				getMainPanel().add(toScaledImage(sku.getImage().getImage()), "grow,wrap");
 			}
-			getMainPanel().add(new MultiLineLabel(Messages.get(sku.getDescription())), "grow, w 200, h 135 , spanx");
+			getMainPanel().add(new MultiLineLabel(sku.getDescription()), "grow, w 200, h 135 , spanx");
 		}
 
 		if (barcode != null) {

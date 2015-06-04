@@ -1,6 +1,5 @@
 package com.sicpa.standard.sasscl.productionParameterSelection.node.impl;
 
-import com.sicpa.standard.common.util.Messages;
 import com.sicpa.standard.sasscl.productionParameterSelection.node.AbstractProductionParametersNode;
 
 public class NavigationNode extends AbstractProductionParametersNode<String> {
@@ -28,7 +27,7 @@ public class NavigationNode extends AbstractProductionParametersNode<String> {
 	
 	@Override
 	public String getText() {
-		return Messages.get(text);
+		return text;
 	}
 
 }

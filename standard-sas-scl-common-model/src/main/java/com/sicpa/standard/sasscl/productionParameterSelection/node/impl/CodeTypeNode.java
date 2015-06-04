@@ -1,10 +1,9 @@
 package com.sicpa.standard.sasscl.productionParameterSelection.node.impl;
 
-import javax.swing.ImageIcon;
-
-import com.sicpa.standard.common.util.Messages;
 import com.sicpa.standard.sasscl.model.CodeType;
 import com.sicpa.standard.sasscl.productionParameterSelection.node.AbstractProductionParametersNode;
+
+import javax.swing.*;
 
 public class CodeTypeNode extends AbstractProductionParametersNode<CodeType> {
 
@@ -42,6 +41,6 @@ public class CodeTypeNode extends AbstractProductionParametersNode<CodeType> {
 
 	@Override
 	public String getText() {
-		return Messages.get(text);
+		return text;
 	}
 }
