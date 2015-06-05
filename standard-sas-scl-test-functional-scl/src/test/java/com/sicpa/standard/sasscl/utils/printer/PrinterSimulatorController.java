@@ -1,9 +1,5 @@
 package com.sicpa.standard.sasscl.utils.printer;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
-
 import com.sicpa.standard.client.common.exception.InitializationRuntimeException;
 import com.sicpa.standard.client.common.utils.ConfigUtils;
 import com.sicpa.standard.client.common.utils.TaskExecutor;
@@ -23,6 +19,10 @@ import com.sicpa.standard.sasscl.devices.printer.simulator.PrinterSimulatorConfi
 import com.sicpa.standard.sasscl.devices.simulator.gui.SimulatorControlView;
 import com.sicpa.standard.sasscl.model.ProductionMode;
 import com.sicpa.standard.sasscl.model.ProductionParameters;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class PrinterSimulatorController implements IPrinterController, IPrinterControllerSimulator {
 
