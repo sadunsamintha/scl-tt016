@@ -1,8 +1,5 @@
 package com.sicpa.standard.sasscl.coding;
 
-import java.io.File;
-import java.util.Arrays;
-
 import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.ioc.BeanProvider;
@@ -25,6 +22,9 @@ import com.sicpa.standard.sasscl.model.ProductionMode;
 import com.sicpa.standard.sasscl.sicpadata.CryptographyException;
 import com.sicpa.standard.sasscl.sicpadata.generator.IEncoder;
 import com.sicpa.standard.sasscl.sicpadata.generator.impl.CodeListEncoder;
+
+import java.io.File;
+import java.util.Arrays;
 
 public class SaveFinishedEncoderTestSCL extends AbstractFunctionnalTest {
 
@@ -83,7 +83,7 @@ public class SaveFinishedEncoderTestSCL extends AbstractFunctionnalTest {
 	}
 
 	protected void checkFinishedEncoderGenerated() {
-		assertTrue(new File("internal/" + FileStorage.FOLDER_ENCODER_FINISHED_PENDING).listFiles().length > 0);
+		assertTrue(new File("internalSimulator/" + FileStorage.FOLDER_ENCODER_FINISHED_PENDING).listFiles().length > 0);
 	}
 
 	protected void configureDevices() {
