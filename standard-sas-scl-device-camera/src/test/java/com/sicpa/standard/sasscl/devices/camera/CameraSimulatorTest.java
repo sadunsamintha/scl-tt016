@@ -1,14 +1,5 @@
 package com.sicpa.standard.sasscl.devices.camera;
 
-import java.io.File;
-import java.io.IOException;
-
-import org.apache.commons.io.FileUtils;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mockito;
-
 import com.sicpa.standard.camera.controller.ICameraController;
 import com.sicpa.standard.sasscl.devices.DeviceException;
 import com.sicpa.standard.sasscl.devices.camera.simulator.CameraSimulatorConfig;
@@ -18,6 +9,14 @@ import com.sicpa.standard.sasscl.devices.camera.simulator.ICodeProvider;
 import com.sicpa.standard.sasscl.devices.camera.transformer.IRoiCameraImageTransformer;
 import com.sicpa.standard.sasscl.model.Code;
 import com.sicpa.standard.sasscl.model.ProductionMode;
+import org.apache.commons.io.FileUtils;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mockito;
+
+import java.io.File;
+import java.io.IOException;
 
 public class CameraSimulatorTest extends AbstractCameraAdaptorTest {
 
@@ -28,7 +27,7 @@ public class CameraSimulatorTest extends AbstractCameraAdaptorTest {
 	public void setUp() throws Exception {
 		camConfig = new CameraSimulatorConfig();
 		camConfig.setCodeGetMethod(CodeGetMethod.generated);
-		camConfig.setReadCodeInterval(5);
+		camConfig.setReadCodeInterval(20);
 		camConfig.setPercentageBadCode(25);
 		simulator = new CameraSimulatorController(camConfig);
 		simulator.setProductionParameters(productionParameters);
