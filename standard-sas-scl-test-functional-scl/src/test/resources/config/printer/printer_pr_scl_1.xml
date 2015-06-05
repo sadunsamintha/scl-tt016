@@ -1,37 +1,36 @@
-<com.sicpa.standard.printer.controller.model.PrinterModel>
-  <mCommDeviceName>SCD2</mCommDeviceName>
-  <mCommDeviceIp>192.168.1.4</mCommDeviceIp>
-  <mCommDeviceId>1234567890123456789012345678901234567890</mCommDeviceId>
-  <mCommDeviceUdpPort>4321</mCommDeviceUdpPort>
-  <mCommDeviceTcpTimeout>5000</mCommDeviceTcpTimeout>
-  <mCommDevicePort>1234</mCommDevicePort>
-  <mRequestFluidLevelsInterval>10</mRequestFluidLevelsInterval>
-  <mRequestReservoirHoursLeftInterval>30</mRequestReservoirHoursLeftInterval>
-  <mUsePrinterSimulator>false</mUsePrinterSimulator>
-  <mResetOnStop>false</mResetOnStop>
-  <mDebugMode>true</mDebugMode>
-  <mPrinterParameters class="com.sicpa.standard.printer.driver.DominoParameter">
-  		<mCodeType>DYNAMIC_DATAMATRIX</mCodeType>
-  		<mDataMatrixFormat>DM_8x18</mDataMatrixFormat>
-  		<mDataMatrixEncoding>ASCII</mDataMatrixEncoding>
-  		<mPersistence class ="com.sicpa.standard.printer.controller.model.Persistence">
-  			<mType class="com.sicpa.standard.printer.controller.model.PersistenceType">STROKE_BASED</mType>
-  			<mValue>1</mValue>
+<com.sicpa.standard.printer.controller.model.DominoPrinterModel>
+	<name>SCD2</name>
+	<ipAdress>192.168.1.207</ipAdress>
+	<deviceId>1234567890123456789012345678901234567890</deviceId>
+	<udpPort>4321</udpPort>
+	<tcpTimeout>10000</tcpTimeout>
+	<tcpPort>1234</tcpPort>
+	<requestFluidLevelsInterval>10</requestFluidLevelsInterval>
+	<requestReservoirHoursLeftInterval>30</requestReservoirHoursLeftInterval>
+	<mUsePrinterSimulator>false</mUsePrinterSimulator>
+	<resetOnStop>true</resetOnStop>
+	<mDebugMode>false</mDebugMode>
+	<mPrinterParameters class="com.sicpa.standard.printer.driver.DominoParameter">
+		<mCodeType>DYNAMIC_DATAMATRIX</mCodeType>
+		<mDataMatrixFormat>DM_8x18</mDataMatrixFormat>
+		<mDataMatrixEncoding>C40</mDataMatrixEncoding>
+		<mPersistence class ="com.sicpa.standard.printer.controller.model.Persistence">
+			<mType class="com.sicpa.standard.printer.controller.model.PersistenceType">STROKE_BASED</mType>
+			<mValue>1</mValue>
 		</mPersistence>
-  		<mDelay>1</mDelay>
-  		<mRaster>R_1</mRaster>
-  		<mAperture>34</mAperture>
-  		<mFlightTime>35</mFlightTime>
-  		<mFlightTimeStroke>10</mFlightTimeStroke>
-  		<mExtStrokeDiv>9</mExtStrokeDiv>
-  		<mPrintMode>1</mPrintMode>
-  		<mBufferMethod>THREE_BUFFERS</mBufferMethod>
-  		<mPrintBlobs>false</mPrintBlobs>
-  		<mTextFormat>TF_1_LINE</mTextFormat>
-  		<noFlushOnStop>true</noFlushOnStop>
-  		<isPrinterBufferSizeControlled>true</isPrinterBufferSizeControlled>
-		<!-- Printer Buffer low threshold & request size -->
-		<mCodeSizePerRequest>20</mCodeSizePerRequest>
+		<mDelay>1</mDelay>
+		<mRaster>R_4</mRaster>
+		<mAperture>26</mAperture>
+		<mFlightTime>35</mFlightTime>
+		<mFlightTimeStroke>10</mFlightTimeStroke>
+		<mExtStrokeDiv>7</mExtStrokeDiv>
+		<mPrintMode>3</mPrintMode>
+		<mBufferMethod>THREE_BUFFERS</mBufferMethod>
+		<mPrintBlobs>false</mPrintBlobs>
+		<mTextFormat>TF_1_LINE</mTextFormat>
+		<isPrinterBufferSizeControlled>true</isPrinterBufferSizeControlled>
+		<noFlushOnStop>true</noFlushOnStop>
+		<mCodeSizePerRequest>100</mCodeSizePerRequest>
 		<mCodeBufferLowThreshold>20</mCodeBufferLowThreshold>
-  </mPrinterParameters>
-</com.sicpa.standard.printer.controller.model.PrinterModel>
+	</mPrinterParameters>
+</com.sicpa.standard.printer.controller.model.DominoPrinterModel>
