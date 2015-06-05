@@ -1,9 +1,8 @@
 package com.sicpa.standard.sasscl.productionParameterSelection.node.impl;
 
-import javax.swing.ImageIcon;
-
-import com.sicpa.standard.common.util.Messages;
 import com.sicpa.standard.sasscl.productionParameterSelection.node.AbstractProductionParametersNode;
+
+import javax.swing.*;
 
 public class CategoryNode extends AbstractProductionParametersNode<Object> {
 
@@ -33,6 +32,6 @@ public class CategoryNode extends AbstractProductionParametersNode<Object> {
 
 	@Override
 	public String getText() {
-		return Messages.get(text);
+		return text;
 	}
 }
