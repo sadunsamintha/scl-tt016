@@ -74,25 +74,6 @@ public class CameraSimulatorTest extends AbstractCameraAdaptorTest {
 	}
 
 	/**
-	 * Test calling start twice, make sure only one thread is running
-	 * 
-	 * @throws DeviceException
-	 * 
-	 */
-	@Test
-	public void cameraReadingCallTwiceTest() throws InterruptedException, DeviceException {
-		camConfig.setCodeGetMethod(CodeGetMethod.generated);
-		cameraController.connect();
-		cameraController.start();
-		// calling second time
-		cameraController.start();
-		Assert.assertTrue(threadCountByName("Camera Simulator") == 1);
-
-		cameraController.stop();
-
-	}
-
-	/**
 	 * Test reading codes from other components
 	 * 
 	 * @throws InterruptedException
