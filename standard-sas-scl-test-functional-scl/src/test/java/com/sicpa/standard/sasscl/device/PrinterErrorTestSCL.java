@@ -1,6 +1,7 @@
 package com.sicpa.standard.sasscl.device;
 
-import com.sicpa.standard.printer.controller.model.FaultStatus;
+import com.sicpa.standard.printer.controller.model.command.PrinterMessage;
+import com.sicpa.standard.printer.controller.model.command.PrinterMessageId;
 import com.sicpa.standard.sasscl.AbstractFunctionnalTest;
 import com.sicpa.standard.sasscl.devices.camera.simulator.CameraAdaptorSimulator;
 import com.sicpa.standard.sasscl.devices.camera.simulator.CameraSimulatorController;
@@ -12,7 +13,6 @@ import com.sicpa.standard.sasscl.model.ProductionMode;
 import com.sicpa.standard.sasscl.utils.printer.PrinterSimulatorThatProvidesCodes;
 
 public class PrinterErrorTestSCL extends AbstractFunctionnalTest {
-
 	private PrinterSimulatorThatProvidesCodes printerSimul;
 
 	public void test() {
@@ -29,11 +29,15 @@ public class PrinterErrorTestSCL extends AbstractFunctionnalTest {
 	}
 
 	public void triggerPrinterError() {
-		printerSimul.fireOnFaultStatusChanged(new FaultStatus(1));
+		PrinterMessage message = new PrinterMessage(PrinterMessageId.CHARGE_FAULT);
+		message.setIssueSolved(false);
+		printerSimul.firePrinterMessage(message);
 	}
 
 	public void recoverPrinterError() {
-		printerSimul.fireOnFaultStatusChanged(new FaultStatus(0));
+		PrinterMessage message = new PrinterMessage(PrinterMessageId.CHARGE_FAULT);
+		message.setIssueSolved(true);
+		printerSimul.firePrinterMessage(message);
 	}
 
 	@Override
@@ -44,8 +48,10 @@ public class PrinterErrorTestSCL extends AbstractFunctionnalTest {
 		cameraModel.setCodeGetMethod(CodeGetMethod.requested);
 
 		PrinterAdaptorSimulator printerDevice = (PrinterAdaptorSimulator) devicesMap.get("pr_scl_1");
-//		printerSimul = (PrinterSimulatorThatProvidesCodes) printerDevice.getSimulatorController();
-//		printerSimul.setCodeByRequest(1);
+
+		printerSimul = new PrinterSimulatorThatProvidesCodes();
+		printerSimul.setListener(printerDevice);
+		printerSimul.setCodeByRequest(1);
 	}
 
 	@Override

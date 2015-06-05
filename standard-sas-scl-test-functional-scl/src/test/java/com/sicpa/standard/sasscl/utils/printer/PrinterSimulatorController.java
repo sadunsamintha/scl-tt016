@@ -7,9 +7,9 @@ import com.sicpa.standard.printer.controller.IPrinterController;
 import com.sicpa.standard.printer.controller.IPrinterControllerListener;
 import com.sicpa.standard.printer.controller.PrinterException;
 import com.sicpa.standard.printer.controller.model.AbstractPrinterModel;
-import com.sicpa.standard.printer.controller.model.FaultStatus;
 import com.sicpa.standard.printer.controller.model.PrinterBufferStatus;
 import com.sicpa.standard.printer.controller.model.SequenceStatus;
+import com.sicpa.standard.printer.controller.model.command.PrinterMessage;
 import com.sicpa.standard.printer.driver.IPrinterDriver;
 import com.sicpa.standard.printer.driver.event.PrinterBufferStatusChangedEventArgs;
 import com.sicpa.standard.printer.xcode.ExtendedCode;
@@ -113,10 +113,10 @@ public class PrinterSimulatorController implements IPrinterController, IPrinterC
 		}
 	}
 
-	public void fireOnFaultStatusChanged(final FaultStatus status) {
-//		for (IPrinterControllerListener lis : this.listeners) {
-//			lis.onFaultStatusChanged(this, status);
-//		}
+	public void firePrinterMessage(final PrinterMessage mess) {
+		for (IPrinterControllerListener lis : this.listeners) {
+			lis.onMessageReceived(mess);
+		}
 	}
 
 	public void setProductionParameters(ProductionParameters productionParameters) {
