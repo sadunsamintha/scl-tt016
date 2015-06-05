@@ -11,6 +11,7 @@ import com.sicpa.standard.camera.parser.event.MetricsEventArgs;
 import com.sicpa.standard.camera.parser.event.UnknownCodeEventArgs;
 import com.sicpa.standard.client.common.ioc.BeanProvider;
 import com.sicpa.standard.client.common.ioc.PropertyPlaceholderResources;
+import com.sicpa.standard.printer.xcode.ExtendedCode;
 import com.sicpa.standard.sasscl.business.coding.ICodeReceiver;
 import com.sicpa.standard.sasscl.business.coding.ICoding;
 import com.sicpa.standard.sasscl.devices.camera.simulator.CameraSimulatorConfig;
@@ -62,6 +63,11 @@ public class ActivationTestSCL extends ActivationTest implements ICameraControll
 			@Override
 			public void provideCode(List<String> c, Object o) {
 				codes.addAll(c);
+			}
+
+			@Override
+			public void provideExtendedCode(List<ExtendedCode> codes, Object o) {
+
 			}
 		});
 		camera.addListener(this);
