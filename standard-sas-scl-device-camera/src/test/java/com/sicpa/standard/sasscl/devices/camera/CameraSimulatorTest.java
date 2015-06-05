@@ -27,7 +27,7 @@ public class CameraSimulatorTest extends AbstractCameraAdaptorTest {
 	public void setUp() throws Exception {
 		camConfig = new CameraSimulatorConfig();
 		camConfig.setCodeGetMethod(CodeGetMethod.generated);
-		camConfig.setReadCodeInterval(20);
+		camConfig.setReadCodeInterval(5);
 		camConfig.setPercentageBadCode(25);
 		simulator = new CameraSimulatorController(camConfig);
 		simulator.setProductionParameters(productionParameters);
