@@ -1,22 +1,16 @@
 package com.sicpa.standard.sasscl.model.productionParameters.impl;
 
-import javax.swing.ImageIcon;
-
-import junit.framework.Assert;
-
-import org.junit.Before;
-import org.junit.Test;
-
 import com.sicpa.standard.common.util.Messages;
 import com.sicpa.standard.sasscl.model.CodeType;
 import com.sicpa.standard.sasscl.model.ProductionMode;
 import com.sicpa.standard.sasscl.model.SKU;
 import com.sicpa.standard.sasscl.productionParameterSelection.node.AbstractProductionParametersNode;
-import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.CategoryNode;
-import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.CodeTypeNode;
-import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.ProductionModeNode;
-import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.ProductionParameterRootNode;
-import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.SKUNode;
+import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.*;
+import junit.framework.Assert;
+import org.junit.Before;
+import org.junit.Test;
+
+import javax.swing.*;
 
 public class ProductionParametersImpTest {
 
@@ -55,7 +49,7 @@ public class ProductionParametersImpTest {
 	public void testCategoryNode() {
 		CategoryNode node = (CategoryNode) this.paramsNode.getChildren().get(0);
 		Assert.assertEquals(1, node.getId());
-		Assert.assertEquals(Messages.get("category"), node.getText());
+		Assert.assertEquals("category", node.getText());
 		Assert.assertEquals("", node.getFormatedTextForSummary());
 		Assert.assertFalse(node.isShownOnSummary());
 	}
@@ -63,10 +57,10 @@ public class ProductionParametersImpTest {
 	@Test
 	public void testCodeTypeNode() {
 		CodeTypeNode node = (CodeTypeNode) this.paramsNode.getChildren().get(1);
-		Assert.assertEquals(Messages.get("type1"), node.getText());
+		Assert.assertEquals("type1", node.getText());
 		Assert.assertEquals(this.codeType, node.getValue());
 		// same functionality as getText
-		Assert.assertEquals(Messages.get("type1"), node.getFormatedTextForSummary());
+		Assert.assertEquals("type1", node.getFormatedTextForSummary());
 		// get codeTypeId
 		Assert.assertEquals(this.codeType.getId(), node.getId());
 		Assert.assertTrue(node.isShownOnSummary());
