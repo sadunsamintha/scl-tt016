@@ -2,12 +2,16 @@ package com.sicpa.standard.sasscl.coding;
 
 import com.sicpa.standard.client.common.ioc.BeanProvider;
 import com.sicpa.standard.client.common.ioc.PropertyPlaceholderResources;
+import com.sicpa.standard.printer.controller.IPrinterController;
 import com.sicpa.standard.sasscl.AbstractFunctionnalTest;
 import com.sicpa.standard.sasscl.common.storage.IStorage;
+import com.sicpa.standard.sasscl.devices.DeviceStatus;
 import com.sicpa.standard.sasscl.devices.camera.simulator.CameraAdaptorSimulator;
 import com.sicpa.standard.sasscl.devices.camera.simulator.CameraSimulatorConfig;
 import com.sicpa.standard.sasscl.devices.camera.simulator.CameraSimulatorController;
 import com.sicpa.standard.sasscl.devices.camera.simulator.CodeGetMethod;
+import com.sicpa.standard.sasscl.devices.printer.IPrinterAdaptor;
+import com.sicpa.standard.sasscl.devices.printer.PrinterAdaptorException;
 import com.sicpa.standard.sasscl.devices.printer.simulator.PrinterAdaptorSimulator;
 import com.sicpa.standard.sasscl.devices.remote.RemoteServerException;
 import com.sicpa.standard.sasscl.devices.remote.simulator.RemoteServerSimulator;
@@ -27,7 +31,11 @@ import com.sicpa.standard.sicpadata.api.exception.UnknownSystemTypeException;
 import com.sicpa.standard.sicpadata.api.exception.UnknownVersionException;
 import com.sicpa.standard.sicpadata.spi.password.NoSuchPasswordException;
 
+import java.util.List;
+
 public class SwitchEncoderTest extends AbstractFunctionnalTest {
+
+	protected IPrinterAdaptor printer;
 
 	volatile boolean codeReceived = false;
 
@@ -40,8 +48,14 @@ public class SwitchEncoderTest extends AbstractFunctionnalTest {
 
 		startProduction();
 		checkApplicationStatusRUNNING();
+
 		for (int i = 0; i < 15; i++) {
-			camera.readCode();
+			try {
+				((TestPrinter) printer).requestCodes(1);
+				camera.readCode();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 		checkApplicationStatusRUNNING();
 		stopProduction();
@@ -119,6 +133,7 @@ public class SwitchEncoderTest extends AbstractFunctionnalTest {
 		PropertyPlaceholderResources.addProperties(BeansName.REMOTE_SERVER_SIMULATOR,
 				RemoteServerSmallEncoder.class.getName());
 		PropertyPlaceholderResources.addProperties(BeansName.CAMERA_SIMULATOR, CameraNoAutomaticRead.class.getName());
+		PropertyPlaceholderResources.addProperties("printerSimulatorAdaptor", TestPrinter.class.getName());
 		super.init();
 
 		storage = BeanProvider.getBean(BeansName.STORAGE);
@@ -131,9 +146,39 @@ public class SwitchEncoderTest extends AbstractFunctionnalTest {
 		cameraModel = camera.getCameraModel();
 		cameraModel.setCodeGetMethod(CodeGetMethod.requested);
 
-		PrinterAdaptorSimulator printerDevice = (PrinterAdaptorSimulator) devicesMap.get("pr_scl_1");
-//		printerSimul = (PrinterSimulatorThatProvidesCodes) printerDevice.getSimulatorController();
-//		printerSimul.setCodeByRequest(1);
+		printer = (IPrinterAdaptor) devicesMap.get("pr_scl_1");
 	}
 
+	private static class TestPrinter extends PrinterAdaptorSimulator {
+		List<String> codes;
+
+		public TestPrinter(IPrinterController controller) {
+			super(controller);
+		}
+
+
+		@Override
+		public void sendCodesToPrint(final List<String> codes) {
+			this.codes = codes;
+		}
+
+		@Override
+		public void doStart() throws PrinterAdaptorException {
+			fireDeviceStatusChanged(DeviceStatus.STARTED);
+		}
+
+		@Override
+		public void doStop() throws PrinterAdaptorException {
+			fireDeviceStatusChanged(DeviceStatus.STOPPED);
+		}
+
+		@Override
+		public String requestCode() {
+			return codes.get(0);
+		}
+
+		public void requestCodes(int nbCodes) {
+			super.notifyRequestCodesToPrint(nbCodes);
+		}
+	}
 }

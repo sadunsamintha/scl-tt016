@@ -17,6 +17,7 @@ import com.sicpa.standard.sasscl.business.coding.ICoding;
 import com.sicpa.standard.sasscl.devices.camera.simulator.CameraSimulatorConfig;
 import com.sicpa.standard.sasscl.devices.camera.simulator.CameraSimulatorController;
 import com.sicpa.standard.sasscl.devices.camera.simulator.CodeGetMethod;
+import com.sicpa.standard.sasscl.devices.printer.IPrinterAdaptor;
 import com.sicpa.standard.sasscl.ioc.BeansName;
 import com.sicpa.standard.sasscl.ioc.SpringConfig;
 import com.sicpa.standard.sasscl.ioc.SpringConfigSCL;
@@ -25,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ActivationTestSCL extends ActivationTest implements ICameraControllerListener {
+	protected IPrinterAdaptor printer;
 
 	public static class CameraSimuNoRead extends CameraSimulatorController {
 		@Override
@@ -57,6 +59,17 @@ public class ActivationTestSCL extends ActivationTest implements ICameraControll
 		super.configureDevices();
 		cameraModel.setCodeGetMethod(CodeGetMethod.requested);
 
+		printer = (IPrinterAdaptor) devicesMap.get("pr_scl_1");
+		try {
+			List<String> codes = new ArrayList<>();
+			for(int i = 0; i<100; i++) {
+				codes.add(generateACodeFromEncoder());
+			}
+			printer.sendCodesToPrint(codes);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
 		final ICoding coding = BeanProvider.getBean(BeansName.CODING);
 		coding.addCodeReceiver(new ICodeReceiver() {
 
@@ -74,10 +87,6 @@ public class ActivationTestSCL extends ActivationTest implements ICameraControll
 	}
 
 	public void generateCameraCodes(int good, int bad) {
-		// trig the need code from the printer
-		// camera.readCode();
-		// ThreadUtils.sleepQuietly(5000);
-
 		cameraModel.setPercentageBadCode(0);
 		for (int i = 0; i < good; i++) {
 			camera.readCode();
