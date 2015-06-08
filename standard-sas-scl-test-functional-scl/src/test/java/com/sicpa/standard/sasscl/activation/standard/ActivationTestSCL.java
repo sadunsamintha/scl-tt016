@@ -11,13 +11,17 @@ import com.sicpa.standard.camera.parser.event.MetricsEventArgs;
 import com.sicpa.standard.camera.parser.event.UnknownCodeEventArgs;
 import com.sicpa.standard.client.common.ioc.BeanProvider;
 import com.sicpa.standard.client.common.ioc.PropertyPlaceholderResources;
+import com.sicpa.standard.printer.controller.IPrinterController;
 import com.sicpa.standard.printer.xcode.ExtendedCode;
 import com.sicpa.standard.sasscl.business.coding.ICodeReceiver;
 import com.sicpa.standard.sasscl.business.coding.ICoding;
+import com.sicpa.standard.sasscl.devices.DeviceStatus;
 import com.sicpa.standard.sasscl.devices.camera.simulator.CameraSimulatorConfig;
 import com.sicpa.standard.sasscl.devices.camera.simulator.CameraSimulatorController;
 import com.sicpa.standard.sasscl.devices.camera.simulator.CodeGetMethod;
 import com.sicpa.standard.sasscl.devices.printer.IPrinterAdaptor;
+import com.sicpa.standard.sasscl.devices.printer.PrinterAdaptorException;
+import com.sicpa.standard.sasscl.devices.printer.simulator.PrinterAdaptorSimulator;
 import com.sicpa.standard.sasscl.ioc.BeansName;
 import com.sicpa.standard.sasscl.ioc.SpringConfig;
 import com.sicpa.standard.sasscl.ioc.SpringConfigSCL;
@@ -58,17 +62,7 @@ public class ActivationTestSCL extends ActivationTest implements ICameraControll
 	protected void configureDevices() {
 		super.configureDevices();
 		cameraModel.setCodeGetMethod(CodeGetMethod.requested);
-
 		printer = (IPrinterAdaptor) devicesMap.get("pr_scl_1");
-		try {
-			List<String> codes = new ArrayList<>();
-			for(int i = 0; i<100; i++) {
-				codes.add(generateACodeFromEncoder());
-			}
-			printer.sendCodesToPrint(codes);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 
 		final ICoding coding = BeanProvider.getBean(BeansName.CODING);
 		coding.addCodeReceiver(new ICodeReceiver() {
@@ -89,11 +83,13 @@ public class ActivationTestSCL extends ActivationTest implements ICameraControll
 	public void generateCameraCodes(int good, int bad) {
 		cameraModel.setPercentageBadCode(0);
 		for (int i = 0; i < good; i++) {
+			((TestPrinter) printer).askForCodes(1);
 			camera.readCode();
 		}
 
 		cameraModel.setPercentageBadCode(100);
 		for (int i = 0; i < bad; i++) {
+			((TestPrinter) printer).askForCodes(1);
 			camera.readCode();
 		}
 	}
@@ -101,6 +97,7 @@ public class ActivationTestSCL extends ActivationTest implements ICameraControll
 	@Override
 	public void init() {
 		PropertyPlaceholderResources.addProperties(BeansName.CAMERA_SIMULATOR, CameraSimuNoRead.class.getName());
+		PropertyPlaceholderResources.addProperties("printerSimulatorAdaptor", TestPrinter.class.getName());
 		super.init();
 	}
 
@@ -141,5 +138,38 @@ public class ActivationTestSCL extends ActivationTest implements ICameraControll
 	@Override
 	public void onCameraCodeReceived(ICameraController<?> arg0, CodeReceivedEventArgs arg1) {
 
+	}
+
+	private static class TestPrinter extends PrinterAdaptorSimulator {
+		List<String> codes;
+
+		public TestPrinter(IPrinterController controller) {
+			super(controller);
+		}
+
+
+		@Override
+		public void sendCodesToPrint(final List<String> codes) {
+			this.codes = codes;
+		}
+
+		@Override
+		public void doStart() throws PrinterAdaptorException {
+			fireDeviceStatusChanged(DeviceStatus.STARTED);
+		}
+
+		@Override
+		public void doStop() throws PrinterAdaptorException {
+			fireDeviceStatusChanged(DeviceStatus.STOPPED);
+		}
+
+		@Override
+		public String requestCode() {
+			return codes.get(0);
+		}
+
+		public void askForCodes(int nbCodes) {
+			super.notifyRequestCodesToPrint(nbCodes);
+		}
 	}
 }
