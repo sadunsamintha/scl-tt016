@@ -26,6 +26,7 @@ import com.sicpa.standard.sasscl.ioc.BeansName;
 import com.sicpa.standard.sasscl.ioc.SpringConfig;
 import com.sicpa.standard.sasscl.ioc.SpringConfigSCL;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -98,7 +99,34 @@ public class ActivationTestSCL extends ActivationTest implements ICameraControll
 	public void init() {
 		PropertyPlaceholderResources.addProperties(BeansName.CAMERA_SIMULATOR, CameraSimuNoRead.class.getName());
 		PropertyPlaceholderResources.addProperties("printerSimulatorAdaptor", TestPrinter.class.getName());
+		removeDataDirectories();
 		super.init();
+	}
+
+	protected void removeDataDirectories() {
+		File internalDirectory = new File("internalSimulator");
+		File monitoringDirectory = new File("monitoring");
+		deleteDir(internalDirectory);
+		deleteDir(monitoringDirectory);
+
+	}
+
+	public boolean deleteDir(File dir)
+	{
+		if (dir.isDirectory())
+		{
+			String[] children = dir.list();
+			for (int i=0; i<children.length; i++)
+			{
+				boolean success = deleteDir(new File(dir, children[i]));
+				if (!success)
+				{
+					return false;
+				}
+			}
+		}
+		// The directory is now empty or this is a file so delete it
+		return dir.delete();
 	}
 
 	int counter = 0;

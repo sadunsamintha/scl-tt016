@@ -31,6 +31,7 @@ import com.sicpa.standard.sicpadata.api.exception.UnknownSystemTypeException;
 import com.sicpa.standard.sicpadata.api.exception.UnknownVersionException;
 import com.sicpa.standard.sicpadata.spi.password.NoSuchPasswordException;
 
+import java.io.File;
 import java.util.List;
 
 public class SwitchEncoderTest extends AbstractFunctionnalTest {
@@ -134,9 +135,35 @@ public class SwitchEncoderTest extends AbstractFunctionnalTest {
 				RemoteServerSmallEncoder.class.getName());
 		PropertyPlaceholderResources.addProperties(BeansName.CAMERA_SIMULATOR, CameraNoAutomaticRead.class.getName());
 		PropertyPlaceholderResources.addProperties("printerSimulatorAdaptor", TestPrinter.class.getName());
-		super.init();
+		removeDataDirectories();
 
+		super.init();
 		storage = BeanProvider.getBean(BeansName.STORAGE);
+	}
+
+	protected void removeDataDirectories() {
+		File internalDirectory = new File("internalSimulator");
+		File monitoringDirectory = new File("monitoring");
+		deleteDir(internalDirectory);
+		deleteDir(monitoringDirectory);
+	}
+
+	public boolean deleteDir(File dir)
+	{
+		if (dir.isDirectory())
+		{
+			String[] children = dir.list();
+			for (int i=0; i<children.length; i++)
+			{
+				boolean success = deleteDir(new File(dir, children[i]));
+				if (!success)
+				{
+					return false;
+				}
+			}
+		}
+		// The directory is now empty or this is a file so delete it
+		return dir.delete();
 	}
 
 	@Override
