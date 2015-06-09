@@ -49,7 +49,6 @@ public class PrinterAdaptorSimulator extends PrinterAdaptor implements ICodeProv
 		codeBuffer.addAll(codes);
 	}
 	
-	//TODO
 	@Override
 	public void onPrinterCodesNeeded(final Object sender, long nbCodes) {
 //		logger.debug("request for {} number of codes", nbCodes);
@@ -98,7 +97,7 @@ public class PrinterAdaptorSimulator extends PrinterAdaptor implements ICodeProv
 			}
 
 			final String code = codeBuffer.remove(0);
-			logger.info("Printed Code: {0}", code);
+			logger.info("Printed Code: {}", code);
 			return code;
 		}
 	}

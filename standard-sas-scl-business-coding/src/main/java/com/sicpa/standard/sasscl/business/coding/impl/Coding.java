@@ -1,15 +1,8 @@
 package com.sicpa.standard.sasscl.business.coding.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.messages.MessageEvent;
-import com.sicpa.standard.printer.xcode.ExtendedCode;
 import com.sicpa.standard.sasscl.business.coding.CodeReceivedFailedException;
 import com.sicpa.standard.sasscl.business.coding.ICodeReceiver;
 import com.sicpa.standard.sasscl.business.coding.ICoding;
@@ -29,6 +22,11 @@ import com.sicpa.standard.sasscl.monitoring.system.event.BasicSystemEvent;
 import com.sicpa.standard.sasscl.sicpadata.CryptographyException;
 import com.sicpa.standard.sasscl.sicpadata.generator.EncoderEmptyException;
 import com.sicpa.standard.sasscl.sicpadata.generator.IEncoder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * <p>
@@ -38,7 +36,7 @@ import com.sicpa.standard.sasscl.sicpadata.generator.IEncoder;
  * It implements the <code>IPrinterListener</code> interface so it can be notified whenever the printer requests for
  * codes.
  * </p>
- * 
+ *
  */
 public class Coding implements ICoding {
 
@@ -72,12 +70,8 @@ public class Coding implements ICoding {
 
 	@Subscribe
 	public void requestCodes(final RequestCodesEvent evt) {
-		logger.debug("Request codes to print: {} for codeType {}", (int) evt.getNumberCodes(), 
-				productionParameters.getSku().getCodeType().getId());
-		if(productionParameters.getSku().getCodeType().getId() >= CodeType.ExtendedCodeId)
-			askExtendedCodes((int) evt.getNumberCodes(), evt.getTarget());
-		else
-			askCodes((int) evt.getNumberCodes(), evt.getTarget());
+		logger.debug("Request codes to print: {}", (int) evt.getNumberCodes());
+		askCodes((int) evt.getNumberCodes(), evt.getTarget());
 	}
 
 	/**
@@ -85,7 +79,7 @@ public class Coding implements ICoding {
 	 * fill <code>restorableEncoders</code> with all the <code>IEncoder</code> used<br>
 	 * if an exception occurred
 	 * <code>restoreEncoders(restorableEncoders);<code> will be called to reset the used <code>IEncoder</code>
-	 * 
+	 *
 	 * @param encoder
 	 *            the current encoder
 	 * @param codes
@@ -117,29 +111,6 @@ public class Coding implements ICoding {
 			return encoder;
 		}
 	}
-	protected IEncoder retreiveEnoughtExtendedCodeToPrint(IEncoder encoder, final List<ExtendedCode> codes, final long numberCodes) {
-
-		try {
-
-			encoderPreprocessing(encoder);
-			generateExtendedCodes(encoder, codes, numberCodes);
-
-		} catch (EncoderEmptyException e) {
-			logger.info("encoder is empty:" + encoder.getId());
-		} catch (CryptographyException e) {
-			logger.error("", e);
-			EventBusService.post(new MessageEvent(this, MessageEventKey.Coding.ERROR_GETTING_EXTENDED_CODES_FROM_ENCODER, e
-					.getMessage()));
-			return null;
-		}
-
-		// if not enough codes in current encoder
-		if (numberCodes > codes.size()) {
-			return handleNotEnoughExtendedCodesInEncoder(encoder, codes, numberCodes);
-		} else {
-			return encoder;
-		}
-	}
 
 	protected void generateCodes(IEncoder encoder, final List<String> codes, final long numberCodes)
 			throws CryptographyException {
@@ -147,15 +118,6 @@ public class Coding implements ICoding {
 		// container to be send to the printer.
 		codes.addAll(encoder.getEncryptedCodes(numberCodes - codes.size()));
 		MonitoringService.addSystemEvent(new BasicSystemEvent(SystemEventType.GET_CODE_FROM_ENCODER, encoder.getId()
-				+ ""));
-	}
-
-	protected void generateExtendedCodes(IEncoder encoder, final List<ExtendedCode> codes, final long numberCodes)
-			throws CryptographyException {
-		// Gets the codes from the current encoder and adds them to the
-		// container to be send to the printer.
-		codes.addAll(encoder.getExtendedCodes(numberCodes - codes.size()));
-		MonitoringService.addSystemEvent(new BasicSystemEvent(SystemEventType.GET_EXTENDED_CODE_FROM_ENCODER, encoder.getId()
 				+ ""));
 	}
 
@@ -178,21 +140,6 @@ public class Coding implements ICoding {
 			return null;
 		} else {
 			return retreiveEnoughtCodeToPrint(newencoder, codes, numberCodes);
-		}
-	}
-
-	protected IEncoder handleNotEnoughExtendedCodesInEncoder(IEncoder encoder, final List<ExtendedCode> codes, final long numberCodes) {
-		// save the fact that we reached the end of the encoder
-		// when calling getEncoderToUse(true); the next encoder will be used and the current one moved as finished
-		storage.saveCurrentEncoder(encoder);
-		IEncoder newencoder = getEncoderToUse(true);
-		if (newencoder == null) {
-			if (codes.isEmpty()) {
-				EventBusService.post(new MessageEvent(MessageEventKey.Coding.ERROR_NO_ENCODERS_IN_STORAGE));
-			}
-			return null;
-		} else {
-			return retreiveEnoughtExtendedCodeToPrint(newencoder, codes, numberCodes);
 		}
 	}
 
@@ -276,33 +223,6 @@ public class Coding implements ICoding {
 		}
 	}
 
-	@Override
-	public void askExtendedCodes(final int number, ICodeReceiver target) {
-		synchronized (askCodeLock) {
-
-			IEncoder encoder;
-			SKU sku = productionParameters.getSku();
-			if (sku != null) {
-				CodeType codeType = sku.getCodeType();
-
-				encoder = getEncoderToUse(false);
-
-				// Storage ran out of encoders.
-				if (encoder == null) {
-					EventBusService.post(new MessageEvent(MessageEventKey.Coding.ERROR_NO_ENCODERS_IN_STORAGE));
-					return;
-				}
-
-				// codes to be sent to the printer
-				List<ExtendedCode> codes = new ArrayList<ExtendedCode>();
-
-				encoder = retreiveEnoughtExtendedCodeToPrint(encoder, codes, number);
-
-				sendExtendedCodeToPrinter(codes, target, encoder, codeType);
-			}
-		}
-	}
-	
 	protected void sendCodeToPrinter(List<String> codes, ICodeReceiver target, IEncoder encoder, CodeType codeType) {
 		try {
 			// After we have all the request codes, we send them to the printer
@@ -319,25 +239,6 @@ public class Coding implements ICoding {
 		} catch (CodeReceivedFailedException e) {
 			logger.error("", e);
 			EventBusService.post(new MessageEvent(MessageEventKey.Coding.FAILED_TO_PROVIDE_CODES));
-		}
-	}
-
-	protected void sendExtendedCodeToPrinter(List<ExtendedCode> codes, ICodeReceiver target, IEncoder encoder, CodeType codeType) {
-		try {
-			// After we have all the request codes, we send them to the printer
-			// and save the state of the current encoder
-			synchronized (this.codeReceivers) {
-				for (ICodeReceiver codeReceiver : this.codeReceivers) {
-					codeReceiver.provideExtendedCode(codes, target);
-				}
-			}
-			target.provideExtendedCode(codes, target);
-			if (encoder != null) {
-				storage.saveCurrentEncoder(encoder);
-			}
-		} catch (CodeReceivedFailedException e) {
-			logger.error("", e);
-			EventBusService.post(new MessageEvent(MessageEventKey.Coding.FAILED_TO_PROVIDE_EXTENDED_CODES));
 		}
 	}
 

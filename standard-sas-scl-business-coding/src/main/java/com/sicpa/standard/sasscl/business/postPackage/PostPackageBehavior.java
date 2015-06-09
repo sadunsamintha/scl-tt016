@@ -1,23 +1,30 @@
 package com.sicpa.standard.sasscl.business.postPackage;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.sicpa.standard.client.common.provider.IProviderGetter;
-import com.sicpa.standard.printer.xcode.ExtendedCode;
 import com.sicpa.standard.sasscl.config.GlobalBean;
-import com.sicpa.standard.sasscl.model.*;
+import com.sicpa.standard.sasscl.model.Code;
+import com.sicpa.standard.sasscl.model.DecodedCameraCode;
+import com.sicpa.standard.sasscl.model.Product;
+import com.sicpa.standard.sasscl.model.ProductStatus;
+import com.sicpa.standard.sasscl.model.ProductionParameters;
 import com.sicpa.standard.sasscl.provider.impl.AuthenticatorModeProvider;
 import com.sicpa.standard.sasscl.provider.impl.ProductionBatchProvider;
 import com.sicpa.standard.sasscl.sicpadata.CryptographyException;
 import com.sicpa.standard.sasscl.sicpadata.reader.IAuthenticator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.*;
 
 public class PostPackageBehavior implements IPostPackageBehavior {
     private static final Logger logger = LoggerFactory.getLogger(PostPackage.class);
 
     protected final List<Code> codes = Collections.synchronizedList(new LinkedList<Code>());
-    protected final List<ExtendedCode> xcodes = Collections.synchronizedList(new LinkedList<ExtendedCode>());
     protected ProductionBatchProvider batchIdProvider;
     protected GlobalBean config;
     protected ProductionParameters productionParameters;
@@ -40,21 +47,6 @@ public class PostPackageBehavior implements IPostPackageBehavior {
         for (String aCode : codes) {
             this.codes.add(new Code(aCode));
         }
-    }
-
-    @Override
-    public void addExtendedCodes(List<ExtendedCode> codes) {
-        for (ExtendedCode aCode : codes) {
-            this.xcodes.add(aCode);
-            for(ExtendedCode.Block block : aCode.getBlocks()) {
-                if(block instanceof ExtendedCode.DatamatrixBlock) {
-                    String code = (String) block.getData();
-                    this.codes.add(new Code(code));
-                    break;
-                }
-            }
-        }
-
     }
 
     /**
@@ -196,7 +188,6 @@ public class PostPackageBehavior implements IPostPackageBehavior {
         synchronized (codes) {
             List<Product> wastedProducts = generateBadProducts(codes, ProductStatus.SENT_TO_PRINTER_WASTED);
             codes.clear();
-            xcodes.clear();
             return wastedProducts;
         }
     }

@@ -1,17 +1,13 @@
 package com.sicpa.standard.sasscl.model;
 
-import java.io.Serializable;
-
-import javax.swing.ImageIcon;
-
 import com.sicpa.standard.sasscl.model.custom.Customizable;
+
+import javax.swing.*;
+import java.io.Serializable;
 
 public class CodeType extends Customizable implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	
-	public static final long ExtendedCodeId = 100;
-	
 	protected long id;
 	protected String description;
 	protected ImageIcon image;

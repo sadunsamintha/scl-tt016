@@ -1,25 +1,15 @@
 package com.sicpa.standard.sasscl.devices.remote.stdCrypto;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import junit.framework.Assert;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-
-import com.sicpa.standard.printer.xcode.BlockFactory;
-import com.sicpa.standard.printer.xcode.ExtendedCode;
-import com.sicpa.standard.printer.xcode.ExtendedCodeFactory;
-import com.sicpa.standard.printer.xcode.Option;
-import com.sicpa.standard.sasscl.model.CodeType;
 import com.sicpa.standard.sasscl.sicpadata.CryptographyException;
 import com.sicpa.standard.sasscl.sicpadata.generator.AbstractEncoder;
 import com.sicpa.standard.sasscl.sicpadata.generator.EncoderEmptyException;
 import com.sicpa.standard.sicpadata.api.business.IBSicpadataGenerator;
 import com.sicpa.standard.sicpadata.api.exception.GeneratorCapacityException;
 import com.sicpa.standard.sicpadata.api.exception.SicpadataException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.List;
 
 /**
  * Encoder that delegates the encode process to standard crypto business encoder
@@ -33,23 +23,13 @@ public class StdCryptoEncoderWrapper extends AbstractEncoder {
 	protected IBSicpadataGenerator encoder;
 
 	protected ICryptoFieldsConfig cryptoFieldsConfig;
-	
-	private ExtendedCodeFactory extendedCodeFactory;
 
 	public StdCryptoEncoderWrapper(final long batchid, final int id, final IBSicpadataGenerator encoder,
-			final int year, final long subsystemId, final ICryptoFieldsConfig cryptoFieldsConfig, int codeTypeId) {
+								   final int year, final long subsystemId, final ICryptoFieldsConfig cryptoFieldsConfig, int codeTypeId) {
 		super(batchid, id, year, subsystemId, codeTypeId);
 		this.encoder = encoder;
 		encoder.setId(Long.valueOf(id));
 		this.cryptoFieldsConfig = cryptoFieldsConfig;
-
-		if(codeTypeId >= CodeType.ExtendedCodeId){
-			ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("config/productionConfig/extended-code.xml");
-			
-			this.extendedCodeFactory = (ExtendedCodeFactory)ctx.getBean(String.valueOf(codeTypeId));
-			Assert.assertNotNull(extendedCodeFactory);
-			ctx.close();
-		}
 	}
 
 	@Override
@@ -68,9 +48,7 @@ public class StdCryptoEncoderWrapper extends AbstractEncoder {
 			if (numberCodesToGenerate == 0) {
 				throw new EncoderEmptyException();
 			}
-			Object[] dummy = new Object[]{cryptoFieldsConfig.getFields(this)};
-			List<String> code = encoder.generate((int) numberCodesToGenerate, dummy);
-//			List<String> code = encoder.generate((int) numberCodesToGenerate, cryptoFieldsConfig.getFields(this));
+			List<String> code = encoder.generate((int) numberCodesToGenerate, cryptoFieldsConfig.getFields(this));
 
 			return code;
 
@@ -79,89 +57,6 @@ public class StdCryptoEncoderWrapper extends AbstractEncoder {
 		} catch (SicpadataException e) {
 			logger.error("Failed to generate code.", e);
 			throw new CryptographyException(e, "Failed to generate encrypted code");
-		}
-	}
-
-	@Override
-	@Deprecated
-	public final ExtendedCode getExtendedCode() throws CryptographyException {
-		throw new CryptographyException("Deprecated");
-	}
-
-	@Override
-	public synchronized List<ExtendedCode> getExtendedCodes(long numberCodes) throws CryptographyException {
-		try {
-
-			updateDateOfUse();
-
-			long numberCodesToGenerate = Math.min(getRemainingCodes(), numberCodes);
-			if (numberCodesToGenerate == 0) {
-				throw new EncoderEmptyException();
-			}
-			
-			Object[] 					dummy = new Object[]{cryptoFieldsConfig.getFields(this)};
-			
-			final List<ExtendedCode> 	codes = new ArrayList<ExtendedCode>();
-			List<BlockFactory> 			lbf = extendedCodeFactory.getBlockFactories();
-			// Encoder generates a list of composite code. Each composite code is a list of Object
-			// each one corresponding to the block type of the extended code.
-			// TODO
-			//List<List<Object>> listOfCompositeCode = encoder.generate((int) numberCodesToGenerate, dummy, lbf);
-			// When the above is working the following code will work
-			//
-			//for (int i = 0; i < code.size(); i++) {
-			//	ExtendedCode xcode = extendedCodeFactory.create(compositeCode);
-			//	codes.add(xcode);
-			//}
-			//return codes;
-			//
-			
-			// For now we use encoder to generate the code for the datamatrix and static text + bitmap
-			List<String> code = encoder.generate((int) numberCodesToGenerate, dummy);
-			
-			for (int i = 0; i < code.size(); i++) {
-				
-				List<Object> compositeCode = new ArrayList<Object>();
-				
-				int numBlock = lbf.size();
-				for(int j=0; j<numBlock; j++)
-				{
-					BlockFactory bf = lbf.get(j);
-					if(bf.getOptions().contains(Option.STATIC) && i != 0)
-						compositeCode.add(null);
-					
-					else switch(bf.getType())
-					{
-						case DMTX:
-							String strCode = code.get(i);
-							compositeCode.add(strCode);
-							break;
-						case ASCII_TEXT:
-							String strText = "AAA|123"; 
-//							String strText = getText(bf);
-							
-							compositeCode.add(strText);
-							break;
-						case BITMAP_LOGO:
-							long[] bmp = new long[] {0xFF,0x81,0x81,0x81,0x81,0x81,0x81,0xFF,0x00};
-//							int[] bmp = getBitmapLogo(bf);
-							compositeCode.add(bmp);
-							break;						
-					}
-					
-				}
-
-				ExtendedCode xcode = extendedCodeFactory.create(compositeCode);
-				codes.add(xcode);
-			}
-			return codes;
-			// cut above up to here
-
-		} catch (GeneratorCapacityException e) {
-			throw new EncoderEmptyException("", e);
-		} catch (SicpadataException e) {
-			logger.error("Failed to generate extended code.", e);
-			throw new CryptographyException(e, "Failed to generate extended code");
 		}
 	}
 

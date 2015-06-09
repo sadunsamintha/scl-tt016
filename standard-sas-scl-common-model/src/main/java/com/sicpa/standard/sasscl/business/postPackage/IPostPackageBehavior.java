@@ -1,10 +1,9 @@
 package com.sicpa.standard.sasscl.business.postPackage;
 
-import java.util.List;
-
-import com.sicpa.standard.printer.xcode.ExtendedCode;
 import com.sicpa.standard.sasscl.model.Code;
 import com.sicpa.standard.sasscl.model.Product;
+
+import java.util.List;
 
 public interface IPostPackageBehavior {
 	List<Product> handleGoodCode(final Code code);
@@ -16,6 +15,4 @@ public interface IPostPackageBehavior {
 	List<Product> notifyProductionStopped();
 
 	void setAssosiatedCamera(String cameraName);
-
-	void addExtendedCodes(List<ExtendedCode> codes);
 }

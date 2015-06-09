@@ -11,14 +11,6 @@ public interface MessageEventKey {
 		String VALIDATOR_LOWER = "plc.validator.error.linked.lower.pulse";
 		String VALIDATOR_HIGHER = "plc.validator.error.higher.linked.pulse";
 
-		// String EMERGENCY_STOP = "PLC.ERR.EMERGENCY_STOP";
-		// String COOLING_SYSTEM = "PLC.ERR.COOLING_SYSTEM";
-		// String TRIGGER_FAULT = "PLC.ERR.TRIGGER_FAULT";
-		// String LIFE_CHECK = "PLC.ERR.LIFE_CHECK";
-		// String PLC_FAULT = "PLC.ERR.PLC_FAULT";
-		// String ENCODER_FAULT = "PLC.ERR.ENCODER_FAULT";
-		// String CONSECUTIVE_INVALID_CODES = "PLC.ERR.CONSECUTIVE_INVALID_CODES";
-
 		String ERROR_SENDING_PARAM = "PLC.ERR.SENT.PARAM";
 
 		String EXCEPTION_FAIL_SAVE_VARIABLE_TO_FILE = "plc.save.file.fail";
@@ -206,11 +198,8 @@ public interface MessageEventKey {
 	public static interface Coding {
 		String ERROR_NO_ENCODERS_IN_STORAGE = "coding.no.encoder";
 		String ERROR_GETTING_CODES_FROM_ENCODER = "coding.getCode.fail";
-		String ERROR_GETTING_EXTENDED_CODES_FROM_ENCODER = "coding.getExtendedCode.fail";
 		String INVALID_ENCODER = "encoder.invalid.move.quarantine";
 		String FAILED_TO_PROVIDE_CODES = "encoder.code.provide.fail";
-		String FAILED_TO_PROVIDE_EXTENDED_CODES = "encoder.xcode.provide.fail";
-
 	}
 
 	public static interface Printer extends PrinterMessageId {

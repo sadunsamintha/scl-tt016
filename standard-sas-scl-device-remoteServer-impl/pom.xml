@@ -19,13 +19,8 @@
             <groupId>com.sicpa.standard.sasscl</groupId>
             <artifactId>device-remoteServer</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.sicpa.standard.printer</groupId>
-            <artifactId>standard-printer</artifactId>
-        </dependency>
 
         <!-- std dms -->
-
         <dependency>
             <groupId>com.sicpa.standard.standard-serverside-util</groupId>
             <artifactId>standard-serverside-util</artifactId>

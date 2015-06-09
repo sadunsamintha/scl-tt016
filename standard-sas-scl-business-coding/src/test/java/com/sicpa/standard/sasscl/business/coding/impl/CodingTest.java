@@ -1,20 +1,6 @@
 package com.sicpa.standard.sasscl.business.coding.impl;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.List;
-
-import org.hamcrest.core.IsEqual;
-import org.hamcrest.core.IsNull;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mockito;
-
 import com.sicpa.standard.client.common.storage.StorageException;
-import com.sicpa.standard.printer.xcode.ExtendedCode;
 import com.sicpa.standard.sasscl.business.coding.CodeReceivedFailedException;
 import com.sicpa.standard.sasscl.business.coding.ICodeReceiver;
 import com.sicpa.standard.sasscl.business.coding.RequestCodesEvent;
@@ -23,19 +9,25 @@ import com.sicpa.standard.sasscl.common.storage.QuarantineReason;
 import com.sicpa.standard.sasscl.config.GlobalConfig;
 import com.sicpa.standard.sasscl.devices.printer.AbstractPrinterAdaptor;
 import com.sicpa.standard.sasscl.devices.printer.PrinterAdaptorException;
-import com.sicpa.standard.sasscl.model.CodeType;
-import com.sicpa.standard.sasscl.model.EncoderInfo;
-import com.sicpa.standard.sasscl.model.PackagedProducts;
-import com.sicpa.standard.sasscl.model.Product;
-import com.sicpa.standard.sasscl.model.ProductionMode;
-import com.sicpa.standard.sasscl.model.ProductionParameters;
-import com.sicpa.standard.sasscl.model.SKU;
+import com.sicpa.standard.sasscl.model.*;
 import com.sicpa.standard.sasscl.model.statistics.StatisticsValues;
 import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.ProductionParameterRootNode;
 import com.sicpa.standard.sasscl.sicpadata.CryptographyException;
 import com.sicpa.standard.sasscl.sicpadata.generator.IEncoder;
 import com.sicpa.standard.sasscl.sicpadata.generator.impl.EncoderNoEncryptionSimulator;
 import com.sicpa.standard.sasscl.sicpadata.reader.IAuthenticator;
+import org.hamcrest.core.IsEqual;
+import org.hamcrest.core.IsNull;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mockito;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.List;
 
 public class CodingTest {
 
@@ -290,7 +282,6 @@ public class CodingTest {
 	private static class TestPrinter extends AbstractPrinterAdaptor {
 
 		List<String> codes;
-		List<ExtendedCode> xcodes;
 
 		boolean crash = false;
 
@@ -349,22 +340,6 @@ public class CodingTest {
 		public boolean isBlockProductionStart() {
 			return true;
 		}
-
-		@Override
-		public void sendExtendedCodesToPrint(List<ExtendedCode> codes) {
-			this.xcodes = codes;
-		}
-
-		@Override
-		public void provideExtendedCode(List<ExtendedCode> codes,
-				Object requestor) throws CodeReceivedFailedException {
-			if (crash) {
-				crash = false;
-				throw new CodeReceivedFailedException();
-			}
-			sendExtendedCodesToPrint(codes);
-			
-		}
 	}
 
 	private static int encoderCount = 0;
@@ -385,14 +360,6 @@ public class CodingTest {
 				throw new CryptographyException();
 			}
 			return super.getEncryptedCode();
-		}
-		@Override
-		public ExtendedCode getExtendedCode() throws CryptographyException {
-
-			if (getSequence() > 20020) {
-				throw new CryptographyException();
-			}
-			return super.getExtendedCode();
 		}
 	}
 }

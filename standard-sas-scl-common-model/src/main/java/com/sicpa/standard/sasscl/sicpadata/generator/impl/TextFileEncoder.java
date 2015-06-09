@@ -1,15 +1,13 @@
 package com.sicpa.standard.sasscl.sicpadata.generator.impl;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-
+import com.sicpa.standard.sasscl.sicpadata.CryptographyException;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sicpa.standard.printer.xcode.ExtendedCode;
-import com.sicpa.standard.sasscl.sicpadata.CryptographyException;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
 
 public class TextFileEncoder extends CodeListEncoder {
 
@@ -30,10 +28,6 @@ public class TextFileEncoder extends CodeListEncoder {
 			init = true;
 		}
 		return super.getEncryptedCode();
-	}
-	@Override
-	public ExtendedCode getExtendedCode() throws CryptographyException {
-		return null;
 	}
 
 	@SuppressWarnings("unchecked")

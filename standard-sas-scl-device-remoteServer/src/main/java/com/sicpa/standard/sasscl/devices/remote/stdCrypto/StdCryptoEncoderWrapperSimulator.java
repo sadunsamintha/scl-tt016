@@ -1,10 +1,9 @@
 package com.sicpa.standard.sasscl.devices.remote.stdCrypto;
 
-import java.util.List;
-
-import com.sicpa.standard.printer.xcode.ExtendedCode;
 import com.sicpa.standard.sasscl.sicpadata.CryptographyException;
 import com.sicpa.standard.sicpadata.api.business.IBSicpadataGenerator;
+
+import java.util.List;
 
 public class StdCryptoEncoderWrapperSimulator extends StdCryptoEncoderWrapper {
 
@@ -13,7 +12,7 @@ public class StdCryptoEncoderWrapperSimulator extends StdCryptoEncoderWrapper {
 	protected long remainingCode;
 
 	public StdCryptoEncoderWrapperSimulator(final long batchid, int id, IBSicpadataGenerator encoder, int year,
-			long subsystemId, long maxCode, ICryptoFieldsConfig cryptoFieldsConfig, int codeTypeId) {
+											long subsystemId, long maxCode, ICryptoFieldsConfig cryptoFieldsConfig, int codeTypeId) {
 		super(batchid,id, encoder, year, subsystemId, cryptoFieldsConfig, codeTypeId);
 		this.remainingCode = maxCode;
 	}
@@ -30,13 +29,6 @@ public class StdCryptoEncoderWrapperSimulator extends StdCryptoEncoderWrapper {
 		return res;
 	}
 
-	@Override
-	public synchronized List<ExtendedCode> getExtendedCodes(long numberCodes) throws CryptographyException {
-		List<ExtendedCode> res = super.getExtendedCodes(numberCodes);
-		remainingCode -= res.size();
-		return res;
-	}
-	
 	public void setRemainingCode(long remainingCode) {
 		this.remainingCode = remainingCode;
 	}

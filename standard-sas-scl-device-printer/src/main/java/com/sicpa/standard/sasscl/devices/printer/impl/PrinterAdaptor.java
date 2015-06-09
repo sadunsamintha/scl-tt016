@@ -16,7 +16,6 @@ import com.sicpa.standard.printer.controller.model.command.PrinterMessageId;
 import com.sicpa.standard.printer.driver.event.PrinterUnsentCodesEventArgs;
 import com.sicpa.standard.printer.leibinger.driver.leibinger.LeibingerSpecificSettings;
 import com.sicpa.standard.printer.leibinger.driver.leibinger.LeibingerUserLevel;
-import com.sicpa.standard.printer.xcode.ExtendedCode;
 import com.sicpa.standard.sasscl.business.coding.CodeReceivedFailedException;
 import com.sicpa.standard.sasscl.devices.DeviceStatus;
 import com.sicpa.standard.sasscl.devices.printer.AbstractPrinterAdaptor;
@@ -97,17 +96,6 @@ public class PrinterAdaptor extends AbstractPrinterAdaptor implements IPrinterCo
 		logger.debug("Printer sending codes to print");
 		try {
 			controller.sendCodes(codes);
-			codeSent = true;
-		} catch (com.sicpa.standard.printer.controller.PrinterException e) {
-			throw new PrinterAdaptorException("sending codes to printer failed", e);
-		}
-	}
-
-	@Override
-	public void sendExtendedCodesToPrint(final List<ExtendedCode> codes) throws PrinterAdaptorException {
-		logger.debug("Printer sending codes to print");
-		try {
-			controller.sendExtendedCodes(codes);
 			codeSent = true;
 		} catch (com.sicpa.standard.printer.controller.PrinterException e) {
 			throw new PrinterAdaptorException("sending codes to printer failed", e);
@@ -351,26 +339,4 @@ public class PrinterAdaptor extends AbstractPrinterAdaptor implements IPrinterCo
 			logger.error(e.getMessage());
 		}
 	}
-
-
-
-	@Override
-	public void provideExtendedCode(List<ExtendedCode> codes, Object requestor)
-			throws CodeReceivedFailedException {
-		try {
-			sendExtendedCodesToPrint(codes);
-		} catch (PrinterAdaptorException e) {
-			throw new CodeReceivedFailedException(e);
-		}
-		
-	}
-
-
-//	@Override
-//	public void onAlarmListReceived(IPrinterController sender,
-//			PrinterAlarmListEventArgs args) {
-//		// TODO Auto-generated method stub
-//		
-//	}
-
 }
