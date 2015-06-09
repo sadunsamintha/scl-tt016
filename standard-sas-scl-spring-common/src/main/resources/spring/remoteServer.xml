@@ -17,11 +17,8 @@
 		<property name="cryptoServiceProviderManager" ref="cryptoProviderManager" />
 		<property name="sdGenReceiver" ref="sicpaDataGeneratorRequestor" />
 		<property name="storage" ref="storage" />
-		<property name="lifeChecker" ref="lifeChecker" />
 	</bean>
 	
-	<bean id="lifeChecker" class="${lifeChecker}" />
-
 	<bean id="productionModeMapping" class="${productionModeMapping}" />
 
 	<bean id="remoteServerSimulator" class="${remoteServerSimulator}">
