@@ -4,7 +4,6 @@ import com.sicpa.standard.sasscl.sicpadata.CryptographyException;
 import com.sicpa.standard.sasscl.sicpadata.generator.AbstractEncoder;
 import com.sicpa.standard.sasscl.sicpadata.generator.EncoderEmptyException;
 import com.sicpa.standard.sicpadata.api.business.IBSicpadataGenerator;
-import com.sicpa.standard.sicpadata.api.exception.GeneratorCapacityException;
 import com.sicpa.standard.sicpadata.api.exception.SicpadataException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,12 +47,10 @@ public class StdCryptoEncoderWrapper extends AbstractEncoder {
 			if (numberCodesToGenerate == 0) {
 				throw new EncoderEmptyException();
 			}
-			List<String> code = encoder.generate((int) numberCodesToGenerate, cryptoFieldsConfig.getFields(this));
+			List<String> code = encoder.generate((int) numberCodesToGenerate, new Object[]{cryptoFieldsConfig.getFields(this)});
 
 			return code;
 
-		} catch (GeneratorCapacityException e) {
-			throw new EncoderEmptyException("", e);
 		} catch (SicpadataException e) {
 			logger.error("Failed to generate code.", e);
 			throw new CryptographyException(e, "Failed to generate encrypted code");
