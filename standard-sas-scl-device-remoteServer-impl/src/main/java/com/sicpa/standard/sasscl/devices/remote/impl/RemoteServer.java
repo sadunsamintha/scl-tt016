@@ -55,7 +55,6 @@ import com.sicpa.std.common.api.sku.dto.PackagingTypeSkuDto;
 import com.sicpa.std.common.api.staticdata.codetype.dto.CodeTypeDto;
 import com.sicpa.std.common.api.staticdata.sku.dto.SkuProductDto;
 import com.sicpa.std.common.api.util.PropertyNames;
-import com.sicpa.std.server.util.lifechecker.LifeChecker;
 import org.jboss.ejb.client.EJBClientContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -86,8 +85,6 @@ public class RemoteServer extends AbstractRemoteServer {
     protected CryptoServiceProviderManager cryptoServiceProviderManager;
 
     protected GlobalBean config;
-
-    protected LifeChecker lifeChecker;
 
     protected final Map<ProductStatus, IPackageSender> packageSenders = new HashMap<ProductStatus, IPackageSender>();
 
@@ -121,8 +118,6 @@ public class RemoteServer extends AbstractRemoteServer {
     }
 
     protected void init() {
-
-        lifeChecker = new LifeChecker();
         initPackageSenders();
 
         if (isPropertiesFileLoaded()) {
@@ -612,7 +607,7 @@ public class RemoteServer extends AbstractRemoteServer {
         long codeTypeId = 0;
 
         for (Product product : list) {
-            skuId = product.getSku().getId();// TODO NULL IF MAINTENANCE
+            skuId = product.getSku().getId();
             codeTypeId = product.getSku().getCodeType().getId();
 
             if (start == null) {
@@ -656,7 +651,7 @@ public class RemoteServer extends AbstractRemoteServer {
 
     protected void checkConnection() throws RemoteServerException {
         try {
-            //lifeChecker.checkServicesAvailability(serverPropertiesFile);
+            getLoginBean().authenticate(model.getUsername(), model.getPassword());
         } catch (Exception e) {
             throw new RemoteServerException(e);
         }
@@ -886,14 +881,4 @@ public class RemoteServer extends AbstractRemoteServer {
 
         return event;
     }
-
-    /**
-     * Set Life Checker
-     *
-     * @param lifeChecker the lifeChecker to set
-     */
-    public void setLifeChecker(LifeChecker lifeChecker) {
-        this.lifeChecker = lifeChecker;
-    }
-
 }
