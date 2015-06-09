@@ -106,9 +106,10 @@ public class ActivationTestSCL extends ActivationTest implements ICameraControll
 	protected void removeDataDirectories() {
 		File internalDirectory = new File("internalSimulator");
 		File monitoringDirectory = new File("monitoring");
+		File dataDirectory = new File("dataSimulator");
 		deleteDir(internalDirectory);
 		deleteDir(monitoringDirectory);
-
+		deleteDir(dataDirectory);
 	}
 
 	public boolean deleteDir(File dir)
