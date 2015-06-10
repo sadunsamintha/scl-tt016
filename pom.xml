@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.sicpa.standard.sasscl</groupId>
 	<artifactId>parent</artifactId>
@@ -7,13 +8,13 @@
 	<name>parent std sas scl</name>
 	<version>2.4.0-SNAPSHOT</version>
 
-	
-	
+
+
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.javadoc.skip>true</maven.javadoc.skip>
 	</properties>
-	
+
 	<build>
 
 		<pluginManagement>
@@ -85,8 +86,8 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>2.9</version>
 				<configuration>
-                    <skip>false</skip>
-                    <includes>
+					<skip>false</skip>
+					<includes>
 						<include>**/*TestSAS.java</include>
 						<include>**/*TestSCL.java</include>
 						<include>**/*Test.java</include>
@@ -164,6 +165,11 @@
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.sicpa.standard.gui</groupId>
+			<artifactId>standard-gui-screen</artifactId>
 		</dependency>
 
 		<!--TEST -->
@@ -484,18 +490,18 @@
 				<version>1.2.2</version>
 			</dependency>
 			<dependency>
-			<groupId>com.sicpa.standard.printer</groupId>
+				<groupId>com.sicpa.standard.printer</groupId>
 				<artifactId>standard-printer-leibinger</artifactId>
 				<version>1.1.0-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>com.sicpa.standard.printer</groupId>
-                <artifactId>standard-printer-oi2jet</artifactId>
-                <version>0.1.1</version>
-            </dependency>
+			</dependency>
+			<dependency>
+				<groupId>com.sicpa.standard.printer</groupId>
+				<artifactId>standard-printer-oi2jet</artifactId>
+				<version>0.1.1</version>
+			</dependency>
 
 
-        <dependency>
+			<dependency>
 				<groupId>com.sicpa.standard.plc</groupId>
 				<artifactId>standard-plc-jbeckplc</artifactId>
 				<version>1.3.7</version>
@@ -518,7 +524,13 @@
 			<dependency>
 				<groupId>com.sicpa.standard.tools</groupId>
 				<artifactId>installer</artifactId>
-				<version>1.0.0</version>
+				<version>1.0.2</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.sicpa.standard.gui</groupId>
+				<artifactId>standard-gui-screen</artifactId>
+				<version>1.2.8</version>
 			</dependency>
 
 
@@ -527,7 +539,7 @@
 				<artifactId>spring-context</artifactId>
 				<version>3.2.4.RELEASE</version>
 			</dependency>
-            <dependency>
+			<dependency>
 				<groupId>ch.qos.logback</groupId>
 				<artifactId>logback-classic</artifactId>
 				<version>1.0.1</version>
@@ -537,11 +549,11 @@
 				<artifactId>logback-core</artifactId>
 				<version>1.0.1</version>
 			</dependency>
-	        <dependency>
-	        	<groupId>org.slf4j</groupId>
-	        	<artifactId>slf4j-api</artifactId>
-	        	<version>1.7.5</version>
-	        </dependency>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-api</artifactId>
+				<version>1.7.5</version>
+			</dependency>
 			<dependency>
 				<groupId>org.aspectj</groupId>
 				<artifactId>aspectjlib</artifactId>

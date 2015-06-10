@@ -86,10 +86,6 @@
 		<property name="storage" ref="storage" />
 		<property name="flowControl" ref="flowControl" />
 	</bean>
-	<bean id="selectionStateListener" class="${selectionStateListener}">
-		<property name="devicesController" ref="otherDevicesController" />
-		<property name="globalBean" ref="globalConfig" />
-	</bean>
 
 	<!-- OLD -->
 

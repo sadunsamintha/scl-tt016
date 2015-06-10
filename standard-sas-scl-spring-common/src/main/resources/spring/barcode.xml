@@ -1,45 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
-	xmlns:util="http://www.springframework.org/schema/util"
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:util="http://www.springframework.org/schema/util"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 
-	<!-- load model for standard barcode reader -->
-	<bean id="stdBarcodeReaderModel" class="com.sicpa.standard.client.common.utils.ConfigUtils"
-		factory-method="load">
-		<constructor-arg value="config/barcodeReader.xml" />
-	</bean>
 
-	<bean id="stdBarcodeReader" class="${stdBarcodeReader}">
-		<property name="model" ref="stdBarcodeReaderModel" />
-	</bean>
+	<bean id="barcodeReader" class="${barcodeReader}" />
 
-	<bean id="barcodeReaderSimulator" class="${barcodeReaderSimulator}">
-		<property name="simulatorGui" ref="simulatorGui" />
-	</bean>
-
-
-	<bean id="mapBarcodeReader" class="com.sicpa.standard.client.common.ioc.GenericMapping">
-		<constructor-arg>
-			<map>
-				<entry key="standard" value-ref="stdBarcodeReader" />
-				<entry key="simulator" value-ref="barcodeReaderSimulator" />
-			</map>
-		</constructor-arg>
-	</bean>
-
-	<bean id="barcodeReader" class="${barcodeReader}">
-		<constructor-arg>
-			<bean factory-bean="mapBarcodeReader" factory-method="get">
-				<constructor-arg value="${barcode.behavior}" />
-			</bean>
-		</constructor-arg>
-	</bean>
-
-	<bean id="selectionGroupAddBarcode" class="com.sicpa.standard.client.common.ioc.InjectByMethodBean">
-		<property name="target" ref="selectionScreenDevicesGroup" />
+	<bean id="startupGroupAddBarcode" class="com.sicpa.standard.client.common.ioc.InjectByMethodBean">
+		<property name="target" ref="startupDevicesGroup" />
 		<property name="methodName" value="addDevice" />
 		<property name="params" ref="barcodeReader" />
 	</bean>

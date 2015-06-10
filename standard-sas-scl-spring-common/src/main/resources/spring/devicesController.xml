@@ -9,8 +9,6 @@
 
 	<bean id="startupDevicesGroup" class="com.sicpa.standard.sasscl.controller.device.group.impl.SimpleGroupDevicesController" />
 
-	<bean id="selectionScreenDevicesGroup" class="com.sicpa.standard.sasscl.controller.device.group.impl.SimpleGroupDevicesController" />
-
 	<bean id="deviceControllerAddRemoteGroup" class="com.sicpa.standard.client.common.ioc.InjectByMethodBean">
 		<property name="target" ref="otherDevicesController" />
 		<property name="methodName" value="addControllerToGroup" />
@@ -18,17 +16,6 @@
 			<array>
 				<ref bean="startupDevicesGroup" />
 				<value>startup</value>
-			</array>
-		</property>
-	</bean>
-
-	<bean id="deviceControllerAddSelectionScreenGroup" class="com.sicpa.standard.client.common.ioc.InjectByMethodBean">
-		<property name="target" ref="otherDevicesController" />
-		<property name="methodName" value="addControllerToGroup" />
-		<property name="params">
-			<array>
-				<ref bean="selectionScreenDevicesGroup" />
-				<value>selectionScreen</value>
 			</array>
 		</property>
 	</bean>

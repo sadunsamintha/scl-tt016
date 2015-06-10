@@ -1,8 +1,5 @@
 package com.sicpa.standard.sasscl.devices.barcode;
 
-import static com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState.STT_SELECT_NO_PREVIOUS;
-import static com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState.STT_SELECT_WITH_PREVIOUS;
-
 import java.awt.AWTEvent;
 import java.awt.Toolkit;
 import java.awt.event.AWTEventListener;
@@ -12,6 +9,7 @@ import javax.swing.text.JTextComponent;
 
 import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.gui.listener.CoalescentChangeListener;
+import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState;
 import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowStateChangedEvent;
 import com.sicpa.standard.sasscl.devices.DeviceException;
 import com.sicpa.standard.sasscl.devices.DeviceStatus;
@@ -27,7 +25,7 @@ public class BarcodeReaderAdaptorAsKeyboard extends AbstractBarcodeReader {
 			public void eventDispatched(AWTEvent event) {
 
 				if (event instanceof KeyEvent) {
-					if (isEventAccepted((KeyEvent) event)) {
+					if (isEventHandledDirectly((KeyEvent) event)) {
 						// the textfield handle it directly
 						return;
 					}
@@ -64,17 +62,22 @@ public class BarcodeReaderAdaptorAsKeyboard extends AbstractBarcodeReader {
 
 	protected boolean waitingForBarcode = false;
 
-	protected boolean isEventAccepted(KeyEvent evt) {
-		return evt.getComponent() instanceof JTextComponent;
+	protected boolean isEventHandledDirectly(KeyEvent evt) {
+		if (evt.getComponent() instanceof JTextComponent) {
+			if (((JTextComponent) evt.getComponent()).isEditable() && ((JTextComponent) evt.getComponent()).isEnabled()) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	@Subscribe
 	public void handleActivityChanged(ApplicationFlowStateChangedEvent evt) {
-		waitingForBarcode = evt.getCurrentState().equals(STT_SELECT_WITH_PREVIOUS)
-				|| evt.getCurrentState().equals(STT_SELECT_NO_PREVIOUS);
+		waitingForBarcode = evt.getCurrentState().equals(ApplicationFlowState.STT_SELECT_WITH_PREVIOUS)
+				|| evt.getCurrentState().equals(ApplicationFlowState.STT_SELECT_NO_PREVIOUS);
 	}
 
-	protected CoalescentChangeListener keyEventCleaner = new CoalescentChangeListener(100) {
+	private CoalescentChangeListener keyEventCleaner = new CoalescentChangeListener(100) {
 		@Override
 		public void doAction() {
 			barcode = "";
