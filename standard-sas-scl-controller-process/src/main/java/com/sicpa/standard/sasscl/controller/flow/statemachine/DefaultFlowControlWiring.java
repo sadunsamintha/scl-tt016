@@ -26,21 +26,22 @@ import static com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState.STT
 import java.util.HashMap;
 import java.util.Map;
 
+import com.sicpa.standard.client.common.statemachine.IStateAction;
 import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState;
 
 public class DefaultFlowControlWiring extends AbstractFlowControlWiring {
 
-	protected Runnable executorStarted;
-	protected Runnable executorStarting;
-	protected Runnable executorExit;
-	protected Runnable executorNoSelection;
-	protected Runnable executorConnecting;
-	protected Runnable executorSelectWithPrevious;
-	protected Runnable executorConnected;
-	protected Runnable executorSelectNoPrevious;
-	protected Runnable executorStopping;
-	protected Runnable executorDisconnectingOnParamChanged;
-	protected Runnable executorRecovering;
+	protected IStateAction executorStarted;
+	protected IStateAction executorStarting;
+	protected IStateAction executorExit;
+	protected IStateAction executorNoSelection;
+	protected IStateAction executorConnecting;
+	protected IStateAction executorSelectWithPrevious;
+	protected IStateAction executorConnected;
+	protected IStateAction executorSelectNoPrevious;
+	protected IStateAction executorStopping;
+	protected IStateAction executorDisconnectingOnParamChanged;
+	protected IStateAction executorRecovering;
 
 	@Override
 	public ApplicationFlowState getInitialState() {
@@ -48,8 +49,8 @@ public class DefaultFlowControlWiring extends AbstractFlowControlWiring {
 	}
 
 	@Override
-	protected Map<ApplicationFlowState, Runnable> createStateMap() {
-		Map<ApplicationFlowState, Runnable> map = new HashMap<ApplicationFlowState, Runnable>();
+	protected Map<ApplicationFlowState, IStateAction> createStateMap() {
+		Map<ApplicationFlowState, IStateAction> map = new HashMap<>();
 		map.put(STT_NO_SELECTION, executorNoSelection);
 		map.put(STT_CONNECTED, executorConnected);
 		map.put(STT_CONNECTING, executorConnecting);
@@ -66,9 +67,9 @@ public class DefaultFlowControlWiring extends AbstractFlowControlWiring {
 
 	@Override
 	protected void initFlowTransitions() {
-		
+		//@formatter:off
 		addNext(STT_NO_SELECTION,
-				new FlowTransition(TRG_ENTERSELECTION,STT_SELECT_NO_PREVIOUS ),
+				new FlowTransition(TRG_ENTERSELECTION, STT_SELECT_NO_PREVIOUS),
 				new FlowTransition(TRG_SELECT, STT_CONNECTING),
 				new FlowTransition(TRG_EXIT_APPLICATION, STT_EXIT));
 
@@ -77,94 +78,93 @@ public class DefaultFlowControlWiring extends AbstractFlowControlWiring {
 				new FlowTransition(TRG_SELECT, STT_CONNECTING),
 				new FlowTransition(TRG_EXIT_APPLICATION, STT_EXIT));
 
-		addNext(STT_CONNECTING,
+		addNext(STT_CONNECTING, 
 				new FlowTransition(TRG_HARDWARE_CONNECTED, STT_CONNECTED),
 				new FlowTransition(TRG_RECOVERING_CONNECTION, STT_RECOVERING),
-				new FlowTransition(TRG_ENTERSELECTION, STT_SELECT_WITH_PREVIOUS),
+				new FlowTransition(TRG_ENTERSELECTION,STT_SELECT_WITH_PREVIOUS),
 				new FlowTransition(TRG_EXIT_APPLICATION, STT_EXIT));
-		
+
 		addNext(STT_CONNECTED,
 				new FlowTransition(TRG_ENTERSELECTION, STT_SELECT_WITH_PREVIOUS),
 				new FlowTransition(TRG_RECOVERING_CONNECTION, STT_RECOVERING),
 				new FlowTransition(TRG_START_PRODUCTION, STT_STARTING),
 				new FlowTransition(TRG_EXIT_APPLICATION, STT_EXIT));
-		
+
 		addNext(STT_SELECT_WITH_PREVIOUS,
 				new FlowTransition(TRG_EXITSELECTION, STT_CONNECTED),
 				new FlowTransition(TRG_SELECT, STT_DISCONNECTING_ON_PARAM_CHANGED),
 				new FlowTransition(TRG_EXIT_APPLICATION, STT_EXIT));
-		
+
 		addNext(STT_DISCONNECTING_ON_PARAM_CHANGED,
 				new FlowTransition(TRG_HARDWARE_DISCONNECTED, STT_CONNECTING),
 				new FlowTransition(TRG_EXIT_APPLICATION, STT_EXIT));
-		
+
 		addNext(STT_STARTING,
 				new FlowTransition(TRG_STARTED, STT_STARTED),
 				new FlowTransition(TRG_RECOVERING_CONNECTION, STT_RECOVERING),
 				new FlowTransition(TRG_STOP_PRODUCTION, STT_CONNECTED),
 				new FlowTransition(TRG_HARDWARE_STOPPING, STT_STOPPING),
-				new FlowTransition(TRG_EXIT_APPLICATION, STT_EXIT));
-		
+				new FlowTransition(TRG_EXIT_APPLICATION,STT_EXIT));
+
 		addNext(STT_STARTED,
 				new FlowTransition(TRG_HARDWARE_STOPPING, STT_STOPPING),
 				new FlowTransition(TRG_STOP_PRODUCTION, STT_STOPPING),
 				new FlowTransition(TRG_EXIT_APPLICATION, STT_EXIT));
-		
+
 		addNext(STT_STOPPING,
 				new FlowTransition(TRG_HARDWARE_CONNECTED, STT_CONNECTED),
 				new FlowTransition(TRG_RECOVERING_CONNECTION, STT_RECOVERING),
 				new FlowTransition(TRG_EXIT_APPLICATION, STT_EXIT));
-		
+
 		addNext(STT_RECOVERING,
 				new FlowTransition(TRG_ENTERSELECTION, STT_SELECT_WITH_PREVIOUS),
 				new FlowTransition(TRG_HARDWARE_CONNECTED, STT_CONNECTED),
 				new FlowTransition(TRG_RECOVERING_CONNECTION, STT_RECOVERING),
 				new FlowTransition(TRG_EXIT_APPLICATION, STT_EXIT));
 	}
-
-	public void setExecutorStarted(Runnable executorStarted) {
+	//@formatter:on
+	
+	public void setExecutorStarted(IStateAction executorStarted) {
 		this.executorStarted = executorStarted;
 	}
 
-	public void setExecutorStarting(Runnable executorStarting) {
+	public void setExecutorStarting(IStateAction executorStarting) {
 		this.executorStarting = executorStarting;
 	}
 
-
-	public void setExecutorNoSelection(Runnable executorNoSelection) {
+	public void setExecutorNoSelection(IStateAction executorNoSelection) {
 		this.executorNoSelection = executorNoSelection;
 	}
 
-
-	public void setExecutorConnecting(Runnable executorConnecting) {
+	public void setExecutorConnecting(IStateAction executorConnecting) {
 		this.executorConnecting = executorConnecting;
 	}
 
-	public void setExecutorSelectWithPrevious(Runnable executorSelectWithPrevious) {
+	public void setExecutorSelectWithPrevious(IStateAction executorSelectWithPrevious) {
 		this.executorSelectWithPrevious = executorSelectWithPrevious;
 	}
 
-	public void setExecutorConnected(Runnable executorConnected) {
+	public void setExecutorConnected(IStateAction executorConnected) {
 		this.executorConnected = executorConnected;
 	}
 
-	public void setExecutorSelectNoPrevious(Runnable executorSelectNoPrevious) {
+	public void setExecutorSelectNoPrevious(IStateAction executorSelectNoPrevious) {
 		this.executorSelectNoPrevious = executorSelectNoPrevious;
 	}
 
-	public void setExecutorStopping(Runnable executorStopping) {
+	public void setExecutorStopping(IStateAction executorStopping) {
 		this.executorStopping = executorStopping;
 	}
 
-	public void setExecutorDisconnectingOnParamChanged(Runnable executorDisconnectingOnParamChanged) {
+	public void setExecutorDisconnectingOnParamChanged(IStateAction executorDisconnectingOnParamChanged) {
 		this.executorDisconnectingOnParamChanged = executorDisconnectingOnParamChanged;
 	}
 
-	public void setExecutorExit(Runnable executorExit) {
+	public void setExecutorExit(IStateAction executorExit) {
 		this.executorExit = executorExit;
 	}
 
-	public void setExecutorRecovering(Runnable executorRecovering) {
+	public void setExecutorRecovering(IStateAction executorRecovering) {
 		this.executorRecovering = executorRecovering;
 	}
 }

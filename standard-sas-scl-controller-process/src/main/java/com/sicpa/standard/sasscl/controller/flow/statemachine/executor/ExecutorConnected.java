@@ -1,9 +1,16 @@
 package com.sicpa.standard.sasscl.controller.flow.statemachine.executor;
 
-public class ExecutorConnected implements Runnable {
+import com.sicpa.standard.client.common.statemachine.IStateAction;
+
+public class ExecutorConnected implements IStateAction {
 
 	@Override
-	public void run() {
+	public void enter() {
+
+	}
+
+	@Override
+	public void leave() {
 
 	}
 

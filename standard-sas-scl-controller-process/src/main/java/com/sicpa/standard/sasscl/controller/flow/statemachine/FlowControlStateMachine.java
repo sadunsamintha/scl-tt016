@@ -4,9 +4,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
-import com.sicpa.standard.gui.state.State;
-import com.sicpa.standard.gui.state.StateMachine;
-import com.sicpa.standard.gui.state.Trigger;
+import com.sicpa.standard.client.common.statemachine.State;
+import com.sicpa.standard.client.common.statemachine.StateMachine;
+import com.sicpa.standard.client.common.statemachine.Trigger;
 import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState;
 import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowStateChangedEvent;
 import com.sicpa.standard.sasscl.monitoring.MonitoringService;
@@ -68,5 +68,4 @@ public class FlowControlStateMachine extends StateMachine implements IStateMachi
 	public ApplicationFlowState getCurrentState() {
 		return (ApplicationFlowState) super.getCurrentState();
 	}
-
 }

@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.messages.MessageEvent;
+import com.sicpa.standard.client.common.statemachine.IStateAction;
 import com.sicpa.standard.sasscl.business.statistics.IStatistics;
 import com.sicpa.standard.sasscl.business.statistics.StatisticsRestoredEvent;
 import com.sicpa.standard.sasscl.controller.hardware.IHardwareController;
@@ -16,7 +17,7 @@ import com.sicpa.standard.sasscl.messages.MessageEventKey;
 import com.sicpa.standard.sasscl.model.ProductionParameters;
 import com.sicpa.standard.sasscl.provider.impl.ProductionConfigProvider;
 
-public class ExecutorConnecting implements Runnable {
+public class ExecutorConnecting implements IStateAction {
 
 	private static final Logger logger = LoggerFactory.getLogger(ExecutorConnecting.class);
 
@@ -29,7 +30,7 @@ public class ExecutorConnecting implements Runnable {
 	protected boolean ignoreStatsReset = false;
 
 	@Override
-	public void run() {
+	public void enter() {
 		try {
 			IProductionConfig config = loader.get(productionParameters.getProductionMode());
 			productionConfigProvider.set(config);
@@ -76,5 +77,10 @@ public class ExecutorConnecting implements Runnable {
 
 	public void setStatistics(IStatistics statistics) {
 		this.statistics = statistics;
+	}
+
+	@Override
+	public void leave() {
+
 	}
 }

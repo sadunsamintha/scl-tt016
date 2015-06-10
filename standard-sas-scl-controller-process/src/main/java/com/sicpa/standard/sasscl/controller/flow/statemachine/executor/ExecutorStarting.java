@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.messages.MessageEvent;
+import com.sicpa.standard.client.common.statemachine.IStateAction;
 import com.sicpa.standard.client.common.utils.TaskExecutor;
 import com.sicpa.standard.sasscl.business.alert.IAlert;
 import com.sicpa.standard.sasscl.business.statistics.IStatistics;
@@ -16,12 +17,9 @@ import com.sicpa.standard.sasscl.controller.hardware.IHardwareController;
 import com.sicpa.standard.sasscl.controller.process.IProductionStartValidator;
 import com.sicpa.standard.sasscl.controller.process.ProductionStartValidatorResult;
 import com.sicpa.standard.sasscl.messages.MessageEventKey;
-import com.sicpa.standard.sasscl.monitoring.MonitoringService;
-import com.sicpa.standard.sasscl.monitoring.system.SystemEventType;
-import com.sicpa.standard.sasscl.monitoring.system.event.StatisticsSystemEvent;
 import com.sicpa.standard.sasscl.provider.impl.ProductionBatchProvider;
 
-public class ExecutorStarting implements Runnable {
+public class ExecutorStarting implements IStateAction {
 
 	private final static Logger logger = LoggerFactory.getLogger(ExecutorStarting.class);
 
@@ -38,7 +36,7 @@ public class ExecutorStarting implements Runnable {
 	protected IHardwareController hardwareController;
 
 	@Override
-	public void run() {
+	public void enter() {
 		TaskExecutor.execute(new Runnable() {
 			@Override
 			public void run() {
@@ -52,7 +50,7 @@ public class ExecutorStarting implements Runnable {
 		for (IProductionStartValidator validator : startValidators) {
 			ProductionStartValidatorResult result = validator.validateStart();
 			if (!result.isValid()) {
-				logger.error("failed to start:"+result.getMessage());
+				logger.error("failed to start:" + result.getMessage());
 				EventBusService.post(new MessageEvent(result.getMessage()));
 				return;
 			}
@@ -118,5 +116,10 @@ public class ExecutorStarting implements Runnable {
 
 	public void setHardwareController(IHardwareController hardwareController) {
 		this.hardwareController = hardwareController;
+	}
+
+	@Override
+	public void leave() {
+
 	}
 }

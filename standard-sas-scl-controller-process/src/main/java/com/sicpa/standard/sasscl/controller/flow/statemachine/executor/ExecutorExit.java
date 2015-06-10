@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
+import com.sicpa.standard.client.common.statemachine.IStateAction;
 import com.sicpa.standard.client.common.utils.SingleAppInstanceUtils;
 import com.sicpa.standard.client.common.utils.TaskExecutor;
 import com.sicpa.standard.client.common.view.screensflow.ScreensFlow;
@@ -18,7 +19,7 @@ import com.sicpa.standard.sasscl.monitoring.system.SystemEventType;
 import com.sicpa.standard.sasscl.monitoring.system.event.BasicSystemEvent;
 import com.sicpa.standard.sasscl.view.ScreensFlowTriggers;
 
-public class ExecutorExit implements Runnable {
+public class ExecutorExit implements IStateAction {
 
 	private static final Logger logger = LoggerFactory.getLogger(ExecutorExit.class);
 
@@ -38,7 +39,7 @@ public class ExecutorExit implements Runnable {
 	}
 
 	@Override
-	public void run() {
+	public void enter() {
 		TaskExecutor.execute(new Runnable() {
 			@Override
 			public void run() {
@@ -73,7 +74,7 @@ public class ExecutorExit implements Runnable {
 		} catch (Exception e) {
 		}
 		production.saveProductionData();
-		
+
 		storage.saveStatistics(statistics.getValues());
 	}
 
@@ -99,5 +100,10 @@ public class ExecutorExit implements Runnable {
 
 	public void setScreensFlow(ScreensFlow screensFlow) {
 		this.screensFlow = screensFlow;
+	}
+
+	@Override
+	public void leave() {
+
 	}
 }

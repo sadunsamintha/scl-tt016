@@ -3,8 +3,8 @@ package com.sicpa.standard.sasscl.controller.flow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sicpa.standard.gui.state.State;
-import com.sicpa.standard.gui.state.Trigger;
+import com.sicpa.standard.client.common.statemachine.State;
+import com.sicpa.standard.client.common.statemachine.Trigger;
 
 public class ApplicationFlowState extends State {
 

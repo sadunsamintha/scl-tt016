@@ -1,10 +1,16 @@
 package com.sicpa.standard.sasscl.controller.flow.statemachine.executor;
 
-public class ExecutorStarted implements Runnable {
+import com.sicpa.standard.client.common.statemachine.IStateAction;
+
+public class ExecutorStarted implements IStateAction {
 
 	@Override
-	public void run() {
-		// TODO Auto-generated method stub
+	public void enter() {
+
+	}
+
+	@Override
+	public void leave() {
 
 	}
 

@@ -1,7 +1,8 @@
 package com.sicpa.standard.sasscl.controller.flow.statemachine;
 
-import com.sicpa.standard.gui.state.State;
-import com.sicpa.standard.gui.state.Trigger;
+import com.sicpa.standard.client.common.statemachine.IStateAction;
+import com.sicpa.standard.client.common.statemachine.State;
+import com.sicpa.standard.client.common.statemachine.Trigger;
 import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState;
 
 public interface IStateMachine {
@@ -10,7 +11,7 @@ public interface IStateMachine {
 
 	void moveToPreviousState();
 
-	void addState(State s, Runnable task);
+	void addState(State s, IStateAction task);
 
 	ApplicationFlowState getPreviousState();
 

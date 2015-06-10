@@ -5,6 +5,7 @@ import java.util.Map.Entry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.sicpa.standard.client.common.statemachine.IStateAction;
 import com.sicpa.standard.client.common.utils.TaskExecutor;
 import com.sicpa.standard.sasscl.controller.flow.statemachine.IFlowControlWiring;
 import com.sicpa.standard.sasscl.controller.flow.statemachine.IStateMachine;
@@ -25,7 +26,7 @@ public abstract class AbstractFlowControl implements IFlowControl {
 	 * called by spring
 	 */
 	public void initMachine() {
-		for (Entry<ApplicationFlowState, Runnable> entry : flowControlWiring.getStateMap().entrySet()) {
+		for (Entry<ApplicationFlowState, IStateAction> entry : flowControlWiring.getStateMap().entrySet()) {
 			stateMachine.addState(entry.getKey(), entry.getValue());
 		}
 	}

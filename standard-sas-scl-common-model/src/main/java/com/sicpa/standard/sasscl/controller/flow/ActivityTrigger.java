@@ -1,6 +1,6 @@
 package com.sicpa.standard.sasscl.controller.flow;
 
-import com.sicpa.standard.gui.state.Trigger;
+import com.sicpa.standard.client.common.statemachine.Trigger;
 
 /**
  * input for the flow control, to decide what to do next

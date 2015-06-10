@@ -1,6 +1,8 @@
 package com.sicpa.standard.sasscl.controller.flow.statemachine;
+
 import java.util.Map;
 
+import com.sicpa.standard.client.common.statemachine.IStateAction;
 import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState;
 
 /**
@@ -16,7 +18,7 @@ public interface IFlowControlWiring {
 	 * 
 	 * @return map<state,executor>
 	 */
-	Map<ApplicationFlowState, Runnable> getStateMap();
+	Map<ApplicationFlowState, IStateAction> getStateMap();
 
 	/**
 	 * 

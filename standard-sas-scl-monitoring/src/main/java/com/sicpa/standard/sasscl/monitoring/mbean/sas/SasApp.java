@@ -1,11 +1,32 @@
 package com.sicpa.standard.sasscl.monitoring.mbean.sas;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import javax.management.AttributeChangeNotification;
+import javax.management.MBeanNotificationInfo;
+import javax.management.Notification;
+import javax.management.NotificationBroadcasterSupport;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.messages.MessageEvent;
+import com.sicpa.standard.client.common.statemachine.State;
 import com.sicpa.standard.client.common.utils.DateUtils;
 import com.sicpa.standard.client.common.utils.ReflectionUtils;
-import com.sicpa.standard.gui.state.State;
 import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState;
 import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowStateChangedEvent;
 import com.sicpa.standard.sasscl.controller.productionconfig.IProductionConfig;
@@ -21,18 +42,6 @@ import com.sicpa.standard.sasscl.monitoring.mbean.StandardMonitoringMBeanConstan
 import com.sicpa.standard.sasscl.provider.impl.ProductionConfigProvider;
 import com.sicpa.standard.sasscl.repository.errors.AppMessage;
 import com.sicpa.standard.sasscl.repository.errors.IErrorsRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.management.AttributeChangeNotification;
-import javax.management.MBeanNotificationInfo;
-import javax.management.Notification;
-import javax.management.NotificationBroadcasterSupport;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.io.File;
-import java.util.*;
-import java.util.Map.Entry;
 
 public class SasApp extends NotificationBroadcasterSupport implements SasAppMBean {
 
