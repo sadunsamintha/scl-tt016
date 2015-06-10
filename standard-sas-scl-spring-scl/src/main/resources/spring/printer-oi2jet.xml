@@ -1,33 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:util="http://www.springframework.org/schema/util"
-	xmlns:context="http://www.springframework.org/schema/context"
-	xmlns:aop="http://www.springframework.org/schema/aop"
-	xmlns:p="http://www.springframework.org/schema/p"
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:util="http://www.springframework.org/schema/util" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:p="http://www.springframework.org/schema/p"
 	xsi:schemaLocation="http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
-<!-- 	Beans created for each printer model -->
+	<!-- Beans created for each printer model -->
 
-    <bean id="mapPrinterOi2JetAdaptor" class="com.sicpa.standard.client.common.ioc.GenericMapping" scope="prototype">
-        <constructor-arg>
-            <map>
-                <entry key="standard" value-ref="stdPrinterOi2JetAdaptor" />
-                <entry key="simulator" value-ref="printerSimulatorAdaptor" />
-            </map>
-        </constructor-arg>
-    </bean>
+	<bean id="mapPrinterOi2JetAdaptor" class="com.sicpa.standard.client.common.ioc.GenericMapping" scope="prototype">
+		<constructor-arg>
+			<map>
+				<entry key="standard" value-ref="stdPrinterOi2JetAdaptor" />
+				<entry key="simulator" value-ref="printerSimulatorAdaptor" />
+			</map>
+		</constructor-arg>
+	</bean>
 
-    <bean id="stdPrinterOi2JetAdaptor" class="${stdPrinterAdaptor}" scope="prototype">
-        <constructor-arg ref="printerControllerOi2jet" />
-    </bean>
+	<bean id="stdPrinterOi2JetAdaptor" class="${stdPrinterAdaptor}" scope="prototype">
+		<constructor-arg ref="printerControllerOi2jet" />
+		<property name="extendedCodesBehavior" ref="extendedCodeBehavior" />
+	</bean>
 
-    <bean id="printerOi2Jet" factory-bean="mapPrinterOi2JetAdaptor" factory-method="get" scope="prototype">
-        <constructor-arg value="${printer.behavior}" />
-    </bean>
+	<bean id="printerOi2Jet" factory-bean="mapPrinterOi2JetAdaptor" factory-method="get" scope="prototype">
+		<constructor-arg value="${printer.behavior}" />
+	</bean>
 
 	<bean id="driverOi2jet" class="com.sicpa.standard.printer.oi2jet.driver.Oi2jetDriver" scope="prototype" />
 
@@ -35,16 +33,17 @@
 
 	<bean id="printerCommanderOi2jet" class="com.sicpa.standard.printer.oi2jet.driver.Oi2jetCommander" scope="prototype" />
 
-	<bean id="printerControllerOi2jet" class="com.sicpa.standard.printer.oi2jet.controller.Oi2jetPrinterController" scope="prototype" >
-        <constructor-arg ref="connectorOi2jet" />
-        <constructor-arg ref="codeBufferOi2jet" />
-        <constructor-arg ref="printerCommanderOi2jet" />
-        <constructor-arg ref="printerProtocolOi2jet" />
-        <constructor-arg ref="driverOi2jet" />
-        <constructor-arg ref="usbAdaptorOi2jet" />
-        <constructor-arg ref="printerModelOi2jet" />
-        <constructor-arg ref="printerParameterOi2jet" />
-    </bean>
+	<bean id="printerControllerOi2jet" class="com.sicpa.standard.printer.oi2jet.controller.Oi2jetPrinterController"
+		scope="prototype">
+		<constructor-arg ref="connectorOi2jet" />
+		<constructor-arg ref="codeBufferOi2jet" />
+		<constructor-arg ref="printerCommanderOi2jet" />
+		<constructor-arg ref="printerProtocolOi2jet" />
+		<constructor-arg ref="driverOi2jet" />
+		<constructor-arg ref="usbAdaptorOi2jet" />
+		<constructor-arg ref="printerModelOi2jet" />
+		<constructor-arg ref="printerParameterOi2jet" />
+	</bean>
 
 	<bean id="codeBufferOi2jet" class="com.sicpa.standard.printer.oi2jet.controller.Oi2jetCodeBuffer" scope="prototype" />
 
@@ -53,13 +52,15 @@
 	<bean id="usbAdaptorOi2jet" class="com.sicpa.standard.printer.oi2jet.connector.impl.UsbAdaptor" scope="prototype" />
 
 
-	<bean id="printerModelOi2jet" class="com.sicpa.standard.client.common.utils.ConfigUtils" factory-method="load" scope="prototype">
+	<bean id="printerModelOi2jet" class="com.sicpa.standard.client.common.utils.ConfigUtils" factory-method="load"
+		scope="prototype">
 		<constructor-arg value="config/printer/printer_pr_oi2jet_model.xml" />
 	</bean>
-	<bean id="printerParameterOi2jet" class="com.sicpa.standard.client.common.utils.ConfigUtils" factory-method="load" scope="prototype">
+	<bean id="printerParameterOi2jet" class="com.sicpa.standard.client.common.utils.ConfigUtils" factory-method="load"
+		scope="prototype">
 		<constructor-arg value="config/printer/printer_pr_oi2jet_parameter.xml" />
 	</bean>
-		
+
 </beans>
 
  

@@ -46,6 +46,7 @@ public class PrinterAdaptorSimulator extends PrinterAdaptor implements ICodeProv
 	@Override
 	public void sendCodesToPrint(final List<String> codes) throws PrinterAdaptorException {
 		logger.debug("Printer sending codes to print");
+		extendedCodesBehavior.createExCodes(codes);		
 		codeBuffer.addAll(codes);
 	}
 	
