@@ -219,11 +219,9 @@
 		<module>standard-sas-scl-spring-scl</module>
 		<module>standard-sas-scl-view</module>
 		<module>standard-sas-scl-monitoring</module>
-		<module>standard-sas-scl-remoteControl</module>
 		<module>standard-sas-scl-test-functional-common</module>
 		<module>standard-sas-scl-test-functional-sas</module>
 		<module>standard-sas-scl-test-functional-scl</module>
-		<module>standard-sas-scl-project-wizard</module>
 		<module>standard-sas-scl-device-bis</module>
 		<module>standard-sas-scl-test-utils</module>
 	</modules>
