@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.sicpa.standard.client.common.view.question.Answer;
+
 public class SingleQuestionViewModel {
 	protected String question;
 	protected final List<Answer> answers = new ArrayList<Answer>();

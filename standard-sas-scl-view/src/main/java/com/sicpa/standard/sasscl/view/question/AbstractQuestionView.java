@@ -1,6 +1,7 @@
 package com.sicpa.standard.sasscl.view.question;
 
 import com.sicpa.standard.client.common.view.mvc.AbstractView;
+import com.sicpa.standard.client.common.view.question.Answer;
 
 @SuppressWarnings("serial")
 public abstract class AbstractQuestionView extends AbstractView<IQuestionViewListener, QuestionViewModel> {

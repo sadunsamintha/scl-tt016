@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import com.sicpa.standard.sasscl.view.question.Answer;
+import com.sicpa.standard.client.common.view.question.Answer;
 
 public class QuestionModel {
 

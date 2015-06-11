@@ -18,6 +18,8 @@ import javax.swing.JFrame;
 
 import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
+import com.sicpa.standard.client.common.view.question.Answer;
+import com.sicpa.standard.client.common.view.question.QuestionEvent;
 import com.sicpa.standard.common.util.Messages;
 import com.sicpa.standard.gui.plaf.SicpaColor;
 import com.sicpa.standard.sasscl.common.log.OperatorLogger;
@@ -28,8 +30,6 @@ import com.sicpa.standard.sasscl.devices.remote.IRemoteServer;
 import com.sicpa.standard.sasscl.event.LockFullScreenEvent;
 import com.sicpa.standard.sasscl.event.UnlockFullScreenEvent;
 import com.sicpa.standard.sasscl.view.MainFrame;
-import com.sicpa.standard.sasscl.view.question.Answer;
-import com.sicpa.standard.sasscl.view.question.QuestionEvent;
 
 public class ExitViewController implements IExitViewListener {
 

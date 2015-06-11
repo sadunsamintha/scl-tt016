@@ -29,6 +29,7 @@ import net.miginfocom.swing.MigLayout;
 import org.jdesktop.swingx.color.ColorUtil;
 import org.pushingpixels.trident.Timeline;
 
+import com.sicpa.standard.client.common.view.question.Answer;
 import com.sicpa.standard.common.util.Messages;
 import com.sicpa.standard.gui.components.buttons.PaddedButton;
 import com.sicpa.standard.gui.components.buttons.shape.DirectionButton;
@@ -38,7 +39,6 @@ import com.sicpa.standard.gui.plaf.SicpaColor;
 import com.sicpa.standard.gui.plaf.SicpaFont;
 import com.sicpa.standard.gui.plaf.SicpaLookAndFeel;
 import com.sicpa.standard.gui.utils.ThreadUtils;
-import com.sicpa.standard.sasscl.view.question.Answer;
 
 @SuppressWarnings("serial")
 public class QuestionPanel extends JPanel {

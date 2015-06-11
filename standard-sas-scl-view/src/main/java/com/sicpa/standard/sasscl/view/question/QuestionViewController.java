@@ -3,6 +3,8 @@ package com.sicpa.standard.sasscl.view.question;
 import java.text.MessageFormat;
 
 import com.google.common.eventbus.Subscribe;
+import com.sicpa.standard.client.common.view.question.Answer;
+import com.sicpa.standard.client.common.view.question.QuestionEvent;
 import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowStateChangedEvent;
 
 public class QuestionViewController implements IQuestionViewListener {
