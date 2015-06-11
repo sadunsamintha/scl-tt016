@@ -229,15 +229,6 @@
 			<artifactId>device-bis</artifactId>
 		</dependency>
 
-		<dependency>
-			<groupId>com.sicpa.standard.sasscl</groupId>
-			<artifactId>device-context-console</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>com.sicpa.standard.sasscl</groupId>
-			<artifactId>business-offline-counting</artifactId>
-		</dependency>
 
 	</dependencies>
 

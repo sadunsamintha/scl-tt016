@@ -43,10 +43,6 @@
 		</dependency>
 		<dependency>
 			<groupId>com.sicpa.standard.sasscl</groupId>
-			<artifactId>business-offline-counting</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.sicpa.standard.sasscl</groupId>
 			<artifactId>test-utils</artifactId>
 		</dependency>
 	</dependencies>

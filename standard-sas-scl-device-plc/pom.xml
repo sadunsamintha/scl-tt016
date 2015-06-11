@@ -11,10 +11,6 @@
 	<dependencies>
 		<dependency>
 			<groupId>com.sicpa.standard.sasscl</groupId>
-			<artifactId>device-common</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.sicpa.standard.sasscl</groupId>
 			<artifactId>model</artifactId>
 		</dependency>
 		<dependency>
