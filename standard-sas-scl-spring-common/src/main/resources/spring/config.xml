@@ -3,9 +3,6 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans
 	       http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
-	<bean id="globalConfig" class="${globalConfig}">
-		<constructor-arg type="java.lang.String" value="config/global.xml" />
-	</bean>
 
 	<bean id="cameraJobFilesConfig" class="${cameraJobFilesConfig}">
 		<constructor-arg type="java.lang.String" value="config/camera/cameraJobConfig.xml" />

@@ -53,7 +53,7 @@ public class FileStorageTest {
 
 	private IProductsPackager productsPackager;
 
-	private final FileStorage storage = new FileStorage(dataFolder, internalFolder, "quarantine", null,
+	private final FileStorage storage = new FileStorage(dataFolder, internalFolder, "quarantine",
 			new XStreamFileStorage());
 
 	private FileSequenceStorageProvider fileSequenceStorageProvider = Mockito.mock(FileSequenceStorageProvider.class);

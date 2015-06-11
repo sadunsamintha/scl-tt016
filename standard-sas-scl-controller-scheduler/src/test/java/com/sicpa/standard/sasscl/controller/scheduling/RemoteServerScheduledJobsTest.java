@@ -18,7 +18,6 @@ import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.sasscl.common.storage.FileStorage;
 import com.sicpa.standard.sasscl.common.storage.IStorage;
-import com.sicpa.standard.sasscl.config.GlobalConfigSCL;
 import com.sicpa.standard.sasscl.devices.remote.IRemoteServer;
 import com.sicpa.standard.sasscl.devices.remote.MaxDownTimeReachedEvent;
 import com.sicpa.standard.sasscl.model.CodeType;
@@ -45,8 +44,6 @@ public class RemoteServerScheduledJobsTest {
 
 	private RemoteServerScheduledJobsSCL remoteServerScheduledJobs;
 
-	private GlobalConfigSCL globalConfig;
-
 	private IStorage storage;
 
 	private IRemoteServer remoteServer;
@@ -72,7 +69,6 @@ public class RemoteServerScheduledJobsTest {
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Before
 	public void setUp() throws Exception {
-		createGlobalConfig();
 
 		this.storage = Mockito.mock(IStorage.class);
 		this.remoteServer = Mockito.mock(IRemoteServer.class);
@@ -99,8 +95,10 @@ public class RemoteServerScheduledJobsTest {
 	}
 
 	private void createRemoteServerScheduledJobs(IStorage storage) {
-		this.remoteServerScheduledJobs = new RemoteServerScheduledJobsSCL(globalConfig, storage, remoteServer,
+		this.remoteServerScheduledJobs = new RemoteServerScheduledJobsSCL(storage, remoteServer,
 				productionParametersProvider, authenticatorProvider);
+		remoteServerScheduledJobs.setRemoteServerMaxDownTime_day(REMOTE_SERVER_MAX_DOWN_TIME);
+		remoteServerScheduledJobs.setRequestNumberEncoders(REQUEST_NUMBER_ENCODERS);
 	}
 
 	@Test
@@ -238,12 +236,6 @@ public class RemoteServerScheduledJobsTest {
 		skuNode.setValue(sku);
 		productionParameterRootNode.addChildren(skuNode);
 		return productionParameterRootNode;
-	}
-
-	private void createGlobalConfig() {
-		this.globalConfig = new GlobalConfigSCL();
-		this.globalConfig.setRequestNumberEncoders(REQUEST_NUMBER_ENCODERS);
-		this.globalConfig.setRemoteServerMaxDownTime_day(REMOTE_SERVER_MAX_DOWN_TIME);
 	}
 
 	private static class MyResourceBundle extends ResourceBundle {

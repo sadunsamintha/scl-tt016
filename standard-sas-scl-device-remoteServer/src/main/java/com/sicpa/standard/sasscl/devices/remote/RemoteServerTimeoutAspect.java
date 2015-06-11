@@ -7,7 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.sicpa.standard.client.common.utils.TaskTimeoutExecutor;
-import com.sicpa.standard.sasscl.config.GlobalBean;
 import com.sicpa.standard.sasscl.monitoring.MonitoringService;
 import com.sicpa.standard.sasscl.monitoring.system.SystemEventLevel;
 import com.sicpa.standard.sasscl.monitoring.system.SystemEventType;
@@ -16,14 +15,14 @@ import com.sicpa.standard.sasscl.monitoring.system.event.BasicSystemEvent;
 public class RemoteServerTimeoutAspect {
 	private static final Logger logger = LoggerFactory.getLogger(RemoteServerTimeoutAspect.class);
 
-	protected GlobalBean config;
+	protected int remoteServerTimeoutCall_sec;
 
 	public Object log(final ProceedingJoinPoint call) throws Throwable {
 
 		logger.debug("calling remote server {}", call.getSignature().toShortString());
 		MonitoringService.addSystemEvent(new BasicSystemEvent(SystemEventLevel.INFO,
 				SystemEventType.REMOTE_SERVER_CALL, call.getSignature().toShortString()));
-		int timeout = config.getRemoteServerTimeoutCall_sec();
+		int timeout = remoteServerTimeoutCall_sec;
 		if (timeout <= 0) {
 			try {
 				return call.proceed();
@@ -52,7 +51,7 @@ public class RemoteServerTimeoutAspect {
 		}
 	}
 
-	public void setConfig(final GlobalBean config) {
-		this.config = config;
+	public void setRemoteServerTimeoutCall_sec(int remoteServerTimeoutCall_sec) {
+		this.remoteServerTimeoutCall_sec = remoteServerTimeoutCall_sec;
 	}
 }

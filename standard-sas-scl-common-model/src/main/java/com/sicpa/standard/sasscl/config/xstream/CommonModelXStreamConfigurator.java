@@ -7,9 +7,6 @@ import com.sicpa.standard.sasscl.business.alert.task.model.CameraCountAlertTaskM
 import com.sicpa.standard.sasscl.business.alert.task.model.CameraDuplicatedAlertTaskModel;
 import com.sicpa.standard.sasscl.business.alert.task.model.CameraIddleAlertTaskModel;
 import com.sicpa.standard.sasscl.business.alert.task.model.PlcActivationCounterCheckModel;
-import com.sicpa.standard.sasscl.config.GlobalBean;
-import com.sicpa.standard.sasscl.config.GlobalConfig;
-import com.sicpa.standard.sasscl.config.GlobalConfigSCL;
 import com.sicpa.standard.sasscl.model.Code;
 import com.sicpa.standard.sasscl.model.CodeType;
 import com.sicpa.standard.sasscl.model.PackagedProducts;
@@ -29,7 +26,6 @@ public class CommonModelXStreamConfigurator implements IXStreamConfigurator {
 
 	@Override
 	public void configure(XStream xstream) {
-		configureGlobalConfig(xstream);
 		configureCameraCountAlertTaskModel(xstream);
 		configureCameraDuplicatedAlertTaskModel(xstream);
 		configureCameraIddleAlertTaskModel(xstream);
@@ -48,12 +44,6 @@ public class CommonModelXStreamConfigurator implements IXStreamConfigurator {
 		configureUser(xstream);
 		configurePermission(xstream);
 		configureNode(xstream);
-	}
-
-	public void configureGlobalConfig(XStream xstream) {
-		xstream.alias("GlobalConfigSCL", GlobalConfigSCL.class);
-		xstream.alias("GlobalConfig", GlobalConfig.class);
-		xstream.useAttributeFor(GlobalBean.class, "language");
 	}
 
 	public void configureCameraCountAlertTaskModel(XStream xstream) {

@@ -6,7 +6,14 @@
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 
 	<bean id="alertCameraCount" class="${alertCameraCount}">
-		<property name="model" value="#{globalConfig.alertModel.cameraCountModel}" />
+		<property name="model">
+			<bean id="alertCameraCountModel" class="com.sicpa.standard.sasscl.business.alert.task.model.CameraCountAlertTaskModel">
+				<property name="enabled" value="${alert.cameraCount.enabled}" />
+				<property name="maxUnreadCount" value="${alert.cameraCount.maxUnreadCount}" />
+				<property name="sampleSize" value="${alert.cameraCount.sampleSize}" />
+				<property name="delayInSec" value="${alert.cameraCount.delayInSec}" />
+			</bean>
+		</property>
 		<property name="productionParameters" ref="productionParameters" />
 	</bean>
 

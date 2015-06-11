@@ -50,7 +50,7 @@ public abstract class AbstractScheduledAlertTask extends AbstractAlertTask {
 			public void run() {
 				checkForMessage();
 			}
-		}, getDelay(), getDelay());
+		}, getDelay() * 1000, getDelay() * 1000);
 	}
 
 	@Override

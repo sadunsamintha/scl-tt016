@@ -1,7 +1,34 @@
 package com.sicpa.standard.sasscl.devices.remote.impl;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.ResourceBundle;
+
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.security.auth.login.LoginContext;
+import javax.security.auth.login.LoginException;
+
+import junit.framework.Assert;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mockito;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
+import org.powermock.modules.junit4.PowerMockRunner;
+
 import com.sicpa.standard.sasscl.common.storage.productPackager.DefaultProductsPackager;
-import com.sicpa.standard.sasscl.config.GlobalBean;
 import com.sicpa.standard.sasscl.devices.remote.RemoteServerException;
 import com.sicpa.standard.sasscl.devices.remote.impl.productionmodemapping.DefaultProductionModeMapping;
 import com.sicpa.standard.sasscl.devices.remote.impl.sicpadata.ISicpaDataGeneratorRequestor;
@@ -9,9 +36,20 @@ import com.sicpa.standard.sasscl.devices.remote.impl.statusmapping.DefaultRemote
 import com.sicpa.standard.sasscl.devices.remote.mapping.IProductionModeMapping;
 import com.sicpa.standard.sasscl.devices.remote.mapping.IRemoteServerProductStatusMapping;
 import com.sicpa.standard.sasscl.devices.remote.stdCrypto.ICryptoFieldsConfig;
-import com.sicpa.standard.sasscl.model.*;
+import com.sicpa.standard.sasscl.model.Code;
+import com.sicpa.standard.sasscl.model.CodeType;
+import com.sicpa.standard.sasscl.model.DecodedCameraCode;
+import com.sicpa.standard.sasscl.model.PackagedProducts;
+import com.sicpa.standard.sasscl.model.Product;
+import com.sicpa.standard.sasscl.model.ProductStatus;
+import com.sicpa.standard.sasscl.model.ProductionMode;
+import com.sicpa.standard.sasscl.model.SKU;
 import com.sicpa.standard.sasscl.productionParameterSelection.node.IProductionParametersNode;
-import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.*;
+import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.CodeTypeNode;
+import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.NavigationNode;
+import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.ProductionModeNode;
+import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.ProductionParameterRootNode;
+import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.SKUNode;
 import com.sicpa.standard.sasscl.sicpadata.CryptoServiceProviderManager;
 import com.sicpa.standard.sasscl.sicpadata.CryptographyException;
 import com.sicpa.standard.sasscl.sicpadata.reader.IAuthenticator;
@@ -42,25 +80,6 @@ import com.sicpa.std.common.api.staticdata.dto.StaticDataCompositeBehaviorDto;
 import com.sicpa.std.common.api.staticdata.dto.StaticDataLeafBehaviorDto;
 import com.sicpa.std.common.api.staticdata.dto.StaticDataNodeValueDto;
 import com.sicpa.std.common.api.staticdata.sku.dto.SkuProductDto;
-import junit.framework.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mockito;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
-import org.powermock.modules.junit4.PowerMockRunner;
-
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.security.auth.login.LoginContext;
-import javax.security.auth.login.LoginException;
-import java.util.*;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
 
 @RunWith(PowerMockRunner.class)
 //@PrepareForTest({ ServiceLocator.class })
@@ -128,7 +147,6 @@ public class RemoteServerTest {
 		productionModeMapping = new DefaultProductionModeMapping();
 		remoteServer.setProductionModeMapping(productionModeMapping);
 
-		remoteServer.setConfig(new GlobalBean());
 
 		sdGenReceiver = Mockito.mock(ISicpaDataGeneratorRequestor.class);
 		remoteServer.setSdGenReceiver(sdGenReceiver);

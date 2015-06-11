@@ -2,7 +2,6 @@ package com.sicpa.standard.sasscl.alert;
 
 import com.sicpa.standard.client.common.ioc.BeanProvider;
 import com.sicpa.standard.sasscl.AbstractFunctionnalTest;
-import com.sicpa.standard.sasscl.config.GlobalBean;
 import com.sicpa.standard.sasscl.devices.camera.alert.CameraCountAlertTask;
 import com.sicpa.standard.sasscl.ioc.BeansName;
 import com.sicpa.standard.sasscl.messages.MessageEventKey;
@@ -36,12 +35,10 @@ public abstract class CameraBadCodeAlertTest extends AbstractFunctionnalTest {
 	public void init() {
 		super.init();
 
-		GlobalBean config = BeanProvider.getBean(BeansName.GLOBAL_CONFIG);
-		config.getAlertModel().getCameraCountModel().setMaxUnreadCount(3);
-		config.getAlertModel().getCameraCountModel().setSampleSize(10);
-		config.getAlertModel().getCameraCountModel().setDelayInSec(99999);
-
 		cameraCountAlertTask = BeanProvider.getBean(BeansName.ALERT_CAMERA_COUNT);
+		cameraCountAlertTask.getModel().setMaxUnreadCount(3);
+		cameraCountAlertTask.getModel().setSampleSize(10);
+		cameraCountAlertTask.getModel().setDelayInSec(99999);
 	}
 
 	public void generateCameraCodes() throws Exception {

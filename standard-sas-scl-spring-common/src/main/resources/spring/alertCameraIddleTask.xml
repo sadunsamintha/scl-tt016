@@ -7,7 +7,13 @@
 
 	<bean id="alertCameraIddle" class="${alertCameraIddle}">
 		<property name="productionParameters" ref="productionParameters" />
-		<property name="model" value="#{globalConfig.alertModel.cameraIddleModel}" />
+		<property name="model">
+			<bean id="alertCameraIddleModel" class="com.sicpa.standard.sasscl.business.alert.task.model.CameraIddleAlertTaskModel">
+				<property name="enabled" value="${alert.cameraIddle.enabled}" />
+				<property name="maxInactiveTimeInSec" value="${alert.cameraIddle.maxInactiveTimeInSec}" />
+				<property name="delayInSec" value="${alert.cameraIddle.delayInSec}" />
+			</bean>
+		</property>
 	</bean>
 
 	<bean id="alertCameraCodeNoVariationAddTask" class="com.sicpa.standard.client.common.ioc.InjectByMethodBean">

@@ -19,7 +19,6 @@ import com.sicpa.standard.client.common.ioc.BeanProvider;
 import com.sicpa.standard.client.common.view.screensflow.IScreensFlow;
 import com.sicpa.standard.sasscl.common.storage.FileStorage;
 import com.sicpa.standard.sasscl.common.storage.IStorage;
-import com.sicpa.standard.sasscl.config.GlobalBean;
 import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState;
 import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowStateChangedEvent;
 import com.sicpa.standard.sasscl.devices.remote.GlobalMonitoringToolInfo;
@@ -34,16 +33,14 @@ import com.sicpa.standard.sasscl.sicpadata.reader.IAuthenticator;
 public class RemoteServerScheduledJobs {
 	private static final Logger logger = LoggerFactory.getLogger(RemoteServerScheduledJobs.class);
 
-	protected GlobalBean globalConfig;
+	protected int remoteServerMaxDownTime_day;
 	protected IStorage storage;
 	protected IRemoteServer remoteServer;
 	protected SkuListProvider skuListProvider;
 	protected AuthenticatorProvider authenticatorProvider;
 
-	public RemoteServerScheduledJobs(final GlobalBean globalConfig, final IStorage storage,
-			final IRemoteServer remoteServer, final SkuListProvider skuList,
-			final AuthenticatorProvider authenticatorProvider) {
-		this.globalConfig = globalConfig;
+	public RemoteServerScheduledJobs(final IStorage storage, final IRemoteServer remoteServer,
+			final SkuListProvider skuList, final AuthenticatorProvider authenticatorProvider) {
 		this.storage = storage;
 		this.remoteServer = remoteServer;
 		this.skuListProvider = skuList;
@@ -88,7 +85,7 @@ public class RemoteServerScheduledJobs {
 				if (node != null) {
 					storage.saveProductionParameters(node);
 					skuListProvider.set(node);
-					
+
 					// Refresh current screen
 					IScreensFlow screensFlow = BeanProvider.getBean("screensFlow");
 					if (screensFlow.getCurrentScreen() != null) {
@@ -173,7 +170,7 @@ public class RemoteServerScheduledJobs {
 
 	public void checkRemoteServerMaxDownTime() {
 		logger.info("Executing job: Trying to check remote server max downtime");
-		if (globalConfig.getRemoteServerMaxDownTime_day() > 0) {
+		if (remoteServerMaxDownTime_day > 0) {
 			if (!remoteServer.isConnected()) {
 				// check if some file in the package folder is older than the max down time
 				// if that's the case the max down time is reached
@@ -191,7 +188,7 @@ public class RemoteServerScheduledJobs {
 							}
 							long delta = System.currentTimeMillis() - lastModified;
 							int days = (int) (delta / miliByDay);
-							if (days >= globalConfig.getRemoteServerMaxDownTime_day()) {
+							if (days >= remoteServerMaxDownTime_day) {
 								fireMaxDownTime(true);
 								return;
 							}
@@ -206,6 +203,10 @@ public class RemoteServerScheduledJobs {
 				fireMaxDownTime(false);
 			}
 		}
+	}
+
+	public void setRemoteServerMaxDownTime_day(int remoteServerMaxDownTime_day) {
+		this.remoteServerMaxDownTime_day = remoteServerMaxDownTime_day;
 	}
 
 	protected void fireMaxDownTime(final boolean reached) {

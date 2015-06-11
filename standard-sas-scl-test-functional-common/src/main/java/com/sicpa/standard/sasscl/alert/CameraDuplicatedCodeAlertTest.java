@@ -2,7 +2,7 @@ package com.sicpa.standard.sasscl.alert;
 
 import com.sicpa.standard.client.common.ioc.BeanProvider;
 import com.sicpa.standard.sasscl.AbstractFunctionnalTest;
-import com.sicpa.standard.sasscl.config.GlobalBean;
+import com.sicpa.standard.sasscl.devices.camera.alert.DuplicatedCodeAlertTask;
 import com.sicpa.standard.sasscl.ioc.BeansName;
 import com.sicpa.standard.sasscl.messages.MessageEventKey;
 import com.sicpa.standard.sasscl.model.ProductionMode;
@@ -38,8 +38,8 @@ public abstract class CameraDuplicatedCodeAlertTest extends AbstractFunctionnalT
 	@Override
 	public void init() {
 		super.init();
-		GlobalBean config = BeanProvider.getBean(BeansName.GLOBAL_CONFIG);
-		config.getAlertModel().getDuplicatedCodeModel().setThreshold(3);
+		DuplicatedCodeAlertTask task = BeanProvider.getBean(BeansName.ALERT_DUPLICATED_CODE);
+		task.getModel().setThreshold(3);
 	}
 
 }

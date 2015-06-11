@@ -23,7 +23,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.sicpa.standard.sasscl.config.GlobalBean;
 import com.sicpa.standard.sasscl.devices.remote.RemoteServerException;
 import com.sicpa.standard.sasscl.devices.remote.simulator.RemoteServerSimulator;
 import com.sicpa.standard.sasscl.devices.remote.simulator.RemoteServerSimulatorModel;
@@ -128,7 +127,6 @@ public class RemoteServerSimulatorModelTest {
 
 		RemoteServerSimulator simulator = new RemoteServerSimulator(model);
 		simulator.setCryptoFieldsConfig(new CryptoFieldsConfig());
-		simulator.setConfig(new GlobalBean());
 		simulator.setServiceProviderManager(StaticServiceProviderManager.getInstance());
 
 		simulator.setupBusinessCrypto();

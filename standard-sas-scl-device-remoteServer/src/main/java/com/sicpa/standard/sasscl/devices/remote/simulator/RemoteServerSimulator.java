@@ -25,7 +25,6 @@ import com.sicpa.standard.client.common.messages.MessageEvent;
 import com.sicpa.standard.client.common.utils.ConfigUtils;
 import com.sicpa.standard.gui.utils.ThreadUtils;
 import com.sicpa.standard.sasscl.common.storage.IStorage;
-import com.sicpa.standard.sasscl.config.GlobalBean;
 import com.sicpa.standard.sasscl.devices.DeviceStatus;
 import com.sicpa.standard.sasscl.devices.remote.AbstractRemoteServer;
 import com.sicpa.standard.sasscl.devices.remote.GlobalMonitoringToolInfo;
@@ -117,8 +116,6 @@ public class RemoteServerSimulator extends AbstractRemoteServer implements ISimu
 
 	protected SimulatorControlView simulatorGui;
 
-	protected GlobalBean config;
-
 	protected String remoteServerSimulatorOutputFolder = "SimulProductSend";
 
 	protected ProductionParameters productionParameters;
@@ -126,7 +123,7 @@ public class RemoteServerSimulator extends AbstractRemoteServer implements ISimu
 	protected IServiceProviderManager serviceProviderManager;
 
 	protected IStorage storage;
-	
+
 	protected FileSequenceStorageProvider fileSequenceStorageProvider;
 
 	// /**
@@ -376,14 +373,12 @@ public class RemoteServerSimulator extends AbstractRemoteServer implements ISimu
 	protected void storeEncoder(IEncoder encoder, int year) {
 		storage.saveEncoders(year, encoder);
 		storage.confirmEncoder(encoder.getId());
-		
-		
+
 	}
-	
+
 	protected void storeSequence(IEncoder encoder, long sequence) {
 		try {
-			fileSequenceStorageProvider
-					.storeSequence(encoder.getId(), sequence);
+			fileSequenceStorageProvider.storeSequence(encoder.getId(), sequence);
 		} catch (ServiceProviderException e) {
 			logger.error("", e);
 		}
@@ -395,11 +390,11 @@ public class RemoteServerSimulator extends AbstractRemoteServer implements ISimu
 		if (simulatorModel.isUseCrypto()) {
 			IBSicpadataGenerator bEncoder = this.generateEncoders(currentEncoderIndex, codeTypeId);
 			int id = new Random().nextInt(Integer.MAX_VALUE);
-			encoder = new StdCryptoEncoderWrapperSimulator(id, id, bEncoder, year, this.config.getSubsystemId(),
+			encoder = new StdCryptoEncoderWrapperSimulator(id, id, bEncoder, year, getSubsystemID(),
 					simulatorModel.requestNumberOfCodes, cryptoFieldsConfig, codeTypeId);
 		} else {
 			encoder = new EncoderNoEncryptionSimulator(0, new Random().nextInt(Integer.MAX_VALUE), 0,
-					simulatorModel.requestNumberOfCodes, year, config.getSubsystemId(), codeTypeId);
+					simulatorModel.requestNumberOfCodes, year, getSubsystemID(), codeTypeId);
 		}
 		encoder.setOnClientDate(new Date());
 		return encoder;
@@ -576,10 +571,6 @@ public class RemoteServerSimulator extends AbstractRemoteServer implements ISimu
 		this.remoteServerSimulatorOutputFolder = remoteServerSimulatorOutputFolder;
 	}
 
-	public void setConfig(final GlobalBean config) {
-		this.config = config;
-	}
-
 	public void setProductionParameters(ProductionParameters productionParameters) {
 		this.productionParameters = productionParameters;
 	}
@@ -609,14 +600,13 @@ public class RemoteServerSimulator extends AbstractRemoteServer implements ISimu
 		System.out.println(info.isProductionStarted());
 	}
 
-	public void setFileSequenceStorageProvider(
-			FileSequenceStorageProvider fileSequenceStorageProvider) {
+	public void setFileSequenceStorageProvider(FileSequenceStorageProvider fileSequenceStorageProvider) {
 		this.fileSequenceStorageProvider = fileSequenceStorageProvider;
 	}
 
 	@Override
 	public void lifeCheckTick() {
 		// TODO Auto-generated method stub
-		
+
 	}
 }

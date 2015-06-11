@@ -7,7 +7,6 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
-import javax.swing.SwingUtilities;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -15,7 +14,6 @@ import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.sasscl.common.log.OperatorLogger;
 import com.sicpa.standard.sasscl.common.utils.LangUtils;
 import com.sicpa.standard.sasscl.view.LanguageSwitchEvent;
-import com.sicpa.standard.sasscl.view.MainFrame;
 
 public class SwitchLangPanel extends JPanel {
 
@@ -23,6 +21,7 @@ public class SwitchLangPanel extends JPanel {
 
 	protected JButton buttonSwitchLanguageToEnglish;
 	protected JButton buttonResetLang;
+	protected String defaultLang;
 
 	public SwitchLangPanel() {
 		initGUI();
@@ -78,10 +77,13 @@ public class SwitchLangPanel extends JPanel {
 	}
 
 	protected void buttonResetActionPerformed() {
-		MainFrame frame = (MainFrame) SwingUtilities.getWindowAncestor(this);
-		LangUtils.initLanguageFiles(frame.getController().getGlobalConfig().getLanguage());
+		LangUtils.initLanguageFiles(defaultLang);
 		applyLangToAllComponents();
 		getButtonResetLang().setEnabled(false);
 		getButtonSwitchLanguageToEnglish().setEnabled(true);
+	}
+
+	public void setDefaultLang(String defaultLang) {
+		this.defaultLang = defaultLang;
 	}
 }

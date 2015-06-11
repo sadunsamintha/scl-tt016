@@ -30,7 +30,6 @@ import com.sicpa.standard.client.common.utils.DateUtils;
 import com.sicpa.standard.client.common.utils.ZipUtils;
 import com.sicpa.standard.sasscl.common.exception.ProductionRuntimeException;
 import com.sicpa.standard.sasscl.common.storage.productPackager.IProductsPackager;
-import com.sicpa.standard.sasscl.config.GlobalBean;
 import com.sicpa.standard.sasscl.messages.MessageEventKey;
 import com.sicpa.standard.sasscl.model.CodeType;
 import com.sicpa.standard.sasscl.model.EncoderInfo;
@@ -79,7 +78,7 @@ public class FileStorage implements IStorage {
 	public static final String FOLDER_ENCODER_FINISHED_CONFIRMED = "encoders/finished/confirmed";
 
 	protected File productionBatchBeingSend;
-	protected GlobalBean config;
+	protected int cleanUpSendDataThreshold_day;
 
 	protected String timeStampFormat = "yyyy-MM-dd--HH-mm-ss-SSS";
 	protected String dateFormat = "yyyy-MM-dd--HH-mm-ss";
@@ -99,11 +98,10 @@ public class FileStorage implements IStorage {
 	 *            root of the storage, mainly used for unit test, for normal case use the default constructor
 	 */
 	public FileStorage(final String baseFolder, String internalFolder, String quarantineFolder,
-			final GlobalBean config, ISimpleFileStorage storageBehavior) {
+			ISimpleFileStorage storageBehavior) {
 		this.quarantineFolder = quarantineFolder;
 		this.dataFolder = baseFolder;
 		this.internalFolder = internalFolder;
-		this.config = config;
 		this.storageBehavior = storageBehavior;
 	}
 
@@ -442,7 +440,7 @@ public class FileStorage implements IStorage {
 	@Override
 	public void cleanUpOldSentProduction() {
 		try {
-			int threshold = config.getCleanUpSendDataThreshold_day();
+			int threshold = cleanUpSendDataThreshold_day;
 			File folder = new File(getPathSentToRemoteServer());
 			int miliSecondByDay = 3600 * 24 * 1000;
 			File[] files = folder.listFiles();
@@ -916,5 +914,9 @@ public class FileStorage implements IStorage {
 				}
 			}
 		}
+	}
+
+	public void setCleanUpSendDataThreshold_day(int cleanUpSendDataThreshold_day) {
+		this.cleanUpSendDataThreshold_day = cleanUpSendDataThreshold_day;
 	}
 }

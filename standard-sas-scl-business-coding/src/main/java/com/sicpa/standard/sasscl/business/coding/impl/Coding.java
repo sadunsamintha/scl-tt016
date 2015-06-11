@@ -1,5 +1,11 @@
 package com.sicpa.standard.sasscl.business.coding.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.messages.MessageEvent;
@@ -11,7 +17,6 @@ import com.sicpa.standard.sasscl.business.coding.validator.EncoderValidatorResul
 import com.sicpa.standard.sasscl.business.coding.validator.IEncoderValidator;
 import com.sicpa.standard.sasscl.common.storage.IStorage;
 import com.sicpa.standard.sasscl.common.storage.QuarantineReason;
-import com.sicpa.standard.sasscl.config.GlobalConfig;
 import com.sicpa.standard.sasscl.messages.MessageEventKey;
 import com.sicpa.standard.sasscl.model.CodeType;
 import com.sicpa.standard.sasscl.model.ProductionParameters;
@@ -22,11 +27,6 @@ import com.sicpa.standard.sasscl.monitoring.system.event.BasicSystemEvent;
 import com.sicpa.standard.sasscl.sicpadata.CryptographyException;
 import com.sicpa.standard.sasscl.sicpadata.generator.EncoderEmptyException;
 import com.sicpa.standard.sasscl.sicpadata.generator.IEncoder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * <p>
@@ -41,8 +41,6 @@ import java.util.List;
 public class Coding implements ICoding {
 
 	private static final Logger logger = LoggerFactory.getLogger(Coding.class);
-
-	protected GlobalConfig globalConfig;
 
 	protected IStorage storage;
 
@@ -59,8 +57,7 @@ public class Coding implements ICoding {
 
 	}
 
-	public Coding(final GlobalConfig globalConfig, final IStorage storage) {
-		this.globalConfig = globalConfig;
+	public Coding(final IStorage storage) {
 		this.storage = storage;
 	}
 

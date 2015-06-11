@@ -6,18 +6,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.sicpa.standard.sasscl.common.storage.IStorage;
-import com.sicpa.standard.sasscl.config.GlobalBean;
 import com.sicpa.standard.sasscl.devices.remote.IRemoteServer;
 import com.sicpa.standard.sasscl.model.EncoderInfo;
 
 public class ProductionSCL extends Production {
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(Production.class);
 
-	public ProductionSCL(GlobalBean globalConfig, IStorage storage,	IRemoteServer remoteServer) {
-		super(globalConfig, storage, remoteServer);
+	public ProductionSCL(IStorage storage, IRemoteServer remoteServer) {
+		super(storage, remoteServer);
 	}
-	
+
 	@Override
 	public void sendAllProductionData() {
 
@@ -31,7 +30,6 @@ public class ProductionSCL extends Production {
 			sendAllBatchOfProducts();
 		}
 	}
-
 
 	protected void sendAllEncoderInfo() {
 		try {

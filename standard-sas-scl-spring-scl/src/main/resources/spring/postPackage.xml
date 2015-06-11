@@ -30,7 +30,7 @@
 	<!-- module for 1 printer+camera -->
 	<bean id="postPackageBehavior" class="${postPackageBehavior}" scope="prototype">
 		<property name="batchIdProvider" ref="productionBatchProvider" />
-		<property name="config" ref="globalConfig" />
+		<property name="subsystemIdProvider" ref="subsystemIdProvider" />
 		<property name="productionParameters" ref="productionParameters" />
 		<property name="authenticatorProvider" ref="authenticatorProvider" />
 		<property name="authenticatorModeProvider" ref="authenticatorModeProvider" />

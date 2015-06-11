@@ -8,8 +8,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.sicpa.standard.sasscl.common.storage.IStorage;
-import com.sicpa.standard.sasscl.config.GlobalBean;
 import com.sicpa.standard.sasscl.devices.remote.stdCrypto.ICryptoFieldsConfig;
+import com.sicpa.standard.sasscl.provider.impl.SubsystemIdProvider;
 import com.sicpa.standard.sasscl.sicpadata.generator.FileSequenceStorageProvider;
 import com.sicpa.standard.sasscl.sicpadata.generator.IEncoder;
 import com.sicpa.standard.sicpadata.spi.manager.ServiceProviderException;
@@ -22,14 +22,13 @@ public class SicpaDataGeneratorStorage implements IncomingSDGenStorageSpi {
 
 	protected IStorage storage;
 	protected ICryptoFieldsConfig cryptoFieldsConfig;
-	protected GlobalBean globalBean;
+	protected SubsystemIdProvider subsystemIdProvider;
 	protected FileSequenceStorageProvider fileSequenceStorageProvider;
 
 	@Override
 	public void storePendingSDGen(SicpadataGeneratorDto generator) {
-		long subsystemId = globalBean.getSubsystemId();
 		int year = generator.getYear();
-		IEncoder encoder = new SicpaDataGeneratorWrapper(generator, year, subsystemId, cryptoFieldsConfig);
+		IEncoder encoder = new SicpaDataGeneratorWrapper(generator, year, subsystemIdProvider.get(), cryptoFieldsConfig);
 		encoder.setOnClientDate(new Date());
 		storage.saveEncoders(year, encoder);
 
@@ -81,12 +80,8 @@ public class SicpaDataGeneratorStorage implements IncomingSDGenStorageSpi {
 		this.cryptoFieldsConfig = cryptoFieldsConfig;
 	}
 
-	public GlobalBean getGlobalBean() {
-		return globalBean;
-	}
-
-	public void setGlobalBean(GlobalBean globalBean) {
-		this.globalBean = globalBean;
+	public void setSubsystemIdProvider(SubsystemIdProvider subsystemIdProvider) {
+		this.subsystemIdProvider = subsystemIdProvider;
 	}
 
 	public void setFileSequenceStorageProvider(FileSequenceStorageProvider fileSequenceStorageProvider) {

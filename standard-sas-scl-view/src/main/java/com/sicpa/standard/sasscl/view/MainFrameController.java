@@ -32,7 +32,6 @@ import com.sicpa.standard.gui.screen.machine.MachineViewController;
 import com.sicpa.standard.gui.screen.machine.component.IdInput.IdInputmodel;
 import com.sicpa.standard.gui.screen.machine.component.applicationStatus.ApplicationStatus;
 import com.sicpa.standard.gui.utils.ThreadUtils;
-import com.sicpa.standard.sasscl.config.GlobalBean;
 import com.sicpa.standard.sasscl.controller.ProductionParametersEvent;
 import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState;
 import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowStateChangedEvent;
@@ -51,14 +50,14 @@ import com.sicpa.standard.sasscl.view.messages.I18nableLockingErrorModel;
 
 public class MainFrameController extends MachineViewController {
 
-	protected final List<SecuredComponentGetter> securedPanels = new ArrayList<SecuredComponentGetter>();
+	protected final List<SecuredComponentGetter> securedPanels = new ArrayList<>();
 
 	protected SkuListProvider productionParametersProvider;
 
 	protected ModelEditableProperties editablePropertyDescriptors;
 	protected Validators beanValidators;
 
-	protected GlobalBean globalConfig;
+	protected String lineId;
 
 	protected ProductionParameters productionParameters;
 
@@ -79,7 +78,7 @@ public class MainFrameController extends MachineViewController {
 	public void handleLanguageSwitch(LanguageSwitchEvent evt) {
 
 		// refresh line id label
-		setLineId(Messages.get("lineId") + ":" + getGlobalConfig().getLineId());
+		setLineId(Messages.get("lineId") + ":" + lineId);
 
 		// refresh application status label
 		setApplicationStatus(getApplicationStatus());
@@ -279,14 +278,6 @@ public class MainFrameController extends MachineViewController {
 		}
 	}
 
-	public void setGlobalConfig(final GlobalBean globalConfig) {
-		this.globalConfig = globalConfig;
-	}
-
-	public GlobalBean getGlobalConfig() {
-		return this.globalConfig;
-	}
-
 	public void setMessageCodeMapper(final IMessageCodeMapper messageCodeMapper) {
 		this.messageCodeMapper = messageCodeMapper;
 	}
@@ -360,5 +351,13 @@ public class MainFrameController extends MachineViewController {
 		if (applicationStatusModel != null) {
 			super.setApplicationStatus(status);
 		}
+	}
+
+	public void setLineId(String lineId) {
+		this.lineId = lineId;
+	}
+
+	public String getLineId() {
+		return lineId;
 	}
 }

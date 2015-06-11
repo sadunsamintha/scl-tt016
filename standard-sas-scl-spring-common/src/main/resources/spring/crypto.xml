@@ -5,7 +5,7 @@
 	       http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">	
 	
 	<bean id="encoderPasswordProvider" class="${encoderPasswordProvider}">
-		<constructor-arg value="#{globalConfig.sicpadataPassword}" />
+		<constructor-arg value="${sicpadataPassword}" />
 	</bean>
 
 	<bean id="cryptoProviderManager" class ="${cryptoProviderManager}">

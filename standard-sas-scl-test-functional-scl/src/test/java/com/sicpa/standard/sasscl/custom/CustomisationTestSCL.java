@@ -15,9 +15,6 @@ import com.sicpa.standard.sasscl.business.coding.ICoding;
 import com.sicpa.standard.sasscl.business.coding.impl.Coding;
 import com.sicpa.standard.sasscl.business.postPackage.PostPackage;
 import com.sicpa.standard.sasscl.common.storage.IStorage;
-import com.sicpa.standard.sasscl.config.GlobalBean;
-import com.sicpa.standard.sasscl.config.GlobalConfig;
-import com.sicpa.standard.sasscl.config.GlobalConfigSCL;
 import com.sicpa.standard.sasscl.controller.scheduling.RemoteServerScheduledJobsSCL;
 import com.sicpa.standard.sasscl.devices.printer.impl.PrinterAdaptor;
 import com.sicpa.standard.sasscl.devices.printer.simulator.PrinterSimulatorConfig;
@@ -57,17 +54,15 @@ public class CustomisationTestSCL extends CustomisationTest {
 		addProperties(PRINTER, PrinterCustom.class.getName());
 		addProperties(PRINTER_SIMULATOR, PrinterSimuCustom.class.getName());
 		addProperties(SCHEDULING_REMOTE_SERVER_JOB, RemoteServerScheduledJobsSCLCustom.class.getName());
-		addProperties(GLOBAL_CONFIG, globalConfigSCLCustom.class.getName());
 	}
 
 	// ----------------------------------------
 
 	public static class RemoteServerScheduledJobsSCLCustom extends RemoteServerScheduledJobsSCL implements ICustom {
 
-		public RemoteServerScheduledJobsSCLCustom(GlobalBean globalConfig, IStorage storage,
-				IRemoteServer remoteServer, SkuListProvider productionParametersProvider,
-				AuthenticatorProvider authenticatorProvider) {
-			super(globalConfig, storage, remoteServer, productionParametersProvider, authenticatorProvider);
+		public RemoteServerScheduledJobsSCLCustom(IStorage storage, IRemoteServer remoteServer,
+				SkuListProvider productionParametersProvider, AuthenticatorProvider authenticatorProvider) {
+			super(storage, remoteServer, productionParametersProvider, authenticatorProvider);
 		}
 
 	}
@@ -108,8 +103,8 @@ public class CustomisationTestSCL extends CustomisationTest {
 			super();
 		}
 
-		public CodingCustom(GlobalConfig globalConfig, IStorage storage) {
-			super(globalConfig, storage);
+		public CodingCustom(IStorage storage) {
+			super(storage);
 		}
 	}
 
@@ -117,19 +112,6 @@ public class CustomisationTestSCL extends CustomisationTest {
 
 		public activationWithPostpackageCustom() {
 			super();
-		}
-	}
-
-	public static class globalConfigSCLCustom extends GlobalConfigSCL implements ICustom {
-
-		private static final long serialVersionUID = 5771914826395800978L;
-
-		public globalConfigSCLCustom() {
-			super();
-		}
-
-		public globalConfigSCLCustom(String file) {
-			super(file);
 		}
 	}
 }

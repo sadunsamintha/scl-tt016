@@ -13,7 +13,6 @@ import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.plc.value.IPlcVariable;
 import com.sicpa.standard.sasscl.business.activation.NewProductEvent;
-import com.sicpa.standard.sasscl.config.GlobalBean;
 import com.sicpa.standard.sasscl.devices.plc.IPlcAdaptor;
 import com.sicpa.standard.sasscl.devices.plc.PlcAdaptorException;
 import com.sicpa.standard.sasscl.model.Product;
@@ -42,7 +41,6 @@ public class PlcOfflineCountingTest {
 		Mockito.when(plc.read(lastStopVar)).thenReturn(lastStop);
 		Mockito.when(plc.read(lastProductVar)).thenReturn(lastProduct);
 
-		poc.setConfig(new GlobalBean());
 		poc.setLastProductTimeVar(lastProductVar);
 		poc.setLastStopTimeVar(lastStopVar);
 		poc.setQuantityVar(qtyVar);

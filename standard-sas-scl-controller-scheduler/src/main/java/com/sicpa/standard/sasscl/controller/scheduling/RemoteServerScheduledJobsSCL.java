@@ -7,8 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.sicpa.standard.sasscl.common.storage.IStorage;
-import com.sicpa.standard.sasscl.config.GlobalBean;
-import com.sicpa.standard.sasscl.config.GlobalConfigSCL;
 import com.sicpa.standard.sasscl.devices.remote.IRemoteServer;
 import com.sicpa.standard.sasscl.devices.remote.RemoteServerException;
 import com.sicpa.standard.sasscl.model.CodeType;
@@ -17,9 +15,12 @@ import com.sicpa.standard.sasscl.provider.impl.SkuListProvider;
 
 public class RemoteServerScheduledJobsSCL extends RemoteServerScheduledJobs {
 
-	public RemoteServerScheduledJobsSCL(GlobalBean globalConfig, IStorage storage, IRemoteServer remoteServer,
+	protected int requestNumberEncoders;
+	protected int minEncodersThreshold;
+
+	public RemoteServerScheduledJobsSCL(IStorage storage, IRemoteServer remoteServer,
 			SkuListProvider productionParametersProvider, AuthenticatorProvider authenticatorProvider) {
-		super(globalConfig, storage, remoteServer, productionParametersProvider, authenticatorProvider);
+		super(storage, remoteServer, productionParametersProvider, authenticatorProvider);
 	}
 
 	private static final Logger logger = LoggerFactory.getLogger(RemoteServerScheduledJobsSCL.class);
@@ -46,20 +47,24 @@ public class RemoteServerScheduledJobsSCL extends RemoteServerScheduledJobs {
 		Set<CodeType> codeTypes = skuListProvider.getAvailableCodeTypes();
 		for (CodeType codeType : codeTypes) {
 			if (codeType != null) {
-				if (storage.getAvailableNumberOfEncoders(codeType, year) <= getGlobalConfig().getMinEncodersThreshold()) {
-					remoteServer.downloadEncoder(getGlobalConfig().getRequestNumberEncoders(), codeType, year);
+				if (storage.getAvailableNumberOfEncoders(codeType, year) <= minEncodersThreshold) {
+					remoteServer.downloadEncoder(requestNumberEncoders, codeType, year);
 				}
 			}
 		}
 	}
 
-	public GlobalConfigSCL getGlobalConfig() {
-		return (GlobalConfigSCL) globalConfig;
+	public void setRequestNumberEncoders(int requestNumberEncoders) {
+		this.requestNumberEncoders = requestNumberEncoders;
 	}
 
 	@Override
 	public void executeInitialTasks() {
 		super.executeInitialTasks();
 		getEncodersFromRemoteServer();
+	}
+
+	public void setMinEncodersThreshold(int minEncodersThreshold) {
+		this.minEncodersThreshold = minEncodersThreshold;
 	}
 }

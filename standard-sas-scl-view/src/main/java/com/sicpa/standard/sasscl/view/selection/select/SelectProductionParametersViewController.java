@@ -4,7 +4,6 @@ import javax.swing.JComponent;
 
 import com.sicpa.standard.client.common.view.screensflow.IScreensFlow;
 import com.sicpa.standard.sasscl.common.log.OperatorLogger;
-import com.sicpa.standard.sasscl.config.GlobalBean;
 import com.sicpa.standard.sasscl.model.ProductionParameters;
 import com.sicpa.standard.sasscl.provider.impl.SkuListProvider;
 import com.sicpa.standard.sasscl.view.AbstractViewFlowController;
@@ -16,7 +15,7 @@ public class SelectProductionParametersViewController extends AbstractViewFlowCo
 
 	protected ISelectProductionParametersView handPickingview;
 	protected ISelectProductionParametersView barcodeView;
-	protected GlobalBean globalBean;
+	protected boolean useBarcodeReader;
 
 	protected SkuListProvider skuListProvider;
 
@@ -31,8 +30,8 @@ public class SelectProductionParametersViewController extends AbstractViewFlowCo
 		this.skuListProvider = skuListProvider;
 	}
 
-	public void setGlobalBean(GlobalBean globalBean) {
-		this.globalBean = globalBean;
+	public void setUseBarcodeReader(boolean useBarcodeReader) {
+		this.useBarcodeReader = useBarcodeReader;
 	}
 
 	@Override
@@ -53,7 +52,7 @@ public class SelectProductionParametersViewController extends AbstractViewFlowCo
 
 	@Override
 	public JComponent getComponent() {
-		if (globalBean.isUseBarcodeReader()) {
+		if (useBarcodeReader) {
 			return (JComponent) barcodeView;
 		} else {
 			return (JComponent) handPickingview;

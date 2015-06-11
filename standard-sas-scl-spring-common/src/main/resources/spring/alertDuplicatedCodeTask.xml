@@ -6,7 +6,12 @@
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 
 	<bean id="alertDuplicatedCode" class="${alertDuplicatedCode}">
-		<property name="model" value="#{globalConfig.alertModel.duplicatedCodeModel}" />
+		<property name="model">
+			<bean id="alertDuplicatedCodeModel" class="com.sicpa.standard.sasscl.business.alert.task.model.CameraDuplicatedAlertTaskModel">
+				<property name="threshold" value="${alert.duplicatedCode.threshold}" />
+				<property name="enabled" value="${alert.duplicatedCode.enabled}" />
+			</bean>
+		</property>
 		<property name="productionParameters" ref="productionParameters" />
 	</bean>
 

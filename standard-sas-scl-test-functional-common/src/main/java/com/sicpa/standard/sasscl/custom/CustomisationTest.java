@@ -22,7 +22,6 @@ import static com.sicpa.standard.sasscl.ioc.BeansName.DEFAULT_SAVE_REMOTELY_CHAN
 import static com.sicpa.standard.sasscl.ioc.BeansName.ENCODER_PASSWORD_PROVIDER;
 import static com.sicpa.standard.sasscl.ioc.BeansName.EXCEPTION_HANDLER;
 import static com.sicpa.standard.sasscl.ioc.BeansName.FLOW_CONTROL;
-import static com.sicpa.standard.sasscl.ioc.BeansName.GLOBAL_CONFIG;
 import static com.sicpa.standard.sasscl.ioc.BeansName.MAIN_FRAME;
 import static com.sicpa.standard.sasscl.ioc.BeansName.MBEAN_STATS_DELEGATE;
 import static com.sicpa.standard.sasscl.ioc.BeansName.MBEAN_VIEWER;
@@ -59,8 +58,6 @@ import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.Arrays;
 import java.util.List;
 
-import com.sicpa.standard.barcode.reader.controller.IBarcodeReaderController;
-import com.sicpa.standard.barcode.reader.model.IBarcodeReaderModel;
 import com.sicpa.standard.camera.controller.ICognexCameraController;
 import com.sicpa.standard.camera.controller.model.ICameraModel;
 import com.sicpa.standard.client.common.ioc.BeanProvider;
@@ -79,7 +76,6 @@ import com.sicpa.standard.sasscl.business.production.IProduction;
 import com.sicpa.standard.sasscl.business.statistics.IStatistics;
 import com.sicpa.standard.sasscl.business.statistics.mapper.IProductStatusToStatisticKeyMapper;
 import com.sicpa.standard.sasscl.common.storage.IStorage;
-import com.sicpa.standard.sasscl.config.GlobalBean;
 import com.sicpa.standard.sasscl.controller.device.IPlcIndependentDevicesController;
 import com.sicpa.standard.sasscl.controller.flow.FlowControl;
 import com.sicpa.standard.sasscl.controller.flow.IFlowControl;
@@ -160,7 +156,6 @@ public abstract class CustomisationTest extends AbstractFunctionnalTest {
 		checkabean(OTHER_DEVICES_CONTROLLER, IPlcIndependentDevicesController.class);
 		checkabean(ENCODER_PASSWORD_PROVIDER, UniquePasswordProvider.class);
 		checkabean(EXCEPTION_HANDLER, UncaughtExceptionHandler.class);
-		checkabean(GLOBAL_CONFIG, GlobalBean.class);
 		checkabean(MONITORING, IMonitoring.class);
 		checkabean(MONITORING_MODEL, IMonitorTypesMapping.class);
 
@@ -210,11 +205,9 @@ public abstract class CustomisationTest extends AbstractFunctionnalTest {
 		addProperties(ALERT_CAMERA_COUNT, alertCameraCountCustom.class.getName());
 		addProperties(ALERT_DUPLICATED_CODE, alertDuplicatedCodeCustom.class.getName());
 		addProperties(ALERT_CAMERA_IDDLE, alertCameraIddleCustom.class.getName());
-		addProperties(BARCODE_READER, barcodeReaderCustom.class.getName());
 		addProperties(CAMERA, cameraCustom.class.getName());
 		addProperties(CAMERA_SIMULATOR, cameraSimulatorCustom.class.getName());
 		addProperties(OTHER_DEVICES_CONTROLLER, devicesControllerCustom.class.getName());
-		addProperties(GLOBAL_CONFIG, globalConfigCustom.class.getName());
 		addProperties(PLC, plcCustom.class.getName());
 		addProperties(PLC_SIMULATOR, plcSimulatorCustom.class.getName());
 		addProperties(FLOW_CONTROL, flowControllCustom.class.getName());
@@ -309,14 +302,6 @@ public abstract class CustomisationTest extends AbstractFunctionnalTest {
 		}
 	}
 
-	public static class barcodeReaderCustom extends com.sicpa.standard.sasscl.devices.barcode.BarcodeReaderAdaptor
-			implements ICustom {
-
-		public barcodeReaderCustom(IBarcodeReaderController<? extends IBarcodeReaderModel> barcodeController) {
-			super(barcodeController);
-		}
-	}
-
 	public static class cameraCustom extends com.sicpa.standard.sasscl.devices.camera.CameraAdaptor implements ICustom {
 
 		public cameraCustom() {
@@ -341,17 +326,6 @@ public abstract class CustomisationTest extends AbstractFunctionnalTest {
 
 	public static class devicesControllerCustom extends
 			com.sicpa.standard.sasscl.controller.device.impl.OtherDevicesController implements ICustom {
-	}
-
-	@SuppressWarnings("serial")
-	public static class globalConfigCustom extends com.sicpa.standard.sasscl.config.GlobalConfig implements ICustom {
-		public globalConfigCustom() {
-			super();
-		}
-
-		public globalConfigCustom(String file) {
-			super(file);
-		}
 	}
 
 	public static class plcCustom extends com.sicpa.standard.sasscl.devices.plc.impl.PlcAdaptor implements ICustom {
@@ -388,8 +362,8 @@ public abstract class CustomisationTest extends AbstractFunctionnalTest {
 	public static class productionCustom extends com.sicpa.standard.sasscl.business.production.impl.Production
 			implements ICustom {
 
-		public productionCustom(GlobalBean globalConfig, IStorage storage, IRemoteServer remoteServer) {
-			super(globalConfig, storage, remoteServer);
+		public productionCustom(IStorage storage, IRemoteServer remoteServer) {
+			super(storage, remoteServer);
 		}
 	}
 
@@ -421,9 +395,9 @@ public abstract class CustomisationTest extends AbstractFunctionnalTest {
 	public static class remoteServerSheduledJobsCustom extends
 			com.sicpa.standard.sasscl.controller.scheduling.RemoteServerScheduledJobs implements ICustom {
 
-		public remoteServerSheduledJobsCustom(GlobalBean globalConfig, IStorage storage, IRemoteServer remoteServer,
+		public remoteServerSheduledJobsCustom(IStorage storage, IRemoteServer remoteServer,
 				SkuListProvider productionParametersProvider, AuthenticatorProvider authenticatorProvider) {
-			super(globalConfig, storage, remoteServer, productionParametersProvider, authenticatorProvider);
+			super(storage, remoteServer, productionParametersProvider, authenticatorProvider);
 		}
 	}
 
@@ -461,9 +435,9 @@ public abstract class CustomisationTest extends AbstractFunctionnalTest {
 
 	public static class storageCustom extends com.sicpa.standard.sasscl.common.storage.FileStorage implements ICustom {
 
-		public storageCustom(String baseFolder, String internalFolder, String quarantineFolder, GlobalBean config,
+		public storageCustom(String baseFolder, String internalFolder, String quarantineFolder,
 				ISimpleFileStorage storageBehavior) {
-			super(baseFolder, internalFolder, quarantineFolder, config, storageBehavior);
+			super(baseFolder, internalFolder, quarantineFolder, storageBehavior);
 		}
 	}
 

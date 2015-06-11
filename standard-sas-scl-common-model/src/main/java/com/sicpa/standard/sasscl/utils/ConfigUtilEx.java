@@ -8,6 +8,8 @@ import com.sicpa.standard.sasscl.controller.productionconfig.IDeviceModelNamePos
 
 public class ConfigUtilEx {
 
+	public static final String GLOBAL_PROPERTIES_PATH = "config/global.properties";
+
 	public static Object load(String pattern, IDeviceModelNamePostfixProperty postfix) throws IOException,
 			URISyntaxException {
 		return ConfigUtils.load(pattern.replace("####", postfix.get()));

@@ -6,7 +6,12 @@
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 
 	<bean id="alertPlcActivationCrossCheckTask" class="${alertPlcActivationCrossCheckTask}">
-		<property name="model" value="#{globalConfig.alertModel.plcActivationCrossCheckModel}" />
+		<property name="model">
+			<bean id="alertPlcActivationCrossCheckTaskModel" class="com.sicpa.standard.sasscl.business.alert.task.model.PlcActivationCounterCheckModel">
+				<property name="maxDelta" value="${alert.plcActivationCrossCheck.maxDelta}" />
+				<property name="enabled" value="${alert.plcActivationCrossCheck.enabled}" />
+			</bean>
+		</property>
 		<property name="plcProvider" ref="plcProvider" />
 	</bean>
 

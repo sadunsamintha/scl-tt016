@@ -6,7 +6,7 @@
 
 	<bean id="callLogAspect"
 		class="com.sicpa.standard.sasscl.devices.remote.RemoteServerTimeoutAspect" >
-		<property name="config" ref="globalConfig" />
+		<property name="remoteServerTimeoutCall_sec" value="${remoteServerTimeoutCall_sec}" />
 		
 		</bean>
 

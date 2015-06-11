@@ -288,9 +288,9 @@ public interface BeansName {
 	String PLC_PARAMETERS = "plcCabinetParameters";
 
 	String PLC_CABINET_VARIABLES_VALUE = "allPlcVariableValues";
-	
+
 	String PLC_SECURE_PARAMETERS = "plcSecureParameters";
-	
+
 	String PLC_SECURE_VARIABLE_VALUES = "plcSecureVariableValues";
 
 	/**
@@ -345,4 +345,6 @@ public interface BeansName {
 	 * IdeviceIncidentContext
 	 */
 	String ERRORS_REPOSITORY = "errorsRepository";
+
+	String SUBSYSTEM_ID_PROVIDER = "subsystemIdProvider";
 }

@@ -1,43 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:p="http://www.springframework.org/schema/p"
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:p="http://www.springframework.org/schema/p"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 
-    <util:map id="mapStorage">
-        <entry key="standard" value-ref="storageStd" />
-        <entry key="simulator" value-ref="storageSimulator" />
-    </util:map>
+	<util:map id="mapStorage">
+		<entry key="standard" value-ref="storageStd" />
+		<entry key="simulator" value-ref="storageSimulator" />
+	</util:map>
 
-    <bean name="storageStd" class="${storage}">
-        <constructor-arg value="data" />
-        <constructor-arg value="internal" />
-        <constructor-arg value="quarantine" />
-        <constructor-arg ref="globalConfig" />
-        <constructor-arg ref="storageBehavior" />
-        <property name="productsPackager" ref="productsPackager" />
-        <property name="fileSequenceProvider" ref="fileSequenceStorageProvider" />
-    </bean>
+	<bean name="storageStd" class="${storage}">
+		<constructor-arg value="data" />
+		<constructor-arg value="internal" />
+		<constructor-arg value="quarantine" />
+		<constructor-arg ref="storageBehavior" />
+		<property name="productsPackager" ref="productsPackager" />
+		<property name="fileSequenceProvider" ref="fileSequenceStorageProvider" />
+		<property name="cleanUpSendDataThreshold_day" value="${cleanUpSendDataThreshold_day}" />
+	</bean>
 
-    <bean name="storageSimulator" class="${storage}">
-        <constructor-arg value="dataSimulator" />
-        <constructor-arg value="internalSimulator" />
-        <constructor-arg value="quarantine" />
-        <constructor-arg ref="globalConfig" />
-        <constructor-arg ref="storageBehavior" />
-        <property name="productsPackager" ref="productsPackager" />
-        <property name="fileSequenceProvider" ref="fileSequenceStorageProvider" />
-    </bean>
+	<bean name="storageSimulator" class="${storage}">
+		<constructor-arg value="dataSimulator" />
+		<constructor-arg value="internalSimulator" />
+		<constructor-arg value="quarantine" />
+		<constructor-arg ref="storageBehavior" />
+		<property name="productsPackager" ref="productsPackager" />
+		<property name="fileSequenceProvider" ref="fileSequenceStorageProvider" />
+		<property name="cleanUpSendDataThreshold_day" value="${cleanUpSendDataThreshold_day}" />
+	</bean>
 
-    <bean id="storage" factory-bean="mapStorage" factory-method="get">
-        <constructor-arg value="${remoteServer.behavior}" />
-    </bean>
+	<bean id="storage" factory-bean="mapStorage" factory-method="get">
+		<constructor-arg value="${remoteServer.behavior}" />
+	</bean>
 
-    <bean name="storageBehavior" class="${storageBehavior}"/>
+	<bean name="storageBehavior" class="${storageBehavior}" />
 
-    <bean id="productsPackager" class="${productPackager}"/>
-	
-	<bean id="userIdStorage" class="com.sicpa.standard.sasscl.common.storage.UserIdStorage"
-		p:fileName="${userRegistry.filePath}"
-	/>
+	<bean id="productsPackager" class="${productPackager}" />
+
+	<bean id="userIdStorage" class="com.sicpa.standard.sasscl.common.storage.UserIdStorage" p:fileName="${userRegistry.filePath}" />
 </beans>

@@ -13,12 +13,16 @@
 	<bean id="productionBatchProvider" class="${productionBatchProvider}" />
 
 	<bean id="plcProvider" class="${plcProvider}" />
-	
+
 	<bean id="plcSecureProvider" class="com.sicpa.standard.sasscl.provider.impl.PlcProvider" />
 
 	<bean id="productionConfigProvider" class="${productionConfigProvider}" />
 
 	<bean id="activationBehaviorProvider" class="${activationBehaviorProvider}" />
+
+	<bean id="subsystemIdProvider" class="${subsystemIdProvider}">
+		<constructor-arg value="${subsystemId}" />
+	</bean>
 
 </beans>
 

@@ -11,7 +11,7 @@
 		<constructor-arg ref="skuListProvider" />
 		<property name="editablePropertyDescriptors" ref="modelEditableProperties" />
 		<property name="productionParameters" ref="productionParameters" />
-		<property name="globalConfig" ref="globalConfig" />
+		<property name="lineId" value="${lineId}" />
 		<property name="messageCodeMapper" ref="messagesMapping" />
 
 		<property name="securedPanels">
@@ -29,7 +29,7 @@
 		</property>
 	</bean>
 
-	<bean id="mainFrame" class="${mainFrame}">		
+	<bean id="mainFrame" class="${mainFrame}">
 		<property name="viewController" ref="mainFrameController" />
 		<property name="startStopView" ref="startStopView" />
 		<property name="exitView" ref="exitView" />
@@ -48,7 +48,7 @@
 	<bean id="plcVariablesPanel" class="${plcVariablesPanel}">
 		<property name="cabinetVariables" ref="cabinetEditablePlcVariables" />
 	</bean>
-	
+
 	<bean id="plcSecureVariablesPanel" class="com.sicpa.standard.sasscl.view.config.plc.PlcSecureVariablesPanelGetter">
 		<property name="cabinetVariables" ref="plcSecureEditablePlcVariables" />
 	</bean>
@@ -58,7 +58,7 @@
 	<bean id="miscPanel" class="${miscPanel}" />
 
 	<bean id="simulatorGui" class="com.sicpa.standard.sasscl.devices.simulator.gui.SimulatorControlView">
-		<property name="visible" value="#{globalConfig.displaySimulatorGui}" />
+		<property name="visible" value="${displaySimulatorGui}" />
 	</bean>
 
 	<bean id="selectionModelFactory" class="${selectionModelFactory}" />
@@ -201,7 +201,7 @@
 	<bean id="systemInfoViewController" class="com.sicpa.standard.sasscl.view.main.systemInfo.SystemInfoViewController">
 		<property name="remoteServer" ref="remoteServer" />
 		<property name="plcProvider" ref="plcProvider" />
-		<property name="plcSecure" ref="plcSecureAdaptor"/>
+		<property name="plcSecure" ref="plcSecureAdaptor" />
 	</bean>
 
 	<!-- STATISTICS VIEW -->
@@ -245,7 +245,7 @@
 		<property name="barcodeView" ref="selectProductionParametersBarcodeView" />
 		<property name="viewController" ref="mainFrameController" />
 		<property name="skuListProvider" ref="skuListProvider" />
-		<property name="globalBean" ref="globalConfig" />
+		<property name="useBarcodeReader" value="${useBarcodeReader}" />
 		<property name="screensFlow" ref="screensFlow" />
 		<property name="mainFrameController" ref="mainFrameController" />
 	</bean>

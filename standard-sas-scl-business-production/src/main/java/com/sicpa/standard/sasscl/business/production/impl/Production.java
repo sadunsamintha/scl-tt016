@@ -1,5 +1,14 @@
 package com.sicpa.standard.sasscl.business.production.impl;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.messages.MessageEvent;
@@ -8,7 +17,6 @@ import com.sicpa.standard.sasscl.business.activation.NewProductEvent;
 import com.sicpa.standard.sasscl.business.production.IProduction;
 import com.sicpa.standard.sasscl.common.storage.IStorage;
 import com.sicpa.standard.sasscl.common.storage.productPackager.IProductsPackager;
-import com.sicpa.standard.sasscl.config.GlobalBean;
 import com.sicpa.standard.sasscl.devices.remote.IRemoteServer;
 import com.sicpa.standard.sasscl.messages.MessageEventKey;
 import com.sicpa.standard.sasscl.model.PackagedProducts;
@@ -18,14 +26,7 @@ import com.sicpa.standard.sasscl.model.SKU;
 import com.sicpa.standard.sasscl.monitoring.MonitoringService;
 import com.sicpa.standard.sasscl.monitoring.system.SystemEventType;
 import com.sicpa.standard.sasscl.monitoring.system.event.BasicSystemEvent;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
+import com.sicpa.standard.sasscl.provider.impl.SubsystemIdProvider;
 
 public class Production implements IProduction {
 
@@ -34,7 +35,9 @@ public class Production implements IProduction {
 	// list of product that has been processed by the activation module
 	protected final List<Product> products = Collections.synchronizedList(new LinkedList<Product>());;
 
-	protected GlobalBean globalConfig;
+	protected int productionSendBatchSize;
+	protected int productionDataSerializationErrorThreshold;
+	protected SubsystemIdProvider subsystemIdProvider;
 
 	protected IStorage storage;
 
@@ -52,8 +55,7 @@ public class Production implements IProduction {
 	protected final Object packageLock = new Object();
 	protected final Object saveProductionLock = new Object();
 
-	public Production(final GlobalBean globalConfig, final IStorage storage, final IRemoteServer remoteServer) {
-		this.globalConfig = globalConfig;
+	public Production(final IStorage storage, final IRemoteServer remoteServer) {
 		this.storage = storage;
 		this.remoteServer = remoteServer;
 	}
@@ -66,7 +68,7 @@ public class Production implements IProduction {
 		Product product = evt.getProduct();
 		if (product != null) {
 
-			product.setSubsystem(globalConfig.getSubsystemId());
+			product.setSubsystem(subsystemIdProvider.get());
 
 			if (product.getSku() != null) {
 				SKU sku = product.getSku().copySkuForProductionData();
@@ -102,7 +104,7 @@ public class Production implements IProduction {
 					}
 					productsToSave.add(product);
 					// do not save a file that contains more than the send batch size
-					if (productsToSave.size() > globalConfig.getProductionSendBatchSize()) {
+					if (productsToSave.size() > productionSendBatchSize) {
 						storage.saveProduction(productsToSave.toArray(new Product[productsToSave.size()]));
 						productsToSave.clear();
 						// to have a new file name wait a few ms
@@ -125,7 +127,7 @@ public class Production implements IProduction {
 				// stop the production and try to send to remote server
 				errorSaveCounter++;
 
-				if (errorSaveCounter >= globalConfig.getProductionDataSerializationErrorThreshold()) {
+				if (errorSaveCounter >= productionDataSerializationErrorThreshold) {
 					EventBusService.post(new MessageEvent(this,
 							MessageEventKey.Production.ERROR_MAX_SERIALIZATION_ERRORS, e.getMessage()));
 					try {
@@ -176,7 +178,6 @@ public class Production implements IProduction {
 		}
 	}
 
-	
 	protected void sendAllBatchOfProducts() {
 
 		int totalBatchCount = storage.getBatchOfProductsCount();
@@ -195,16 +196,15 @@ public class Production implements IProduction {
 			cancelSending = false;
 
 			logger.info("Total data sent to remote server {}", totalProductsCount);
-			if(totalProductsCount.get() > 0) {
+			if (totalProductsCount.get() > 0) {
 				MonitoringService.addSystemEvent(new BasicSystemEvent(SystemEventType.SENT_TO_REMOTE_SERVER_OK,
 						totalProductsCount + ""));
 			}
-		}		
+		}
 	}
-	
-	
+
 	protected void sendABatchOfProducts(final PackagedProducts batch, int totalBatchCount,
-                                        final AtomicInteger currentIndex, final AtomicInteger productCount) {
+			final AtomicInteger currentIndex, final AtomicInteger productCount) {
 
 		currentIndex.incrementAndGet();
 		productCount.addAndGet(batch.getProducts().size());
@@ -212,32 +212,32 @@ public class Production implements IProduction {
 		logger.info("Sending package {}/{}", currentIndex.get(), totalBatchCount);
 
 		EventBusService.post(new ProductionSendingProgress(totalBatchCount, currentIndex.get()));
-		
+
 		int maxRetries = 3;
-		while(maxRetries != 0){
+		while (maxRetries != 0) {
 			try {
 				// highly cpu consuming so wait a bit between each call
 				// asynchronous, executed every 10 min, so it doesn't
 				// matter if it waits a bit
 				// when exiting the delay is set to 0
 				ThreadUtils.sleepQuietly(delayBetweenPackageSent);
-				
+
 				maxRetries--;
 				remoteServer.sendProductionData(batch);
 				storage.notifyDataSentToRemoteServer();
 				break;
-				
+
 			} catch (Exception e) {
 
 				logger.warn("Error sending production to remote server, retries left: {}", maxRetries);
-				logger.error("",e);
+				logger.error("", e);
 
 				// Verify that we are still connected to server
-				if(remoteServer.isConnected()){
+				if (remoteServer.isConnected()) {
 					remoteServer.lifeCheckTick();
 				}
-				
-				if(!remoteServer.isConnected()){
+
+				if (!remoteServer.isConnected()) {
 					logger.info("Server disconnected, aborting sending production");
 					cancelSending();
 					break;
@@ -245,8 +245,8 @@ public class Production implements IProduction {
 
 			}
 		}
-		
-		if(maxRetries == 0){
+
+		if (maxRetries == 0) {
 			productCount.addAndGet(-batch.getProducts().size());
 			storage.notifyDataErrorSendingToRemoteServer();
 			MonitoringService.addSystemEvent(new BasicSystemEvent(SystemEventType.SENT_TO_REMOTE_SERVER_ERROR,
@@ -256,7 +256,6 @@ public class Production implements IProduction {
 		}
 	}
 
-
 	/**
 	 * delegate this call to storage.packageProduction
 	 */
@@ -264,7 +263,7 @@ public class Production implements IProduction {
 	public void packageProduction() {
 		synchronized (packageLock) {
 			logger.debug("Package production");
-			storage.packageProduction(globalConfig.getProductionSendBatchSize());
+			storage.packageProduction(productionSendBatchSize);
 		}
 	}
 
@@ -287,5 +286,17 @@ public class Production implements IProduction {
 
 	public long getDelayBetweenPackageSent() {
 		return delayBetweenPackageSent;
+	}
+
+	public void setProductionSendBatchSize(int productionSendBatchSize) {
+		this.productionSendBatchSize = productionSendBatchSize;
+	}
+
+	public void setProductionDataSerializationErrorThreshold(int productionDataSerializationErrorThreshold) {
+		this.productionDataSerializationErrorThreshold = productionDataSerializationErrorThreshold;
+	}
+
+	public void setSubsystemIdProvider(SubsystemIdProvider subsystemIdProvider) {
+		this.subsystemIdProvider = subsystemIdProvider;
 	}
 }

@@ -7,27 +7,23 @@ import org.slf4j.LoggerFactory;
 
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.sasscl.business.activation.NewProductEvent;
-import com.sicpa.standard.sasscl.config.GlobalBean;
 import com.sicpa.standard.sasscl.model.Product;
 import com.sicpa.standard.sasscl.model.ProductStatus;
 import com.sicpa.standard.sasscl.model.SKU;
 import com.sicpa.standard.sasscl.monitoring.MonitoringService;
 import com.sicpa.standard.sasscl.monitoring.system.event.OfflineCountingSystemEvent;
+import com.sicpa.standard.sasscl.provider.impl.SubsystemIdProvider;
 
 public abstract class AbstractOfflineCounting implements IOfflineCounting {
 
 	private static final Logger logger = LoggerFactory.getLogger(AbstractOfflineCounting.class);
 
-	protected GlobalBean config;
+	protected SubsystemIdProvider subsystemIdProvider;
 	protected SKU offlineSku;
 	protected String productionBatchId;
 
 	public AbstractOfflineCounting() {
 		offlineSku = new SKU(-1, "OFFLINE");
-	}
-
-	public void setConfig(GlobalBean config) {
-		this.config = config;
 	}
 
 	/**
@@ -50,7 +46,7 @@ public abstract class AbstractOfflineCounting implements IOfflineCounting {
 	protected void notityProduct(Date time) {
 		Product p = new Product();
 		p.setActivationDate(time);
-		p.setSubsystem(config.getSubsystemId());
+		p.setSubsystem(subsystemIdProvider.get());
 		p.setSku(getSKU());
 		p.setStatus(ProductStatus.OFFLINE);
 		p.setProductionBatchId(productionBatchId);
@@ -59,5 +55,9 @@ public abstract class AbstractOfflineCounting implements IOfflineCounting {
 
 	protected SKU getSKU() {
 		return offlineSku;
+	}
+
+	public void setSubsystemIdProvider(SubsystemIdProvider subsystemIdProvider) {
+		this.subsystemIdProvider = subsystemIdProvider;
 	}
 }

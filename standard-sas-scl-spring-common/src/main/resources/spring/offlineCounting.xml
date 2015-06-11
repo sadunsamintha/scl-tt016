@@ -6,7 +6,6 @@
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 
 	<bean id="offlineCounting" class="${offlineCounting}">
-		<property name="config" ref="globalConfig" />
 		<property name="plcProvider" ref="plcProvider" />
 		<property name="quantityVar" ref="plcOfflineCountingQtyVar" />
 		<property name="lastStopTimeVar" ref="plcOfflineCountingLastStopVar" />

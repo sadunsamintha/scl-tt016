@@ -11,7 +11,6 @@ import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.sicpa.standard.sasscl.config.GlobalBean;
 import com.sicpa.standard.sasscl.devices.remote.RemoteServerException;
 import com.sicpa.standard.sasscl.devices.remote.simulator.RemoteServerSimulatorModel;
 import com.sicpa.standard.sasscl.devices.remote.simulator.RemoteServerSimulatorThatProvidesCodeList;
@@ -82,7 +81,6 @@ public class RemoteServerSimulatorThatProvidesCodeListTest {
 		RemoteServerSimulatorThatProvidesCodeList server = new RemoteServerSimulatorThatProvidesCodeList(model);
 		server.setCryptoFieldsConfig(new CryptoFieldsConfig());
 		server.setSimulatorGui(new SimulatorControlView());
-		server.setConfig(new GlobalBean());
 		server.setServiceProviderManager(StaticServiceProviderManager.getInstance());
 		server.setupBusinessCrypto();
 

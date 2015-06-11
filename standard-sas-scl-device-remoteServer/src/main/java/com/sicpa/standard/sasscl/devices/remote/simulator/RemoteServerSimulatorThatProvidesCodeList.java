@@ -34,9 +34,8 @@ public class RemoteServerSimulatorThatProvidesCodeList extends RemoteServerSimul
 	protected StdCryptoEncoderWrapper getNewEncoder(final int batchId, final int year, final CodeType codeType)
 			throws UnknownModeException, UnknownVersionException, UnknownSystemTypeException, SicpadataException,
 			NoSuchPasswordException {
-		return new StdCryptoEncoderWrapperSimulator(batchId,new Random().nextInt(), this.generateEncoders(batchId,
-				codeType.getId()), year, this.config.getSubsystemId(), 999999, this.cryptoFieldsConfig,
-				(int) codeType.getId());
+		return new StdCryptoEncoderWrapperSimulator(batchId, new Random().nextInt(), this.generateEncoders(batchId,
+				codeType.getId()), year, getSubsystemID(), 999999, this.cryptoFieldsConfig, (int) codeType.getId());
 	}
 
 	@Override
@@ -100,8 +99,8 @@ public class RemoteServerSimulatorThatProvidesCodeList extends RemoteServerSimul
 				continue;
 			}
 
-			CodeListEncoder codeListEncoder = new CodeListEncoder(0,new Random().nextInt(), year,
-					this.config.getSubsystemId(), codeList, (int) codeType.getId());
+			CodeListEncoder codeListEncoder = new CodeListEncoder(0, new Random().nextInt(), year, getSubsystemID(),
+					codeList, (int) codeType.getId());
 
 			encoders.add(codeListEncoder);
 		}

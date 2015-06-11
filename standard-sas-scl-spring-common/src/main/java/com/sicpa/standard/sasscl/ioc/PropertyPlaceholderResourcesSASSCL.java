@@ -16,7 +16,7 @@ public class PropertyPlaceholderResourcesSASSCL extends PropertyPlaceholderResou
 		defaultFiles.add("config/printer/printer-leibinger.properties");
 		defaultFiles.add("config/printer/jobConfig-leibinger.properties");
 
-		defaultFiles.add("config/devices.properties");
+		defaultFiles.add("config/global.properties");
 
 		defaultFolders.add("config");
 	}

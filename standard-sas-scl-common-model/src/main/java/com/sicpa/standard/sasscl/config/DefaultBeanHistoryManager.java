@@ -24,7 +24,6 @@ public class DefaultBeanHistoryManager extends BeanHistoryManager {
 		addManagedFile("config/scheduler.xml");
 		addManagedFile("config/security.xml");
 		addManagedFile("config/barcode.xml");
-		addManagedFile("config/global.xml");
 	}
 
 }

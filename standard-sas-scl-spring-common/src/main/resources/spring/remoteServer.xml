@@ -11,20 +11,19 @@
 	<bean id="stdRemoteServer" class="${stdRemoteServer}">
 		<constructor-arg ref="stdRemoteModel" />
 		<property name="productStatusMapping" ref="remoteServerProductStatusMapping" />
-		<property name="config" ref="globalConfig" />
+		<property name="sicpadataPassword" value="${sicpadataPassword}" />
 		<property name="cryptoFieldsConfig" ref="cryptoFieldsConfig" />
 		<property name="productionModeMapping" ref="productionModeMapping" />
 		<property name="cryptoServiceProviderManager" ref="cryptoProviderManager" />
 		<property name="sdGenReceiver" ref="sicpaDataGeneratorRequestor" />
 		<property name="storage" ref="storage" />
 	</bean>
-	
+
 	<bean id="productionModeMapping" class="${productionModeMapping}" />
 
 	<bean id="remoteServerSimulator" class="${remoteServerSimulator}">
 		<constructor-arg ref="simulatorRemoteModel" />
 		<property name="simulatorGui" ref="simulatorGui" />
-		<property name="config" ref="globalConfig" />
 		<property name="cryptoFieldsConfig" ref="cryptoFieldsConfig" />
 		<property name="productionParameters" ref="productionParameters" />
 		<property name="serviceProviderManager" ref="cryptoProviderManager" />
@@ -57,11 +56,11 @@
 	<bean id="sicpaDataGeneratorStorage" class="${sicpaDataGeneratorStorage}">
 		<property name="cryptoFieldsConfig" ref="cryptoFieldsConfig" />
 		<property name="storage" ref="storage" />
-		<property name="globalBean" ref="globalConfig" />
+		<property name="subsystemIdProvider" ref="subsystemIdProvider" />
 		<property name="fileSequenceStorageProvider" ref="fileSequenceStorageProvider" />
 	</bean>
-	
-		<bean id="sicpaDataGeneratorRequestor" class="${sicpaDataGeneratorRequestor}">
+
+	<bean id="sicpaDataGeneratorRequestor" class="${sicpaDataGeneratorRequestor}">
 		<property name="incomingStorageProvider" ref="sicpaDataGeneratorStorage" />
 	</bean>
 

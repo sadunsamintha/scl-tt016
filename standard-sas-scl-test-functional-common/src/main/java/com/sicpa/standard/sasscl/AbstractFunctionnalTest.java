@@ -230,7 +230,7 @@ public abstract class AbstractFunctionnalTest extends TestCase {
 
 		String[] profiles = new String[1];
 		try {
-			String fileName = "config/devices.properties";
+			String fileName = "config/global.properties";
 			URL url = ClassLoader.getSystemResource(fileName);
 			File f = (url == null) ?  new File(fileName) : new File(url.toURI());
 			Properties properties = new Properties();

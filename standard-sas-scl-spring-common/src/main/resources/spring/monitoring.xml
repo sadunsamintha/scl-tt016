@@ -8,7 +8,7 @@
 	<bean id="monitoring" class="${monitoring}">
 		<constructor-arg ref="monitoringModel" />
 		<property name="saveIncrPeriod" value="#{schedulerConfig.monitoringSaveIncrementalStatisticsTimer_sec}" />
-		<property name="config" ref="globalConfig" />
+		<property name="subsystemIdProvider" ref="subsystemIdProvider" />
 		<property name="mbeanStatistics" ref="MBeanStatsDelegate" />
 		<property name="productionParameters" ref="productionParameters" />
 	</bean>

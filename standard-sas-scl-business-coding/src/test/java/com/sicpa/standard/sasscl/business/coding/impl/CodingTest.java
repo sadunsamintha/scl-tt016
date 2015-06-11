@@ -1,21 +1,11 @@
 package com.sicpa.standard.sasscl.business.coding.impl;
 
-import com.sicpa.standard.client.common.storage.StorageException;
-import com.sicpa.standard.sasscl.business.coding.CodeReceivedFailedException;
-import com.sicpa.standard.sasscl.business.coding.ICodeReceiver;
-import com.sicpa.standard.sasscl.business.coding.RequestCodesEvent;
-import com.sicpa.standard.sasscl.common.storage.IStorage;
-import com.sicpa.standard.sasscl.common.storage.QuarantineReason;
-import com.sicpa.standard.sasscl.config.GlobalConfig;
-import com.sicpa.standard.sasscl.devices.printer.AbstractPrinterAdaptor;
-import com.sicpa.standard.sasscl.devices.printer.PrinterAdaptorException;
-import com.sicpa.standard.sasscl.model.*;
-import com.sicpa.standard.sasscl.model.statistics.StatisticsValues;
-import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.ProductionParameterRootNode;
-import com.sicpa.standard.sasscl.sicpadata.CryptographyException;
-import com.sicpa.standard.sasscl.sicpadata.generator.IEncoder;
-import com.sicpa.standard.sasscl.sicpadata.generator.impl.EncoderNoEncryptionSimulator;
-import com.sicpa.standard.sasscl.sicpadata.reader.IAuthenticator;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.List;
+
 import org.hamcrest.core.IsEqual;
 import org.hamcrest.core.IsNull;
 import org.junit.Assert;
@@ -23,11 +13,27 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.List;
+import com.sicpa.standard.client.common.storage.StorageException;
+import com.sicpa.standard.sasscl.business.coding.CodeReceivedFailedException;
+import com.sicpa.standard.sasscl.business.coding.ICodeReceiver;
+import com.sicpa.standard.sasscl.business.coding.RequestCodesEvent;
+import com.sicpa.standard.sasscl.common.storage.IStorage;
+import com.sicpa.standard.sasscl.common.storage.QuarantineReason;
+import com.sicpa.standard.sasscl.devices.printer.AbstractPrinterAdaptor;
+import com.sicpa.standard.sasscl.devices.printer.PrinterAdaptorException;
+import com.sicpa.standard.sasscl.model.CodeType;
+import com.sicpa.standard.sasscl.model.EncoderInfo;
+import com.sicpa.standard.sasscl.model.PackagedProducts;
+import com.sicpa.standard.sasscl.model.Product;
+import com.sicpa.standard.sasscl.model.ProductionMode;
+import com.sicpa.standard.sasscl.model.ProductionParameters;
+import com.sicpa.standard.sasscl.model.SKU;
+import com.sicpa.standard.sasscl.model.statistics.StatisticsValues;
+import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.ProductionParameterRootNode;
+import com.sicpa.standard.sasscl.sicpadata.CryptographyException;
+import com.sicpa.standard.sasscl.sicpadata.generator.IEncoder;
+import com.sicpa.standard.sasscl.sicpadata.generator.impl.EncoderNoEncryptionSimulator;
+import com.sicpa.standard.sasscl.sicpadata.reader.IAuthenticator;
 
 public class CodingTest {
 
@@ -39,7 +45,7 @@ public class CodingTest {
 	public void setup() {
 
 		printer = new TestPrinter();
-		coding = new Coding(new GlobalConfig(), storage = new TestStorage());
+		coding = new Coding(storage = new TestStorage());
 		ProductionParameters productionParameters = new ProductionParameters();
 		SKU sku = new SKU(1);
 		sku.setCodeType(new CodeType(1));
