@@ -1,16 +1,12 @@
 package com.sicpa.standard.sasscl.devices.plc;
 
-@SuppressWarnings("serial")
-public class BrsPlcRequest extends PlcRequest {
+public class BrsPlcRequest {
 
-	public final static BrsPlcRequest LINE_ENABLE = new BrsPlcRequest(4, "line enable");
-	public final static BrsPlcRequest LINE_DISABLE = new BrsPlcRequest(5, "line disable");
-	public static final BrsPlcRequest RESET_EXPECTED_SKU = new BrsPlcRequest(8, "reset expected SKU");
-	public static final BrsPlcRequest SET_SKU_CHECK_MODE = new BrsPlcRequest(9, "set sku button mode");
-	public static final BrsPlcRequest RESET_SKU_CHECK_MODE = new BrsPlcRequest(10, "reset sku button mode");
-	public static final BrsPlcRequest SET_EXPECTED_SKU = new BrsPlcRequest(11, "set expected SKU");
+	public static final PlcRequest LINE_ENABLE = new PlcRequest("line enable");
+	public static final PlcRequest LINE_DISABLE = new PlcRequest("line disable");
+	public static final PlcRequest RESET_EXPECTED_SKU = new PlcRequest("reset expected SKU");
+	public static final PlcRequest SET_SKU_CHECK_MODE = new PlcRequest("set sku button mode");
+	public static final PlcRequest RESET_SKU_CHECK_MODE = new PlcRequest("reset sku button mode");
+	public static final PlcRequest SET_EXPECTED_SKU = new PlcRequest("set expected SKU");
 
-	public BrsPlcRequest(int id, String description) {
-		super(id, description);
-	}
 }

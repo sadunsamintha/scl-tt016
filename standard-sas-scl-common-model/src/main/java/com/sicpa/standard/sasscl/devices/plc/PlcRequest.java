@@ -13,39 +13,16 @@ public class PlcRequest implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	public final static PlcRequest START = new PlcRequest(1, "start");
-	public final static PlcRequest RUN = new PlcRequest(2, "run");
-	public final static PlcRequest STOP = new PlcRequest(3, "stop");
-	public final static PlcRequest RELOAD_PLC_PARAM = new PlcRequest(4, "reload PLC parameters");
-	public final static PlcRequest SEND_JAVA_WARNING_ERROR = new PlcRequest(5, "send java warning and error");      
-	
-	protected final int id;
+	public final static PlcRequest START = new PlcRequest("start");
+	public final static PlcRequest RUN = new PlcRequest("run");
+	public final static PlcRequest STOP = new PlcRequest("stop");
+	public final static PlcRequest RELOAD_PLC_PARAM = new PlcRequest("reload PLC parameters");
+	public final static PlcRequest SEND_JAVA_WARNING_ERROR = new PlcRequest("send java warning and error");
 
 	protected final String description;
 
-	public PlcRequest(int id, String description) {
-		this.id = id;
+	public PlcRequest(String description) {
 		this.description = description;
-	}
-
-	@Override
-	public boolean equals(final Object obj) {
-		if (obj == null) {
-			return false;
-		}
-		if (obj instanceof PlcRequest) {
-			return ((PlcRequest) obj).id == this.id;
-		}
-		return false;
-	}
-
-	@Override
-	public int hashCode() {
-		return this.id;
-	}
-
-	public int getId() {
-		return this.id;
 	}
 
 	public String getDescription() {
