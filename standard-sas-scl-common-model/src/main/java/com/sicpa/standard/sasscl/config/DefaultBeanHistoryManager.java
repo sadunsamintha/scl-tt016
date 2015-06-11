@@ -21,9 +21,7 @@ public class DefaultBeanHistoryManager extends BeanHistoryManager {
 		addManagedFile("config/plc/line3Config.xml");
 
 		addManagedFile("config/server/remoteServer.xml");
-		addManagedFile("config/scheduler.xml");
 		addManagedFile("config/security.xml");
-		addManagedFile("config/barcode.xml");
 	}
 
 }

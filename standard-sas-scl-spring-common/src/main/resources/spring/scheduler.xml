@@ -16,37 +16,30 @@
 
 
 	<task:scheduled-tasks scheduler="SchedulerSasScl">
-		<task:scheduled ref="production" method="saveProductionData" fixed-delay="#{schedulerConfig.productionSerializationTimer_sec*1000}" />
+		<task:scheduled ref="production" method="saveProductionData" fixed-delay="#{${productionSerializationTimer_sec}*1000}" />
 
-		<task:scheduled ref="production" method="packageProduction" fixed-delay="#{schedulerConfig.packagedProductTimer_sec*1000}" />
+		<task:scheduled ref="production" method="packageProduction" fixed-delay="#{${packagedProductTimer_sec}*1000}" />
 
-		<task:scheduled ref="production" method="sendAllProductionData" fixed-delay="#{schedulerConfig.productionSendTimer_sec*1000}" />
+		<task:scheduled ref="production" method="sendAllProductionData" fixed-delay="#{${productionSendTimer_sec}*1000}" />
 
-		<task:scheduled ref="storage" method="cleanUpOldSentProduction" fixed-delay="#{schedulerConfig.storageProductionCleanUp_sec*1000}" />
+		<task:scheduled ref="storage" method="cleanUpOldSentProduction" fixed-delay="#{${storageProductionCleanUp_sec}*1000}" />
 
-		<task:scheduled ref="remoteServerSheduledJobs" method="getAuthenticatorFromRemoteServer"
-			fixed-delay="#{schedulerConfig.getAuthenticathorTimer_sec*1000}" />
+		<task:scheduled ref="remoteServerSheduledJobs" method="getAuthenticatorFromRemoteServer" fixed-delay="#{${getAuthenticathorTimer_sec}*1000}" />
 
 		<task:scheduled ref="remoteServerSheduledJobs" method="getProductionParametersFromRemoteServer"
-			fixed-delay="#{schedulerConfig.getProductionParametersTimer_sec*1000}" />
+			fixed-delay="#{${getProductionParametersTimer_sec}*1000}" />
 
-		<task:scheduled ref="remoteServerSheduledJobs" method="getLanguageFileFromRemoteServer"
-			fixed-delay="#{schedulerConfig.getLanguageFilesTimer_sec*1000}" />
+		<task:scheduled ref="remoteServerSheduledJobs" method="getLanguageFileFromRemoteServer" fixed-delay="#{${getLanguageFilesTimer_sec}*1000}" />
 
-		<task:scheduled ref="remoteServerSheduledJobs" method="checkRemoteServerMaxDownTime"
-			fixed-delay="#{schedulerConfig.maxRemoteServerDownTimeTimer_sec*1000}" />
+		<task:scheduled ref="remoteServerSheduledJobs" method="checkRemoteServerMaxDownTime" fixed-delay="#{${maxRemoteServerDownTimeTimer_sec}*1000}" />
 
-		<task:scheduled ref="statistics" method="saveStatistics" fixed-delay="#{schedulerConfig.saveStatisticsTimer_sec*1000}" />
+		<task:scheduled ref="statistics" method="saveStatistics" fixed-delay="#{${saveStatisticsTimer_sec}*1000}" />
 
 		<task:scheduled ref="remoteServerSheduledJobs" method="sendGlobalMonitoringToolInfo"
-			fixed-delay="#{schedulerConfig.globalMonitoringToolSendInfoTimer_sec*1000}" />
+			fixed-delay="#{${globalMonitoringToolSendInfoTimer_sec}*1000}" />
 
 	</task:scheduled-tasks>
 
 	<task:scheduler id="SchedulerSasScl" pool-size="10" />
-
-	<bean id="schedulerConfig" class="${schedulerConfig}" scope="prototype">
-		<constructor-arg value="config/scheduler.xml" />
-	</bean>
 
 </beans>

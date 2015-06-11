@@ -16,7 +16,7 @@
 
 	<task:scheduled-tasks scheduler="SchedulerSasScl">
 
-		<task:scheduled ref="remoteServerSheduledJobs" method="getEncodersFromRemoteServer" fixed-delay="#{schedulerConfig.getEncodersTimer_sec*1000}" />
+		<task:scheduled ref="remoteServerSheduledJobs" method="getEncodersFromRemoteServer" fixed-delay="#{${getEncodersTimer_sec}*1000}" />
 
 	</task:scheduled-tasks>
 
