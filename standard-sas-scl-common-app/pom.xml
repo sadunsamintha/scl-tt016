@@ -12,10 +12,6 @@
 
 		<dependency>
 			<groupId>com.sicpa.standard.sasscl</groupId>
-			<artifactId>controller-scheduler</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.sicpa.standard.sasscl</groupId>
 			<artifactId>view</artifactId>
 		</dependency>
 		<dependency>

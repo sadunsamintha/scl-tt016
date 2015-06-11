@@ -1,4 +1,4 @@
-package com.sicpa.standard.sasscl.deviceIncidentContext.view;
+package com.sicpa.standard.sasscl.view.deviceIncidentContext;
 
 import java.util.Map;
 import java.util.Map.Entry;

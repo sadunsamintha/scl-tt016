@@ -19,11 +19,6 @@
 			<groupId>com.sicpa.standard.camera</groupId>
 			<artifactId>standard-camera-cognex</artifactId>
 		</dependency>
-
-		<dependency>
-			<groupId>com.sicpa.standard.sasscl</groupId>
-			<artifactId>device-common</artifactId>
-		</dependency>
 		
 		<dependency>
 			<groupId>com.sicpa.standard.sasscl</groupId>

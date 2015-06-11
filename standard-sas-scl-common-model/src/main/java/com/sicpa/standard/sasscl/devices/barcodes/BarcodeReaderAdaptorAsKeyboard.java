@@ -1,4 +1,4 @@
-package com.sicpa.standard.sasscl.devices.barcode;
+package com.sicpa.standard.sasscl.devices.barcodes;
 
 import java.awt.AWTEvent;
 import java.awt.Toolkit;
