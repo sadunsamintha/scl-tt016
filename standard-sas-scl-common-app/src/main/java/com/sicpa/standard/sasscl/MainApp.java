@@ -14,6 +14,7 @@ import com.sicpa.standard.client.common.descriptor.validator.ValidatorException;
 import com.sicpa.standard.client.common.descriptor.validator.Validators;
 import com.sicpa.standard.client.common.descriptor.validator.ValidatorsException;
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
+import com.sicpa.standard.client.common.groovy.GroovyLoggerConfigurator;
 import com.sicpa.standard.client.common.ioc.AbstractSpringConfig;
 import com.sicpa.standard.client.common.ioc.BeanProvider;
 import com.sicpa.standard.client.common.launcher.CommonMainApp;
@@ -24,6 +25,7 @@ import com.sicpa.standard.client.common.launcher.spring.impl.DefaultLoadingMonit
 import com.sicpa.standard.client.common.messages.MessageEvent;
 import com.sicpa.standard.client.common.utils.ConfigUtils;
 import com.sicpa.standard.client.common.utils.PropertiesUtils;
+import com.sicpa.standard.client.common.utils.StringMap;
 import com.sicpa.standard.client.common.utils.TaskExecutor;
 import com.sicpa.standard.client.common.view.IGUIComponentGetter;
 import com.sicpa.standard.gui.screen.loader.AbstractApplicationLoader;
@@ -99,6 +101,12 @@ public class MainApp extends CommonMainApp<LoaderConfig> {
 				}
 			}
 		}
+	}
+
+	@Override
+	protected void initLog() {
+		GroovyLoggerConfigurator lc = new GroovyLoggerConfigurator(new StringMap());
+		lc.initLogger();
 	}
 
 	protected void executePlcVarValidator() {

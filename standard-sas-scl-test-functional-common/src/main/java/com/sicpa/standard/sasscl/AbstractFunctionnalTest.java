@@ -3,6 +3,7 @@ package com.sicpa.standard.sasscl;
 import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.camera.driver.CameraDriverEventCode;
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
+import com.sicpa.standard.client.common.groovy.GroovyLoggerConfigurator;
 import com.sicpa.standard.client.common.ioc.BeanProvider;
 import com.sicpa.standard.client.common.ioc.PropertyPlaceholderResources;
 import com.sicpa.standard.client.common.launcher.CommonMainApp.Loader;
@@ -11,6 +12,7 @@ import com.sicpa.standard.client.common.launcher.display.IProgressDisplay;
 import com.sicpa.standard.client.common.utils.AppUtils;
 import com.sicpa.standard.client.common.utils.LogUtils;
 import com.sicpa.standard.client.common.utils.SingleAppInstanceUtils;
+import com.sicpa.standard.client.common.utils.StringMap;
 import com.sicpa.standard.gui.plaf.SicpaLookAndFeel;
 import com.sicpa.standard.gui.screen.loader.AbstractApplicationLoader;
 import com.sicpa.standard.gui.utils.ThreadUtils;
@@ -45,8 +47,10 @@ import com.sicpa.standard.sasscl.repository.errors.AppMessage;
 import com.sicpa.standard.sasscl.repository.errors.IErrorsRepository;
 import com.sicpa.standard.sasscl.sicpadata.generator.IEncoder;
 import com.sicpa.standard.sasscl.test.utils.TestHelper;
+
 import junit.framework.Assert;
 import junit.framework.TestCase;
+
 import org.apache.commons.io.FileUtils;
 
 import java.beans.PropertyChangeEvent;
@@ -220,7 +224,8 @@ public abstract class AbstractFunctionnalTest extends TestCase {
 
 		emptyStorageFolders();
 		emptyRemoteServerReceivedData();
-		LogUtils.initLogger();
+		GroovyLoggerConfigurator lc = new GroovyLoggerConfigurator(new StringMap());
+		lc.initLogger();
 		loadSpring();
 	}
 
