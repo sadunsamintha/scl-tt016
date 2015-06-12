@@ -1,11 +1,4 @@
-package com.sicpa.standard.sasscl.devices.barcodes;
-
-import java.awt.AWTEvent;
-import java.awt.Toolkit;
-import java.awt.event.AWTEventListener;
-import java.awt.event.KeyEvent;
-
-import javax.swing.text.JTextComponent;
+package com.sicpa.standard.sasscl.devices.barcode;
 
 import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.gui.listener.CoalescentChangeListener;
@@ -13,6 +6,11 @@ import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState;
 import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowStateChangedEvent;
 import com.sicpa.standard.sasscl.devices.DeviceException;
 import com.sicpa.standard.sasscl.devices.DeviceStatus;
+
+import javax.swing.text.JTextComponent;
+import java.awt.*;
+import java.awt.event.AWTEventListener;
+import java.awt.event.KeyEvent;
 
 public class BarcodeReaderAdaptorAsKeyboard extends AbstractBarcodeReader {
 
