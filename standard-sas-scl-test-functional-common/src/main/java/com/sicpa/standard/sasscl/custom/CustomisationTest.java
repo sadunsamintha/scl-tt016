@@ -12,7 +12,6 @@ import static com.sicpa.standard.sasscl.ioc.BeansName.ALERT_CAMERA_IDDLE;
 import static com.sicpa.standard.sasscl.ioc.BeansName.ALERT_DUPLICATED_CODE;
 import static com.sicpa.standard.sasscl.ioc.BeansName.APPLICATION_INITIALIZATION_TASKS;
 import static com.sicpa.standard.sasscl.ioc.BeansName.AUTHENTICATOR_PROVIDER;
-import static com.sicpa.standard.sasscl.ioc.BeansName.BARCODE_READER;
 import static com.sicpa.standard.sasscl.ioc.BeansName.BEAN_CALL_PANEL;
 import static com.sicpa.standard.sasscl.ioc.BeansName.CAMERA;
 import static com.sicpa.standard.sasscl.ioc.BeansName.CAMERA_SIMULATOR;
@@ -80,7 +79,6 @@ import com.sicpa.standard.sasscl.controller.device.IPlcIndependentDevicesControl
 import com.sicpa.standard.sasscl.controller.flow.FlowControl;
 import com.sicpa.standard.sasscl.controller.flow.IFlowControl;
 import com.sicpa.standard.sasscl.controller.scheduling.RemoteServerScheduledJobs;
-import com.sicpa.standard.sasscl.devices.barcode.IBarcodeReaderAdaptor;
 import com.sicpa.standard.sasscl.devices.camera.simulator.CameraSimulatorConfig;
 import com.sicpa.standard.sasscl.devices.camera.transformer.IRoiCameraImageTransformer;
 import com.sicpa.standard.sasscl.devices.plc.simulator.PlcSimulatorConfig;
@@ -148,7 +146,6 @@ public abstract class CustomisationTest extends AbstractFunctionnalTest {
 		checkabean(ALERT_CAMERA_IDDLE, IAlertTask.class);
 		checkabean(ALERT_DUPLICATED_CODE, IAlertTask.class);
 		checkabean(AUTHENTICATOR_PROVIDER, IProvider.class);
-		checkabean(BARCODE_READER, IBarcodeReaderAdaptor.class);
 
 		checkabean(CRYPTO_FIELDS_CONFIG, ICryptoFieldsConfig.class);
 		checkabean(CRYPTO_PROVIDER_MANAGER, IServiceProviderManager.class);
