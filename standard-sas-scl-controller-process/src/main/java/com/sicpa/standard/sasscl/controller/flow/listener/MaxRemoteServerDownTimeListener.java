@@ -3,14 +3,14 @@ package com.sicpa.standard.sasscl.controller.flow.listener;
 import static com.sicpa.standard.sasscl.messages.MessageEventKey.RemoteServer.MAX_DOWNTIME;
 
 import com.google.common.eventbus.Subscribe;
+import com.sicpa.standard.client.common.controller.predicate.start.IStartProductionValidator;
+import com.sicpa.standard.client.common.controller.predicate.start.NoStartReason;
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.messages.MessageEvent;
-import com.sicpa.standard.sasscl.controller.process.IProductionStartValidator;
-import com.sicpa.standard.sasscl.controller.process.ProductionStartValidatorResult;
 import com.sicpa.standard.sasscl.devices.remote.MaxDownTimeReachedEvent;
 import com.sicpa.standard.sasscl.messages.MessageEventKey;
 
-public class MaxRemoteServerDownTimeListener implements IProductionStartValidator {
+public class MaxRemoteServerDownTimeListener implements IStartProductionValidator {
 
 	protected boolean remoteServerMaxDownTimeReached;
 
@@ -25,12 +25,13 @@ public class MaxRemoteServerDownTimeListener implements IProductionStartValidato
 		}
 	}
 
-	public ProductionStartValidatorResult validateStart() {
+	@Override
+	public NoStartReason isPossibleToStartProduction() {
+		NoStartReason res = new NoStartReason();
 		if (remoteServerMaxDownTimeReached) {
-			return ProductionStartValidatorResult.createInvalidResult(MAX_DOWNTIME);
-		} else {
-			return ProductionStartValidatorResult.createValidResult();
+			res.addReason(MAX_DOWNTIME);
 		}
+		return res;
 	}
 
 }

@@ -47,10 +47,14 @@
 		<property name="productionBatchProvider" ref="productionBatchProvider" />
 		<property name="hardwareController" ref="hardwareController" />
 		<property name="startValidators">
-			<list>
-				<ref bean="maxRemoteServerDownTimeListener" />
-				<ref bean="parametersAvailableStartValidator" />
-			</list>
+			<bean id="globalStartProductionValidator" class="${globalStartProductionValidator}">
+				<property name="validators">
+					<list>
+						<ref bean="maxRemoteServerDownTimeListener" />
+						<ref bean="parametersAvailableStartValidator" />
+					</list>
+				</property>
+			</bean>
 		</property>
 	</bean>
 	<bean id="executorNoSelection" class="${executorNoSelection}" />
@@ -91,9 +95,9 @@
 
 	<!-- MESSAGES -->
 	<bean id="messagesHandler" class="${messagesHandler}">
-		<property name="messagesMapping" ref="messagesMapping"/>
+		<property name="messagesMapping" ref="messagesMapping" />
 	</bean>
-	
+
 	<bean id="warningHandler" class="${warningHandler}" />
 	<bean id="errorHandler" class="${errorHandler}">
 		<property name="flowControl" ref="flowControl" />

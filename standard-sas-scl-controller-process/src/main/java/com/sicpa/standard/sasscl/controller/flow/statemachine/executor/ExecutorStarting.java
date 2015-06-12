@@ -1,11 +1,12 @@
 package com.sicpa.standard.sasscl.controller.flow.statemachine.executor;
 
-import java.util.List;
 import java.util.TimerTask;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.sicpa.standard.client.common.controller.predicate.start.IStartProductionValidator;
+import com.sicpa.standard.client.common.controller.predicate.start.NoStartReason;
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.messages.MessageEvent;
 import com.sicpa.standard.client.common.statemachine.IStateAction;
@@ -14,8 +15,6 @@ import com.sicpa.standard.sasscl.business.alert.IAlert;
 import com.sicpa.standard.sasscl.business.statistics.IStatistics;
 import com.sicpa.standard.sasscl.common.utils.Timeout;
 import com.sicpa.standard.sasscl.controller.hardware.IHardwareController;
-import com.sicpa.standard.sasscl.controller.process.IProductionStartValidator;
-import com.sicpa.standard.sasscl.controller.process.ProductionStartValidatorResult;
 import com.sicpa.standard.sasscl.messages.MessageEventKey;
 import com.sicpa.standard.sasscl.provider.impl.ProductionBatchProvider;
 
@@ -27,7 +26,7 @@ public class ExecutorStarting implements IStateAction {
 	protected Timeout timeoutStart;
 
 	protected IStatistics statistics;
-	protected List<IProductionStartValidator> startValidators;
+	protected IStartProductionValidator startValidators;
 
 	protected int timeoutDelay = 30000;
 	protected ProductionBatchProvider productionBatchProvider;
@@ -47,13 +46,13 @@ public class ExecutorStarting implements IStateAction {
 
 	public void startProduction() {
 
-		for (IProductionStartValidator validator : startValidators) {
-			ProductionStartValidatorResult result = validator.validateStart();
-			if (!result.isValid()) {
-				logger.error("failed to start:" + result.getMessage());
-				EventBusService.post(new MessageEvent(result.getMessage()));
-				return;
+		NoStartReason reasons = startValidators.isPossibleToStartProduction();
+		if (!reasons.isEmpty()) {
+			for (String r : reasons.getReasons()) {
+				logger.error("failed to start:" + r);
+				EventBusService.post(new MessageEvent(r));
 			}
+			return;
 		}
 
 		startTimeoutStart();
@@ -98,7 +97,7 @@ public class ExecutorStarting implements IStateAction {
 		}, timeoutDelay);
 	}
 
-	public void setStartValidators(List<IProductionStartValidator> startValidators) {
+	public void setStartValidators(IStartProductionValidator startValidators) {
 		this.startValidators = startValidators;
 	}
 
