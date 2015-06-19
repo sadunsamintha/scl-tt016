@@ -37,7 +37,6 @@ public class Main {
 		SpringConfig config = new SpringConfigSCL();
 		
 		// config.put("deviceIncidentContext", "spring/deviceIncidentConsole.xml");
-		config.put("postPackage", "spring/postPackage.xml");
 		// config.put(SpringConfig.OFFLINE_COUNTING, "spring" + File.separator + "offlineCounting.xml");
 
 		// ------ Adding BIS ---------//
