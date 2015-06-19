@@ -1,45 +1,11 @@
 package com.sicpa.standard.sasscl.devices.remote.impl;
 
-import static com.sicpa.standard.sasscl.model.ProductionMode.REFEED_CORRECTION;
-import static com.sicpa.standard.sasscl.model.ProductionMode.REFEED_NORMAL;
-import static com.sicpa.standard.sasscl.monitoring.system.SystemEventType.LAST_SENT_TO_REMOTE_SERVER;
-import static com.sicpa.std.common.api.activation.business.ActivationServiceHandler.COUNTING_PRODUCT_TYPE;
-import static com.sicpa.std.common.api.activation.business.ActivationServiceHandler.LABELED_PRODUCT_TYPE;
-import static com.sicpa.std.common.api.activation.business.ActivationServiceHandler.MARKED_PRODUCT_TYPE;
-import static com.sicpa.std.server.util.locator.ServiceLocator.SERVICE_ACTIVATION_BUSINESS_SERVICE;
-import static com.sicpa.std.server.util.locator.ServiceLocator.SERVICE_COMMON_CODING_BUSINESS_SERVICE;
-import static com.sicpa.std.server.util.locator.ServiceLocator.SERVICE_CONFIG_BUSINESS_SERVICE;
-import static com.sicpa.std.server.util.locator.ServiceLocator.SERVICE_DMS_EVENT_BUSINESS_SERVICE;
-import static com.sicpa.std.server.util.locator.ServiceLocator.SERVICE_LOGIN_BUSINESS_SERVICE;
-import static com.sicpa.std.server.util.locator.ServiceLocator.SERVICE_PROVIDE_TRANSLATION_BUSINESS_SERVICE;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.net.URL;
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.ResourceBundle;
-
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-
-import org.jboss.ejb.client.EJBClientContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.exception.InitializationRuntimeException;
 import com.sicpa.standard.client.common.messages.MessageEvent;
 import com.sicpa.standard.client.common.utils.ConfigUtils;
 import com.sicpa.standard.client.common.utils.PropertiesUtils;
+import com.sicpa.standard.client.common.utils.TaskExecutor;
 import com.sicpa.standard.common.util.Messages;
 import com.sicpa.standard.gui.utils.ThreadUtils;
 import com.sicpa.standard.sasscl.common.storage.IStorage;
@@ -51,22 +17,12 @@ import com.sicpa.standard.sasscl.devices.remote.impl.sicpadata.ISicpaDataGenerat
 import com.sicpa.standard.sasscl.devices.remote.mapping.IProductionModeMapping;
 import com.sicpa.standard.sasscl.devices.remote.mapping.IRemoteServerProductStatusMapping;
 import com.sicpa.standard.sasscl.devices.remote.stdCrypto.StdCryptoAuthenticatorWrapper;
-import com.sicpa.standard.sasscl.model.CodeType;
-import com.sicpa.standard.sasscl.model.EncoderInfo;
-import com.sicpa.standard.sasscl.model.PackagedProducts;
-import com.sicpa.standard.sasscl.model.Product;
-import com.sicpa.standard.sasscl.model.ProductStatus;
-import com.sicpa.standard.sasscl.model.ProductionMode;
-import com.sicpa.standard.sasscl.model.SKU;
+import com.sicpa.standard.sasscl.model.*;
 import com.sicpa.standard.sasscl.monitoring.MonitoringService;
 import com.sicpa.standard.sasscl.monitoring.system.event.BasicSystemEvent;
 import com.sicpa.standard.sasscl.productionParameterSelection.node.AbstractProductionParametersNode;
 import com.sicpa.standard.sasscl.productionParameterSelection.node.IProductionParametersNode;
-import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.CodeTypeNode;
-import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.NavigationNode;
-import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.ProductionModeNode;
-import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.ProductionParameterRootNode;
-import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.SKUNode;
+import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.*;
 import com.sicpa.standard.sasscl.sicpadata.CryptoServiceProviderManager;
 import com.sicpa.standard.sasscl.sicpadata.reader.IAuthenticator;
 import com.sicpa.standard.sasscl.utils.ConfigUtilEx;
@@ -101,6 +57,24 @@ import com.sicpa.std.common.api.sku.dto.PackagingTypeSkuDto;
 import com.sicpa.std.common.api.staticdata.codetype.dto.CodeTypeDto;
 import com.sicpa.std.common.api.staticdata.sku.dto.SkuProductDto;
 import com.sicpa.std.common.api.util.PropertyNames;
+import org.jboss.ejb.client.EJBClientContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import java.io.File;
+import java.io.FileInputStream;
+import java.net.URL;
+import java.text.MessageFormat;
+import java.util.*;
+
+import static com.sicpa.standard.sasscl.model.ProductionMode.REFEED_CORRECTION;
+import static com.sicpa.standard.sasscl.model.ProductionMode.REFEED_NORMAL;
+import static com.sicpa.standard.sasscl.monitoring.system.SystemEventType.LAST_SENT_TO_REMOTE_SERVER;
+import static com.sicpa.std.common.api.activation.business.ActivationServiceHandler.*;
+import static com.sicpa.std.server.util.locator.ServiceLocator.*;
 
 public class RemoteServer extends AbstractRemoteServer {
 
@@ -146,12 +120,17 @@ public class RemoteServer extends AbstractRemoteServer {
 	}
 
 	protected void init() {
-		initPackageSenders();
+		TaskExecutor.execute(new Runnable() {
+			@Override
+			public void run() {
+				initPackageSenders();
 
-		if (isPropertiesFileLoaded()) {
-			initClientSecurityContext();
-			setupContext();
-		}
+				if (isPropertiesFileLoaded()) {
+					initClientSecurityContext();
+					setupContext();
+				}
+			}
+		});
 	}
 
 	protected void setupContext() {
@@ -167,7 +146,6 @@ public class RemoteServer extends AbstractRemoteServer {
 	}
 
 	private void initClientSecurityContext() {
-
 		EJBClientContext ejbClientContext = EJBClientContext.getCurrent();
 		ejbClientContext.registerInterceptor(1, new BasicClientSecurityInterceptor());
 		BasicClientSecurityInterceptor.setPrincipal(model.getUsername(), model.getPassword().toCharArray());
