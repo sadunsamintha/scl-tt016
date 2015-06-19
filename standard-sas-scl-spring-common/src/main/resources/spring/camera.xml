@@ -33,11 +33,11 @@
 		<constructor-arg ref="cameraSimulatorModel" />
 		<property name="productionParameters" ref="productionParameters" />
 		<property name="simulatorGui" ref="simulatorGui" />
-		<property name="aliasROI_StartRow" value="${camera.cell.roi.startrow}" />
-		<property name="aliasROI_x" value="${camera.cell.roi.x}" />
-		<property name="aliasROI_y" value="${camera.cell.roi.y}" />
-		<property name="aliasROI_w" value="${camera.cell.roi.w}" />
-		<property name="aliasROI_h" value="${camera.cell.roi.h}" />
+		<property name="aliasROI_StartRow" value="StartRow" />
+		<property name="aliasROI_x" value="ROI_col" />
+		<property name="aliasROI_y" value="ROI_row" />
+		<property name="aliasROI_w" value="ROI_wide" />
+		<property name="aliasROI_h" value="ROI_high" />
 	</bean>
 
 	<bean id="stdCameraAdaptor" class="${stdCameraAdaptor}" scope="prototype">
@@ -68,11 +68,11 @@
 	<bean id="cropImageTransformer" class="${cropImageTransformer}" scope="prototype" />
 
 	<bean id="cameraRoiImageTransformer" class="${cameraRoiImageTransformer}" scope="prototype">
-		<property name="aliasROI_StartRow" value="${camera.cell.roi.startrow}" />
-		<property name="aliasROI_x" value="${camera.cell.roi.x}" />
-		<property name="aliasROI_y" value="${camera.cell.roi.y}" />
-		<property name="aliasROI_w" value="${camera.cell.roi.w}" />
-		<property name="aliasROI_h" value="${camera.cell.roi.h}" />
+		<property name="aliasROI_StartRow" value="StartRow" />
+		<property name="aliasROI_x" value="ROI_col" />
+		<property name="aliasROI_y" value="ROI_row" />
+		<property name="aliasROI_w" value="ROI_wide" />
+		<property name="aliasROI_h" value="ROI_high" />
 	</bean>
 
 </beans>

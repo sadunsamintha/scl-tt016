@@ -8,9 +8,9 @@
 	<bean id="plcValuesLoader" class="${plcValuesLoader}" />
 
 	<bean id="plcPulseToMMConverterHandler" class="${plcPulseToMMConverterHandler}">
-		<property name="encoderModFolEvalVarName" value="${pulse.converter.encoderModFolEvalVarName}" />
-		<property name="shapeDiameterVarName" value="${pulse.converter.shapeDiameterVarName}" />
-		<property name="encoderResolutionVarName" value="${pulse.converter.encoderResolutionVarName}" />
+		<property name="encoderModFolEvalVarName" value=".stParameters.nEncoderModuleFoldEvaluation" />
+		<property name="shapeDiameterVarName" value=".stParameters.nShapeDiameter" />
+		<property name="encoderResolutionVarName" value=".stParameters.nEncoderResolution" />
 	</bean>
 
 	<bean id="mapPlcAdaptor" class="com.sicpa.standard.client.common.ioc.GenericMapping" scope="prototype">
