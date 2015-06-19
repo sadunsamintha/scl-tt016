@@ -69,7 +69,8 @@
 					<excludes>
 						<exclude>**/config/</exclude>
                         <exclude>*.bat</exclude>
-                        <exclude>license</exclude>
+						<exclude>*.sh</exclude>
+						<exclude>license</exclude>
                         <exclude>version</exclude>
 					</excludes>
 				</configuration>
