@@ -144,6 +144,9 @@ public class Statistics implements IStatistics {
 		} else if (evt.getCurrentState().equals(ApplicationFlowState.STT_STOPPING)
 				|| evt.getCurrentState().equals(ApplicationFlowState.STT_RECOVERING)) {
 			uptimeCounter.stop();
+		} else if(evt.getCurrentState().equals(ApplicationFlowState.STT_CONNECTED)
+				&& evt.getPreviousState().equals(ApplicationFlowState.STT_STARTING)) {
+			uptimeCounter.stop();
 		}
 	}
 
