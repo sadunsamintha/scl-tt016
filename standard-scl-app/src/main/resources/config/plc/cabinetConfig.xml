@@ -33,19 +33,19 @@
     <value class="int">50</value>
   </PlcValue>
   <PlcValue varName=".com.stCabinet.stParameters.nWar_air_pressure_level">
-    <value class="int">0</value>
+    <value class="int">2</value>
   </PlcValue>
   <PlcValue varName=".com.stCabinet.stParameters.nErr_air_pressure_level">
-    <value class="int">0</value>
+    <value class="int">3</value>
   </PlcValue>
   <PlcValue varName=".com.stCabinet.stParameters.nWar_Fans_EE_cabinet_MIN_freq">
-    <value class="int">0</value>
+    <value class="int">1</value>
   </PlcValue>
   <PlcValue varName=".com.stCabinet.stParameters.nWar_Fans_EE_cabinet_MAX_freq">
     <value class="int">42</value>
   </PlcValue>
   <PlcValue varName=".com.stCabinet.stParameters.nWar_Fans_Bypass_cabinet_MIN_freq">
-    <value class="int">0</value>
+    <value class="int">1</value>
   </PlcValue>
   <PlcValue varName=".com.stCabinet.stParameters.nWar_Fans_Bypass_cabinet_MAX_freq">
     <value class="int">42</value>
