@@ -1,21 +1,21 @@
 package com.sicpa.standard.sasscl.devices.plc;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.messages.MessageEvent;
+import com.sicpa.standard.gui.utils.ThreadUtils;
 import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState;
 import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowStateChangedEvent;
 import com.sicpa.standard.sasscl.devices.plc.event.PlcEvent;
 import com.sicpa.standard.sasscl.devices.plc.impl.PlcVariables;
 import com.sicpa.standard.sasscl.messages.MessageEventKey;
 import com.sicpa.standard.sasscl.provider.impl.PlcProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.List;
 
 public class PlcStateListener extends PlcListenerAdaptor {
 
@@ -46,6 +46,9 @@ public class PlcStateListener extends PlcListenerAdaptor {
 				logger.error("plc runningStateValue not set");
 				return;
 			}
+
+			//STDSASSCL-971
+			ThreadUtils.sleepQuietly(50);
 
 			if (currentAppState.equals(ApplicationFlowState.STT_STARTED)) {
 				if (event.getValue() instanceof Integer) {
