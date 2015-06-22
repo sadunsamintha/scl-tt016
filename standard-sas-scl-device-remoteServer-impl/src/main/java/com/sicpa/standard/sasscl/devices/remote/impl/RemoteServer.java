@@ -322,6 +322,8 @@ public class RemoteServer extends AbstractRemoteServer {
 		// convert AuthorizedProductsDto to root node
 		ProductionParameterRootNode root = convertDMSProductionParameter(products);
 		pruneParametersTree(root);
+		ProductionModeNode maintenanceNode = new ProductionModeNode(ProductionMode.MAINTENANCE);
+		root.addChildren(maintenanceNode);
 		return root;
 	}
 

@@ -24,7 +24,6 @@ public class DefaultProductionModeMapping extends ProductionModeMapping {
 		productionModes.add(ProductionMode.EXPORT);
 		productionModes.add(ProductionMode.EXPORT_CODING);
 		productionModes.add(ProductionMode.COUNTING);
-		productionModes.add(ProductionMode.MAINTENANCE);
 		return productionModes;
 	}
 }
