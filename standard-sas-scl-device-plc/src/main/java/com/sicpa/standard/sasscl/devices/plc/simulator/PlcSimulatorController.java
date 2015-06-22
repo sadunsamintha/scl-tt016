@@ -139,6 +139,8 @@ public class PlcSimulatorController implements IPlcController<PlcSimulatorConfig
 	 * populate PLC variable map to locate variable by variable name
 	 */
 	public void setupVariableValueMap() {
+		ThreadUtils.sleepQuietly(500);
+
 		if (config.getPlcVariables() == null) {
 			return;
 		}
