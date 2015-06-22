@@ -492,7 +492,7 @@ public class RemoteServer extends AbstractRemoteServer {
 			dtos.add(dto);
 		}
 		logger.debug("sending encoder info {}", infos);
-		SicpadataGeneratorInfoResultDto res = getCodingBean().registerGeneratorsCycle(dtos);
+		SicpadataGeneratorInfoResultDto res = getCodingBean().registerGeneratorsCicle(dtos);
 		for (InfoResult ir : res.getInfoResult()) {
 			if (!ir.isInfoSavedOk()) {
 				storage.quarantineEncoder(ir.getId());
