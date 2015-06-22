@@ -283,7 +283,7 @@ public class RemoteServer extends AbstractRemoteServer {
 			return;
 		}
 		logger.info("requesting encoder qty={} codeType={} ,  year={}",
-				new Object[] { quantity, codeType.getId(), year });
+				new Object[]{quantity, codeType.getId(), year});
 		try {
 
 			sdGenReceiver.requestSicpadataGenerators(newSdGenOrder(quantity, codeType, year), getCodingBean());
@@ -322,8 +322,6 @@ public class RemoteServer extends AbstractRemoteServer {
 		// convert AuthorizedProductsDto to root node
 		ProductionParameterRootNode root = convertDMSProductionParameter(products);
 		pruneParametersTree(root);
-		ProductionModeNode maintenanceNode = new ProductionModeNode(ProductionMode.MAINTENANCE);
-		root.addChildren(maintenanceNode);
 		return root;
 	}
 
@@ -433,22 +431,33 @@ public class RemoteServer extends AbstractRemoteServer {
 			final AbstractProductionParametersNode<?> convertedParentRoot) {
 
 		MarketTypeDto marketDto = (MarketTypeDto) child.getNodeValue();
-		ProductionMode productionMode = productionModeMapping.getProductionModeFromRemoteId(marketDto.getId()
-				.intValue());
-		if (productionMode == null) {
+		List<ProductionMode> productionModes = new ArrayList<>();
 
+		ProductionMode pm = productionModeMapping.getProductionModeFromRemoteId(marketDto.getId()
+				.intValue());
+		if (pm == null) {
 			logger.error("no production mode for {}", marketDto.toString());
 			return;
 		}
-		ProductionModeNode productionModeConverted = new ProductionModeNode(productionMode);
-		convertedParentRoot.addChildren(productionModeConverted);
-		convertDMSProductionParameter(child, productionModeConverted);
 
-		if (ProductionMode.STANDARD.equals(productionMode)) {
-			// if standard mode duplicate the tree for refeed
-			copyTree(productionModeConverted, new ProductionModeNode(REFEED_NORMAL), convertedParentRoot);
-			copyTree(productionModeConverted, new ProductionModeNode(REFEED_CORRECTION), convertedParentRoot);
+		if(ProductionMode.ALL.equals(pm)) {
+			productionModes.addAll(productionModeMapping.getAllAvailableProductionModes());
+		} else {
+			productionModes.add(pm);
 		}
+
+		for(ProductionMode productionMode : productionModes) {
+			ProductionModeNode productionModeConverted = new ProductionModeNode(productionMode);
+			convertedParentRoot.addChildren(productionModeConverted);
+			convertDMSProductionParameter(child, productionModeConverted);
+
+			if (ProductionMode.STANDARD.equals(productionMode)) {
+				// if standard mode duplicate the tree for refeed
+				copyTree(productionModeConverted, new ProductionModeNode(REFEED_NORMAL), convertedParentRoot);
+				copyTree(productionModeConverted, new ProductionModeNode(REFEED_CORRECTION), convertedParentRoot);
+			}
+		}
+
 	}
 
 	protected void copyTree(ProductionModeNode from, ProductionModeNode to,
@@ -492,7 +501,7 @@ public class RemoteServer extends AbstractRemoteServer {
 			dtos.add(dto);
 		}
 		logger.debug("sending encoder info {}", infos);
-		SicpadataGeneratorInfoResultDto res = getCodingBean().registerGeneratorsCicle(dtos);
+		SicpadataGeneratorInfoResultDto res = getCodingBean().registerGeneratorsCycle(dtos);
 		for (InfoResult ir : res.getInfoResult()) {
 			if (!ir.isInfoSavedOk()) {
 				storage.quarantineEncoder(ir.getId());
