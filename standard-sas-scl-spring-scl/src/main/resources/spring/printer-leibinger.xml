@@ -49,6 +49,7 @@
 		<constructor-arg ref="stateMachineLeibinger" />
 		<constructor-arg ref="commander" />
 		<constructor-arg ref="ethernetAdaptor" />
+		<constructor-arg ref="commandMapLeibinger" />
 	</bean>
 
 	<bean id="printerModelLeibinger" class="com.sicpa.standard.sasscl.utils.ConfigUtilEx" factory-method="load" scope="prototype">
