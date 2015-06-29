@@ -1,16 +1,15 @@
 package com.sicpa.standard.sasscl.devices.remote;
 
-import java.util.concurrent.Callable;
-
-import org.aspectj.lang.ProceedingJoinPoint;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.sicpa.standard.client.common.utils.TaskTimeoutExecutor;
 import com.sicpa.standard.sasscl.monitoring.MonitoringService;
 import com.sicpa.standard.sasscl.monitoring.system.SystemEventLevel;
 import com.sicpa.standard.sasscl.monitoring.system.SystemEventType;
 import com.sicpa.standard.sasscl.monitoring.system.event.BasicSystemEvent;
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.concurrent.Callable;
 
 public class RemoteServerTimeoutAspect {
 	private static final Logger logger = LoggerFactory.getLogger(RemoteServerTimeoutAspect.class);
@@ -19,7 +18,7 @@ public class RemoteServerTimeoutAspect {
 
 	public Object log(final ProceedingJoinPoint call) throws Throwable {
 
-		logger.debug("calling remote server {}", call.getSignature().toShortString());
+		logger.info("[AOP Timeout Aspect] Calling Remote Server method {}", call.getSignature().toShortString());
 		MonitoringService.addSystemEvent(new BasicSystemEvent(SystemEventLevel.INFO,
 				SystemEventType.REMOTE_SERVER_CALL, call.getSignature().toShortString()));
 		int timeout = remoteServerTimeoutCall_sec;

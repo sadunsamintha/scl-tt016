@@ -7,7 +7,6 @@ import com.sicpa.standard.client.common.utils.ConfigUtils;
 import com.sicpa.standard.client.common.utils.PropertiesUtils;
 import com.sicpa.standard.client.common.utils.TaskExecutor;
 import com.sicpa.standard.common.util.Messages;
-import com.sicpa.standard.gui.utils.ThreadUtils;
 import com.sicpa.standard.sasscl.common.storage.IStorage;
 import com.sicpa.standard.sasscl.devices.DeviceStatus;
 import com.sicpa.standard.sasscl.devices.remote.AbstractRemoteServer;
@@ -99,6 +98,8 @@ public class RemoteServer extends AbstractRemoteServer {
 	protected String serverPropertiesFile = "config/server/standard-server.properties";
 
 	protected Context context;
+
+	protected RemoteServerLifeChecker lifeChecker;
 
 	private final Properties properties = new Properties();
 
@@ -664,7 +665,7 @@ public class RemoteServer extends AbstractRemoteServer {
 		getActivationBean().registerProductionCycle(countedProductsResultDto, COUNTING_PRODUCT_TYPE);
 	}
 
-	protected void checkConnection() throws RemoteServerException {
+	public void checkConnection() throws RemoteServerException {
 		try {
 			getLoginBean().authenticate(model.getUsername(), model.getPassword());
 		} catch (Exception e) {
@@ -692,35 +693,12 @@ public class RemoteServer extends AbstractRemoteServer {
 		return getService(SERVICE_LOGIN_BUSINESS_SERVICE);
 	}
 
-	protected class RemoteServerLifeChecker {
-		Thread lifeCheker;
-
-		protected void start() {
-			if (lifeCheker == null) {
-				lifeCheker = new Thread(new Runnable() {
-					@Override
-					public void run() {
-						// is a daemon + server is supposed to be up at all time
-						// => while true is ok
-						while (true) {
-							lifeCheckTick();
-							if (model.getLifeCheckSleep() > 0) {
-								ThreadUtils.sleepQuietly(1000L * model.getLifeCheckSleep());
-							} else {
-								ThreadUtils.sleepQuietly(10 * 1000);
-							}
-						}
-					}
-				});
-				lifeCheker.setDaemon(true);
-				lifeCheker.setName("RemoteServerLifeChecker");
-				lifeCheker.start();
-			}
-		}
-	}
-
 	protected void startLifeChecker() {
-		new RemoteServerLifeChecker().start();
+		if(lifeChecker != null) {
+			lifeChecker.start();
+		} else {
+			logger.warn("Not starting Remote Server Life Checker because not implemented");
+		}
 	}
 
 	@Override
@@ -851,6 +829,10 @@ public class RemoteServer extends AbstractRemoteServer {
 
 	public void setCryptoServiceProviderManager(CryptoServiceProviderManager cryptoServiceProviderManager) {
 		this.cryptoServiceProviderManager = cryptoServiceProviderManager;
+	}
+
+	public void setLifeChecker(RemoteServerLifeChecker lifeChecker) {
+		this.lifeChecker = lifeChecker;
 	}
 
 	public void setSdGenReceiver(ISicpaDataGeneratorRequestor sdGenReceiver) {

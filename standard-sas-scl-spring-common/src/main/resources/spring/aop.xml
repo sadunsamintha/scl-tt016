@@ -13,8 +13,7 @@
 	<aop:config>
 		<!--			log remote server method	-->
 		<aop:aspect ref="callLogAspect">
-			<aop:around method="log"
-				pointcut="execution(* com.sicpa.standard.sasscl.devices.remote.AbstractRemoteServer.*(..))" />
+			<aop:around method="log" pointcut="execution(* com.sicpa.standard.sasscl.devices.remote.AbstractRemoteServer.*(..))" />
 		</aop:aspect>
 	</aop:config>
 

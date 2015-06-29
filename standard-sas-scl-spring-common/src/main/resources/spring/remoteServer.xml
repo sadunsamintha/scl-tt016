@@ -17,7 +17,14 @@
 		<property name="cryptoServiceProviderManager" ref="cryptoProviderManager" />
 		<property name="sdGenReceiver" ref="sicpaDataGeneratorRequestor" />
 		<property name="storage" ref="storage" />
+		<property name="lifeChecker" ref="remoteLifeChecker" />
 	</bean>
+
+	<bean id="remoteLifeChecker" class="${remoteLifeChecker}" scope="prototype">
+		<property name="target" ref="stdRemoteServer" />
+		<property name="lifeCheckSleep" value="#{stdRemoteModel.lifeCheckSleep}" />
+	</bean>
+
 
 	<bean id="productionModeMapping" class="${productionModeMapping}" />
 
@@ -34,6 +41,7 @@
 	<bean id="stdRemoteModel" class="com.sicpa.standard.client.common.utils.ConfigUtils" factory-method="load">
 		<constructor-arg value="config/server/remoteServer.xml" />
 	</bean>
+
 	<bean id="simulatorRemoteModel" class="com.sicpa.standard.client.common.utils.ConfigUtils" factory-method="load">
 		<constructor-arg value="config/server/simulator/remoteServerSimulator.xml" />
 	</bean>
