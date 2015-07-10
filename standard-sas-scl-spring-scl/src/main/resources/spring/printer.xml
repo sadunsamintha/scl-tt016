@@ -6,6 +6,7 @@
 
 	<bean id="printerSimulatorAdaptor" class="${printerSimulatorAdaptor}" scope="prototype">
 		<constructor-arg ref="printerSimulatorController" />
+		<property name="extendedCodesBehavior" ref="extendedCodeBehavior" />
 	</bean>
 
 	<bean id="printerSimulatorModel" class="com.sicpa.standard.sasscl.utils.ConfigUtilEx" factory-method="load" scope="prototype">
