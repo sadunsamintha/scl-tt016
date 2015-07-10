@@ -1,14 +1,5 @@
 package com.sicpa.standard.sasscl;
 
-import java.io.File;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-
 import com.sicpa.standard.client.common.config.history.BeanHistoryManager;
 import com.sicpa.standard.client.common.descriptor.validator.ValidatorException;
 import com.sicpa.standard.client.common.descriptor.validator.Validators;
@@ -72,6 +63,14 @@ import com.sicpa.standard.sasscl.view.MainFrameController;
 import com.sicpa.standard.sasscl.view.lineid.LineIdWithAuthenticateButton;
 import com.sicpa.standard.sicpadata.spi.manager.SimpleServiceProviderManager;
 import com.sicpa.standard.sicpadata.spi.manager.StaticServiceProviderManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+import java.io.File;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
 public class MainApp extends CommonMainApp<LoaderConfig> {
 
@@ -264,13 +263,15 @@ public class MainApp extends CommonMainApp<LoaderConfig> {
 	protected void getLineIdFromRemoteServerAndSaveItLocally() {
 		IRemoteServer remote = BeanProvider.getBean(BeansName.REMOTE_SERVER);
 		SubsystemIdProvider subsystemIdProvider = BeanProvider.getBean(BeansName.SUBSYSTEM_ID_PROVIDER);
-		long id = remote.getSubsystemID();
-		subsystemIdProvider.set(id);
+
 		try {
+			long id = remote.getSubsystemID();
+			subsystemIdProvider.set(id);
+
 			PropertiesUtils.savePropertiesKeepOrderAndComment(new File(ConfigUtilEx.GLOBAL_PROPERTIES_PATH),
 					"subsystemId", "" + id);
 		} catch (Exception e) {
-			logger.error("", e);
+			logger.error("Failed to Get and Save Line Id", e);
 		}
 	}
 

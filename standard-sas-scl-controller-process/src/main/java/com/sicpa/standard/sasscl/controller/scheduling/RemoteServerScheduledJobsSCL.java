@@ -1,17 +1,16 @@
 package com.sicpa.standard.sasscl.controller.scheduling;
 
-import java.util.Calendar;
-import java.util.Set;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.sicpa.standard.sasscl.common.storage.IStorage;
 import com.sicpa.standard.sasscl.devices.remote.IRemoteServer;
 import com.sicpa.standard.sasscl.devices.remote.RemoteServerException;
 import com.sicpa.standard.sasscl.model.CodeType;
 import com.sicpa.standard.sasscl.provider.impl.AuthenticatorProvider;
 import com.sicpa.standard.sasscl.provider.impl.SkuListProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Calendar;
+import java.util.Set;
 
 public class RemoteServerScheduledJobsSCL extends RemoteServerScheduledJobs {
 
@@ -48,7 +47,11 @@ public class RemoteServerScheduledJobsSCL extends RemoteServerScheduledJobs {
 		for (CodeType codeType : codeTypes) {
 			if (codeType != null) {
 				if (storage.getAvailableNumberOfEncoders(codeType, year) <= minEncodersThreshold) {
-					remoteServer.downloadEncoder(requestNumberEncoders, codeType, year);
+					try {
+						remoteServer.downloadEncoder(requestNumberEncoders, codeType, year);
+					} catch (Exception e) {
+						logger.error("Failed to download encoder for code type {}", codeType, e);
+					}
 				}
 			}
 		}

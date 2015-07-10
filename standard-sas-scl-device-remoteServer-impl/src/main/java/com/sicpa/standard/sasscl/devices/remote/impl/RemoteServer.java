@@ -503,7 +503,7 @@ public class RemoteServer extends AbstractRemoteServer {
 					(long) info.getCodeTypeId(), info.getSequence(), info.getFirstCodeDate(), info.getLastCodeDate());
 			dtos.add(dto);
 		}
-		logger.debug("sending encoder info {}", infos);
+		logger.info("sending encoder info {}", infos);
 		SicpadataGeneratorInfoResultDto res = getCodingBean().registerGeneratorsCycle(dtos);
 		for (InfoResult ir : res.getInfoResult()) {
 			if (!ir.isInfoSavedOk()) {
@@ -701,7 +701,6 @@ public class RemoteServer extends AbstractRemoteServer {
 		}
 	}
 
-	@Override
 	public void lifeCheckTick() {
 		try {
 			logger.debug("remote server life check");
@@ -849,7 +848,7 @@ public class RemoteServer extends AbstractRemoteServer {
 	}
 
 	@Override
-	public void sentInfoToGlobalMonitoringTool(GlobalMonitoringToolInfo info) {
+	public void sendInfoToGlobalMonitoringTool(GlobalMonitoringToolInfo info) {
 		try {
 			EventDto evt = createEventDto(info);
 			getEventBean().register(evt);

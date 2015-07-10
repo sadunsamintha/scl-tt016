@@ -1,24 +1,5 @@
 package com.sicpa.standard.sasscl.devices.remote.simulator;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Random;
-import java.util.ResourceBundle;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.exception.InitializationRuntimeException;
 import com.sicpa.standard.client.common.messages.MessageEvent;
@@ -34,13 +15,7 @@ import com.sicpa.standard.sasscl.devices.remote.stdCrypto.StdCryptoAuthenticator
 import com.sicpa.standard.sasscl.devices.remote.stdCrypto.StdCryptoEncoderWrapperSimulator;
 import com.sicpa.standard.sasscl.devices.simulator.gui.SimulatorControlView;
 import com.sicpa.standard.sasscl.messages.MessageEventKey;
-import com.sicpa.standard.sasscl.model.CodeType;
-import com.sicpa.standard.sasscl.model.EncoderInfo;
-import com.sicpa.standard.sasscl.model.PackagedProducts;
-import com.sicpa.standard.sasscl.model.Product;
-import com.sicpa.standard.sasscl.model.ProductStatus;
-import com.sicpa.standard.sasscl.model.ProductionParameters;
-import com.sicpa.standard.sasscl.model.SKU;
+import com.sicpa.standard.sasscl.model.*;
 import com.sicpa.standard.sasscl.monitoring.MonitoringService;
 import com.sicpa.standard.sasscl.monitoring.system.SystemEventType;
 import com.sicpa.standard.sasscl.monitoring.system.event.BasicSystemEvent;
@@ -49,12 +24,7 @@ import com.sicpa.standard.sasscl.sicpadata.generator.FileSequenceStorageProvider
 import com.sicpa.standard.sasscl.sicpadata.generator.IEncoder;
 import com.sicpa.standard.sasscl.sicpadata.generator.impl.EncoderNoEncryptionSimulator;
 import com.sicpa.standard.sasscl.sicpadata.reader.IAuthenticator;
-import com.sicpa.standard.sicpadata.api.business.BSicpadataModuleFactory;
-import com.sicpa.standard.sicpadata.api.business.IBSicpadataGenerator;
-import com.sicpa.standard.sicpadata.api.business.IBSicpadataModule;
-import com.sicpa.standard.sicpadata.api.business.IBSicpadataReader;
-import com.sicpa.standard.sicpadata.api.business.IKeyManager;
-import com.sicpa.standard.sicpadata.api.business.KeyManagerFactory;
+import com.sicpa.standard.sicpadata.api.business.*;
 import com.sicpa.standard.sicpadata.api.exception.SicpadataException;
 import com.sicpa.standard.sicpadata.api.exception.UnknownModeException;
 import com.sicpa.standard.sicpadata.api.exception.UnknownSystemTypeException;
@@ -69,6 +39,16 @@ import com.sicpa.standard.sicpadata.preset.std.StdVersioningPreset;
 import com.sicpa.standard.sicpadata.spi.manager.IServiceProviderManager;
 import com.sicpa.standard.sicpadata.spi.manager.ServiceProviderException;
 import com.sicpa.standard.sicpadata.spi.password.NoSuchPasswordException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.Map.Entry;
 
 /**
  * 
@@ -596,8 +576,8 @@ public class RemoteServerSimulator extends AbstractRemoteServer implements ISimu
 	}
 
 	@Override
-	public void sentInfoToGlobalMonitoringTool(GlobalMonitoringToolInfo info) {
-		System.out.println(info.isProductionStarted());
+	public void sendInfoToGlobalMonitoringTool(GlobalMonitoringToolInfo info) {
+		logger.info("Info sent to Global Monitoring Tool Production Started:{}", info.isProductionStarted());
 	}
 
 	public void setFileSequenceStorageProvider(FileSequenceStorageProvider fileSequenceStorageProvider) {

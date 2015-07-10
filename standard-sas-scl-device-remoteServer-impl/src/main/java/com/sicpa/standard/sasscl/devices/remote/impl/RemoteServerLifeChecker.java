@@ -2,6 +2,8 @@ package com.sicpa.standard.sasscl.devices.remote.impl;
 
 import com.sicpa.standard.gui.utils.ThreadUtils;
 import com.sicpa.standard.sasscl.devices.remote.IRemoteServer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * NOTICE:  All information and intellectual property contained herein is the confidential property of SICPA Security Solutions SA,
@@ -16,6 +18,8 @@ import com.sicpa.standard.sasscl.devices.remote.IRemoteServer;
  
 
 public class RemoteServerLifeChecker {
+    private static final Logger logger = LoggerFactory.getLogger(RemoteServerLifeChecker.class);
+
     protected IRemoteServer target;
 
     protected int lifeCheckSleep = 20;
@@ -41,7 +45,11 @@ public class RemoteServerLifeChecker {
                     // is a daemon + server is supposed to be up at all time
                     // => while true is ok
                     while (true) {
-                        target.lifeCheckTick();
+                        try {
+                            target.lifeCheckTick();
+                        } catch (Exception e) {
+                            logger.error("Remote Server Life Check Tick Failed", e);
+                        }
                         if (lifeCheckSleep > 0) {
                             ThreadUtils.sleepQuietly(1000L * lifeCheckSleep);
                         } else {

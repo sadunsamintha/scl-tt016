@@ -1,22 +1,10 @@
 package com.sicpa.standard.sasscl.controller.scheduling;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.Enumeration;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Properties;
-import java.util.ResourceBundle;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.ioc.BeanProvider;
 import com.sicpa.standard.client.common.view.screensflow.IScreensFlow;
+import com.sicpa.standard.gui.utils.ThreadUtils;
 import com.sicpa.standard.sasscl.common.storage.FileStorage;
 import com.sicpa.standard.sasscl.common.storage.IStorage;
 import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState;
@@ -29,6 +17,18 @@ import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.Producti
 import com.sicpa.standard.sasscl.provider.impl.AuthenticatorProvider;
 import com.sicpa.standard.sasscl.provider.impl.SkuListProvider;
 import com.sicpa.standard.sasscl.sicpadata.reader.IAuthenticator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Enumeration;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Properties;
+import java.util.ResourceBundle;
 
 public class RemoteServerScheduledJobs {
 	private static final Logger logger = LoggerFactory.getLogger(RemoteServerScheduledJobs.class);
@@ -215,10 +215,19 @@ public class RemoteServerScheduledJobs {
 
 	// trigger by the scheduler or when the production is started/stopped
 	public void sendGlobalMonitoringToolInfo() {
-		logger.info("Executing job: Trying to send info to global monitoring tool");
-		GlobalMonitoringToolInfo info = new GlobalMonitoringToolInfo();
-		info.setProductionStarted(currentApplicationState.equals(ApplicationFlowState.STT_STARTED));
-		remoteServer.sentInfoToGlobalMonitoringTool(info);
+		ThreadUtils.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				logger.info("Executing job: Trying to send info to global monitoring tool");
+				GlobalMonitoringToolInfo info = new GlobalMonitoringToolInfo();
+				info.setProductionStarted(currentApplicationState.equals(ApplicationFlowState.STT_STARTED));
+				try {
+					remoteServer.sendInfoToGlobalMonitoringTool(info);
+				} catch (Exception e) {
+					logger.error("Failed to send information to global monitoring tool", e);
+				}
+			}
+		});
 	}
 
 	protected ApplicationFlowState currentApplicationState = ApplicationFlowState.STT_NO_SELECTION;
