@@ -55,7 +55,6 @@ public class SpringConfig extends AbstractSpringConfig {
 	// fix should be loaded first thus the 000000000000
 	public static final String PROPERTIES_PLACEHOLDER = PREFIX + "00000000000000propertyPlaceholderConfigurer";
 	public static final String BARCODE = PREFIX + "barcode";
-	public static final String ASPECT = PREFIX + "aspect";
 	public static final String DESCRIPTORS_CAMERA = PREFIX + "cameraDescriptors";
 	public static final String DESCRIPTORS_PLC = PREFIX + "plcDescriptors";
 	public static final String DESCRIPTORS_BARCODE = PREFIX + "barocdeDescriptors";
@@ -115,7 +114,6 @@ public class SpringConfig extends AbstractSpringConfig {
 		config.put(FLOW_CONTROL, "spring/flowControl.xml");
 		config.put(PROPERTIES_PLACEHOLDER, "spring/propertyPlaceholderConfigurer.xml");
 		config.put(BARCODE, "spring/barcode.xml");
-		config.put(ASPECT, "spring/aop.xml");
 //        config.put(ALERT_PLC_ACTIVATION_CROSSCHECK, "spring/alertPlcActivationCrossCheckTask.xml");
 
 		// PLC variables descriptors for cabinet

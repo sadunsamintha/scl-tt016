@@ -98,5 +98,4 @@ public interface IRemoteServer extends IDevice {
      * 
      */
     public void lifeCheckTick();
-
 }

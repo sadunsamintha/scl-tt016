@@ -3,6 +3,8 @@ package com.sicpa.standard.sasscl.devices.remote.impl;
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.exception.InitializationRuntimeException;
 import com.sicpa.standard.client.common.messages.MessageEvent;
+import com.sicpa.standard.client.common.timeout.Timeout;
+import com.sicpa.standard.client.common.timeout.TimeoutLifeCheck;
 import com.sicpa.standard.client.common.utils.ConfigUtils;
 import com.sicpa.standard.client.common.utils.PropertiesUtils;
 import com.sicpa.standard.client.common.utils.TaskExecutor;
@@ -206,6 +208,7 @@ public class RemoteServer extends AbstractRemoteServer {
 	}
 
 	@Override
+	@Timeout
 	public final IAuthenticator getAuthenticator() throws RemoteServerException {
 		if (!isConnected()) {
 			return null;
@@ -228,13 +231,13 @@ public class RemoteServer extends AbstractRemoteServer {
 	}
 
 	@Override
+	@Timeout
 	public final void downloadEncoder(final int batchesQuantity, final CodeType codeType, final int year)
 			throws RemoteServerException {
 		if (!isConnected()) {
 			return;
 		}
 		try {
-
 			doDownloadEncoder(batchesQuantity, codeType, year);
 		} catch (Exception e) {
 			throw new RemoteServerException(e);
@@ -267,7 +270,6 @@ public class RemoteServer extends AbstractRemoteServer {
 		} catch (Exception e) {
 			logger.error("", e);
 		}
-
 	}
 
 	private String fetchCryptoPassword() {
@@ -296,8 +298,7 @@ public class RemoteServer extends AbstractRemoteServer {
 		}
 	}
 
-	private SicpadataGeneratorOrderDto newSdGenOrder(int quantity, CodeType codeType, int year) {
-
+	protected SicpadataGeneratorOrderDto newSdGenOrder(int quantity, CodeType codeType, int year) {
 		SicpadataGeneratorOrderDto dto = new SicpadataGeneratorOrderDto();
 		dto.setQuantity(quantity);
 		dto.setCodeTypeId(codeType.getId());
@@ -306,12 +307,13 @@ public class RemoteServer extends AbstractRemoteServer {
 	}
 
 	@Override
+	@Timeout
 	public final ProductionParameterRootNode getTreeProductionParameters() throws RemoteServerException {
 		if (!isConnected()) {
 			return null;
 		}
-		try {
 
+		try {
 			return doGetTreeProductionParameters();
 		} catch (Exception e) {
 			throw new RemoteServerException(e);
@@ -486,6 +488,7 @@ public class RemoteServer extends AbstractRemoteServer {
 	}
 
 	@Override
+	@Timeout
 	public void sendEncoderInfos(List<EncoderInfo> infos) throws RemoteServerException {
 		try {
 			doSendEncoderInfos(infos);
@@ -516,6 +519,7 @@ public class RemoteServer extends AbstractRemoteServer {
 	}
 
 	@Override
+	@Timeout
 	public final void sendProductionData(final PackagedProducts products) throws RemoteServerException {
 		if (!isConnected()) {
 			throw new RemoteServerException();
@@ -678,6 +682,7 @@ public class RemoteServer extends AbstractRemoteServer {
 	}
 
 	@Override
+	@Timeout
 	public long getSubsystemID() {
 		try {
 			LoginDto dto = getLoginBean().authenticate(model.getUsername(), model.getPassword());
@@ -694,13 +699,15 @@ public class RemoteServer extends AbstractRemoteServer {
 	}
 
 	protected void startLifeChecker() {
-		if(lifeChecker != null) {
+		if(lifeChecker != null && !lifeChecker.isAlive()) {
 			lifeChecker.start();
 		} else {
 			logger.warn("Not starting Remote Server Life Checker because not implemented");
 		}
 	}
 
+	@Override
+	@TimeoutLifeCheck
 	public void lifeCheckTick() {
 		try {
 			logger.debug("remote server life check");
@@ -713,12 +720,13 @@ public class RemoteServer extends AbstractRemoteServer {
 	}
 
 	@Override
+	@Timeout
 	public Map<String, ? extends ResourceBundle> getLanguageBundles() throws RemoteServerException {
 		if (!isConnected()) {
 			return null;
 		}
-		try {
 
+		try {
 			return doGetTranslationBean();
 		} catch (Exception e) {
 			throw new RemoteServerException(e);
@@ -848,6 +856,7 @@ public class RemoteServer extends AbstractRemoteServer {
 	}
 
 	@Override
+	@Timeout
 	public void sendInfoToGlobalMonitoringTool(GlobalMonitoringToolInfo info) {
 		try {
 			EventDto evt = createEventDto(info);
