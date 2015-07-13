@@ -46,7 +46,6 @@
 		<constructor-arg ref="codeBuffer" />
 		<constructor-arg ref="connector" />
 		<constructor-arg ref="protocol" />
-		<constructor-arg ref="stateMachineLeibinger" />
 		<constructor-arg ref="commander" />
 		<constructor-arg ref="ethernetAdaptor" />
 		<constructor-arg ref="commandMapLeibinger" />
@@ -62,10 +61,6 @@
 	<bean id="driverLeibinger" class="com.sicpa.standard.printer.leibinger.driver.leibinger.LeibingerDriver" scope="singleton" />
 
 	<bean id="protocol" class="com.sicpa.standard.printer.leibinger.driver.leibinger.LeibingerProtocol" scope="singleton">
-		<property name="scheduler" ref="schedulerLeibinger" />
-	</bean>
-
-	<bean id="stateMachineLeibinger" class="com.sicpa.standard.printer.leibinger.driver.leibinger.StateMachine" scope="singleton">
 		<property name="scheduler" ref="schedulerLeibinger" />
 	</bean>
 
