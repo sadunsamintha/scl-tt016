@@ -36,6 +36,7 @@ public class ProductionTest {
 		when(remoteServer.isConnected()).thenReturn(true);
 		production = new Production(storage, remoteServer);
 		production.setProductionDataSerializationErrorThreshold(2);
+		production.setProductionSendBatchSize(5000);
 		production.setSubsystemIdProvider(new SubsystemIdProvider(0));
 		when(storage.getBatchOfProductsCount()).thenReturn(10);
 
