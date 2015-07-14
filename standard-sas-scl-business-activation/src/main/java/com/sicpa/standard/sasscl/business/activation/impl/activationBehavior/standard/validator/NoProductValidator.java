@@ -13,10 +13,7 @@ public class NoProductValidator extends AbstractProductValidator {
 
 	@Override
 	public void validate(Product product, DecodedCameraCode cameraCode) {
-		logger.debug("Product = {} , Decoded camera code = {}", product, cameraCode);
-
 		product.setStatus(ProductStatus.AUTHENTICATED);
-
 	}
 
 }

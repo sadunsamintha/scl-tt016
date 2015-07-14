@@ -15,9 +15,6 @@ public abstract class AbstractBeforeActivationAction implements IBeforeActivatio
 
 	@Override
 	public BeforeActivationResult receiveCode(final Code code, final boolean good, String cameraName) {
-
-		logger.debug("Code received = {} , Is good code = {}", code.getStringCode(), good);
-
 		BeforeActivationResult res = internalReceivedCode(code, good, cameraName);
 		if (this.nextAction != null && !res.isFiltered()) {
 			res = this.nextAction.receiveCode(res.getCode(), res.isValid(), cameraName);

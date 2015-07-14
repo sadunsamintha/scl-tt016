@@ -1,8 +1,5 @@
 package com.sicpa.standard.sasscl.business.activation.impl.activationBehavior.standard;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.messages.MessageEvent;
 import com.sicpa.standard.client.common.provider.IProviderGetter;
@@ -20,6 +17,8 @@ import com.sicpa.standard.sasscl.provider.impl.AuthenticatorModeProvider;
 import com.sicpa.standard.sasscl.provider.impl.ProductionConfigProvider;
 import com.sicpa.standard.sasscl.sicpadata.CryptographyException;
 import com.sicpa.standard.sasscl.sicpadata.reader.IAuthenticator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Activation behavior used for the standard production mode</br>
@@ -91,12 +90,6 @@ public class StandardActivationBehavior extends AbstractActivationBehavior {
 	}
 
 	protected void handleGoodCode(final Product product) {
-
-		// using ToStringBuilder.reflectionToString in product will get "{}" for map type attribute which causing
-		// runtime exception when parsing by MessageFormat. use different method to avoid MessageFormat parsing
-		// logger.debug("Product = " + product);
-		logger.debug("Product = {}", product);
-
 		DecodedCameraCode result = getDecodedCameraCode(product.getCode());
 		if (result == null) {
 			product.setStatus(ProductStatus.NOT_AUTHENTICATED);

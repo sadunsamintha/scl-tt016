@@ -17,8 +17,6 @@ public class CodeTypeValidator extends AbstractProductValidator {
 	 */
 	@Override
 	public void validate(final Product product, final DecodedCameraCode cameraCode) {
-		logger.debug("Product = {} , Decoded camera code = {}", product, cameraCode);
-
 		if (productionParameters.getSku() != null
 				&& (cameraCode.getCodeType() == null || cameraCode.getCodeType().equals(
 						productionParameters.getSku().getCodeType()))) {
