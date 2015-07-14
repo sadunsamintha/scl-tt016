@@ -1,48 +1,36 @@
 package com.sicpa.standard.sasscl.devices.plc.impl;
 
-import static com.sicpa.standard.plc.controller.actions.PlcAction.request;
-import static com.sicpa.standard.plc.value.PlcVariable.createBooleanVar;
-import static com.sicpa.standard.plc.value.PlcVariable.createInt32Var;
-import static com.sicpa.standard.sasscl.devices.DeviceStatus.STARTED;
-import static com.sicpa.standard.sasscl.devices.DeviceStatus.STOPPED;
-import static com.sicpa.standard.sasscl.devices.plc.PlcRequest.RELOAD_PLC_PARAM;
-import static com.sicpa.standard.sasscl.devices.plc.PlcRequest.START;
-import static com.sicpa.standard.sasscl.devices.plc.PlcRequest.STOP;
-import static com.sicpa.standard.sasscl.devices.plc.simulator.PlcSimulatorNotificationConfig.createStaticPatternBooleanVar;
-import static java.util.Arrays.asList;
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.ArgumentCaptor;
-
 import com.sicpa.standard.plc.controller.actions.IPlcAction;
 import com.sicpa.standard.plc.value.IPlcVariable;
 import com.sicpa.standard.plc.value.PlcVariable;
 import com.sicpa.standard.sasscl.devices.DeviceException;
 import com.sicpa.standard.sasscl.devices.DeviceStatusEvent;
 import com.sicpa.standard.sasscl.devices.IDeviceStatusListener;
-import com.sicpa.standard.sasscl.devices.plc.DefaultPlcRequestExecutor;
-import com.sicpa.standard.sasscl.devices.plc.IPlcListener;
-import com.sicpa.standard.sasscl.devices.plc.IPlcRequestExecutor;
-import com.sicpa.standard.sasscl.devices.plc.PlcAdaptorException;
-import com.sicpa.standard.sasscl.devices.plc.PlcRequest;
-import com.sicpa.standard.sasscl.devices.plc.PlcVariableMap;
+import com.sicpa.standard.sasscl.devices.plc.*;
 import com.sicpa.standard.sasscl.devices.plc.event.PlcEvent;
 import com.sicpa.standard.sasscl.devices.plc.simulator.PlcSimulatorConfig;
 import com.sicpa.standard.sasscl.devices.plc.simulator.PlcSimulatorController;
 import com.sicpa.standard.sasscl.devices.plc.simulator.PlcSimulatorNotificationConfig;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.ArgumentCaptor;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static com.sicpa.standard.plc.controller.actions.PlcAction.request;
+import static com.sicpa.standard.plc.value.PlcVariable.createBooleanVar;
+import static com.sicpa.standard.plc.value.PlcVariable.createInt32Var;
+import static com.sicpa.standard.sasscl.devices.DeviceStatus.STARTED;
+import static com.sicpa.standard.sasscl.devices.DeviceStatus.STOPPED;
+import static com.sicpa.standard.sasscl.devices.plc.PlcRequest.*;
+import static com.sicpa.standard.sasscl.devices.plc.simulator.PlcSimulatorNotificationConfig.createStaticPatternBooleanVar;
+import static java.util.Arrays.asList;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.*;
 
 public class PlcTest {
 
@@ -81,6 +69,8 @@ public class PlcTest {
 		Map<String, String> plcVariableMap = new HashMap<String, String>();
 
 		plcVariableMap.put("NTF_WAR_ERR_REGISTER", "COM.stCabinet.stNotifications.nWar_err_register");
+		plcVariableMap.put("NTF_LINE_SPEED", ".com.stLine[#x].stNotifications.nLineSpeed");
+		plcVariableMap.put("NTF_PRODUCTS_FREQ", ".com.stCabinet.stNotifications.nProductsFreq");
 
 		final IPlcVariable<Integer> warErrVar = PlcVariable
 				.createInt32Var("COM.stCabinet.stNotifications.nWar_err_register");
@@ -98,25 +88,6 @@ public class PlcTest {
 
 		Map<String, String> notificationMap = new HashMap<String, String>();
 		notificationMap.put("NTF_LINE_WAR_ERR_REGISTER", ".com.stLine[#x].stNotifications.nWar_err_register");
-
-		// PlcTemplateSettings settings = new PlcTemplateSettings(new ArrayList<IPlcVariable<?>>(), notificationList,
-		// null, new HashMap<String, String>(), notificationMap, "1,2,3");
-		//
-		// PlcConfigInfo plcConfigInfo = new PlcConfigInfo();
-		// plcConfigInfo.setConveyorIdIndexMapping("defaultConveyor=1;");
-		// PlcConfigInfoProvider plcConfigInfoProvider = new PlcConfigInfoProvider();
-		// PlcMulticonveyorHandler multiconveyorHandler = new PlcMulticonveyorHandler(plcConfigInfoProvider, settings);
-		// plcConfigInfoProvider.set(plcConfigInfo);
-
-		// PlcVariableMap.setPlcMulticonveyorHandler(multiconveyorHandler);
-
-		// --------------------------------------------------------------------------
-
-		// setup Plc warning & error handler
-		// PlcRegisterHandler plcWarningErrorHandler = new PlcRegisterHandler();
-		// plcWarningErrorHandler.setCabinetPlcWarningErrorMsgDescriptorList(Arrays
-		// .asList(new PlcWarningErrorMessageDescriptor[] { new PlcWarningErrorMessageDescriptor(
-		// "message.blockable.error", true) }));
 
 		plc = new PlcAdaptor(/* simulatorController = */new PlcSimulatorController(new PlcSimulatorConfig() {
 
@@ -151,25 +122,6 @@ public class PlcTest {
 	private IPlcRequestExecutor createExecutor(IPlcAction... actions) {
 		return new DefaultPlcRequestExecutor(actions);
 	}
-
-	// /**
-	// * PLCListener implementation for testing purpose
-	// */
-	// private static class PlcListenerImpl extends PlcListenerAdaptor {
-	//
-	// private Map<String, List<PlcEvent>> varPlcEventMap = new HashMap<String, List<PlcEvent>>();
-	//
-	// @Override
-	// public void onPlcEvent(final PlcEvent event) {
-	//
-	// List<PlcEvent> plcEventList = varPlcEventMap.get(event.getVarName());
-	// if (plcEventList == null) {
-	// plcEventList = new ArrayList<PlcEvent>();
-	// varPlcEventMap.put(event.getVarName(), plcEventList);
-	// }
-	// plcEventList.add(event);
-	// }
-	// }
 
 	@Test
 	public void allEventsListener() throws Exception {

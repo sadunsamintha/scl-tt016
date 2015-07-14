@@ -1,23 +1,5 @@
 package com.sicpa.standard.sasscl.business.production.impl;
 
-import static org.mockito.Matchers.anyObject;
-import static org.mockito.Mockito.atLeast;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import org.fest.reflect.core.Reflection;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.ArgumentCaptor;
-
 import com.sicpa.standard.client.common.storage.StorageException;
 import com.sicpa.standard.sasscl.business.activation.NewProductEvent;
 import com.sicpa.standard.sasscl.common.storage.IStorage;
@@ -27,6 +9,18 @@ import com.sicpa.standard.sasscl.devices.remote.RemoteServerException;
 import com.sicpa.standard.sasscl.model.PackagedProducts;
 import com.sicpa.standard.sasscl.model.Product;
 import com.sicpa.standard.sasscl.model.ProductStatus;
+import com.sicpa.standard.sasscl.provider.impl.SubsystemIdProvider;
+import org.fest.reflect.core.Reflection;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.ArgumentCaptor;
+
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Mockito.*;
 
 @SuppressWarnings("unchecked")
 public class ProductionTest {
@@ -42,6 +36,7 @@ public class ProductionTest {
 		when(remoteServer.isConnected()).thenReturn(true);
 		production = new Production(storage, remoteServer);
 		production.setProductionDataSerializationErrorThreshold(2);
+		production.setSubsystemIdProvider(new SubsystemIdProvider(0));
 		when(storage.getBatchOfProductsCount()).thenReturn(10);
 
 		DefaultProductsPackager packager = new DefaultProductsPackager();
