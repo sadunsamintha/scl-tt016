@@ -9,8 +9,8 @@
 		<constructor-arg ref="remoteServer" />
 		<property name="productsPackager" ref="productsPackager" />
 		<property name="subsystemIdProvider" ref="subsystemIdProvider" />
-		<property name="productionSendBatchSize" ref="${productionSendBatchSize}" />
-		<property name="productionDataSerializationErrorThreshold" ref="${productionDataSerializationErrorThreshold}" />
+		<property name="productionSendBatchSize" value="${productionSendBatchSize}" />
+		<property name="productionDataSerializationErrorThreshold" value="${productionDataSerializationErrorThreshold}" />
 	</bean>
 
 </beans>
