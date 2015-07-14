@@ -1,14 +1,5 @@
 package com.sicpa.standard.sasscl.business.activation.offline;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import junit.framework.Assert;
-
-import org.junit.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Mockito;
-
 import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.plc.value.IPlcVariable;
@@ -18,6 +9,14 @@ import com.sicpa.standard.sasscl.devices.plc.IPlcAdaptor;
 import com.sicpa.standard.sasscl.devices.plc.PlcAdaptorException;
 import com.sicpa.standard.sasscl.model.Product;
 import com.sicpa.standard.sasscl.provider.impl.PlcProvider;
+import com.sicpa.standard.sasscl.provider.impl.SubsystemIdProvider;
+import junit.framework.Assert;
+import org.junit.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Mockito;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class PlcOfflineCountingTest {
 
@@ -46,6 +45,7 @@ public class PlcOfflineCountingTest {
 		poc.setLastStopTimeVar(lastStopVar);
 		poc.setQuantityVar(qtyVar);
 		poc.setPlcProvider(plcProvider);
+		poc.setSubsystemIdProvider(new SubsystemIdProvider(0));
 		plcProvider.set(plc);
 
 		final List<Product> products = new ArrayList<Product>();
