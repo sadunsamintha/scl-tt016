@@ -16,12 +16,12 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class PrinterAdaptorSimulator extends PrinterAdaptor implements ICodeProvider {
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(PrinterAdaptorSimulator.class);
+
+	protected final List<String> codeBuffer = new LinkedList<String>();
 	
-	private final List<String> codeBuffer = new LinkedList<String>();
-	
-	private ScheduledExecutorService exe;
+	protected ScheduledExecutorService exe;
 	
 	public PrinterAdaptorSimulator() {
 		super();

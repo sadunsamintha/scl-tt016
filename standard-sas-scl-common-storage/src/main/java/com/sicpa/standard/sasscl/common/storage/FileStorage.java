@@ -1,27 +1,5 @@
 package com.sicpa.standard.sasscl.common.storage;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FilenameFilter;
-import java.io.IOException;
-import java.io.Serializable;
-import java.text.MessageFormat;
-import java.util.AbstractMap.SimpleImmutableEntry;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
-import java.util.Map.Entry;
-import java.util.SortedSet;
-import java.util.TreeSet;
-import java.util.regex.Pattern;
-
-import org.apache.commons.io.FileUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.messages.MessageEvent;
 import com.sicpa.standard.client.common.storage.ISimpleFileStorage;
@@ -31,11 +9,7 @@ import com.sicpa.standard.client.common.utils.ZipUtils;
 import com.sicpa.standard.sasscl.common.exception.ProductionRuntimeException;
 import com.sicpa.standard.sasscl.common.storage.productPackager.IProductsPackager;
 import com.sicpa.standard.sasscl.messages.MessageEventKey;
-import com.sicpa.standard.sasscl.model.CodeType;
-import com.sicpa.standard.sasscl.model.EncoderInfo;
-import com.sicpa.standard.sasscl.model.PackagedProducts;
-import com.sicpa.standard.sasscl.model.Product;
-import com.sicpa.standard.sasscl.model.ProductionParameters;
+import com.sicpa.standard.sasscl.model.*;
 import com.sicpa.standard.sasscl.model.statistics.StatisticsValues;
 import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.ProductionParameterRootNode;
 import com.sicpa.standard.sasscl.sicpadata.generator.FinishedEncoder;
@@ -43,6 +17,16 @@ import com.sicpa.standard.sasscl.sicpadata.generator.IEncoder;
 import com.sicpa.standard.sasscl.sicpadata.generator.IFinishedEncoder;
 import com.sicpa.standard.sasscl.sicpadata.reader.IAuthenticator;
 import com.sicpa.standard.sicpadata.spi.sequencestorage.FileSequenceStorageProvider;
+import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.*;
+import java.text.MessageFormat;
+import java.util.AbstractMap.SimpleImmutableEntry;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.regex.Pattern;
 
 /**
  * storage implementation using files
@@ -404,7 +388,7 @@ public class FileStorage implements IStorage {
 	@Override
 	public void notifyDataSentToRemoteServer() {
 		// move working files to a sent folder and then zip them
-		moveNotifyFile(FOLDER_PRODUCTION_SEND_TO_REMOTE_SERVER, "Notify send success => move file to sent {0}", true);
+		moveNotifyFile(FOLDER_PRODUCTION_SEND_TO_REMOTE_SERVER, "Notify send success => move file to sent {}", true);
 	}
 
 	// move production data files to a new folder
