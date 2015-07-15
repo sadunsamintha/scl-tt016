@@ -6,7 +6,7 @@
 
 	<bean id="printerSimulatorAdaptor" class="${printerSimulatorAdaptor}" scope="prototype">
 		<constructor-arg ref="printerSimulatorController" />
-		<property name="extendedCodesBehavior" ref="extendedCodeBehavior" />
+		<property name="mappingExtendedCodeBehavior" ref="mappingExtendedCodeBehavior" />
 	</bean>
 
 	<bean id="printerSimulatorModel" class="com.sicpa.standard.sasscl.utils.ConfigUtilEx" factory-method="load" scope="prototype">
@@ -20,6 +20,11 @@
 		<property name="simulatorGui" ref="simulatorGui" />
 	</bean>
 
-	<bean id="extendedCodeBehavior" class="${extendedCodeBehavior}" />
+	<bean id="sicpaDataOnly8_18OExtendedCodeBehavior" class="${sicpadataOnlyExCodeBehavior}" />
+
+	<bean id="mappingExtendedCodeBehavior" class="${mappingExtendedCodeBehavior}">
+		<property name="defaultBehavior" ref="sicpaDataOnly8_18OExtendedCodeBehavior" />
+	</bean>
+
 
 </beans>

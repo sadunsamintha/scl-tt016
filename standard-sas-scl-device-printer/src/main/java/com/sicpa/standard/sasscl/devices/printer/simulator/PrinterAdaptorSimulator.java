@@ -20,72 +20,72 @@ public class PrinterAdaptorSimulator extends PrinterAdaptor implements ICodeProv
 	private static final Logger logger = LoggerFactory.getLogger(PrinterAdaptorSimulator.class);
 
 	protected final List<String> codeBuffer = new LinkedList<String>();
-	
+
 	protected ScheduledExecutorService exe;
-	
+
 	public PrinterAdaptorSimulator() {
 		super();
 	}
 
-    public PrinterAdaptorSimulator(IPrinterController controller) {
-        super(controller);
-    }
-	
+	public PrinterAdaptorSimulator(IPrinterController controller) {
+		super(controller);
+	}
+
 	@Override
 	protected void doConnect() throws PrinterAdaptorException {
 		initialized = true;
 		fireDeviceStatusChanged(DeviceStatus.CONNECTED);
 	}
-	
+
 	@Override
 	protected void doDisconnect() {
 		initialized = false;
 		fireDeviceStatusChanged(DeviceStatus.DISCONNECTED);
 	}
-	
+
 	@Override
 	public void sendCodesToPrint(final List<String> codes) throws PrinterAdaptorException {
 		logger.debug("Printer sending codes to print");
-		extendedCodesBehavior.createExCodes(codes);		
+		mappingExtendedCodeBehavior.get(getName()).createExCodes(codes);
 		codeBuffer.addAll(codes);
 	}
-	
+
 	@Override
 	public void onPrinterCodesNeeded(final Object sender, long nbCodes) {
-//		logger.debug("request for {} number of codes", nbCodes);
-//		notifyRequestCodesToPrint(nbCodes);
+		// logger.debug("request for {} number of codes", nbCodes);
+		// notifyRequestCodesToPrint(nbCodes);
 	}
-	
+
 	@Override
 	public void doStart() throws PrinterAdaptorException {
 		exe = Executors.newScheduledThreadPool(1);
 		exe.scheduleWithFixedDelay(new AskCodesTask(), 100, 1000, TimeUnit.MILLISECONDS);
 		fireDeviceStatusChanged(DeviceStatus.STARTED);
 	}
-	
+
 	@Override
 	public void doStop() throws PrinterAdaptorException {
 		fireDeviceStatusChanged(DeviceStatus.STOPPED);
 		exe = null;
 	}
-	
+
 	public void resetCodes() throws PrinterAdaptorException {
-		
+
 	}
-	
+
 	@Override
 	public void switchOff() throws PrinterAdaptorException {
 		codeBuffer.clear();
 	}
-	
+
 	@Override
 	public void switchOn() throws PrinterAdaptorException {
-		
+
 	}
-	
+
 	@Override
 	public void setUserLevel(PrinterProfileEvent event) {
-		
+
 	}
 
 	@Override
@@ -102,7 +102,7 @@ public class PrinterAdaptorSimulator extends PrinterAdaptor implements ICodeProv
 			return code;
 		}
 	}
-	
+
 	private class AskCodesTask implements Runnable {
 
 		@Override
@@ -110,7 +110,7 @@ public class PrinterAdaptorSimulator extends PrinterAdaptor implements ICodeProv
 			if (codeBuffer.size() < 100)
 				notifyRequestCodesToPrint(1000L);
 		}
-		
+
 	}
 
 }

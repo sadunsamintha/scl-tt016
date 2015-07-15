@@ -27,7 +27,7 @@ import com.sicpa.standard.sasscl.business.coding.CodeReceivedFailedException;
 import com.sicpa.standard.sasscl.devices.DeviceStatus;
 import com.sicpa.standard.sasscl.devices.printer.AbstractPrinterAdaptor;
 import com.sicpa.standard.sasscl.devices.printer.PrinterAdaptorException;
-import com.sicpa.standard.sasscl.devices.printer.xcode.IExCodeBehavior;
+import com.sicpa.standard.sasscl.devices.printer.xcode.mapping.IMappingExtendedCodeBehavior;
 import com.sicpa.standard.sasscl.event.PrinterProfileEvent;
 import com.sicpa.standard.sasscl.messages.ActionMessageType;
 import com.sicpa.standard.sasscl.monitoring.MonitoringService;
@@ -49,7 +49,7 @@ public class PrinterAdaptor extends AbstractPrinterAdaptor implements IPrinterCo
 
 	protected SequenceStatus lastSequence = SequenceStatus.UNKNOWN;
 
-	protected IExCodeBehavior extendedCodesBehavior;
+	protected IMappingExtendedCodeBehavior mappingExtendedCodeBehavior;
 
 	public PrinterAdaptor(final IPrinterController controller) {
 		this();
@@ -98,7 +98,7 @@ public class PrinterAdaptor extends AbstractPrinterAdaptor implements IPrinterCo
 	public void sendCodesToPrint(final List<String> codes) throws PrinterAdaptorException {
 		logger.debug("Printer sending codes to print");
 		try {
-			controller.sendExtendedCodes(extendedCodesBehavior.createExCodes(codes));
+			controller.sendExtendedCodes(mappingExtendedCodeBehavior.get(getName()).createExCodes(codes));
 			codeSent = true;
 		} catch (PrinterException e) {
 			throw new PrinterAdaptorException("sending codes to printer failed", e);
@@ -330,7 +330,7 @@ public class PrinterAdaptor extends AbstractPrinterAdaptor implements IPrinterCo
 		}
 	}
 
-	public void setExtendedCodesBehavior(IExCodeBehavior extendedCodesBehavior) {
-		this.extendedCodesBehavior = extendedCodesBehavior;
+	public void setMappingExtendedCodeBehavior(IMappingExtendedCodeBehavior mappingExtendedCodeBehavior) {
+		this.mappingExtendedCodeBehavior = mappingExtendedCodeBehavior;
 	}
 }

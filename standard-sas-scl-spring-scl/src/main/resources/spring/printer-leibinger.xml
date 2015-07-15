@@ -30,7 +30,7 @@
 
 	<bean id="stdPrinterLeibingerAdaptor" class="${stdPrinterAdaptor}" scope="prototype">
 		<constructor-arg ref="printerControllerLeibinger" />
-		<property name="extendedCodesBehavior" ref="extendedCodeBehavior" />
+		<property name="mappingExtendedCodeBehavior" ref="mappingExtendedCodeBehavior" />
 	</bean>
 
 	<bean id="printerLeibinger" factory-bean="mapPrinterLeibingerAdaptor" factory-method="get" scope="prototype">

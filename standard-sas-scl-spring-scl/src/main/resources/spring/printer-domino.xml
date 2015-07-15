@@ -18,7 +18,7 @@
 
 	<bean id="stdPrinterDominoAdaptor" class="${stdPrinterAdaptor}" scope="prototype">
 		<constructor-arg ref="printerControllerDomino" />
-		<property name="extendedCodesBehavior" ref="extendedCodeBehavior" />
+		<property name="mappingExtendedCodeBehavior" ref="mappingExtendedCodeBehavior" />
 	</bean>
 
 	<bean id="printerDomino" factory-bean="mapPrinterDominoAdaptor" factory-method="get" scope="prototype">

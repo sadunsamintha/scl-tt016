@@ -13,6 +13,14 @@ import com.sicpa.standard.printer.xcode.ExtendedCodeFactory;
 
 public class SicpaDataOnlyExCodeBehavior implements IExCodeBehavior {
 
+	protected ModelDataMatrixEncoding dmEncoding;
+	protected ModelDataMatrixFormat dmFormat;
+
+	public SicpaDataOnlyExCodeBehavior() {
+		dmEncoding = ModelDataMatrixEncoding.ASCII;
+		dmFormat = ModelDataMatrixFormat.DM_8x18;
+	}
+
 	@Override
 	public List<ExtendedCode> createExCodes(List<String> codes) {
 
@@ -33,9 +41,17 @@ public class SicpaDataOnlyExCodeBehavior implements IExCodeBehavior {
 
 	protected List<BlockFactory> createBlockFactories() {
 		DatamatrixBlockFactory dm = new DatamatrixBlockFactory();
-		dm.setModelDatamatrixEncoding(ModelDataMatrixEncoding.ASCII);
-		dm.setModelDatamatrixFormat(ModelDataMatrixFormat.DM_8x18);
+		dm.setModelDatamatrixEncoding(dmEncoding);
+		dm.setModelDatamatrixFormat(dmFormat);
 		return Arrays.asList(dm);
+	}
+
+	public void setDmEncoding(ModelDataMatrixEncoding dmEncoding) {
+		this.dmEncoding = dmEncoding;
+	}
+
+	public void setDmFormat(ModelDataMatrixFormat dmFormat) {
+		this.dmFormat = dmFormat;
 	}
 
 }

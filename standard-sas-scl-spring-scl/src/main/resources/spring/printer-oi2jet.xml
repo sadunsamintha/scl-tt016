@@ -20,7 +20,7 @@
 
 	<bean id="stdPrinterOi2JetAdaptor" class="${stdPrinterAdaptor}" scope="prototype">
 		<constructor-arg ref="printerControllerOi2jet" />
-		<property name="extendedCodesBehavior" ref="extendedCodeBehavior" />
+		<property name="mappingExtendedCodeBehavior" ref="mappingExtendedCodeBehavior" />
 	</bean>
 
 	<bean id="printerOi2Jet" factory-bean="mapPrinterOi2JetAdaptor" factory-method="get" scope="prototype">

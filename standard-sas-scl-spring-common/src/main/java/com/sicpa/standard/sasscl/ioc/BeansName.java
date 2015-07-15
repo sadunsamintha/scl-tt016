@@ -347,4 +347,9 @@ public interface BeansName {
 	String ERRORS_REPOSITORY = "errorsRepository";
 
 	String SUBSYSTEM_ID_PROVIDER = "subsystemIdProvider";
+
+	/**
+	 * IMappingExtendedCodeBehavior
+	 */
+	String MAPPING_EXTENDED_CODE_BEHAVIOR = "mappingExtendedCodeBehavior";
 }
