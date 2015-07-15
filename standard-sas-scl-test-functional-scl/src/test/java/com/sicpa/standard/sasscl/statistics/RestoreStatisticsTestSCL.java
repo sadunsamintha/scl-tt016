@@ -10,7 +10,9 @@ public class RestoreStatisticsTestSCL extends RestoreStatisticsTest {
 
 	@Override
 	public SpringConfig getSpringConfig() {
-		return new SpringConfigSCL();
+		SpringConfig sc = new SpringConfigSCL();
+		sc.remove(SpringConfigSCL.POST_PACKAGE);
+		return sc;
 	}
 
 	protected void configureDevices() {
