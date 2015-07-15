@@ -69,6 +69,7 @@
     <bean id="plcBrsStateListener" class="com.sicpa.standard.sasscl.devices.plc.PlcBrsStateListener">
         <property name="versionVarName" value="#{plcVarMap['NTF_BRS_VERSION']}" />
         <property name="productionParameters" ref="productionParameters" />
+		<property name="plcAdaptor" ref="plcAdaptor" />
     </bean>
 	
 	<bean id="plcSimulatorAdaptor" class="${plcAdaptor}" scope="prototype">
