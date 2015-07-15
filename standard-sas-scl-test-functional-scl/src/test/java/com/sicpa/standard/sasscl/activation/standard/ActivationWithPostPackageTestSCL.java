@@ -18,7 +18,6 @@ public class ActivationWithPostPackageTestSCL extends ActivationTestSCL {
 	@Override
 	public SpringConfig getSpringConfig() {
 		SpringConfigSCL config = new SpringConfigSCL();
-		config.put(SpringConfigSCL.POST_PACKAGE, "spring/postPackage.xml");
 		return config;
 	}
 

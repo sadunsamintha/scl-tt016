@@ -31,6 +31,7 @@ import java.util.List;
 
 public class ActivationTestSCL extends ActivationTest implements ICameraControllerListener {
 	protected IPrinterAdaptor printer;
+	protected static List<String> codesSentToPrinter = new ArrayList<>();
 
 	public static class CameraSimuNoRead extends CameraSimulatorController {
 		@Override
@@ -130,6 +131,7 @@ public class ActivationTestSCL extends ActivationTest implements ICameraControll
 	public void onValidCameraCodeReceived(ICameraController<?> arg0, CodeEventArgs arg1) {
 		dataGenerated.add("AUTHENTICATED" + arg1.getCode() + "SKU#1");
 		counter++;
+		codesSentToPrinter.remove(0);
 	}
 
 	@Override
@@ -144,7 +146,7 @@ public class ActivationTestSCL extends ActivationTest implements ICameraControll
 
 	@Override
 	public void onErrorCameraCodeReceived(ICameraController<?> arg0, ErrorCodeEventArgs arg1) {
-		dataGenerated.add("UNREAD" + "SKU#1");
+		dataGenerated.add("SENT_TO_PRINTER_UNREAD" + codesSentToPrinter.get(0) + "SKU#1");
 		counter++;
 	}
 
@@ -174,6 +176,7 @@ public class ActivationTestSCL extends ActivationTest implements ICameraControll
 		@Override
 		public void sendCodesToPrint(final List<String> codes) {
 			this.codes = codes;
+			codesSentToPrinter.addAll(codes);
 		}
 
 		@Override
