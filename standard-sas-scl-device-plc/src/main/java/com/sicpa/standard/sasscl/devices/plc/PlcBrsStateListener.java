@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.text.MessageFormat;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -23,7 +24,7 @@ public class PlcBrsStateListener {
 
 	private static final Logger logger = LoggerFactory.getLogger(PlcBrsStateListener.class);
 
-	protected Map<PlcRequest, IPlcVariable<?>> brsRequestMap;
+	protected Map<PlcRequest, IPlcVariable<?>> brsRequestMap = new HashMap<>();
 
 	protected IPlcAdaptor plcAdaptor;
 
