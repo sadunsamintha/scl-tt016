@@ -433,36 +433,25 @@ public class RemoteServer extends AbstractRemoteServer {
 	}
 
 	protected void convertMarketTypeDto(ComponentBehaviorDto<? extends BaseDto<Long>> child,
-			final AbstractProductionParametersNode<?> convertedParentRoot) {
+										final AbstractProductionParametersNode<?> convertedParentRoot) {
 
 		MarketTypeDto marketDto = (MarketTypeDto) child.getNodeValue();
-		List<ProductionMode> productionModes = new ArrayList<>();
-
-		ProductionMode pm = productionModeMapping.getProductionModeFromRemoteId(marketDto.getId()
+		ProductionMode productionMode = productionModeMapping.getProductionModeFromRemoteId(marketDto.getId()
 				.intValue());
-		if (pm == null) {
+		if (productionMode == null) {
+
 			logger.error("no production mode for {}", marketDto.toString());
 			return;
 		}
+		ProductionModeNode productionModeConverted = new ProductionModeNode(productionMode);
+		convertedParentRoot.addChildren(productionModeConverted);
+		convertDMSProductionParameter(child, productionModeConverted);
 
-		if(ProductionMode.ALL.equals(pm)) {
-			productionModes.addAll(productionModeMapping.getAllAvailableProductionModes());
-		} else {
-			productionModes.add(pm);
+		if (ProductionMode.STANDARD.equals(productionMode)) {
+			// if standard mode duplicate the tree for refeed
+			copyTree(productionModeConverted, new ProductionModeNode(REFEED_NORMAL), convertedParentRoot);
+			copyTree(productionModeConverted, new ProductionModeNode(REFEED_CORRECTION), convertedParentRoot);
 		}
-
-		for(ProductionMode productionMode : productionModes) {
-			ProductionModeNode productionModeConverted = new ProductionModeNode(productionMode);
-			convertedParentRoot.addChildren(productionModeConverted);
-			convertDMSProductionParameter(child, productionModeConverted);
-
-			if (ProductionMode.STANDARD.equals(productionMode)) {
-				// if standard mode duplicate the tree for refeed
-				copyTree(productionModeConverted, new ProductionModeNode(REFEED_NORMAL), convertedParentRoot);
-				copyTree(productionModeConverted, new ProductionModeNode(REFEED_CORRECTION), convertedParentRoot);
-			}
-		}
-
 	}
 
 	protected void copyTree(ProductionModeNode from, ProductionModeNode to,

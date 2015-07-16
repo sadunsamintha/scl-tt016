@@ -15,8 +15,6 @@ public class ProductionMode implements Serializable {
 			true);
 	public static final ProductionMode OFFLINE = new ProductionMode(7, "productionmode.offline", false);
 	public static final ProductionMode EXPORT_CODING = new ProductionMode(8, "productionmode.export.coding", true);
-	public static final ProductionMode ALL = new ProductionMode(0, "productionmode.all", false);
-
 
 	protected final int id;
 	protected String description;
