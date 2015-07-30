@@ -21,14 +21,11 @@ public class StdCryptoEncoderWrapper extends AbstractEncoder {
 
 	protected IBSicpadataGenerator encoder;
 
-	protected ICryptoFieldsConfig cryptoFieldsConfig;
-
 	public StdCryptoEncoderWrapper(final long batchid, final int id, final IBSicpadataGenerator encoder,
-								   final int year, final long subsystemId, final ICryptoFieldsConfig cryptoFieldsConfig, int codeTypeId) {
+								   final int year, final long subsystemId, int codeTypeId) {
 		super(batchid, id, year, subsystemId, codeTypeId);
 		this.encoder = encoder;
 		encoder.setId(Long.valueOf(id));
-		this.cryptoFieldsConfig = cryptoFieldsConfig;
 	}
 
 	@Override
@@ -47,7 +44,7 @@ public class StdCryptoEncoderWrapper extends AbstractEncoder {
 			if (numberCodesToGenerate == 0) {
 				throw new EncoderEmptyException();
 			}
-			List<String> code = encoder.generate((int) numberCodesToGenerate, new Object[]{cryptoFieldsConfig.getFields(this)});
+			List<String> code = encoder.generate((int) numberCodesToGenerate);
 
 			return code;
 

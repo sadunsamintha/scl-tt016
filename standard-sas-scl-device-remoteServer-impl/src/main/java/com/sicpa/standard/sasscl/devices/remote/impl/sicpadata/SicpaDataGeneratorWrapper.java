@@ -12,8 +12,8 @@ public class SicpaDataGeneratorWrapper extends StdCryptoEncoderWrapper {
 	protected SicpadataGeneratorDto generator;
 
 	public SicpaDataGeneratorWrapper(SicpadataGeneratorDto sdgen, int year, long subsystemId, ICryptoFieldsConfig cryptoFieldsConfig) {
-		super(sdgen.getBatchId(),sdgen.getId().intValue(), (IBSicpadataGenerator) sdgen.getSicpadataGeneratorObject(), year, subsystemId,
-				cryptoFieldsConfig, sdgen.getCodeType().getId().intValue());
+		super(sdgen.getBatchId(),sdgen.getId().intValue(), (IBSicpadataGenerator) sdgen.getSicpadataGeneratorObject(),
+				year, subsystemId, sdgen.getCodeType().getId().intValue());
 		generator = sdgen;
 	}
 
