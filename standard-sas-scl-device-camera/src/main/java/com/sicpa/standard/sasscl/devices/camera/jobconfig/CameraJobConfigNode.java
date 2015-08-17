@@ -29,6 +29,9 @@ public class CameraJobConfigNode {
 	 */
 	protected final List<CameraJobConfigNode> children = new ArrayList<CameraJobConfigNode>();
 
+
+    public CameraJobConfigNode(){};
+
 	/**
 	 * to form a node with passed in configuration
 	 * 
