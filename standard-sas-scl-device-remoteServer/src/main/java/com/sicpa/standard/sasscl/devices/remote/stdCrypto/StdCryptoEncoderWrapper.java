@@ -10,9 +10,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
-/**
- * Encoder that delegates the encode process to standard crypto business encoder
- */
 public class StdCryptoEncoderWrapper extends AbstractEncoder {
 
     private static final Logger logger = LoggerFactory.getLogger(StdCryptoEncoderWrapper.class);
