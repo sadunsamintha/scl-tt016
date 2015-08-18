@@ -13,7 +13,7 @@ public class StdCryptoEncoderWrapperSimulator extends StdCryptoEncoderWrapper {
 
 	public StdCryptoEncoderWrapperSimulator(final long batchid, int id, IBSicpadataGenerator encoder, int year,
 											long subsystemId, long maxCode, ICryptoFieldsConfig cryptoFieldsConfig, int codeTypeId) {
-		super(batchid,id, encoder, year, subsystemId, codeTypeId);
+		super(batchid,id, encoder, year, subsystemId, cryptoFieldsConfig, codeTypeId);
 		this.remainingCode = maxCode;
 	}
 
