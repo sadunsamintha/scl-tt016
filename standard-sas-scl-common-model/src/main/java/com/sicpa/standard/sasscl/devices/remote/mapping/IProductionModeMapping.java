@@ -4,7 +4,8 @@ import com.sicpa.standard.sasscl.model.ProductionMode;
 
 public interface IProductionModeMapping {
 
-	ProductionMode getProductionModeFromRemoteId(int remoteid);
+    ProductionMode getProductionModeFromRemoteId(int remoteid);
 
-	void add(ProductionMode mode, int idOnRemote);
+    void add(ProductionMode mode, int idOnRemote);
+
 }
