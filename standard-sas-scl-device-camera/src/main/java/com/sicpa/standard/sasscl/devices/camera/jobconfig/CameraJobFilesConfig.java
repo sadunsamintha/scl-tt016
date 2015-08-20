@@ -54,6 +54,8 @@ public class CameraJobFilesConfig implements ICameraJobFilesConfig{
 	 */
 	protected boolean useDefaultCameraJobFile = false;
 
+    public CameraJobFilesConfig() {}
+
 	public CameraJobFilesConfig(final List<CameraJobConfigNode> cameraJobConfigNodes) {
 		this.cameraJobConfigNodes = cameraJobConfigNodes;
 	}
