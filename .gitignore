@@ -9,3 +9,6 @@ data
 version
 configHistory
 lock
+UserDatabase.csv
+standard-sas-scl-controller-process/uncaught-error
+standard-sas-scl-device-remoteServer/simulation/storage
