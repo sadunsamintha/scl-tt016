@@ -13,7 +13,6 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.javadoc.skip>true</maven.javadoc.skip>
-		<project.scm.id>git</project.scm.id>
 	</properties>
 
 	<build>
@@ -120,23 +119,6 @@
 						</configuration>
 					</execution>
 				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-release-plugin</artifactId>
-				<version>2.5.1</version>
-				<configuration>
-					<providerImplementations>
-						<git>jgit</git>
-					</providerImplementations>
-				</configuration>
-				<dependencies>
-					<dependency>
-						<groupId>org.apache.maven.scm</groupId>
-						<artifactId>maven-scm-provider-jgit</artifactId>
-						<version>1.9.4</version>
-					</dependency>
-				</dependencies>
 			</plugin>
 		</plugins>
 	</build>
@@ -626,10 +608,11 @@
 	</dependencyManagement>
 
 	<scm>
-		<connection>scm:git:http://psdgit.sicpa-net.ads/scm/cc/sas-scl-std.git</connection>
-		<developerConnection>scm:git:http://psdgit.sicpa-net.ads/scm/cc/sas-scl-std.git</developerConnection>
-		<url>http://psdgit.sicpa-net.ads/scm/cc/sas-scl-std.git</url>
+		<connection>scm:svn:https://psdsvn.sicpa-net.ads/standard-framework/standard-sas-scl-modules/standard-sas-scl-parent/trunk</connection>
+		<developerConnection>scm:svn:https://psdsvn.sicpa-net.ads/standard-framework/standard-sas-scl-modules/standard-sas-scl-parent/trunk</developerConnection>
+		<url>https://psdsvn.sicpa-net.ads/standard-framework/standard-sas-scl-modules/standard-sas-scl-parent/trunk</url>
 	</scm>
+
 
 	<distributionManagement>
 		<repository>
