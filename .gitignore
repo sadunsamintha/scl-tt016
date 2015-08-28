@@ -9,3 +9,8 @@ data
 version
 configHistory
 lock
+UserDatabase.csv
+standard-sas-scl-controller-process/uncaught-error
+standard-sas-scl-device-camera/testresources/camera/test.data
+standard-sas-scl-device-remoteServer/simulation/storage/encoder-sequence/Sequences_S.prop
+standard-sas-scl-test-functional-scl/config/global.properties
