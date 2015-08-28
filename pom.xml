@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.sicpa.standard.sasscl</groupId>
 	<artifactId>parent</artifactId>
 	<packaging>pom</packaging>
 	<name>parent std sas scl</name>
-	<version>2.4.1-SNAPSHOT</version>
+	<version>2.4.0-SNAPSHOT</version>
 
 
 
@@ -253,39 +254,39 @@
 			<dependency>
 				<groupId>com.sicpa.standard.sasscl</groupId>
 				<artifactId>model</artifactId>
-				<version>2.4.1-SNAPSHOT</version>
+				<version>2.4.0-SNAPSHOT</version>
 			</dependency>
 
 			<!--BUSINESS -->
 			<dependency>
 				<groupId>com.sicpa.standard.sasscl</groupId>
 				<artifactId>business-production</artifactId>
-				<version>2.4.1-SNAPSHOT</version>
+				<version>2.4.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>com.sicpa.standard.sasscl</groupId>
 				<artifactId>business-activation</artifactId>
-				<version>2.4.1-SNAPSHOT</version>
+				<version>2.4.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>com.sicpa.standard.sasscl</groupId>
 				<artifactId>business-alert</artifactId>
-				<version>2.4.1-SNAPSHOT</version>
+				<version>2.4.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>com.sicpa.standard.sasscl</groupId>
 				<artifactId>business-statistics</artifactId>
-				<version>2.4.1-SNAPSHOT</version>
+				<version>2.4.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>com.sicpa.standard.sasscl</groupId>
 				<artifactId>business-coding</artifactId>
-				<version>2.4.1-SNAPSHOT</version>
+				<version>2.4.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>com.sicpa.standard.sasscl</groupId>
 				<artifactId>test-utils</artifactId>
-				<version>2.4.1-SNAPSHOT</version>
+				<version>2.4.0-SNAPSHOT</version>
 			</dependency>
 
 
@@ -293,61 +294,61 @@
 			<dependency>
 				<groupId>com.sicpa.standard.sasscl</groupId>
 				<artifactId>service-monitoring</artifactId>
-				<version>2.4.1-SNAPSHOT</version>
+				<version>2.4.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>com.sicpa.standard.sasscl</groupId>
 				<artifactId>storage</artifactId>
-				<version>2.4.1-SNAPSHOT</version>
+				<version>2.4.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>com.sicpa.standard.sasscl</groupId>
 				<artifactId>controller-process</artifactId>
-				<version>2.4.1-SNAPSHOT</version>
+				<version>2.4.0-SNAPSHOT</version>
 			</dependency>
 
 			<dependency>
 				<groupId>com.sicpa.standard.sasscl</groupId>
 				<artifactId>view</artifactId>
-				<version>2.4.1-SNAPSHOT</version>
+				<version>2.4.0-SNAPSHOT</version>
 			</dependency>
 
 			<!--DEVICES -->
 			<dependency>
 				<groupId>com.sicpa.standard.sasscl</groupId>
 				<artifactId>device-printer</artifactId>
-				<version>2.4.1-SNAPSHOT</version>
+				<version>2.4.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>com.sicpa.standard.sasscl</groupId>
 				<artifactId>device-camera</artifactId>
-				<version>2.4.1-SNAPSHOT</version>
+				<version>2.4.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>com.sicpa.standard.sasscl</groupId>
 				<artifactId>device-remoteServer</artifactId>
-				<version>2.4.1-SNAPSHOT</version>
+				<version>2.4.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>com.sicpa.standard.sasscl</groupId>
 				<artifactId>device-plc</artifactId>
-				<version>2.4.1-SNAPSHOT</version>
+				<version>2.4.0-SNAPSHOT</version>
 			</dependency>
 			<!--SPRING -->
 			<dependency>
 				<groupId>com.sicpa.standard.sasscl</groupId>
 				<artifactId>spring-common</artifactId>
-				<version>2.4.1-SNAPSHOT</version>
+				<version>2.4.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>com.sicpa.standard.sasscl</groupId>
 				<artifactId>spring-scl</artifactId>
-				<version>2.4.1-SNAPSHOT</version>
+				<version>2.4.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>com.sicpa.standard.sasscl</groupId>
 				<artifactId>device-remoteServer-impl</artifactId>
-				<version>2.4.1-SNAPSHOT</version>
+				<version>2.4.0-SNAPSHOT</version>
 			</dependency>
 			<!--MISC -->
 			<dependency>
@@ -358,33 +359,33 @@
 			<dependency>
 				<groupId>com.sicpa.standard.sasscl</groupId>
 				<artifactId>common-app</artifactId>
-				<version>2.4.1-SNAPSHOT</version>
+				<version>2.4.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>com.sicpa.standard.sasscl</groupId>
 				<artifactId>parent</artifactId>
-				<version>2.4.1-SNAPSHOT</version>
+				<version>2.4.0-SNAPSHOT</version>
 			</dependency>
 
 			<dependency>
 				<groupId>com.sicpa.standard.sasscl</groupId>
 				<artifactId>functional-test-common</artifactId>
-				<version>2.4.1-SNAPSHOT</version>
+				<version>2.4.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>com.sicpa.standard.sasscl</groupId>
 				<artifactId>business-skucheck</artifactId>
-				<version>2.4.1-SNAPSHOT</version>
+				<version>2.4.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>com.sicpa.standard.sasscl</groupId>
 				<artifactId>device-brs</artifactId>
-				<version>2.4.1-SNAPSHOT</version>
+				<version>2.4.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>com.sicpa.standard.sasscl</groupId>
 				<artifactId>device-bis</artifactId>
-				<version>2.4.1-SNAPSHOT</version>
+				<version>2.4.0-SNAPSHOT</version>
 			</dependency>
 
 			<!-- EXTERNALS -->
@@ -628,8 +629,7 @@
 		<connection>scm:git:http://psdgit.sicpa-net.ads/scm/cc/sas-scl-std.git</connection>
 		<developerConnection>scm:git:http://psdgit.sicpa-net.ads/scm/cc/sas-scl-std.git</developerConnection>
 		<url>http://psdgit.sicpa-net.ads/scm/cc/sas-scl-std.git</url>
-	  <tag>HEAD</tag>
-  </scm>
+	</scm>
 
 	<distributionManagement>
 		<repository>
