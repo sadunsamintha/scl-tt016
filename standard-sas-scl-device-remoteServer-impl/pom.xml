@@ -24,7 +24,7 @@
         <dependency>
             <groupId>com.sicpa.standard.standard-serverside-util</groupId>
             <artifactId>standard-serverside-util</artifactId>
-            <version>4.0.0-SNAPSHOT</version>
+            <version>4.0.0-TR</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.slf4j</groupId>
@@ -44,7 +44,7 @@
         <dependency>
             <groupId>com.sicpa.standard.standard-serverside-api</groupId>
             <artifactId>standard-common-server-api</artifactId>
-            <version>4.0.0-SNAPSHOT</version>
+            <version>4.0.0-TR</version>
             <exclusions>
                 <exclusion>
                     <artifactId>validation-api</artifactId>
