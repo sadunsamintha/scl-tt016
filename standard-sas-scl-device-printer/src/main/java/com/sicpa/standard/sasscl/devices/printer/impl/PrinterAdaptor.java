@@ -106,7 +106,8 @@ public class PrinterAdaptor extends AbstractPrinterAdaptor implements IPrinterCo
 	}
 
 	@Override
-	public void onConnectionStatusChanged(final IPrinterController sender, final boolean isConnected) {
+	public void onConnectionStatusChanged(final Object sender, final boolean isConnected) {
+
 		logger.debug((isConnected) ? "connection successful" : "disconnected");
 
 		if (!isConnected) {
@@ -300,7 +301,7 @@ public class PrinterAdaptor extends AbstractPrinterAdaptor implements IPrinterCo
 		}
 	}
 
-	@Override
+	@Deprecated
 	public void onMessagesReceived(Map<String, PrinterMessage> messageMap) {
 		if (messageMap.isEmpty())
 			return;
