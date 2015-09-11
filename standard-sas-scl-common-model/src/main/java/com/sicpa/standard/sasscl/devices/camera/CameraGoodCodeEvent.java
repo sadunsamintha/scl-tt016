@@ -4,6 +4,7 @@ import com.sicpa.standard.sasscl.model.Code;
 
 public class CameraGoodCodeEvent {
 
+
 	protected Code code;
 	protected ICameraAdaptor source;
 
@@ -18,5 +19,12 @@ public class CameraGoodCodeEvent {
 
 	public ICameraAdaptor getSource() {
 		return source;
+	}
+
+	@Override
+	public String toString() {
+		return "CameraGoodCodeEvent{" +
+				"code=" + code +
+				'}';
 	}
 }
