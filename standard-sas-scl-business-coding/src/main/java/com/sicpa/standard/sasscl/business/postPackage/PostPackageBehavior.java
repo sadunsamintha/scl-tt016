@@ -119,6 +119,7 @@ public class PostPackageBehavior implements IPostPackageBehavior {
 		return p;
 	}
 
+	@Override
 	public List<Product> handleBadCode(Code code) {
 		synchronized (codes) {
 			if (!codes.isEmpty()) {
