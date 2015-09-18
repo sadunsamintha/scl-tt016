@@ -19,4 +19,12 @@ public class CameraBadCodeEvent {
 	public ICameraAdaptor getSource() {
 		return source;
 	}
+
+	@Override
+	public String toString() {
+		return "CameraBadCodeEvent{" +
+				"code=" + code +
+				'}';
+	}
+
 }

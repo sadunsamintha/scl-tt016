@@ -80,14 +80,14 @@
 
 	<bean id="warAirPressLvlPlcVarDesc" class="com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcIntegerVariableDescriptor">
 		<property name="variable" ref="warAirPressLvlParam" />
-		<property name="min" value="1" />
+		<property name="min" value="0" />
 		<property name="max" value="999999" />
 		<property name="plcProvider" ref="plcProvider" />
 	</bean>
 
 	<bean id="errAirPressLvlPlcVarDesc" class="com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcIntegerVariableDescriptor">
 		<property name="variable" ref="errAirPressLvlParam" />
-		<property name="min" value="1" />
+		<property name="min" value="0" />
 		<property name="max" value="999999" />
 		<property name="plcProvider" ref="plcProvider" />
 	</bean>
