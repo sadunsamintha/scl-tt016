@@ -7,8 +7,8 @@
     <CameraConfig deviceType="COGNEX" id="qc_scl_1"/>
     <!--<CameraConfig deviceType="COGNEX" id="qc_scl_2"/>-->
 
-    <!-- uncomment to use the bis -->
-     	<BrsConfig />
+    <BrsConfig />
+
 
 
     <PlcConfig line1File="line1Config.xml" line1Index="1">
@@ -19,7 +19,6 @@
         <property key=".com.stLine[1].stParameters.bExportModeEnabled" value="false"/>
         <property key=".com.stLine[1].stParameters.bMaintenanceModeEnabled" value="false"/>
         <property key=".com.stLine[1].stParameters.bRefeedModeEnabled" value="false"/>
-        <property key=".ExtGbl_stBRScom.bBRSenable" value="true"/>
     </PlcConfig>
 
 </ProductionConfig>

@@ -1,80 +1,253 @@
 package com.sicpa.standard.sasscl.devices.brs;
 
-import com.sicpa.standard.sasscl.devices.AbstractDevice;
+import com.sicpa.common.device.reader.CodeReader;
+import com.sicpa.common.device.reader.CodeReceiver;
+import com.sicpa.common.device.reader.DisconnectionListener;
+import com.sicpa.common.device.reader.brs.commands.BrsCommands;
+import com.sicpa.common.device.reader.brs.factory.BrsFactory;
+import com.sicpa.common.device.reader.factory.ReaderFactory;
+import com.sicpa.common.device.reader.lifecheck.EchoListener;
+import com.sicpa.common.device.reader.sick.commands.SickCommands;
+import com.sicpa.common.device.reader.sick.factory.SickFactory;
+import com.sicpa.standard.client.common.eventbus.service.EventBusService;
+import com.sicpa.standard.common.util.Messages;
+import com.sicpa.standard.common.util.ThreadUtils;
+import com.sicpa.standard.sasscl.devices.AbstractStartableDevice;
 import com.sicpa.standard.sasscl.devices.DeviceException;
 import com.sicpa.standard.sasscl.devices.DeviceStatus;
-import com.sicpa.standard.sasscl.devices.IStartableDevice;
+import com.sicpa.standard.sasscl.devices.brs.event.BRSStartFailedEvent;
+import com.sicpa.standard.sasscl.devices.brs.event.BrsProductEvent;
+import com.sicpa.standard.sasscl.devices.brs.model.BrsModel;
+import com.sicpa.standard.sasscl.devices.brs.model.BrsType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * NOTICE:  All information and intellectual property contained herein is the confidential property of SICPA Security Solutions SA,
- * and may be subject to patent, copyright, trade secret, and other intellectual property and contractual protections.
- * Reproduction or dissemination of the information or intellectual property contained herein is strictly forbidden,
- * unless separate written permission has been obtained from SICPA Security Solutions SA.
- *
- * Copyright © 2014 SICPA Security Solutions SA. All rights reserved.
- *
- * Created by lclaudon on 22.08.14.
- */
- 
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
-public class BrsAdaptor  extends AbstractDevice implements IStartableDevice {
+public class BrsAdaptor extends AbstractStartableDevice implements CodeReceiver, DisconnectionListener, EchoListener {
 
     private static final Logger logger = LoggerFactory.getLogger(BrsAdaptor.class);
 
-    protected boolean shouldBeConnected;
+    private BrsModel brsModel;
 
-    protected boolean reallyConnected;
+    private final AtomicBoolean isConnected;
+
+    private BrsReconnectionHandler brsReconnectionHandler = new BrsReconnectionHandler();
+
+    private List<CodeReader> readers;
+
+    private static final int BRS_READER_INTERVAL = 1000;
+
+    private static final int BRS_READER_TIMEOUT = 2000;
+
+    private static final int BRS_NUMBER_OF_RETRIES = 3;
+
 
     public BrsAdaptor() {
+        this(null);
+    }
+
+    public BrsAdaptor(BrsModel model) {
         super();
-        setName("BRS");
+        setName("Brs");
+        this.brsModel = model;
+        isConnected = new AtomicBoolean(false);
+        readers = new ArrayList<CodeReader>();
     }
 
     @Override
     protected void doConnect() throws DeviceException {
+        logger.debug("Establishing connection to BRS devices {}", brsModel);
+        readers.clear();
 
-        shouldBeConnected = true;
-        if (reallyConnected) {
-            fireDeviceStatusChanged(DeviceStatus.CONNECTED);
+        try {
+            createReaders();
+        } catch (IOException | URISyntaxException e) {
+            logger.error("Error creating code readers {}", e.getMessage());
+            onBrsConnected(false);
+            return;
         }
+        checkBrsConnectivity();
+        onBrsConnected(true);
     }
 
     @Override
     protected void doDisconnect() throws DeviceException {
-
-        shouldBeConnected = false;
+        logger.debug("do DISCONNECTED");
+        doStop();
         fireDeviceStatusChanged(DeviceStatus.DISCONNECTED);
     }
 
-    public void onBrsConnected(boolean connected) {
-
-        reallyConnected = connected;
-        if (!shouldBeConnected) return;
-
-        if (connected) {
-            logger.debug("BRS CONNECTED");
-            fireDeviceStatusChanged(DeviceStatus.CONNECTED);
-        }
-        else {
-            logger.debug("BRS DISCONNECTED");
-            fireDeviceStatusChanged(DeviceStatus.DISCONNECTED);
-        }
-    }
-
     @Override
-    public void start() throws DeviceException {
+    public void doStart() throws DeviceException {
+        if(!isConnected.get()) {
+            EventBusService.post(new BRSStartFailedEvent(Messages.get("brs.start.failed.not.connected")));
+            return;
+        }
+        try {
+            enableBrsReading();
+        } catch (IOException e) {
+            logger.error("Error starting brs device", e.getMessage());
+            EventBusService.post(new BRSStartFailedEvent(Messages.get("brs.start.failed")));
+        }
         fireDeviceStatusChanged(DeviceStatus.STARTED);
     }
 
     @Override
-    public void stop() throws DeviceException {
+    public void doStop() throws DeviceException {
+        try {
+            disableBrsReading();
+        } catch (IOException e) {
+            logger.error("Error stopping brs devices", e.getMessage());
+        }
         fireDeviceStatusChanged(DeviceStatus.STOPPED);
+    }
+
+    @Override
+    public void onCodeReceived(String s) {
+        EventBusService.post(new BrsProductEvent(s));
+    }
+
+
+    @Override
+    public void onDisconnection(boolean b) {
+        isConnected.getAndSet(false);
+        onBrsConnected(false);
     }
 
     @Override
     public boolean isBlockProductionStart() {
         return true;
+    }
+
+
+    @Override
+    public void onErrorReceived(String s) {
+    }
+
+    @Override
+    public void onLifecheck() {
+        if (!isConnected.getAndSet(true)) {
+            onBrsConnected(true);
+        }
+
+    }
+
+    private void onBrsConnected(boolean connected) {
+        if (connected) {
+            logger.debug("BRS CONNECTED");
+            fireDeviceStatusChanged(DeviceStatus.CONNECTED);
+            brsReconnectionHandler.stopReconnection();
+        } else {
+            disconnectReaders();
+            logger.debug("BRS DISCONNECTED");
+            fireDeviceStatusChanged(DeviceStatus.DISCONNECTED);
+
+            brsReconnectionHandler.startReconnection();
+        }
+    }
+
+    private void disconnectReaders() {
+        for (CodeReader reader : readers) {
+            reader.stop();
+        }
+    }
+
+    private void checkBrsConnectivity() throws DeviceException {
+        for(CodeReader reader : readers) {
+            // Allow life check
+            reader.start();
+            // Prevent reading barcodes
+            doStop();
+        }
+    }
+
+
+    private void enableBrsReading() throws IOException {
+        for (CodeReader reader : readers) {
+            sendEnableReadingCommand(reader);
+        }
+    }
+
+    private void disableBrsReading() throws IOException {
+        for (CodeReader reader : readers) {
+            sendDisableReadingCommand(reader);
+        }
+    }
+
+    private void createReaders() throws IOException, URISyntaxException {
+        ReaderFactory factory = createReaderFactory();
+        for (String address : brsModel.getActiveAddresses()) {
+            CodeReader reader = factory.createReader(
+                    new URI(String.format("brs:%s:%d", address, brsModel.getPort())),
+                    this, this);
+            readers.add(reader);
+        }
+    }
+
+    private ReaderFactory createReaderFactory() {
+        ReaderFactory factory = null;
+        if (brsModel.getBrsType().equalsIgnoreCase(BrsType.SICK.name())) {
+            factory = new SickFactory(BRS_READER_INTERVAL, BRS_READER_TIMEOUT, "brs");
+        } else if (brsModel.getBrsType().equalsIgnoreCase(BrsType.DATAMAN.name())) {
+            factory = new BrsFactory(BRS_READER_INTERVAL, BRS_READER_TIMEOUT, this, BRS_NUMBER_OF_RETRIES);
+        }
+        return factory;
+    }
+
+    private void sendDisableReadingCommand(CodeReader reader) throws IOException {
+        if (brsModel.getBrsType().equalsIgnoreCase(BrsType.SICK.name())) {
+            reader.sendData(SickCommands.DISABLE_READING);
+        } else if (brsModel.getBrsType().equalsIgnoreCase(BrsType.DATAMAN.name())) {
+            reader.sendData(BrsCommands.DISABLE_READING);
+        }
+    }
+
+    private void sendEnableReadingCommand(CodeReader reader) throws IOException {
+        if (brsModel.getBrsType().equalsIgnoreCase(BrsType.SICK.name())) {
+            reader.sendData(SickCommands.ENABLE_READING);
+        } else if (brsModel.getBrsType().equalsIgnoreCase(BrsType.DATAMAN.name())) {
+            reader.sendData(BrsCommands.ENABLE_READING);
+        }
+    }
+
+    private class BrsReconnectionHandler {
+        private Thread reconnectionHandler = new Thread();
+        private boolean onReconnection = false;
+
+        public void startReconnection() {
+            if (!reconnectionHandler.isAlive()) {
+                onReconnection = true;
+
+                reconnectionHandler = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        while (onReconnection) {
+                            logger.debug("Trying to reconnect BRS..." + Thread.currentThread().getId());
+                            try {
+                                doConnect();
+                            } catch (DeviceException e) {
+                                logger.error("Error connecting to brs device", e.getMessage());
+                            }
+
+                            ThreadUtils.sleepQuietly(5000);
+                        }
+                        ;
+                    }
+                });
+
+                reconnectionHandler.start();
+            }
+        }
+
+        public void stopReconnection() {
+            onReconnection = false;
+        }
     }
 }

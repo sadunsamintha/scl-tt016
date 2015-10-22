@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>device-brs</artifactId>
@@ -21,16 +22,35 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.sicpa.standard.sasscl</groupId>
-            <artifactId>business-skucheck</artifactId>
+            <artifactId>common</artifactId>
+            <groupId>com.sicpa.common.device.reader</groupId>
+            <version>0.0.9</version>
         </dependency>
         <dependency>
-            <groupId>com.sicpa.standard.plc</groupId>
-            <artifactId>standard-plc</artifactId>
+            <artifactId>brs-eth</artifactId>
+            <groupId>com.sicpa.common.device.reader</groupId>
+            <version>0.0.9</version>
         </dependency>
         <dependency>
-            <groupId>com.sicpa.standard.sasscl</groupId>
-            <artifactId>device-plc</artifactId>
+            <artifactId>sick-eth</artifactId>
+            <groupId>com.sicpa.common.device.reader</groupId>
+            <version>0.0.9</version>
         </dependency>
-    </dependencies>
+        <dependency>
+            <artifactId>business-alert</artifactId>
+            <groupId>com.sicpa.standard.sasscl</groupId>
+            <version>2.4.3-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <artifactId>model</artifactId>
+            <groupId>com.sicpa.standard.sasscl</groupId>
+            <version>2.4.3-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>6.1.1</version>
+            <scope>test</scope>
+        </dependency>
+</dependencies>
 </project>

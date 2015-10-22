@@ -145,6 +145,8 @@ public class SASDefaultMessagesMapping implements IMessageCodeMapper {
 		addEntry(Simulator.ENCODER, "[SIMU5]", WARNING);
 		addEntry(Simulator.AUTHENTICATOR, "[SIMU6]", WARNING);
 		addEntry(Simulator.CAMERA_READ_CODE_FROM_FILE, "[SIMU7]", WARNING);
+		addEntry(Simulator.BRS, "[SIMU8]", WARNING);
+
 
 		addEntry(ProductionParameters.NO_LONGER_AVAILABLE, "[SKU_01]", WARNING);
 
@@ -178,22 +180,9 @@ public class SASDefaultMessagesMapping implements IMessageCodeMapper {
 		addEntry(DevicesController.FAILED_TO_START_DEVICE, "[DEV_03]", ERROR);
 		addEntry(FlowControl.DEVICES_CONNECT_FAILED, "[DEV_01]", ERROR);
 
-		addEntry(BRS.BRS_PLC_ALL_CAMERAS_CONNECTED, "[BRS_01]", IGNORE);
-		addEntry(BRS.BRS_PLC_ALL_CAMERAS_DISCONNECTED, "[BRS_02]", WARNING);
-		addEntry(BRS.BRS_PLC_FRAUD_DETECTED, "[BRS_03]", IGNORE);
-		addEntry(BRS.BRS_PLC_JAM_DETECTED, "[BRS_04]", WARNING);
-		addEntry(BRS.BRS_PLC_ENCODER_PROBLEM, "[BRS_05]", WARNING);
-		addEntry(BRS.BRS_PLC_COMMUNICATION_PROBLEM, "[BRS_07]", WARNING);
-		addEntry(BRS.BRS_PLC_CAN_NOT_CONNECT, "[BRS_08]", WARNING);
-		addEntry(BRS.BRS_CAN_NOT_START, "[BRS_09]", WARNING);
-		addEntry(BRS.BRS_PLC_CAMERAS_DISCONNECTION, "[BRS_10]", WARNING);
-		addEntry(BRS.BRS_PLC_RECEIVED_EMPTY_SKU, "[BRS_11]", WARNING);
-		addEntry(BRS.BRS_COUNT_DIFFERENCE_HIGH, "[BRS_12]", WARNING);
-		addEntry(BRS.BRS_TOO_MANY_UNREAD, "[BRS_13]", WARNING);
-        addEntry(BRS.NTF_BRS_CONSECUTIVE_BAD_CODE_DETECTED, "[BRS_14]", ERROR);
-        addEntry(BRS.NTF_BRS_TOO_MANY_UNREAD_WAR_DETECTED, "[BRS_15]", WARNING);
-        addEntry(BRS.NTF_BRS_TOO_MANY_UNREAD_ERR_DETECTED, "[BRS_16]", ERROR);
-
+		addEntry(BRS.BRS_WRONG_SKU, "[BRS_01]", ActionMessageType.ERROR);
+		addEntry(BRS.BRS_TOO_MANY_UNREAD_BARCODES_WARNING, "[BRS_02]", WARNING);
+		addEntry(BRS.BRS_TOO_MANY_UNREAD_BARCODES_ERROR, "[BRS_03]", ERROR);
 
         addEntry(BIS.BIS_CONNECTED, "[BIS_01]", WARNING);
 		addEntry(BIS.BIS_DISCONNECTED, "[BIS_02]", WARNING);

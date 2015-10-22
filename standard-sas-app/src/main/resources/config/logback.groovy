@@ -38,8 +38,8 @@ rollingFileAppendersTime = [
 rollingFileAppendersSize = [
 	[id: "STDCAMERA",    file:"log/camera.log",    fileZip: "log/camera-.%i.log.zip"],
 	[id: "STDPRINTER",   file:"log/printer.log",   fileZip: "log/printer-.%i.log.zip"],
-	[id: "STDOPERATOR",  file:"log/operator.log",  fileZip: "log/operator-.%i.log"],
-	[id: "BRS-SKUCHECK", file:"log/skucheck.log",  fileZip: "log/brs-.%i.log.zip"]
+	[id: "STDOPERATOR",  file:"log/operator.log",  fileZip: "log/operator-.%i.log.zip"],
+	[id: "BRS", 		 file:"log/brs.log",  fileZip: "log/brs-.%i.log.zip"]
 ]
 
 
@@ -69,8 +69,7 @@ rollingFileAppendersSize.each { c ->
 
 logger("com.sicpa.standard.sasscl",     	                    DEBUG,  ["SASSCL"],      true)
 logger("com.sicpa.standard.sasscl.common.log.OperatorLogger",   INFO,   ["STDOPERATOR"],  true)
-logger("com.sicpa.standard.sasscl.skucheck",                    DEBUG,  ["BRS-SKUCHECK"],true)
-logger("com.sicpa.standard.sasscl.devices.brs",                 DEBUG,  ["BRS-SKUCHECK"],true)
+logger("com.sicpa.standard.sasscl.devices.brs",                 DEBUG,  ["BRS"]			,true)
 logger("com.sicpa.standard.camera",                             INFO,   ["STDCAMERA"],   true)
 logger("com.sicpa.standard.printer",                            WARN,   ["STDPRINTER"],  true)
 logger("com.sicpa.standard.plc",                                INFO,   ["STDPLC"],      true)

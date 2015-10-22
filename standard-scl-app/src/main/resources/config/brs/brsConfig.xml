@@ -1,0 +1,17 @@
+<!-- ########################################################################### -->
+<!--               BRS configuration file                                        -->
+<!-- ########################################################################### -->
+
+<com.sicpa.standard.sasscl.devices.brs.model.BrsModel>
+
+    <mId>1</mId>
+    <brsType>dataman</brsType>
+    <mIp1>192.168.1.121</mIp1>
+    <mIp2>192.168.1.122</mIp2>
+    <mIp3>192.168.1.123</mIp3>
+    <mIp4>192.168.1.124</mIp4>
+
+    <mPort>23</mPort>
+
+</com.sicpa.standard.sasscl.devices.brs.model.BrsModel>
+

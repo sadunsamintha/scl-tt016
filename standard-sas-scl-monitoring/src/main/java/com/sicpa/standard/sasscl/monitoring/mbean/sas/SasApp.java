@@ -53,8 +53,6 @@ public class SasApp extends NotificationBroadcasterSupport implements SasAppMBea
 	protected IPlcJmxInfo plcJmxInfo;
 	protected ProductionConfigProvider productionConfigProvider;
 
-    private String cameraDisconnected = "[]";
-
     private String NO_CAMERAS = "No Cameras configured";
 
 	public SasApp() {
@@ -62,28 +60,6 @@ public class SasApp extends NotificationBroadcasterSupport implements SasAppMBea
         EventBusService.register(this);
     }
 
-    @Subscribe
-    public void handleMessageEvent(final MessageEvent event)
-    {
-        if (MessageEventKey.BRS.BRS_PLC_ALL_CAMERAS_DISCONNECTED.equals(event.getKey()))
-        {
-            cameraDisconnected = "<all>";
-        }
-        else if (MessageEventKey.BRS.BRS_PLC_CAMERAS_DISCONNECTION.equals(event.getKey()))
-        {
-            cameraDisconnected = "[";
-            try {
-                cameraDisconnected += event.getParams()[0].toString();
-            } catch (Exception e) {
-                cameraDisconnected += "UNKNOWN";
-            }
-            cameraDisconnected+= "]";
-        }
-        else if (MessageEventKey.BRS.BRS_PLC_ALL_CAMERAS_CONNECTED.equals(event.getKey()))
-        {
-            cameraDisconnected = "[]";
-        }
-    }
 
     @Override
 	public boolean isRunning() {
@@ -569,15 +545,5 @@ public class SasApp extends NotificationBroadcasterSupport implements SasAppMBea
 		this.productionConfigProvider = productionConfigProvider;
 	}
 
-    /**
-     * Return list Of Brs Camera Disconnected.
-     *
-     * @return String<br>
-     *         <b>[]</b>No<br>
-     *         <b>[X,Y,..]</b>X, Y Camera Id<br>
-     */
-    public String getDeviceBrsDisconnected()
-    {
-        return cameraDisconnected;
-    }
+
 }

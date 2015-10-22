@@ -46,16 +46,7 @@ public class Main {
 
 		// ------ Adding BRS ---------//
 		config.put("brs", "spring/brs.xml");
-		config.put("brsConfigParameterDescriptors", "spring/brsConfigParameterDescriptors.xml");
-		config.put("brsPlc", "spring/brsPlc.xml");
-		config.put("brsPlcNotifications", "spring/brsPlcNotifications.xml");
-		config.put("brsPlcParameters", "spring/brsPlcParameters.xml");
-		config.put("brsPlcRequests", "spring/brsPlcRequests.xml");
-		config.put("brsPlcVariablesDescriptors", "spring/brsPlcVariablesDescriptors.xml");
-		config.put("brsPlcVariablesMapping", "spring/brsPlcVariablesMapping.xml");
-		config.put("skuCheck", "spring/skuCheck.xml");
-		config.put("skuCheckView", "spring/skuCheckView.xml");
-		
+
 		String[] profiles = new String[1];
 		try {
 			String fileName = "config/global.properties";			

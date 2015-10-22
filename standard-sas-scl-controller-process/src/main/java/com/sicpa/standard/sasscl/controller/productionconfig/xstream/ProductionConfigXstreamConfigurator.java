@@ -26,5 +26,7 @@ public class ProductionConfigXstreamConfigurator implements IXStreamConfigurator
 		x.registerConverter(new PrinterConfigConverter());
 		x.registerConverter(new PlcConfigConverter());
 		x.registerConverter(new BisConfigConverter());
+		x.registerConverter(new BrsConfigConverter());
+
 	}
 }

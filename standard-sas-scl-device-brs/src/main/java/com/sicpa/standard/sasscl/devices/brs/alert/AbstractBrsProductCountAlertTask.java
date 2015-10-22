@@ -1,0 +1,84 @@
+package com.sicpa.standard.sasscl.devices.brs.alert;
+
+import com.google.common.eventbus.Subscribe;
+
+import com.sicpa.standard.sasscl.business.alert.task.AbstractAlertTask;
+import com.sicpa.standard.sasscl.controller.ProductionParametersEvent;
+import com.sicpa.standard.sasscl.devices.brs.event.BrsProductEvent;
+import com.sicpa.standard.sasscl.devices.brs.utils.ResettableAtomicCounter;
+import com.sicpa.standard.sasscl.devices.camera.CameraBadCodeEvent;
+import com.sicpa.standard.sasscl.devices.camera.CameraGoodCodeEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+
+public abstract class AbstractBrsProductCountAlertTask extends AbstractAlertTask  {
+
+    private static final Logger logger = LoggerFactory.getLogger(AbstractBrsProductCountAlertTask.class);
+
+    private ResettableAtomicCounter brsProductsDeltaCounter = new ResettableAtomicCounter();
+
+    private boolean isUnreadBarcodesEnable;
+
+    public abstract int getUnreadBarcodesThreshold();
+
+
+
+    @Subscribe
+    public void receiveCameraCode(final CameraGoodCodeEvent evt) {
+        increaseProductCount();
+    }
+
+    @Subscribe
+    public void receiveCameraCodeError(final CameraBadCodeEvent evt) {
+        increaseProductCount();
+    }
+
+    @Subscribe
+    public void onProductionParametersChanged(ProductionParametersEvent evt) {
+        reset();
+        //TODO if the brs barcode is not compliance then we have to disable the alert
+    }
+
+    private void increaseProductCount() {
+        brsProductsDeltaCounter.getNextValue();
+        logger.debug("increasing brs delta counter. The Current value is {} ", brsProductsDeltaCounter);
+        checkForMessage();
+    }
+
+    @Subscribe
+    public void onBrsCodeReceived(BrsProductEvent evt) {
+        brsProductsDeltaCounter.reset();
+    }
+
+
+    @Override
+    public boolean isAlertPresent() {
+        return brsProductsDeltaCounter.getValue() > getUnreadBarcodesThreshold();
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return isUnreadBarcodesEnable;
+    }
+
+
+    @Override
+    public void reset() {
+        brsProductsDeltaCounter.reset();
+    }
+
+    public int getCountValue() {
+        return brsProductsDeltaCounter.getValue();
+    }
+
+
+    public boolean isUnreadBarcodesEnable() {
+        return isUnreadBarcodesEnable;
+    }
+
+    public void setIsUnreadBarcodesEnable(boolean isUnreadBarcodesEnable) {
+        this.isUnreadBarcodesEnable = isUnreadBarcodesEnable;
+    }
+
+}

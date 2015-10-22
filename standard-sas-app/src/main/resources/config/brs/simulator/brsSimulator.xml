@@ -1,0 +1,6 @@
+<com.sicpa.standard.sasscl.devices.brs.simulator.BrsSimulatorConfig>
+
+    <sendWrongBarcode>false</sendWrongBarcode>
+    <reachUnreadBarcodesThresholds>false</reachUnreadBarcodesThresholds>
+
+</com.sicpa.standard.sasscl.devices.brs.simulator.BrsSimulatorConfig>

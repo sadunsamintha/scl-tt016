@@ -63,8 +63,6 @@ public class PlcAdaptor extends AbstractPlcAdaptor implements IPlcControllerList
 	
 	private static final short SYSTEM_TYPE_TOBACCO = 3;
 
-    protected PlcBrsStateListener brsStateListener;
-
 
     /**
 	 * 
@@ -76,10 +74,6 @@ public class PlcAdaptor extends AbstractPlcAdaptor implements IPlcControllerList
 
 	public PlcAdaptor() {
 	}
-
-    public void setBrsStateListener(PlcBrsStateListener brsStateListener) {
-        this.brsStateListener = brsStateListener;
-    }
 
 	public PlcAdaptor(final IPlcController<?> controller) {
 		this.controller = controller;
@@ -236,15 +230,6 @@ public class PlcAdaptor extends AbstractPlcAdaptor implements IPlcControllerList
 				logger.error("failed to write plc param:" + var.getVariableName() + " value:" + var.getValue(), e);
 			}
 		}
-
-        // Send Expected SKU to BRS
-        if(this.brsStateListener != null) {
-            try {
-                brsStateListener.sendSkuConfig();
-            } catch (Exception e) {
-                logger.error("Failed to send sku config to BRS", e);
-            }
-        }
 
 		try {
 			sendReloadPlcParametersRequest();
