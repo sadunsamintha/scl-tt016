@@ -11,7 +11,7 @@
     <mIp3>192.168.1.123</mIp3>
     <mIp4>192.168.1.124</mIp4>
 
-    <mPort>80</mPort>
+    <mPort>23</mPort>
 
 </com.sicpa.standard.sasscl.devices.brs.model.BrsModel>
 
