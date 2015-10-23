@@ -60,14 +60,12 @@ public class PlcAdaptor extends AbstractPlcAdaptor implements IPlcControllerList
 	private Map<String, Short> systemTypes;
 	
 	private Map<String, Boolean> activeLines;
+
+	protected final AtomicBoolean notificationCreated = new AtomicBoolean(false);
 	
 	private static final short SYSTEM_TYPE_TOBACCO = 3;
 
 
-    /**
-	 * 
-	 * @param plcVariablesMap
-	 */
 	public void setPlcVariablesNameMap(Map<String, String> plcVariablesMap) {
 		PlcVariableMap.addPlcVariables(plcVariablesMap);
 	}
@@ -81,10 +79,6 @@ public class PlcAdaptor extends AbstractPlcAdaptor implements IPlcControllerList
 		setName("PLC");
 	}
 
-	protected final AtomicBoolean notificationCreated = new AtomicBoolean(false);
-	
-	
-	
 	@Override
 	protected void doConnect() throws PlcAdaptorException {
 
