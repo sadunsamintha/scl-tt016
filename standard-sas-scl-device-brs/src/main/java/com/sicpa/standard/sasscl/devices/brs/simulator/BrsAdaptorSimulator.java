@@ -21,9 +21,6 @@ public class BrsAdaptorSimulator extends BrsAdaptor {
 
     private static final Logger logger = LoggerFactory.getLogger(BrsAdaptorSimulator.class);
 
-    /**
-     * Configuration to setup the brs simulator
-     */
     private BrsSimulatorConfig config;
 
     private ProductionParameters productionParameters;

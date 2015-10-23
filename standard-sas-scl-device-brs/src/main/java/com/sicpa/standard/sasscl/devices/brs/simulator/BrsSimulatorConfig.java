@@ -3,9 +3,7 @@ package com.sicpa.standard.sasscl.devices.brs.simulator;
 
 import java.io.Serializable;
 
-public class BrsSimulatorConfig implements Serializable {
-
-    private static final long serialVersionUID = -2432103731183714506L;
+public class BrsSimulatorConfig {
 
     /**
      * if the value is set to true then the BrsAdaptorSimulator will receive wrong barcodes not maching any barcodes
