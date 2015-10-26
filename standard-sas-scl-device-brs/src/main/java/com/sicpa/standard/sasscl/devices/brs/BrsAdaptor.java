@@ -3,27 +3,22 @@ package com.sicpa.standard.sasscl.devices.brs;
 import com.sicpa.common.device.reader.CodeReader;
 import com.sicpa.common.device.reader.CodeReceiver;
 import com.sicpa.common.device.reader.DisconnectionListener;
-import com.sicpa.common.device.reader.brs.commands.BrsCommands;
-import com.sicpa.common.device.reader.brs.factory.BrsFactory;
-import com.sicpa.common.device.reader.factory.ReaderFactory;
 import com.sicpa.common.device.reader.lifecheck.EchoListener;
-import com.sicpa.common.device.reader.sick.commands.SickCommands;
-import com.sicpa.common.device.reader.sick.factory.SickFactory;
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.common.util.Messages;
 import com.sicpa.standard.common.util.ThreadUtils;
 import com.sicpa.standard.sasscl.devices.AbstractStartableDevice;
 import com.sicpa.standard.sasscl.devices.DeviceException;
 import com.sicpa.standard.sasscl.devices.DeviceStatus;
-import com.sicpa.standard.sasscl.devices.brs.event.BRSStartFailedEvent;
+import com.sicpa.standard.sasscl.devices.brs.event.BrsStartFailedEvent;
 import com.sicpa.standard.sasscl.devices.brs.event.BrsProductEvent;
 import com.sicpa.standard.sasscl.devices.brs.model.BrsModel;
-import com.sicpa.standard.sasscl.devices.brs.model.BrsType;
+import com.sicpa.standard.sasscl.devices.brs.reader.CodeReaderAdaptor;
+import com.sicpa.standard.sasscl.devices.brs.reader.BrsCodeReaderFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +34,7 @@ public class BrsAdaptor extends AbstractStartableDevice implements CodeReceiver,
 
     private BrsReconnectionHandler brsReconnectionHandler = new BrsReconnectionHandler();
 
-    private List<CodeReader> readers;
+    private List<CodeReaderAdaptor> readers;
 
 
     private int brsLifeCheckInterval;
@@ -58,7 +53,7 @@ public class BrsAdaptor extends AbstractStartableDevice implements CodeReceiver,
         setName("Brs");
         this.brsModel = model;
         isConnected = new AtomicBoolean(false);
-        readers = new ArrayList<CodeReader>();
+        readers = new ArrayList<>();
     }
 
     @Override
@@ -67,7 +62,7 @@ public class BrsAdaptor extends AbstractStartableDevice implements CodeReceiver,
         readers.clear();
 
         try {
-            createReaders();
+            readers.addAll(BrsCodeReaderFactory.createReaders(this));
         } catch (IOException | URISyntaxException e) {
             logger.error("Error creating code readers {}", e.getMessage());
             onBrsConnected(false);
@@ -87,14 +82,14 @@ public class BrsAdaptor extends AbstractStartableDevice implements CodeReceiver,
     @Override
     public void doStart() throws DeviceException {
         if(!isConnected.get()) {
-            EventBusService.post(new BRSStartFailedEvent(Messages.get("brs.start.failed.not.connected")));
+            EventBusService.post(new BrsStartFailedEvent(Messages.get("brs.start.failed.not.connected")));
             return;
         }
         try {
             enableBrsReading();
         } catch (IOException e) {
             logger.error("Error starting brs device", e.getMessage());
-            EventBusService.post(new BRSStartFailedEvent(Messages.get("brs.start.failed")));
+            EventBusService.post(new BrsStartFailedEvent(Messages.get("brs.start.failed")));
         }
         fireDeviceStatusChanged(DeviceStatus.STARTED);
     }
@@ -136,8 +131,9 @@ public class BrsAdaptor extends AbstractStartableDevice implements CodeReceiver,
         if (!isConnected.getAndSet(true)) {
             onBrsConnected(true);
         }
-
     }
+
+    // Setters, Getters
 
     public int getBrsLifeCheckInterval() {
         return brsLifeCheckInterval;
@@ -162,6 +158,13 @@ public class BrsAdaptor extends AbstractStartableDevice implements CodeReceiver,
     public void setBrsLifeCheckNumberOfRetries(int brsLifeCheckNumberOfRetries) {
         this.brsLifeCheckNumberOfRetries = brsLifeCheckNumberOfRetries;
     }
+
+    public BrsModel getBrsModel() {
+        return brsModel;
+    }
+
+
+    // Private methods
 
     private void onBrsConnected(boolean connected) {
         if (connected) {
@@ -194,52 +197,17 @@ public class BrsAdaptor extends AbstractStartableDevice implements CodeReceiver,
 
 
     private void enableBrsReading() throws IOException {
-        for (CodeReader reader : readers) {
-            sendEnableReadingCommand(reader);
+        for (CodeReaderAdaptor reader : readers) {
+            reader.sendEnableReadingCommand();
         }
     }
 
     private void disableBrsReading() throws IOException {
-        for (CodeReader reader : readers) {
-            sendDisableReadingCommand(reader);
+        for (CodeReaderAdaptor reader : readers) {
+            reader.sendDisableReadingCommand();
         }
     }
 
-    private void createReaders() throws IOException, URISyntaxException {
-        ReaderFactory factory = createReaderFactory();
-        for (String address : brsModel.getActiveAddresses()) {
-            CodeReader reader = factory.createReader(
-                    new URI(String.format("brs:%s:%d", address, brsModel.getPort())),
-                    this, this);
-            readers.add(reader);
-        }
-    }
-
-    private ReaderFactory createReaderFactory() {
-        ReaderFactory factory = null;
-        if (brsModel.getBrsType().equalsIgnoreCase(BrsType.SICK.name())) {
-            factory = new SickFactory(brsLifeCheckInterval, brsLifeCheckTimeout, "brs");
-        } else if (brsModel.getBrsType().equalsIgnoreCase(BrsType.DATAMAN.name())) {
-            factory = new BrsFactory(brsLifeCheckInterval, brsLifeCheckTimeout, this, brsLifeCheckTimeout);
-        }
-        return factory;
-    }
-
-    private void sendDisableReadingCommand(CodeReader reader) throws IOException {
-        if (brsModel.getBrsType().equalsIgnoreCase(BrsType.SICK.name())) {
-            reader.sendData(SickCommands.DISABLE_READING);
-        } else if (brsModel.getBrsType().equalsIgnoreCase(BrsType.DATAMAN.name())) {
-            reader.sendData(BrsCommands.DISABLE_READING);
-        }
-    }
-
-    private void sendEnableReadingCommand(CodeReader reader) throws IOException {
-        if (brsModel.getBrsType().equalsIgnoreCase(BrsType.SICK.name())) {
-            reader.sendData(SickCommands.ENABLE_READING);
-        } else if (brsModel.getBrsType().equalsIgnoreCase(BrsType.DATAMAN.name())) {
-            reader.sendData(BrsCommands.ENABLE_READING);
-        }
-    }
 
     private class BrsReconnectionHandler {
         private Thread reconnectionHandler = new Thread();
