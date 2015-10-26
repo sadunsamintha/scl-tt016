@@ -48,7 +48,6 @@
 		<dependency>
 			<groupId>com.sicpa.standard.sasscl</groupId>
 			<artifactId>device-brs</artifactId>
-			<version>2.4.3-SNAPSHOT</version>
 		</dependency>
 
 	</dependencies>
