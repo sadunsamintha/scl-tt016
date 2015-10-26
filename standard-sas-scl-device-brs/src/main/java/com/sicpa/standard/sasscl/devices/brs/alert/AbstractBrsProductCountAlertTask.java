@@ -42,7 +42,7 @@ public abstract class AbstractBrsProductCountAlertTask extends AbstractAlertTask
 
     private void increaseProductCount() {
         brsProductsDeltaCounter.getNextValue();
-        logger.debug("increasing brs delta counter. The Current value is {} ", brsProductsDeltaCounter);
+        logger.debug("increasing brs delta counter. The Current value is {} ", brsProductsDeltaCounter.getValue());
         checkForMessage();
     }
 
