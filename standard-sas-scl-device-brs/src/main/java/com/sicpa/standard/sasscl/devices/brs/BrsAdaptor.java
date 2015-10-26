@@ -41,11 +41,12 @@ public class BrsAdaptor extends AbstractStartableDevice implements CodeReceiver,
 
     private List<CodeReader> readers;
 
-    private static final int BRS_READER_INTERVAL = 1000;
 
-    private static final int BRS_READER_TIMEOUT = 2000;
+    private int brsLifeCheckInterval;
 
-    private static final int BRS_NUMBER_OF_RETRIES = 3;
+    private int brsLifeCheckTimeout;
+
+    private int brsLifeCheckNumberOfRetries;
 
 
     public BrsAdaptor() {
@@ -138,6 +139,30 @@ public class BrsAdaptor extends AbstractStartableDevice implements CodeReceiver,
 
     }
 
+    public int getBrsLifeCheckInterval() {
+        return brsLifeCheckInterval;
+    }
+
+    public void setBrsLifeCheckInterval(int brsLifeCheckInterval) {
+        this.brsLifeCheckInterval = brsLifeCheckInterval;
+    }
+
+    public int getBrsLifeCheckTimeout() {
+        return brsLifeCheckTimeout;
+    }
+
+    public void setBrsLifeCheckTimeout(int brsLifeCheckTimeout) {
+        this.brsLifeCheckTimeout = brsLifeCheckTimeout;
+    }
+
+    public int getBrsLifeCheckNumberOfRetries() {
+        return brsLifeCheckNumberOfRetries;
+    }
+
+    public void setBrsLifeCheckNumberOfRetries(int brsLifeCheckNumberOfRetries) {
+        this.brsLifeCheckNumberOfRetries = brsLifeCheckNumberOfRetries;
+    }
+
     private void onBrsConnected(boolean connected) {
         if (connected) {
             logger.debug("BRS CONNECTED");
@@ -193,9 +218,9 @@ public class BrsAdaptor extends AbstractStartableDevice implements CodeReceiver,
     private ReaderFactory createReaderFactory() {
         ReaderFactory factory = null;
         if (brsModel.getBrsType().equalsIgnoreCase(BrsType.SICK.name())) {
-            factory = new SickFactory(BRS_READER_INTERVAL, BRS_READER_TIMEOUT, "brs");
+            factory = new SickFactory(brsLifeCheckInterval, brsLifeCheckTimeout, "brs");
         } else if (brsModel.getBrsType().equalsIgnoreCase(BrsType.DATAMAN.name())) {
-            factory = new BrsFactory(BRS_READER_INTERVAL, BRS_READER_TIMEOUT, this, BRS_NUMBER_OF_RETRIES);
+            factory = new BrsFactory(brsLifeCheckInterval, brsLifeCheckTimeout, this, brsLifeCheckTimeout);
         }
         return factory;
     }

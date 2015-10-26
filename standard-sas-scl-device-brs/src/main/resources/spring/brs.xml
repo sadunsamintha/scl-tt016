@@ -23,6 +23,11 @@
 
 	<bean id="brsAdaptorStd" class="${brsAdaptor}" scope="prototype" >
 		<constructor-arg ref="stdBrsModel" />
+
+		<property name="brsLifeCheckInterval" value="${brs.lifecheck.interval}" />
+		<property name="brsLifeCheckTimeout" value="${brs.lifecheck.timeout}" />
+		<property name="brsLifeCheckNumberOfRetries" value="${brs.lifecheck.retries}" />
+
 	</bean>
 
 	<bean id="stdBrsModel"  class="com.sicpa.standard.client.common.utils.ConfigUtils" factory-method="load" >
