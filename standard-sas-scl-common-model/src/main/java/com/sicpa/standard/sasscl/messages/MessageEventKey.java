@@ -124,8 +124,8 @@ public interface MessageEventKey {
 		String REMOTE_SERVER = "simulator.remoteserver";
 		String ENCODER = "simulator.encoder";
 		String AUTHENTICATOR = "simulator.authenticator";
-
 		String CAMERA_READ_CODE_FROM_FILE = "simulator.camera.from.file";
+		String BRS = "simulator.brs";
 	}
 
 	public static interface ProductionParameters {
@@ -169,22 +169,9 @@ public interface MessageEventKey {
 	}
 
 	public static interface BRS {
-		String BRS_PLC_FRAUD_DETECTED = "brs.plc.fraud.detected";
-		String BRS_PLC_JAM_DETECTED = "brs.plc.jam.detected";
-		String BRS_PLC_ENCODER_PROBLEM = "brs.plc.encoder.problem";
-		String BRS_PLC_FAULT_ERROR = "brs.plc.fault.error";
-		String BRS_PLC_CAMERAS_DISCONNECTION = "brs.plc.cameras.disconnection";
-		String BRS_PLC_RECEIVED_EMPTY_SKU = "brs.plc.empty.sku";
-		String BRS_PLC_ALL_CAMERAS_CONNECTED = "brs.plc.all.cameras.connected";
-		String BRS_PLC_ALL_CAMERAS_DISCONNECTED = "brs.plc.all.cameras.disconnected";
-		String BRS_PLC_COMMUNICATION_PROBLEM = "brs.plc.communication.problem";
-		String BRS_PLC_CAN_NOT_CONNECT = "brs.plc.can.not.connect";
-		String BRS_CAN_NOT_START = "brs.plc.can.not.start";
-		String BRS_COUNT_DIFFERENCE_HIGH = "brs.count.difference.high";
-		String BRS_TOO_MANY_UNREAD = "brs.unread.toomany";
-        String NTF_BRS_CONSECUTIVE_BAD_CODE_DETECTED = "brs.plc.consecutive.bad.code.detected";
-        String NTF_BRS_TOO_MANY_UNREAD_WAR_DETECTED= "brs.plc.too.many.unread.war";
-        String NTF_BRS_TOO_MANY_UNREAD_ERR_DETECTED= "brs.plc.too.many.unread.err";
+		String BRS_WRONG_SKU = "brs.skucheck.wrong.sku";
+		String BRS_TOO_MANY_UNREAD_BARCODES_WARNING = "brs.unread.toomany.warning";
+		String BRS_TOO_MANY_UNREAD_BARCODES_ERROR = "brs.unread.toomany.error";
 	}
 
 	public static interface SkuCheck {

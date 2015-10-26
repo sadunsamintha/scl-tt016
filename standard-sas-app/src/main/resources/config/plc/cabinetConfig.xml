@@ -62,58 +62,5 @@
   <PlcValue varName=".com.stCabinet.stParameters.nFans_Temp_OFF_delta_hyst_Bypass">
     <value class="int">5</value>
   </PlcValue>
-  <PlcValue varName=".ExtGbl_stBRSconfig.nTypeOfLine">
-    <value class="int">5</value>
-  </PlcValue>
-  <PlcValueWithUnit varName=".ExtGbl_stBRSconfig.nCamDistance1" unit="PULSE" unitVariable=".ExtGbl_stBRSconfig.bDistanceType1">
-    <value class="int">16504</value>
-  </PlcValueWithUnit>
-  <PlcValueWithUnit varName=".ExtGbl_stBRSconfig.nCamDistance2" unit="PULSE" unitVariable=".ExtGbl_stBRSconfig.bDistanceType2">
-    <value class="int">16504</value>
-  </PlcValueWithUnit>
-  <PlcValue varName=".ExtGbl_stBRSconfig.nSamplingPeriod">
-    <value class="int">1</value>
-  </PlcValue>
-  <PlcValue varName=".ExtGbl_stBRSconfig.nNtfCounter">
-    <value class="int">10</value>
-  </PlcValue>
-  <PlcValue varName=".ExtGbl_stBRSconfig.bOfflineEnabled">
-    <value class="boolean">true</value>
-  </PlcValue>
-  <PlcValue varName=".ExtGbl_stBRSconfig.nCoderSignal1">
-    <value class="int">1</value>
-  </PlcValue>
-  <PlcValue varName=".ExtGbl_stBRSconfig.nCoderSignal2">
-    <value class="int">1</value>
-  </PlcValue>
-    <PlcValue varName=".ExtGbl_stBRSconfig.bSensor1NormallyLow">
-        <value class="boolean">false</value>
-    </PlcValue>
-    <PlcValue varName=".ExtGbl_stBRSconfig.bSensor2NormallyLow">
-        <value class="boolean">false</value>
-    </PlcValue>
-    <PlcValue varName=".ExtGbl_stBRSconfig.nConsecWrongBC">
-        <value class="short">5</value>
-    </PlcValue>
-    <PlcValue varName=".ExtGbl_stBRSconfig.nPercentUnreadWar">
-        <value class="short">30</value>
-    </PlcValue>
-    <PlcValue varName=".ExtGbl_stBRSconfig.nPercentUnreadErr">
-        <value class="short">50</value>
-    </PlcValue>
-    <PlcValue varName=".ExtGbl_stBRSconfig.nNbSamplesUnread">
-        <value class="short">100</value>
-    </PlcValue>
-    <PlcValue varName=".ExtGbl_stBRSconfig.nCoderDiameter1">
-        <value class="short">42</value>
-    </PlcValue>
-    <PlcValue varName=".ExtGbl_stBRSconfig.nCoderDiameter2">
-        <value class="short">20</value>
-    </PlcValue>
-    <PlcValue varName=".ExtGbl_stBRSconfig.nCoderResolution1">
-        <value class="short">8192</value>
-    </PlcValue>
-    <PlcValue varName=".ExtGbl_stBRSconfig.nCoderResolution2">
-        <value class="short">20</value>
-    </PlcValue>
+
 </PlcValuesForAllVar>

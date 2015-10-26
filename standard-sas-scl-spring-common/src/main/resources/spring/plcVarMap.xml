@@ -173,59 +173,6 @@
 		<entry key="REQUEST_LIFE_CHECK" value=".com.stCabinet.stRequests.bLifeCheck" />
 		<entry key="REQUEST_JAVA_WARNINGS_AND_ERRORS_REGISTER" value=".com.nJavaWarningsAndErrorsRegister" />
 
-
-
-        <!-- BRS -->
-        <!-- PARAMETER -->
-        <entry key="PARAM_BRS_LINE_TYPE" value=".ExtGbl_stBRSconfig.nTypeOfLine" />
-        <entry key="PARAM_BRS_DISTANCE1" value=".ExtGbl_stBRSconfig.nCamDistance1" />
-        <entry key="PARAM_BRS_DISTANCE2" value=".ExtGbl_stBRSconfig.nCamDistance2" />
-        <entry key="PARAM_BRS_DISTANCE_TYPE1" value=".ExtGbl_stBRSconfig.bDistanceType1" />
-        <entry key="PARAM_BRS_DISTANCE_TYPE2" value=".ExtGbl_stBRSconfig.bDistanceType2" />
-        <entry key="PARAM_BRS_CODER_SIGNAL1" value=".ExtGbl_stBRSconfig.nCoderSignal1" />
-        <entry key="PARAM_BRS_CODER_SIGNAL2" value=".ExtGbl_stBRSconfig.nCoderSignal2" />
-        <entry key="PARAM_BRS_SENSOR_LOW1" value=".ExtGbl_stBRSconfig.bSensor1NormallyLow" />
-        <entry key="PARAM_BRS_SENSOR_LOW2" value=".ExtGbl_stBRSconfig.bSensor2NormallyLow" />
-        <entry key="PARAM_BRS_SAMPLING_PERIOD" value=".ExtGbl_stBRSconfig.nSamplingPeriod" />
-        <entry key="PARAM_BRS_NOTIFICATION_COUNTER" value=".ExtGbl_stBRSconfig.nNtfCounter" />
-        <entry key="PARAM_BRS_OFFLINE_ENABLED" value=".ExtGbl_stBRSconfig.bOfflineEnabled" />
-        <!-- value editable in GUI, after which the PLC will raise the ConsecutiveBadCode warning -->
-        <entry key="PARAM_BRS_NB_CONSECUTIVE_BAD_CODE" value=".ExtGbl_stBRSconfig.nConsecWrongBC" />
-        <entry key="PARAM_BRS_PERCENT_UNREAD_WAR" value=".ExtGbl_stBRSconfig.nPercentUnreadWar" />
-        <entry key="PARAM_BRS_PERCENT_UNREAD_ERR" value=".ExtGbl_stBRSconfig.nPercentUnreadErr" />
-        <entry key="PARAM_BRS_NB_SAMPLES_UNREAD" value=".ExtGbl_stBRSconfig.nNbSamplesUnread" />
-        <entry key="PARAM_BRS_NCODER_DIAM_1" value=".ExtGbl_stBRSconfig.nCoderDiameter1"/>
-        <entry key="PARAM_BRS_NCODER_DIAM_2" value=".ExtGbl_stBRSconfig.nCoderDiameter2"/>
-        <entry key="PARAM_BRS_NCODER_RESOLUTION_1" value=".ExtGbl_stBRSconfig.nCoderResolution1"/>
-        <entry key="PARAM_BRS_NCODER_RESOLUTION_2" value=".ExtGbl_stBRSconfig.nCoderResolution2"/>
-
-
-        <!-- NOTIFICATION -->
-        <entry key="NTF_BRS_FRAUD1" value=".ExtGbl_stBRSntf.bFraud1" />
-        <entry key="NTF_BRS_FRAUD2" value=".ExtGbl_stBRSntf.bFraud2" />
-        <entry key="NTF_BRS_JAM_DETECTED1" value=".ExtGbl_stBRSntf.bJamDetected1" />
-        <entry key="NTF_BRS_JAM_DETECTED2" value=".ExtGbl_stBRSntf.bJamDetected2" />
-        <entry key="NTF_BRS_CAMERAS_CONNECTED" value=".ExtGbl_stBRSntf.BcamerasConnected" />
-        <entry key="NTF_BRS_SKU_INFO" value=".ExtGbl_stBRSntf.sSKUinfo" />
-        <entry key="NTF_BRS_PRODUCT_COUNTER1" value=".ExtGbl_stBRSntf.nProductCounter1" />
-        <entry key="NTF_BRS_PRODUCT_COUNTER2" value=".ExtGbl_stBRSntf.nProductCounter2" />
-
-        <entry key="NTF_BRS_VERSION" value=".ExtGbl_stBRSntf.sBRSversion" />
-
-        <!-- stops line if this is true -->
-        <entry key="NTF_BRS_CONSECUTIVE_BAD_CODE" value=".ExtGbl_stBRSntf.bConsecutiveBadCode" />
-        <entry key="NTF_BRS_TOO_MANY_UNREAD_WAR" value=".ExtGbl_stBRSntf.bTooManyUnreadWar" />
-        <entry key="NTF_BRS_TOO_MANY_UNREAD_ERR" value=".ExtGbl_stBRSntf.bTooManyUnreadErr" />
-
-
-        <!-- REQUEST -->
-        <entry key="BRS_LINE_ENABLE" value=".ExtGbl_stBRScom.bBRSenable" />
-        <entry key="REQUEST_RELOAD_BRS_CONFIG" value=".ExtGbl_stBRScom.bReloadConfig" />
-        <entry key="BRS_SET_SKU_CHECK_MODE" value=".ExtGbl_stBRSconfig.bSKUcheckMode" />
-        <entry key="BRS_SELECTED_SKU" value=".ExtGbl_stBRSconfig.sExpectedSKU" />
-
-
-
         <!-- OFFLINE -->
 		<entry key="OFFLINE_COUNTING_QTY" value=".offline.counting.qty" />
 		<entry key="OFFLINE_COUNTING_LAST_STOP" value=".offline.counting.last.stop" />

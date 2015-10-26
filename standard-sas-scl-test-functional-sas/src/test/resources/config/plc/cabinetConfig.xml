@@ -62,28 +62,5 @@
   <PlcValue varName=".com.stCabinet.stParameters.nFans_Temp_OFF_delta_hyst_Bypass">
     <value class="int">0</value>
   </PlcValue>
-  <PlcValue varName=".ExtGbl_stBRSconfig.nTypeOfLine">
-    <value class="int">5</value>
-  </PlcValue>
-  <PlcValueWithUnit varName=".ExtGbl_stBRSconfig.nCamDistance1" unit="PULSE" unitVariable=".ExtGbl_stBRSconfig.bDistanceType1">
-    <value class="int">16504</value>
-  </PlcValueWithUnit>
-  <PlcValueWithUnit varName=".ExtGbl_stBRSconfig.nCamDistance2" unit="PULSE" unitVariable=".ExtGbl_stBRSconfig.bDistanceType2">
-    <value class="int">16504</value>
-  </PlcValueWithUnit>
-  <PlcValue varName=".ExtGbl_stBRSconfig.nSamplingPeriod">
-    <value class="int">1</value>
-  </PlcValue>
-  <PlcValue varName=".ExtGbl_stBRSconfig.nNtfCounter">
-    <value class="int">10</value>
-  </PlcValue>
-  <PlcValue varName=".ExtGbl_stBRSconfig.bOfflineEnabled">
-    <value class="boolean">true</value>
-  </PlcValue>
-  <PlcValue varName=".ExtGbl_stBRSconfig.nCoderSignal1">
-    <value class="int">1</value>
-  </PlcValue>
-  <PlcValue varName=".ExtGbl_stBRSconfig.nCoderSignal2">
-    <value class="int">1</value>
-  </PlcValue>
+
 </PlcValuesForAllVar>

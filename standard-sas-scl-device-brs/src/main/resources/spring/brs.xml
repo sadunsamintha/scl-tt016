@@ -1,19 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:util="http://www.springframework.org/schema/util"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	   xmlns:aop="http://www.springframework.org/schema/aop" xmlns:util="http://www.springframework.org/schema/util"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 
-	<bean id="skuCheckFacadeProvider" class="com.sicpa.standard.sasscl.devices.brs.SkuCheckFacadeProvider" />
+	<bean id="brsSkuCheck" class="${brsSkuCheck}" />
 
-	<bean id="injectSkuCheckerIntoProvider" class="com.sicpa.standard.client.common.ioc.InjectByMethodBean">
-		<property name="target" ref="skuCheckFacadeProvider" />
-		<property name="methodName" value="set" />
-		<property name="params" ref="skuCheckFacade" />
-	</bean>
-	
 	<bean id="mapBrsAdaptor" class="com.sicpa.standard.client.common.ioc.GenericMapping" scope="prototype">
 		<constructor-arg>
 			<map>
@@ -23,48 +17,58 @@
 		</constructor-arg>
 	</bean>
 
-	<bean id="brsAdaptor" factory-bean="mapBrsAdaptor" factory-method="get" scope="prototype">
-		<constructor-arg value="${plc.behavior}" />
-	</bean>
-	
-	<bean id="brsAdaptorStd" class="${brsAdaptor}"/>
-	
-	<bean id="brsAdaptorSimulator" class="${brsAdaptorSimulator}"/>
-
-	<bean id="brs" class="${brs}">
-		<constructor-arg ref="brsConfigParametersValues" />
-		<constructor-arg ref="skuCheckFacadeProvider" />
-		<constructor-arg ref="plcProvider" />
-		<constructor-arg ref="brsPlcLineTypeVarDesc" />
-		<constructor-arg ref="brsPlcNotificationCntVarDesc" />
-		<constructor-arg ref="skuAcquisitionStatistics" />
-		<constructor-arg ref="statistics" />
-		<constructor-arg ref="plcBrsStateListener" />
-		<constructor-arg ref="brsAggregateModel" />
-		<constructor-arg ref="tooManyUnreadHandler" />
-		<property name="notifications" ref="brsPlcNotifications" />
-		<property name="adaptor" ref="brsAdaptor"/>
-		<property name="productionConfigProvider" ref="productionConfigProvider" />
+	<bean id="brsAdaptor" factory-bean="mapBrsAdaptor" factory-method="get" scope="prototype"  >
+		<constructor-arg value="${brs.behavior}" />
 	</bean>
 
-	<bean id="tooManyUnreadHandler" class="${tooManyUnreadHandler}">
-		<property name="configBean" ref="brsConfigParametersValues" />
+	<bean id="brsAdaptorStd" class="${brsAdaptor}" scope="prototype" >
+		<constructor-arg ref="stdBrsModel" />
+
+		<property name="brsLifeCheckInterval" value="${brs.lifecheck.interval}" />
+		<property name="brsLifeCheckTimeout" value="${brs.lifecheck.timeout}" />
+		<property name="brsLifeCheckNumberOfRetries" value="${brs.lifecheck.retries}" />
+
 	</bean>
 
-	<bean id="brsAggregateModel" class="com.sicpa.standard.sasscl.devices.brs.BrsAggregateModel" />
-
-	<bean id="injectBrsRequestMapToBrsStateListener" class="com.sicpa.standard.client.common.ioc.InjectByMethodBean">
-		<property name="target" ref="plcBrsStateListener" />
-		<property name="methodName" value="setBrsRequestMap" />
-		<property name="params" ref="mapBrsPlcRequestAction" />
+	<bean id="stdBrsModel"  class="com.sicpa.standard.client.common.utils.ConfigUtils" factory-method="load" >
+		<constructor-arg value="config/brs/brsConfig.xml" />
 	</bean>
 
-	<bean id="skuCheckResultListenerLogger" class="${skuCheckResultListenerLogger}" />
+	<!--simulator beans-->
 
-	<bean id="facadeAddResultListenerLogger" class="com.sicpa.standard.client.common.ioc.InjectByMethodBean">
-		<property name="target" ref="skuCheckFacade" />
-		<property name="methodName" value="addCheckingListener" />
-		<property name="params" ref="skuCheckResultListenerLogger" />
+	<bean id="brsAdaptorSimulator" class="${brsAdaptorSimulator}" scope="prototype">
+		<constructor-arg ref="simulatorBrsModel" />
+		<constructor-arg ref="productionParameters" />
+		<constructor-arg value="${brs.behavior}" />
+	</bean>
+
+
+	<bean id="simulatorBrsModel" class="com.sicpa.standard.client.common.utils.ConfigUtils" factory-method="load" >
+		<constructor-arg value="config/brs/simulator/brsSimulator.xml" />
+	</bean>
+
+	<!--alert tasks-->
+
+	<bean id="alertBrsProductWarningCount" class="${alertBrsProductWarningCount}">
+		<property name="unreadBarcodesWarningThreshold" value="${alert.unreadbarcodes.warning.threshold}" />
+		<property name="isUnreadBarcodesEnable" value="${alert.unreadbarcodes.enable}" />
+	</bean>
+
+	<bean id="alertBrsProductErrorCount" class="${alertBrsProductErrorCount}">
+		<property name="unreadBarcodesErrorThreshold" value="${alert.unreadbarcodes.error.threshold}" />
+		<property name="isUnreadBarcodesEnable" value="${alert.unreadbarcodes.enable}" />
+	</bean>
+
+	<bean id="alertBrsProducWarningCountAddTask" class="com.sicpa.standard.client.common.ioc.InjectByMethodBean">
+		<property name="target" ref="alert" />
+		<property name="methodName" value="addTask" />
+		<property name="params" ref="alertBrsProductWarningCount" />
+	</bean>
+
+	<bean id="alertBrsProducErrorCountAddTask" class="com.sicpa.standard.client.common.ioc.InjectByMethodBean">
+		<property name="target" ref="alert" />
+		<property name="methodName" value="addTask" />
+		<property name="params" ref="alertBrsProductErrorCount" />
 	</bean>
 
 </beans>
