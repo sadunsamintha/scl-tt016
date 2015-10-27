@@ -8,6 +8,7 @@ import com.sicpa.standard.sasscl.devices.brs.event.BrsProductEvent;
 import com.sicpa.standard.sasscl.devices.brs.utils.ResettableAtomicCounter;
 import com.sicpa.standard.sasscl.devices.camera.CameraBadCodeEvent;
 import com.sicpa.standard.sasscl.devices.camera.CameraGoodCodeEvent;
+import com.sicpa.standard.sasscl.provider.impl.ProductionConfigProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,6 +22,9 @@ public abstract class AbstractBrsProductCountAlertTask extends AbstractAlertTask
     private boolean isUnreadBarcodesEnable;
 
     public abstract int getUnreadBarcodesThreshold();
+
+
+    private ProductionConfigProvider productionConfigProvider;
 
 
 
@@ -59,7 +63,8 @@ public abstract class AbstractBrsProductCountAlertTask extends AbstractAlertTask
 
     @Override
     public boolean isEnabled() {
-        return isUnreadBarcodesEnable;
+        boolean isBrsDeviceEnable =  productionConfigProvider.get().getBrsConfig() != null;
+        return isBrsDeviceEnable && isUnreadBarcodesEnable;
     }
 
 
@@ -79,6 +84,14 @@ public abstract class AbstractBrsProductCountAlertTask extends AbstractAlertTask
 
     public void setIsUnreadBarcodesEnable(boolean isUnreadBarcodesEnable) {
         this.isUnreadBarcodesEnable = isUnreadBarcodesEnable;
+    }
+
+    public ProductionConfigProvider getProductionConfigProvider() {
+        return productionConfigProvider;
+    }
+
+    public void setProductionConfigProvider(ProductionConfigProvider productionConfigProvider) {
+        this.productionConfigProvider = productionConfigProvider;
     }
 
 }
