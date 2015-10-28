@@ -52,11 +52,14 @@
 	<bean id="alertBrsProductWarningCount" class="${alertBrsProductWarningCount}">
 		<property name="unreadBarcodesWarningThreshold" value="${alert.unreadbarcodes.warning.threshold}" />
 		<property name="isUnreadBarcodesEnable" value="${alert.unreadbarcodes.enable}" />
+		<property name="productionConfigProvider" ref="productionConfigProvider" />
+
 	</bean>
 
 	<bean id="alertBrsProductErrorCount" class="${alertBrsProductErrorCount}">
 		<property name="unreadBarcodesErrorThreshold" value="${alert.unreadbarcodes.error.threshold}" />
 		<property name="isUnreadBarcodesEnable" value="${alert.unreadbarcodes.enable}" />
+		<property name="productionConfigProvider" ref="productionConfigProvider" />
 	</bean>
 
 	<bean id="alertBrsProducWarningCountAddTask" class="com.sicpa.standard.client.common.ioc.InjectByMethodBean">
