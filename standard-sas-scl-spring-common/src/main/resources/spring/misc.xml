@@ -12,4 +12,6 @@
 	
 	<bean id="implementationProvider" class="${implementationProvider}" />
 
+	<bean id="codeTypeFilterFactory" class="${codeTypeFilterFactory}" />
+
 </beans>
