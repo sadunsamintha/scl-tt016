@@ -176,10 +176,6 @@ public class PrinterAdaptor extends AbstractPrinterAdaptor implements IPrinterCo
 	 */
 	@Override
 	public void doStart() throws PrinterAdaptorException {
-		if (status != DeviceStatus.CONNECTED) {
-			throw new PrinterAdaptorException("error when start printing");
-		}
-
 		try {
 			codeSent = false;
 			controller.start();
