@@ -1,12 +1,5 @@
 package com.sicpa.standard.sasscl.devices.printer.impl;
 
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.messages.MessageEvent;
@@ -27,12 +20,19 @@ import com.sicpa.standard.sasscl.business.coding.CodeReceivedFailedException;
 import com.sicpa.standard.sasscl.devices.DeviceStatus;
 import com.sicpa.standard.sasscl.devices.printer.AbstractPrinterAdaptor;
 import com.sicpa.standard.sasscl.devices.printer.PrinterAdaptorException;
+import com.sicpa.standard.sasscl.devices.printer.event.PrinterStoppedEvent;
 import com.sicpa.standard.sasscl.devices.printer.xcode.mapping.IMappingExtendedCodeBehavior;
 import com.sicpa.standard.sasscl.event.PrinterProfileEvent;
 import com.sicpa.standard.sasscl.messages.ActionMessageType;
 import com.sicpa.standard.sasscl.monitoring.MonitoringService;
 import com.sicpa.standard.sasscl.monitoring.system.SystemEventType;
 import com.sicpa.standard.sasscl.monitoring.system.event.BasicSystemEvent;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * Handles the communication with the <code>Standard Printer</code> component.
@@ -167,6 +167,11 @@ public class PrinterAdaptor extends AbstractPrinterAdaptor implements IPrinterCo
 			fireMessage(PrinterMessageId.NOT_READY_TO_PRINT, args.name());
 		}
 		lastSequence = args;
+	}
+
+	@Override
+	public void onPrinterStop() {
+		EventBusService.post(new PrinterStoppedEvent(this));
 	}
 
 	protected volatile boolean startedOnce;
