@@ -21,8 +21,9 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class BrsAdaptor extends AbstractStartableDevice implements CodeReceiver, DisconnectionListener, EchoListener {
 
@@ -30,11 +31,11 @@ public class BrsAdaptor extends AbstractStartableDevice implements CodeReceiver,
 
     private BrsModel brsModel;
 
-    private final AtomicBoolean isConnected;
-
     private BrsReconnectionHandler brsReconnectionHandler = new BrsReconnectionHandler();
 
     private List<CodeReaderAdaptor> readers;
+
+    private AtomicInteger readersConnected;
 
 
     private int brsLifeCheckInterval;
@@ -52,8 +53,8 @@ public class BrsAdaptor extends AbstractStartableDevice implements CodeReceiver,
         super();
         setName("Brs");
         this.brsModel = model;
-        isConnected = new AtomicBoolean(false);
         readers = new ArrayList<>();
+        readersConnected = new AtomicInteger(0);
     }
 
     @Override
@@ -69,19 +70,18 @@ public class BrsAdaptor extends AbstractStartableDevice implements CodeReceiver,
             return;
         }
         checkBrsConnectivity();
-        onBrsConnected(true);
     }
 
     @Override
     protected void doDisconnect() throws DeviceException {
         logger.debug("do DISCONNECTED");
-        doStop();
+        disconnectReaders();
         fireDeviceStatusChanged(DeviceStatus.DISCONNECTED);
     }
 
     @Override
     public void doStart() throws DeviceException {
-        if(!isConnected.get()) {
+        if (!allReadersConnected()) {
             EventBusService.post(new BrsStartFailedEvent(Messages.get("brs.start.failed.not.connected")));
             return;
         }
@@ -112,7 +112,7 @@ public class BrsAdaptor extends AbstractStartableDevice implements CodeReceiver,
 
     @Override
     public void onDisconnection(boolean b) {
-        isConnected.getAndSet(false);
+        readersConnected.set(0);
         onBrsConnected(false);
     }
 
@@ -128,7 +128,11 @@ public class BrsAdaptor extends AbstractStartableDevice implements CodeReceiver,
 
     @Override
     public void onLifecheck() {
-        if (!isConnected.getAndSet(true)) {
+        /**
+         *  This callback is exectued by one of the BRS readers  notifying us
+         *  that is connected. Let's verify if all the readers are connected.
+         */
+        if (readersConnected.getAndIncrement() == readers.size() - 1) {
             onBrsConnected(true);
         }
     }
@@ -186,13 +190,28 @@ public class BrsAdaptor extends AbstractStartableDevice implements CodeReceiver,
         }
     }
 
+    /**
+     * Note the BRS api (com.sicpa.common.device.reader) is not managing well multiple
+     * code readers at the same time. Sometimes the method reader.start() is throwing
+     * IllegalThreadStateException. This is why this method :
+     * - is using an iterator to iterate over the readers in order to avoid
+     * ConcurrentModificationExceptions.
+     * - Catching and swallowing concurrency exceptions from reader.start() and let
+     * the reconnectionHandler retry again later.
+     */
     private void checkBrsConnectivity() throws DeviceException {
-        for(CodeReader reader : readers) {
-            // Allow life check
-            reader.start();
-            // Prevent reading barcodes
-            doStop();
+        Iterator<CodeReaderAdaptor> iterator = readers.iterator();
+        while (iterator.hasNext()) {
+            try {
+                CodeReaderAdaptor reader = iterator.next();
+                // Allow life check
+                reader.start();
+            } catch (Exception ex) {
+                logger.warn("Error starting code reader", ex.getMessage());
+            }
         }
+        // Prevent reading barcodes
+        doStop();
     }
 
 
@@ -206,6 +225,10 @@ public class BrsAdaptor extends AbstractStartableDevice implements CodeReceiver,
         for (CodeReaderAdaptor reader : readers) {
             reader.sendDisableReadingCommand();
         }
+    }
+
+    private boolean allReadersConnected() {
+        return readersConnected.get() >= readers.size();
     }
 
 
