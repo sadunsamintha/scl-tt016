@@ -10,7 +10,11 @@ public abstract class AbstractCodeReaderAdaptor implements CodeReaderAdaptor {
 
     protected CodeReader codeReader;
 
-    public AbstractCodeReaderAdaptor(CodeReader codeReader) {
+
+    private String id;
+
+    public AbstractCodeReaderAdaptor(CodeReader codeReader, String id) {
+        this.id = id;
         this.codeReader = codeReader;
     }
 
@@ -64,5 +68,10 @@ public abstract class AbstractCodeReaderAdaptor implements CodeReaderAdaptor {
     public void sendData(byte... data) throws IOException {
         codeReader.sendData(data);
 
+    }
+
+    @Override
+    public String getId() {
+        return id;
     }
 }

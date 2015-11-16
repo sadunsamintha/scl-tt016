@@ -1,9 +1,6 @@
 package com.sicpa.standard.sasscl.devices.brs;
 
 import com.sicpa.common.device.reader.CodeReader;
-import com.sicpa.common.device.reader.CodeReceiver;
-import com.sicpa.common.device.reader.DisconnectionListener;
-import com.sicpa.common.device.reader.lifecheck.EchoListener;
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.common.util.Messages;
 import com.sicpa.standard.common.util.ThreadUtils;
@@ -11,10 +8,9 @@ import com.sicpa.standard.sasscl.devices.AbstractStartableDevice;
 import com.sicpa.standard.sasscl.devices.DeviceException;
 import com.sicpa.standard.sasscl.devices.DeviceStatus;
 import com.sicpa.standard.sasscl.devices.brs.event.BrsStartFailedEvent;
-import com.sicpa.standard.sasscl.devices.brs.event.BrsProductEvent;
 import com.sicpa.standard.sasscl.devices.brs.model.BrsModel;
-import com.sicpa.standard.sasscl.devices.brs.reader.CodeReaderAdaptor;
 import com.sicpa.standard.sasscl.devices.brs.reader.BrsCodeReaderFactory;
+import com.sicpa.standard.sasscl.devices.brs.reader.CodeReaderAdaptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,7 +21,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class BrsAdaptor extends AbstractStartableDevice implements CodeReceiver, DisconnectionListener, EchoListener {
+public class BrsAdaptor extends AbstractStartableDevice implements BrsReaderListener {
 
     private static final Logger logger = LoggerFactory.getLogger(BrsAdaptor.class);
 
@@ -36,7 +32,6 @@ public class BrsAdaptor extends AbstractStartableDevice implements CodeReceiver,
     private List<CodeReaderAdaptor> readers;
 
     private AtomicInteger readersConnected;
-
 
     private int brsLifeCheckInterval;
 
@@ -63,7 +58,7 @@ public class BrsAdaptor extends AbstractStartableDevice implements CodeReceiver,
         readers.clear();
 
         try {
-            readers.addAll(BrsCodeReaderFactory.createReaders(this));
+            readers.addAll(BrsCodeReaderFactory.createBrsReaderDevices(this));
         } catch (IOException | URISyntaxException e) {
             logger.error("Error creating code readers {}", e.getMessage());
             onBrsConnected(false);
@@ -105,37 +100,10 @@ public class BrsAdaptor extends AbstractStartableDevice implements CodeReceiver,
     }
 
     @Override
-    public void onCodeReceived(String s) {
-        EventBusService.post(new BrsProductEvent(s));
-    }
-
-
-    @Override
-    public void onDisconnection(boolean b) {
-        readersConnected.set(0);
-        onBrsConnected(false);
-    }
-
-    @Override
     public boolean isBlockProductionStart() {
         return true;
     }
 
-
-    @Override
-    public void onErrorReceived(String s) {
-    }
-
-    @Override
-    public void onLifecheck() {
-        /**
-         *  This callback is exectued by one of the BRS readers  notifying us
-         *  that is connected. Let's verify if all the readers are connected.
-         */
-        if (readersConnected.getAndIncrement() == readers.size() - 1) {
-            onBrsConnected(true);
-        }
-    }
 
     // Setters, Getters
 
@@ -167,22 +135,6 @@ public class BrsAdaptor extends AbstractStartableDevice implements CodeReceiver,
         return brsModel;
     }
 
-
-    // Private methods
-
-    private void onBrsConnected(boolean connected) {
-        if (connected) {
-            logger.debug("BRS CONNECTED");
-            fireDeviceStatusChanged(DeviceStatus.CONNECTED);
-            brsReconnectionHandler.stopReconnection();
-        } else {
-            disconnectReaders();
-            logger.debug("BRS DISCONNECTED");
-            fireDeviceStatusChanged(DeviceStatus.DISCONNECTED);
-
-            brsReconnectionHandler.startReconnection();
-        }
-    }
 
     private void disconnectReaders() {
         for (CodeReader reader : readers) {
@@ -229,6 +181,11 @@ public class BrsAdaptor extends AbstractStartableDevice implements CodeReceiver,
 
     private boolean allReadersConnected() {
         return readersConnected.get() >= readers.size();
+    }
+
+    @Override
+    public void onBrsReaderConnected(boolean isConnected, String readerId) {
+
     }
 
 

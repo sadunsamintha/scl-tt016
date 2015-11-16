@@ -20,4 +20,10 @@ public interface CodeReaderAdaptor extends CodeReader {
      * @throws IOException if some other I/O error occurs
      */
     void sendDisableReadingCommand() throws IOException;
+
+
+    /**
+     * Returns a unique id of the code reder.
+     */
+    String getId();
 }

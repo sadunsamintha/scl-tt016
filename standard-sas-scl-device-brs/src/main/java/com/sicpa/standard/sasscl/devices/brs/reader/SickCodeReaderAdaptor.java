@@ -8,8 +8,9 @@ import java.io.IOException;
 
 public class SickCodeReaderAdaptor extends AbstractCodeReaderAdaptor implements CodeReaderAdaptor {
 
-    public SickCodeReaderAdaptor(CodeReader codeReader) {
-        super(codeReader);
+    public SickCodeReaderAdaptor(CodeReader codeReader, String id) {
+        super(codeReader, id);
+
     }
 
     @Override
