@@ -86,6 +86,10 @@
 		<property name="flowControl" ref="flowControl" />
 	</bean>
 
+	<bean id="printerListener" class="${printerListener}">
+		<property name="stateMachine" ref="stateMachine" />
+	</bean>
+
 	<bean id="productionParameterChangedListener" class="${productionParameterChangedListener}">
 		<property name="storage" ref="storage" />
 		<property name="flowControl" ref="flowControl" />
