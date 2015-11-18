@@ -21,9 +21,4 @@ public interface CodeReaderAdaptor extends CodeReader {
      */
     void sendDisableReadingCommand() throws IOException;
 
-
-    /**
-     * Returns a unique id of the code reder.
-     */
-    String getId();
 }

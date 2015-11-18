@@ -3,63 +3,93 @@ package com.sicpa.standard.sasscl.devices.brs.model;
 
 public class BrsReaderModel {
 
-    private String ip;
+    private final String address;
 
-    private String port;
+    private final int port;
 
-    private BrsType type;
+    private final BrsType type;
 
-    private int brsLifeCheckInterval;
+    private final int brsLifeCheckInterval;
 
-    private int brsLifeCheckTimeout;
+    private final int brsLifeCheckTimeout;
 
-    private int brsLifeCheckNumberOfRetries;
+    private final int brsLifeCheckNumberOfRetries;
 
-    public String getIp() {
-        return ip;
+    private BrsReaderModel(BrsReaderModelBuilder builder) {
+        this.address = builder.address;
+        this.port = builder.port;
+        this.type = builder.type;
+        this.brsLifeCheckInterval = builder.brsLifeCheckInterval;
+        this.brsLifeCheckTimeout = builder.brsLifeCheckTimeout;
+        this.brsLifeCheckNumberOfRetries = builder.brsLifeCheckNumberOfRetries;
     }
 
-    public void setIp(String ip) {
-        this.ip = ip;
+    public String getAddress() {
+        return address;
     }
 
-    public String getPort() {
+    public int getPort() {
         return port;
-    }
-
-    public void setPort(String port) {
-        this.port = port;
     }
 
     public BrsType getType() {
         return type;
     }
 
-    public void setType(BrsType type) {
-        this.type = type;
-    }
-
     public int getBrsLifeCheckInterval() {
         return brsLifeCheckInterval;
-    }
-
-    public void setBrsLifeCheckInterval(int brsLifeCheckInterval) {
-        this.brsLifeCheckInterval = brsLifeCheckInterval;
     }
 
     public int getBrsLifeCheckTimeout() {
         return brsLifeCheckTimeout;
     }
 
-    public void setBrsLifeCheckTimeout(int brsLifeCheckTimeout) {
-        this.brsLifeCheckTimeout = brsLifeCheckTimeout;
-    }
-
     public int getBrsLifeCheckNumberOfRetries() {
         return brsLifeCheckNumberOfRetries;
     }
 
-    public void setBrsLifeCheckNumberOfRetries(int brsLifeCheckNumberOfRetries) {
-        this.brsLifeCheckNumberOfRetries = brsLifeCheckNumberOfRetries;
+    public static class BrsReaderModelBuilder {
+
+        private final String address;
+
+        private final int port;
+
+        private final BrsType type;
+
+        private int brsLifeCheckInterval = 1000;
+
+        private int brsLifeCheckTimeout = 2000;
+
+        private int brsLifeCheckNumberOfRetries = 3;
+
+        public BrsReaderModelBuilder(String address, int port, BrsType type) {
+            this.address = address;
+            this.port = port;
+            this.type = type;
+        }
+
+        public BrsReaderModelBuilder brsLifeCheckInterval(int brsLifeCheckInterval) {
+            this.brsLifeCheckInterval = brsLifeCheckInterval;
+            return this;
+        }
+
+        public BrsReaderModelBuilder brsLifeCheckTimeout(int brsLifeCheckTimeout) {
+            this.brsLifeCheckTimeout = brsLifeCheckTimeout;
+            return this;
+        }
+
+        public BrsReaderModelBuilder brsLifeCheckNumberOfRetries(int brsLifeCheckNumberOfRetries) {
+            this.brsLifeCheckNumberOfRetries = brsLifeCheckNumberOfRetries;
+            return this;
+        }
+
+        public BrsReaderModel build() {
+          return new BrsReaderModel(this);
+        }
+
+
+
     }
+
+
 }

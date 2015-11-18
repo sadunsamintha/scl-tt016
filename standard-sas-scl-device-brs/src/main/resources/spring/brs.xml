@@ -21,7 +21,7 @@
 		<constructor-arg value="${brs.behavior}" />
 	</bean>
 
-	<bean id="brsAdaptorStd" class="${brsAdaptor}" scope="prototype" >
+	<bean id="brsAdaptorStd" class="${brsAdaptor}" scope="prototype" init-method="createReaders">
 		<constructor-arg ref="stdBrsModel" />
 
 		<property name="brsLifeCheckInterval" value="${brs.lifecheck.interval}" />

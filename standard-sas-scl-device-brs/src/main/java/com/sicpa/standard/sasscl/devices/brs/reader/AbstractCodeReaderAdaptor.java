@@ -11,10 +11,7 @@ public abstract class AbstractCodeReaderAdaptor implements CodeReaderAdaptor {
     protected CodeReader codeReader;
 
 
-    private String id;
-
-    public AbstractCodeReaderAdaptor(CodeReader codeReader, String id) {
-        this.id = id;
+    public AbstractCodeReaderAdaptor(CodeReader codeReader) {
         this.codeReader = codeReader;
     }
 
@@ -70,8 +67,4 @@ public abstract class AbstractCodeReaderAdaptor implements CodeReaderAdaptor {
 
     }
 
-    @Override
-    public String getId() {
-        return id;
-    }
 }

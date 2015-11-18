@@ -51,7 +51,6 @@ public class BrsSkuCheckTest {
 
     }
 
-    @Test
     private ProductionParametersEvent buildProductionParametersEvent() {
         List<String> barcodesExpected = Arrays.asList("12345", "123456");
         SKU sku = new SKU(1, "description", barcodesExpected);
