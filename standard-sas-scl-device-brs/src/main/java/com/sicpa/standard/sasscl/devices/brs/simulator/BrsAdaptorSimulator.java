@@ -28,14 +28,14 @@ public class BrsAdaptorSimulator extends BrsAdaptor {
     private boolean simulationMode = false;
 
 
-    public BrsAdaptorSimulator(BrsSimulatorConfig config, ProductionParameters productionParameters, String behavior) {
+    public BrsAdaptorSimulator(BrsSimulatorConfig config, ProductionParameters productionParameters, String behavior) throws DeviceException {
         this();
         this.config = config;
         this.productionParameters = productionParameters;
         this.simulationMode = behavior.equalsIgnoreCase("simulator");
     }
 
-    public BrsAdaptorSimulator() {
+    public BrsAdaptorSimulator() throws DeviceException {
         super();
     }
 
@@ -57,24 +57,24 @@ public class BrsAdaptorSimulator extends BrsAdaptor {
 
     @Subscribe
     public void receiveCameraCode(final CameraGoodCodeEvent evt) {
-        if(simulationMode) {
+        if (simulationMode) {
             simulateReceiveBarcode();
         }
     }
 
     @Subscribe
     public void receiveCameraCodeError(final CameraBadCodeEvent evt) {
-        if(simulationMode) {
+        if (simulationMode) {
             simulateReceiveBarcode();
         }
     }
 
     private void simulateReceiveBarcode() {
-        if(config.isSendWrongBarcode()) {
+        if (config.isSendWrongBarcode()) {
             onCodeReceived(generateWrongBarcode());
             return;
         }
-        if(config.isReachUnreadBarcodesThresholds()) {
+        if (config.isReachUnreadBarcodesThresholds()) {
             // simulate unread barcodes
             return;
         }
@@ -82,7 +82,7 @@ public class BrsAdaptorSimulator extends BrsAdaptor {
     }
 
     private String generateWrongBarcode() {
-        String barcodes =  String.join("",productionParameters.getSku().getBarCodes());
+        String barcodes = String.join("", productionParameters.getSku().getBarCodes());
         String badBarcode = barcodes + RandomStringUtils.randomNumeric(5);
         return badBarcode;
 
@@ -92,9 +92,6 @@ public class BrsAdaptorSimulator extends BrsAdaptor {
         List<String> barcodes = productionParameters.getSku().getBarCodes();
         return barcodes.get(new Random().nextInt(barcodes.size()));
     }
-
-
-
 
 
 }

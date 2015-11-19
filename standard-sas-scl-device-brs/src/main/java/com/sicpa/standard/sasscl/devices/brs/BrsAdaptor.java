@@ -1,42 +1,29 @@
 package com.sicpa.standard.sasscl.devices.brs;
 
-import com.sicpa.common.device.reader.CodeReader;
-import com.sicpa.common.device.reader.CodeReceiver;
-import com.sicpa.common.device.reader.DisconnectionListener;
-import com.sicpa.common.device.reader.lifecheck.EchoListener;
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
-import com.sicpa.standard.common.util.Messages;
-import com.sicpa.standard.common.util.ThreadUtils;
 import com.sicpa.standard.sasscl.devices.AbstractStartableDevice;
 import com.sicpa.standard.sasscl.devices.DeviceException;
 import com.sicpa.standard.sasscl.devices.DeviceStatus;
-import com.sicpa.standard.sasscl.devices.brs.event.BrsStartFailedEvent;
 import com.sicpa.standard.sasscl.devices.brs.event.BrsProductEvent;
 import com.sicpa.standard.sasscl.devices.brs.model.BrsModel;
-import com.sicpa.standard.sasscl.devices.brs.reader.CodeReaderAdaptor;
-import com.sicpa.standard.sasscl.devices.brs.reader.BrsCodeReaderFactory;
+import com.sicpa.standard.sasscl.devices.brs.model.BrsReaderModel;
+import com.sicpa.standard.sasscl.devices.brs.model.BrsType;
+import com.sicpa.standard.sasscl.devices.brs.reader.BrsReaderController;
+import com.sicpa.standard.sasscl.devices.brs.reader.CodeReaderController;
+import com.sicpa.standard.sasscl.devices.brs.reader.CodeReaderListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
-public class BrsAdaptor extends AbstractStartableDevice implements CodeReceiver, DisconnectionListener, EchoListener {
+public class BrsAdaptor extends AbstractStartableDevice implements CodeReaderListener {
 
     private static final Logger logger = LoggerFactory.getLogger(BrsAdaptor.class);
 
     private BrsModel brsModel;
 
-    private BrsReconnectionHandler brsReconnectionHandler = new BrsReconnectionHandler();
-
-    private List<CodeReaderAdaptor> readers;
-
-    private AtomicInteger readersConnected;
-
+    private List<CodeReaderController> readers;
 
     private int brsLifeCheckInterval;
 
@@ -45,75 +32,43 @@ public class BrsAdaptor extends AbstractStartableDevice implements CodeReceiver,
     private int brsLifeCheckNumberOfRetries;
 
 
-    public BrsAdaptor() {
+    public BrsAdaptor() throws DeviceException {
         this(null);
     }
 
-    public BrsAdaptor(BrsModel model) {
+    public BrsAdaptor(BrsModel model) throws DeviceException {
         super();
         setName("Brs");
         this.brsModel = model;
         readers = new ArrayList<>();
-        readersConnected = new AtomicInteger(0);
     }
+
 
     @Override
     protected void doConnect() throws DeviceException {
         logger.debug("Establishing connection to BRS devices {}", brsModel);
-        readers.clear();
-
-        try {
-            readers.addAll(BrsCodeReaderFactory.createReaders(this));
-        } catch (IOException | URISyntaxException e) {
-            logger.error("Error creating code readers {}", e.getMessage());
-            onBrsConnected(false);
-            return;
-        }
-        checkBrsConnectivity();
+        connectReaders();
     }
 
     @Override
     protected void doDisconnect() throws DeviceException {
-        logger.debug("do DISCONNECTED");
-        disconnectReaders();
+        logger.debug("disconnecting brs devices");
+        stopReaders();
         fireDeviceStatusChanged(DeviceStatus.DISCONNECTED);
     }
 
     @Override
     public void doStart() throws DeviceException {
-        if (!allReadersConnected()) {
-            EventBusService.post(new BrsStartFailedEvent(Messages.get("brs.start.failed.not.connected")));
-            return;
-        }
-        try {
-            enableBrsReading();
-        } catch (IOException e) {
-            logger.error("Error starting brs device", e.getMessage());
-            EventBusService.post(new BrsStartFailedEvent(Messages.get("brs.start.failed")));
-        }
+        logger.debug("starting brs devices");
+        startReaders();
         fireDeviceStatusChanged(DeviceStatus.STARTED);
     }
 
     @Override
     public void doStop() throws DeviceException {
-        try {
-            disableBrsReading();
-        } catch (IOException e) {
-            logger.error("Error stopping brs devices", e.getMessage());
-        }
+        logger.debug("stopping brs devices");
+        stopReaders();
         fireDeviceStatusChanged(DeviceStatus.STOPPED);
-    }
-
-    @Override
-    public void onCodeReceived(String s) {
-        EventBusService.post(new BrsProductEvent(s));
-    }
-
-
-    @Override
-    public void onDisconnection(boolean b) {
-        readersConnected.set(0);
-        onBrsConnected(false);
     }
 
     @Override
@@ -121,149 +76,97 @@ public class BrsAdaptor extends AbstractStartableDevice implements CodeReceiver,
         return true;
     }
 
-
     @Override
-    public void onErrorReceived(String s) {
+    public void onReaderConnected(boolean isConnected, String readerId) {
+        if (isConnected && areAllConnected()) {
+            try {
+                stopReaders();
+            } catch (DeviceException ex) {
+                logger.error("Error stoping readers", ex.getMessage());
+            }
+            fireDeviceStatusChanged(DeviceStatus.CONNECTED);
+        } else if (!isConnected) {
+            fireDeviceStatusChanged(DeviceStatus.DISCONNECTED);
+        }
     }
 
     @Override
-    public void onLifecheck() {
-        /**
-         *  This callback is exectued by one of the BRS readers  notifying us
-         *  that is connected. Let's verify if all the readers are connected.
-         */
-        if (readersConnected.getAndIncrement() == readers.size() - 1) {
-            onBrsConnected(true);
+    public void onCodeReceived(String code) {
+        EventBusService.post(new BrsProductEvent(code));
+    }
+
+    private boolean areAllConnected() {
+        for (CodeReaderController reader : readers) {
+            if (!reader.isConnected()) {
+                return false;
+            }
         }
+        return true;
     }
 
     // Setters, Getters
 
-    public int getBrsLifeCheckInterval() {
-        return brsLifeCheckInterval;
-    }
-
     public void setBrsLifeCheckInterval(int brsLifeCheckInterval) {
         this.brsLifeCheckInterval = brsLifeCheckInterval;
-    }
-
-    public int getBrsLifeCheckTimeout() {
-        return brsLifeCheckTimeout;
     }
 
     public void setBrsLifeCheckTimeout(int brsLifeCheckTimeout) {
         this.brsLifeCheckTimeout = brsLifeCheckTimeout;
     }
 
-    public int getBrsLifeCheckNumberOfRetries() {
-        return brsLifeCheckNumberOfRetries;
-    }
-
     public void setBrsLifeCheckNumberOfRetries(int brsLifeCheckNumberOfRetries) {
         this.brsLifeCheckNumberOfRetries = brsLifeCheckNumberOfRetries;
     }
 
-    public BrsModel getBrsModel() {
-        return brsModel;
-    }
+    public void createReaders() throws DeviceException {
+        if (brsModel == null)
+            return; //do nothing
 
-
-    // Private methods
-
-    private void onBrsConnected(boolean connected) {
-        if (connected) {
-            logger.debug("BRS CONNECTED");
-            fireDeviceStatusChanged(DeviceStatus.CONNECTED);
-            brsReconnectionHandler.stopReconnection();
-        } else {
-            disconnectReaders();
-            logger.debug("BRS DISCONNECTED");
-            fireDeviceStatusChanged(DeviceStatus.DISCONNECTED);
-
-            brsReconnectionHandler.startReconnection();
+        readers.clear();
+        for (String brsAddress : brsModel.getActiveAddresses()) {
+            BrsReaderModel brsReaderModel = buildBrsReaderModel(brsAddress);
+            CodeReaderController brsReader = new BrsReaderController(this, brsReaderModel);
+            readers.add(brsReader);
         }
     }
 
-    private void disconnectReaders() {
-        for (CodeReader reader : readers) {
+    // PRIVATE METHODS
+
+    private void stopAndDisconnectReaders() throws DeviceException {
+        for (CodeReaderController reader : readers) {
+            reader.stop(); // Prevent reading barcodes
+            reader.disconnect();
+        }
+    }
+
+    private void connectReaders() throws DeviceException {
+        for (CodeReaderController reader : readers) {
+            reader.connect();
+        }
+    }
+
+
+    private BrsReaderModel buildBrsReaderModel(String brsAddress) {
+        int port = Integer.valueOf(brsModel.getPort());
+        BrsType brsType = BrsType.valueOf(brsModel.getBrsType().trim().toUpperCase());
+
+        return new BrsReaderModel.BrsReaderModelBuilder(brsAddress, port, brsType)
+                .brsLifeCheckInterval(brsLifeCheckInterval)
+                .brsLifeCheckTimeout(brsLifeCheckTimeout)
+                .brsLifeCheckNumberOfRetries(brsLifeCheckNumberOfRetries).build();
+    }
+
+
+    private void startReaders() throws DeviceException {
+        for (CodeReaderController reader : readers) {
+            reader.start();
+        }
+    }
+
+    private void stopReaders() throws DeviceException {
+        for (CodeReaderController reader : readers) {
             reader.stop();
         }
     }
 
-    /**
-     * Note the BRS api (com.sicpa.common.device.reader) is not managing well multiple
-     * code readers at the same time. Sometimes the method reader.start() is throwing
-     * IllegalThreadStateException. This is why this method :
-     * - is using an iterator to iterate over the readers in order to avoid
-     * ConcurrentModificationExceptions.
-     * - Catching and swallowing concurrency exceptions from reader.start() and let
-     * the reconnectionHandler retry again later.
-     */
-    private void checkBrsConnectivity() throws DeviceException {
-        Iterator<CodeReaderAdaptor> iterator = readers.iterator();
-        while (iterator.hasNext()) {
-            try {
-                CodeReaderAdaptor reader = iterator.next();
-                // Allow life check
-                reader.start();
-            } catch (Exception ex) {
-                logger.warn("Error starting code reader", ex.getMessage());
-            }
-        }
-        // Prevent reading barcodes
-        doStop();
-    }
-
-
-    private void enableBrsReading() throws IOException {
-        for (CodeReaderAdaptor reader : readers) {
-            reader.sendEnableReadingCommand();
-        }
-    }
-
-    private void disableBrsReading() throws IOException {
-        for (CodeReaderAdaptor reader : readers) {
-            reader.sendDisableReadingCommand();
-        }
-    }
-
-    private boolean allReadersConnected() {
-        return readersConnected.get() >= readers.size();
-    }
-
-
-    private class BrsReconnectionHandler {
-        private Thread reconnectionHandler = new Thread();
-        private boolean onReconnection = false;
-
-        public void startReconnection() {
-            if (!reconnectionHandler.isAlive()) {
-                onReconnection = true;
-
-                reconnectionHandler = new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-
-                        while (onReconnection) {
-                            logger.debug("Trying to reconnect BRS..." + Thread.currentThread().getId());
-                            try {
-                                doConnect();
-                            } catch (DeviceException e) {
-                                logger.error("Error connecting to brs device", e.getMessage());
-                            }
-
-                            ThreadUtils.sleepQuietly(5000);
-                        }
-                        ;
-                    }
-                });
-
-                reconnectionHandler.start();
-            }
-        }
-
-        public void stopReconnection() {
-            onReconnection = false;
-        }
-    }
 }

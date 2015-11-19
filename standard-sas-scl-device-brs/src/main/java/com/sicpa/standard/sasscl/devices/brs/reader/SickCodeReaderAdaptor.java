@@ -10,6 +10,7 @@ public class SickCodeReaderAdaptor extends AbstractCodeReaderAdaptor implements 
 
     public SickCodeReaderAdaptor(CodeReader codeReader) {
         super(codeReader);
+
     }
 
     @Override

@@ -10,6 +10,7 @@ public abstract class AbstractCodeReaderAdaptor implements CodeReaderAdaptor {
 
     protected CodeReader codeReader;
 
+
     public AbstractCodeReaderAdaptor(CodeReader codeReader) {
         this.codeReader = codeReader;
     }
@@ -65,4 +66,5 @@ public abstract class AbstractCodeReaderAdaptor implements CodeReaderAdaptor {
         codeReader.sendData(data);
 
     }
+
 }

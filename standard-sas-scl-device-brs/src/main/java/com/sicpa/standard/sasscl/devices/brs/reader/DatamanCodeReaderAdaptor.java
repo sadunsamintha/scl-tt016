@@ -8,10 +8,10 @@ import java.io.IOException;
 
 public class DatamanCodeReaderAdaptor extends AbstractCodeReaderAdaptor  {
 
-    public DatamanCodeReaderAdaptor(CodeReader reader) {
-        super(reader);
-    }
+    public DatamanCodeReaderAdaptor(CodeReader codeReader) {
+        super(codeReader);
 
+    }
 
     @Override
     public void sendEnableReadingCommand() throws IOException {
@@ -22,4 +22,5 @@ public class DatamanCodeReaderAdaptor extends AbstractCodeReaderAdaptor  {
     public void sendDisableReadingCommand() throws IOException {
         codeReader.sendData(BrsCommands.DISABLE_READING);
     }
+
 }
