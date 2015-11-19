@@ -19,9 +19,9 @@ public class BrsReaderController implements CodeReaderController {
 
     private CodeReaderListener codeReaderListener;
 
-    private BrsReconnectionHandler brsReconnectionHandler = new BrsReconnectionHandler();
+    private final BrsReconnectionHandler brsReconnectionHandler = new BrsReconnectionHandler();
 
-    private AtomicBoolean isConnected = new AtomicBoolean(false);
+    private final AtomicBoolean isConnected = new AtomicBoolean(false);
 
     private BrsReaderModel brsReaderModel;
 
@@ -128,7 +128,7 @@ public class BrsReaderController implements CodeReaderController {
     private class BrsReconnectionHandler {
 
         private Thread reconnectionHandler = new Thread();
-        private boolean onReconnection = false;
+        private volatile boolean onReconnection = false;
 
         public void startReconnection() {
             if (!reconnectionHandler.isAlive()) {

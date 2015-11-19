@@ -148,7 +148,7 @@ public class BrsAdaptor extends AbstractStartableDevice implements CodeReaderLis
 
     private BrsReaderModel buildBrsReaderModel(String brsAddress) {
         int port = Integer.valueOf(brsModel.getPort());
-        BrsType brsType = BrsType.fromString(brsModel.getBrsType());
+        BrsType brsType = BrsType.valueOf(brsModel.getBrsType().trim().toUpperCase());
 
         return new BrsReaderModel.BrsReaderModelBuilder(brsAddress, port, brsType)
                 .brsLifeCheckInterval(brsLifeCheckInterval)

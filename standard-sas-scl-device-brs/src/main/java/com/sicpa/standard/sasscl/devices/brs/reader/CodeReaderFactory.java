@@ -27,23 +27,27 @@ public class CodeReaderFactory {
 
     private static ReaderFactory createReaderFactory(BrsReaderModel brsReaderModel, CodeReaderController codeReaderController) {
         ReaderFactory factory = null;
-        if (brsReaderModel.getType().equals(BrsType.SICK)) {
-            factory = new SickFactory(brsReaderModel.getBrsLifeCheckInterval(), brsReaderModel.getBrsLifeCheckTimeout(), "brs");
-        } else if (brsReaderModel.getType().equals(BrsType.DATAMAN)) {
-            factory = new BrsFactory(brsReaderModel.getBrsLifeCheckInterval(), brsReaderModel.getBrsLifeCheckTimeout(), codeReaderController, brsReaderModel.getBrsLifeCheckNumberOfRetries());
+        switch (brsReaderModel.getType()) {
+            case SICK:
+                factory = new SickFactory(brsReaderModel.getBrsLifeCheckInterval(), brsReaderModel.getBrsLifeCheckTimeout(), "brs");
+                break;
+            case DATAMAN:
+                factory = new BrsFactory(brsReaderModel.getBrsLifeCheckInterval(), brsReaderModel.getBrsLifeCheckTimeout(), codeReaderController, brsReaderModel.getBrsLifeCheckNumberOfRetries());
+                break;
         }
         return factory;
     }
 
     private static CodeReaderAdaptor createReaderAdaptor(CodeReader reader, BrsType brsType) {
         CodeReaderAdaptor adaptor = null;
-        if (brsType.equals(BrsType.SICK)) {
-            adaptor = new SickCodeReaderAdaptor(reader);
-
-        } else if (brsType.equals(BrsType.DATAMAN)) {
-            adaptor = new DatamanCodeReaderAdaptor(reader);
+        switch (brsType) {
+            case SICK:
+                adaptor = new SickCodeReaderAdaptor(reader);
+                break;
+            case DATAMAN:
+                adaptor = new DatamanCodeReaderAdaptor(reader);
+                break;
         }
-
         return adaptor;
     }
 }
