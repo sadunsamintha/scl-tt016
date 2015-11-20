@@ -5,6 +5,7 @@ import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.messages.MessageEvent;
 import com.sicpa.standard.sasscl.controller.ProductionParametersEvent;
 import com.sicpa.standard.sasscl.devices.brs.event.BrsProductEvent;
+import com.sicpa.standard.sasscl.devices.brs.sku.NonCompliantProduct;
 import com.sicpa.standard.sasscl.messages.MessageEventKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +22,11 @@ public class BrsSkuCheck {
 
     private Set<String> validBarcodes = new HashSet<>();
 
+    private NonCompliantProduct nonCompliantProductResolver;
+
+    private boolean isSkuSelectedCompliantProduct = true;
+
+
     public BrsSkuCheck() {
     }
 
@@ -34,11 +40,14 @@ public class BrsSkuCheck {
 
         this.validBarcodes.clear();
         this.validBarcodes.addAll(evt.getProductionParameters().getSku().getBarCodes());
-        //TODO if the brs barcode is not compliance then we have to disable the alert
+        isSkuSelectedCompliantProduct = nonCompliantProductResolver.isCompliant(evt.getProductionParameters().getSku());
     }
 
     @Subscribe
     public void onBrsCodeReceived(BrsProductEvent evt) {
+        if(!isSkuSelectedCompliantProduct)
+            return; // do nothing
+
         logger.debug("BRS Code Received:" + evt.getCode());
 
         if(!validBarcodes.contains(evt.getCode())) {
@@ -46,4 +55,9 @@ public class BrsSkuCheck {
             EventBusService.post(new MessageEvent(MessageEventKey.BRS.BRS_WRONG_SKU));
         }
     }
+
+    public void setNonCompliantProductResolver(NonCompliantProduct nonCompliantProductResolver) {
+        this.nonCompliantProductResolver = nonCompliantProductResolver;
+    }
+
 }
