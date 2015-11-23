@@ -6,6 +6,9 @@
        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 
+	<!--non compliant product resolver -->
+	<bean id="nonCompliantProduct" class="${nonCompliantProduct}" />
+
 	<bean id="brsSkuCheck" class="${brsSkuCheck}">
 		<property name="nonCompliantProductResolver" ref="nonCompliantProduct" />
 	</bean>
@@ -79,8 +82,5 @@
 		<property name="params" ref="alertBrsProductErrorCount" />
 	</bean>
 
-	<!--non compliant product resolver -->
-
-	<bean id="nonCompliantProduct" class="${nonCompliantProduct}" />
 
 </beans>
