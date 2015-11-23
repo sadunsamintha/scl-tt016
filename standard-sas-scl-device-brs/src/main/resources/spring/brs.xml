@@ -7,10 +7,10 @@
        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 
 	<!--non compliant product resolver -->
-	<bean id="nonCompliantProduct" class="${nonCompliantProduct}" />
+	<bean id="compliantProduct" class="${compliantProduct}" />
 
 	<bean id="brsSkuCheck" class="${brsSkuCheck}">
-		<property name="nonCompliantProductResolver" ref="nonCompliantProduct" />
+		<property name="compliantProductResolver" ref="compliantProduct" />
 	</bean>
 
 	<bean id="mapBrsAdaptor" class="com.sicpa.standard.client.common.ioc.GenericMapping" scope="prototype">
@@ -58,16 +58,14 @@
 		<property name="unreadBarcodesWarningThreshold" value="${alert.unreadbarcodes.warning.threshold}" />
 		<property name="isUnreadBarcodesEnable" value="${alert.unreadbarcodes.enable}" />
 		<property name="productionConfigProvider" ref="productionConfigProvider" />
-		<property name="nonCompliantProductResolver" ref="nonCompliantProduct" />
-
+		<property name="compliantProductResolver" ref="compliantProduct" />
 	</bean>
 
 	<bean id="alertBrsProductErrorCount" class="${alertBrsProductErrorCount}">
 		<property name="unreadBarcodesErrorThreshold" value="${alert.unreadbarcodes.error.threshold}" />
 		<property name="isUnreadBarcodesEnable" value="${alert.unreadbarcodes.enable}" />
 		<property name="productionConfigProvider" ref="productionConfigProvider" />
-		<property name="nonCompliantProductResolver" ref="nonCompliantProduct" />
-
+		<property name="compliantProductResolver" ref="compliantProduct" />
 	</bean>
 
 	<bean id="alertBrsProducWarningCountAddTask" class="com.sicpa.standard.client.common.ioc.InjectByMethodBean">

@@ -3,7 +3,7 @@ package com.sicpa.standard.sasscl.devices.brs.sku;
 
 import com.sicpa.standard.sasscl.model.SKU;
 
-public class NonCompliantProductSkuResolver implements NonCompliantProduct<SKU> {
+public class CompliantProductSkuResolver implements CompliantProduct<SKU> {
 
     @Override
     public boolean isCompliant(SKU sku) {

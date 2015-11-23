@@ -3,7 +3,7 @@ package com.sicpa.standard.sasscl.devices.brs.skuCheck;
 
 import com.sicpa.standard.sasscl.controller.ProductionParametersEvent;
 import com.sicpa.standard.sasscl.devices.brs.event.BrsProductEvent;
-import com.sicpa.standard.sasscl.devices.brs.sku.NonCompliantProduct;
+import com.sicpa.standard.sasscl.devices.brs.sku.CompliantProduct;
 import com.sicpa.standard.sasscl.model.ProductionParameters;
 import com.sicpa.standard.sasscl.model.SKU;
 import junit.framework.Assert;
@@ -31,7 +31,7 @@ public class BrsSkuCheckTest {
     private Set<String> barcodes = new HashSet<>();
 
     @Mock
-    private NonCompliantProduct nonCompliantProduct;
+    private CompliantProduct compliantProduct;
 
     @InjectMocks
     private BrsSkuCheck brsSkuCheck = new BrsSkuCheck();
@@ -40,7 +40,7 @@ public class BrsSkuCheckTest {
     @Test
     public void onProductionParametersChanged() {
 
-        when(nonCompliantProduct.isCompliant(anyObject())).thenReturn(true);
+        when(compliantProduct.isCompliant(anyObject())).thenReturn(true);
         ProductionParametersEvent event = buildProductionParametersEvent();
         brsSkuCheck.onProductionParametersChanged(event);
 
@@ -50,7 +50,7 @@ public class BrsSkuCheckTest {
 
     @Test
     public void onBrsCodeReceived() {
-        when(nonCompliantProduct.isCompliant(anyObject())).thenReturn(true);
+        when(compliantProduct.isCompliant(anyObject())).thenReturn(true);
         ProductionParametersEvent prodEvent = buildProductionParametersEvent();
         brsSkuCheck.onProductionParametersChanged(prodEvent);
 
@@ -62,7 +62,7 @@ public class BrsSkuCheckTest {
 
     @Test
     public void onBrsDisableCodeReceived() {
-        when(nonCompliantProduct.isCompliant(anyObject())).thenReturn(false);
+        when(compliantProduct.isCompliant(anyObject())).thenReturn(false);
         ProductionParametersEvent prodEvent = buildProductionParametersEvent();
         brsSkuCheck.onProductionParametersChanged(prodEvent);
 

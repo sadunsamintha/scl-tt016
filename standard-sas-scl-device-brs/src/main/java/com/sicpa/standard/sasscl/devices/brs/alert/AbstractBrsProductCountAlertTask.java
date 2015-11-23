@@ -5,7 +5,7 @@ import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.sasscl.business.alert.task.AbstractAlertTask;
 import com.sicpa.standard.sasscl.controller.ProductionParametersEvent;
 import com.sicpa.standard.sasscl.devices.brs.event.BrsProductEvent;
-import com.sicpa.standard.sasscl.devices.brs.sku.NonCompliantProduct;
+import com.sicpa.standard.sasscl.devices.brs.sku.CompliantProduct;
 import com.sicpa.standard.sasscl.devices.brs.utils.ResettableAtomicCounter;
 import com.sicpa.standard.sasscl.devices.camera.CameraBadCodeEvent;
 import com.sicpa.standard.sasscl.devices.camera.CameraGoodCodeEvent;
@@ -29,7 +29,7 @@ public abstract class AbstractBrsProductCountAlertTask extends AbstractAlertTask
 
     private ProductionConfigProvider productionConfigProvider;
 
-    private NonCompliantProduct nonCompliantProductResolver;
+    private CompliantProduct compliantProductResolver;
 
 
 
@@ -47,7 +47,7 @@ public abstract class AbstractBrsProductCountAlertTask extends AbstractAlertTask
     public void onProductionParametersChanged(ProductionParametersEvent evt) {
         reset();
         SKU sku = evt.getProductionParameters().getSku();
-        isSkuSelectedCompliantProduct = nonCompliantProductResolver.isCompliant(sku);
+        isSkuSelectedCompliantProduct = compliantProductResolver.isCompliant(sku);
     }
 
     private void increaseProductCount() {
@@ -100,8 +100,8 @@ public abstract class AbstractBrsProductCountAlertTask extends AbstractAlertTask
         this.productionConfigProvider = productionConfigProvider;
     }
 
-    public void setNonCompliantProductResolver(NonCompliantProduct nonCompliantProductResolver) {
-        this.nonCompliantProductResolver = nonCompliantProductResolver;
+    public void setCompliantProductResolver(CompliantProduct compliantProductResolver) {
+        this.compliantProductResolver = compliantProductResolver;
     }
 
 }

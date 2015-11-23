@@ -5,7 +5,7 @@ import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.messages.MessageEvent;
 import com.sicpa.standard.sasscl.controller.ProductionParametersEvent;
 import com.sicpa.standard.sasscl.devices.brs.event.BrsProductEvent;
-import com.sicpa.standard.sasscl.devices.brs.sku.NonCompliantProduct;
+import com.sicpa.standard.sasscl.devices.brs.sku.CompliantProduct;
 import com.sicpa.standard.sasscl.messages.MessageEventKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +22,7 @@ public class BrsSkuCheck {
 
     private Set<String> validBarcodes = new HashSet<>();
 
-    private NonCompliantProduct nonCompliantProductResolver;
+    private CompliantProduct compliantProductResolver;
 
     private boolean isSkuSelectedCompliantProduct = true;
 
@@ -40,7 +40,7 @@ public class BrsSkuCheck {
 
         this.validBarcodes.clear();
         this.validBarcodes.addAll(evt.getProductionParameters().getSku().getBarCodes());
-        isSkuSelectedCompliantProduct = nonCompliantProductResolver.isCompliant(evt.getProductionParameters().getSku());
+        isSkuSelectedCompliantProduct = compliantProductResolver.isCompliant(evt.getProductionParameters().getSku());
     }
 
     @Subscribe
@@ -56,8 +56,8 @@ public class BrsSkuCheck {
         }
     }
 
-    public void setNonCompliantProductResolver(NonCompliantProduct nonCompliantProductResolver) {
-        this.nonCompliantProductResolver = nonCompliantProductResolver;
+    public void setCompliantProductResolver(CompliantProduct compliantProductResolver) {
+        this.compliantProductResolver = compliantProductResolver;
     }
 
 }

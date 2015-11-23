@@ -4,7 +4,6 @@ package com.sicpa.standard.sasscl.devices.brs.alert;
 import com.sicpa.standard.sasscl.controller.productionconfig.IProductionConfig;
 import com.sicpa.standard.sasscl.controller.productionconfig.config.BrsConfig;
 import com.sicpa.standard.sasscl.devices.brs.event.BrsProductEvent;
-import com.sicpa.standard.sasscl.devices.brs.sku.NonCompliantProduct;
 import com.sicpa.standard.sasscl.devices.camera.CameraGoodCodeEvent;
 import com.sicpa.standard.sasscl.provider.impl.ProductionConfigProvider;
 import junit.framework.Assert;
@@ -14,7 +13,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.mockito.Matchers.anyObject;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
