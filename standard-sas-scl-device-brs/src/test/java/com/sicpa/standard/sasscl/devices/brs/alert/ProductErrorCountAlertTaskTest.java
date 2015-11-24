@@ -5,6 +5,7 @@ import com.sicpa.standard.sasscl.messages.MessageEventKey;
 import junit.framework.Assert;
 import org.junit.Test;
 
+
 public class ProductErrorCountAlertTaskTest extends  ProductCountAlertTaskAbstractTest{
 
 

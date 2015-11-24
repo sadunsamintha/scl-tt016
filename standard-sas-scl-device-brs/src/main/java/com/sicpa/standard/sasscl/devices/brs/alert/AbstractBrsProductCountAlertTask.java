@@ -5,9 +5,11 @@ import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.sasscl.business.alert.task.AbstractAlertTask;
 import com.sicpa.standard.sasscl.controller.ProductionParametersEvent;
 import com.sicpa.standard.sasscl.devices.brs.event.BrsProductEvent;
+import com.sicpa.standard.sasscl.devices.brs.sku.CompliantProduct;
 import com.sicpa.standard.sasscl.devices.brs.utils.ResettableAtomicCounter;
 import com.sicpa.standard.sasscl.devices.camera.CameraBadCodeEvent;
 import com.sicpa.standard.sasscl.devices.camera.CameraGoodCodeEvent;
+import com.sicpa.standard.sasscl.model.SKU;
 import com.sicpa.standard.sasscl.provider.impl.ProductionConfigProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,10 +23,13 @@ public abstract class AbstractBrsProductCountAlertTask extends AbstractAlertTask
 
     private boolean isUnreadBarcodesEnable;
 
+    private boolean isSkuSelectedCompliantProduct = true;
+
     public abstract int getUnreadBarcodesThreshold();
 
-
     private ProductionConfigProvider productionConfigProvider;
+
+    private CompliantProduct compliantProductResolver;
 
 
 
@@ -41,7 +46,8 @@ public abstract class AbstractBrsProductCountAlertTask extends AbstractAlertTask
     @Subscribe
     public void onProductionParametersChanged(ProductionParametersEvent evt) {
         reset();
-        //TODO if the brs barcode is not compliance then we have to disable the alert
+        SKU sku = evt.getProductionParameters().getSku();
+        isSkuSelectedCompliantProduct = compliantProductResolver.isCompliant(sku);
     }
 
     private void increaseProductCount() {
@@ -64,7 +70,7 @@ public abstract class AbstractBrsProductCountAlertTask extends AbstractAlertTask
     @Override
     public boolean isEnabled() {
         boolean isBrsDeviceEnable =  productionConfigProvider.get().getBrsConfig() != null;
-        return isBrsDeviceEnable && isUnreadBarcodesEnable;
+        return isBrsDeviceEnable && isUnreadBarcodesEnable &&  isSkuSelectedCompliantProduct;
     }
 
 
@@ -92,6 +98,10 @@ public abstract class AbstractBrsProductCountAlertTask extends AbstractAlertTask
 
     public void setProductionConfigProvider(ProductionConfigProvider productionConfigProvider) {
         this.productionConfigProvider = productionConfigProvider;
+    }
+
+    public void setCompliantProductResolver(CompliantProduct compliantProductResolver) {
+        this.compliantProductResolver = compliantProductResolver;
     }
 
 }

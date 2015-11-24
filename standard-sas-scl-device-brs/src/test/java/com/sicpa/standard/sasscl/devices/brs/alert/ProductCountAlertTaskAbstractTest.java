@@ -1,13 +1,30 @@
 package com.sicpa.standard.sasscl.devices.brs.alert;
 
 
+import com.sicpa.standard.sasscl.controller.productionconfig.IProductionConfig;
+import com.sicpa.standard.sasscl.controller.productionconfig.config.BrsConfig;
 import com.sicpa.standard.sasscl.devices.brs.event.BrsProductEvent;
 import com.sicpa.standard.sasscl.devices.camera.CameraGoodCodeEvent;
+import com.sicpa.standard.sasscl.provider.impl.ProductionConfigProvider;
 import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
+import static org.mockito.Mockito.when;
+
+@RunWith(MockitoJUnitRunner.class)
 public abstract class ProductCountAlertTaskAbstractTest {
+
+    @Mock
+    private ProductionConfigProvider productionConfigProvider;
+
+    @Mock
+    private IProductionConfig productionConfig;
+
+
 
     protected AbstractBrsProductCountAlertTask task;
 
@@ -18,6 +35,9 @@ public abstract class ProductCountAlertTaskAbstractTest {
     @Before
     public void setUp() {
         task = instantiateAlertTask();
+        task.setProductionConfigProvider(productionConfigProvider);
+        when(productionConfigProvider.get()).thenReturn(productionConfig);
+        when(productionConfig.getBrsConfig()).thenReturn(new BrsConfig());
     }
 
     @Test
