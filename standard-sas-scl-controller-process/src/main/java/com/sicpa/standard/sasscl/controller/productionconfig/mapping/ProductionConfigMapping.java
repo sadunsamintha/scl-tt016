@@ -17,6 +17,8 @@ public class ProductionConfigMapping implements IProductionConfigMapping {
 		put(ProductionMode.REFEED_CORRECTION, "refeedCorrection");
 		put(ProductionMode.REFEED_NORMAL, "refeedNormal");
 		put(ProductionMode.STANDARD, "standard");
+		put(ProductionMode.READY_TO_DRINK, "readyToDrink");
+
 	}
 
 	@Override
