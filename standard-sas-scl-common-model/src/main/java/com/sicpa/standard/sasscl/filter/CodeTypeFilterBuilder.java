@@ -7,7 +7,7 @@ import java.util.function.Predicate;
 
 public class CodeTypeFilterBuilder {
 
-    private Predicate <CodeType> filters = (CodeType ct) -> true; // default empty filter
+    private  Predicate <CodeType> filters = noFilter();  // default empty filter
 
     public CodeTypeFilterBuilder() {
 
@@ -20,6 +20,10 @@ public class CodeTypeFilterBuilder {
 
     public Predicate <CodeType> buildCompositeFilter() {
         return filters;
+    }
+
+    private Predicate<CodeType> noFilter(){
+        return ct -> true;
     }
 
 }

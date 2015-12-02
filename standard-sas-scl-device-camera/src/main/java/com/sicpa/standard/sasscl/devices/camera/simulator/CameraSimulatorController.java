@@ -224,7 +224,7 @@ public class CameraSimulatorController implements ICognexCameraController<Camera
 			if (isCounting()) {
 				codeProvider = new CountingCodeProvider();
 				initCodeProviderDone = true;
-			} else if (isRefeed()) {
+			} else if (initWithRandomCodeProvider()) {
 				if (!config.getCodeGetMethod().equals(CodeGetMethod.file)) {
 					codeProvider = new RandomCodeProvider();
 					initCodeProviderDone = true;
@@ -248,6 +248,10 @@ public class CameraSimulatorController implements ICognexCameraController<Camera
 			}
 			initCodeProviderDone = true;
 		}
+	}
+
+	protected boolean initWithRandomCodeProvider() {
+		return isRefeed();
 	}
 
 	/**
