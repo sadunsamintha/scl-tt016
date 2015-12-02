@@ -12,6 +12,8 @@
 		<property name="remoteServerMaxDownTime_day" value="${remoteServerMaxDownTime_day}" />
 		<property name="requestNumberEncoders" value="${requestNumberEncoders}" />
 		<property name="minEncodersThreshold" value="${minEncodersThreshold}" />
+		<property name="codeTypeFilterFactory" ref="codeTypeFilterFactory" />
+
 	</bean>
 
 	<task:scheduled-tasks scheduler="SchedulerSasScl">

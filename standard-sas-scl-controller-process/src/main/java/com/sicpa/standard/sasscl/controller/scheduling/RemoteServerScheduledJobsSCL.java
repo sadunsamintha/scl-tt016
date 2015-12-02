@@ -3,6 +3,8 @@ package com.sicpa.standard.sasscl.controller.scheduling;
 import com.sicpa.standard.sasscl.common.storage.IStorage;
 import com.sicpa.standard.sasscl.devices.remote.IRemoteServer;
 import com.sicpa.standard.sasscl.devices.remote.RemoteServerException;
+import com.sicpa.standard.sasscl.filter.CodeTypeFilterFactory;
+import com.sicpa.standard.sasscl.filter.DefaultCodeTypeFilterFactory;
 import com.sicpa.standard.sasscl.model.CodeType;
 import com.sicpa.standard.sasscl.provider.impl.AuthenticatorProvider;
 import com.sicpa.standard.sasscl.provider.impl.SkuListProvider;
@@ -11,11 +13,13 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Calendar;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class RemoteServerScheduledJobsSCL extends RemoteServerScheduledJobs {
 
-	protected int requestNumberEncoders;
-	protected int minEncodersThreshold;
+	private int requestNumberEncoders;
+	private int minEncodersThreshold;
+	private CodeTypeFilterFactory codeTypeFilterFactory;
 
 	public RemoteServerScheduledJobsSCL(IStorage storage, IRemoteServer remoteServer,
 			SkuListProvider productionParametersProvider, AuthenticatorProvider authenticatorProvider) {
@@ -44,7 +48,12 @@ public class RemoteServerScheduledJobsSCL extends RemoteServerScheduledJobs {
 
 	protected void getEncodersFromRemoteServer(final int year) throws RemoteServerException {
 		Set<CodeType> codeTypes = skuListProvider.getAvailableCodeTypes();
-		for (CodeType codeType : codeTypes) {
+
+		// Filter
+		Set<CodeType> codeTypesFilter = codeTypes.stream()
+				.filter(codeTypeFilterFactory.getFilter()).collect(Collectors.toSet());
+
+		for (CodeType codeType : codeTypesFilter) {
 			if (codeType != null) {
 				if (storage.getAvailableNumberOfEncoders(codeType, year) <= minEncodersThreshold) {
 					try {
@@ -57,17 +66,25 @@ public class RemoteServerScheduledJobsSCL extends RemoteServerScheduledJobs {
 		}
 	}
 
-	public void setRequestNumberEncoders(int requestNumberEncoders) {
-		this.requestNumberEncoders = requestNumberEncoders;
-	}
-
 	@Override
 	public void executeInitialTasks() {
 		super.executeInitialTasks();
 		getEncodersFromRemoteServer();
 	}
 
+	public void setRequestNumberEncoders(int requestNumberEncoders) {
+		this.requestNumberEncoders = requestNumberEncoders;
+	}
+
 	public void setMinEncodersThreshold(int minEncodersThreshold) {
 		this.minEncodersThreshold = minEncodersThreshold;
+	}
+
+	public CodeTypeFilterFactory getCodeTypeFilterFactory() {
+		return codeTypeFilterFactory;
+	}
+
+	public void setCodeTypeFilterFactory(CodeTypeFilterFactory codeTypeFilterFactory) {
+		this.codeTypeFilterFactory = codeTypeFilterFactory;
 	}
 }

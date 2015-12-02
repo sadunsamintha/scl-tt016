@@ -17,6 +17,7 @@ public class ProductionMode implements Serializable {
     public static final ProductionMode EXPORT_CODING = new ProductionMode(8, "productionmode.export.coding", true);
     public static final ProductionMode ALL = new ProductionMode(0, "productionmode.all", false);
 
+
     protected final int id;
     protected String description;
     protected boolean withSicpaData;
