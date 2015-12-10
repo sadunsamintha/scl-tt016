@@ -8,8 +8,6 @@
 	<tcpMaxExpiredRequests>3</tcpMaxExpiredRequests>
 	<transitionMaxExpiredRequests>10</transitionMaxExpiredRequests>
 	<resetOnStop>true</resetOnStop>
-	<printerBufferLowThreshold>200</printerBufferLowThreshold>
-	<nbCodesPerSending>100</nbCodesPerSending>
 	<requestBufferStatusPeriod>500</requestBufferStatusPeriod>
 	<requestParamPeriod>2000</requestParamPeriod>
 	<allowedInkTags>79000-*</allowedInkTags>
