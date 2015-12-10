@@ -82,10 +82,6 @@ public class CameraAdaptor extends AbstractCameraAdaptor implements ICameraContr
 	protected void doStart() throws DeviceException {
 		try {
 			if (status == DeviceStatus.CONNECTED || status == DeviceStatus.STOPPED) {
-				/*
-				 * done already when connection if (this.cameraJobFilesConfig != null &&
-				 * this.cameraJobFilesConfig.isSetCameraJob()) { this.setCameraJob(); }
-				 */
 				controller.startReading();
 				fireDeviceStatusChanged(DeviceStatus.STARTED);
 			}
@@ -154,6 +150,9 @@ public class CameraAdaptor extends AbstractCameraAdaptor implements ICameraContr
 		switch (eventCode) {
 
 		case CONNECTED:
+			if (needCameraJobToBeSet()) {
+				setCameraJob();
+			}
 			fireDeviceStatusChanged(DeviceStatus.CONNECTED);
 			break;
 
@@ -173,6 +172,10 @@ public class CameraAdaptor extends AbstractCameraAdaptor implements ICameraContr
 		default:
 			break;
 		}
+	}
+
+	private boolean needCameraJobToBeSet() {
+		return cameraJobFilesConfig != null && cameraJobFilesConfig.isSetCameraJob();
 	}
 
 	/**
@@ -227,9 +230,6 @@ public class CameraAdaptor extends AbstractCameraAdaptor implements ICameraContr
 	public void doConnect() throws CameraAdaptorException {
 		try {
 
-			if (cameraJobFilesConfig != null && cameraJobFilesConfig.isSetCameraJob()) {
-				setCameraJob();
-			}
 			controller.create();
 		} catch (com.sicpa.standard.camera.controller.CameraException e) {
 			throw new CameraAdaptorException(e);
