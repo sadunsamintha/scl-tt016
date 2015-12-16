@@ -86,6 +86,6 @@ public class CameraIddleAlertTask extends AbstractScheduledAlertTask {
 
 	@Override
 	public long getDelay() {
-		return model.getDelayInSec() * 1000;
+		return model.getDelayInSec();
 	}
 }
