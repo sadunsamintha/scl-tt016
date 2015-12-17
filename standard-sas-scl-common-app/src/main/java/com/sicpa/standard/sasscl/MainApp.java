@@ -66,6 +66,7 @@ import com.sicpa.standard.sicpadata.spi.manager.StaticServiceProviderManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.core.io.ClassPathResource;
 
 import java.io.File;
 import java.util.List;
@@ -261,18 +262,29 @@ public class MainApp extends CommonMainApp<LoaderConfig> {
 	}
 
 	protected void getLineIdFromRemoteServerAndSaveItLocally() {
-		IRemoteServer remote = BeanProvider.getBean(BeansName.REMOTE_SERVER);
+		long id = getLineIdFromRemoteServer();
 		SubsystemIdProvider subsystemIdProvider = BeanProvider.getBean(BeansName.SUBSYSTEM_ID_PROVIDER);
+		subsystemIdProvider.set(id);
+		saveSubsystemId(id);
+	}
 
+	private void saveSubsystemId(long id) {
 		try {
-			long id = remote.getSubsystemID();
-			subsystemIdProvider.set(id);
+			File globalPropertiesFile = new ClassPathResource(ConfigUtilEx.GLOBAL_PROPERTIES_PATH).getFile();
 
-			PropertiesUtils.savePropertiesKeepOrderAndComment(new File(ConfigUtilEx.GLOBAL_PROPERTIES_PATH),
-					"subsystemId", "" + id);
-		} catch (Exception e) {
-			logger.error("Failed to Get and Save Line Id", e);
+			PropertiesUtils.savePropertiesKeepOrderAndComment(globalPropertiesFile,
+					"subsystemId", Long.toString(id));
+			PropertiesUtils.savePropertiesKeepOrderAndComment(globalPropertiesFile,
+					"lineId", Long.toString(id));
+
+		} catch (Exception ex) {
+			logger.error("Failed to Get and Save Line Id", ex);
 		}
+	}
+
+	private long getLineIdFromRemoteServer() {
+		IRemoteServer remote = BeanProvider.getBean(BeansName.REMOTE_SERVER);
+		return remote.getSubsystemID();
 	}
 
 	protected void restoreStatistics(IStorage storage) {

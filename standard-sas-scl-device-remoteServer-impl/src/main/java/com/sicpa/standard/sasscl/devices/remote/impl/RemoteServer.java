@@ -61,6 +61,7 @@ import com.sicpa.std.common.api.util.PropertyNames;
 import org.jboss.ejb.client.EJBClientContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.ClassPathResource;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -265,7 +266,7 @@ public class RemoteServer extends AbstractRemoteServer {
 			cryptoServiceProviderManager.setPassword(pwd);
 
 			// save the password for offline prod
-			PropertiesUtils.savePropertiesKeepOrderAndComment(new File(ConfigUtilEx.GLOBAL_PROPERTIES_PATH),
+			PropertiesUtils.savePropertiesKeepOrderAndComment(new ClassPathResource(ConfigUtilEx.GLOBAL_PROPERTIES_PATH).getFile(),
 					"sicpadataPassword", "" + pwd);
 		} catch (Exception e) {
 			logger.error("", e);

@@ -1,24 +1,5 @@
 package com.sicpa.standard.sasscl.view;
 
-import static com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState.STT_CONNECTED;
-import static com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState.STT_CONNECTING;
-import static com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState.STT_EXIT;
-import static com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState.STT_NO_SELECTION;
-import static com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState.STT_RECOVERING;
-import static com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState.STT_SELECT_NO_PREVIOUS;
-import static com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState.STT_SELECT_WITH_PREVIOUS;
-import static com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState.STT_STARTED;
-import static com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState.STT_STARTING;
-import static com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState.STT_STOPPING;
-
-import java.awt.Color;
-import java.awt.Dialog;
-import java.awt.Window;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.swing.JComponent;
-
 import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.descriptor.ModelEditableProperties;
 import com.sicpa.standard.client.common.descriptor.validator.Validators;
@@ -48,316 +29,334 @@ import com.sicpa.standard.sasscl.provider.impl.SkuListProvider;
 import com.sicpa.standard.sasscl.view.config.plc.FrameCameraImage;
 import com.sicpa.standard.sasscl.view.messages.I18nableLockingErrorModel;
 
+import javax.swing.*;
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState.*;
+
 public class MainFrameController extends MachineViewController {
 
-	protected final List<SecuredComponentGetter> securedPanels = new ArrayList<>();
+    protected final List<SecuredComponentGetter> securedPanels = new ArrayList<>();
 
-	protected SkuListProvider productionParametersProvider;
+    protected SkuListProvider productionParametersProvider;
 
-	protected ModelEditableProperties editablePropertyDescriptors;
-	protected Validators beanValidators;
+    protected ModelEditableProperties editablePropertyDescriptors;
+    protected Validators beanValidators;
 
-	protected String lineId;
+    protected String lineId;
 
-	protected ProductionParameters productionParameters;
+    protected ProductionParameters productionParameters;
 
-	protected IMessageCodeMapper messageCodeMapper;
+    protected IMessageCodeMapper messageCodeMapper;
 
-	public void addSecuredPanel(SecuredComponentGetter securedComponentGetter) {
-		securedPanels.add(securedComponentGetter);
-	}
+    public static String LINE_LABEL_SEPARATOR = " : ";
 
-	public MainFrameController(final SkuListProvider productionParametersProvider) {
-		this.productionParametersProvider = productionParametersProvider;
-	}
+    public static String LINE_LABEL_ID = Messages.get("lineId");
 
-	public MainFrameController() {
-	}
 
-	@Subscribe
-	public void handleLanguageSwitch(LanguageSwitchEvent evt) {
+    public void addSecuredPanel(SecuredComponentGetter securedComponentGetter) {
+        securedPanels.add(securedComponentGetter);
+    }
 
-		// refresh line id label
-		setLineId(Messages.get("lineId") + ":" + lineId);
+    public MainFrameController(final SkuListProvider productionParametersProvider) {
+        this.productionParametersProvider = productionParametersProvider;
+    }
 
-		// refresh application status label
-		setApplicationStatus(getApplicationStatus());
-	}
+    public MainFrameController() {
+    }
 
-	@Subscribe
-	public void addErrorMainPanel(final ErrorBlockingViewEvent evt) {
-		addErrorMainPanel(evt.getKey(), evt.getMessage());
-	}
+    @Subscribe
+    public void handleLanguageSwitch(LanguageSwitchEvent evt) {
 
-	public void addErrorMainPanel(final String key, final String message, final Object... params) {
-		if (lockingErrorModel != null) {
-			((I18nableLockingErrorModel) this.lockingErrorModel).addMessage(key, message, params);
-		}
-	}
+        // refresh line id label
+        setLineId(LINE_LABEL_ID + LINE_LABEL_SEPARATOR + lineId);
 
-	@Subscribe
-	public void productionParametersChanged(final ProductionParametersEvent evt) {
-		if (!filterProductionChangedEvent) {
-			productionParametersChanged(false);
-			filterProductionChangedEvent = false;
-		}
-	}
+        // refresh application status label
+        setApplicationStatus(getApplicationStatus());
+    }
 
-	public void setBarcode(String barcode) {
-		productionParameters.setBarcode(barcode);
-	}
 
-	public void setSku(SKU sku) {
-		productionParameters.setSku(sku);
-	}
+    @Subscribe
+    public void addErrorMainPanel(final ErrorBlockingViewEvent evt) {
+        addErrorMainPanel(evt.getKey(), evt.getMessage());
+    }
 
-	public void setProductionMode(ProductionMode productionMode) {
-		productionParameters.setProductionMode(productionMode);
-	}
+    public void addErrorMainPanel(final String key, final String message, final Object... params) {
+        if (lockingErrorModel != null) {
+            ((I18nableLockingErrorModel) this.lockingErrorModel).addMessage(key, message, params);
+        }
+    }
 
-	protected boolean filterProductionChangedEvent = false;
+    @Subscribe
+    public void productionParametersChanged(final ProductionParametersEvent evt) {
+        if (!filterProductionChangedEvent) {
+            productionParametersChanged(false);
+            filterProductionChangedEvent = false;
+        }
+    }
 
-	public void productionParametersChanged() {
-		productionParametersChanged(true);
-	}
 
-	public void productionParametersChanged(boolean sendEvent) {
+    public void setBarcode(String barcode) {
+        productionParameters.setBarcode(barcode);
+    }
 
-		// refresh all errors and warning when production mode has been changed
-		if (lockingErrorModel != null) {
-			removeAllWarnings();
-			removeAllErrorMainPanel();
-		}
-		if (sendEvent) {
-			filterProductionChangedEvent = true;
-			EventBusService.post(new ProductionParametersEvent(productionParameters));
-		}
-	}
+    public void setSku(SKU sku) {
+        productionParameters.setSku(sku);
+    }
 
-	@Override
-	protected void setBarcodeModel(final IdInputmodel barcodeModel) {
-		super.setBarcodeModel(barcodeModel);
-	}
+    public void setProductionMode(ProductionMode productionMode) {
+        productionParameters.setProductionMode(productionMode);
+    }
 
-	protected ApplicationFlowState currentApplicationState = ApplicationFlowState.STT_NO_SELECTION;;
+    protected boolean filterProductionChangedEvent = false;
 
-	@Subscribe
-	public void processStateChanged(final ApplicationFlowStateChangedEvent evt) {
-		ThreadUtils.invokeLater(new Runnable() {
-			@Override
-			public void run() {
+    public void productionParametersChanged() {
+        productionParametersChanged(true);
+    }
 
-				currentApplicationState = evt.getCurrentState();
+    public void productionParametersChanged(boolean sendEvent) {
 
-				if (evt.getCurrentState() == STT_NO_SELECTION) {
-					onNoSelection();
-				} else if (evt.getCurrentState() == STT_STARTING) {
-					onStarting();
-				} else if (evt.getCurrentState() == STT_STARTED) {
-					onStarted();
-				} else if (evt.getCurrentState() == STT_SELECT_NO_PREVIOUS) {
-					onSelecting();
-				} else if (evt.getCurrentState() == STT_SELECT_WITH_PREVIOUS) {
-					onSelecting();
-				} else if (evt.getCurrentState() == STT_STOPPING) {
-					onStopping();
-				} else if (evt.getCurrentState() == STT_RECOVERING) {
-					onConnecting(evt);
-				} else if (evt.getCurrentState() == STT_CONNECTING) {
-					onConnecting(evt);
-				} else if (evt.getCurrentState() == STT_CONNECTED) {
-					onConnected();
-				} else if (evt.getCurrentState() == STT_EXIT) {
-					onExiting();
-				}
-			}
-		});
-	}
+        // refresh all errors and warning when production mode has been changed
+        if (lockingErrorModel != null) {
+            removeAllWarnings();
+            removeAllErrorMainPanel();
+        }
+        if (sendEvent) {
+            filterProductionChangedEvent = true;
+            EventBusService.post(new ProductionParametersEvent(productionParameters));
+        }
+    }
 
-	protected void onNoSelection() {
-		if (applicationStatusModel != null) {
-			setApplicationStatus(new STDSASSCLApplicationStatus(SicpaColor.RED, "view.status.stopped"));
-		}
-	}
+    @Override
+    protected void setBarcodeModel(final IdInputmodel barcodeModel) {
+        super.setBarcodeModel(barcodeModel);
+    }
 
-	protected void onSelecting() {
-		removeAllErrorMainPanel();
-		setApplicationStatus(new STDSASSCLApplicationStatus(SicpaColor.RED, "view.status.stopped"));
-	}
+    protected ApplicationFlowState currentApplicationState = ApplicationFlowState.STT_NO_SELECTION;
+    ;
 
-	protected void onStarting() {
-		removeAllWarnings();
-		setApplicationStatus(new STDSASSCLApplicationStatus(SicpaColor.GREEN_DARK, "view.status.starting"));
-	}
+    @Subscribe
+    public void processStateChanged(final ApplicationFlowStateChangedEvent evt) {
+        ThreadUtils.invokeLater(new Runnable() {
+            @Override
+            public void run() {
 
-	protected void onStarted() {
-		Color color;
-		String text;
-		if (productionParameters.getProductionMode().equals(ProductionMode.MAINTENANCE)) {
-			color = SicpaColor.ORANGE;
-			text = "view.status.maintenance";
-		} else {
-			color = SicpaColor.GREEN_DARK;
-			text = "view.status.running";
-		}
-		setApplicationStatus(new STDSASSCLApplicationStatus(color, text));
-	}
+                currentApplicationState = evt.getCurrentState();
 
-	protected void onStopping() {
-		setApplicationStatus(new STDSASSCLApplicationStatus(SicpaColor.RED, "view.status.stopping"));
-	}
+                if (evt.getCurrentState() == STT_NO_SELECTION) {
+                    onNoSelection();
+                } else if (evt.getCurrentState() == STT_STARTING) {
+                    onStarting();
+                } else if (evt.getCurrentState() == STT_STARTED) {
+                    onStarted();
+                } else if (evt.getCurrentState() == STT_SELECT_NO_PREVIOUS) {
+                    onSelecting();
+                } else if (evt.getCurrentState() == STT_SELECT_WITH_PREVIOUS) {
+                    onSelecting();
+                } else if (evt.getCurrentState() == STT_STOPPING) {
+                    onStopping();
+                } else if (evt.getCurrentState() == STT_RECOVERING) {
+                    onConnecting(evt);
+                } else if (evt.getCurrentState() == STT_CONNECTING) {
+                    onConnecting(evt);
+                } else if (evt.getCurrentState() == STT_CONNECTED) {
+                    onConnected();
+                } else if (evt.getCurrentState() == STT_EXIT) {
+                    onExiting();
+                }
+            }
+        });
+    }
 
-	protected void onStopped() {
-		setApplicationStatus(new STDSASSCLApplicationStatus(SicpaColor.RED, "view.status.stopped"));
-	}
+    protected void onNoSelection() {
+        if (applicationStatusModel != null) {
+            setApplicationStatus(new STDSASSCLApplicationStatus(SicpaColor.RED, "view.status.stopped"));
+        }
+    }
 
-	protected void onExiting() {
-		setApplicationStatus(new STDSASSCLApplicationStatus(SicpaColor.RED, "view.status.exiting"));
-	}
+    protected void onSelecting() {
+        removeAllErrorMainPanel();
+        setApplicationStatus(new STDSASSCLApplicationStatus(SicpaColor.RED, "view.status.stopped"));
+    }
 
-	protected void onConnected() {
-		setApplicationStatus(new STDSASSCLApplicationStatus(SicpaColor.RED, "view.status.stopped"));
-	}
+    protected void onStarting() {
+        removeAllWarnings();
+        setApplicationStatus(new STDSASSCLApplicationStatus(SicpaColor.GREEN_DARK, "view.status.starting"));
+    }
 
-	protected void onConnecting(final ApplicationFlowStateChangedEvent evt) {
-		setApplicationStatus(new STDSASSCLApplicationStatus(SicpaColor.RED, "view.status.recovering"));
-	}
+    protected void onStarted() {
+        Color color;
+        String text;
+        if (productionParameters.getProductionMode().equals(ProductionMode.MAINTENANCE)) {
+            color = SicpaColor.ORANGE;
+            text = "view.status.maintenance";
+        } else {
+            color = SicpaColor.GREEN_DARK;
+            text = "view.status.running";
+        }
+        setApplicationStatus(new STDSASSCLApplicationStatus(color, text));
+    }
 
-	@Subscribe
-	public void handleHardwareConnecting(final HardwareControllerStatusEvent evt) {
-		ThreadUtils.invokeLater(new Runnable() {
-			@Override
-			public void run() {
+    protected void onStopping() {
+        setApplicationStatus(new STDSASSCLApplicationStatus(SicpaColor.RED, "view.status.stopping"));
+    }
 
-				removeAllErrorMainPanel();
+    protected void onStopped() {
+        setApplicationStatus(new STDSASSCLApplicationStatus(SicpaColor.RED, "view.status.stopped"));
+    }
 
-				if (currentApplicationState == STT_SELECT_WITH_PREVIOUS) {
-					return;
-				}
+    protected void onExiting() {
+        setApplicationStatus(new STDSASSCLApplicationStatus(SicpaColor.RED, "view.status.exiting"));
+    }
 
-				if (evt.getStatus().equals(HardwareControllerStatus.CONNECTING)) {
-					String errorMsg = "";
-					for (String error : evt.getErrors()) {
-						errorMsg += error + "\n";
-					}
-					addErrorMainPanel("", "controller.device.recovering.waiting", "\n" + errorMsg);
-				}
-			}
-		});
-	}
+    protected void onConnected() {
+        setApplicationStatus(new STDSASSCLApplicationStatus(SicpaColor.RED, "view.status.stopped"));
+    }
 
-	public void setEditablePropertyDescriptors(final ModelEditableProperties editablePropertyDescriptor) {
-		this.editablePropertyDescriptors = editablePropertyDescriptor;
-	}
+    protected void onConnecting(final ApplicationFlowStateChangedEvent evt) {
+        setApplicationStatus(new STDSASSCLApplicationStatus(SicpaColor.RED, "view.status.recovering"));
+    }
 
-	public ModelEditableProperties getEditablePropertyDescriptors() {
-		return editablePropertyDescriptors;
-	}
+    @Subscribe
+    public void handleHardwareConnecting(final HardwareControllerStatusEvent evt) {
+        ThreadUtils.invokeLater(new Runnable() {
+            @Override
+            public void run() {
 
-	public void setBeanValidators(final Validators beanValidators) {
-		this.beanValidators = beanValidators;
-	}
+                removeAllErrorMainPanel();
 
-	public Validators getBeanValidators() {
-		return this.beanValidators;
-	}
+                if (currentApplicationState == STT_SELECT_WITH_PREVIOUS) {
+                    return;
+                }
 
-	protected FrameCameraImage frameCameraImage;
+                if (evt.getStatus().equals(HardwareControllerStatus.CONNECTING)) {
+                    String errorMsg = "";
+                    for (String error : evt.getErrors()) {
+                        errorMsg += error + "\n";
+                    }
+                    addErrorMainPanel("", "controller.device.recovering.waiting", "\n" + errorMsg);
+                }
+            }
+        });
+    }
 
-	@Subscribe
-	public void receiveCameraImage(final CameraImageEvent event) {
-		if (frameCameraImage == null) {
-			for (Window d : Dialog.getWindows()) {
-				if (d instanceof FrameCameraImage) {
-					frameCameraImage = (FrameCameraImage) d;
-				}
-			}
-		}
-		if (frameCameraImage != null) {
-			frameCameraImage.setimage(event);
-		}
-	}
+    public void setEditablePropertyDescriptors(final ModelEditableProperties editablePropertyDescriptor) {
+        this.editablePropertyDescriptors = editablePropertyDescriptor;
+    }
 
-	public void setMessageCodeMapper(final IMessageCodeMapper messageCodeMapper) {
-		this.messageCodeMapper = messageCodeMapper;
-	}
+    public ModelEditableProperties getEditablePropertyDescriptors() {
+        return editablePropertyDescriptors;
+    }
 
-	public IMessageCodeMapper getMessageCodeMapper() {
-		return this.messageCodeMapper;
-	}
+    public void setBeanValidators(final Validators beanValidators) {
+        this.beanValidators = beanValidators;
+    }
 
-	@Override
-	protected void setLockingErrorModel(final LockingErrorModel lockingErrorModel) {
-		super.setLockingErrorModel(lockingErrorModel);
-	}
+    public Validators getBeanValidators() {
+        return this.beanValidators;
+    }
 
-	public void setVisible(boolean visible) {
-		if (getView() != null) {
-			getView().setVisible(visible);
-		}
-	}
+    protected FrameCameraImage frameCameraImage;
 
-	public void setSecuredPanels(List<SecuredComponentGetter> securedPanels) {
-		this.securedPanels.clear();
-		this.securedPanels.addAll(securedPanels);
-	}
+    @Subscribe
+    public void receiveCameraImage(final CameraImageEvent event) {
+        if (frameCameraImage == null) {
+            for (Window d : Dialog.getWindows()) {
+                if (d instanceof FrameCameraImage) {
+                    frameCameraImage = (FrameCameraImage) d;
+                }
+            }
+        }
+        if (frameCameraImage != null) {
+            frameCameraImage.setimage(event);
+        }
+    }
 
-	public List<SecuredComponentGetter> getSecuredPanels() {
-		return securedPanels;
-	}
+    public void setMessageCodeMapper(final IMessageCodeMapper messageCodeMapper) {
+        this.messageCodeMapper = messageCodeMapper;
+    }
 
-	public void replaceMainPanel(JComponent panel) {
-		if (getView() != null) {
-			getView().replaceMainPanel(panel);
-		}
-	}
+    public IMessageCodeMapper getMessageCodeMapper() {
+        return this.messageCodeMapper;
+    }
 
-	public void resetMainPanel() {
-		if (getView() != null) {
-			getView().resetMainPanel();
-		}
-	}
+    @Override
+    protected void setLockingErrorModel(final LockingErrorModel lockingErrorModel) {
+        super.setLockingErrorModel(lockingErrorModel);
+    }
 
-	public void setProductionParameters(ProductionParameters productionParameters) {
-		this.productionParameters = productionParameters;
-	}
+    public void setVisible(boolean visible) {
+        if (getView() != null) {
+            getView().setVisible(visible);
+        }
+    }
 
-	@Subscribe
-	public void handleLockFullScreenEvent(LockFullScreenEvent evt) {
-		lockFrame(true, "exit");
-	}
+    public void setSecuredPanels(List<SecuredComponentGetter> securedPanels) {
+        this.securedPanels.clear();
+        this.securedPanels.addAll(securedPanels);
+    }
 
-	@Subscribe
-	public void handleUnlockFullScreenEvent(UnlockFullScreenEvent evt) {
-		lockFrame(false, "exit");
-	}
+    public List<SecuredComponentGetter> getSecuredPanels() {
+        return securedPanels;
+    }
 
-	@Override
-	public void removeAllErrorMainPanel() {
-		if (lockingErrorModel != null) {
-			super.removeAllErrorMainPanel();
-		}
-	}
+    public void replaceMainPanel(JComponent panel) {
+        if (getView() != null) {
+            getView().replaceMainPanel(panel);
+        }
+    }
 
-	@Override
-	public void addErrorMainPanel(String key, String message) {
-		if (lockingErrorModel != null) {
-			super.addErrorMainPanel(key, message);
-		}
-	}
+    public void resetMainPanel() {
+        if (getView() != null) {
+            getView().resetMainPanel();
+        }
+    }
 
-	@Override
-	public void setApplicationStatus(ApplicationStatus status) {
-		if (applicationStatusModel != null) {
-			super.setApplicationStatus(status);
-		}
-	}
+    public void setProductionParameters(ProductionParameters productionParameters) {
+        this.productionParameters = productionParameters;
+    }
 
-	public void setLineId(String lineId) {
-		this.lineId = lineId;
-	}
+    @Subscribe
+    public void handleLockFullScreenEvent(LockFullScreenEvent evt) {
+        lockFrame(true, "exit");
+    }
 
-	public String getLineId() {
-		return lineId;
-	}
+    @Subscribe
+    public void handleUnlockFullScreenEvent(UnlockFullScreenEvent evt) {
+        lockFrame(false, "exit");
+    }
+
+    @Override
+    public void removeAllErrorMainPanel() {
+        if (lockingErrorModel != null) {
+            super.removeAllErrorMainPanel();
+        }
+    }
+
+
+    @Override
+    public void addErrorMainPanel(String key, String message) {
+        if (lockingErrorModel != null) {
+            super.addErrorMainPanel(key, message);
+        }
+    }
+
+    @Override
+    public void setApplicationStatus(ApplicationStatus status) {
+        if (applicationStatusModel != null) {
+            super.setApplicationStatus(status);
+        }
+    }
+
+    public void setLineId(String lineId) {
+        this.lineId = lineId;
+    }
+
+    public String getLineId() {
+        return lineId;
+    }
+
+
 }
