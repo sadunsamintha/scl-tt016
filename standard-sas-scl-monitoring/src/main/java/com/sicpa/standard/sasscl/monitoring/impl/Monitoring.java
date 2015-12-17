@@ -274,7 +274,6 @@ public class Monitoring implements IMonitoring {
 
 	public void saveProductionStatistics() {
 		synchronized (lockProduction) {
-
 			if (productionStatistics != null && !productionStatistics.getProductsStatistics().getValues().isEmpty()) {
 				productionStatistics.setStopTime(new Date());
 				MonitorService.addEvent(MonitorType.PRODUCTION_STATISTICS, productionStatistics);
@@ -283,7 +282,7 @@ public class Monitoring implements IMonitoring {
 		}
 	}
 
-	public synchronized void saveIncrementalStatistics() {
+	public void saveIncrementalStatistics() {
 		synchronized (lockIncremental) {
 			if (incrementalStatistics != null && !incrementalStatistics.getProductsStatistics().getValues().isEmpty()) {
 				incrementalStatistics.setStopTime(new Date());
