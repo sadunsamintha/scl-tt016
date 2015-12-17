@@ -59,7 +59,7 @@ public class CameraCountAlertTask extends AbstractScheduledBadCountAlertTask {
 
 	@Override
 	public long getDelay() {
-		return getModel().getDelay() * 1000;
+		return getModel().getDelay();
 	}
 
 	public void setModel(CameraCountAlertTaskModel model) {
