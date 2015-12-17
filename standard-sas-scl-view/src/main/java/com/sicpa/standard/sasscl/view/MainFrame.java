@@ -1,42 +1,5 @@
 package com.sicpa.standard.sasscl.view;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Point;
-import java.awt.event.ActionEvent;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Scanner;
-
-import javax.swing.AbstractAction;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JSeparator;
-import javax.swing.JTextArea;
-import javax.swing.SwingUtilities;
-
-import net.miginfocom.swing.MigLayout;
-
-import org.jdesktop.swingx.graphics.GraphicsUtilities;
-
 import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.descriptor.IPropertyDescriptor;
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
@@ -58,6 +21,23 @@ import com.sicpa.standard.sasscl.view.config.GenericConfigPanel;
 import com.sicpa.standard.sasscl.view.config.plc.MultiEditablePlcVariablesSet;
 import com.sicpa.standard.sasscl.view.lineid.LineIdWithAuthenticateButton;
 import com.sicpa.standard.sasscl.view.messages.I18nableLockingErrorModel;
+import net.miginfocom.swing.MigLayout;
+import org.jdesktop.swingx.graphics.GraphicsUtilities;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Scanner;
 
 @SuppressWarnings("serial")
 public class MainFrame extends AbstractMachineFrame {
@@ -70,6 +50,7 @@ public class MainFrame extends AbstractMachineFrame {
 	protected JComponent mainPanel;
 	protected JComponent snapshotView;
 	protected JComponent licenceInfoPanel;
+
 
 	public MainFrame(final MainFrameController controller, JComponent startStopView, JComponent changeSelectionView,
 			JComponent exitView, JComponent optionsView, JComponent messagesView, JComponent mainPanel,
@@ -90,7 +71,8 @@ public class MainFrame extends AbstractMachineFrame {
 		lockModel.setLockedComponent(getInternalCenterPanel());
 		getProdPanel().setModel(lockModel);
 		getController().setLockingErrorModel(getProdPanel().getModel());
-		getController().setLineId(Messages.get("lineId") + ":" + controller.getLineId());
+		String lineId = controller.LINE_LABEL_ID + controller.LINE_LABEL_SEPARATOR + controller.getLineId();
+		((LineIdWithAuthenticateButton) getLineIdPanel()).getLabelLineId().setText(lineId);
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		SecurityService.addLoginListener(new ILoginListener() {
 			@Override
@@ -544,5 +526,6 @@ public class MainFrame extends AbstractMachineFrame {
 			}
 		});
 	}
+
 
 }
