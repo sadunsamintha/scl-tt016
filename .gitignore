@@ -13,3 +13,7 @@ UserDatabase.csv
 standard-sas-scl-controller-process/uncaught-error
 standard-sas-scl-device-remoteServer/simulation/storage
 *.iml
+.idea/
+config/
+language/
+standard-sas-scl-device-camera/testresources/camera/test.data

@@ -287,7 +287,7 @@ public class MainApp extends CommonMainApp<LoaderConfig> {
 		}
 		stats.setValues(statsValues);
 		if (restored) {
-			EventBusService.post(new StatisticsRestoredEvent());
+			EventBusService.post(new StatisticsRestoredEvent(statsValues));
 		}
 	}
 
