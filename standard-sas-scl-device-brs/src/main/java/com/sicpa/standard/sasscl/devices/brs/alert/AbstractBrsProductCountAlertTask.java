@@ -47,7 +47,9 @@ public abstract class AbstractBrsProductCountAlertTask extends AbstractAlertTask
     public void onProductionParametersChanged(ProductionParametersEvent evt) {
         reset();
         SKU sku = evt.getProductionParameters().getSku();
-        isSkuSelectedCompliantProduct = compliantProductResolver.isCompliant(sku);
+        if(sku != null ) {
+            isSkuSelectedCompliantProduct = compliantProductResolver.isCompliant(sku);
+        }
     }
 
     private void increaseProductCount() {

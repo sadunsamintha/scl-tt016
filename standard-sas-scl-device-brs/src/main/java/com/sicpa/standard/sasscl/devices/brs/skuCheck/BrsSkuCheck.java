@@ -36,11 +36,12 @@ public class BrsSkuCheck {
 
     @Subscribe
     public void onProductionParametersChanged(ProductionParametersEvent evt) {
-        logger.info("Setting BRS Valid Barcodes:" + evt.getProductionParameters().getSku().getBarCodes());
-
         this.validBarcodes.clear();
-        this.validBarcodes.addAll(evt.getProductionParameters().getSku().getBarCodes());
-        isSkuSelectedCompliantProduct = compliantProductResolver.isCompliant(evt.getProductionParameters().getSku());
+        if(evt.getProductionParameters().getSku() !=  null) {
+            logger.info("Setting BRS Valid Barcodes:" + evt.getProductionParameters().getSku().getBarCodes());
+            this.validBarcodes.addAll(evt.getProductionParameters().getSku().getBarCodes());
+            isSkuSelectedCompliantProduct = compliantProductResolver.isCompliant(evt.getProductionParameters().getSku());
+        }
     }
 
     @Subscribe
