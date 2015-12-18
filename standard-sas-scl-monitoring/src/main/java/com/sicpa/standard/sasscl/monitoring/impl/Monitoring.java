@@ -243,9 +243,7 @@ public class Monitoring implements IMonitoring {
 
 			if (event.getMessage().equals(ApplicationFlowState.STT_CONNECTED.getName())
 					|| event.getMessage().equals(ApplicationFlowState.STT_CONNECTING.getName())) {
-				saveIncrementalStatistics();
-				saveProductionStatistics();
-				saveIncrTimer.cancel();
+				initStats();
 			}
 
 			else if (event.getMessage().equals(ApplicationFlowState.STT_STARTING.getName())) {
@@ -266,6 +264,7 @@ public class Monitoring implements IMonitoring {
 			if (restoreStats) {
 				restoreStats = false;
 			} else {
+				saveIncrTimer.cancel();
 				incrementalStatistics = null;
 				productionStatistics = null;
 			}
@@ -401,10 +400,18 @@ public class Monitoring implements IMonitoring {
 	public void handleStatisticsRestored(StatisticsRestoredEvent evt) {
 		restoreStats = true;
 
-		saveIncrementalStatistics();
-		saveProductionStatistics();
+		initStats();
 
 		productionStatistics.setProductsStatisticsOffset(evt.getStatsValues().getMapValues());
 		incrementalStatistics.setProductsStatisticsOffset(evt.getStatsValues().getMapValues());
+	}
+
+	private void initStats(){
+		synchronized(lockProduction){
+			createNewProductionStatistics();
+		}
+		synchronized(lockIncremental){
+			createNewIncrementalStatistics();
+		}
 	}
 }
