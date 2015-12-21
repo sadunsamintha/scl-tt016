@@ -243,7 +243,9 @@ public class Monitoring implements IMonitoring {
 
 			if (event.getMessage().equals(ApplicationFlowState.STT_CONNECTED.getName())
 					|| event.getMessage().equals(ApplicationFlowState.STT_CONNECTING.getName())) {
-				initStats();
+				saveIncrementalStatistics();
+				saveProductionStatistics();
+				saveIncrTimer.cancel();
 			}
 
 			else if (event.getMessage().equals(ApplicationFlowState.STT_STARTING.getName())) {
@@ -264,7 +266,7 @@ public class Monitoring implements IMonitoring {
 			if (restoreStats) {
 				restoreStats = false;
 			} else {
-				saveIncrTimer.cancel();
+				//saveIncrTimer.cancel();
 				incrementalStatistics = null;
 				productionStatistics = null;
 			}
