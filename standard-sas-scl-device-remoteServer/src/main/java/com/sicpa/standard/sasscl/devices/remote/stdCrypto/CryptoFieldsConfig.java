@@ -29,6 +29,8 @@ public class CryptoFieldsConfig implements ICryptoFieldsConfig {
 		DecodedCameraCode decoded = new DecodedCameraCode();
 		if (authenResult != null) {
 			decoded.setAuthenticated(authenResult.isValid());
+			decoded.setMode(authenResult.getMode());;
+			decoded.setVersion(authenResult.getVersion());
 			if (authenResult.isValid()) {
 				if (authenResult.getFields().get("batchId") != null) {
 					decoded.setBatchId(authenResult.getFields().get("batchId"));

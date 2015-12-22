@@ -107,6 +107,8 @@ public class PostPackageBehavior implements IPostPackageBehavior {
 		product.getCode().setCodeType(code.getCodeType());
 		product.getCode().setEncoderId(code.getBatchId());
 		product.getCode().setSequence(code.getSequence());
+		product.getCode().setMode(code.getMode());;
+		product.getCode().setVersion(code.getVersion());
 	}
 
 	protected Product createProduct() {

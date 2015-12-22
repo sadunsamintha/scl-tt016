@@ -18,6 +18,10 @@ public class Code extends Customizable implements Serializable {
 
 	protected long sequence;
 
+	private String mode;
+
+	private Integer version;
+
 	public CodeType getCodeType() {
 		return this.codeType;
 	}
@@ -87,5 +91,21 @@ public class Code extends Customizable implements Serializable {
 
 	public void setStringCode(final String stringCode) {
 		this.stringCode = stringCode;
+	}
+
+	public void setMode(String mode) {
+		this.mode = mode;
+	}
+
+	public String getMode() {
+		return mode;
+	}
+
+	public void setVersion(Integer version) {
+		this.version = version;
+	}
+
+	public Integer getVersion() {
+		return version;
 	}
 }

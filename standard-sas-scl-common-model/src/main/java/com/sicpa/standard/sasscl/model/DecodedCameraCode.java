@@ -21,6 +21,10 @@ public class DecodedCameraCode implements IDecodedResult {
 
 	protected boolean authenticated;
 
+	private String mode;
+
+	private Integer version;
+
 	public DecodedCameraCode() {
 	}
 
@@ -68,6 +72,22 @@ public class DecodedCameraCode implements IDecodedResult {
 		this.codeType = codeType;
 	}
 
+	public void setMode(String mode) {
+		this.mode = mode;
+	}
+
+	public String getMode() {
+		return mode;
+	}
+
+	public void setVersion(Integer version) {
+		this.version = version;
+	}
+
+	public Integer getVersion() {
+		return version;
+	}
+
 	@Override
 	public int hashCode() {
 		return ObjectUtils.computeCompositeHashCode(this.authenticated, this.batchId, this.codeType, this.sequence);
@@ -89,5 +109,6 @@ public class DecodedCameraCode implements IDecodedResult {
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this);
 	}
+
 
 }
