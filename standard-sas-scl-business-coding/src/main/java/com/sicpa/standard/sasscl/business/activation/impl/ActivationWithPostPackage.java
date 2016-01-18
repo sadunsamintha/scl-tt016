@@ -47,12 +47,25 @@ public class ActivationWithPostPackage extends Activation {
 	@Subscribe
 	public void processStateChanged(ApplicationFlowStateChangedEvent evt) {
 		ApplicationFlowState currentState = evt.getCurrentState();
-		if (currentState.equals(ApplicationFlowState.STT_EXIT)
-				|| currentState.equals(ApplicationFlowState.STT_SELECT_WITH_PREVIOUS)) {
-			for (Product p : postPackage.notifyProductionStopped()) {
-				fireNewProduct(p);
-			}
+		if (currentState.equals(ApplicationFlowState.STT_EXIT) || currentState.equals(ApplicationFlowState.STT_SELECT_WITH_PREVIOUS)) {
+			notifyProductionStoppedOnPostPackage(true);
+		}
+
+		//actually Connected state is matching Stopped state.
+		if (currentState.equals(ApplicationFlowState.STT_CONNECTED)) {
+			notifyProductionStoppedOnPostPackage(false);
+		}
+	}
+
+	protected static final Logger logger = LoggerFactory.getLogger(ActivationWithPostPackage.class);
+
+	private void notifyProductionStoppedOnPostPackage(boolean resetPostPacakge) {
+		for (Product p : postPackage.notifyProductionStopped()) {
+			fireNewProduct(p);
+		}
+		if (resetPostPacakge) {
 			postPackage.reset();
 		}
 	}
+
 }
