@@ -57,8 +57,6 @@ public class ActivationWithPostPackage extends Activation {
 		}
 	}
 
-	protected static final Logger logger = LoggerFactory.getLogger(ActivationWithPostPackage.class);
-
 	private void notifyProductionStoppedOnPostPackage(boolean resetPostPacakge) {
 		for (Product p : postPackage.notifyProductionStopped()) {
 			fireNewProduct(p);
