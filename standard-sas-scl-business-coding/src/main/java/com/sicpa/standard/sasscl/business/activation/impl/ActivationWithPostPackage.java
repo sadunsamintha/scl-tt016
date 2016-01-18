@@ -57,11 +57,11 @@ public class ActivationWithPostPackage extends Activation {
 		}
 	}
 
-	private void notifyProductionStoppedOnPostPackage(boolean resetPostPacakge) {
+	private void notifyProductionStoppedOnPostPackage(boolean resetPostPackage) {
 		for (Product p : postPackage.notifyProductionStopped()) {
 			fireNewProduct(p);
 		}
-		if (resetPostPacakge) {
+		if (resetPostPackage) {
 			postPackage.reset();
 		}
 	}
