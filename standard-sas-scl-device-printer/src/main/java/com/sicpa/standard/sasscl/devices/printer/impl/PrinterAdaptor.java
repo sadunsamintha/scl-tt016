@@ -1,5 +1,12 @@
 package com.sicpa.standard.sasscl.devices.printer.impl;
 
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.messages.MessageEvent;
@@ -17,6 +24,7 @@ import com.sicpa.standard.printer.driver.event.PrinterUnsentCodesEventArgs;
 import com.sicpa.standard.printer.leibinger.driver.leibinger.LeibingerSpecificSettings;
 import com.sicpa.standard.printer.leibinger.driver.leibinger.LeibingerUserLevel;
 import com.sicpa.standard.sasscl.business.coding.CodeReceivedFailedException;
+import com.sicpa.standard.sasscl.controller.productionconfig.config.PrinterType;
 import com.sicpa.standard.sasscl.devices.DeviceStatus;
 import com.sicpa.standard.sasscl.devices.printer.AbstractPrinterAdaptor;
 import com.sicpa.standard.sasscl.devices.printer.PrinterAdaptorException;
@@ -27,12 +35,6 @@ import com.sicpa.standard.sasscl.messages.ActionMessageType;
 import com.sicpa.standard.sasscl.monitoring.MonitoringService;
 import com.sicpa.standard.sasscl.monitoring.system.SystemEventType;
 import com.sicpa.standard.sasscl.monitoring.system.event.BasicSystemEvent;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * Handles the communication with the <code>Standard Printer</code> component.
@@ -98,7 +100,11 @@ public class PrinterAdaptor extends AbstractPrinterAdaptor implements IPrinterCo
 	public void sendCodesToPrint(final List<String> codes) throws PrinterAdaptorException {
 		logger.debug("Printer sending codes to print");
 		try {
-			controller.sendExtendedCodes(mappingExtendedCodeBehavior.get(getName()).createExCodes(codes));
+			if (getName().startsWith(PrinterType.DOMINO.toString().toLowerCase())) {
+				controller.sendCodes(codes);
+			} else {
+				controller.sendExtendedCodes(mappingExtendedCodeBehavior.get(getName()).createExCodes(codes));
+			}
 			codeSent = true;
 		} catch (PrinterException e) {
 			throw new PrinterAdaptorException("sending codes to printer failed", e);
@@ -130,7 +136,8 @@ public class PrinterAdaptor extends AbstractPrinterAdaptor implements IPrinterCo
 		logger.debug("sequence status received: {}", args.name());
 
 		if (!isConnected()) {
-			// workaround because apparently "sometime" we don t get the connected notification
+			// workaround because apparently "sometime" we don t get the
+			// connected notification
 			fireDeviceStatusChanged(DeviceStatus.CONNECTED);
 		}
 
@@ -324,9 +331,9 @@ public class PrinterAdaptor extends AbstractPrinterAdaptor implements IPrinterCo
 	@Subscribe
 	public void setUserLevel(PrinterProfileEvent event) {
 		try {
-			// FIXME this has to be moved to some Leibinger specific implementation
-			controller.sendSpecificSettings(LeibingerSpecificSettings.CMD_SET_USER_LEVEL.getValue(),
-					LeibingerUserLevel.get(event.getLevel()));
+			// FIXME this has to be moved to some Leibinger specific
+			// implementation
+			controller.sendSpecificSettings(LeibingerSpecificSettings.CMD_SET_USER_LEVEL.getValue(), LeibingerUserLevel.get(event.getLevel()));
 		} catch (PrinterException e) {
 			logger.error("", e.getMessage());
 		}
