@@ -128,6 +128,7 @@ public class MainFrame extends AbstractMachineFrame {
 		changeSelectionView.setVisible(SecurityService.hasPermission(SasSclPermission.PRODUCTION_CHANGE_PARAMETERS));
 		exitView.setVisible(SecurityService.hasPermission(SasSclPermission.EXIT));
 		snapshotView.setVisible(SecurityService.hasPermission(SasSclPermission.SCREENSHOT));
+		startStopView.setVisible(SecurityService.hasPermission(SasSclPermission.PRODUCTION_START) && SecurityService.hasPermission(SasSclPermission.PRODUCTION_STOP));
 	}
 
 	@Override
