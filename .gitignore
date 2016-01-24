@@ -39,3 +39,8 @@ standard-sas-scl-spring-common/target
 standard-sas-scl-spring-scl/target
 standard-sas-scl-test-utils/target
 standard-sas-scl-view/target
+standard-sas-app/target
+standard-sas-scl-test-functional-common/target
+standard-sas-scl-test-functional-sas/target
+standard-sas-scl-test-functional-scl/target
+standard-scl-app/target
