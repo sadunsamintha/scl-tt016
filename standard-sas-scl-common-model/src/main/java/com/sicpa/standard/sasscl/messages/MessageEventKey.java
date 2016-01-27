@@ -174,6 +174,12 @@ public interface MessageEventKey {
 		String BRS_TOO_MANY_UNREAD_BARCODES_ERROR = "brs.unread.toomany.error";
 	}
 
+	public static interface MAINTENACE {
+
+		String TOO_MANY_PRODUCTS_COUNTED_ERROR = "maintenace.toomany.products.error";
+	}
+
+
 	public static interface SkuCheck {
 		String UNKOWN_SKU = "sku.check.unknown";
 		String WRONG_SKU_CRITICAL = "sku.check.wrong.critical";

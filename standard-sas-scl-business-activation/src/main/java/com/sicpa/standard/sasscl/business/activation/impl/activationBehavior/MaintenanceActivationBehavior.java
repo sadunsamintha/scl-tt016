@@ -25,6 +25,9 @@ public class MaintenanceActivationBehavior extends AbstractActivationBehavior {
 		Product p = new Product();
 		p.setStatus(ProductStatus.MAINTENANCE);
 		p.setCode(code);
+		if (productionParameters.getSku() != null) {
+			p.setSku(productionParameters.getSku());
+		}
 		return p;
 	}
 }

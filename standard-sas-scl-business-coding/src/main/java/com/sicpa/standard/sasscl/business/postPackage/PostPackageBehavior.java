@@ -22,7 +22,7 @@ import com.sicpa.standard.sasscl.sicpadata.CryptographyException;
 import com.sicpa.standard.sasscl.sicpadata.reader.IAuthenticator;
 
 public class PostPackageBehavior implements IPostPackageBehavior {
-	private static final Logger logger = LoggerFactory.getLogger(PostPackage.class);
+	private static final Logger logger = LoggerFactory.getLogger(PostPackageBehavior.class);
 
 	protected final List<Code> codes = Collections.synchronizedList(new LinkedList<Code>());
 	protected ProductionBatchProvider batchIdProvider;
@@ -44,6 +44,7 @@ public class PostPackageBehavior implements IPostPackageBehavior {
 	 */
 	@Override
 	public void addCodes(List<String> codes) {
+		logger.debug("Adding to the list {} the following codes {} ",this.codes.toString(), codes.toString());
 		for (String aCode : codes) {
 			this.codes.add(new Code(aCode));
 		}
@@ -57,11 +58,11 @@ public class PostPackageBehavior implements IPostPackageBehavior {
 	 */
 	protected int indexOfCode(final String code) {
 		for (int i = 0; i < codes.size(); i++) {
-			if (i > indexCodeThreshold) {
-				// do not check after x bad codes
-				return -1;
-			}
-			if (codes.get(i).getStringCode().equals(code)) {
+//			if (i > indexCodeThreshold) {
+//				// do not check after x bad codes
+//				return -1;
+//			}
+			if(code.equals(codes.get(i).getStringCode())) {
 				return i;
 			}
 		}
@@ -126,6 +127,8 @@ public class PostPackageBehavior implements IPostPackageBehavior {
 		synchronized (codes) {
 			if (!codes.isEmpty()) {
 				List<Code> badCode = new ArrayList<Code>(1);
+				logger.debug("handeling the current bad code {}. The code removes is {} " , code, codes.get(0));
+
 				badCode.add(codes.remove(0));
 				return generateBadProducts(badCode, ProductStatus.SENT_TO_PRINTER_UNREAD);
 			}
@@ -139,9 +142,12 @@ public class PostPackageBehavior implements IPostPackageBehavior {
 			if (!codes.isEmpty()) {
 				int index = indexOfCode(code.getStringCode());
 				if (index != -1) {
+					logger.debug("handeling the current good code {}. The code removes is {} " , code, codes.get(index));
 					codes.remove(index);
 					if (index != 0) {
 						List<Code> subList = codes.subList(0, index);
+						logger.debug("removing the following codes from the list {}. printer wasted " , codes.toString());
+
 						List<Code> badCodes = new ArrayList<Code>(subList);
 						subList.clear();
 						return generateBadProducts(badCodes, ProductStatus.SENT_TO_PRINTER_WASTED);
@@ -186,6 +192,8 @@ public class PostPackageBehavior implements IPostPackageBehavior {
 	public List<Product> notifyProductionStopped() {
 		synchronized (codes) {
 			List<Product> wastedProducts = generateBadProducts(codes, ProductStatus.SENT_TO_PRINTER_WASTED);
+			logger.debug("notifyProductionStopped . clearing the follwoing codes {} " , codes.toString());
+
 			codes.clear();
 			return wastedProducts;
 		}
