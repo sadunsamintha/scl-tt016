@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>scl-app</artifactId>
 	<parent>
@@ -8,42 +9,45 @@
 		<version>2.4.10-SNAPSHOT</version>
 	</parent>
 
-    <properties>
-        <license.timestamp>${maven.build.timestamp}</license.timestamp>
-        <maven.build.timestamp.format>yyyy</maven.build.timestamp.format>
-    </properties>
+	<properties>
+		<license.timestamp>${maven.build.timestamp}</license.timestamp>
+		<maven.build.timestamp.format>yyyy</maven.build.timestamp.format>
+		<rpm.install.update.folder>/usr/scl/app/update</rpm.install.update.folder>
+		<rpm.install.app.folder>/usr/scl/app/</rpm.install.app.folder>
+		<rpm.install.class>com.sicpa.standard.sasscl.installer.SclAppInstaller</rpm.install.class>
+	</properties>
 
 	<build>
 		<resources>
-            <!-- Root folder -->
-            <resource>
-                <directory>src/main/resources</directory>
-                <targetPath>.</targetPath>
-                <filtering>true</filtering>
-                <includes>
-                    <include>*</include>
-                </includes>
-            </resource>
+			<!-- Root folder -->
+			<resource>
+				<directory>src/main/resources</directory>
+				<targetPath>.</targetPath>
+				<filtering>true</filtering>
+				<includes>
+					<include>*</include>
+				</includes>
+			</resource>
 
-            <!-- Config files for application -->
-            <resource>
-                <directory>src/main/resources</directory>
-                <targetPath>.</targetPath>
-                <filtering>false</filtering>
-                <includes>
-                    <include>**/*</include>
-                </includes>
-            </resource>
+			<!-- Config files for application -->
+			<resource>
+				<directory>src/main/resources</directory>
+				<targetPath>.</targetPath>
+				<filtering>false</filtering>
+				<includes>
+					<include>**/*</include>
+				</includes>
+			</resource>
 		</resources>
 
 		<plugins>
-		
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-resources-plugin</artifactId>
 				<version>2.6</version>
 			</plugin>
-		
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
@@ -63,28 +67,28 @@
 							<addExtensions>false</addExtensions>
 						</manifest>
 					</archive>
-					
+
 					<!-- Don't want these files inside the jar -->
 					<excludes>
 						<exclude>**/config/</exclude>
 						<exclude>*.bat</exclude>
 						<exclude>*.sh</exclude>
-                        <exclude>license</exclude>
+						<exclude>license</exclude>
 						<exclude>version</exclude>
 					</excludes>
 				</configuration>
 			</plugin>
 
 			<plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <version>2.1</version>
-                <configuration>
-                    <descriptors>
-                        <descriptor>assembly.xml</descriptor>
-                    </descriptors>
-                </configuration>
-                <executions>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>2.1</version>
+				<configuration>
+					<descriptors>
+						<descriptor>assembly.xml</descriptor>
+					</descriptors>
+				</configuration>
+				<executions>
 					<execution>
 						<id>make-assembly</id>
 						<phase>package</phase>
@@ -93,8 +97,8 @@
 						</goals>
 					</execution>
 				</executions>
-            </plugin>
-			
+			</plugin>
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-antrun-plugin</artifactId>
@@ -112,67 +116,57 @@
 					</execution>
 				</executions>
 			</plugin>
+
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>rpm-maven-plugin</artifactId>
+				<version>2.1.4</version>
+				<configuration>
+					<defaultFilemode>644</defaultFilemode>
+					<defaultUsername>root</defaultUsername>
+					<defaultGroupname>root</defaultGroupname>
+					<defaultDirmode>755</defaultDirmode>
+
+					<requires>
+						<require>java</require>
+					</requires>
+
+					<mappings>
+						<mapping>
+							<directory>${rpm.install.update.folder}</directory>
+							<sources>
+								<source>
+									<location>${project.build.directory}/${project.build.finalName}-dist*zip</location>
+								</source>
+							</sources>
+						</mapping>
+						<mapping>
+							<directory>${rpm.install.app.folder}</directory>
+							<filemode>755</filemode>
+							<username>root</username>
+							<groupname>root</groupname>
+							<dependency>
+								<includes>
+									<include>com.sicpa.standard.tools:client-installer</include>
+								</includes>
+							</dependency>
+						</mapping>
+					</mappings>
+					<postinstallScriptlet>
+						<script>cd ${rpm.install.app.folder}; java -jar client-installer.jar com.sicpa.standard.tools.installer.InstallerMain -class=${rpm.install.class}</script>
+					</postinstallScriptlet>
+					<cleanScriptlet>
+						<script>rm -r ${rpm.install.update.folder}</script>
+					</cleanScriptlet>
+				</configuration>
+			</plugin>
 		</plugins>
 
-		<pluginManagement>
-			<plugins>
-				<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
-				<plugin>
-					<groupId>org.eclipse.m2e</groupId>
-					<artifactId>lifecycle-mapping</artifactId>
-					<version>1.0.0</version>
-					<configuration>
-						<lifecycleMappingMetadata>
-							<pluginExecutions>
-								<pluginExecution>
-									<pluginExecutionFilter>
-										<groupId>
-											org.apache.maven.plugins
-										</groupId>
-										<artifactId>
-											maven-dependency-plugin
-										</artifactId>
-										<versionRange>
-											[2.1,)
-										</versionRange>
-										<goals>
-											<goal>
-												copy-dependencies
-											</goal>
-										</goals>
-									</pluginExecutionFilter>
-									<action>
-										<ignore />
-									</action>
-								</pluginExecution>
-								<pluginExecution>
-									<pluginExecutionFilter>
-										<groupId>
-											org.apache.maven.plugins
-										</groupId>
-										<artifactId>
-											maven-antrun-plugin
-										</artifactId>
-										<versionRange>
-											[1.3,)
-										</versionRange>
-										<goals>
-											<goal>run</goal>
-										</goals>
-									</pluginExecutionFilter>
-									<action>
-										<ignore />
-									</action>
-								</pluginExecution>
-							</pluginExecutions>
-						</lifecycleMappingMetadata>
-					</configuration>
-				</plugin>
-			</plugins>
-		</pluginManagement>
 	</build>
 
 	<dependencies>
+
+
 		<dependency>
 			<groupId>com.sicpa.standard.sasscl</groupId>
 			<artifactId>spring-scl</artifactId>
@@ -192,7 +186,7 @@
 			<groupId>com.sicpa.standard.sasscl</groupId>
 			<artifactId>device-remoteServer-impl</artifactId>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>com.sicpa.standard.camera</groupId>
 			<artifactId>standard-camera-drs</artifactId>
@@ -229,7 +223,33 @@
 			<artifactId>device-bis</artifactId>
 		</dependency>
 
-
 	</dependencies>
+
+	<profiles>
+		<profile>
+			<id>rpmbuild</id>
+			<activation>
+				<file>
+					<exists>/usr/bin/rpmbuild</exists>
+				</file>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>rpm-maven-plugin</artifactId>
+						<executions>
+							<execution>
+								<phase>package</phase>
+								<goals>
+									<goal>attached-rpm</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 
 </project>

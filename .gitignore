@@ -44,3 +44,15 @@ standard-sas-scl-test-functional-common/target
 standard-sas-scl-test-functional-sas/target
 standard-sas-scl-test-functional-scl/target
 standard-scl-app/target
+*.prefs
+standard-scl-app/configHistory/
+*.classpath
+standard-scl-app/SimulProductSend/
+standard-scl-app/dataSimulator/
+standard-scl-app/internalSimulator/
+*.log
+*.project
+standard-sas-scl-common-storage/test/
+standard-scl-app/monitoring/
+standard-scl-app/internal/
+standard-sas-scl-common-storage/UserDatabase.csv
