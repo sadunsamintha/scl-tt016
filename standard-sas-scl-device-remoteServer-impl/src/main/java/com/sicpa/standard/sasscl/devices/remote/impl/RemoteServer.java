@@ -545,10 +545,8 @@ public class RemoteServer extends AbstractRemoteServer {
 
 		AuthenticatedProductsResultDto authenticatedProductsResultDto = generateAuthenticatedProductsResultDto(products);
 
-		String key = getActivationServiceKey(products);
-
 		// call remote
-		getActivationBean().registerProductionCycle(authenticatedProductsResultDto, key);
+		getActivationBean().registerAuthenticatedProducts(authenticatedProductsResultDto);
 	}
 
 	protected String getActivationServiceKey(PackagedProducts products) {
@@ -563,8 +561,9 @@ public class RemoteServer extends AbstractRemoteServer {
 
 	protected AuthenticatedProductsResultDto generateAuthenticatedProductsResultDto(PackagedProducts products) {
 
-		ArrayList<AuthenticatedProductDto> authenticatedProductsDto = new ArrayList<AuthenticatedProductDto>();
+		ArrayList<AuthenticatedProductDto> authenticatedProductsDto = new ArrayList<>();
 		ProcessedProductsStatusDto statusDto = null;
+
 		// create a product dto for each product
 		for (Product product : products.getProducts()) {
 			if (statusDto == null) {
@@ -585,6 +584,7 @@ public class RemoteServer extends AbstractRemoteServer {
 		authenticatedProductsResultDto.setProcessedProducts(authenticatedProductsDto);
 
 		authenticatedProductsResultDto.setProcessedProductsStatusDto(statusDto);
+		authenticatedProductsResultDto.setActivationType(getActivationServiceKey(products));
 
 		return authenticatedProductsResultDto;
 	}
@@ -609,7 +609,7 @@ public class RemoteServer extends AbstractRemoteServer {
 		return mapStatusProductList;
 	}
 
-	protected CountedProductsDto createCountedProductDto(final ProductStatus status, final List<Product> list) {
+	protected CountedProductsDto createCountedProductDto(final List<Product> list) {
 		Date start = null;
 		Date end = null;
 		long skuId = 0;
@@ -641,14 +641,10 @@ public class RemoteServer extends AbstractRemoteServer {
 		}
 
 		// create product dto
-
 		CountedProductsResultDto countedProductsResultDto = new CountedProductsResultDto();
-		ArrayList<CountedProductsDto> countedProductsDto = new ArrayList<CountedProductsDto>();
-
-		countedProductsDto.add(createCountedProductDto(products.getProductStatus(), products.getProducts()));
 
 		populateResultDtoInfo(countedProductsResultDto, products);
-		countedProductsResultDto.setProcessedProducts(countedProductsDto);
+		countedProductsResultDto.setProcessedProducts(createCountedProductDto(products.getProducts()));
 
 		ProcessedProductsStatusDto processedProductStatusDto = new ProcessedProductsStatusDto();
 		processedProductStatusDto.setValue(productStatusMapping.getRemoteServerProdutcStatus(products
@@ -656,7 +652,7 @@ public class RemoteServer extends AbstractRemoteServer {
 		countedProductsResultDto.setProcessedProductsStatusDto(processedProductStatusDto);
 
 		// call remote
-		getActivationBean().registerProductionCycle(countedProductsResultDto, COUNTING_PRODUCT_TYPE);
+		getActivationBean().registerCountedProducts(countedProductsResultDto);
 	}
 
 	public void checkConnection() throws RemoteServerException {
