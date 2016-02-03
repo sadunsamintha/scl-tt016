@@ -17,7 +17,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.javadoc.skip>true</maven.javadoc.skip>
-		<project.scm.id>git</project.scm.id>
+		<installer.version>1.0.4-SNAPSHOT</installer.version>
 	</properties>
 
 	<build>
@@ -530,11 +530,6 @@
 				<artifactId>skuCheck</artifactId>
 				<version>0.0.3</version>
 			</dependency>
-			<dependency>
-				<groupId>com.sicpa.standard.tools</groupId>
-				<artifactId>installer</artifactId>
-				<version>1.0.2</version>
-			</dependency>
 
 			<dependency>
 				<groupId>com.sicpa.standard.gui</groupId>
@@ -545,7 +540,7 @@
 			<dependency>
 				<groupId>com.sicpa.standard.tools</groupId>
 				<artifactId>client-installer</artifactId>
-				<version>1.0.3</version>
+				<version>${installer.version}</version>
 			</dependency>
 
 
@@ -657,13 +652,6 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
-
-	<scm>
-		<connection>scm:git:http://psdgit.sicpa-net.ads/scm/cc/sas-scl-std.git</connection>
-		<developerConnection>scm:git:http://psdgit.sicpa-net.ads/scm/cc/sas-scl-std.git</developerConnection>
-		<url>http://psdgit.sicpa-net.ads/scm/cc/sas-scl-std.git</url>
-		<tag>HEAD</tag>
-	</scm>
 
 	<distributionManagement>
 		<repository>

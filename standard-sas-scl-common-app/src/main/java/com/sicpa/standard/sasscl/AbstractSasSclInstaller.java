@@ -11,6 +11,7 @@ import java.util.List;
 import com.sicpa.standard.tools.installer.BasicInstaller;
 import com.sicpa.standard.tools.installer.task.InstallTask;
 import com.sicpa.standard.tools.installer.utils.ClasspathHacker;
+import com.sicpa.standard.tools.installer.utils.FileUtils;
 
 public abstract class AbstractSasSclInstaller extends BasicInstaller {
 
@@ -28,8 +29,7 @@ public abstract class AbstractSasSclInstaller extends BasicInstaller {
 	// 11/copy files from update
 	// 12/execute patch tasks necessary to go from current to target version
 
-	private static final String LIBS = "libs";
-	private static final String UPDATE = "update";
+	private static final String LIBS = "lib";
 
 	@Override
 	protected abstract List<InstallTask> getInstallTasks();
@@ -42,26 +42,26 @@ public abstract class AbstractSasSclInstaller extends BasicInstaller {
 
 	@Override
 	public void install() {
-		setupclassPath();
+		setupClassPath();
 		setupFileFilters();
 		super.install();
 	}
 
-	private void setupclassPath() {
+	private void setupClassPath() {
 		File libsDir = getUpdateLibsFolder();
 		log("trying to add to the class path:" + libsDir.getAbsolutePath());
 		ClasspathHacker.addAllFilesInDirToClassPath(libsDir);
 	}
 
 	private File getUpdateLibsFolder() {
-		return new File("./" + UPDATE + "/" + LIBS);
+		return new File(getUpdateFolderPath() + "/" + LIBS);
 	}
 
 	private void setupFileFilters() {
-		Collection<String> noOverride = Arrays.asList("/codingjob-history/", "/dataSimulator/", "/internal/",
-				"/internal-simulator/", "/log/", "/monitoring/", "/simulProductSent/");
+		Collection<String> noOverride = Arrays.asList("config", "configHistory", "data", "/dataSimulator/",
+				"/internal/", "/internalSimulator/", "/log/", "/monitoring/", "/simulProductSend/");
 
-		Collection<String> noBackup = Arrays.asList("/data/", "/log/", "/monitoring/");
+		Collection<String> noBackup = Arrays.asList("/log/", "/monitoring/", "/update");
 
 		noOverride.forEach(fileToIgnore -> doNotOverwriteFile(fileToIgnore));
 		noBackup.forEach(fileToIgnore -> doNotBackupFile(fileToIgnore));
@@ -82,17 +82,24 @@ public abstract class AbstractSasSclInstaller extends BasicInstaller {
 	}
 
 	private void removeLibsBeforeUpdate() throws IOException {
-		log("trying to remove:" + new File(LIBS).getAbsolutePath());
-		cleanDirectory(new File(LIBS));
-	}
+		if (isFirstTimeInstall()) {
+			return;
+		}
+		File libsFolder = new File(LIBS);
+		log("removing:" + libsFolder.getAbsolutePath());
+		cleanDirectory(libsFolder);
 
-	private void removePreviousLauncherFile() throws IOException {
-		File launcherFile = new File(getLauncherArtifactName() + "-" + currentVersion + ".jar");
-		log("deleting:" + launcherFile.getAbsolutePath());
-		if (!launcherFile.delete()) {
-			log("failed to delete:" + launcherFile.getAbsolutePath());
-			throw new IOException("failed to delete:" + launcherFile.getAbsolutePath());
+		if (libsFolder.list() != null) {
+			log(libsFolder.list().length);
 		}
 	}
 
+	private void removePreviousLauncherFile() throws IOException {
+		if (isFirstTimeInstall()) {
+			return;
+		}
+		File launcherFile = new File(getLauncherArtifactName() + "-" + currentVersion + ".jar");
+		log("deleting:" + launcherFile.getAbsolutePath());
+		FileUtils.forceDelete(launcherFile);
+	}
 }

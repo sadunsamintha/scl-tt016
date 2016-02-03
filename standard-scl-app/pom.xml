@@ -15,6 +15,9 @@
 		<rpm.install.update.folder>/usr/scl/app/update</rpm.install.update.folder>
 		<rpm.install.app.folder>/usr/scl/app/</rpm.install.app.folder>
 		<rpm.install.class>com.sicpa.standard.sasscl.installer.SclAppInstaller</rpm.install.class>
+		<rpm.install.access.group>root</rpm.install.access.group>
+		<rpm.install.access.user>root</rpm.install.access.user>
+		<rpm.install.access.mode>644</rpm.install.access.mode>
 	</properties>
 
 	<build>
@@ -122,10 +125,12 @@
 				<artifactId>rpm-maven-plugin</artifactId>
 				<version>2.1.4</version>
 				<configuration>
-					<defaultFilemode>644</defaultFilemode>
-					<defaultUsername>root</defaultUsername>
-					<defaultGroupname>root</defaultGroupname>
-					<defaultDirmode>755</defaultDirmode>
+					<defaultFilemode>${rpm.install.access.mode}</defaultFilemode>
+					<defaultDirmode>${rpm.install.access.mode}</defaultDirmode>
+					<defaultUsername>${rpm.install.access.group}</defaultUsername>
+					<defaultGroupname>${rpm.install.access.group}</defaultGroupname>
+					<group>sicpa/app/sasscl</group>
+					<release>installer</release>
 
 					<requires>
 						<require>java</require>
@@ -136,15 +141,12 @@
 							<directory>${rpm.install.update.folder}</directory>
 							<sources>
 								<source>
-									<location>${project.build.directory}/${project.build.finalName}-dist*zip</location>
+									<location>${project.build.directory}/${project.build.finalName}-dist.zip</location>
 								</source>
 							</sources>
 						</mapping>
 						<mapping>
 							<directory>${rpm.install.app.folder}</directory>
-							<filemode>755</filemode>
-							<username>root</username>
-							<groupname>root</groupname>
 							<dependency>
 								<includes>
 									<include>com.sicpa.standard.tools:client-installer</include>
@@ -153,11 +155,14 @@
 						</mapping>
 					</mappings>
 					<postinstallScriptlet>
-						<script>cd ${rpm.install.app.folder}; java -jar client-installer.jar com.sicpa.standard.tools.installer.InstallerMain -class=${rpm.install.class}</script>
+						<script>
+							<![CDATA[
+								cd ${rpm.install.app.folder};
+								java -cp client-installer-${installer.version}.jar	com.sicpa.standard.tools.installer.InstallerMain -class=${rpm.install.class};
+								rm -r ${rpm.install.update.folder}
+							]]>
+						</script>
 					</postinstallScriptlet>
-					<cleanScriptlet>
-						<script>rm -r ${rpm.install.update.folder}</script>
-					</cleanScriptlet>
 				</configuration>
 			</plugin>
 		</plugins>
