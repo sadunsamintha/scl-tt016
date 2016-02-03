@@ -34,8 +34,6 @@ public class SpringConfig extends AbstractSpringConfig {
 	public static final String DEVICES_CONTROLLER = PREFIX + "devicesController";
 	public static final String HARDWARE_CONTROLLER = PREFIX + "hardwareController";
 
-	public static final String MODEL_EDITABLE_PROPERTIES = PREFIX + "editableProperties";
-
 	public static final String PLC = PREFIX + "plc";
 	public static final String PLC_SECURE = PREFIX + "plcSecure";
 	public static final String PLC_JMX_INFO = PREFIX + "plcjmxinfo";
@@ -114,7 +112,7 @@ public class SpringConfig extends AbstractSpringConfig {
 		config.put(FLOW_CONTROL, "spring/flowControl.xml");
 		config.put(PROPERTIES_PLACEHOLDER, "spring/propertyPlaceholderConfigurer.xml");
 		config.put(BARCODE, "spring/barcode.xml");
-//        config.put(ALERT_PLC_ACTIVATION_CROSSCHECK, "spring/alertPlcActivationCrossCheckTask.xml");
+		// config.put(ALERT_PLC_ACTIVATION_CROSSCHECK, "spring/alertPlcActivationCrossCheckTask.xml");
 
 		// PLC variables descriptors for cabinet
 		config.put(EDITABLE_PLC_CABINET_VARIABLES, "spring/descriptors/plcCabinetVariablesDescriptors.xml");
@@ -132,7 +130,6 @@ public class SpringConfig extends AbstractSpringConfig {
 
 		config.put(PRODUCTION_CONFIG, "spring/productionConfig.xml");
 
-		config.put(MODEL_EDITABLE_PROPERTIES, "spring/descriptors/modelEditableProperties.xml");
 		config.put(PLC_VAR_MAP, "spring/plcVarMap.xml");
 	}
 }

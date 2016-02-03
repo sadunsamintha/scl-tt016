@@ -84,10 +84,6 @@ public interface BeansName {
 	 */
 	String GLOBAL_CONFIG = "globalConfig";
 	/**
-	 * ModelEditableProperties
-	 */
-	String MODEL_EDITABLE_PROPERTIES = "modelEditableProperties";
-	/**
 	 * IPlcAdaptor
 	 */
 	String PLC = "plc";

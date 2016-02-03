@@ -1,21 +1,8 @@
 package com.sicpa.standard.sasscl.custoBuilder;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.sicpa.standard.client.common.descriptor.AbstractPropertyDescriptor;
-import com.sicpa.standard.client.common.descriptor.DescriptorWrapper;
-import com.sicpa.standard.client.common.descriptor.IPropertyDescriptor;
-import com.sicpa.standard.client.common.descriptor.ModelEditableProperties;
-import com.sicpa.standard.client.common.descriptor.impl.BooleanPropertyDescriptor;
-import com.sicpa.standard.client.common.descriptor.impl.ConstantPropertyDescriptor;
-import com.sicpa.standard.client.common.descriptor.impl.DateDescriptor;
-import com.sicpa.standard.client.common.descriptor.impl.FreeTextDescriptor;
-import com.sicpa.standard.client.common.descriptor.impl.IPPropertyDescriptor;
-import com.sicpa.standard.client.common.descriptor.impl.PortDescriptor;
-import com.sicpa.standard.client.common.descriptor.impl.RangeDoublePropertyDescriptor;
-import com.sicpa.standard.client.common.descriptor.impl.RangeIntegerPropertyDescriptor;
 import com.sicpa.standard.client.common.ioc.BeanProvider;
 import com.sicpa.standard.client.common.messages.IMessageCodeMapper;
 import com.sicpa.standard.client.common.messages.IMessagesMapping;
@@ -62,21 +49,6 @@ public class CustoBuilder {
 		}
 	}
 
-	public static abstract class Statistics {
-
-		// public static void addStatistics(ProductStatus status, StatisticsDescriptor statisticsDescriptor) {
-		// MainFrameController view = BeanProvider.getBean(BeansName.MAIN_FRAME_CONTROLLER);
-		// // TODO view.addStatisticsDescriptors(statisticsDescriptor);
-		// changeStatisticsMapping(status, statisticsDescriptor.getKey());
-		// }
-
-//		public static void changeStatisticsMapping(ProductStatus status, StatisticsKey statisticsDescriptor) {
-//			IProductStatusToStatisticKeyMapper mapper = BeanProvider
-//					.getBean(BeansName.STATISTICS_PRODUCTS_STATUS_MAPPER);
-//			mapper.add(status, statisticsDescriptor);
-//		}
-	}
-
 	public static abstract class Messages {
 		public static void addMessage(String langKey, String msgCode, MessageType type) {
 			IMessagesMapping typeMapping = BeanProvider.getBean(BeansName.MESSAGES_MAPPING);
@@ -88,93 +60,6 @@ public class CustoBuilder {
 		public static void setMessageType(String langKey, MessageType type) {
 			IMessagesMapping typeMapping = BeanProvider.getBean(BeansName.MESSAGES_MAPPING);
 			typeMapping.add(langKey, type);
-		}
-	}
-
-	public static abstract class ModelDescriptor {
-		public static void addModelDescriptor(AbstractPropertyDescriptor descriptor, Object bean, String property,
-				String description, String screenKey, boolean editableWhenProduction) {
-
-			descriptor.setProperty(property);
-			descriptor.setPropertyDescription(description);
-			descriptor.setEnabledWhenProductionRunning(editableWhenProduction);
-
-			// We have to assign this property descriptor to a screen and to a bean
-			// this is done by declaring a DescriptorWrapper
-			DescriptorWrapper wrapper = new DescriptorWrapper();
-			// key: the screen title; it’s also used as an ID for the screen.
-			// If a wrapper already exists with the same key, they will be merged
-			wrapper.setKey(screenKey);
-			wrapper.setBean(bean);
-
-			List<IPropertyDescriptor> desc = new ArrayList<IPropertyDescriptor>();
-			desc.add(descriptor);
-			wrapper.setDescriptors(desc);
-
-			// The above descriptor wrapper has to be added to the full list of editable properties
-			ModelEditableProperties modelEditableProperties = BeanProvider.getBean(BeansName.MODEL_EDITABLE_PROPERTIES);
-			modelEditableProperties.add(wrapper);
-		}
-
-		public static void addModelBooleanDescriptor(Object bean, String property, String description,
-				String screenKey, boolean editableWhenProduction) {
-
-			addModelDescriptor(new BooleanPropertyDescriptor(), bean, property, description, screenKey,
-					editableWhenProduction);
-		}
-
-		public static void addModelIntegerDescriptor(Object bean, String property, String description, int min,
-				int max, String screenKey, boolean editableWhenProduction) {
-
-			RangeIntegerPropertyDescriptor desc = new RangeIntegerPropertyDescriptor();
-			desc.setMin(min);
-			desc.setMax(max);
-
-			addModelDescriptor(desc, bean, property, description, screenKey, editableWhenProduction);
-		}
-
-		public static void addModelDoubleDescriptor(Object bean, String property, String description, double min,
-				double max, String screenKey, boolean editableWhenProduction) {
-
-			RangeDoublePropertyDescriptor desc = new RangeDoublePropertyDescriptor();
-			desc.setMin(min);
-			desc.setMax(max);
-
-			addModelDescriptor(desc, bean, property, description, screenKey, editableWhenProduction);
-		}
-
-		public static void addModelConstantDescriptor(Object bean, String property, String description,
-				List<Object> possibleValues, String screenKey, boolean editableWhenProduction) {
-
-			ConstantPropertyDescriptor desc = new ConstantPropertyDescriptor();
-			desc.setPossibleValues(possibleValues);
-
-			addModelDescriptor(desc, bean, property, description, screenKey, editableWhenProduction);
-		}
-
-		public static void addModelIpDescriptor(Object bean, String property, String description,
-				List<Object> possibleValues, String screenKey, boolean editableWhenProduction) {
-
-			addModelDescriptor(new IPPropertyDescriptor(), bean, property, description, screenKey,
-					editableWhenProduction);
-		}
-
-		public static void addModelFreeTextDescriptor(Object bean, String property, String description,
-				List<Object> possibleValues, String screenKey, boolean editableWhenProduction) {
-
-			addModelDescriptor(new FreeTextDescriptor(), bean, property, description, screenKey, editableWhenProduction);
-		}
-
-		public static void addModelDateDescriptor(Object bean, String property, String description,
-				List<Object> possibleValues, String screenKey, boolean editableWhenProduction) {
-
-			addModelDescriptor(new DateDescriptor(), bean, property, description, screenKey, editableWhenProduction);
-		}
-
-		public static void addModelPortDescriptor(Object bean, String property, String description,
-				List<Object> possibleValues, String screenKey, boolean editableWhenProduction) {
-
-			addModelDescriptor(new PortDescriptor(), bean, property, description, screenKey, editableWhenProduction);
 		}
 	}
 

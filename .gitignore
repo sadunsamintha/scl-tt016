@@ -44,3 +44,16 @@ standard-sas-scl-test-functional-common/target
 standard-sas-scl-test-functional-sas/target
 standard-sas-scl-test-functional-scl/target
 standard-scl-app/target
+*.project
+standard-sas-scl-test-functional-scl/.settings/org.eclipse.core.resources.prefs
+*.prefs
+standard-scl-app/configHistory/
+standard-scl-app/dataSimulator/
+standard-scl-app/SimulProductSend/
+standard-scl-app/internal/
+*.classpath
+standard-scl-app/monitoring/
+standard-scl-app/log/
+standard-sas-scl-common-storage/UserDatabase.csv
+standard-scl-app/internalSimulator/
+standard-sas-scl-common-storage/test/data/statistics.data
