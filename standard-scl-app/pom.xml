@@ -12,12 +12,11 @@
 	<properties>
 		<license.timestamp>${maven.build.timestamp}</license.timestamp>
 		<maven.build.timestamp.format>yyyy</maven.build.timestamp.format>
-		<rpm.install.update.folder>/usr/scl/app/update</rpm.install.update.folder>
-		<rpm.install.app.folder>/usr/scl/app/</rpm.install.app.folder>
-		<rpm.install.class>com.sicpa.standard.sasscl.installer.SclAppInstaller</rpm.install.class>
-		<rpm.install.access.group>root</rpm.install.access.group>
-		<rpm.install.access.user>root</rpm.install.access.user>
-		<rpm.install.access.mode>644</rpm.install.access.mode>
+		<rpm.update.folder>/usr/scl/app/update</rpm.update.folder>
+		<rpm.app.folder>/usr/scl/app/</rpm.app.folder>
+		<rpm.installer.class>com.sicpa.standard.sasscl.installer.SclAppInstaller</rpm.installer.class>
+		<rpm.access.user>sicpa_op</rpm.access.user>
+		<rpm.group>sicpa/app/sasscl</rpm.group>
 	</properties>
 
 	<build>
@@ -125,20 +124,14 @@
 				<artifactId>rpm-maven-plugin</artifactId>
 				<version>2.1.4</version>
 				<configuration>
-					<defaultFilemode>${rpm.install.access.mode}</defaultFilemode>
-					<defaultDirmode>${rpm.install.access.mode}</defaultDirmode>
-					<defaultUsername>${rpm.install.access.group}</defaultUsername>
-					<defaultGroupname>${rpm.install.access.group}</defaultGroupname>
-					<group>sicpa/app/sasscl</group>
-					<release>installer</release>
-
+					<group>${rpm.group}</group>
 					<requires>
 						<require>java</require>
 					</requires>
 
 					<mappings>
 						<mapping>
-							<directory>${rpm.install.update.folder}</directory>
+							<directory>${rpm.update.folder}</directory>
 							<sources>
 								<source>
 									<location>${project.build.directory}/${project.build.finalName}-dist.zip</location>
@@ -146,7 +139,7 @@
 							</sources>
 						</mapping>
 						<mapping>
-							<directory>${rpm.install.app.folder}</directory>
+							<directory>${rpm.app.folder}</directory>
 							<dependency>
 								<includes>
 									<include>com.sicpa.standard.tools:client-installer</include>
@@ -157,9 +150,11 @@
 					<postinstallScriptlet>
 						<script>
 							<![CDATA[
-								cd ${rpm.install.app.folder};
-								java -cp client-installer-${installer.version}.jar	com.sicpa.standard.tools.installer.InstallerMain -class=${rpm.install.class};
-								rm -r ${rpm.install.update.folder}
+								cd ${rpm.app.folder}
+								java -cp client-installer-${installer.version}.jar	com.sicpa.standard.tools.installer.InstallerMain -class=${rpm.installer.class}
+								rm -r ${rpm.update.folder}
+								rm client-installer-${installer.version}.jar
+								setfacl -R -m user:${rpm.access.user}:rwx ${rpm.app.folder}
 							]]>
 						</script>
 					</postinstallScriptlet>
