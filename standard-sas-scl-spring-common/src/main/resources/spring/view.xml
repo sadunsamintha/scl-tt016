@@ -9,7 +9,6 @@
 
 	<bean id="mainFrameController" class="${mainFrameController}">
 		<constructor-arg ref="skuListProvider" />
-		<property name="editablePropertyDescriptors" ref="modelEditableProperties" />
 		<property name="productionParameters" ref="productionParameters" />
 		<property name="lineId" value="${lineId}" />
 		<property name="messageCodeMapper" ref="messagesMapping" />

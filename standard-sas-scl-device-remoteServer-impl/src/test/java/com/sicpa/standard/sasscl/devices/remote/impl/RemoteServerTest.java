@@ -216,7 +216,7 @@ public class RemoteServerTest {
 				Assert.assertEquals(Long.valueOf(1), result.getProcessedProducts().get(0).getSequence());
 				Assert.assertEquals(Long.valueOf(2), result.getProcessedProducts().get(1).getSequence());
 			}
-		})).when(activationBean).registerProductionCycle(Mockito.any(ActivationResultsDto.class), Mockito.anyString());
+		})).when(activationBean).registerAuthenticatedProducts(Mockito.any(AuthenticatedProductsResultDto.class));
 
 		SKU sku = new SKU(1);
 		sku.setCodeType(new CodeType(2));
@@ -249,10 +249,9 @@ public class RemoteServerTest {
 				Assert.assertEquals(ProcessedProductsStatusDto.COUNTED_EJECTED_UNREAD, result
 						.getProcessedProductsStatusDto().getValue());
 
-				Assert.assertEquals(1, result.getProcessedProducts().size());
-				Assert.assertEquals(2, result.getProcessedProducts().get(0).getQuantity().longValue());
+				Assert.assertEquals(2, result.getCountedProductsDto().getQuantity().longValue());
 			}
-		})).when(activationBean).registerProductionCycle(Mockito.any(ActivationResultsDto.class), Mockito.anyString());
+		})).when(activationBean).registerAuthenticatedProducts(Mockito.any(AuthenticatedProductsResultDto.class));
 
 		SKU sku = new SKU(1);
 		sku.setCodeType(new CodeType(2));

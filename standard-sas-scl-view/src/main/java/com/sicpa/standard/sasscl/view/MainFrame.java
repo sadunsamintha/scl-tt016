@@ -1,8 +1,41 @@
 package com.sicpa.standard.sasscl.view;
 
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+import javax.swing.AbstractAction;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JSeparator;
+import javax.swing.JTextArea;
+import javax.swing.SwingUtilities;
+
+import net.miginfocom.swing.MigLayout;
+
+import org.jdesktop.swingx.graphics.GraphicsUtilities;
+
 import com.google.common.eventbus.Subscribe;
-import com.sicpa.standard.client.common.descriptor.IPropertyDescriptor;
-import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.security.ILoginListener;
 import com.sicpa.standard.client.common.security.SecurityService;
 import com.sicpa.standard.client.common.view.SecuredComponentGetter;
@@ -17,27 +50,9 @@ import com.sicpa.standard.sasscl.controller.ProductionParametersEvent;
 import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState;
 import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowStateChangedEvent;
 import com.sicpa.standard.sasscl.security.SasSclPermission;
-import com.sicpa.standard.sasscl.view.config.GenericConfigPanel;
 import com.sicpa.standard.sasscl.view.config.plc.MultiEditablePlcVariablesSet;
 import com.sicpa.standard.sasscl.view.lineid.LineIdWithAuthenticateButton;
 import com.sicpa.standard.sasscl.view.messages.I18nableLockingErrorModel;
-import net.miginfocom.swing.MigLayout;
-import org.jdesktop.swingx.graphics.GraphicsUtilities;
-
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Scanner;
 
 @SuppressWarnings("serial")
 public class MainFrame extends AbstractMachineFrame {
@@ -50,7 +65,6 @@ public class MainFrame extends AbstractMachineFrame {
 	protected JComponent mainPanel;
 	protected JComponent snapshotView;
 	protected JComponent licenceInfoPanel;
-
 
 	public MainFrame(final MainFrameController controller, JComponent startStopView, JComponent changeSelectionView,
 			JComponent exitView, JComponent optionsView, JComponent messagesView, JComponent mainPanel,
@@ -128,7 +142,8 @@ public class MainFrame extends AbstractMachineFrame {
 		changeSelectionView.setVisible(SecurityService.hasPermission(SasSclPermission.PRODUCTION_CHANGE_PARAMETERS));
 		exitView.setVisible(SecurityService.hasPermission(SasSclPermission.EXIT));
 		snapshotView.setVisible(SecurityService.hasPermission(SasSclPermission.SCREENSHOT));
-		startStopView.setVisible(SecurityService.hasPermission(SasSclPermission.PRODUCTION_START) && SecurityService.hasPermission(SasSclPermission.PRODUCTION_STOP));
+		startStopView.setVisible(SecurityService.hasPermission(SasSclPermission.PRODUCTION_START)
+				&& SecurityService.hasPermission(SasSclPermission.PRODUCTION_STOP));
 	}
 
 	@Override
@@ -178,18 +193,6 @@ public class MainFrame extends AbstractMachineFrame {
 		if (configs == null) {
 
 			List<Pair<JPanel, String>> listConfigPanel = new ArrayList<Pair<JPanel, String>>();
-
-			if (SecurityService.hasPermission(SasSclPermission.EDIT_MODEL_PROPERTY)) {
-				for (Entry<Object, Map<String, List<IPropertyDescriptor>>> beanEntry : getController()
-						.getEditablePropertyDescriptors().getDescriptors().entrySet()) {
-					for (Entry<String, List<IPropertyDescriptor>> screenEntry : beanEntry.getValue().entrySet()) {
-						String screenTitle = screenEntry.getKey();
-						GenericConfigPanel config = new GenericConfigPanel(beanEntry.getKey(), screenEntry.getValue());
-						EventBusService.register(config);
-						listConfigPanel.add(new Pair<JPanel, String>(config, screenTitle));
-					}
-				}
-			}
 
 			for (SecuredComponentGetter getter : getController().getSecuredPanels()) {
 				if (SecurityService.hasPermission(getter.getPermission())) {
@@ -527,6 +530,5 @@ public class MainFrame extends AbstractMachineFrame {
 			}
 		});
 	}
-
 
 }
