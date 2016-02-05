@@ -55,8 +55,7 @@
 		</fileSet>
 
 		<fileSet>
-			<directory>src/main/java/com/sicpa/standard/sasscl/devices/remote/simulator/stdcrypto/config
-			</directory>
+			<directory>src/main/java/com/sicpa/standard/sasscl/devices/remote/simulator/stdcrypto/config</directory>
 			<includes>
 				<include>*</include>
 			</includes>
