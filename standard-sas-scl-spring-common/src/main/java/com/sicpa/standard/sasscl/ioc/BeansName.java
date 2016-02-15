@@ -101,6 +101,7 @@ public interface BeansName {
 	 */
 	String PLC_EDITABLE_VARIABLES = "cabinetEditablePlcVariables";
 	String PLC_MODEL = "stdPlcModel";
+	String PLC_VARIABLE_GROUPS = "lineVarGroups";
 	/**
 	 * IPlcController
 	 */

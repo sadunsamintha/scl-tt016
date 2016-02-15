@@ -30,7 +30,7 @@ public class MessagesHandler {
 
 	}
 	
-	
+
 	/**
 	 * Retrieves the ActionMessageType then constructs and sends the event
 	 */
@@ -78,13 +78,14 @@ public class MessagesHandler {
 		
 		String[] keySplit = StringUtils.split(key, ".", 3);
 		
-		ActionMessageType type = messagesMapping.getMessageType(key);
+		ActionMessageType type = (ActionMessageType) messagesMapping.getMessageType(key);
 
 		if (type == null) {
-			
+
 			try {
-				type = ActionMessageType.valueOf(ActionMessageType.class, keySplit[0].toUpperCase());
+				type = ActionMessageType.get(keySplit[0].toUpperCase());
 			} catch (Exception e) {
+				logger.warn("Couldn't find ActionMessageType constant that matches the specified key");
 			}
 			
 			if (type == null || keySplit.length != 3) {
