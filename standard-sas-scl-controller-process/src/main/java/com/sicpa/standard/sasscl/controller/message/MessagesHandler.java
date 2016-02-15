@@ -69,10 +69,10 @@ public class MessagesHandler {
 	}
 
 	/**
-	 * Returns the type if already mapped and processes it if not
-	 * By convention the key of a custom MessageEvent key respects the format IMPACT.CODE.ID
-	 * @param key
-	 * @return
+	 * Get the action message type based on the specified message key.
+	 * @param key message key
+	 * @return action message type. Action message warning will be returned if no action message matches specified
+	 * key.
 	 */
 	private ActionMessageType getType(String key) {
 		ActionMessageType type = (ActionMessageType) messagesMapping.getMessageType(key);
