@@ -25,34 +25,4 @@ public class ActionMessageType extends MessageType {
 	public Class<? extends ActionEvent> getActionEventClass() {
 		return actionEventClass;
 	}
-
-	public static ActionMessageType get(String description) {
-		ActionMessageType actionMessageType = null;
-
-		switch (description) {
-			case "IGNORE":
-				actionMessageType = IGNORE;
-				break;
-			case "ERROR":
-				actionMessageType = ERROR;
-				break;
-			case "ERROR_DEVICE":
-				actionMessageType = ERROR_DEVICE;
-				break;
-			case "ERROR_DISPLAY":
-				actionMessageType = ERROR_DISPLAY;
-				break;
-			case "WARNING":
-				actionMessageType = WARNING;
-				break;
-			case "LOG":
-				actionMessageType = LOG;
-				break;
-			case "MONITORING":
-				actionMessageType = MONITORING;
-				break;
-		}
-
-		return actionMessageType;
-	}
 }

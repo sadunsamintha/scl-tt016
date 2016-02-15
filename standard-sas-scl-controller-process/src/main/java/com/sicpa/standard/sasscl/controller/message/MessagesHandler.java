@@ -75,25 +75,12 @@ public class MessagesHandler {
 	 * @return
 	 */
 	private ActionMessageType getType(String key) {
-		
-		String[] keySplit = StringUtils.split(key, ".", 3);
-		
 		ActionMessageType type = (ActionMessageType) messagesMapping.getMessageType(key);
 
 		if (type == null) {
-
-			try {
-				type = ActionMessageType.get(keySplit[0].toUpperCase());
-			} catch (Exception e) {
-				logger.warn("Couldn't find ActionMessageType constant that matches the specified key");
-			}
-			
-			if (type == null || keySplit.length != 3) {
-				return null;
-			}
-			
-			messagesMapping.addEntry(key, keySplit[1], type);
+			return ActionMessageType.WARNING;
 		}
+
 		return type;
 	}
 
