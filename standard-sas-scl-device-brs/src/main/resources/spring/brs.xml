@@ -11,9 +11,26 @@
 	<!--non compliant product resolver -->
 	<bean id="compliantProduct" class="${compliantProduct}" />
 
-	<bean id="brsSkuCheck" class="${brsSkuCheck}">
+	<bean id="brsBarcodeCheck" class="${brsBarcodeCheck}">
 		<property name="compliantProductResolver" ref="compliantProduct" />
 	</bean>
+
+	<bean id="brsWrongBarcodeThreshold" class="${brsWrongBarcodeThreshold}">
+		<constructor-arg value="${brs.threshold.active}" />
+		<constructor-arg value="${brs.threshold}"  />
+		<constructor-arg ref="brsTimeWindow" />
+	</bean>
+
+	<bean id="brsTimeWindow" class="${brsTimeWindow}">
+		<constructor-arg value="${brs.threshold.window.time}" />
+	</bean>
+
+	<bean id="brsWrongBarcodeThresholdAddTask" class="com.sicpa.standard.client.common.ioc.InjectByMethodBean">
+		<property name="target" ref="alert" />
+		<property name="methodName" value="addTask" />
+		<property name="params" ref="brsTimeWindow" />
+	</bean>
+
 
 	<bean id="mapBrsAdaptor" class="com.sicpa.standard.client.common.ioc.GenericMapping" scope="prototype">
 		<constructor-arg>

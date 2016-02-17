@@ -1,4 +1,4 @@
-package com.sicpa.standard.sasscl.devices.brs.skuCheck;
+package com.sicpa.standard.sasscl.devices.brs.barcodeCheck;
 
 
 import com.sicpa.standard.sasscl.controller.ProductionParametersEvent;
@@ -25,7 +25,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class BrsSkuCheckTest {
+public class BrsBarcodeCheckTest {
 
     @Spy
     private Set<String> barcodes = new HashSet<>();
@@ -34,7 +34,7 @@ public class BrsSkuCheckTest {
     private CompliantProduct compliantProduct;
 
     @InjectMocks
-    private BrsSkuCheck brsSkuCheck = new BrsSkuCheck();
+    private BrsBarcodeCheck brsBarcodeCheck = new BrsBarcodeCheck();
 
 
     @Test
@@ -42,7 +42,7 @@ public class BrsSkuCheckTest {
 
         when(compliantProduct.isCompliant(anyObject())).thenReturn(true);
         ProductionParametersEvent event = buildProductionParametersEvent();
-        brsSkuCheck.onProductionParametersChanged(event);
+        brsBarcodeCheck.onProductionParametersChanged(event);
 
         Assert.assertTrue(barcodes.contains("12345"));
         Assert.assertTrue(barcodes.contains("123456"));
@@ -52,10 +52,10 @@ public class BrsSkuCheckTest {
     public void onBrsCodeReceived() {
         when(compliantProduct.isCompliant(anyObject())).thenReturn(true);
         ProductionParametersEvent prodEvent = buildProductionParametersEvent();
-        brsSkuCheck.onProductionParametersChanged(prodEvent);
+        brsBarcodeCheck.onProductionParametersChanged(prodEvent);
 
         BrsProductEvent brsProductEvent = new BrsProductEvent("12345");
-        brsSkuCheck.onBrsCodeReceived(brsProductEvent);
+        brsBarcodeCheck.onBrsCodeReceived(brsProductEvent);
         verify(barcodes, times(1)).contains("12345");
 
     }
@@ -64,10 +64,10 @@ public class BrsSkuCheckTest {
     public void onBrsDisableCodeReceived() {
         when(compliantProduct.isCompliant(anyObject())).thenReturn(false);
         ProductionParametersEvent prodEvent = buildProductionParametersEvent();
-        brsSkuCheck.onProductionParametersChanged(prodEvent);
+        brsBarcodeCheck.onProductionParametersChanged(prodEvent);
 
         BrsProductEvent brsProductEvent = new BrsProductEvent("12345");
-        brsSkuCheck.onBrsCodeReceived(brsProductEvent);
+        brsBarcodeCheck.onBrsCodeReceived(brsProductEvent);
         verify(barcodes, times(0)).contains("12345");
 
     }
