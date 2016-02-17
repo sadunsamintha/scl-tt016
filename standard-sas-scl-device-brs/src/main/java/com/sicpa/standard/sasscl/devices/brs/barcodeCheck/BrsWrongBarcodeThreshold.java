@@ -9,7 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This class is responsible to trigger a wrong SKU error if a number of consecutive wrong barcodes is bigger than the define threshold .
+ * This class is responsible to trigger a wrong SKU error if a number of wrong barcodes is bigger than the define threshold .
  */
 public class BrsWrongBarcodeThreshold {
 
