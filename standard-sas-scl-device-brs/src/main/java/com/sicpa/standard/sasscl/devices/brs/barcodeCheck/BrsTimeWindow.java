@@ -5,6 +5,7 @@ import com.sicpa.standard.sasscl.business.alert.task.IAlertTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.util.PriorityQueue;
 
@@ -12,13 +13,12 @@ public class BrsTimeWindow implements BrsWindow, IAlertTask {
 
     private static final Logger logger = LoggerFactory.getLogger(BrsBarcodeCheck.class);
 
-
     /**
      * The size of the windows in milliseconds
      */
     private final long windowSize ;
 
-    private PriorityQueue<Long> window = new PriorityQueue<>();
+    private PriorityQueue<Instant> window = new PriorityQueue<>();
 
     public BrsTimeWindow(long windowSize) {
         this.windowSize = windowSize;
@@ -48,8 +48,8 @@ public class BrsTimeWindow implements BrsWindow, IAlertTask {
 
     @Override
     public synchronized int getWindowCount(){
-        long currentTime = Instant.now().toEpochMilli();
-        cleanoutOldTimestamps(currentTime);
+        Instant currentTime = Instant.now();
+        cleanoutOldTimestamps();
         final int  windowCount = window.size();
         logger.debug("The Size of the BRS window is {} ", windowCount);
         return windowCount;
@@ -57,12 +57,12 @@ public class BrsTimeWindow implements BrsWindow, IAlertTask {
 
     @Override
     public void incrementWindowCount() {
-        window.add(Instant.now().toEpochMilli());
+        window.add(Instant.now());
     }
 
-    private void cleanoutOldTimestamps(long currentTime) {
+    private void cleanoutOldTimestamps() {
 
-        while(window.peek() == null ? false : currentTime -  window.peek().longValue() > windowSize){
+        while(window.peek() == null ? false : Duration.between(window.peek(), Instant.now()).toMillis() > windowSize){
            window.remove();
         }
     }
@@ -71,7 +71,6 @@ public class BrsTimeWindow implements BrsWindow, IAlertTask {
         logger.debug("reseting BRS windows");
         window.clear();
     }
-
 
 
 }

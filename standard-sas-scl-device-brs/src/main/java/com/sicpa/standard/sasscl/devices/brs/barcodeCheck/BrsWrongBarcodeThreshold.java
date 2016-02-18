@@ -29,15 +29,19 @@ public class BrsWrongBarcodeThreshold {
 
     @Subscribe
     public void onWrongBarcodeReceived(BrsWrongBarcodeEvent evt) {
-        if (isThresholdActive && isWrongBarcodeThresholdReached()) {
+        if ( !isThresholdActive ){
+            return;
+        }
+
+        final int windowCountWrongBarcode = window.incrementAndGetWindowCount();
+        if (isWrongBarcodeThresholdReached(windowCountWrongBarcode)) {
             logger.debug("Wrong barcode threshold has been reached");
             triggerWrongBarcodeErrorEvent();
         }
-        logger.debug("Wrong barcode threshold not reached");
     }
 
-    private boolean isWrongBarcodeThresholdReached() {
-        return window.incrementAndGetWindowCount() > wrongSKUThreshold;
+    private boolean isWrongBarcodeThresholdReached(int windowCountWrongBarcode) {
+        return windowCountWrongBarcode > wrongSKUThreshold;
     }
 
     private void triggerWrongBarcodeErrorEvent() {

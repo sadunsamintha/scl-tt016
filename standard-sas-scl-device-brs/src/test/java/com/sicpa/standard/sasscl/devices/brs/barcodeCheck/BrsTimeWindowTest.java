@@ -35,7 +35,7 @@ public class BrsTimeWindowTest {
 
     @Test
     public void get0WindowCountOutsideWindow() {
-        long windowSize = 500; // 1.5s
+        long windowSize = 500; // 0.5s
         window = new BrsTimeWindow(windowSize);
         incrementWindowCountMultipleTimes(2, 1000);
         Assert.assertEquals(0, window.getWindowCount());
