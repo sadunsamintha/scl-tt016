@@ -5,7 +5,7 @@
 	<artifactId>parent</artifactId>
 	<packaging>pom</packaging>
 	<name>parent std sas scl</name>
-	<version>2.4.9</version>
+	<version>2.4.9-SNAPSHOT</version>
 
 	<parent>
 		<artifactId>standard-pom</artifactId>
