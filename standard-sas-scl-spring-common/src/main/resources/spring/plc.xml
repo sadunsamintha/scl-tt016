@@ -28,7 +28,7 @@
 
 	<!-- Standard PLC - Create model for standard PLC controller -->
 	<bean id="stdPlcModel" class="com.sicpa.standard.client.common.utils.ConfigUtils" factory-method="load">
-		<constructor-arg value="config/plc/plc.xml" />
+		<constructor-arg value="${profile.path}/config/plc/plc.xml" />
 		<property name="parameters">
 			<map />
 		</property>
@@ -43,7 +43,7 @@
 
 	<!-- Simulator - Create model for PLC simulator -->
 	<bean id="plcSimulatorModel" class="com.sicpa.standard.client.common.utils.ConfigUtils" factory-method="load">
-		<constructor-arg value="config/plc/simulator/plcSimulator.xml" />
+		<constructor-arg value="${profile.path}/config/plc/simulator/plcSimulator.xml" />
 	</bean>
 
 
@@ -63,9 +63,10 @@
 		<property name="parameterLine" ref="plcLineParamsTemplate" />
 		<property name="notificationLine" ref="plcConveyorNtfTemplate" />
 		<property name="lineVarGroups" ref="lineVarGroups" />
-    </bean>
+		<property name="plcConfigFolder" value="${profile.path}/config/plc" />
+	</bean>
 
-	
+
 	<bean id="plcSimulatorAdaptor" class="${plcAdaptor}" scope="prototype">
 		<constructor-arg ref="plcSimulatorController" />
 		<property name="notificationVariables" ref="plcCabinetNtf" />
@@ -75,6 +76,7 @@
 		<property name="parameterLine" ref="plcLineParamsTemplate" />
 		<property name="notificationLine" ref="plcConveyorNtfTemplate" />
 		<property name="lineVarGroups" ref="lineVarGroups" />
+		<property name="plcConfigFolder" value="${profile.path}/config/plc" />
 	</bean>
 
 	<bean id="plcRemoteServerConnectionHandler" class="${plcRemoteServerConnectionHandler}">

@@ -1,6 +1,6 @@
 package com.sicpa.standard.sasscl.devices.camera;
 
-import com.sicpa.standard.sasscl.config.xstream.IXStreamConfigurator;
+import com.sicpa.standard.client.common.xstream.IXStreamConfigurator;
 import com.sicpa.standard.sasscl.devices.camera.jobconfig.CameraJobConfigNode;
 import com.sicpa.standard.sasscl.devices.camera.jobconfig.CameraJobFileDescriptor;
 import com.sicpa.standard.sasscl.devices.camera.jobconfig.CameraJobFilesConfig;

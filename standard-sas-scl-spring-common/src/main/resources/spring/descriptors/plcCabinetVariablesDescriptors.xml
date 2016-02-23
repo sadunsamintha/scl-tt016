@@ -208,13 +208,13 @@
 			</array>
 		</constructor-arg>
 
-		<property name="file" value="config/plc/cabinetConfig.xml" />
+		<property name="file" value="${profile.path}/config/plc/cabinetConfig.xml" />
 
 	</bean>
 
 	<!--variable values -->
 	<bean id="allPlcVariableValues" class="com.sicpa.standard.client.common.utils.ConfigUtils" factory-method="load">
-		<constructor-arg value="config/plc/cabinetConfig.xml" />
+		<constructor-arg value="${profile.path}/config/plc/cabinetConfig.xml" />
 	</bean>
 
 </beans>

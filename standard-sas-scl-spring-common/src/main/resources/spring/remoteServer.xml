@@ -19,7 +19,7 @@
 		<entry key="simulator" value-ref="remoteServerSimulator" />
 	</util:map>
 
-	<bean id="stdRemoteServer" class="${stdRemoteServer}">
+	<bean id="stdRemoteServer" class="${stdRemoteServer}" init-method="init">
 		<constructor-arg ref="stdRemoteModel" />
 		<property name="productStatusMapping" ref="remoteServerProductStatusMapping" />
 		<property name="sicpadataPassword" value="${sicpadataPassword}" />
@@ -29,6 +29,7 @@
 		<property name="sdGenReceiver" ref="sicpaDataGeneratorRequestor" />
 		<property name="storage" ref="storage" />
 		<property name="lifeChecker" ref="remoteLifeChecker" />
+		<property name="serverPropertiesFile" value="${profile.path}/config/server/standard-server.properties"></property>
 	</bean>
 
 	<bean id="remoteLifeChecker" class="${remoteLifeChecker}" scope="prototype">
@@ -47,14 +48,15 @@
 		<property name="serviceProviderManager" ref="cryptoProviderManager" />
 		<property name="storage" ref="storage" />
 		<property name="fileSequenceStorageProvider" ref="fileSequenceStorageProvider" />
+		<property name="remoteServerSimulatorOutputFolder" value="${profile.path}/simulProductSend"></property>
 	</bean>
 
 	<bean id="stdRemoteModel" class="com.sicpa.standard.client.common.utils.ConfigUtils" factory-method="load">
-		<constructor-arg value="config/server/remoteServer.xml" />
+		<constructor-arg value="${profile.path}/config/server/remoteServer.xml" />
 	</bean>
 
 	<bean id="simulatorRemoteModel" class="com.sicpa.standard.client.common.utils.ConfigUtils" factory-method="load">
-		<constructor-arg value="config/server/simulator/remoteServerSimulator.xml" />
+		<constructor-arg value="${profile.path}/config/server/simulator/remoteServerSimulator.xml" />
 	</bean>
 
 

@@ -16,12 +16,12 @@
 	</bean>
 
 	<bean id="stdCameraModel" class="com.sicpa.standard.sasscl.utils.ConfigUtilEx" factory-method="load" scope="prototype">
-		<constructor-arg value="config/camera/camera_####.xml" />
+		<constructor-arg value="${profile.path}/config/camera/camera_####.xml" />
 		<constructor-arg ref="deviceModelNamePostfixProperty" />
 	</bean>
 
 	<bean id="cameraSimulatorModel" class="com.sicpa.standard.sasscl.utils.ConfigUtilEx" factory-method="load" scope="prototype">
-		<constructor-arg value="config/camera/simulator/cameraSimulator_####.xml" />
+		<constructor-arg value="${profile.path}/config/camera/simulator/cameraSimulator_####.xml" />
 		<constructor-arg ref="deviceModelNamePostfixProperty" />
 	</bean>
 

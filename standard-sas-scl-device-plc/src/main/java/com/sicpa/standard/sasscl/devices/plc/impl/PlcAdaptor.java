@@ -43,7 +43,7 @@ public class PlcAdaptor extends AbstractPlcAdaptor implements IPlcControllerList
 
 	protected IPlcController<? extends IPlcModel> controller;
 
-	protected String plcConfigFolder = "config/plc";
+	protected String plcConfigFolder;
 
 	/**
 	 * to get actions for specific PLCRequest in a particular production mode
@@ -56,15 +56,14 @@ public class PlcAdaptor extends AbstractPlcAdaptor implements IPlcControllerList
 	protected List<IPlcVariable<?>> notificationVariables = new ArrayList<IPlcVariable<?>>();
 
 	protected final Collection<IPlcVariable> parameters = new ArrayList<IPlcVariable>();
-	
+
 	private Map<String, Short> systemTypes;
-	
+
 	private Map<String, Boolean> activeLines;
 
 	protected final AtomicBoolean notificationCreated = new AtomicBoolean(false);
-	
-	private static final short SYSTEM_TYPE_TOBACCO = 3;
 
+	private static final short SYSTEM_TYPE_TOBACCO = 3;
 
 	public void setPlcVariablesNameMap(Map<String, String> plcVariablesMap) {
 		PlcVariableMap.addPlcVariables(plcVariablesMap);
@@ -147,7 +146,7 @@ public class PlcAdaptor extends AbstractPlcAdaptor implements IPlcControllerList
 
 		fireDeviceStatusChanged(DeviceStatus.STARTED);
 	}
-	
+
 	@Override
 	public void doRun() throws PlcAdaptorException {
 
@@ -191,13 +190,11 @@ public class PlcAdaptor extends AbstractPlcAdaptor implements IPlcControllerList
 		}
 	}
 
-	
-	
 	protected void onPlcConnected() {
 		sendAllParameters();
-		addPlcListener(new IPlcListener() {			
+		addPlcListener(new IPlcListener() {
 			@Override
-			public void onPlcEvent(PlcEvent event) {				
+			public void onPlcEvent(PlcEvent event) {
 				handleEvent(event);
 			}
 
@@ -231,123 +228,119 @@ public class PlcAdaptor extends AbstractPlcAdaptor implements IPlcControllerList
 			logger.error("", e);
 		}
 	}
-	
+
 	protected void handleEvent(final PlcEvent event) {
-		
-//		logger.debug("Event {} {}", event.getVarName(), event.getValue());
+
+		// logger.debug("Event {} {}", event.getVarName(), event.getValue());
 
 		String lineIndex = PlcVariableMap.getLineIndex(event.getVarName());
-		
+
 		if (!isLineActive(lineIndex)) {
 			logger.debug("line not active");
 			return;
 		}
-		
-		int length = lineIndex.length()+ 1;
+
+		int length = lineIndex.length() + 1;
 
 		String eventVarName = event.getVarName().substring(length);
-		
+
 		String freqVar = PlcVariables.NTF_PRODUCTS_FREQ.getVariableName().substring(length + 1);
 		String speedVar = PlcVariables.NTF_LINE_SPEED.getVariableName().substring(length + 1);
-		
+
 		if (eventVarName.equals(freqVar) && isTobacco(event)) {
 			handleProductFreqEvent(lineIndex, event);
-		}
-		else if(eventVarName.equals(speedVar) && !isTobacco(event)) {
+		} else if (eventVarName.equals(speedVar) && !isTobacco(event)) {
 			handleLineSpeedEvent(lineIndex, event);
 		}
-		
+
 	}
-	
-	
-	
+
 	private void handleProductFreqEvent(String lineIndex, final PlcEvent event) {
-		
+
 		String value = String.valueOf(event.getValue()) + " PACKS/MIN";
-		
-//		logger.debug("Prod freq received line {} : {}", lineIndex, value);
+
+		// logger.debug("Prod freq received line {} : {}", lineIndex, value);
 
 		EventBusService.post(new LineSpeedEvent(lineIndex, value));
-	}	
-	
+	}
+
 	protected void handleLineSpeedEvent(String lineIndex, final PlcEvent event) {
-		
-		String value = String.valueOf(event.getValue()) +" M/MIN";
-		
-//		logger.debug("Speed received line {} : {}", lineIndex, value);
+
+		String value = String.valueOf(event.getValue()) + " M/MIN";
+
+		// logger.debug("Speed received line {} : {}", lineIndex, value);
 
 		EventBusService.post(new LineSpeedEvent(lineIndex, value));
 
 	}
-	
+
 	/**
 	 * @return system types of all lines
 	 */
-	private Map<String, Short> getSystemTypes(){
-		
-		if (parameters == null || parameters.size()<=0){
+	private Map<String, Short> getSystemTypes() {
+
+		if (parameters == null || parameters.size() <= 0) {
 			return null;
 		}
-		
-		if (systemTypes == null){
+
+		if (systemTypes == null) {
 			systemTypes = new HashMap<String, Short>();
-			
+
 			List<String> systemTypeVarList = PlcVariables.PARAM_SYSTEM_TYPE.getLineVariableNames();
-			
+
 			for (String systemTypeVar : systemTypeVarList) {
 				for (IPlcVariable<?> var : parameters) {
-					if (var.getVariableName().equals(systemTypeVar)){
+					if (var.getVariableName().equals(systemTypeVar)) {
 						systemTypes.put(PlcVariableMap.getLineIndex(systemTypeVar), (Short) var.getValue());
 					}
 				}
 			}
 		}
-		
+
 		return systemTypes;
 	}
-	
+
 	/**
 	 * @return system types of all lines
 	 */
-	private Map<String, Boolean> getActiveLines(){
-		
-		if (parameters == null || parameters.size()<=0){
+	private Map<String, Boolean> getActiveLines() {
+
+		if (parameters == null || parameters.size() <= 0) {
 			return null;
 		}
-		
-		if (activeLines == null){
+
+		if (activeLines == null) {
 			activeLines = new HashMap<String, Boolean>();
-			
+
 			List<String> systemTypeVarList = PlcVariables.PARAM_LINE_IS_ACTIVE.getLineVariableNames();
-			
+
 			for (String systemTypeVar : systemTypeVarList) {
 				for (IPlcVariable<?> var : parameters) {
-					if (var.getVariableName().equals(systemTypeVar)){
+					if (var.getVariableName().equals(systemTypeVar)) {
 						activeLines.put(PlcVariableMap.getLineIndex(systemTypeVar), (Boolean) var.getValue());
 					}
 				}
 			}
 		}
-		
+
 		return activeLines;
 	}
-	
+
 	private boolean isLineActive(String lineIndex) {
 		return getActiveLines().get(lineIndex);
 	}
-	
+
 	/**
 	 * 
-	 * @param event - notified variable
+	 * @param event
+	 *            - notified variable
 	 * @return true if the system type of the related line is tobacco
 	 */
-	private boolean isTobacco(PlcEvent event){
-		
+	private boolean isTobacco(PlcEvent event) {
+
 		Short systemType = getSystemTypes().get(PlcVariableMap.getLineIndex(event.getVarName()));
 		return (systemType != null) && systemType.equals(SYSTEM_TYPE_TOBACCO);
 	}
-	
-	
 
 	/**
 	 * @see com.sicpa.standard.sasscl.devices.plc.IPlcAdaptor#executeRequest(com.sicpa.standard.sasscl.devices.plc.PlcRequest)
@@ -664,5 +657,9 @@ public class PlcAdaptor extends AbstractPlcAdaptor implements IPlcControllerList
 			logger.error("", e);
 			return "error reading plc version";
 		}
+	}
+
+	public void setPlcConfigFolder(String plcConfigFolder) {
+		this.plcConfigFolder = plcConfigFolder;
 	}
 }

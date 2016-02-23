@@ -27,6 +27,22 @@
 		<dependency>
 			<groupId>com.sicpa.standard.bis2</groupId>
 			<artifactId>remote</artifactId>
+			<exclusions>
+				<exclusion>
+					<artifactId>spring-context</artifactId>
+					<groupId>org.springframework</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>com.sicpa.standard</groupId>
+			<artifactId>common-client</artifactId>
+			<exclusions>
+				<exclusion>
+					<artifactId>spring-context</artifactId>
+					<groupId>org.springframework</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 	</dependencies>
 </project>

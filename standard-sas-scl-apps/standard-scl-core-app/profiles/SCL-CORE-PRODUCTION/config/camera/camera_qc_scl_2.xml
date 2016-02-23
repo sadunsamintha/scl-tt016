@@ -1,0 +1,25 @@
+<com.sicpa.standard.camera.controller.model.CameraModel>
+	<mId>3</mId>
+	<mDriverName>CognexCameraDriver</mDriverName>
+	<mPort>3000</mPort>
+	<mIp>192.168.1.6</mIp>
+	<mConnectionTimeout>2000</mConnectionTimeout>
+	<mLifeCheckInterval>1000</mLifeCheckInterval>
+	<mTelnetPort>23</mTelnetPort>
+	<mTelnetUser>admin</mTelnetUser>
+	<mTelnetPassword></mTelnetPassword>
+	<mFTPPort>21</mFTPPort>
+	<mFTPUser>admin</mFTPUser>
+	<mFTPPassword></mFTPPassword>
+	<mImageFileName>image.jpg</mImageFileName>
+	<mImageRetrievalType>TIMER_TASK</mImageRetrievalType>
+	<mLoadJob>false</mLoadJob>
+	<mJobFileName>dummyjobUpdated1.job</mJobFileName>
+	<mNoCodeReceivedIteration>1000</mNoCodeReceivedIteration>
+	<mImagePollingInterval>1000</mImagePollingInterval>
+	<mSaveImage>false</mSaveImage>
+	<mImageRepositoryPath>c:\</mImageRepositoryPath>
+	<mNumberOfImageToKeep>0</mNumberOfImageToKeep>
+	<mSaveImageType>ALL</mSaveImageType>
+	<mCameraParserClass>com.sicpa.standard.camera.parser.CameraCodeParser</mCameraParserClass>
+</com.sicpa.standard.camera.controller.model.CameraModel>

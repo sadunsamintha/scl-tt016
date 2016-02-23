@@ -20,8 +20,8 @@ public class DefaultMonitoringSerializerMapping extends DefaultMonitorTypesMappi
 	protected String folder;
 	protected int storageDays;
 
-	public DefaultMonitoringSerializerMapping() {
-		folder = "monitoring/";
+	public DefaultMonitoringSerializerMapping(String folder) {
+		this.folder = folder;
 		storageDays = 999;
 		new File(folder).mkdirs();
 
@@ -48,8 +48,7 @@ public class DefaultMonitoringSerializerMapping extends DefaultMonitorTypesMappi
 		return serializer;
 	}
 
-	protected ISerializer getProductionStatisticsSerializer() {
-
+	protected ISerializer getProductionStatisticsSerializer() { 
 		IFileHandler fileHandler = new FileHandler(MonitorType.PRODUCTION_STATISTICS.getFileName(), storageDays, folder);
 		SimplifiedCSVWriter writer = new SimplifiedCSVWriter();
 		ISerializer serializer = new Serializer(ProductionStatistics.class, writer, new SimplifiedCSVReader(),

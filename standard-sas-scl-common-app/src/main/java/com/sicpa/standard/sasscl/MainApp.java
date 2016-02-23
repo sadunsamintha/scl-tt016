@@ -1,15 +1,27 @@
 package com.sicpa.standard.sasscl;
 
+import java.io.File;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
+import org.springframework.context.support.AbstractApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.core.io.ClassPathResource;
+
+import com.sicpa.standard.client.common.app.profile.LoaderConfigWithProfile;
 import com.sicpa.standard.client.common.config.history.BeanHistoryManager;
 import com.sicpa.standard.client.common.descriptor.validator.ValidatorException;
 import com.sicpa.standard.client.common.descriptor.validator.Validators;
 import com.sicpa.standard.client.common.descriptor.validator.ValidatorsException;
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.groovy.GroovyLoggerConfigurator;
-import com.sicpa.standard.client.common.ioc.AbstractSpringConfig;
 import com.sicpa.standard.client.common.ioc.BeanProvider;
+import com.sicpa.standard.client.common.ioc.PropertiesFile;
 import com.sicpa.standard.client.common.launcher.CommonMainApp;
-import com.sicpa.standard.client.common.launcher.LoaderConfig;
 import com.sicpa.standard.client.common.launcher.display.IProgressDisplay;
 import com.sicpa.standard.client.common.launcher.spring.ILoadingMonitor;
 import com.sicpa.standard.client.common.launcher.spring.impl.DefaultLoadingMonitor;
@@ -19,6 +31,7 @@ import com.sicpa.standard.client.common.utils.PropertiesUtils;
 import com.sicpa.standard.client.common.utils.StringMap;
 import com.sicpa.standard.client.common.utils.TaskExecutor;
 import com.sicpa.standard.client.common.view.IGUIComponentGetter;
+import com.sicpa.standard.client.common.xstream.IXStreamConfigurator;
 import com.sicpa.standard.gui.screen.loader.AbstractApplicationLoader;
 import com.sicpa.standard.gui.screen.machine.impl.SPL.AbstractSplFrame;
 import com.sicpa.standard.plc.value.IPlcVariable;
@@ -28,7 +41,6 @@ import com.sicpa.standard.sasscl.common.log.ILoggerBehavior;
 import com.sicpa.standard.sasscl.common.log.OperatorLogger;
 import com.sicpa.standard.sasscl.common.storage.IStorage;
 import com.sicpa.standard.sasscl.common.utils.LangUtils;
-import com.sicpa.standard.sasscl.config.xstream.IXStreamConfigurator;
 import com.sicpa.standard.sasscl.controller.ProductionParametersEvent;
 import com.sicpa.standard.sasscl.controller.device.IPlcIndependentDevicesController;
 import com.sicpa.standard.sasscl.controller.device.group.DevicesGroup;
@@ -46,7 +58,6 @@ import com.sicpa.standard.sasscl.devices.remote.IRemoteServer;
 import com.sicpa.standard.sasscl.event.ApplicationVersionEvent;
 import com.sicpa.standard.sasscl.ioc.BeansName;
 import com.sicpa.standard.sasscl.ioc.PropertyPlaceholderResourcesSASSCL;
-import com.sicpa.standard.sasscl.ioc.SpringConfig;
 import com.sicpa.standard.sasscl.model.ProductionParameters;
 import com.sicpa.standard.sasscl.model.statistics.StatisticsValues;
 import com.sicpa.standard.sasscl.monitoring.MonitoringService;
@@ -63,26 +74,19 @@ import com.sicpa.standard.sasscl.view.MainFrameController;
 import com.sicpa.standard.sasscl.view.lineid.LineIdWithAuthenticateButton;
 import com.sicpa.standard.sicpadata.spi.manager.SimpleServiceProviderManager;
 import com.sicpa.standard.sicpadata.spi.manager.StaticServiceProviderManager;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.core.io.ClassPathResource;
 
-import java.io.File;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-
-public class MainApp extends CommonMainApp<LoaderConfig> {
+public class MainApp extends CommonMainApp<LoaderConfigWithProfile> {
 
 	private static final Logger logger = LoggerFactory.getLogger(MainApp.class);
+
+	private Properties loadedProperties;
 
 	public MainApp() {
 		PropertyPlaceholderResourcesSASSCL.init();
 	}
 
 	@Override
-	public AbstractApplicationLoader createLoader(LoaderConfig config, String... profiles) {
+	public AbstractApplicationLoader createLoader(LoaderConfigWithProfile config, String... profiles) {
 		return new Loader(config, true, profiles);
 	}
 
@@ -162,12 +166,8 @@ public class MainApp extends CommonMainApp<LoaderConfig> {
 		return (MainFrame) compGetter.getComponent();
 	}
 
-	protected void initLanguage(String lang) {
-		try {
-			LangUtils.initLanguageFiles(lang);
-		} catch (Exception e) {
-			logger.error("", e);
-		}
+	private void initLanguage() {
+		LangUtils.initLanguageFiles(getProperties().getProperty("language"));
 	}
 
 	@SuppressWarnings("rawtypes")
@@ -188,45 +188,6 @@ public class MainApp extends CommonMainApp<LoaderConfig> {
 		PlcValuesForAllVar valuesSecure = BeanProvider.getBean(BeansName.PLC_SECURE_VARIABLE_VALUES);
 
 		loader.load(variablesSecure, valuesSecure);
-	}
-
-	/**
-	 * init spring and everything that can be done before gui
-	 */
-	@Override
-	protected void initApplication(LoaderConfig config, String... profiles) {
-		super.initApplication(config, profiles);
-		try {
-			IStorage storage = BeanProvider.getBean(BeansName.STORAGE);
-
-			restoreStatistics(storage);
-
-			initPlc();
-
-			// needed to init the selection model for the gui
-			initProductionParameter(storage);
-
-			initAuthenticator(storage);
-			initCrypto();
-
-			handleHistoryBean();
-
-			// --add listener on remote server to query the remote server when
-			// connected
-			final IRemoteServer server = BeanProvider.getBean(BeansName.REMOTE_SERVER);
-			IDeviceStatusListener lis = new IDeviceStatusListener() {
-				@Override
-				public void deviceStatusChanged(final DeviceStatusEvent evt) {
-					if (evt.getDevice() instanceof IRemoteServer && evt.getStatus() == DeviceStatus.CONNECTED) {
-						initRemoteServerConnected();
-					}
-				}
-			};
-			server.addDeviceStatusListener(lis);
-
-		} catch (Exception e) {
-			logger.error("", e);
-		}
 	}
 
 	protected void initOperatorLogger() {
@@ -251,16 +212,6 @@ public class MainApp extends CommonMainApp<LoaderConfig> {
 		remoteJobs.executeInitialTasks();
 	}
 
-	protected Properties initProperties() {
-		AbstractSpringConfig sc = new AbstractSpringConfig() {
-		};
-		sc.put(SpringConfig.PROPERTIES_PLACEHOLDER, "spring/propertyPlaceholderConfigurer.xml");
-		ClassPathXmlApplicationContext appcontext = new ClassPathXmlApplicationContext(sc.getPaths());
-		Properties config = (Properties) appcontext.getBean("allProperties");
-		appcontext.close();
-		return config;
-	}
-
 	protected void getLineIdFromRemoteServerAndSaveItLocally() {
 		long id = getLineIdFromRemoteServer();
 		SubsystemIdProvider subsystemIdProvider = BeanProvider.getBean(BeansName.SUBSYSTEM_ID_PROVIDER);
@@ -270,12 +221,13 @@ public class MainApp extends CommonMainApp<LoaderConfig> {
 
 	private void saveSubsystemId(long id) {
 		try {
+			
+			
+			
 			File globalPropertiesFile = new ClassPathResource(ConfigUtilEx.GLOBAL_PROPERTIES_PATH).getFile();
 
-			PropertiesUtils.savePropertiesKeepOrderAndComment(globalPropertiesFile,
-					"subsystemId", Long.toString(id));
-			PropertiesUtils.savePropertiesKeepOrderAndComment(globalPropertiesFile,
-					"lineId", Long.toString(id));
+			PropertiesUtils.savePropertiesKeepOrderAndComment(globalPropertiesFile, "subsystemId", Long.toString(id));
+			PropertiesUtils.savePropertiesKeepOrderAndComment(globalPropertiesFile, "lineId", Long.toString(id));
 
 		} catch (Exception ex) {
 			logger.error("Failed to Get and Save Line Id", ex);
@@ -310,6 +262,46 @@ public class MainApp extends CommonMainApp<LoaderConfig> {
 	@Override
 	protected void doInitEnd() {
 
+		try {
+			IStorage storage = BeanProvider.getBean(BeansName.STORAGE);
+
+			restoreStatistics(storage);
+
+			initPlc();
+
+			// needed to init the selection model for the gui
+			initProductionParameter(storage);
+
+			initAuthenticator(storage);
+			initCrypto();
+
+			handleHistoryBean();
+
+			// --add listener on remote server to query the remote server when
+			// connected
+			final IRemoteServer server = BeanProvider.getBean(BeansName.REMOTE_SERVER);
+			IDeviceStatusListener lis = new IDeviceStatusListener() {
+				@Override
+				public void deviceStatusChanged(final DeviceStatusEvent evt) {
+					if (evt.getDevice() instanceof IRemoteServer && evt.getStatus() == DeviceStatus.CONNECTED) {
+						initRemoteServerConnected();
+					}
+				}
+			};
+			server.addDeviceStatusListener(lis);
+
+		} catch (Exception e) {
+			logger.error("", e);
+		}
+
+		ApplicationInitializationTasks initTasksBean = BeanProvider.getBean(BeansName.APPLICATION_INITIALIZATION_TASKS);
+		// used by optional module to add some init task after spring has been initialized
+		for (Runnable task : initTasksBean.getInitTasks()) {
+			task.run();
+		}
+
+		initOperatorLogger();
+
 		initCustomGuiComponent();
 
 		MainFrame main = getMainFrame();
@@ -339,7 +331,7 @@ public class MainApp extends CommonMainApp<LoaderConfig> {
 	}
 
 	@Override
-	protected void initSpring(LoaderConfig config, String... profiles) {
+	protected void initSpring(LoaderConfigWithProfile config, String... profiles) {
 
 		setLoadingProgress("init event bus", 0);
 		initEventBus();
@@ -347,19 +339,15 @@ public class MainApp extends CommonMainApp<LoaderConfig> {
 		initXstreamConfig();
 		setLoadingProgress("init language", 0);
 
-		Properties props = initProperties();
-		initLanguage(props.getProperty("language"));
+		initLanguage();
 
 		setLoadingProgress("init spring", 10);
 
-		super.initSpring(config, profiles);
-
-		ApplicationInitializationTasks initTasksBean = BeanProvider.getBean(BeansName.APPLICATION_INITIALIZATION_TASKS);
-		// used by optional module to add some init task after spring has been initialized
-		for (Runnable task : initTasksBean.getInitTasks()) {
-			task.run();
+		BeanProvider.initSpring(config.getContext(), createProgressMonitor(progressDisplay));
+		if (config.getInitTask() != null) {
+			config.getInitTask().run();
 		}
-		initOperatorLogger();
+
 	}
 
 	protected void initCrypto() {
@@ -372,34 +360,47 @@ public class MainApp extends CommonMainApp<LoaderConfig> {
 		manager.checkForModification();
 	}
 
-	protected void initEventBus() {
+	private void initEventBus() {
+		initContext("spring/eventBus.xml");
+	}
+
+	private void initXstreamConfig() {
 		try {
 			// it has to be executed before the main spring has been initialized
-			AbstractSpringConfig sc = new AbstractSpringConfig() {
-			};
-			sc.put(SpringConfig.EVENT_BUS, "spring/eventBus.xml");
-			sc.put(SpringConfig.PROPERTIES_PLACEHOLDER, "spring" + File.separator + "propertyPlaceholderConfigurer.xml");
-			new ClassPathXmlApplicationContext(sc.getPaths());
+			ClassPathXmlApplicationContext context = initContext("spring/xstream.xml");
+			IXStreamConfigurator configurator = (IXStreamConfigurator) context.getBean(BeansName.XSTREAM_CONFIGURATOR);
+			configurator.configure(ConfigUtils.getXStream());
+			context.close();
 		} catch (Exception e) {
 			logger.error("", e);
 			System.exit(-1);
 		}
 	}
 
-	protected void initXstreamConfig() {
+	protected Properties getProperties() {
+		if (loadedProperties != null) {
+			return loadedProperties;
+		}
+
+		loadedProperties = new PropertiesFile(PropertyPlaceholderResourcesSASSCL.getAllFiles(),
+				PropertyPlaceholderResourcesSASSCL.getAllFolders(),
+				PropertyPlaceholderResourcesSASSCL.getOverridingProperties());
+
+		return loadedProperties;
+	}
+
+	private ClassPathXmlApplicationContext initContext(String... path) {
 		try {
-			// it has to be executed before the main spring has been initialized
-			AbstractSpringConfig sc = new AbstractSpringConfig() {
-			};
-			sc.put(SpringConfig.XSTREAM_CONFIG, "spring" + File.separator + "xstream.xml");
-			sc.put(SpringConfig.PROPERTIES_PLACEHOLDER, "spring" + File.separator + "propertyPlaceholderConfigurer.xml");
-			ClassPathXmlApplicationContext aFactory = new ClassPathXmlApplicationContext(sc.getPaths());
-			IXStreamConfigurator configurator = (IXStreamConfigurator) aFactory.getBean(BeansName.XSTREAM_CONFIGURATOR);
-			configurator.configure(ConfigUtils.getXStream());
+			ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext();
+			addPropertyPlaceholder(context);
+			context.setConfigLocations(path);
+			context.refresh();
+			return context;
 		} catch (Exception e) {
 			logger.error("", e);
 			System.exit(-1);
 		}
+		return null;
 	}
 
 	@Override
@@ -407,11 +408,14 @@ public class MainApp extends CommonMainApp<LoaderConfig> {
 		return new DefaultLoadingMonitor(display, 10);
 	}
 
-	/**
-	 * This method sends the progress and the text to display in the progress bar.
-	 */
-	protected void setLoadingProgress(String loadingItem, int progress) {
+	private void setLoadingProgress(String loadingItem, int progress) {
 		progressDisplay.setText(loadingItem);
 		progressDisplay.setProgress(progress);
+	}
+
+	protected void addPropertyPlaceholder(AbstractApplicationContext context) {
+		PropertyPlaceholderConfigurer configurer = new PropertyPlaceholderConfigurer();
+		configurer.setProperties(getProperties());
+		context.addBeanFactoryPostProcessor(configurer);
 	}
 }

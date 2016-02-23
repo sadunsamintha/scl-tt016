@@ -10,7 +10,7 @@
 	</bean>
 
 	<bean id="printerSimulatorModel" class="com.sicpa.standard.sasscl.utils.ConfigUtilEx" factory-method="load" scope="prototype">
-		<constructor-arg value="config/printer/simulator/printerSimulator_####.xml" />
+		<constructor-arg value="${profile.path}/config/printer/simulator/printerSimulator_####.xml" />
 		<constructor-arg ref="deviceModelNamePostfixProperty" />
 	</bean>
 

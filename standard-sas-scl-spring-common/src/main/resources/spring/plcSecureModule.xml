@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
-	xmlns:context="http://www.springframework.org/schema/context"
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:util="http://www.springframework.org/schema/util" xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:aop="http://www.springframework.org/schema/aop"
 	xsi:schemaLocation="http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
@@ -10,25 +9,25 @@
 
 	<import resource="plcSecureVarMap.xml" />
 	<import resource="descriptors/plcSecureVariablesDescriptors.xml" />
-
+	<!-- TODO should be imported using groovy if+ import -->
 	<beans profile="plcSecure.behavior.standard">
 
 		<bean id="plcSecureAdaptor" class="${plcSecureAdaptor}">
-            <constructor-arg ref="plcSecureController" />
-            <property name="notificationVariables" ref="plcSecureNotifications" />
-            <property name="plcSecureRequestMap" ref="plcSecureRequestAction" />
-            <property name="parameters" ref="plcSecureParameters" />
-            <property name="userIdStorage" ref="userIdStorage" />
-            <property name="model" ref="plcSecureModel" />
-            <property name="securityModel" ref="securityModel" />
-        </bean>
+			<constructor-arg ref="plcSecureController" />
+			<property name="notificationVariables" ref="plcSecureNotifications" />
+			<property name="plcSecureRequestMap" ref="plcSecureRequestAction" />
+			<property name="parameters" ref="plcSecureParameters" />
+			<property name="userIdStorage" ref="userIdStorage" />
+			<property name="model" ref="plcSecureModel" />
+			<property name="securityModel" ref="securityModel" />
+		</bean>
 
 		<bean id="plcSecureController" class="${plcSecureController}">
 			<property name="model" ref="plcSecureModel" />
 		</bean>
 
 		<bean id="plcSecureModel" class="com.sicpa.standard.client.common.utils.ConfigUtils" factory-method="load">
-			<constructor-arg value="config/plc/plcSecure.xml" />
+			<constructor-arg value="${profile.path}/config/plc/plcSecure.xml" />
 			<property name="parameters">
 				<map />
 			</property>
@@ -37,13 +36,13 @@
 
 	</beans>
 
-	<beans profile="plcSecure.behavior.simulator">
-
-        <bean id="plcSecureAdaptor" class="${plcSecureAdaptorSimulator}">
-            <constructor-arg ref="plcSecureController" />
-            <property name="userIdStorage" ref="userIdStorage" />
-            <property name="securityModel" ref="securityModel" />
-        </bean>
+	<beans>
+		<!-- <beans profile="plcSecure.behavior.simulator"> -->
+		<bean id="plcSecureAdaptor" class="${plcSecureAdaptorSimulator}">
+			<constructor-arg ref="plcSecureController" />
+			<property name="userIdStorage" ref="userIdStorage" />
+			<property name="securityModel" ref="securityModel" />
+		</bean>
 
 		<bean id="plcSecureController" class="${plcSimulatorController}">
 			<constructor-arg ref="plcSimulatorModel" />

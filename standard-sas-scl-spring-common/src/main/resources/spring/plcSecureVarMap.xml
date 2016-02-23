@@ -14,7 +14,7 @@
 	<bean id="PlcVariableString" 	class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createStringVar" abstract="true"/>
 
 	<bean id="plcSecureVariableValues" class="com.sicpa.standard.client.common.utils.ConfigUtils" factory-method="load">
-		<constructor-arg value="config/plc/plcSecureParams.xml" />
+		<constructor-arg value="${profile.path}/config/plc/plcSecureParams.xml" />
 	</bean>
 
 <!-- ================================ REQUESTS ================================ -->

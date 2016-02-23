@@ -23,16 +23,23 @@
 		<dependency>
 			<groupId>com.sicpa.standard.printer</groupId>
 			<artifactId>standard-printer-leibinger</artifactId>
+			<exclusions>
+				<exclusion>
+					<artifactId>spring-context</artifactId>
+					<groupId>org.springframework</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
-
-        <dependency>
-            <groupId>com.sicpa.standard.printer</groupId>
-            <artifactId>standard-printer-oi2jet</artifactId>
-        </dependency>
 
 		<dependency>
 			<groupId>com.sicpa.standard.sasscl</groupId>
 			<artifactId>service-monitoring</artifactId>
+			<exclusions>
+				<exclusion>
+					<artifactId>spring-context</artifactId>
+					<groupId>org.springframework</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>com.sicpa.standard.sasscl</groupId>

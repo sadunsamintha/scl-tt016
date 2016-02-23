@@ -1,0 +1,21 @@
+<com.sicpa.standard.printer.oi2jet.driver.Oi2jetParameter>
+	<codeType>EXTENDED_CODE</codeType>
+	
+	<!-- Unused for extended code -->
+	<dataMatrixFormat>DM8x18</dataMatrixFormat>
+	<dataMatrixEncoding>ASCII</dataMatrixEncoding>
+	<textFormat>TF_1_LINE</textFormat>
+	<textFontName>"Courier New"</textFontName>
+	<textFontSize >50</textFontSize>
+	<!-- End of: Unused for extended code -->
+	
+	<printingResolution>PR_300x300</printingResolution>
+	<datamatrixPixelsPerDot>10</datamatrixPixelsPerDot>
+	<startPrintWaitDistance>13000</startPrintWaitDistance>
+	<rotate90Degrees>false</rotate90Degrees>
+	<codeBufferLowThreshold>100</codeBufferLowThreshold>
+	<codeSizePerRequest>1000</codeSizePerRequest>
+	<printerBufferLowThreshold>200</printerBufferLowThreshold>
+	<nbCodesPerSending>100</nbCodesPerSending>
+	<requestBufferStatusPeriod>500</requestBufferStatusPeriod>	
+</com.sicpa.standard.printer.oi2jet.driver.Oi2jetParameter>

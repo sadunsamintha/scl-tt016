@@ -56,7 +56,7 @@
 			</array>
 		</constructor-arg>
 
-		<property name="file" value="config/plc/plcSecureParams.xml" />
+		<property name="file" value="${profile.path}/config/plc/plcSecureParams.xml" />
 	</bean>
 	
 </beans>

@@ -13,7 +13,9 @@
 		<property name="productionParameters" ref="productionParameters" />
 	</bean>
 
-	<bean id="monitoringModel" class="${monitoringModel}" />
+	<bean id="monitoringModel" class="${monitoringModel}">
+		<constructor-arg value="${profile.path}/monitoring" />
+	</bean>
 
 	<bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
 		<property name="staticMethod" value="com.sicpa.standard.sasscl.monitoring.MonitoringService.set" />

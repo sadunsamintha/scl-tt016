@@ -9,9 +9,9 @@
 	</util:map>
 
 	<bean name="storageStd" class="${storage}">
-		<constructor-arg value="data" />
-		<constructor-arg value="internal" />
-		<constructor-arg value="quarantine" />
+		<constructor-arg value="${profile.path}/data" />
+		<constructor-arg value="${profile.path}/internal" />
+		<constructor-arg value="${profile.path}/quarantine" />
 		<constructor-arg ref="storageBehavior" />
 		<property name="productsPackager" ref="productsPackager" />
 		<property name="fileSequenceProvider" ref="fileSequenceStorageProvider" />
@@ -19,9 +19,9 @@
 	</bean>
 
 	<bean name="storageSimulator" class="${storage}">
-		<constructor-arg value="dataSimulator" />
-		<constructor-arg value="internalSimulator" />
-		<constructor-arg value="quarantine" />
+		<constructor-arg value="${profile.path}/dataSimulator" />
+		<constructor-arg value="${profile.path}/internalSimulator" />
+		<constructor-arg value="${profile.path}/quarantine" />
 		<constructor-arg ref="storageBehavior" />
 		<property name="productsPackager" ref="productsPackager" />
 		<property name="fileSequenceProvider" ref="fileSequenceStorageProvider" />

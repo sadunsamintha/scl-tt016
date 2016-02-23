@@ -1,6 +1,6 @@
 package com.sicpa.standard.sasscl.devices.plc;
 
-import com.sicpa.standard.sasscl.config.xstream.IXStreamConfigurator;
+import com.sicpa.standard.client.common.xstream.IXStreamConfigurator;
 import com.sicpa.standard.sasscl.devices.plc.variable.serialisation.PlcValue;
 import com.sicpa.standard.sasscl.devices.plc.variable.serialisation.PlcValueWithUnit;
 import com.sicpa.standard.sasscl.devices.plc.variable.serialisation.PlcValuesForAllVar;

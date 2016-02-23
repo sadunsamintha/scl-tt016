@@ -98,7 +98,7 @@ public class RemoteServer extends AbstractRemoteServer {
 
 	protected IStorage storage;
 
-	protected String serverPropertiesFile = "config/server/standard-server.properties";
+	protected String serverPropertiesFile;
 
 	protected Context context;
 
@@ -113,23 +113,20 @@ public class RemoteServer extends AbstractRemoteServer {
 		} catch (Exception e) {
 			throw new InitializationRuntimeException("Failed to load remote server model", e);
 		}
-
-		init();
 	}
 
 	public RemoteServer(final RemoteServerModel remoteServerModel) {
 
 		model = remoteServerModel;
-		init();
 	}
 
-	protected void init() {
+	public void init() {
 		TaskExecutor.execute(new Runnable() {
 			@Override
 			public void run() {
 				initPackageSenders();
 
-				if (isPropertiesFileLoaded()) {
+				if (loadPropertyFile()) {
 					initClientSecurityContext();
 					setupContext();
 				}
@@ -155,12 +152,11 @@ public class RemoteServer extends AbstractRemoteServer {
 		BasicClientSecurityInterceptor.setPrincipal(model.getUsername(), model.getPassword().toCharArray());
 	}
 
-	private boolean isPropertiesFileLoaded() {
+	private boolean loadPropertyFile() {
 
 		try {
-			URL url = ClassLoader.getSystemResource(serverPropertiesFile);
-			properties.load(new FileInputStream(new File(url.toURI())));
-
+			File f = new File(serverPropertiesFile);
+			properties.load(new FileInputStream(f));
 			return true;
 		} catch (Exception e) {
 			logger.error("failed to load " + serverPropertiesFile, e);
@@ -266,8 +262,10 @@ public class RemoteServer extends AbstractRemoteServer {
 			cryptoServiceProviderManager.setPassword(pwd);
 
 			// save the password for offline prod
-			PropertiesUtils.savePropertiesKeepOrderAndComment(new ClassPathResource(ConfigUtilEx.GLOBAL_PROPERTIES_PATH).getFile(),
-					"sicpadataPassword", "" + pwd);
+			PropertiesUtils
+					.savePropertiesKeepOrderAndComment(
+							new ClassPathResource(ConfigUtilEx.GLOBAL_PROPERTIES_PATH).getFile(), "sicpadataPassword",
+							"" + pwd);
 		} catch (Exception e) {
 			logger.error("", e);
 		}
@@ -287,7 +285,7 @@ public class RemoteServer extends AbstractRemoteServer {
 			return;
 		}
 		logger.info("requesting encoder qty={} codeType={} ,  year={}",
-				new Object[]{quantity, codeType.getId(), year});
+				new Object[] { quantity, codeType.getId(), year });
 		try {
 
 			sdGenReceiver.requestSicpadataGenerators(newSdGenOrder(quantity, codeType, year), getCodingBean());
@@ -434,7 +432,7 @@ public class RemoteServer extends AbstractRemoteServer {
 	}
 
 	protected void convertMarketTypeDto(ComponentBehaviorDto<? extends BaseDto<Long>> child,
-										final AbstractProductionParametersNode<?> convertedParentRoot) {
+			final AbstractProductionParametersNode<?> convertedParentRoot) {
 
 		MarketTypeDto marketDto = (MarketTypeDto) child.getNodeValue();
 		ProductionMode productionMode = productionModeMapping.getProductionModeFromRemoteId(marketDto.getId()
@@ -685,7 +683,7 @@ public class RemoteServer extends AbstractRemoteServer {
 	}
 
 	protected void startLifeChecker() {
-		if(lifeChecker != null && !lifeChecker.isAlive()) {
+		if (lifeChecker != null && !lifeChecker.isAlive()) {
 			lifeChecker.start();
 		} else {
 			logger.warn("Not starting Remote Server Life Checker because not implemented");
@@ -867,5 +865,9 @@ public class RemoteServer extends AbstractRemoteServer {
 		event.setEventType(type);
 
 		return event;
+	}
+
+	public void setServerPropertiesFile(String serverPropertiesFile) {
+		this.serverPropertiesFile = serverPropertiesFile;
 	}
 }

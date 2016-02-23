@@ -1,0 +1,66 @@
+<PlcValuesForAllVar>
+  <PlcValue varName=".com.stCabinet.stParameters.nTimeoutLifeCheck">
+    <value class="int">10000</value>
+  </PlcValue>
+  <PlcValue varName=".com.stCabinet.stParameters.nCoolingErrorActivationTimeout">
+    <value class="int">200000</value>
+  </PlcValue>
+  <PlcValue varName=".com.stCabinet.stParameters.bComStructureStoredInRAM">
+    <value class="boolean">false</value>
+  </PlcValue>
+  <PlcValue varName=".com.stCabinet.stParameters.bInhibitRamWriting">
+    <value class="boolean">true</value>
+  </PlcValue>
+  <PlcValue varName=".com.stCabinet.stParameters.bMultiLineRequestsModeEnabled">
+    <value class="boolean">true</value>
+  </PlcValue>
+  <PlcValue varName=".com.stCabinet.stParameters.nWar_Temperature_EE_cabinet_level">
+    <value class="int">42</value>
+  </PlcValue>
+  <PlcValue varName=".com.stCabinet.stParameters.nWar_Temperature_ambiant_level">
+    <value class="int">42</value>
+  </PlcValue>
+  <PlcValue varName=".com.stCabinet.stParameters.nWar_Temperature_bypass_level">
+    <value class="int">42</value>
+  </PlcValue>
+  <PlcValue varName=".com.stCabinet.stParameters.nErr_Temperature_EE_cabinet_level">
+    <value class="int">50</value>
+  </PlcValue>
+  <PlcValue varName=".com.stCabinet.stParameters.nErr_Temperature_ambiant_level">
+    <value class="int">50</value>
+  </PlcValue>
+  <PlcValue varName=".com.stCabinet.stParameters.nErr_Temperature_bypass_level">
+    <value class="int">50</value>
+  </PlcValue>
+  <PlcValue varName=".com.stCabinet.stParameters.nWar_air_pressure_level">
+    <value class="int">2</value>
+  </PlcValue>
+  <PlcValue varName=".com.stCabinet.stParameters.nErr_air_pressure_level">
+    <value class="int">3</value>
+  </PlcValue>
+  <PlcValue varName=".com.stCabinet.stParameters.nWar_Fans_EE_cabinet_MIN_freq">
+    <value class="int">1</value>
+  </PlcValue>
+  <PlcValue varName=".com.stCabinet.stParameters.nWar_Fans_EE_cabinet_MAX_freq">
+    <value class="int">42</value>
+  </PlcValue>
+  <PlcValue varName=".com.stCabinet.stParameters.nWar_Fans_Bypass_cabinet_MIN_freq">
+    <value class="int">1</value>
+  </PlcValue>
+  <PlcValue varName=".com.stCabinet.stParameters.nWar_Fans_Bypass_cabinet_MAX_freq">
+    <value class="int">42</value>
+  </PlcValue>
+  <PlcValue varName=".com.stCabinet.stParameters.nFans_Temp_ON_threshold_EE">
+    <value class="int">35</value>
+  </PlcValue>
+  <PlcValue varName=".com.stCabinet.stParameters.nFans_Temp_OFF_delta_hyst_EE">
+    <value class="int">5</value>
+  </PlcValue>
+  <PlcValue varName=".com.stCabinet.stParameters.nFans_Temp_ON_threshold_Bypass">
+    <value class="int">35</value>
+  </PlcValue>
+  <PlcValue varName=".com.stCabinet.stParameters.nFans_Temp_OFF_delta_hyst_Bypass">
+    <value class="int">0</value>
+  </PlcValue>
+
+</PlcValuesForAllVar>

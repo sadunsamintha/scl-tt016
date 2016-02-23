@@ -241,7 +241,6 @@
 	</dependencies>
 
 	<modules>
-		<module>standard-sas-app</module>
 		<module>standard-scl-app</module>
 		<module>standard-sas-scl-business-activation</module>
 		<module>standard-sas-scl-business-alert</module>
@@ -268,6 +267,7 @@
 		<module>standard-sas-scl-test-functional-scl</module>
 		<module>standard-sas-scl-device-bis</module>
 		<module>standard-sas-scl-test-utils</module>
+		<module>standard-sas-scl-apps</module>
 	</modules>
 
 
@@ -424,7 +424,7 @@
 			<dependency>
 				<groupId>com.sicpa.standard</groupId>
 				<artifactId>common-client</artifactId>
-				<version>1.0.15</version>
+				<version>2.0.1-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>com.sicpa.standard.sicpadata</groupId>
@@ -535,13 +535,6 @@
 				<groupId>com.sicpa.standard.tools</groupId>
 				<artifactId>client-installer</artifactId>
 				<version>${installer.version}</version>
-			</dependency>
-
-
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-context</artifactId>
-				<version>3.2.4.RELEASE</version>
 			</dependency>
 			<dependency>
 				<groupId>ch.qos.logback</groupId>

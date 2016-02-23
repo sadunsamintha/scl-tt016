@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans
-	       http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">	
-	
+	       http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
 	<bean id="encoderPasswordProvider" class="${encoderPasswordProvider}">
 		<constructor-arg value="${sicpadataPassword}" />
 	</bean>
 
-	<bean id="cryptoProviderManager" class ="${cryptoProviderManager}">
+	<bean id="cryptoProviderManager" class="${cryptoProviderManager}">
 		<constructor-arg ref="encoderPasswordProvider" />
 		<constructor-arg ref="fileSequenceStorageProvider" />
+		<constructor-arg value="${profile.path}" />
 	</bean>
-	
+
 	<bean id="fileSequenceStorageProvider" class="${fileSequenceStorageProvider}">
-		<constructor-arg value="./internal/encoders/sequence" />
+		<constructor-arg value="${profile.path}/internal/encoders/sequence" />
 	</bean>
-	
-	
+
+
 </beans>

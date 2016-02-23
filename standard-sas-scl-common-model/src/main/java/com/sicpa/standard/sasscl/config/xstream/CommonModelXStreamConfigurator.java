@@ -3,6 +3,7 @@ package com.sicpa.standard.sasscl.config.xstream;
 import com.sicpa.standard.client.common.security.Permission;
 import com.sicpa.standard.client.common.security.SecurityModel;
 import com.sicpa.standard.client.common.security.User;
+import com.sicpa.standard.client.common.xstream.IXStreamConfigurator;
 import com.sicpa.standard.sasscl.business.alert.task.model.CameraCountAlertTaskModel;
 import com.sicpa.standard.sasscl.business.alert.task.model.CameraDuplicatedAlertTaskModel;
 import com.sicpa.standard.sasscl.business.alert.task.model.CameraIddleAlertTaskModel;

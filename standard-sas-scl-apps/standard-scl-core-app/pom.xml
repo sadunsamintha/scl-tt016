@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>scl-core-app</artifactId>
+	
+	<parent>
+		<artifactId>pom-apps</artifactId>
+		<groupId>com.sicpa.standard.sasscl</groupId>
+		<version>2.4.10-SNAPSHOT</version>
+	</parent>
+
+	<properties>
+		<license.timestamp>${maven.build.timestamp}</license.timestamp>
+		<maven.build.timestamp.format>yyyy</maven.build.timestamp.format>
+		<rpm.update.folder>/usr/scl/app/update</rpm.update.folder>
+		<rpm.app.folder>/usr/scl/app/</rpm.app.folder>
+		<rpm.installer.class>com.sicpa.standard.sasscl.installer.SclAppInstaller</rpm.installer.class>
+		<rpm.access.user>sicpa_op</rpm.access.user>
+		<rpm.group>sicpa/app/sasscl</rpm.group>
+	</properties>
+
+	<build>
+		<resources>
+			<!-- Root folder -->
+			<resource>
+				<directory>src/main/resources</directory>
+				<targetPath>.</targetPath>
+				<filtering>true</filtering>
+				<includes>
+					<include>*</include>
+				</includes>
+			</resource>
+
+			<!-- Config files for application -->
+			<resource>
+				<directory>src/main/resources</directory>
+				<targetPath>.</targetPath>
+				<filtering>false</filtering>
+				<includes>
+					<include>**/*</include>
+				</includes>
+			</resource>
+		</resources>
+
+		<plugins>
+		
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.2</version>
+				<configuration>
+					<outputDirectory>${project.build.directory}/build/current</outputDirectory>
+					<useDefaultManifestFile>true</useDefaultManifestFile>
+					<archive>
+						<manifestEntries>
+							<Class-Path>./</Class-Path>
+						</manifestEntries>
+						<manifest>
+							<mainClass>com.sicpa.standard.sasscl.Main</mainClass>
+							<packageName>com.sicpa.standard.sasscl</packageName>
+							<addClasspath>true</addClasspath>
+							<classpathPrefix>lib</classpathPrefix>
+							<addExtensions>false</addExtensions>
+						</manifest>
+					</archive>
+
+					<!-- Don't want these files inside the jar -->
+					<excludes>
+						<exclude>**/config/</exclude>
+						<exclude>*.bat</exclude>
+						<exclude>*.sh</exclude>
+						<exclude>license</exclude>
+						<exclude>version</exclude>
+					</excludes>
+				</configuration>
+			</plugin>		
+		</plugins>
+
+	</build>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.sicpa.standard.sasscl</groupId>
+			<artifactId>device-remoteServer-impl</artifactId>
+		</dependency>
+	</dependencies>
+
+</project>

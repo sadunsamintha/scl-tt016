@@ -1,6 +1,6 @@
 package com.sicpa.standard.sasscl.controller.productionconfig.xstream;
 
-import com.sicpa.standard.sasscl.config.xstream.IXStreamConfigurator;
+import com.sicpa.standard.client.common.xstream.IXStreamConfigurator;
 import com.sicpa.standard.sasscl.controller.productionconfig.ProductionConfig;
 import com.sicpa.standard.sasscl.controller.productionconfig.config.CameraConfig;
 import com.sicpa.standard.sasscl.controller.productionconfig.config.PrinterConfig;

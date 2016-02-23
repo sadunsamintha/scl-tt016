@@ -29,17 +29,16 @@
 					<groupId>com.sicpa.standard.gui</groupId>
 					<artifactId>standard-gui-screen</artifactId>
 				</exclusion>
+				<exclusion>
+					<artifactId>spring-context</artifactId>
+					<groupId>org.springframework</groupId>
+				</exclusion>
 			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>com.sicpa.standard.plc</groupId>
 			<artifactId>standard-plc</artifactId>
 		</dependency>
-		<!-- <dependency> -->
-		<!-- <groupId>com.sicpa.standard.opc2</groupId> -->
-		<!-- <artifactId>encoding</artifactId> -->
-		<!-- <version>0.0.1-SNAPSHOT</version> -->
-		<!-- </dependency> -->
 	</dependencies>
 
 

@@ -5,7 +5,7 @@
 
 
 	<bean id="cameraJobFilesConfig" class="${cameraJobFilesConfig}">
-		<constructor-arg type="java.lang.String" value="config/camera/cameraJobConfig.xml" />
+		<constructor-arg type="java.lang.String" value="${profile.path}/config/camera/cameraJobConfig.xml" />
 	</bean>
 
 	<!-- section to setup ConfigUtils ignored fields -->
@@ -30,7 +30,10 @@
 	</bean>
 
 
-	<bean id="beanHistoryManager" class="${beanHistoryManager}" />
+	<bean id="beanHistoryManager" class="${beanHistoryManager}">
+		<constructor-arg value="${profile.path}/configHistory" />
+		<constructor-arg value="${profile.path}" />
+	</bean>
 
 
 </beans>

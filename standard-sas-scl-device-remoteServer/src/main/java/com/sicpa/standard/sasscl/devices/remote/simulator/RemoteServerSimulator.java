@@ -66,37 +66,24 @@ public class RemoteServerSimulator extends AbstractRemoteServer implements ISimu
 
 	private final static Logger logger = LoggerFactory.getLogger(RemoteServerSimulator.class);
 
-	/**
-	 * version defined in stdCrypto.ini
-	 */
+	// version defined in stdCrypto.ini
 	protected int cryptoVersion = 0;
 	protected String cryptoMode = "MY_MODE";
 
-	/**
-	 * specify the starting year, used in date calculation (value to be set in {@link DescriptorBean#setDate(long)}.
-	 * 
-	 */
+	// specify the starting year, used in date calculation (value to be set in {@link DescriptorBean#setDate(long)}.
 	protected int cryptoStartYear = 2010;
 
-	/**
-	 * to keep track the current batch index
-	 */
+	// to keep track the current batch index
 	protected int currentEncoderIndex = 0;
 
-	/**
-	 * business crypto from standard crypto library
-	 * 
-	 */
+	// business crypto from standard crypto library
 	protected IBSicpadataModule module;
 
-	/**
-	 * Model to setup remote server simulator
-	 */
 	protected final RemoteServerSimulatorModel simulatorModel;
 
 	protected SimulatorControlView simulatorGui;
 
-	protected String remoteServerSimulatorOutputFolder = "SimulProductSend";
+	protected String remoteServerSimulatorOutputFolder;
 
 	protected ProductionParameters productionParameters;
 
@@ -105,6 +92,9 @@ public class RemoteServerSimulator extends AbstractRemoteServer implements ISimu
 	protected IStorage storage;
 
 	protected FileSequenceStorageProvider fileSequenceStorageProvider;
+
+	protected boolean setupBusinessCryptoDone = false;
+	protected StdCoreModelPreset cryptoModelPreset = StdCoreModelPreset.CRYPTO_12x26;
 
 	// /**
 	// * main method, maintained to test cryptography library.
@@ -149,9 +139,6 @@ public class RemoteServerSimulator extends AbstractRemoteServer implements ISimu
 		this.serviceProviderManager = serviceProviderManager;
 	}
 
-	protected boolean setupBusinessCryptoDone = false;
-	protected StdCoreModelPreset cryptoModelPreset = StdCoreModelPreset.CRYPTO_12x26;
-
 	public void setCryptoModelPreset(StdCoreModelPreset cryptoModelPreset) {
 		this.cryptoModelPreset = cryptoModelPreset;
 	}
@@ -174,9 +161,7 @@ public class RemoteServerSimulator extends AbstractRemoteServer implements ISimu
 				return;
 			}
 
-			/*
-			 * PREPARE THE MODEL
-			 */
+			// PREPARE THE MODEL
 			List<FieldModel> fixedFieldModels = new ArrayList<FieldModel>(Arrays.asList(//
 					new FieldModel("batchId", (1L << 10) - 1L),//
 					new FieldModel("codeType", (1L << 10) - 1L),//
@@ -193,18 +178,14 @@ public class RemoteServerSimulator extends AbstractRemoteServer implements ISimu
 			SicpadataModel sicpadataModel = new SicpadataModel();
 			sicpadataModel.addModeModel(cryptoMode, modeModel);
 
-			/*
-			 * PUT THE MODEL
-			 */
+			// PUT THE MODEL
 			module = null;
 			try {
 				module = BSicpadataModuleFactory.getInstance(serviceProviderManager);
 
 				module.setSicpadataModel(sicpadataModel);
 
-				/*
-				 * GENERATE THE KEYS
-				 */
+				// GENERATE THE KEYS
 				IKeyManager keyManager = null;
 				keyManager = KeyManagerFactory.getInstance(serviceProviderManager);
 				keyManager.generateKeyset(cryptoMode, cryptoVersion);
@@ -586,7 +567,6 @@ public class RemoteServerSimulator extends AbstractRemoteServer implements ISimu
 
 	@Override
 	public void lifeCheckTick() {
-		// TODO Auto-generated method stub
-
 	}
+
 }

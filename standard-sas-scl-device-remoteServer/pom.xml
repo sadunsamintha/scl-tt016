@@ -16,11 +16,6 @@
 			<groupId>com.sicpa.standard.sasscl</groupId>
 			<artifactId>service-monitoring</artifactId>
 		</dependency>
-		<!--spring is use to load a crypto model for the simulator -->
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-context</artifactId>
-		</dependency>
 		<dependency>
 			<groupId>org.aspectj</groupId>
 			<artifactId>aspectjrt</artifactId>

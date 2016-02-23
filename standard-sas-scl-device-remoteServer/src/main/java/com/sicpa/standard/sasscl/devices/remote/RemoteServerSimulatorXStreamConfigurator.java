@@ -1,6 +1,6 @@
 package com.sicpa.standard.sasscl.devices.remote;
 
-import com.sicpa.standard.sasscl.config.xstream.IXStreamConfigurator;
+import com.sicpa.standard.client.common.xstream.IXStreamConfigurator;
 import com.sicpa.standard.sasscl.devices.remote.simulator.RemoteServerSimulatorModel;
 import com.thoughtworks.xstream.XStream;
 

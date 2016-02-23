@@ -1,0 +1,20 @@
+<ProductionConfig activationBehavior="maintenanceActivationBehavior" >
+
+	<CameraConfig deviceType="COGNEX" id="qc_scl_1" />
+	<CameraConfig deviceType="COGNEX" id="qc_scl_2" />
+
+	<plcConfig line1File="line1Config.xml" line2File="line2Config.xml" line1Index="1" line2Index="2">
+		<property key=".com.stLine[1].bLine_is_active" value="true" />
+		<property key=".com.stLine[2].bLine_is_active" value="true" />
+		<property key=".com.stLine[3].bLine_is_active" value="false" />
+
+		<property key=".com.stLine[1].stParameters.bExportModeEnabled" value="false" />
+		<property key=".com.stLine[1].stParameters.bMaintenanceModeEnabled" value="true" />
+		<property key=".com.stLine[1].stParameters.bRefeedModeEnabled" value="false" />
+
+		<property key=".com.stLine[2].stParameters.bExportModeEnabled" value="false" />
+		<property key=".com.stLine[2].stParameters.bMaintenanceModeEnabled" value="true" />
+		<property key=".com.stLine[2].stParameters.bRefeedModeEnabled" value="false" />
+	</plcConfig>
+
+</ProductionConfig>

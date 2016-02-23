@@ -31,7 +31,7 @@
 	</bean>
 
 	<bean id="printerModelDomino" class="com.sicpa.standard.sasscl.utils.ConfigUtilEx" factory-method="load" scope="prototype">
-		<constructor-arg value="config/printer/printer_####.xml" />
+		<constructor-arg value="${profile.path}/config/printer/printer_####.xml" />
 		<constructor-arg ref="deviceModelNamePostfixProperty" />
 	</bean>
 
