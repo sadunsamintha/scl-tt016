@@ -134,31 +134,30 @@ public abstract class MainAppWithProfile extends MainApp implements IProfileSele
 		config.add("spring/customizableProperties.xml");
 		config.add("spring/activation.xml");
 		config.add("spring/statistics.xml");
-		config.add("spring/remoteServer.xml");
 		config.add("spring/production.xml");
 		config.add("spring/provider.xml");
-		config.add("spring/camera.xml");
+		config.add("spring/camera/camera.xml");
 		config.add("spring/config.xml");
 		config.add("spring/scheduler.xml");
-		config.add("spring/alert.xml");
-		config.add("spring/alertCameraCountTask.xml");
-		config.add("spring/alertDuplicatedCodeTask.xml");
-		config.add("spring/alertCameraIddleTask.xml");
+		config.add("spring/alert/alert.xml");
+		config.add("spring/alert/alertCameraCountTask.xml");
+		config.add("spring/alert/alertDuplicatedCodeTask.xml");
+		config.add("spring/alert/alertCameraIddleTask.xml");
 		config.add("spring/storage.xml");
 		config.add("spring/misc.xml");
 		config.add("spring/view.xml");
 		config.add("spring/devicesController.xml");
 		config.add("spring/hardwareController.xml");
-		config.add("spring/plc.xml");
-		config.add("spring/plcSecureModule.xml");
-		config.add("spring/plcJmxInfo.xml");
-		config.add("spring/plcLineNotificationsTemplate.xml");
-		config.add("spring/plcCabinetNotifications.xml");
-		config.add("spring/plcCabinetErrorRegister.xml");
-		config.add("spring/plcLineErrorRegister.xml");
-		config.add("spring/plcRequests.xml");
-		config.add("spring/plcCabinetParameters.xml");
-		config.add("spring/plcLineParametersTemplate.xml");
+		config.add("spring/plc/plc.xml");
+		config.add("spring/plc/plcSecureModule.xml");
+		config.add("spring/plc/plcJmxInfo.xml");
+		config.add("spring/plc/plcLineNotificationsTemplate.xml");
+		config.add("spring/plc/plcCabinetNotifications.xml");
+		config.add("spring/plc/plcCabinetErrorRegister.xml");
+		config.add("spring/plc/plcLineErrorRegister.xml");
+		config.add("spring/plc/plcRequests.xml");
+		config.add("spring/plc/plcCabinetParameters.xml");
+		config.add("spring/plc/plcLineParametersTemplate.xml");
 		config.add("spring/flowControl.xml");
 		config.add("spring/barcode.xml");
 
@@ -177,17 +176,19 @@ public abstract class MainAppWithProfile extends MainApp implements IProfileSele
 
 		config.add("spring/productionConfig.xml");
 
-		config.add("spring/plcVarMap.xml");
+		config.add("spring/plc/plcVarMap.xml");
 
 		// SCL
 
 		config.add("spring/coding.xml");
-		config.add("spring/printer.xml");
-		config.add("spring/printer-domino.xml");
-		config.add("spring/printer-leibinger.xml");
-		config.add("spring/leibingerProtocol.xml");
+		config.add("spring/printer/printer.xml");
+		config.add("spring/printer/printer-domino.xml");
+		config.add("spring/printer/printer-leibinger.xml");
+		config.add("spring/printer/leibingerProtocol.xml");
 		config.add("spring/postPackage.xml");
 		config.add("spring/schedulerSCL.xml");
+		
+		config.add("spring/custo/customization.groovy");
 
 		return config;
 	}

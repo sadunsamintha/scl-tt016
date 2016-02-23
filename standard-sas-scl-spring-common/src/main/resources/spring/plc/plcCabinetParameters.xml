@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+
+	<util:list id="plcCabinetParameters">
+		<ref bean="timeoutLifecheckParam" />
+		<ref bean="coolingErrActivationTimeoutParam" />
+		<ref bean="comStrucStoredInRamParam" />
+		<ref bean="inhibitRamWritingParam" />
+		<ref bean="multilineReqModeEnabledParam" />
+		<ref bean="warTempEeCabLvlParam" />
+		<ref bean="warTempAmbiantLvlParam" />
+		<ref bean="warTempBypasstLvlParam" />
+		<ref bean="errTempEeCabLvlParam" />
+		<ref bean="errTempAmbiantLvlParam" />
+		<ref bean="errTempBypassLvlParam" />
+		<ref bean="warAirPressLvlParam" />
+		<ref bean="errAirPressLvlParam" />
+		<ref bean="warFansEeCabMinFreqParam" />
+		<ref bean="warFansEeCabMaxFreqParam" />
+		<ref bean="warFansBypassCabMinFreqParam" />
+		<ref bean="warFansBypassCabMaxFreqParam" />
+		<ref bean="fansTempOnThresholdEeParam" />
+		<ref bean="fansTempOffDeltaHystEeParam" />
+		<ref bean="fansTempOnThresholdBypassParam" />
+		<ref bean="fansTempOffDeltaHystBypassParam" />
+	</util:list>
+
+	<bean id="timeoutLifecheckParam" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createInt32Var">
+		<constructor-arg value="#{plcVarMap['PARAM_TIMEOUT_LIFECHECK']}" />
+	</bean>
+
+	<bean id="coolingErrActivationTimeoutParam" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createInt32Var">
+		<constructor-arg value="#{plcVarMap['PARAM_COOLING_ERR_ACTIVATION_TIMEOUT']}" />
+	</bean>
+
+	<bean id="comStrucStoredInRamParam" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createBooleanVar">
+		<constructor-arg value="#{plcVarMap['PARAM_COM_STRUC_STORED_IN_RAM']}" />
+	</bean>
+
+	<bean id="inhibitRamWritingParam" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createBooleanVar">
+		<constructor-arg value="#{plcVarMap['PARAM_INHIBIT_RAM_WRITING']}" />
+	</bean>
+
+	<bean id="multilineReqModeEnabledParam" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createBooleanVar">
+		<constructor-arg value="#{plcVarMap['PARAM_MULTILINE_REQ_MODE_ENABLED']}" />
+	</bean>
+
+	<bean id="warTempEeCabLvlParam" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="create">
+		<constructor-arg value="#{plcVarMap['PARAM_WAR_TEMP_EE_CAB_LVL']}" />
+		<constructor-arg value="com.sicpa.standard.plc.value.PlcUInt16" />
+	</bean>
+
+	<bean id="warTempAmbiantLvlParam" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="create">
+		<constructor-arg value="#{plcVarMap['PARAM_WAR_TEMP_AMBIANT_LVL']}" />
+		<constructor-arg value="com.sicpa.standard.plc.value.PlcUInt16" />
+	</bean>
+
+	<bean id="warTempBypasstLvlParam" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="create">
+		<constructor-arg value="#{plcVarMap['PARAM_WAR_TEMP_BYPASS_LVL']}" />
+		<constructor-arg value="com.sicpa.standard.plc.value.PlcUInt16" />
+	</bean>
+
+	<bean id="errTempEeCabLvlParam" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="create">
+		<constructor-arg value="#{plcVarMap['PARAM_ERR_TEMP_EE_CAB_LVL']}" />
+		<constructor-arg value="com.sicpa.standard.plc.value.PlcUInt16" />
+	</bean>
+
+	<bean id="errTempAmbiantLvlParam" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="create">
+		<constructor-arg value="#{plcVarMap['PARAM_ERR_TEMP_AMBIANT_LVL']}" />
+		<constructor-arg value="com.sicpa.standard.plc.value.PlcUInt16" />
+	</bean>
+
+	<bean id="errTempBypassLvlParam" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="create">
+		<constructor-arg value="#{plcVarMap['PARAM_ERR_TEMP_BYPASS_LVL']}" />
+		<constructor-arg value="com.sicpa.standard.plc.value.PlcUInt16" />
+	</bean>
+
+	<bean id="warAirPressLvlParam" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="create">
+		<constructor-arg value="#{plcVarMap['PARAM_WAR_AIR_PRESS_LVL']}" />
+		<constructor-arg value="com.sicpa.standard.plc.value.PlcUInt16" />
+	</bean>
+
+	<bean id="errAirPressLvlParam" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="create">
+		<constructor-arg value="#{plcVarMap['PARAM_ERR_AIR_PRESS_LVL']}" />
+		<constructor-arg value="com.sicpa.standard.plc.value.PlcUInt16" />
+	</bean>
+
+	<bean id="warFansEeCabMinFreqParam" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="create">
+		<constructor-arg value="#{plcVarMap['PARAM_WAR_FANS_EE_CAB_MIN_FREQ']}" />
+		<constructor-arg value="com.sicpa.standard.plc.value.PlcUInt16" />
+	</bean>
+
+	<bean id="warFansEeCabMaxFreqParam" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="create">
+		<constructor-arg value="#{plcVarMap['PARAM_WAR_FANS_EE_CAB_MAX_FREQ']}" />
+		<constructor-arg value="com.sicpa.standard.plc.value.PlcUInt16" />
+	</bean>
+
+	<bean id="warFansBypassCabMinFreqParam" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="create">
+		<constructor-arg value="#{plcVarMap['PARAM_WAR_FANS_BYPASS_CAB_MIN_FREQ']}" />
+		<constructor-arg value="com.sicpa.standard.plc.value.PlcUInt16" />
+	</bean>
+
+	<bean id="warFansBypassCabMaxFreqParam" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="create">
+		<constructor-arg value="#{plcVarMap['PARAM_WAR_FANS_BYPASS_CAB_MAX_FREQ']}" />
+		<constructor-arg value="com.sicpa.standard.plc.value.PlcUInt16" />
+	</bean>
+
+	<bean id="fansTempOnThresholdEeParam" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="create">
+		<constructor-arg value="#{plcVarMap['PARAM_FANS_TEMP_ON_THRESHOLD_EE']}" />
+		<constructor-arg value="com.sicpa.standard.plc.value.PlcUInt16" />
+	</bean>
+
+	<bean id="fansTempOffDeltaHystEeParam" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="create">
+		<constructor-arg value="#{plcVarMap['PARAM_FANS_TEMP_OFF_DELTA_HYST_EE']}" />
+		<constructor-arg value="com.sicpa.standard.plc.value.PlcUInt16" />
+	</bean>
+
+	<bean id="fansTempOnThresholdBypassParam" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="create">
+		<constructor-arg value="#{plcVarMap['PARAM_FANS_TEMP_ON_THRESHOLD_BYPASS']}" />
+		<constructor-arg value="com.sicpa.standard.plc.value.PlcUInt16" />
+	</bean>
+
+	<bean id="fansTempOffDeltaHystBypassParam" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="create">
+		<constructor-arg value="#{plcVarMap['PARAM_FANS_TEMP_OFF_DELTA_HYST_BYPASS']}" />
+		<constructor-arg value="com.sicpa.standard.plc.value.PlcUInt16" />
+	</bean>
+
+
+</beans>

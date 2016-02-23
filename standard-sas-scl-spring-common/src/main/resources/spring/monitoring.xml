@@ -14,7 +14,7 @@
 	</bean>
 
 	<bean id="monitoringModel" class="${monitoringModel}">
-		<constructor-arg value="${profile.path}/monitoring" />
+		<constructor-arg value="${profile.path}/monitoring/" />
 	</bean>
 
 	<bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">

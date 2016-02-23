@@ -58,3 +58,8 @@ standard-sas-scl-common-storage/UserDatabase.csv
 standard-scl-app/internalSimulator/
 standard-sas-scl-common-storage/test/data/statistics.data
 standard-sas-scl-apps/standard-scl-core-app/log/
+standard-sas-scl-apps/standard-scl-core-app/profiles/SCL-CORE-DEV/internalSimulator/
+standard-sas-scl-apps/standard-scl-core-app/profiles/SCL-CORE-DEV/simulProductSend/
+standard-sas-scl-apps/standard-scl-core-app/profiles/SCL-CORE-DEV/dataSimulator/
+standard-sas-scl-apps/standard-scl-core-app/profiles/SCL-CORE-DEV/internal/
+standard-sas-scl-apps/standard-scl-core-app/profiles/SCL-CORE-DEV/monitoring/
