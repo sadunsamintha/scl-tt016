@@ -9,7 +9,7 @@ import java.util.Map;
 import static com.sicpa.standard.sasscl.messages.ActionMessageType.*;
 
 public class SASDefaultMessagesMapping implements IMessageCodeMapper {
-	
+
 	protected Map<String, ActionMessageType> typeMap;
 	protected Map<String, String> codeMap;
 
@@ -274,5 +274,13 @@ public class SASDefaultMessagesMapping implements IMessageCodeMapper {
 		addEntry(Coding.ERROR_GETTING_CODES_FROM_ENCODER, "[COD_02]", ERROR);
 		addEntry(Coding.INVALID_ENCODER, "[COD_03]", ERROR);
 		addEntry(Coding.FAILED_TO_PROVIDE_CODES, "[COD_04]", ERROR);
+	}
+
+	public Map<String, ActionMessageType> getTypeMap() {
+		return typeMap;
+	}
+
+	public Map<String, String> getCodeMap() {
+		return codeMap;
 	}
 }

@@ -40,6 +40,17 @@
 					<include>**/*</include>
 				</includes>
 			</resource>
+
+			<!-- Documentation files -->
+			<resource>
+				<directory>src/main/resources/documentation</directory>
+				<targetPath>documentation</targetPath>
+				<filtering>false</filtering>
+				<includes>
+					<include>**/*</include>
+				</includes>
+			</resource>
+
 		</resources>
 
 		<plugins>
@@ -158,6 +169,24 @@
 							]]>
 						</script>
 					</postinstallScriptlet>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<version>1.2</version>
+				<executions>
+					<execution>
+						<id>build-error-list</id>
+						<phase>package</phase>
+						<goals>
+							<goal>java</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<mainClass>com.sicpa.standard.sasscl.documentation.MessageListFileCreator</mainClass>
 				</configuration>
 			</plugin>
 		</plugins>
