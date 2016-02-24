@@ -30,7 +30,7 @@ public class MessagesHandler {
 
 	}
 	
-	
+
 	/**
 	 * Retrieves the ActionMessageType then constructs and sends the event
 	 */
@@ -69,30 +69,18 @@ public class MessagesHandler {
 	}
 
 	/**
-	 * Returns the type if already mapped and processes it if not
-	 * By convention the key of a custom MessageEvent key respects the format IMPACT.CODE.ID
-	 * @param key
-	 * @return
+	 * Get the action message type based on the specified message key.
+	 * @param key message key
+	 * @return action message type. Action message warning will be returned if no action message matches specified
+	 * key.
 	 */
 	private ActionMessageType getType(String key) {
-		
-		String[] keySplit = StringUtils.split(key, ".", 3);
-		
-		ActionMessageType type = messagesMapping.getMessageType(key);
+		ActionMessageType type = (ActionMessageType) messagesMapping.getMessageType(key);
 
 		if (type == null) {
-			
-			try {
-				type = ActionMessageType.valueOf(ActionMessageType.class, keySplit[0].toUpperCase());
-			} catch (Exception e) {
-			}
-			
-			if (type == null || keySplit.length != 3) {
-				return null;
-			}
-			
-			messagesMapping.addEntry(key, keySplit[1], type);
+			return ActionMessageType.WARNING;
 		}
+
 		return type;
 	}
 

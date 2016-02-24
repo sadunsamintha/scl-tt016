@@ -1,56 +1,11 @@
 package com.sicpa.standard.sasscl.messages;
 
-import com.sicpa.standard.client.common.messages.IMessageCodeMapper;
+import com.sicpa.standard.client.common.messages.DefaultMessagesMapping;
 import com.sicpa.standard.sasscl.messages.MessageEventKey.*;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import static com.sicpa.standard.sasscl.messages.ActionMessageType.*;
 
-public class SASDefaultMessagesMapping implements IMessageCodeMapper {
-	
-	protected Map<String, ActionMessageType> typeMap;
-	protected Map<String, String> codeMap;
-
-	public SASDefaultMessagesMapping() {
-		this.typeMap = new HashMap<String, ActionMessageType>();
-		codeMap = new HashMap<String, String>();
-		populateMap();
-	}
-
-	public ActionMessageType getMessageType(final String key) {
-		return this.typeMap.get(key);
-	}
-
-	/**
-	 * @param langKey
-	 *            key for i18n
-	 * @param messageCode
-	 *            msg key, display as part of the message, must be unique
-	 * @param type
-	 */
-	public void addEntry(final String langKey, String messageCode, final ActionMessageType type) {
-
-		this.typeMap.put(langKey, type);
-		this.codeMap.put(langKey, messageCode);
-	}
-
-	public void addEntry(String langKey, String messageCode) {
-		this.codeMap.put(langKey, messageCode);
-	}
-
-	public String getMessageCode(String langKey) {
-		return codeMap.get(langKey);
-	}
-
-	public void add(String key, ActionMessageType type) {
-		typeMap.put(key, type);
-	}
-
-	public void add(String code, String langKey) {
-		this.codeMap.put(langKey, code);
-	}
+public class SASDefaultMessagesMapping extends DefaultMessagesMapping {
 
 	protected void populateMap() {
 

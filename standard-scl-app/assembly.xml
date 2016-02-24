@@ -42,6 +42,7 @@
                 <include>license</include>
 				<include>version</include>
 				<include>log4j.properties</include>
+				<include>jboss-ejb-client.properties</include>
 			</includes>
 			<lineEnding>unix</lineEnding>
 		</fileSet>
