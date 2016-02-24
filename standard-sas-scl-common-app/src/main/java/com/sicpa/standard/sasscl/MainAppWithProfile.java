@@ -1,12 +1,14 @@
 package com.sicpa.standard.sasscl;
 
 import java.io.File;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
 import javax.swing.SwingUtilities;
 
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,7 +27,7 @@ import com.sicpa.standard.gui.screen.loader.LoadApplicationScreen;
 import com.sicpa.standard.gui.utils.WindowsUtils;
 import com.sicpa.standard.sasscl.ioc.PropertyPlaceholderResourcesSASSCL;
 
-public abstract class MainAppWithProfile extends MainApp implements IProfileSelectorListener {
+public class MainAppWithProfile extends MainApp implements IProfileSelectorListener {
 	private static Logger logger = LoggerFactory.getLogger(MainAppWithProfile.class);
 
 	private static final String PROFILE_NAME_PROPERTIES_KEY_XML = "profile.name";
@@ -42,6 +44,25 @@ public abstract class MainAppWithProfile extends MainApp implements IProfileSele
 		PropertyPlaceholderResourcesSASSCL.init();
 	}
 
+	@Override
+	public String getApplicationVersion() {
+		InputStream versionFile = null;
+		try {
+			versionFile = ClassLoader.getSystemResourceAsStream("version");
+			return IOUtils.toString(versionFile);
+		} catch (Exception e) {
+			logger.error("", e);
+			return "N/A";
+		} finally {
+			if (versionFile != null) {
+				try {
+					versionFile.close();
+				} catch (Exception e2) {
+				}
+			}
+		}
+	}
+
 	public void selectProfile() {
 
 		List<Profile> profiles = Profile.getAllAvailableProfiles();
@@ -51,20 +72,17 @@ public abstract class MainAppWithProfile extends MainApp implements IProfileSele
 		} else if (profiles.size() == 1) {
 			onProfileSelected(new ProfileSelectedEvent(profiles.get(0)));
 		} else {
-			SwingUtilities.invokeLater(() -> {
-				ProfileSelectorView ps = new ProfileSelectorView();
-				ps.setLocationRelativeTo(null);
-				ps.setVisible(true);
-				ps.addProfileSelectorListener(MainAppWithProfile.this);
-
-			});
+			displayProfileSelectionScreen();
 		}
 	}
 
-	@Deprecated
-	protected void initLog() {
-		// it is made useless by initLogFromProfile
-
+	private void displayProfileSelectionScreen() {
+		SwingUtilities.invokeLater(() -> {
+			ProfileSelectorView ps = new ProfileSelectorView();
+			ps.setLocationRelativeTo(null);
+			ps.setVisible(true);
+			ps.addProfileSelectorListener(MainAppWithProfile.this);
+		});
 	}
 
 	private void initLogger(Profile profile) {
@@ -96,19 +114,24 @@ public abstract class MainAppWithProfile extends MainApp implements IProfileSele
 	}
 
 	@Override
-	protected void startLoading(final String title, final AbstractApplicationLoader loader) {
-		SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				if (AppUtils.isHeadless()) {
-					loader.execute();
-				} else {
-					LoadApplicationScreen screen = new LoadApplicationScreen(loader, true);
-					WindowsUtils.setOpaque(screen, true);
-					screen.setText(title);
-					screen.start();
-				}
-			}
+	protected void startLoading(String title, AbstractApplicationLoader loader) {
+		if (AppUtils.isHeadless()) {
+			startHeadless(loader);
+		} else {
+			startAndDisplayLoadScreen(title, loader);
+		}
+	}
+
+	private void startHeadless(AbstractApplicationLoader loader) {
+		loader.execute();
+	}
+
+	private void startAndDisplayLoadScreen(String title, AbstractApplicationLoader loader) {
+		SwingUtilities.invokeLater(() -> {
+			LoadApplicationScreen screen = new LoadApplicationScreen(loader, true);
+			WindowsUtils.setOpaque(screen, true);
+			screen.setText(title);
+			screen.start();
 		});
 	}
 
@@ -187,7 +210,10 @@ public abstract class MainAppWithProfile extends MainApp implements IProfileSele
 		config.add("spring/printer/leibingerProtocol.xml");
 		config.add("spring/postPackage.xml");
 		config.add("spring/schedulerSCL.xml");
-		
+
+		config.add("spring/bootstrap.groovy");
+
+		// custo has to be last import for bean overriding
 		config.add("spring/custo/customization.groovy");
 
 		return config;

@@ -62,7 +62,7 @@ public class RemoteServerSimulatorModelTest {
 	@Before
 	public void prepareCodeGenerator() {
 		StaticServiceProviderManager.register(new CryptoServiceProviderManager(new UniquePasswordProvider("dummy"),
-				new FileSequenceStorageProvider("./simulation/storage/encoder-sequence")));
+				new FileSequenceStorageProvider("./simulation/storage/encoder-sequence"), ""));
 	}
 
 	@After

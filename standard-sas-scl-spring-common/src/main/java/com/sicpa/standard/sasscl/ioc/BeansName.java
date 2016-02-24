@@ -250,9 +250,9 @@ public interface BeansName {
 	String PRODUCTION_MODE_DEVICEGROUP_MAPPING = "productionModeDeviceGroupMapping";
 
 	/**
-	 * ApplicationInitializationTasks
+	 * IBootstrap
 	 */
-	String APPLICATION_INITIALIZATION_TASKS = "applicationInitializationTasks";
+	String BOOTSTRAP = "bootstrap";
 
 	/**
 	 * UniquePasswordProvider

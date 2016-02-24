@@ -31,7 +31,23 @@
 				<include>*</include>
 			</includes>
 		</fileSet>
-		
+		<fileSet>
+			<directory>profiles</directory>
+			<includes>
+				<include>*/**</include>
+			</includes>
+			<excludes>
+				<exclude>**/dataSimulator/**</exclude>
+				<exclude>**/internal/**</exclude>
+				<exclude>**/data/**</exclude>
+				<exclude>**/internalSimulator/**</exclude>
+				<exclude>**/monitoring/**</exclude>
+				<exclude>**/simulProductSend/**</exclude>
+				<exclude>**/uncaught-error/**</exclude>
+			</excludes>
+			<outputDirectory>profiles</outputDirectory>
+		</fileSet>
+
 		<!-- Launchers for built version -->
 		<fileSet>
 			<directory>target/classes</directory>
@@ -39,7 +55,7 @@
 			<includes>
 				<include>*.bat</include>
 				<include>*.sh</include>
-                <include>license</include>
+				<include>license</include>
 				<include>version</include>
 				<include>log4j.properties</include>
 			</includes>

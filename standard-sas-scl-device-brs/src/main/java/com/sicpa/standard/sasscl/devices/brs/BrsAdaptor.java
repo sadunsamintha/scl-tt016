@@ -10,6 +10,13 @@ import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.sasscl.devices.AbstractStartableDevice;
 import com.sicpa.standard.sasscl.devices.DeviceException;
 import com.sicpa.standard.sasscl.devices.DeviceStatus;
+import com.sicpa.standard.sasscl.devices.brs.event.BrsProductEvent;
+import com.sicpa.standard.sasscl.devices.brs.model.BrsModel;
+import com.sicpa.standard.sasscl.devices.brs.model.BrsReaderModel;
+import com.sicpa.standard.sasscl.devices.brs.model.BrsType;
+import com.sicpa.standard.sasscl.devices.brs.reader.BrsReaderController;
+import com.sicpa.standard.sasscl.devices.brs.reader.CodeReaderController;
+import com.sicpa.standard.sasscl.devices.brs.reader.CodeReaderListener;
 
 public class BrsAdaptor extends AbstractStartableDevice implements CodeReaderListener {
 

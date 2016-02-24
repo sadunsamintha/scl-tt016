@@ -7,8 +7,6 @@
 	<bean id="eventBusAutoRegistering" class="${eventBusAutoRegistering}" />
 
 	<bean id="productionParameters" class="${productionParameters}" />
-
-	<bean id="applicationInitializationTasks" class="${applicationInitializationTasks}" />
 	
 	<bean id="implementationProvider" class="${implementationProvider}" />
 

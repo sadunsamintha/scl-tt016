@@ -241,7 +241,6 @@
 	</dependencies>
 
 	<modules>
-		<module>standard-scl-app</module>
 		<module>standard-sas-scl-business-activation</module>
 		<module>standard-sas-scl-business-alert</module>
 		<module>standard-sas-scl-business-coding</module>
@@ -262,9 +261,9 @@
 		<module>standard-sas-scl-spring-scl</module>
 		<module>standard-sas-scl-view</module>
 		<module>standard-sas-scl-monitoring</module>
-		<module>standard-sas-scl-test-functional-common</module>
-		<module>standard-sas-scl-test-functional-sas</module>
-		<module>standard-sas-scl-test-functional-scl</module>
+<!-- 		<module>standard-sas-scl-test-functional-common</module> -->
+<!-- 		<module>standard-sas-scl-test-functional-sas</module> -->
+<!-- 		<module>standard-sas-scl-test-functional-scl</module> -->
 		<module>standard-sas-scl-device-bis</module>
 		<module>standard-sas-scl-test-utils</module>
 		<module>standard-sas-scl-apps</module>
