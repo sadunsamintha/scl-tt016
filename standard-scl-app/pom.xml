@@ -88,6 +88,7 @@
 						<exclude>*.sh</exclude>
 						<exclude>license</exclude>
 						<exclude>version</exclude>
+						<exclude>jboss-ejb-client.properties</exclude>
 					</excludes>
 				</configuration>
 			</plugin>
@@ -115,6 +116,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-antrun-plugin</artifactId>
+				<version>1.8</version>
 				<executions>
 					<execution>
 						<phase>generate-resources</phase>
@@ -123,7 +125,7 @@
 						</goals>
 						<configuration>
 							<tasks>
-								<echo file="src/main/resources/version" message="${version}" />
+								<echo file="src/main/resources/version" message="${project.version}" />
 							</tasks>
 						</configuration>
 					</execution>

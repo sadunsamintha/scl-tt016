@@ -1,5 +1,6 @@
 package com.sicpa.standard.sasscl.documentation;
 
+import com.sicpa.standard.client.common.messages.MessageType;
 import com.sicpa.standard.sasscl.messages.ActionMessageType;
 import com.sicpa.standard.sasscl.messages.SASDefaultMessagesMapping;
 import org.springframework.core.io.ClassPathResource;
@@ -81,7 +82,7 @@ public class MessageListFileCreator {
     }
 
     private static void loadTypes(SASDefaultMessagesMapping mapping, Map<String, ErrorListEntry> output) {
-        for (Map.Entry<String, ActionMessageType> entry : mapping.getTypeMap().entrySet()) {
+        for (Map.Entry<String, MessageType> entry : mapping.getTypeMap().entrySet()) {
             String langKey = entry.getKey();
             String type = format(entry.getValue());
 
@@ -99,7 +100,7 @@ public class MessageListFileCreator {
         }
     }
 
-    private static boolean shouldFilterType(ActionMessageType type) {
+    private static boolean shouldFilterType(MessageType type) {
         return type == ActionMessageType.IGNORE || type == ActionMessageType.LOG;
     }
 

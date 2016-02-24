@@ -57,5 +57,17 @@ standard-scl-app/log/
 standard-sas-scl-common-storage/UserDatabase.csv
 standard-scl-app/internalSimulator/
 standard-sas-scl-common-storage/test/data/statistics.data
+data/
+.idea/
+monitoring/
+*.iml
+log/
+language/
+internalSimulator/
+dataSimulator/
+configHistory/
+config/
+internal/
 standard-sas-app/documentation
 standard-scl-app/documentation
+documentation
