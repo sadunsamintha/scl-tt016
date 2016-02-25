@@ -19,7 +19,7 @@ public interface ICustomizable {
 	 * @param customProperty
 	 * @param object
 	 */
-	public <T> void setProperty(ICustomProperty<T> customProperty, T object);
+	<T> void setProperty(ICustomProperty<T> customProperty, T object);
 
 	/**
 	 * to set a list of custom properties
@@ -27,7 +27,7 @@ public interface ICustomizable {
 	 * @param <T>
 	 * @param properties
 	 */
-	public void setProperties(Map<ICustomProperty<?>, Object> properties);
+	void setProperties(Map<ICustomProperty<?>, Object> properties);
 
 	/**
 	 * 
@@ -37,7 +37,7 @@ public interface ICustomizable {
 	 * @param customProperty
 	 * @return
 	 */
-	public <T> T getProperty(ICustomProperty<T> customProperty);
+	<T> T getProperty(ICustomProperty<T> customProperty);
 
 	/**
 	 * to remove the property value from the instance
@@ -46,11 +46,11 @@ public interface ICustomizable {
 	 * @param <T>
 	 * @param customProperty
 	 */
-	public <T> void clearProperty(ICustomProperty<T> customProperty);
+	<T> void clearProperty(ICustomProperty<T> customProperty);
 
 	/**
 	 * make a copy of all the properties
 	 */
-	public Map<ICustomProperty<?>, Object> copyProperties();
+	Map<ICustomProperty<?>, Object> copyProperties();
 
 }

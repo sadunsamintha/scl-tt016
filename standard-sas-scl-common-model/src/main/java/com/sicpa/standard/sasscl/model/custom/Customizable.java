@@ -13,15 +13,15 @@ public class Customizable implements ICustomizable, Serializable, Cloneable {
 
 	private static final long serialVersionUID = 1L;
 
-	private HashMap<ICustomProperty<?>, Object> customPropertiesMap = new HashMap<ICustomProperty<?>, Object>();
+	private Map<ICustomProperty<?>, Object> customPropertiesMap = new HashMap<>();
 
 	@Override
-	public <T> void setProperty(ICustomProperty<T> customProperty, T object) {
+	public <T> void setProperty(ICustomProperty<T> customProperty, T value) {
 		if (!CustomizablePropertyFactory.isPropertyAvailable(this.getClass(), customProperty)) {
 			throw new IllegalArgumentException(MessageFormat.format("Property {0} is not available for class {1} !",
 					customProperty.getName(), this.getClass().getName()));
 		}
-		customPropertiesMap.put(customProperty, object);
+		customPropertiesMap.put(customProperty, value);
 	}
 
 	@Override
@@ -45,12 +45,12 @@ public class Customizable implements ICustomizable, Serializable, Cloneable {
 
 	@Override
 	public void setProperties(Map<ICustomProperty<?>, Object> properties) {
-		this.customPropertiesMap.putAll(properties);
+		customPropertiesMap.putAll(properties);
 	}
 
 	@Override
 	public Map<ICustomProperty<?>, Object> copyProperties() {
-		return new HashMap<ICustomProperty<?>, Object>(this.customPropertiesMap);
+		return new HashMap<>(customPropertiesMap);
 	}
 
 }
