@@ -1,7 +1,10 @@
 package com.sicpa.standard.sasscl.messages;
 
 import com.sicpa.standard.client.common.messages.DefaultMessagesMapping;
+import com.sicpa.standard.client.common.messages.MessageType;
 import com.sicpa.standard.sasscl.messages.MessageEventKey.*;
+
+import java.util.Map;
 
 import static com.sicpa.standard.sasscl.messages.ActionMessageType.*;
 
@@ -229,5 +232,13 @@ public class SASDefaultMessagesMapping extends DefaultMessagesMapping {
 		addEntry(Coding.ERROR_GETTING_CODES_FROM_ENCODER, "[COD_02]", ERROR);
 		addEntry(Coding.INVALID_ENCODER, "[COD_03]", ERROR);
 		addEntry(Coding.FAILED_TO_PROVIDE_CODES, "[COD_04]", ERROR);
+	}
+
+	public Map<String, MessageType> getTypeMap() {
+		return typeMap;
+	}
+
+	public Map<String, String> getCodeMap() {
+		return codeMap;
 	}
 }
