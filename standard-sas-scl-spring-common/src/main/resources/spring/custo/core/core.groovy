@@ -1,7 +1,7 @@
 import com.sicpa.standard.sasscl.*
 beans{
 	 
-	importBeans('spring/server/remoteServer-core.xml')
+	importBeans('spring/server/server-core5.groovy')
 	
 	bootstrap(CoreBootstrap)
  }

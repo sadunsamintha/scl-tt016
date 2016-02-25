@@ -90,12 +90,6 @@ public class Bootstrap implements IBootstrap {
 		server.addDeviceStatusListener(lis);
 	}
 
-	@Override
-	public void executeProductionScopeInitTask() {
-		// TODO Auto-generated method stub
-
-	}
-
 	private void executeModelValidator() {
 		MainFrame main = getMainFrame();
 		MainFrameController controller = null;

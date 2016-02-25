@@ -5,9 +5,11 @@ import com.sicpa.standard.sasscl.sicpadata.generator.AbstractEncoder;
 import com.sicpa.standard.sasscl.sicpadata.generator.EncoderEmptyException;
 import com.sicpa.standard.sicpadata.api.business.IBSicpadataGenerator;
 import com.sicpa.standard.sicpadata.api.exception.SicpadataException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashMap;
 import java.util.List;
 
 public class StdCryptoEncoderWrapper extends AbstractEncoder {
@@ -50,7 +52,7 @@ public class StdCryptoEncoderWrapper extends AbstractEncoder {
                 throw new EncoderEmptyException();
             }
 
-            List<String> code = encoder.generate((int) numberCodesToGenerate, new Object[]{cryptoFieldsConfig.getFields(this)});
+            List<String> code = encoder.generate((int) numberCodesToGenerate, new Object[]{new HashMap<String, Long>()});
             return code;
 
         } catch (SicpadataException e) {

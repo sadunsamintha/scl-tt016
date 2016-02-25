@@ -171,8 +171,8 @@ public class MainAppWithProfile extends MainApp implements IProfileSelectorListe
 		config.add("spring/view.xml");
 		config.add("spring/devicesController.xml");
 		config.add("spring/hardwareController.xml");
-		config.add("spring/plc/plc.xml");
-		config.add("spring/plc/plcSecureModule.xml");
+		config.add("spring/plc/plc-import.groovy");
+		config.add("spring/plc/secure/plc-secure-import.groovy");
 		config.add("spring/plc/plcJmxInfo.xml");
 		config.add("spring/plc/plcLineNotificationsTemplate.xml");
 		config.add("spring/plc/plcCabinetNotifications.xml");
@@ -200,6 +200,8 @@ public class MainAppWithProfile extends MainApp implements IProfileSelectorListe
 		config.add("spring/productionConfig.xml");
 
 		config.add("spring/plc/plcVarMap.xml");
+		
+		config.add("spring/server/server-import.groovy");
 
 		// SCL
 

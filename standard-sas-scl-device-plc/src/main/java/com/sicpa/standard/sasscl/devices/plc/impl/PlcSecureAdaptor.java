@@ -15,7 +15,6 @@ import com.sicpa.standard.client.common.security.User;
 import com.sicpa.standard.plc.controller.IPlcController;
 import com.sicpa.standard.plc.controller.PlcException;
 import com.sicpa.standard.plc.controller.actions.PlcAction;
-import com.sicpa.standard.plc.controller.model.PlcModel;
 import com.sicpa.standard.plc.value.IPlcVariable;
 import com.sicpa.standard.plc.value.PlcVariable;
 import com.sicpa.standard.sasscl.common.log.OperatorLogger;
@@ -38,8 +37,6 @@ public class PlcSecureAdaptor extends PlcAdaptor {
 	private UserIdStorage userIdStorage;
 	
 	private SecurityModel securityModel;
-	
-	private PlcModel model;
 	
 	private boolean fileReloadSent;
 	
@@ -466,7 +463,4 @@ public class PlcSecureAdaptor extends PlcAdaptor {
 		this.securityModel = securityModel;
 	}
 	
-	 public void setModel(final PlcModel model) {
-		 	this.model = model;
-	 }
 }

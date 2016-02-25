@@ -7,7 +7,7 @@
 	<bean id="eventBusAutoRegistering" class="${eventBusAutoRegistering}" />
 
 	<bean id="productionParameters" class="${productionParameters}" />
-	
+
 	<bean id="implementationProvider" class="${implementationProvider}" />
 
 	<bean id="codeTypeFilterFactory" class="${codeTypeFilterFactory}" />

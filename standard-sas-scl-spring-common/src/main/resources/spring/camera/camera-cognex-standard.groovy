@@ -12,7 +12,7 @@ beans{
 		b.scope='prototype'
 	}
 
-	camera(CameraAdaptor,ref('stdCameraController'),ref('cameraRoiImageTransformer')){
+	camera(CameraAdaptor,ref('stdCameraController'),ref('cameraRoiImageTransformer')){b->
 		b.scope='prototype'
 		productionParameters=ref('productionParameters')
 		cameraJobFilesConfig=ref('cameraJobFilesConfig')

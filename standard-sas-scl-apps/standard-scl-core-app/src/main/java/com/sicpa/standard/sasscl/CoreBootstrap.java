@@ -1,11 +1,8 @@
 package com.sicpa.standard.sasscl;
 
-public class CoreBootstrap extends Bootstrap {
+import com.sicpa.standard.plc.controller.internal.PlcControllerImpl;
 
-	@Override
-	public void executeProductionScopeInitTask() {
-		super.executeProductionScopeInitTask();
-	}
+public class CoreBootstrap extends Bootstrap {
 
 	@Override
 	public void executeSpringInitTasks() {

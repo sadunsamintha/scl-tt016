@@ -5,4 +5,5 @@
   <mLittleEndian>true</mLittleEndian>
   <mUseSimulator>false</mUseSimulator>
   <mExecutionMode>MULTITHREADED</mExecutionMode>
+  <mParameters></mParameters>
 </com.sicpa.standard.plc.controller.model.PlcModel>
