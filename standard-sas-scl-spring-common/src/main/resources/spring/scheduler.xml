@@ -5,12 +5,16 @@
 
 
 
-	<bean id="remoteServerSheduledJobs" class="${remoteServerSheduledJobs}">
+	<bean id="remoteServerSheduledJobs" class="com.sicpa.standard.sasscl.controller.scheduling.RemoteServerScheduledJobsSCL">
 		<constructor-arg ref="storage" />
 		<constructor-arg ref="remoteServer" />
 		<constructor-arg ref="skuListProvider" />
 		<constructor-arg ref="authenticatorProvider" />
 		<property name="remoteServerMaxDownTime_day" value="${remoteServerMaxDownTime_day}" />
+		<property name="requestNumberEncoders" value="${requestNumberEncoders}" />
+		<property name="minEncodersThreshold" value="${minEncodersThreshold}" />
+		<property name="codeTypeFilterFactory" ref="codeTypeFilterFactory" />
+
 	</bean>
 
 
@@ -37,6 +41,8 @@
 
 		<task:scheduled ref="remoteServerSheduledJobs" method="sendGlobalMonitoringToolInfo"
 			fixed-delay="#{${globalMonitoringToolSendInfoTimer_sec}*1000}" />
+
+		<task:scheduled ref="remoteServerSheduledJobs" method="getEncodersFromRemoteServer" fixed-delay="#{${getEncodersTimer_sec}*1000}" />
 
 	</task:scheduled-tasks>
 

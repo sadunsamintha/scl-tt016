@@ -1,0 +1,2 @@
+DO NOT REMOVE THIS FILE
+it is used to get the build plugins in the parent without actually running them in the parent, they will only run in sub project 

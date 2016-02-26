@@ -64,3 +64,10 @@ standard-sas-scl-apps/standard-scl-core-app/profiles/SCL-CORE-DEV/dataSimulator/
 standard-sas-scl-apps/standard-scl-core-app/profiles/SCL-CORE-DEV/internal/
 standard-sas-scl-apps/standard-scl-core-app/profiles/SCL-CORE-DEV/monitoring/
 standard-sas-scl-apps/standard-scl-core-app/uncaught-error/
+standard-sas-scl-test-functional-common/profiles/test/simulProductSend/
+standard-sas-scl-test-functional-common/profiles/test/internalSimulator/
+standard-sas-scl-test-functional-common/profiles/test/monitoring/
+standard-sas-scl-test-functional-common/profiles/test/dataSimulator/
+standard-sas-scl-test-functional-common/uncaught-error/
+standard-sas-scl-test-functional-common/log/
+*.db

@@ -9,7 +9,7 @@ public abstract class ActivationTest extends AbstractFunctionnalTest {
 
 		init();
 
-		setProductionParameter(1, 1, ProductionMode.STANDARD);
+		setProductionParameter(1, 1, getProductionMode());
 		runAllTasks();
 		checkApplicationStatusCONNECTED();
 
@@ -27,6 +27,8 @@ public abstract class ActivationTest extends AbstractFunctionnalTest {
 
 		checkDataSentToRemoteServer();
 	}
+
+	protected abstract ProductionMode getProductionMode();
 
 	public void generateCameraCodes(int good, int bad) throws Exception {
 		for (int i = 0; i < good; i++) {

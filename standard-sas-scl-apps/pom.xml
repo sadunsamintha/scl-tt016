@@ -48,114 +48,125 @@
 			</resource>
 		</resources>
 
-		<plugins>
 
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-resources-plugin</artifactId>
-				<version>2.6</version>
-			</plugin>
+	</build>
 
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<version>2.2</version>
-				<configuration>
-					<outputDirectory>${project.build.directory}/build/current</outputDirectory>
-					<useDefaultManifestFile>true</useDefaultManifestFile>
-					<archive>
-						<manifestEntries>
-							<Class-Path>./</Class-Path>
-						</manifestEntries>
-						<manifest>
-							<mainClass>com.sicpa.standard.sasscl.Main</mainClass>
-							<packageName>com.sicpa.standard.sasscl</packageName>
-							<addClasspath>true</addClasspath>
-							<classpathPrefix>lib</classpathPrefix>
-							<addExtensions>false</addExtensions>
-						</manifest>
-					</archive>
+	<dependencies>
+		<dependency>
+			<groupId>com.sicpa.standard.sasscl</groupId>
+			<artifactId>common-app</artifactId>
+		</dependency>
+	</dependencies>
 
-					<!-- Don't want these files inside the jar -->
-					<excludes>
-						<exclude>**/config/</exclude>
-						<exclude>*.bat</exclude>
-						<exclude>*.sh</exclude>
-						<exclude>license</exclude>
-						<exclude>version</exclude>
-					</excludes>
-				</configuration>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<version>2.1</version>
-				<configuration>
-					<descriptors>
-						<descriptor>../assembly.xml</descriptor>
-					</descriptors>
-				</configuration>
-				<executions>
-					<execution>
-						<id>make-assembly</id>
-						<phase>package</phase>
-						<goals>
-							<goal>single</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-antrun-plugin</artifactId>
-				<version>1.8</version>
-				<executions>
-					<execution>
-						<phase>generate-resources</phase>
-						<goals>
-							<goal>run</goal>
-						</goals>
+	<profiles>
+		<profile>
+			<id>build</id>
+			<activation>
+				<file>
+					<missing>${basedir}/nobuild.txt</missing>
+				</file>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-assembly-plugin</artifactId>
+						<version>2.1</version>
 						<configuration>
-							<tasks>
-								<echo file="src/main/resources/version" message="${project.version}" />
-							</tasks>
+							<descriptors>
+								<descriptor>../assembly.xml</descriptor>
+							</descriptors>
 						</configuration>
-					</execution>
-				</executions>
-			</plugin>
+						<executions>
+							<execution>
+								<id>make-assembly</id>
+								<phase>package</phase>
+								<goals>
+									<goal>single</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-antrun-plugin</artifactId>
+						<version>1.8</version>
+						<executions>
+							<execution>
+								<phase>generate-resources</phase>
+								<goals>
+									<goal>run</goal>
+								</goals>
+								<configuration>
+									<tasks>
+										<echo file="src/main/resources/version" message="${project.version}" />
+									</tasks>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-jar-plugin</artifactId>
+						<version>2.2</version>
+						<configuration>
+							<outputDirectory>${project.build.directory}/build/current</outputDirectory>
+							<useDefaultManifestFile>true</useDefaultManifestFile>
+							<archive>
+								<manifestEntries>
+									<Class-Path>./</Class-Path>
+								</manifestEntries>
+								<manifest>
+									<mainClass>com.sicpa.standard.sasscl.Main</mainClass>
+									<packageName>com.sicpa.standard.sasscl</packageName>
+									<addClasspath>true</addClasspath>
+									<classpathPrefix>lib</classpathPrefix>
+									<addExtensions>false</addExtensions>
+								</manifest>
+							</archive>
 
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>rpm-maven-plugin</artifactId>
-				<version>2.1.4</version>
-				<configuration>
-					<group>${rpm.group}</group>
-					<requires>
-						<require>java</require>
-					</requires>
+							<!-- Don't want these files inside the jar -->
+							<excludes>
+								<exclude>**/config/</exclude>
+								<exclude>*.bat</exclude>
+								<exclude>*.sh</exclude>
+								<exclude>license</exclude>
+								<exclude>version</exclude>
+							</excludes>
+						</configuration>
+					</plugin>
 
-					<mappings>
-						<mapping>
-							<directory>${rpm.update.folder}</directory>
-							<sources>
-								<source>
-									<location>${project.build.directory}/${project.build.finalName}-dist.zip</location>
-								</source>
-							</sources>
-						</mapping>
-						<mapping>
-							<directory>${rpm.app.folder}</directory>
-							<dependency>
-								<includes>
-									<include>com.sicpa.standard.tools:client-installer</include>
-								</includes>
-							</dependency>
-						</mapping>
-					</mappings>
-					<postinstallScriptlet>
-						<script>
+
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>rpm-maven-plugin</artifactId>
+						<version>2.1.4</version>
+						<configuration>
+							<group>${rpm.group}</group>
+							<requires>
+								<require>java</require>
+							</requires>
+
+							<mappings>
+								<mapping>
+									<directory>${rpm.update.folder}</directory>
+									<sources>
+										<source>
+											<location>${project.build.directory}/${project.build.finalName}-dist.zip</location>
+										</source>
+									</sources>
+								</mapping>
+								<mapping>
+									<directory>${rpm.app.folder}</directory>
+									<dependency>
+										<includes>
+											<include>com.sicpa.standard.tools:client-installer</include>
+										</includes>
+									</dependency>
+								</mapping>
+							</mappings>
+							<postinstallScriptlet>
+								<script>
 							<![CDATA[
 								cd ${rpm.app.folder}
 								java -cp client-installer-${installer.version}.jar	com.sicpa.standard.tools.installer.InstallerMain -class=${rpm.installer.class}
@@ -163,66 +174,27 @@
 								rm client-installer-${installer.version}.jar
 								setfacl -R -m user:${rpm.access.user}:rwx ${rpm.app.folder}
 							]]>
-						</script>
-					</postinstallScriptlet>
-				</configuration>
-			</plugin>
-		</plugins>
+								</script>
+							</postinstallScriptlet>
+						</configuration>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-resources-plugin</artifactId>
+						<version>2.6</version>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
 
-	</build>
-
-	<dependencies>
 
 
-		<dependency>
-			<groupId>com.sicpa.standard.sasscl</groupId>
-			<artifactId>spring-scl</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>com.sicpa.standard.sasscl</groupId>
-			<artifactId>business-coding</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>com.sicpa.standard.sasscl</groupId>
-			<artifactId>common-app</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>com.sicpa.standard.sasscl</groupId>
-			<artifactId>business-skucheck</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>com.sicpa.standard.sasscl</groupId>
-			<artifactId>device-brs</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>com.sicpa.standard.sasscl</groupId>
-			<artifactId>device-brs</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>com.sicpa.standard.plc</groupId>
-			<artifactId>standard-plc-jbeckplc</artifactId>
-			<scope>compile</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>com.sicpa.standard.sasscl</groupId>
-			<artifactId>device-bis</artifactId>
-		</dependency>
-
-	</dependencies>
-
-	<profiles>
 		<profile>
 			<id>rpmbuild</id>
 			<activation>
 				<file>
 					<exists>/usr/bin/rpmbuild</exists>
+					<missing>${basedir}/nobuild.txt</missing>
 				</file>
 			</activation>
 			<build>

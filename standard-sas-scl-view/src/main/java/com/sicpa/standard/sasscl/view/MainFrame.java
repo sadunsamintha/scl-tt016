@@ -1,39 +1,25 @@
 package com.sicpa.standard.sasscl.view;
 
-import java.awt.BorderLayout;
+import static com.sicpa.standard.client.common.security.SecurityService.hasPermission;
+import static com.sicpa.standard.sasscl.security.SasSclPermission.PRODUCTION_CHANGE_PARAMETERS;
+
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 import javax.swing.AbstractAction;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
-import javax.swing.JDialog;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
-import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 
 import net.miginfocom.swing.MigLayout;
-
-import org.jdesktop.swingx.graphics.GraphicsUtilities;
 
 import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.security.ILoginListener;
@@ -51,6 +37,7 @@ import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState;
 import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowStateChangedEvent;
 import com.sicpa.standard.sasscl.security.SasSclPermission;
 import com.sicpa.standard.sasscl.view.config.plc.MultiEditablePlcVariablesSet;
+import com.sicpa.standard.sasscl.view.licence.LicencePanel;
 import com.sicpa.standard.sasscl.view.lineid.LineIdWithAuthenticateButton;
 import com.sicpa.standard.sasscl.view.messages.I18nableLockingErrorModel;
 
@@ -85,7 +72,8 @@ public class MainFrame extends AbstractMachineFrame {
 		lockModel.setLockedComponent(getInternalCenterPanel());
 		getProdPanel().setModel(lockModel);
 		getController().setLockingErrorModel(getProdPanel().getModel());
-		String lineId = controller.LINE_LABEL_ID + controller.LINE_LABEL_SEPARATOR + controller.getLineId();
+		String lineId = MainFrameController.LINE_LABEL_ID + MainFrameController.LINE_LABEL_SEPARATOR
+				+ controller.getLineId();
 		((LineIdWithAuthenticateButton) getLineIdPanel()).getLabelLineId().setText(lineId);
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		SecurityService.addLoginListener(new ILoginListener() {
@@ -109,13 +97,7 @@ public class MainFrame extends AbstractMachineFrame {
 	}
 
 	private void fireUserChanged() {
-		SwingUtilities.invokeLater(new Runnable() {
-
-			@Override
-			public void run() {
-				userChanged();
-			}
-		});
+		SwingUtilities.invokeLater(() -> userChanged());
 	}
 
 	protected void userChanged() {
@@ -139,11 +121,11 @@ public class MainFrame extends AbstractMachineFrame {
 		this.configPanel.setPanels(comps, titles);
 
 		// set the button visible according to the user credentials
-		changeSelectionView.setVisible(SecurityService.hasPermission(SasSclPermission.PRODUCTION_CHANGE_PARAMETERS));
-		exitView.setVisible(SecurityService.hasPermission(SasSclPermission.EXIT));
-		snapshotView.setVisible(SecurityService.hasPermission(SasSclPermission.SCREENSHOT));
-		startStopView.setVisible(SecurityService.hasPermission(SasSclPermission.PRODUCTION_START)
-				&& SecurityService.hasPermission(SasSclPermission.PRODUCTION_STOP));
+		changeSelectionView.setVisible(hasPermission(SasSclPermission.PRODUCTION_CHANGE_PARAMETERS));
+		exitView.setVisible(hasPermission(SasSclPermission.EXIT));
+		snapshotView.setVisible(hasPermission(SasSclPermission.SCREENSHOT));
+		startStopView.setVisible(hasPermission(SasSclPermission.PRODUCTION_START)
+				&& hasPermission(SasSclPermission.PRODUCTION_STOP));
 	}
 
 	@Override
@@ -156,10 +138,6 @@ public class MainFrame extends AbstractMachineFrame {
 				getExitButton().setVisible(false);
 			}
 		};
-	}
-
-	public void exitButtonActionPerformed() {
-		super.exitButtonActionPerformed();
 	}
 
 	public JPanel getPanelEast() {
@@ -359,109 +337,16 @@ public class MainFrame extends AbstractMachineFrame {
 
 	@Override
 	public JComponent getHeader() {
-		if (this.header == null) {
-			this.header = new JPanel(new MigLayout("fill,inset 0 0 0 0, hidemode 3,gap 0 0 0 0"));
-			this.header.add(getLineIdPanel(), "growx");
-			this.header.add(getLicenceInfoPanel(), "growx, gapright 20, wrap");
-			this.header.add(getConfigPasswordPanel(), "wrap,growx");
-			this.header.add(getApplicationStatusPanel(), "grow");
+		if (header == null) {
+			header = new JPanel(new MigLayout(",fill,inset 0 0 0 0, hidemode 3,gap 0 0 0 0"));
+			header.add(getLineIdPanel(), "growx");
+			header.add(new LicencePanel(), "growx, gapright 20, wrap");
+			header.add(getConfigPasswordPanel(), "wrap,growx");
+			header.add(getApplicationStatusPanel(), "grow");
 			getConfigPasswordPanel().setVisible(false);
-			this.header.add(getHeaderInfoPanel(), "south");
+			header.add(getHeaderInfoPanel(), "south");
 		}
-		return this.header;
-	}
-
-	public JComponent getLicenceInfoPanel() {
-		if (this.licenceInfoPanel == null) {
-			licenceInfoPanel = new JPanel(new BorderLayout());
-			licenceInfoPanel.setBackground(SicpaColor.BLUE_DARK);
-			licenceInfoPanel.add(getInfoLicenseLabel(), BorderLayout.EAST);
-		}
-		return licenceInfoPanel;
-	}
-
-	private JDialog dialog;
-
-	private JLabel getInfoLicenseLabel() {
-
-		JLabel licenseIcon = new JLabel(getLicenseIcon());
-		licenseIcon.addMouseListener(new MouseAdapter() {
-
-			@Override
-			public void mousePressed(MouseEvent arg0) {
-				mouseClicked(arg0);
-			}
-
-			@Override
-			public void mouseClicked(MouseEvent arg0) {
-				Scanner scanner = null;
-				try {
-					URL url = ClassLoader.getSystemResource("license");
-					scanner = new Scanner(new FileInputStream(new File(url.toURI())), "UTF-8");
-				} catch (FileNotFoundException e) {
-					e.printStackTrace();
-				} catch (URISyntaxException e) {
-					e.printStackTrace();
-				}
-
-				if (dialog == null) {
-					dialog = new JDialog();
-					dialog.setLayout(new MigLayout("fill"));
-					dialog.setMinimumSize(new Dimension(650, 300));
-
-					String firstMessage = null;
-					String custoMessage = null;
-
-					if (scanner != null) {
-						firstMessage = scanner.nextLine();
-						custoMessage = scanner.nextLine();
-					}
-					JLabel headLabel = new JLabel(firstMessage);
-					headLabel.setForeground(SicpaColor.BLUE_DARK);
-
-					int innerBoundsx = 40;
-					int innerBoundsy = 100;
-
-					int jtextWidth = dialog.getWidth() - innerBoundsx;
-					int jtextHeight = dialog.getHeight() - innerBoundsy;
-					Dimension textAreaDim = new Dimension(jtextWidth, jtextHeight);
-
-					JTextArea mainLabel = new JTextArea(custoMessage);
-					mainLabel.setForeground(SicpaColor.BLUE_DARK);
-					mainLabel.setMinimumSize(textAreaDim);
-					mainLabel.setMaximumSize(textAreaDim);
-					mainLabel.setWrapStyleWord(true);
-					mainLabel.setLineWrap(true);
-					mainLabel.setEditable(false);
-					mainLabel.setRequestFocusEnabled(false);
-					mainLabel.setFocusable(false);
-					mainLabel.setOpaque(false);
-					mainLabel.putClientProperty("Synthetica.opaque", false);
-
-					JPanel panel = new JPanel(new MigLayout("fill"));
-					panel.add(headLabel, "wrap");
-					panel.add(mainLabel);
-					dialog.add(panel, "grow");
-
-				}
-				dialog.setVisible(true);
-			}
-		});
-		return licenseIcon;
-	}
-
-	public ImageIcon getLicenseIcon() {
-		String resourceName = "config/images/licenseIcon.png";
-		ImageIcon licenceIcon = null;
-		URL url = ClassLoader.getSystemResource(resourceName);
-		if (url != null) {
-			try {
-				licenceIcon = new ImageIcon((GraphicsUtilities.loadCompatibleImage(url)));
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		return licenceIcon;
+		return header;
 	}
 
 	public void displayOptionsPreviewScreen() {

@@ -76,6 +76,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
+				<version>3.0.0</version>
 				<executions>
 					<execution>
 						<phase>package</phase>
@@ -102,6 +103,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.5.1</version>
 				<configuration>
 					<source>1.8</source>
 					<target>1.8</target>
@@ -261,9 +263,7 @@
 		<module>standard-sas-scl-spring-scl</module>
 		<module>standard-sas-scl-view</module>
 		<module>standard-sas-scl-monitoring</module>
-<!-- 		<module>standard-sas-scl-test-functional-common</module> -->
-<!-- 		<module>standard-sas-scl-test-functional-sas</module> -->
-<!-- 		<module>standard-sas-scl-test-functional-scl</module> -->
+		<module>standard-sas-scl-test-functional-common</module>
 		<module>standard-sas-scl-device-bis</module>
 		<module>standard-sas-scl-test-utils</module>
 		<module>standard-sas-scl-apps</module>

@@ -9,6 +9,7 @@ import java.util.Properties;
 import javax.swing.SwingUtilities;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,6 +23,7 @@ import com.sicpa.standard.client.common.groovy.SwingEnabledGroovyApplicationCont
 import com.sicpa.standard.client.common.utils.AppUtils;
 import com.sicpa.standard.client.common.utils.ClasspathHacker;
 import com.sicpa.standard.client.common.utils.StringMap;
+import com.sicpa.standard.gui.plaf.SicpaLookAndFeel;
 import com.sicpa.standard.gui.screen.loader.AbstractApplicationLoader;
 import com.sicpa.standard.gui.screen.loader.LoadApplicationScreen;
 import com.sicpa.standard.gui.utils.WindowsUtils;
@@ -41,7 +43,17 @@ public class MainAppWithProfile extends MainApp implements IProfileSelectorListe
 	private static final String CUSTO_FILE = "context-override.groovy";
 
 	public MainAppWithProfile() {
+		makeSureLogFolderExist();
+		SicpaLookAndFeel.install();
+		LoadApplicationScreen.DOUBLE_BUFFERING_OFF = false;
 		PropertyPlaceholderResourcesSASSCL.init();
+	}
+
+	private void makeSureLogFolderExist() {
+		File log = new File("./log");
+		if (!log.exists()) {
+			log.mkdir();
+		}
 	}
 
 	@Override
@@ -64,16 +76,36 @@ public class MainAppWithProfile extends MainApp implements IProfileSelectorListe
 	}
 
 	public void selectProfile() {
+		selectProfile("");
+	}
+
+	public void selectProfile(String profileToRun) {
 
 		List<Profile> profiles = Profile.getAllAvailableProfiles();
 		if (profiles.isEmpty()) {
 			logger.error("no profile available");
 			System.exit(-1);
-		} else if (profiles.size() == 1) {
-			onProfileSelected(new ProfileSelectedEvent(profiles.get(0)));
 		} else {
-			displayProfileSelectionScreen();
+			if (StringUtils.isNotBlank(profileToRun)) {
+				Profile p = extractProfile(profileToRun, profiles);
+				onProfileSelected(new ProfileSelectedEvent(p));
+			} else {
+				if (profiles.size() == 1) {
+					onProfileSelected(new ProfileSelectedEvent(profiles.get(0)));
+				} else {
+					displayProfileSelectionScreen();
+				}
+			}
 		}
+	}
+
+	private Profile extractProfile(String profileName, List<Profile> profiles) {
+		for (Profile p : profiles) {
+			if (p.getName().equals(profileName)) {
+				return p;
+			}
+		}
+		throw new IllegalArgumentException("no profile found for name :" + profileName);
 	}
 
 	private void displayProfileSelectionScreen() {
@@ -135,7 +167,7 @@ public class MainAppWithProfile extends MainApp implements IProfileSelectorListe
 		});
 	}
 
-	private void initFromProfile(Profile profile, List<String> filesToLoad) {
+	protected void initFromProfile(Profile profile, List<String> filesToLoad) {
 
 		ClasspathHacker.addFile(profile.getPath() + "/spring");
 		ClasspathHacker.addFile(profile.getPath() + "/config");
@@ -152,7 +184,7 @@ public class MainAppWithProfile extends MainApp implements IProfileSelectorListe
 		PropertyPlaceholderResourcesSASSCL.addFolder(profile.getPath() + "/config");
 	}
 
-	private List<String> createSpringFilesToLoad() {
+	protected List<String> createSpringFilesToLoad() {
 		List<String> config = new ArrayList<>();
 		config.add("spring/customizableProperties.xml");
 		config.add("spring/activation.xml");
@@ -200,7 +232,7 @@ public class MainAppWithProfile extends MainApp implements IProfileSelectorListe
 		config.add("spring/productionConfig.xml");
 
 		config.add("spring/plc/plcVarMap.xml");
-		
+
 		config.add("spring/server/server-import.groovy");
 
 		// SCL
@@ -211,7 +243,6 @@ public class MainAppWithProfile extends MainApp implements IProfileSelectorListe
 		config.add("spring/printer/printer-leibinger.xml");
 		config.add("spring/printer/leibingerProtocol.xml");
 		config.add("spring/postPackage.xml");
-		config.add("spring/schedulerSCL.xml");
 
 		config.add("spring/bootstrap.groovy");
 

@@ -10,10 +10,6 @@
 	<name>device-brs</name>
 	<url>http://maven.apache.org</url>
 
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	</properties>
-
 	<parent>
 		<artifactId>parent</artifactId>
 		<groupId>com.sicpa.standard.sasscl</groupId>

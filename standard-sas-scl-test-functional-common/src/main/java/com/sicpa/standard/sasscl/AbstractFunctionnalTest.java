@@ -1,21 +1,28 @@
 package com.sicpa.standard.sasscl;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import junit.framework.Assert;
+import junit.framework.TestCase;
+
+import org.apache.commons.io.FileUtils;
+
 import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.camera.driver.CameraDriverEventCode;
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.groovy.GroovyLoggerConfigurator;
 import com.sicpa.standard.client.common.ioc.BeanProvider;
 import com.sicpa.standard.client.common.ioc.PropertyPlaceholderResources;
-import com.sicpa.standard.client.common.launcher.CommonMainApp.Loader;
-import com.sicpa.standard.client.common.launcher.LoaderConfig;
-import com.sicpa.standard.client.common.launcher.display.IProgressDisplay;
 import com.sicpa.standard.client.common.utils.AppUtils;
-import com.sicpa.standard.client.common.utils.LogUtils;
 import com.sicpa.standard.client.common.utils.SingleAppInstanceUtils;
 import com.sicpa.standard.client.common.utils.StringMap;
 import com.sicpa.standard.gui.plaf.SicpaLookAndFeel;
-import com.sicpa.standard.gui.screen.loader.AbstractApplicationLoader;
-import com.sicpa.standard.gui.utils.ThreadUtils;
 import com.sicpa.standard.sasscl.business.statistics.impl.Statistics;
 import com.sicpa.standard.sasscl.common.exception.ExceptionHandler;
 import com.sicpa.standard.sasscl.controller.ProductionParametersEvent;
@@ -35,7 +42,6 @@ import com.sicpa.standard.sasscl.devices.plc.impl.PlcAdaptor;
 import com.sicpa.standard.sasscl.devices.remote.IRemoteServer;
 import com.sicpa.standard.sasscl.devices.remote.simulator.ISimulatorGetEncoder;
 import com.sicpa.standard.sasscl.ioc.BeansName;
-import com.sicpa.standard.sasscl.ioc.SpringConfig;
 import com.sicpa.standard.sasscl.model.CodeType;
 import com.sicpa.standard.sasscl.model.ProductionMode;
 import com.sicpa.standard.sasscl.model.ProductionParameters;
@@ -48,29 +54,19 @@ import com.sicpa.standard.sasscl.repository.errors.IErrorsRepository;
 import com.sicpa.standard.sasscl.sicpadata.generator.IEncoder;
 import com.sicpa.standard.sasscl.test.utils.TestHelper;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
-
-import org.apache.commons.io.FileUtils;
-
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.net.URL;
-import java.util.*;
-
 public abstract class AbstractFunctionnalTest extends TestCase {
 
-	protected List<String> dataGenerated = new ArrayList<String>();
+	public static final ProductionMode SAS_MODE = new ProductionMode(50, "productionmode.sas", false);
+	public static final ProductionMode SCL_MODE = new ProductionMode(51, "productionmode.scl", true);
+
+	protected List<String> dataGenerated = new ArrayList<>();
 
 	protected Statistics statistiscs;
 
 	protected CameraSimulatorController camera;
 	protected CameraSimulatorConfig cameraModel;
 
-	protected MainApp mainApp;
+	protected MainAppForFunctionnalTest mainApp;
 	protected FlowControl flowControl;
 	protected ApplicationFlowState currentState;
 	protected ExceptionHandler exceptionHandler;
@@ -82,42 +78,15 @@ public abstract class AbstractFunctionnalTest extends TestCase {
 
 	protected IErrorsRepository incidentContext;
 
+	protected IEncoder currentEncoder;
+
 	public AbstractFunctionnalTest() {
 
 		System.out.println("================");
 		System.out.println(getClass());
 		System.out.println("================");
 
-		PropertyPlaceholderResources.addProperties("executorExit", ExecutorExitNoJVMExit.class.getName());
-
-		// needed because we need to be able to control the simulator with a service executor
-		PropertyPlaceholderResources.addProperties(BeansName.PRINTER_SIMULATOR,
-				"com.sicpa.standard.sasscl.utils.printer.PrinterSimulatorThatProvidesCodes");
-
-		PropertyPlaceholderResources.addProperties("remoteServerSimulator",
-				"com.sicpa.standard.sasscl.devices.remote.simulator.RemoteServerSimulator");
-
-		mainApp = new MainApp() {
-			{
-				this.progressDisplay = new IProgressDisplay() {
-					@Override
-					public void setText(String text) {
-
-					}
-
-					@Override
-					public void setProgress(int progress) {
-
-					}
-				};
-			}
-
-			@Override
-			public AbstractApplicationLoader createLoader(LoaderConfig config, String ... profiles) {
-				return super.createLoader(new LoaderConfig(getSpringConfig(), "functional test:\n"
-						+ getClass().getSimpleName(), null), profiles);
-			}
-		};
+		mainApp = new MainAppForFunctionnalTest();
 	}
 
 	public void exit() {
@@ -224,40 +193,15 @@ public abstract class AbstractFunctionnalTest extends TestCase {
 
 		emptyStorageFolders();
 		emptyRemoteServerReceivedData();
-		GroovyLoggerConfigurator lc = new GroovyLoggerConfigurator(new StringMap());
-		lc.initLogger();
+		// GroovyLoggerConfigurator lc = new GroovyLoggerConfigurator(new StringMap());
+		// lc.initLogger();
 		loadSpring();
 	}
 
-	@SuppressWarnings("rawtypes")
 	protected void loadSpring() {
 		SingleAppInstanceUtils.releaseLock();
 
-		String[] profiles = new String[1];
-		try {
-			String fileName = "config/global.properties";
-			URL url = ClassLoader.getSystemResource(fileName);
-			File f = (url == null) ?  new File(fileName) : new File(url.toURI());
-			Properties properties = new Properties();
-			properties.load(new BufferedReader(new FileReader(f)));
-
-			String key = "plcSecure.behavior";
-			profiles[0] = key + "." + (String) properties.get(key);
-
-		} catch (Exception e) {
-			e.printStackTrace();
-			return;
-		}
-
-		final Loader loader = (Loader) mainApp.createLoader(new LoaderConfig(getSpringConfig(), "functional test:\n"
-				+ getClass().getSimpleName(), null), profiles);
-		loader.loadApplication();
-		ThreadUtils.invokeAndWait(new Runnable() {
-			@Override
-			public void run() {
-				loader.done();
-			}
-		});
+		mainApp.load(getClass().getSimpleName());
 
 		statistiscs = BeanProvider.getBean(BeansName.STATISTICS);
 
@@ -308,8 +252,8 @@ public abstract class AbstractFunctionnalTest extends TestCase {
 
 	public List<String> getDataFromRemoteServer() {
 		try {
-			File folder = new File("SimulProductSend");
-			List<String> codes = new ArrayList<String>();
+			File folder = new File("profiles/test/SimulProductSend");
+			List<String> codes = new ArrayList<>();
 			for (File f : folder.listFiles()) {
 				String content = FileUtils.readFileToString(f);
 				for (String line : content.split("\n")) {
@@ -344,10 +288,6 @@ public abstract class AbstractFunctionnalTest extends TestCase {
 			Assert.assertTrue(codes.contains(expected));
 		}
 	}
-
-	public abstract SpringConfig getSpringConfig();
-
-	protected IEncoder currentEncoder;
 
 	public String generateACodeFromEncoder() throws Exception {
 		if (currentEncoder == null) {
