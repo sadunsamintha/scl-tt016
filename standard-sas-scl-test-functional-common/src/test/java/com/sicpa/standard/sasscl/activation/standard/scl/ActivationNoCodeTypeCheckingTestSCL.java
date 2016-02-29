@@ -1,12 +1,12 @@
 package com.sicpa.standard.sasscl.activation.standard.scl;
 
-import com.sicpa.standard.sasscl.ioc.SpringConfig;
-import com.sicpa.standard.sasscl.ioc.SpringConfigSCL;
+import com.sicpa.standard.sasscl.activation.standard.ActivationNoCodeTypeCheckingTest;
+import com.sicpa.standard.sasscl.model.ProductionMode;
 
 public class ActivationNoCodeTypeCheckingTestSCL extends ActivationNoCodeTypeCheckingTest {
 
 	@Override
-	public SpringConfig getSpringConfig() {
-		return new SpringConfigSCL();
+	protected ProductionMode getProductionMode() {
+		return SCL_MODE;
 	}
 }

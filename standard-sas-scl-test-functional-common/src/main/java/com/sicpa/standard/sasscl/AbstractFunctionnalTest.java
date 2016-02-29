@@ -16,15 +16,15 @@ import org.apache.commons.io.FileUtils;
 import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.camera.driver.CameraDriverEventCode;
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
-import com.sicpa.standard.client.common.groovy.GroovyLoggerConfigurator;
+import com.sicpa.standard.client.common.i18n.LangUtils;
 import com.sicpa.standard.client.common.ioc.BeanProvider;
-import com.sicpa.standard.client.common.ioc.PropertyPlaceholderResources;
 import com.sicpa.standard.client.common.utils.AppUtils;
 import com.sicpa.standard.client.common.utils.SingleAppInstanceUtils;
-import com.sicpa.standard.client.common.utils.StringMap;
 import com.sicpa.standard.gui.plaf.SicpaLookAndFeel;
+import com.sicpa.standard.sasscl.business.coding.ICoding;
 import com.sicpa.standard.sasscl.business.statistics.impl.Statistics;
 import com.sicpa.standard.sasscl.common.exception.ExceptionHandler;
+import com.sicpa.standard.sasscl.common.storage.FileStorage;
 import com.sicpa.standard.sasscl.controller.ProductionParametersEvent;
 import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState;
 import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowStateChangedEvent;
@@ -38,7 +38,9 @@ import com.sicpa.standard.sasscl.devices.camera.simulator.CameraAdaptorSimulator
 import com.sicpa.standard.sasscl.devices.camera.simulator.CameraSimulatorConfig;
 import com.sicpa.standard.sasscl.devices.camera.simulator.CameraSimulatorController;
 import com.sicpa.standard.sasscl.devices.camera.simulator.CodeGetMethod;
+import com.sicpa.standard.sasscl.devices.camera.simulator.ICodeProvider;
 import com.sicpa.standard.sasscl.devices.plc.impl.PlcAdaptor;
+import com.sicpa.standard.sasscl.devices.printer.simulator.PrinterAdaptorSimulator;
 import com.sicpa.standard.sasscl.devices.remote.IRemoteServer;
 import com.sicpa.standard.sasscl.devices.remote.simulator.ISimulatorGetEncoder;
 import com.sicpa.standard.sasscl.ioc.BeansName;
@@ -56,23 +58,39 @@ import com.sicpa.standard.sasscl.test.utils.TestHelper;
 
 public abstract class AbstractFunctionnalTest extends TestCase {
 
-	public static final ProductionMode SAS_MODE = new ProductionMode(50, "productionmode.sas", false);
+	public static final String PROFILE_FOLDER = "profiles/test";
+
+	public static final ProductionMode SAS_MODE = new ProductionMode(50, "productionmode.sas", true);
 	public static final ProductionMode SCL_MODE = new ProductionMode(51, "productionmode.scl", true);
 
-	protected List<String> dataGenerated = new ArrayList<>();
+	protected List<String> dataGenerated = new ArrayList<String>() {
+
+		@Override
+		public boolean add(String element) {
+			if (element == null) {
+				System.out.println("NULL");
+			}
+			return super.add(element);
+		}
+	};
 
 	protected Statistics statistiscs;
 
 	protected CameraSimulatorController camera;
 	protected CameraSimulatorConfig cameraModel;
 
+	protected PrinterAdaptorSimulator printer;
+
 	protected MainAppForFunctionnalTest mainApp;
 	protected FlowControl flowControl;
+	protected ICoding coding;
 	protected ApplicationFlowState currentState;
 	protected ExceptionHandler exceptionHandler;
 	protected IRemoteServer remoteServer;
 	protected CodeType selecCodeType = new CodeType(1);
 	protected ProductionParameters productionParameters;
+
+	protected FileStorage storage;
 
 	public PlcAdaptor plc;
 
@@ -88,6 +106,8 @@ public abstract class AbstractFunctionnalTest extends TestCase {
 
 		mainApp = new MainAppForFunctionnalTest();
 	}
+
+	protected abstract ProductionMode getProductionMode();
 
 	public void exit() {
 		flowControl.notifyExitApplication();
@@ -122,6 +142,10 @@ public abstract class AbstractFunctionnalTest extends TestCase {
 
 	}
 
+	public void setProductionParameter() {
+		setProductionParameter(1, 1, getProductionMode());
+	}
+
 	public void setProductionParameter(int skuId, int codeTypeId, ProductionMode mode) {
 		flowControl.notifyEnterSelectionScreen();
 		SKU sku = new SKU(skuId, "SKU#" + skuId);
@@ -149,29 +173,19 @@ public abstract class AbstractFunctionnalTest extends TestCase {
 		camera.fireStatusChanged(CameraDriverEventCode.CONNECTED);
 	}
 
-	protected void emptyStorageFolders() {
+	private void emptyStorageFolders() {
 		try {
-			File folder = new File("data");
-			if (folder.exists()) {
-				FileUtils.deleteDirectory(folder);
-			}
+			FileUtils.deleteDirectory(new File(PROFILE_FOLDER + "/internalSimulator"));
+			FileUtils.deleteDirectory(new File(PROFILE_FOLDER + "/dataSimulator"));
+			FileUtils.deleteDirectory(new File(PROFILE_FOLDER + "/internal"));
+			FileUtils.deleteDirectory(new File(PROFILE_FOLDER + "/monitoring"));
+			FileUtils.deleteDirectory(new File(PROFILE_FOLDER + "/simulProductSend"));
 		} catch (Exception e) {
-			e.printStackTrace();
-			Assert.fail(e.getMessage());
-		}
-
-		try {
-			File folder = new File("internal");
-			if (folder.exists()) {
-				FileUtils.deleteDirectory(folder);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
 			Assert.fail(e.getMessage());
 		}
 	}
 
-	protected void emptyRemoteServerReceivedData() {
+	private void emptyRemoteServerReceivedData() {
 		try {
 			File folder = new File("SimulProductSend");
 			if (folder.exists()) {
@@ -189,6 +203,8 @@ public abstract class AbstractFunctionnalTest extends TestCase {
 			SicpaLookAndFeel.install();
 		}
 
+		LangUtils.initLanguageFiles("en", "sasscl");
+
 		TestHelper.initExecutor();
 
 		emptyStorageFolders();
@@ -204,22 +220,19 @@ public abstract class AbstractFunctionnalTest extends TestCase {
 		mainApp.load(getClass().getSimpleName());
 
 		statistiscs = BeanProvider.getBean(BeansName.STATISTICS);
-
 		flowControl = BeanProvider.getBean(BeansName.FLOW_CONTROL);
-
+		coding = BeanProvider.getBean(BeansName.CODING);
+		storage = BeanProvider.getBean(BeansName.STORAGE);
 		ExecutorStarting executorStarting = BeanProvider.getBean("executorStarting");
 		executorStarting.setTimeoutDelay(Integer.MAX_VALUE);
-
 		remoteServer = BeanProvider.getBean(BeansName.REMOTE_SERVER);
 		exceptionHandler = BeanProvider.getBean(BeansName.EXCEPTION_HANDLER);
-
 		productionParameters = BeanProvider.getBean(BeansName.PRODUCTION_PARAMETERS);
-
 		incidentContext = BeanProvider.getBean(BeansName.ERRORS_REPOSITORY);
-
+		storage = BeanProvider.getBean(BeansName.STORAGE);
 		EventBusService.register(this);
 
-		final PlcProvider plcProvider = BeanProvider.getBean(BeansName.PLC_PROVIDER);
+		PlcProvider plcProvider = BeanProvider.getBean(BeansName.PLC_PROVIDER);
 		plcProvider.addChangeListener(new PropertyChangeListener() {
 			@Override
 			public void propertyChange(PropertyChangeEvent evt) {
@@ -285,7 +298,13 @@ public abstract class AbstractFunctionnalTest extends TestCase {
 		TestHelper.runAllTasks();
 		List<String> codes = getDataFromRemoteServer();
 		for (String expected : dataGenerated) {
-			Assert.assertTrue(codes.contains(expected));
+			try {
+				Assert.assertTrue(codes + " should contain " + expected, codes.contains(expected));
+			} catch (Throwable e) {
+				e.printStackTrace();
+				System.out.println();
+			}
+
 		}
 	}
 
@@ -307,10 +326,31 @@ public abstract class AbstractFunctionnalTest extends TestCase {
 	}
 
 	protected void configureDevices() {
+
 		CameraAdaptorSimulator cameraDevice = (CameraAdaptorSimulator) devicesMap.get("qc_1");
 		camera = (CameraSimulatorController) cameraDevice.getSimulatorController();
 		cameraModel = camera.getCameraModel();
-		cameraModel.setCodeGetMethod(CodeGetMethod.none);
+		cameraModel.setCodeGetMethod(CodeGetMethod.requested);
+		cameraModel.setReadCodeInterval(-1);
+
+		if (devicesMap.get("pr_scl_1") != null) {
+			printer = (PrinterAdaptorSimulator) devicesMap.get("pr_scl_1");
+			printer.setAskCodeDelayMs(-1);
+			camera.setCodeProvider(printer);
+		} else {
+			camera.setCodeProvider(new ICodeProvider() {
+				@Override
+				public String requestCode() {
+					try {
+						return generateACodeFromEncoder();
+					} catch (Exception e) {
+						e.printStackTrace();
+						return null;
+					}
+				}
+			});
+		}
+
 	}
 
 	public static class ExecutorExitNoJVMExit extends ExecutorExit {
@@ -335,5 +375,36 @@ public abstract class AbstractFunctionnalTest extends TestCase {
 		int bad = statistiscs.getValues().get(keybad);
 		Assert.assertEquals(expectedGood, good);
 		Assert.assertEquals(exceptedBad, bad);
+	}
+
+	protected void trigProduct(int count) {
+		for (int i = 0; i < count; i++) {
+			trigProduct();
+		}
+	}
+
+	protected void trigProduct() {
+		trigPrinter();
+		camera.readCode();
+	}
+
+	protected String trigGood() {
+		trigPrinter();
+		String code = camera.getGoodCode();
+		camera.fireGoodCode(code);
+		return code;
+	}
+
+	protected String trigBad() {
+		trigPrinter();
+		String code = camera.getGoodCode();
+		camera.fireBadCode(code);
+		return code;
+	}
+
+	private void trigPrinter() {
+		if (printer != null) {
+			printer.onPrinterCodesNeeded(null, 1);
+		}
 	}
 }

@@ -1,67 +1,42 @@
 package com.sicpa.standard.sasscl.coding;
 
-import com.sicpa.standard.client.common.ioc.BeanProvider;
-import com.sicpa.standard.client.common.ioc.PropertyPlaceholderResources;
-import com.sicpa.standard.printer.controller.IPrinterController;
 import com.sicpa.standard.sasscl.AbstractFunctionnalTest;
-import com.sicpa.standard.sasscl.common.storage.IStorage;
-import com.sicpa.standard.sasscl.devices.DeviceStatus;
-import com.sicpa.standard.sasscl.devices.camera.simulator.CameraAdaptorSimulator;
-import com.sicpa.standard.sasscl.devices.camera.simulator.CameraSimulatorConfig;
-import com.sicpa.standard.sasscl.devices.camera.simulator.CameraSimulatorController;
-import com.sicpa.standard.sasscl.devices.camera.simulator.CodeGetMethod;
-import com.sicpa.standard.sasscl.devices.printer.IPrinterAdaptor;
-import com.sicpa.standard.sasscl.devices.printer.PrinterAdaptorException;
-import com.sicpa.standard.sasscl.devices.printer.simulator.PrinterAdaptorSimulator;
 import com.sicpa.standard.sasscl.devices.remote.RemoteServerException;
 import com.sicpa.standard.sasscl.devices.remote.simulator.RemoteServerSimulator;
-import com.sicpa.standard.sasscl.devices.remote.simulator.RemoteServerSimulatorModel;
-import com.sicpa.standard.sasscl.devices.remote.stdCrypto.StdCryptoEncoderWrapperSimulator;
-import com.sicpa.standard.sasscl.ioc.BeansName;
-import com.sicpa.standard.sasscl.ioc.SpringConfig;
-import com.sicpa.standard.sasscl.ioc.SpringConfigSCL;
 import com.sicpa.standard.sasscl.model.EncoderInfo;
 import com.sicpa.standard.sasscl.model.ProductionMode;
 import com.sicpa.standard.sasscl.sicpadata.CryptographyException;
-import com.sicpa.standard.sasscl.sicpadata.generator.IEncoder;
-import com.sicpa.standard.sasscl.utils.printer.PrinterSimulatorThatProvidesCodes;
-import com.sicpa.standard.sicpadata.api.exception.SicpadataException;
-import com.sicpa.standard.sicpadata.api.exception.UnknownModeException;
-import com.sicpa.standard.sicpadata.api.exception.UnknownSystemTypeException;
-import com.sicpa.standard.sicpadata.api.exception.UnknownVersionException;
-import com.sicpa.standard.sicpadata.spi.password.NoSuchPasswordException;
-
-import java.io.File;
-import java.util.List;
 
 public class SwitchEncoderTest extends AbstractFunctionnalTest {
 
-	protected IPrinterAdaptor printer;
-
-	volatile boolean codeReceived = false;
+	@Override
+	protected ProductionMode getProductionMode() {
+		return SCL_MODE;
+	}
 
 	public void test() throws RemoteServerException, CryptographyException {
 		init();
 
-		setProductionParameter(1, 1, ProductionMode.STANDARD);
+		((RemoteServerSimulator) remoteServer).getSimulatorModel().setRequestNumberOfCodes(10);
+
+		setProductionParameter();
 
 		checkApplicationStatusCONNECTED();
 
 		startProduction();
 		checkApplicationStatusRUNNING();
 
-		for (int i = 0; i < 15; i++) {
-			try {
-				((TestPrinter) printer).requestCodes(1);
-				camera.readCode();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
+		trigProduct(15);
+
 		checkApplicationStatusRUNNING();
 		stopProduction();
 		checkApplicationStatusCONNECTED();
+		checkEncoderInfo();
 
+		exit();
+	}
+
+	private void checkEncoderInfo() {
 		boolean firstFound = false;
 		boolean secondFound = false;
 		for (EncoderInfo info : storage.getAllEndodersInfo()) {
@@ -76,136 +51,7 @@ public class SwitchEncoderTest extends AbstractFunctionnalTest {
 
 		assertTrue("finished encoder is not found", firstFound);
 		assertTrue("current encoder is not found", secondFound);
-
-		exit();
 	}
 
-	public static class RemoteServerSmallEncoder extends RemoteServerSimulator {
-		public RemoteServerSmallEncoder(String configFile) throws RemoteServerException {
-			super(configFile);
-		}
-
-		private RemoteServerSmallEncoder(RemoteServerSimulatorModel model) throws RemoteServerException {
-			super(model);
-		}
-
-		@Override
-		public IEncoder createOneEncoder(int year, int codeTypeId) throws UnknownModeException,
-				UnknownVersionException, UnknownSystemTypeException, SicpadataException, NoSuchPasswordException {
-
-			IEncoder encoder = super.createOneEncoder(year, codeTypeId);
-			((StdCryptoEncoderWrapperSimulator) encoder).setRemainingCode(10);
-			return encoder;
-		}
-	}
-
-	public static class CameraNoAutomaticRead extends CameraSimulatorController {
-
-		public CameraNoAutomaticRead() {
-			super();
-		}
-
-		public CameraNoAutomaticRead(CameraSimulatorConfig config) {
-			super(config);
-		}
-
-		@Override
-		protected Runnable createCameraThread() {
-			return new Runnable() {
-				@Override
-				public void run() {
-
-				}
-			};
-		}
-
-	}
-
-	private PrinterSimulatorThatProvidesCodes printerSimul;
-	private IStorage storage;
-
-	@Override
-	public SpringConfig getSpringConfig() {
-		return new SpringConfigSCL();
-	}
-
-	@Override
-	public void init() {
-		PropertyPlaceholderResources.addProperties(BeansName.REMOTE_SERVER_SIMULATOR,
-				RemoteServerSmallEncoder.class.getName());
-		PropertyPlaceholderResources.addProperties(BeansName.CAMERA_SIMULATOR, CameraNoAutomaticRead.class.getName());
-		PropertyPlaceholderResources.addProperties("printerSimulatorAdaptor", TestPrinter.class.getName());
-		removeDataDirectories();
-
-		super.init();
-		storage = BeanProvider.getBean(BeansName.STORAGE);
-	}
-
-	protected void removeDataDirectories() {
-		File internalDirectory = new File("internalSimulator");
-		File monitoringDirectory = new File("monitoring");
-		deleteDir(internalDirectory);
-		deleteDir(monitoringDirectory);
-	}
-
-	public boolean deleteDir(File dir)
-	{
-		if (dir.isDirectory())
-		{
-			String[] children = dir.list();
-			for (int i=0; i<children.length; i++)
-			{
-				boolean success = deleteDir(new File(dir, children[i]));
-				if (!success)
-				{
-					return false;
-				}
-			}
-		}
-		// The directory is now empty or this is a file so delete it
-		return dir.delete();
-	}
-
-	@Override
-	protected void configureDevices() {
-		CameraAdaptorSimulator cameraDevice = (CameraAdaptorSimulator) devicesMap.get("qc_1");
-		camera = (CameraSimulatorController) cameraDevice.getSimulatorController();
-		cameraModel = camera.getCameraModel();
-		cameraModel.setCodeGetMethod(CodeGetMethod.requested);
-
-		printer = (IPrinterAdaptor) devicesMap.get("pr_scl_1");
-	}
-
-	private static class TestPrinter extends PrinterAdaptorSimulator {
-		List<String> codes;
-
-		public TestPrinter(IPrinterController controller) {
-			super(controller);
-		}
-
-
-		@Override
-		public void sendCodesToPrint(final List<String> codes) {
-			this.codes = codes;
-		}
-
-		@Override
-		public void doStart() throws PrinterAdaptorException {
-			fireDeviceStatusChanged(DeviceStatus.STARTED);
-		}
-
-		@Override
-		public void doStop() throws PrinterAdaptorException {
-			fireDeviceStatusChanged(DeviceStatus.STOPPED);
-		}
-
-		@Override
-		public String requestCode() {
-			return codes.get(0);
-		}
-
-		public void requestCodes(int nbCodes) {
-			super.notifyRequestCodesToPrint(nbCodes);
-		}
-	}
+	
 }

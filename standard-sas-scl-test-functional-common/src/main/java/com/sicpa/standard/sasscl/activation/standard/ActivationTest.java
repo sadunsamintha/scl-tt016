@@ -1,7 +1,7 @@
 package com.sicpa.standard.sasscl.activation.standard;
 
+import com.sicpa.standard.common.util.ThreadUtils;
 import com.sicpa.standard.sasscl.AbstractFunctionnalTest;
-import com.sicpa.standard.sasscl.model.ProductionMode;
 
 public abstract class ActivationTest extends AbstractFunctionnalTest {
 
@@ -9,7 +9,7 @@ public abstract class ActivationTest extends AbstractFunctionnalTest {
 
 		init();
 
-		setProductionParameter(1, 1, getProductionMode());
+		setProductionParameter();
 		runAllTasks();
 		checkApplicationStatusCONNECTED();
 
@@ -28,19 +28,23 @@ public abstract class ActivationTest extends AbstractFunctionnalTest {
 		checkDataSentToRemoteServer();
 	}
 
-	protected abstract ProductionMode getProductionMode();
-
 	public void generateCameraCodes(int good, int bad) throws Exception {
 		for (int i = 0; i < good; i++) {
-			String code = generateACodeFromEncoder();
-			camera.fireGoodCode(code);
+			String code = trigGood();
+			System.out.println("read :" + code);
 			dataGenerated.add("AUTHENTICATED" + code + "SKU#1");
+			runAllTasks();
 		}
 
 		for (int i = 0; i < bad; i++) {
-			String code = "B00" + i;
-			camera.fireBadCode(code);
-			dataGenerated.add("UNREAD" + code + "SKU#1");
+			String code = trigBad();
+			System.out.println("unread :" + code);
+			if (printer == null) {
+				dataGenerated.add("UNREAD" + code + "SKU#1");
+			} else {
+				dataGenerated.add("SENT_TO_PRINTER_UNREAD" + code + "SKU#1");
+			}
+			runAllTasks();
 		}
 	}
 

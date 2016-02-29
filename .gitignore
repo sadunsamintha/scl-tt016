@@ -71,3 +71,4 @@ standard-sas-scl-test-functional-common/profiles/test/dataSimulator/
 standard-sas-scl-test-functional-common/uncaught-error/
 standard-sas-scl-test-functional-common/log/
 *.db
+standard-sas-scl-test-functional-common/profiles/test/internal/

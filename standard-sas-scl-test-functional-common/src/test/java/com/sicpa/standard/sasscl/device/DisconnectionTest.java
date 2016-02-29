@@ -4,13 +4,18 @@ import com.sicpa.standard.sasscl.AbstractFunctionnalTest;
 import com.sicpa.standard.sasscl.devices.DeviceException;
 import com.sicpa.standard.sasscl.model.ProductionMode;
 
-public abstract class DisconnectionTest extends AbstractFunctionnalTest {
+public class DisconnectionTest extends AbstractFunctionnalTest {
+	
+	@Override
+	protected ProductionMode getProductionMode() {
+		return SCL_MODE;
+	}
 
 	public void test() throws DeviceException {
 
 		init();
 
-		setProductionParameter(1, 1, ProductionMode.STANDARD);
+		setProductionParameter();
 
 		checkApplicationStatusCONNECTED();
 
@@ -19,7 +24,7 @@ public abstract class DisconnectionTest extends AbstractFunctionnalTest {
 
 		disconnectCamera();
 		disconnectPlc();
-		
+
 		checkApplicationStatusRECOVERING();
 
 		connectCamera();

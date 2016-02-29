@@ -8,10 +8,11 @@ import com.sicpa.standard.sasscl.business.activation.impl.activationBehavior.sta
 import com.sicpa.standard.sasscl.devices.remote.simulator.ISimulatorGetEncoder;
 import com.sicpa.standard.sasscl.messages.MessageEventKey;
 import com.sicpa.standard.sasscl.model.CodeType;
-import com.sicpa.standard.sasscl.model.ProductionMode;
 import com.sicpa.standard.sasscl.sicpadata.generator.IEncoder;
 
 public abstract class ActivationCodeTypeMismatchTest extends AbstractFunctionnalTest {
+
+	private static final int WRONG_CODE_TYPE = 8;
 
 	public void test() {
 
@@ -19,7 +20,7 @@ public abstract class ActivationCodeTypeMismatchTest extends AbstractFunctionnal
 
 		init();
 
-		setProductionParameter(1, 1, ProductionMode.STANDARD);
+		setProductionParameter();
 		runAllTasks();
 		checkApplicationStatusCONNECTED();
 
@@ -37,7 +38,7 @@ public abstract class ActivationCodeTypeMismatchTest extends AbstractFunctionnal
 
 	public void generateCameraCodeWithWrongCodeType() {
 		try {
-			IEncoder encoder = ((ISimulatorGetEncoder) remoteServer).getEncoder(new CodeType(8));
+			IEncoder encoder = ((ISimulatorGetEncoder) remoteServer).getEncoder(new CodeType(WRONG_CODE_TYPE));
 			String code = encoder.getEncryptedCodes(1).get(0);
 
 			camera.fireGoodCode(code);

@@ -569,4 +569,8 @@ public class RemoteServerSimulator extends AbstractRemoteServer implements ISimu
 	public void lifeCheckTick() {
 	}
 
+	public RemoteServerSimulatorModel getSimulatorModel() {
+		return simulatorModel;
+	}
+
 }

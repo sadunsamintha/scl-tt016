@@ -15,18 +15,6 @@ import static ch.qos.logback.classic.Level.*
 
 scan("20 seconds")
 
-turboFilter(RepeatedMessageThreadFilter) {
-	threadName = "JBPLC-LifeCheck"
-	minRepetitionPeriodInMs = 200
-}
-
-repeatedMessageThreadFilters = [""]
-
-repeatedMessageThreadFilters.each { name ->
-	turboFilter(RepeatedMessageThreadFilter) { threadName = name }
-}
-
-
 appender("CONSOLE", ConsoleAppender) {
 	layout(PatternLayout)  { pattern = "[%d{HH:mm:ss.SSS}] %-5p [%t %X{FILTERED}] [%c{1}] [%M:%L] %m%n" }
 }

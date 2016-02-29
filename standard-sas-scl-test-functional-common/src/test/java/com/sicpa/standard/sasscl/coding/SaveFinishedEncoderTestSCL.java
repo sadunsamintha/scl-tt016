@@ -1,5 +1,8 @@
 package com.sicpa.standard.sasscl.coding;
 
+import java.io.File;
+import java.util.Arrays;
+
 import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.ioc.BeanProvider;
@@ -15,22 +18,17 @@ import com.sicpa.standard.sasscl.devices.camera.simulator.CodeGetMethod;
 import com.sicpa.standard.sasscl.devices.remote.RemoteServerException;
 import com.sicpa.standard.sasscl.devices.remote.simulator.ISimulatorGetEncoder;
 import com.sicpa.standard.sasscl.ioc.BeansName;
-import com.sicpa.standard.sasscl.ioc.SpringConfig;
-import com.sicpa.standard.sasscl.ioc.SpringConfigSCL;
 import com.sicpa.standard.sasscl.model.CodeType;
 import com.sicpa.standard.sasscl.model.ProductionMode;
 import com.sicpa.standard.sasscl.sicpadata.CryptographyException;
 import com.sicpa.standard.sasscl.sicpadata.generator.IEncoder;
 import com.sicpa.standard.sasscl.sicpadata.generator.impl.CodeListEncoder;
 
-import java.io.File;
-import java.util.Arrays;
-
 public class SaveFinishedEncoderTestSCL extends AbstractFunctionnalTest {
 
 	@Override
-	public SpringConfig getSpringConfig() {
-		return new SpringConfigSCL();
+	protected ProductionMode getProductionMode() {
+		return SCL_MODE;
 	}
 
 	volatile boolean codeReceived = false;
@@ -41,7 +39,7 @@ public class SaveFinishedEncoderTestSCL extends AbstractFunctionnalTest {
 		EventBusService.register(this);
 
 		generateSmallEncoder();
-		setProductionParameter(1, 1, ProductionMode.STANDARD);
+		setProductionParameter();
 
 		checkApplicationStatusCONNECTED();
 
@@ -56,7 +54,6 @@ public class SaveFinishedEncoderTestSCL extends AbstractFunctionnalTest {
 		checkFinishedEncoderGenerated();
 		exit();
 	}
-	
 
 	private void waitForACode() throws Exception {
 		TaskTimeoutExecutor.execute(new Runnable() {
@@ -74,7 +71,7 @@ public class SaveFinishedEncoderTestSCL extends AbstractFunctionnalTest {
 		codeReceived = true;
 	}
 
-	protected void generateSmallEncoder() throws RemoteServerException, CryptographyException {
+	private void generateSmallEncoder() throws RemoteServerException, CryptographyException {
 		IStorage storage = BeanProvider.getBean(BeansName.STORAGE);
 		IEncoder encoder = ((ISimulatorGetEncoder) remoteServer).getEncoder(new CodeType(1));
 		CodeListEncoder codeListEncoder = new CodeListEncoder(encoder.getId(), 1, encoder.getYear(),
@@ -82,8 +79,9 @@ public class SaveFinishedEncoderTestSCL extends AbstractFunctionnalTest {
 		storage.saveCurrentEncoder(codeListEncoder);
 	}
 
-	protected void checkFinishedEncoderGenerated() {
-		assertTrue(new File("internalSimulator/" + FileStorage.FOLDER_ENCODER_FINISHED_PENDING).listFiles().length > 0);
+	private void checkFinishedEncoderGenerated() {
+		assertTrue(new File(PROFILE_FOLDER + "/internalSimulator/" + FileStorage.FOLDER_ENCODER_FINISHED_PENDING)
+				.listFiles().length > 0);
 	}
 
 	protected void configureDevices() {

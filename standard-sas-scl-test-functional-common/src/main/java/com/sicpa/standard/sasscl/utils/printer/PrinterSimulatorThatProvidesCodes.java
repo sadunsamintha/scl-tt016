@@ -32,7 +32,7 @@ public class PrinterSimulatorThatProvidesCodes extends PrinterSimulatorControlle
 			String code = null;
 
 			try {
-				code = this.codes.poll(1, TimeUnit.SECONDS);
+				code = codes.poll(1, TimeUnit.SECONDS);
 			} catch (InterruptedException e) {
 			}
 

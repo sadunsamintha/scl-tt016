@@ -7,15 +7,15 @@ import com.sicpa.standard.sasscl.ioc.BeansName;
 import com.sicpa.standard.sasscl.messages.MessageEventKey;
 import com.sicpa.standard.sasscl.model.ProductionMode;
 
-public abstract class CameraBadCodeAlertTest extends AbstractFunctionnalTest {
+public class CameraBadCodeAlertTest extends AbstractFunctionnalTest {
 
-	protected CameraCountAlertTask cameraCountAlertTask;
+	private CameraCountAlertTask cameraCountAlertTask;
 
 	public void test() throws Exception {
 
 		init();
 
-		setProductionParameter(1, 1, ProductionMode.STANDARD);
+		setProductionParameter();
 
 		checkApplicationStatusCONNECTED();
 
@@ -29,6 +29,11 @@ public abstract class CameraBadCodeAlertTest extends AbstractFunctionnalTest {
 		checkApplicationStatusCONNECTED();
 		checkWarningMessage(MessageEventKey.Alert.TOO_MUCH_CAMERA_ERROR);
 		exit();
+	}
+
+	@Override
+	protected ProductionMode getProductionMode() {
+		return SCL_MODE;
 	}
 
 	@Override

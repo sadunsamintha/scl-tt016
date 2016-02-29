@@ -1,4 +1,4 @@
-<ProductionConfig activationBehavior="standardActivationBehavior">
+<ProductionConfig activationBehavior="standardActivationBehavior" authenticatorMode="MY_MODE">
 
 	<CameraConfig deviceType="COGNEX" id="qc_1" />
 

@@ -7,13 +7,13 @@ import com.sicpa.standard.sasscl.ioc.BeansName;
 import com.sicpa.standard.sasscl.messages.MessageEventKey;
 import com.sicpa.standard.sasscl.model.ProductionMode;
 
-public abstract class CameraDuplicatedCodeAlertTest extends AbstractFunctionnalTest {
+public class CameraDuplicatedCodeAlertTest extends AbstractFunctionnalTest {
 
 	public void test() {
 
 		init();
 
-		setProductionParameter(1, 1, ProductionMode.STANDARD);
+		setProductionParameter();
 		checkApplicationStatusCONNECTED();
 
 		startProduction();
@@ -24,6 +24,11 @@ public abstract class CameraDuplicatedCodeAlertTest extends AbstractFunctionnalT
 		checkWarningMessage(MessageEventKey.Alert.DUPLICATED_CODE);
 
 		exit();
+	}
+	
+	@Override
+	protected ProductionMode getProductionMode() {
+		return SCL_MODE;
 	}
 
 	public void generateCameraCodes() {

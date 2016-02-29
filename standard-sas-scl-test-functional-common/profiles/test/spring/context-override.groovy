@@ -18,10 +18,8 @@ beans {
 
 	addAlias('printerSimulatorControllerAlias','printerSimulatorController')
 	printerSimulatorController(PrinterSimulatorThatProvidesCodes){b->
-		b.parent=ref('executorExitAlias')
+		b.parent=ref('printerSimulatorControllerAlias')
 		b.scope='prototype'
 	}
-
-	//		remoteServerSimulator(RemoteServerSimulator)
 
 }

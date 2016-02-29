@@ -2,7 +2,6 @@ package com.sicpa.standard.sasscl.activation.standard;
 
 import com.sicpa.standard.sasscl.AbstractFunctionnalTest;
 import com.sicpa.standard.sasscl.messages.MessageEventKey;
-import com.sicpa.standard.sasscl.model.ProductionMode;
 
 public abstract class ActivationCodeNotAuthenticatedTest extends AbstractFunctionnalTest {
 
@@ -10,7 +9,7 @@ public abstract class ActivationCodeNotAuthenticatedTest extends AbstractFunctio
 
 		init();
 
-		setProductionParameter(1, 1, ProductionMode.STANDARD);
+		setProductionParameter();
 		runAllTasks();
 
 		checkApplicationStatusCONNECTED();

@@ -1,22 +1,12 @@
 package com.sicpa.standard.sasscl.activation.standard.sas;
 
-import com.sicpa.standard.client.common.ioc.PropertyPlaceholderResources;
-import com.sicpa.standard.sasscl.devices.remote.simulator.RemoteServerSimulator;
-import com.sicpa.standard.sasscl.ioc.SpringConfig;
+import com.sicpa.standard.sasscl.activation.standard.ActivationNoCodeTypeCheckingTest;
+import com.sicpa.standard.sasscl.model.ProductionMode;
 
 public class ActivationNoCodeTypeCheckingTestSAS extends ActivationNoCodeTypeCheckingTest {
 
 	@Override
-	public SpringConfig getSpringConfig() {
-		return new SpringConfig();
-	}
-
-	@Override
-	public void init() {
-
-		// needed because we need to generate an encoder for testing
-		PropertyPlaceholderResources.addProperties("remoteServerSimulator", RemoteServerSimulator.class.getName());
-
-		super.init();
+	protected ProductionMode getProductionMode() {
+		return SAS_MODE;
 	}
 }
