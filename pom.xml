@@ -199,11 +199,6 @@
 		</dependency>
 
 		<dependency>
-			<groupId>com.thoughtworks.xstream</groupId>
-			<artifactId>xstream</artifactId>
-		</dependency>
-
-		<dependency>
 			<groupId>commons-lang</groupId>
 			<artifactId>commons-lang</artifactId>
 		</dependency>
@@ -260,7 +255,6 @@
 		<module>standard-sas-scl-device-remoteServer</module>
 		<module>standard-sas-scl-device-remoteServer-impl</module>
 		<module>standard-sas-scl-spring-common</module>
-		<module>standard-sas-scl-spring-scl</module>
 		<module>standard-sas-scl-view</module>
 		<module>standard-sas-scl-monitoring</module>
 		<module>standard-sas-scl-test-functional-common</module>
@@ -359,20 +353,15 @@
 				<artifactId>device-plc</artifactId>
 				<version>2.4.10-SNAPSHOT</version>
 			</dependency>
+			<dependency>
+				<groupId>com.sicpa.standard.sasscl</groupId>
+				<artifactId>device-remoteServer-impl</artifactId>
+				<version>2.4.10-SNAPSHOT</version>
+			</dependency>
 			<!--SPRING -->
 			<dependency>
 				<groupId>com.sicpa.standard.sasscl</groupId>
 				<artifactId>spring-common</artifactId>
-				<version>2.4.10-SNAPSHOT</version>
-			</dependency>
-			<dependency>
-				<groupId>com.sicpa.standard.sasscl</groupId>
-				<artifactId>spring-scl</artifactId>
-				<version>2.4.10-SNAPSHOT</version>
-			</dependency>
-			<dependency>
-				<groupId>com.sicpa.standard.sasscl</groupId>
-				<artifactId>device-remoteServer-impl</artifactId>
 				<version>2.4.10-SNAPSHOT</version>
 			</dependency>
 			<!--MISC -->
@@ -462,11 +451,6 @@
 			</dependency>
 			<dependency>
 				<groupId>com.sicpa.standard.camera</groupId>
-				<artifactId>standard-camera-drs</artifactId>
-				<version>0.0.4</version>
-			</dependency>
-			<dependency>
-				<groupId>com.sicpa.standard.camera</groupId>
 				<artifactId>standard-camera-cognex</artifactId>
 				<version>1.6.1</version>
 			</dependency>
@@ -496,13 +480,6 @@
 				<artifactId>standard-printer-leibinger</artifactId>
 				<version>1.1.6</version>
 			</dependency>
-			<dependency>
-				<groupId>com.sicpa.standard.printer</groupId>
-				<artifactId>standard-printer-oi2jet</artifactId>
-				<version>0.1.18</version>
-			</dependency>
-
-
 			<dependency>
 				<groupId>com.sicpa.standard.plc</groupId>
 				<artifactId>standard-plc-jbeckplc</artifactId>
@@ -579,11 +556,6 @@
 				<groupId>jfree</groupId>
 				<artifactId>jcommon</artifactId>
 				<version>1.0.9</version>
-			</dependency>
-			<dependency>
-				<groupId>com.thoughtworks.xstream</groupId>
-				<version>1.4.2</version>
-				<artifactId>xstream</artifactId>
 			</dependency>
 			<dependency>
 				<groupId>commons-lang</groupId>
