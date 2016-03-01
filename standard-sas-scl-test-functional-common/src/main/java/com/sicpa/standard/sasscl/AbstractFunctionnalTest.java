@@ -63,16 +63,7 @@ public abstract class AbstractFunctionnalTest extends TestCase {
 	public static final ProductionMode SAS_MODE = new ProductionMode(50, "productionmode.sas", true);
 	public static final ProductionMode SCL_MODE = new ProductionMode(51, "productionmode.scl", true);
 
-	protected List<String> dataGenerated = new ArrayList<String>() {
-
-		@Override
-		public boolean add(String element) {
-			if (element == null) {
-				System.out.println("NULL");
-			}
-			return super.add(element);
-		}
-	};
+	protected List<String> dataGenerated = new ArrayList<>();
 
 	protected Statistics statistiscs;
 

@@ -238,10 +238,7 @@ public class MainAppWithProfile extends MainApp implements IProfileSelectorListe
 		// SCL
 
 		config.add("spring/coding.xml");
-		config.add("spring/printer/printer.xml");
-		config.add("spring/printer/printer-domino.xml");
-		config.add("spring/printer/printer-leibinger.xml");
-		config.add("spring/printer/leibingerProtocol.xml");
+		config.add("spring/printer/printer-import.groovy");
 		config.add("spring/postPackage.xml");
 
 		config.add("spring/bootstrap.groovy");

@@ -6,9 +6,6 @@ import com.sicpa.standard.sasscl.utils.printer.PrinterSimulatorThatProvidesCodes
 
 beans {
 
-	bootstrap(TestBootstrap){
-	}
-
 	productionConfigMapping(TestProductionConfigMapping)
 
 	addAlias('executorExitAlias','executorExit')
@@ -21,5 +18,4 @@ beans {
 		b.parent=ref('printerSimulatorControllerAlias')
 		b.scope='prototype'
 	}
-
 }
