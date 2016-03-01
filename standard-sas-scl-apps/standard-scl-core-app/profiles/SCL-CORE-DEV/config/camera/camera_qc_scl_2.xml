@@ -1,4 +1,4 @@
-<com.sicpa.standard.camera.controller.model.CameraModel>
+<CameraModel>
 	<mId>3</mId>
 	<mDriverName>CognexCameraDriver</mDriverName>
 	<mPort>3000</mPort>
@@ -22,4 +22,4 @@
 	<mNumberOfImageToKeep>0</mNumberOfImageToKeep>
 	<mSaveImageType>ALL</mSaveImageType>
 	<mCameraParserClass>com.sicpa.standard.camera.parser.CameraCodeParser</mCameraParserClass>
-</com.sicpa.standard.camera.controller.model.CameraModel>
+</CameraModel>

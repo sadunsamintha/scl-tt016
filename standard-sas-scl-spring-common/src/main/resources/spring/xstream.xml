@@ -14,6 +14,7 @@
 				<bean class="com.sicpa.standard.sasscl.devices.camera.CameraXStreamConfigurator" />
 				<bean class="com.sicpa.standard.sasscl.devices.plc.PlcXStreamConfigurator" />
 				<bean class="com.sicpa.standard.sasscl.controller.productionconfig.xstream.ProductionConfigXstreamConfigurator" />
+				<bean class="com.sicpa.standard.sasscl.devices.printer.PrinterXStreamConfigurator" />
 			</util:list>
 		</property>
 	</bean>

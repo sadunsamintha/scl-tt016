@@ -1,4 +1,4 @@
-<com.sicpa.standard.printer.leibinger.model.LeibingerPrinterModel>
+<LeibingerPrinterModel>
 	<name>LEIBINGER</name>
 	<ipAdress>192.168.1.11</ipAdress>
 	<deviceId>1</deviceId>
@@ -13,8 +13,6 @@
 	<allowedInkTags>79000-*</allowedInkTags>
 	<allowedSolventTags>77001-*</allowedSolventTags>
 	<printerParameters class="com.sicpa.standard.printer.leibinger.model.LeibingerParameter">
-<!-- 		<codeType>EXTENDED_CODE</codeType>
- -->
  		<codeType>DYNAMIC_DATAMATRIX</codeType>
 		<dataMatrixFormat>DM8x18</dataMatrixFormat>
 		<dataMatrixEncoding>ASCII</dataMatrixEncoding>
@@ -32,4 +30,4 @@
 	<printGoDelayMicrometers>0</printGoDelayMicrometers>
 	<printGoDistance>0</printGoDistance>
 	<printGoRepetition>0</printGoRepetition>
-</com.sicpa.standard.printer.leibinger.model.LeibingerPrinterModel>
+</LeibingerPrinterModel>

@@ -4,10 +4,6 @@ import com.sicpa.standard.client.common.security.Permission;
 import com.sicpa.standard.client.common.security.SecurityModel;
 import com.sicpa.standard.client.common.security.User;
 import com.sicpa.standard.client.common.xstream.IXStreamConfigurator;
-import com.sicpa.standard.sasscl.business.alert.task.model.CameraCountAlertTaskModel;
-import com.sicpa.standard.sasscl.business.alert.task.model.CameraDuplicatedAlertTaskModel;
-import com.sicpa.standard.sasscl.business.alert.task.model.CameraIddleAlertTaskModel;
-import com.sicpa.standard.sasscl.business.alert.task.model.PlcActivationCounterCheckModel;
 import com.sicpa.standard.sasscl.model.Code;
 import com.sicpa.standard.sasscl.model.CodeType;
 import com.sicpa.standard.sasscl.model.PackagedProducts;
@@ -27,10 +23,6 @@ public class CommonModelXStreamConfigurator implements IXStreamConfigurator {
 
 	@Override
 	public void configure(XStream xstream) {
-		configureCameraCountAlertTaskModel(xstream);
-		configureCameraDuplicatedAlertTaskModel(xstream);
-		configureCameraIddleAlertTaskModel(xstream);
-		configurePlcActivationCounterCheckModel(xstream);
 		configureCustomizable(xstream);
 		configureSKU(xstream);
 		configureCode(xstream);
@@ -45,29 +37,6 @@ public class CommonModelXStreamConfigurator implements IXStreamConfigurator {
 		configureUser(xstream);
 		configurePermission(xstream);
 		configureNode(xstream);
-	}
-
-	public void configureCameraCountAlertTaskModel(XStream xstream) {
-		xstream.useAttributeFor(CameraCountAlertTaskModel.class, "enabled");
-		xstream.useAttributeFor(CameraCountAlertTaskModel.class, "maxUnreadCount");
-		xstream.useAttributeFor(CameraCountAlertTaskModel.class, "sampleSize");
-		xstream.useAttributeFor(CameraCountAlertTaskModel.class, "delayInSec");
-	}
-
-	public void configureCameraDuplicatedAlertTaskModel(XStream xstream) {
-		xstream.useAttributeFor(CameraDuplicatedAlertTaskModel.class, "enabled");
-		xstream.useAttributeFor(CameraDuplicatedAlertTaskModel.class, "threshold");
-	}
-
-	public void configureCameraIddleAlertTaskModel(XStream xstream) {
-		xstream.useAttributeFor(CameraIddleAlertTaskModel.class, "enabled");
-		xstream.useAttributeFor(CameraIddleAlertTaskModel.class, "maxInactiveTimeInSec");
-		xstream.useAttributeFor(CameraIddleAlertTaskModel.class, "delayInSec");
-	}
-
-	public void configurePlcActivationCounterCheckModel(XStream xstream) {
-		xstream.useAttributeFor(PlcActivationCounterCheckModel.class, "maxDelta");
-		xstream.useAttributeFor(PlcActivationCounterCheckModel.class, "enabled");
 	}
 
 	public void configureCustomizable(XStream xstream) {

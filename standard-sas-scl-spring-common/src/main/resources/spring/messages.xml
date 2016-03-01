@@ -5,7 +5,4 @@
 
 	<bean id="messagesMapping" class="com.sicpa.standard.sasscl.messages.SASDefaultMessagesMapping" />
 
-<!-- 	<bean class="com.sicpa.standard.client.common.messages.MessagesUtils"> -->
-<!-- 		<property name="messagesMapping" ref="messagesMapping" /> -->
-<!-- 	</bean> -->
 </beans>

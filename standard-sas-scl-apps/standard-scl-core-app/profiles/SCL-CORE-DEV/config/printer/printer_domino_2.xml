@@ -1,4 +1,4 @@
-<com.sicpa.standard.printer.controller.model.DominoPrinterModel>
+<DominoPrinterModel>
   <name>SCD2</name>
   <ipAdress>192.168.1.7</ipAdress>
   <deviceId>1234567890123456789012345678901234567890</deviceId>
@@ -33,4 +33,4 @@
 		<mCodeSizePerRequest>100</mCodeSizePerRequest>
 		<mCodeBufferLowThreshold>20</mCodeBufferLowThreshold>
   </mPrinterParameters>
-</com.sicpa.standard.printer.controller.model.DominoPrinterModel>
+</DominoPrinterModel>

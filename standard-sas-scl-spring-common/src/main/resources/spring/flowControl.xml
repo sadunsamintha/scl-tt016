@@ -95,8 +95,6 @@
 		<property name="flowControl" ref="flowControl" />
 	</bean>
 
-	<!-- OLD -->
-
 	<!-- MESSAGES -->
 	<bean id="messagesHandler" class="com.sicpa.standard.sasscl.controller.message.MessagesHandler">
 		<property name="messagesMapping" ref="messagesMapping" />
