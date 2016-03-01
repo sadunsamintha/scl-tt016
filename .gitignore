@@ -72,3 +72,5 @@ standard-sas-scl-test-functional-common/uncaught-error/
 standard-sas-scl-test-functional-common/log/
 *.db
 standard-sas-scl-test-functional-common/profiles/test/internal/
+standard-sas-scl-device-remoteServer/profiles/
+standard-sas-scl-device-remoteServer/simulation/

@@ -202,6 +202,7 @@ public class RemoteServerSimulatorModelTest {
 
 		RemoteServerSimulatorModel model = new RemoteServerSimulatorModel();
 		RemoteServerSimulator simulator = new RemoteServerSimulator(model);
+		simulator.setRemoteServerSimulatorOutputFolder("profiles/test/simu");
 
 		File outputDir = new File(simulator.getRemoteServerSimulatorOutputFolder());
 

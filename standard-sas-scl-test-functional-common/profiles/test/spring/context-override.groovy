@@ -1,4 +1,3 @@
-import com.sicpa.standard.sasscl.TestBootstrap
 import com.sicpa.standard.sasscl.AbstractFunctionnalTest.ExecutorExitNoJVMExit;
 import com.sicpa.standard.sasscl.devices.remote.simulator.RemoteServerSimulator;
 import com.sicpa.standard.sasscl.utils.mapping.TestProductionConfigMapping

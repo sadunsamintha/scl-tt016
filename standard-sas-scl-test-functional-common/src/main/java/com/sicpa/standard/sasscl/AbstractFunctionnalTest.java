@@ -200,8 +200,6 @@ public abstract class AbstractFunctionnalTest extends TestCase {
 
 		emptyStorageFolders();
 		emptyRemoteServerReceivedData();
-		// GroovyLoggerConfigurator lc = new GroovyLoggerConfigurator(new StringMap());
-		// lc.initLogger();
 		loadSpring();
 	}
 
