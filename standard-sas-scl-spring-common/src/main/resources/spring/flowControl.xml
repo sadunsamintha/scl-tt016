@@ -6,16 +6,16 @@
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 
 
-	<bean id="flowControl" class="${flowControl}" init-method="initMachine">
+	<bean id="flowControl" class="com.sicpa.standard.sasscl.controller.flow.FlowControl" init-method="initMachine">
 		<property name="stateMachine" ref="stateMachine" />
 		<property name="flowControlWiring" ref="flowControlWiring" />
 	</bean>
 
-	<bean id="stateMachine" class="${stateMachine}">
+	<bean id="stateMachine" class="com.sicpa.standard.sasscl.controller.flow.statemachine.FlowControlStateMachine">
 		<constructor-arg value="#{flowControlWiring.getInitialState()}" />
 	</bean>
 
-	<bean id="flowControlWiring" class="${flowControlWiring}">
+	<bean id="flowControlWiring" class="com.sicpa.standard.sasscl.controller.flow.statemachine.DefaultFlowControlWiring">
 		<property name="executorExit" ref="executorExit" />
 		<property name="executorStarted" ref="executorStarted" />
 		<property name="executorStarting" ref="executorStarting" />
@@ -29,9 +29,9 @@
 		<property name="executorDisconnectingOnParamChanged" ref="executorDisconnectingOnParamChanged" />
 	</bean>
 
-	<bean id="executorRecovering" class="${executorRecovering}" />
+	<bean id="executorRecovering" class="com.sicpa.standard.sasscl.controller.flow.statemachine.executor.ExecutorRecovering" />
 
-	<bean id="executorExit" class="${executorExit}">
+	<bean id="executorExit" class="com.sicpa.standard.sasscl.controller.flow.statemachine.executor.ExecutorExit">
 		<property name="hardwareController" ref="hardwareController" />
 		<property name="production" ref="production" />
 		<property name="storage" ref="storage" />
@@ -39,15 +39,15 @@
 		<property name="screensFlow" ref="screensFlow" />
 	</bean>
 
-	<bean id="executorStarted" class="${executorStarted}" />
+	<bean id="executorStarted" class="com.sicpa.standard.sasscl.controller.flow.statemachine.executor.ExecutorStarted" />
 
-	<bean id="executorStarting" class="${executorStarting}">
+	<bean id="executorStarting" class="com.sicpa.standard.sasscl.controller.flow.statemachine.executor.ExecutorStarting">
 		<property name="statistics" ref="statistics" />
 		<property name="alert" ref="alert" />
 		<property name="productionBatchProvider" ref="productionBatchProvider" />
 		<property name="hardwareController" ref="hardwareController" />
 		<property name="startValidators">
-			<bean id="globalStartProductionValidator" class="${globalStartProductionValidator}">
+			<bean id="globalStartProductionValidator" class="com.sicpa.standard.client.common.controller.predicate.start.GlobalStartProductionValidator">
 				<property name="validators">
 					<list>
 						<ref bean="maxRemoteServerDownTimeListener" />
@@ -57,8 +57,8 @@
 			</bean>
 		</property>
 	</bean>
-	<bean id="executorNoSelection" class="${executorNoSelection}" />
-	<bean id="executorConnecting" class="${executorConnecting}">
+	<bean id="executorNoSelection" class="com.sicpa.standard.sasscl.controller.flow.statemachine.executor.ExecutorNoSelection" />
+	<bean id="executorConnecting" class="com.sicpa.standard.sasscl.controller.flow.statemachine.executor.ExecutorConnecting">
 		<property name="hardwareController" ref="hardwareController" />
 		<property name="productionParameters" ref="productionParameters" />
 		<property name="productionInitiator" ref="productionInitiator" />
@@ -66,31 +66,31 @@
 		<property name="productionConfigProvider" ref="productionConfigProvider" />
 		<property name="statistics" ref="statistics" />
 	</bean>
-	<bean id="executorSelectWithPrevious" class="${executorSelectWithPrevious}">
+	<bean id="executorSelectWithPrevious" class="com.sicpa.standard.sasscl.controller.flow.statemachine.executor.ExecutorSelectWithPrevious">
 		<property name="screensFlow" ref="screensFlow" />
 	</bean>
-	<bean id="executorConnected" class="${executorConnected}" />
-	<bean id="executorSelectNoPrevious" class="${executorSelectNoPrevious}">
+	<bean id="executorConnected" class="com.sicpa.standard.sasscl.controller.flow.statemachine.executor.ExecutorConnected" />
+	<bean id="executorSelectNoPrevious" class="com.sicpa.standard.sasscl.controller.flow.statemachine.executor.ExecutorSelectNoPrevious">
 		<property name="screensFlow" ref="screensFlow" />
 	</bean>
-	<bean id="executorStopping" class="${executorStopping}">
+	<bean id="executorStopping" class="com.sicpa.standard.sasscl.controller.flow.statemachine.executor.ExecutorStopping">
 		<property name="hardwareController" ref="hardwareController" />
 		<property name="alert" ref="alert" />
 	</bean>
-	<bean id="executorDisconnectingOnParamChanged" class="${executorDisconnectingOnParamChanged}">
+	<bean id="executorDisconnectingOnParamChanged" class="com.sicpa.standard.sasscl.controller.flow.statemachine.executor.ExecutorDisconnectingOnParamChanged">
 		<property name="hardwareController" ref="hardwareController" />
 	</bean>
 
 
-	<bean id="hardwareControllerStatusListener" class="${hardwareControllerStatusListener}">
+	<bean id="hardwareControllerStatusListener" class="com.sicpa.standard.sasscl.controller.flow.listener.HardwareControllerStatusListener">
 		<property name="flowControl" ref="flowControl" />
 	</bean>
 
-	<bean id="printerListener" class="${printerListener}">
+	<bean id="printerListener" class="com.sicpa.standard.sasscl.controller.flow.listener.PrinterListener">
 		<property name="stateMachine" ref="stateMachine" />
 	</bean>
 
-	<bean id="productionParameterChangedListener" class="${productionParameterChangedListener}">
+	<bean id="productionParameterChangedListener" class="com.sicpa.standard.sasscl.controller.flow.listener.ProductionParameterChangedListener">
 		<property name="storage" ref="storage" />
 		<property name="flowControl" ref="flowControl" />
 	</bean>
@@ -98,25 +98,25 @@
 	<!-- OLD -->
 
 	<!-- MESSAGES -->
-	<bean id="messagesHandler" class="${messagesHandler}">
+	<bean id="messagesHandler" class="com.sicpa.standard.sasscl.controller.message.MessagesHandler">
 		<property name="messagesMapping" ref="messagesMapping" />
 	</bean>
 
-	<bean id="warningHandler" class="${warningHandler}" />
-	<bean id="errorHandler" class="${errorHandler}">
+	<bean id="warningHandler" class="com.sicpa.standard.sasscl.controller.message.MessageHandlerWarning" />
+	<bean id="errorHandler" class="com.sicpa.standard.sasscl.controller.message.MessageHandlerError">
 		<property name="flowControl" ref="flowControl" />
 	</bean>
-	<bean id="errorDisplayHandler" class="${errorDisplayHandler}" />
+	<bean id="errorDisplayHandler" class="com.sicpa.standard.sasscl.controller.message.MessageHandlerErrorDisplay" />
 
 
 	<!-- production parameters START VALIDATORS -->
 
-	<bean id="parametersAvailableStartValidator" class="${parametersAvailableStartValidator}">
+	<bean id="parametersAvailableStartValidator" class="com.sicpa.standard.sasscl.controller.flow.validator.ParametersAvailableStartValidator">
 		<property name="productionParameters" ref="productionParameters" />
 		<property name="skuListProvider" ref="skuListProvider" />
 	</bean>
 
 	<!-- max downtine listener -->
-	<bean id="maxRemoteServerDownTimeListener" class="${maxRemoteServerDownTimeListener}" />
+	<bean id="maxRemoteServerDownTimeListener" class="com.sicpa.standard.sasscl.controller.flow.listener.MaxRemoteServerDownTimeListener" />
 
 </beans>

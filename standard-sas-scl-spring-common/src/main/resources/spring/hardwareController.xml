@@ -6,45 +6,45 @@
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 
 
-	<bean id="deviceErrorRepository" class="${deviceErrorRepository}" />
+	<bean id="deviceErrorRepository" class="com.sicpa.standard.sasscl.controller.hardware.DeviceErrorRepository" />
 
-	<bean id="hardwareController" class="${hardwareController}">
+	<bean id="hardwareController" class="com.sicpa.standard.sasscl.controller.hardware.HardwareController">
 		<property name="plcProvider" ref="plcProvider" />
 		<property name="currentState" ref="hwDisconnectedState" />
 		<property name="devicesErrorsRepository" ref="deviceErrorRepository" />
 	</bean>
 
-	<bean id="hwConnectedState" class="${hwConnectedState}">
+	<bean id="hwConnectedState" class="com.sicpa.standard.sasscl.controller.hardware.state.impl.ConnectedState">
 		<property name="connectingState" ref="hwConnectingState" />
 		<property name="disconnectingState" ref="hwDisconnectingState" />
 		<property name="startingState" ref="hwStartingState" />
 	</bean>
 
-	<bean id="hwConnectingState" class="${hwConnectingState}">
+	<bean id="hwConnectingState" class="com.sicpa.standard.sasscl.controller.hardware.state.impl.ConnectingState">
 		<property name="connectedState" ref="hwConnectedState" />
 		<property name="disconnectingState" ref="hwDisconnectingState" />
 	</bean>
 
-	<bean id="hwDisconnectedState" class="${hwDisconnectedState}">
+	<bean id="hwDisconnectedState" class="com.sicpa.standard.sasscl.controller.hardware.state.impl.DisconnectedState">
 		<property name="connectingState" ref="hwConnectingState" />
 	</bean>
 
-	<bean id="hwDisconnectingState" class="${hwDisconnectingState}">
+	<bean id="hwDisconnectingState" class="com.sicpa.standard.sasscl.controller.hardware.state.impl.DisconnectingState">
 		<property name="disconnectedState" ref="hwDisconnectedState" />
 	</bean>
 
-	<bean id="hwStartedState" class="${hwStartedState}">
+	<bean id="hwStartedState" class="com.sicpa.standard.sasscl.controller.hardware.state.impl.StartedState">
 		<property name="stoppingState" ref="hwStoppingState" />
 		<property name="disconnectingState" ref="hwDisconnectingState" />
 	</bean>
 
-	<bean id="hwStartingState" class="${hwStartingState}">
+	<bean id="hwStartingState" class="com.sicpa.standard.sasscl.controller.hardware.state.impl.StartingState">
 		<property name="startedState" ref="hwStartedState" />
 		<property name="connectingState" ref="hwConnectingState" />
 		<property name="disconnectingState" ref="hwDisconnectingState" />
 	</bean>
 
-	<bean id="hwStoppingState" class="${hwStoppingState}">
+	<bean id="hwStoppingState" class="com.sicpa.standard.sasscl.controller.hardware.state.impl.StoppingState">
 		<property name="connectedState" ref="hwConnectedState" />
 		<property name="connectingState" ref="hwConnectingState" />
 	</bean>

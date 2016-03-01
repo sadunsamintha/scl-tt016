@@ -5,7 +5,7 @@
 		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 
-	<bean id="monitoring" class="${monitoring}">
+	<bean id="monitoring" class="com.sicpa.standard.sasscl.monitoring.impl.Monitoring">
 		<constructor-arg ref="monitoringModel" />
 		<property name="saveIncrPeriod" value="${monitoringSaveIncrementalStatisticsTimer_sec}" />
 		<property name="subsystemIdProvider" ref="subsystemIdProvider" />
@@ -13,7 +13,7 @@
 		<property name="productionParameters" ref="productionParameters" />
 	</bean>
 
-	<bean id="monitoringModel" class="${monitoringModel}">
+	<bean id="monitoringModel" class="com.sicpa.standard.sasscl.monitoring.impl.DefaultMonitoringSerializerMapping">
 		<constructor-arg value="${profile.path}/monitoring/" />
 	</bean>
 
@@ -26,23 +26,23 @@
 		</property>
 	</bean>
 
-	<bean id="statsMBean" class="${statsMBean}">
+	<bean id="statsMBean" class="com.sicpa.standard.sasscl.monitoring.mbean.scl.SclApp">
 		<property name="stats" ref="MBeanStatsDelegate" />
 		<property name="errorsRepository" ref="errorsRepository" />
 		<property name="plcJmxInfo" ref="plcJmxInfo" />
 		<property name="productionConfigProvider" ref="productionConfigProvider" />
 	</bean>
 
-	<bean id="remoteControlMBean" class="${remoteControlMBean}">
+	<bean id="remoteControlMBean" class="com.sicpa.standard.sasscl.monitoring.mbean.scl.RemoteControlScl">
 		<property name="appBean" ref="statsMBean" />
 		<property name="defaultSaveTask">
 			<ref bean="defaultSaveRemotelyChangedBeanTask" />
 		</property>
 	</bean>
 
-	<bean id="defaultSaveRemotelyChangedBeanTask" class="${defaultSaveRemotelyChangedBeanTask}" />
+	<bean id="defaultSaveRemotelyChangedBeanTask" class="com.sicpa.standard.sasscl.monitoring.mbean.sas.DefaultSaveRemotelyUpdateBeanTask" />
 
-	<bean id="MBeanStatsDelegate" class="${MBeanStatsDelegate}">
+	<bean id="MBeanStatsDelegate" class="com.sicpa.standard.sasscl.monitoring.mbean.scl.SclAppBeanStatistics">
 		<property name="storage" ref="storage" />
 		<property name="productionParameters" ref="productionParameters" />
 	</bean>
@@ -59,7 +59,7 @@
 		</property>
 	</bean>
 
-	<bean id="plcVarSaveRemotelyChangedBeanTask" class="${plcVarSaveRemotelyChangedBeanTask}">
+	<bean id="plcVarSaveRemotelyChangedBeanTask" class="com.sicpa.standard.sasscl.devices.plc.variable.SavePlcVarRemotlyChanged">
 		<property name="plcProvider" ref="plcProvider" />
 	</bean>
 

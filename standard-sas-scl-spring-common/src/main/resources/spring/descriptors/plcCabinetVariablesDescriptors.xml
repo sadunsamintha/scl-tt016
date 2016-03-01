@@ -149,7 +149,7 @@
 	</bean>
 
 	<!-- variables list -->
-	<bean id="cabinetEditablePlcVariables" class="${editablePlcVariables}">
+	<bean id="cabinetEditablePlcVariables" class="com.sicpa.standard.sasscl.devices.plc.variable.EditablePlcVariables">
 		<constructor-arg ref="allPlcVariableValues" />
 
 		<constructor-arg>

@@ -6,7 +6,7 @@
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 
 
-	<bean id="plcJmxInfo" class="${plcJmxInfo}">
+	<bean id="plcJmxInfo" class="com.sicpa.standard.sasscl.devices.plc.PlcJmxInfo">
 		<property name="plcProvider" ref="plcProvider" />
 		<property name="plcCabinetVars" ref="cabinetVarForJmxInfo" />
 		<property name="plcLineVars" ref="lineVarsForJmxInfo" />

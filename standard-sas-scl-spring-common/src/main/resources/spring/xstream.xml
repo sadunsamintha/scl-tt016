@@ -8,12 +8,12 @@
 	<bean id="xstreamConfigurator" class="com.sicpa.standard.client.common.xstream.DefaultXstreamConfigurator">
 		<property name="delegates">
 			<util:list>
-				<bean class="${xstreamConfiguratorCommonModel}" />
-				<bean class="${remoteServerSimulatorXStreamConfigurator}" />
-				<bean class="${remoteServerXStreamConfigurator}" />
-				<bean class="${cameraXStreamConfigurator}" />
-				<bean class="${plcXStreamConfigurator}" />
-				<bean class="${productionConfigXstreamConfigurator}" />
+				<bean class="com.sicpa.standard.sasscl.config.xstream.CommonModelXStreamConfigurator" />
+				<bean class="com.sicpa.standard.sasscl.devices.remote.RemoteServerSimulatorXStreamConfigurator" />
+				<bean class="com.sicpa.standard.sasscl.devices.remote.impl.RemoteServerXStreamConfigurator" />
+				<bean class="com.sicpa.standard.sasscl.devices.camera.CameraXStreamConfigurator" />
+				<bean class="com.sicpa.standard.sasscl.devices.plc.PlcXStreamConfigurator" />
+				<bean class="com.sicpa.standard.sasscl.controller.productionconfig.xstream.ProductionConfigXstreamConfigurator" />
 			</util:list>
 		</property>
 	</bean>

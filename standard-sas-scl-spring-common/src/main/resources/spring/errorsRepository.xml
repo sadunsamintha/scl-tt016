@@ -6,7 +6,7 @@
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 
 
-	<bean id="errorsRepository" class="${errorsRepository}">
+	<bean id="errorsRepository" class="com.sicpa.standard.sasscl.repository.errors.ErrorsRepository">
 		<property name="messageCodeMapper" ref="messagesMapping" />
 		<property name="server" ref="remoteServer"/>
 		<property name="plcProvider" ref="plcProvider"/>

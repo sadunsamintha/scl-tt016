@@ -5,7 +5,7 @@
 		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 
-	<bean id="alertCameraIddle" class="${alertCameraIddle}">
+	<bean id="alertCameraIddle" class="com.sicpa.standard.sasscl.devices.camera.alert.CameraIddleAlertTask">
 		<property name="productionParameters" ref="productionParameters" />
 		<property name="model">
 			<bean id="alertCameraIddleModel" class="com.sicpa.standard.sasscl.business.alert.task.model.CameraIddleAlertTaskModel">

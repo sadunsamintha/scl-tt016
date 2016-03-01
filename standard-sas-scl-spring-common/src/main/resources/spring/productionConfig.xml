@@ -6,26 +6,26 @@
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 
 
-	<bean id="productionConfigLoader" class="${productionConfigLoader}">
+	<bean id="productionConfigLoader" class="com.sicpa.standard.sasscl.controller.productionconfig.loader.ProductionConfigFileLoader">
 		<property name="mapping" ref="productionConfigMapping" />
 		<property name="folder" value="${profile.path}/config/productionConfig"/>
 	</bean>
 	
-	<bean id="productionConfigMapping" class="${productionConfigMapping}" />
-	<bean id="deviceModelNamePostfixProperty" class="${deviceModelNamePostfixProperty}" />
+	<bean id="productionConfigMapping" class="com.sicpa.standard.sasscl.controller.productionconfig.mapping.ProductionConfigMapping" />
+	<bean id="deviceModelNamePostfixProperty" class="com.sicpa.standard.sasscl.controller.productionconfig.factory.utils.DeviceModelNamePostfixProperty" />
 
-	<bean id="printerFactoryMapping" class="${printerFactoryMapping}" />
+	<bean id="printerFactoryMapping" class="com.sicpa.standard.sasscl.controller.productionconfig.factory.mapping.PrinterFactoryMapping" />
 
-	<bean id="cameraFactoryMapping" class="${cameraFactoryMapping}" />
+	<bean id="cameraFactoryMapping" class="com.sicpa.standard.sasscl.controller.productionconfig.factory.mapping.CameraFactoryMapping" />
 
-	<bean id="deviceFactory" class="${deviceFactory}">
+	<bean id="deviceFactory" class="com.sicpa.standard.sasscl.controller.productionconfig.factory.DeviceFactory">
 		<property name="cameraFactoryMapping" ref="cameraFactoryMapping" />
 		<property name="printerFactoryMapping" ref="printerFactoryMapping" />
 		<property name="implementationProvider" ref="implementationProvider" />
 		<property name="deviceModelNamePostfixProperty" ref="deviceModelNamePostfixProperty" />
 	</bean>
 
-	<bean id="productionInitiator" class="${productionInitiator}">
+	<bean id="productionInitiator" class="com.sicpa.standard.sasscl.controller.productionconfig.ProductionInitiator">
 		<property name="deviceFactory" ref="deviceFactory" />
 		<property name="hardwareController" ref="hardwareController" />
 		<property name="plcProvider" ref="plcProvider" />

@@ -5,7 +5,7 @@
 		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 
-	<bean id="alertPlcActivationCrossCheckTask" class="${alertPlcActivationCrossCheckTask}">
+	<bean id="alertPlcActivationCrossCheckTask" class="com.sicpa.standard.sasscl.business.activation.PlcActivationCounterCheck">
 		<property name="model">
 			<bean id="alertPlcActivationCrossCheckTaskModel" class="com.sicpa.standard.sasscl.business.alert.task.model.PlcActivationCounterCheckModel">
 				<property name="maxDelta" value="${alert.plcActivationCrossCheck.maxDelta}" />

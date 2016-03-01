@@ -5,16 +5,16 @@
 		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 
-	<bean id="qcReader" class="${qcReader}" />
+	<bean id="qcReader" class="com.sicpa.standard.sasscl.business.qc.reader.DefaultQCReader" />
 
-	<bean id="defaultQC" class="${defaultQC}" scope="prototype">
+	<bean id="defaultQC" class="com.sicpa.standard.sasscl.business.qc.impl.DefaultQualityCheck" scope="prototype">
 		<property name="qcContextProvider" ref="qcContextProvider" />
 		<property name="executor" ref="qcSingleThreadExecutor" />
 	</bean>
 
-	<bean id="defaultQCComponent" class="${defaultQCComponent}" />
+	<bean id="defaultQCComponent" class="com.sicpa.standard.sasscl.business.qc.impl.DefaultQCComponent" />
 
-	<bean id="defaultQCPolicy" class="${defaultQCPolicy}" />
+	<bean id="defaultQCPolicy" class="com.sicpa.standard.sasscl.business.qc.impl.DefaultQCPolicy" />
 
 	<bean id="qcSingleThreadExecutor" factory-method="newSingleThreadExecutor" class="java.util.concurrent.Executors" />
 

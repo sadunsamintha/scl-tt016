@@ -5,9 +5,9 @@
 		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 
-	<bean id="reportScreen" class="${reportScreen}" />
+	<bean id="reportScreen" class="com.sicpa.standard.sasscl.view.report.ReportScreenGetter" />
 
-	<bean id="mainFrameController" class="${mainFrameController}">
+	<bean id="mainFrameController" class="com.sicpa.standard.sasscl.view.MainFrameController">
 		<constructor-arg ref="skuListProvider" />
 		<property name="productionParameters" ref="productionParameters" />
 		<property name="lineId" value="${lineId}" />
@@ -28,7 +28,7 @@
 		</property>
 	</bean>
 
-	<bean id="mainFrame" class="${mainFrame}">
+	<bean id="mainFrame" class="com.sicpa.standard.sasscl.view.MainFrameGetter">
 		<property name="viewController" ref="mainFrameController" />
 		<property name="startStopView" ref="startStopView" />
 		<property name="exitView" ref="exitView" />
@@ -40,11 +40,11 @@
 		<property name="fingerPrintLogin" value="${fingerprint.login}" />
 	</bean>
 
-	<bean id="MBeanViewer" class="${MBeanViewer}">
+	<bean id="MBeanViewer" class="com.sicpa.standard.sasscl.view.monitoring.mbean.MBeanViewerGetter">
 		<property name="bean" ref="statsMBean" />
 	</bean>
 
-	<bean id="plcVariablesPanel" class="${plcVariablesPanel}">
+	<bean id="plcVariablesPanel" class="com.sicpa.standard.sasscl.view.config.plc.PlcVariablesPanelGetter">
 		<property name="cabinetVariables" ref="cabinetEditablePlcVariables" />
 	</bean>
 
@@ -52,21 +52,21 @@
 		<property name="cabinetVariables" ref="plcSecureEditablePlcVariables" />
 	</bean>
 
-	<bean id="productionStatisticsPanel" class="${productionStatisticsPanel}" />
-	<bean id="systemEventPanel" class="${systemEventPanel}" />
-	<bean id="miscPanel" class="${miscPanel}" />
+	<bean id="productionStatisticsPanel" class="com.sicpa.standard.sasscl.view.monitoring.ProductionStatisticsPanelGetter" />
+	<bean id="systemEventPanel" class="com.sicpa.standard.sasscl.view.monitoring.SystemEventPanelGetter" />
+	<bean id="miscPanel" class="com.sicpa.standard.sasscl.view.config.misc.MiscConfigPanelGetter" />
 
 	<bean id="simulatorGui" class="com.sicpa.standard.sasscl.devices.simulator.gui.SimulatorControlView">
 		<property name="visible" value="${displaySimulatorGui}" />
 	</bean>
 
-	<bean id="selectionModelFactory" class="${selectionModelFactory}" />
+	<bean id="selectionModelFactory" class="com.sicpa.standard.sasscl.productionParameterSelection.DefaultSelectionModelFactory" />
 
-	<bean id="beanCallPanelGetter" class="${beanCallPanelGetter}">
+	<bean id="beanCallPanelGetter" class="com.sicpa.standard.sasscl.view.forceCall.BeanCallPanelGetter">
 		<property name="beancalls" ref="beanCallList" />
 	</bean>
 
-	<bean id="encodersInfoViewGetter" class="${encodersInfoViewGetter}">
+	<bean id="encodersInfoViewGetter" class="com.sicpa.standard.sasscl.view.encoder.EncodersInfoViewGetter">
 		<property name="storage" ref="storage" />
 	</bean>
 
@@ -130,10 +130,10 @@
 
 	</util:list>
 
-	<bean id="operatorLoggerBehavior" class="${operatorLoggerBehavior}" />
+	<bean id="operatorLoggerBehavior" class="com.sicpa.standard.sasscl.common.log.OperatorLoggerBehavior" />
 
 
-	<bean id="screensFlow" class="${screensFlow}" init-method="buildScreensFlow">
+	<bean id="screensFlow" class="com.sicpa.standard.sasscl.controller.view.flow.DefaultScreensFlow" init-method="buildScreensFlow">
 		<property name="initialScreen" ref="mainPanelGetter" />
 		<property name="selectionScreen" ref="selectProductionParametersViewController" />
 		<property name="mainScreen" ref="mainPanelGetter" />
@@ -143,57 +143,57 @@
 
 	<!-- START STOP VIEW -->
 
-	<bean id="startStopView" class="${startStopView}">
+	<bean id="startStopView" class="com.sicpa.standard.sasscl.view.startstop.StartStopView">
 		<property name="controller" ref="startStopViewController" />
 		<property name="model" value="#{startStopViewController.model}" />
 	</bean>
-	<bean id="startStopViewController" class="${startStopViewController}">
+	<bean id="startStopViewController" class="com.sicpa.standard.sasscl.view.startstop.StartStopViewController">
 		<property name="flowControl" ref="flowControl" />
 	</bean>
 
 	<!-- SELECTION CHANGE -->
-	<bean id="selectionChangeView" class="${selectionChangeView}">
+	<bean id="selectionChangeView" class="com.sicpa.standard.sasscl.view.selection.change.SelectionChangeView">
 		<property name="controller" ref="selectionChangeViewController" />
 		<property name="model" value="#{selectionChangeViewController.model}" />
 	</bean>
-	<bean id="selectionChangeViewController" class="${selectionChangeViewController}">
+	<bean id="selectionChangeViewController" class="com.sicpa.standard.sasscl.view.selection.change.SelectionChangeViewController">
 		<property name="flowControl" ref="flowControl" />
 		<property name="skuListProvider" ref="skuListProvider" />
 	</bean>
 
 	<!-- EXIT / LOGOUT -->
-	<bean id="exitView" class="${exitView}">
+	<bean id="exitView" class="com.sicpa.standard.sasscl.view.exit.DefaultExitView">
 		<property name="controller" ref="exitViewController" />
 		<property name="model" value="#{exitViewController.model}" />
 	</bean>
-	<bean id="exitViewController" class="${exitViewController}">
+	<bean id="exitViewController" class="com.sicpa.standard.sasscl.view.exit.ExitViewController">
 		<property name="flowControl" ref="flowControl" />
 		<property name="remoteServer" ref="remoteServer" />
 	</bean>
 
 	<!-- OPTIONS -->
-	<bean id="optionsView" class="${optionsView}">
+	<bean id="optionsView" class="com.sicpa.standard.sasscl.view.option.DefaultOptionsView">
 		<property name="controller" ref="optionsViewController" />
 		<property name="model" value="#{optionsViewController.model}" />
 	</bean>
-	<bean id="optionsViewController" class="${optionsViewController}" />
+	<bean id="optionsViewController" class="com.sicpa.standard.sasscl.view.option.OptionsViewController" />
 
 	<!-- MESSAGES VIEW -->
-	<bean id="messagesView" class="${messagesView}" />
-	<bean id="messagesViewController" class="${messagesViewController}">
+	<bean id="messagesView" class="com.sicpa.standard.sasscl.view.messages.DefaultMessagesView" />
+	<bean id="messagesViewController" class="com.sicpa.standard.sasscl.view.messages.MessagesViewController">
 		<property name="view" ref="messagesView" />
 		<property name="messageCodeMapper" ref="messagesMapping" />
 	</bean>
 
 	<!-- QUESTION VIEW -->
-	<bean id="questionView" class="${questionView}">
+	<bean id="questionView" class="com.sicpa.standard.sasscl.view.question.DefaultQuestionView">
 		<property name="controller" ref="questionViewController" />
 		<property name="model" value="#{questionViewController.model}" />
 	</bean>
-	<bean id="questionViewController" class="${questionViewController}" />
+	<bean id="questionViewController" class="com.sicpa.standard.sasscl.view.question.QuestionViewController" />
 
 	<!-- SYSTEM INFO VIEW -->
-	<bean id="systemInfoView" class="${systemInfoView}">
+	<bean id="systemInfoView" class="com.sicpa.standard.sasscl.view.main.systemInfo.SystemInfoView">
 		<property name="controller" ref="systemInfoViewController" />
 		<property name="model" value="#{systemInfoViewController.model}" />
 	</bean>
@@ -204,26 +204,26 @@
 	</bean>
 
 	<!-- STATISTICS VIEW -->
-	<bean id="statisticsView" class="${statisticsView}">
+	<bean id="statisticsView" class="com.sicpa.standard.sasscl.view.main.statistics.StatisticsView">
 		<property name="controller" ref="statisticsViewController" />
 		<property name="model" value="#{statisticsViewController.model}" />
 	</bean>
-	<bean id="statisticsViewController" class="${statisticsViewController}">
+	<bean id="statisticsViewController" class="com.sicpa.standard.sasscl.view.main.statistics.StatisticsViewController">
 		<property name="statistics" ref="statistics" />
 		<property name="descriptorMapping" ref="statisticsKeyToViewDescriptorMapping" />
 	</bean>
 
 	<!-- SELECTION DISPLAY -->
-	<bean id="selectionDisplayView" class="${selectionDisplayView}">
+	<bean id="selectionDisplayView" class="com.sicpa.standard.sasscl.view.selection.display.SelectionDisplayView">
 		<property name="controller" ref="selectionDisplayViewController" />
 		<property name="model" value="#{selectionDisplayViewController.model}" />
 	</bean>
-	<bean id="selectionDisplayViewController" class="${selectionDisplayViewController}">
+	<bean id="selectionDisplayViewController" class="com.sicpa.standard.sasscl.view.selection.display.SelectionDisplayViewController">
 		<property name="productionParameters" ref="productionParameters" />
 	</bean>
 
 	<!-- MAIN PANEL -->
-	<bean id="mainPanelGetter" class="${mainPanelGetter}">
+	<bean id="mainPanelGetter" class="com.sicpa.standard.sasscl.view.main.MainPanelGetter">
 		<property name="systemInfoView" ref="systemInfoView" />
 		<property name="selectionDisplayView" ref="selectionDisplayView" />
 		<property name="statsView" ref="statisticsView" />
@@ -232,14 +232,14 @@
 
 	<!-- SELECT PARAMETER -->
 
-	<bean id="selectProductionParametersHandPickingView" class="${selectProductionParametersHandPickingView}">
+	<bean id="selectProductionParametersHandPickingView" class="com.sicpa.standard.sasscl.view.selection.select.SelectProductionParametersHandPickingView">
 		<property name="callback" ref="selectProductionParametersViewController" />
 		<property name="selectionModelFactory" ref="selectionModelFactory" />
 	</bean>
-	<bean id="selectProductionParametersBarcodeView" class="${selectProductionParametersBarcodeView}">
+	<bean id="selectProductionParametersBarcodeView" class="com.sicpa.standard.sasscl.view.selection.select.SelectProductionParametersBarcodeView">
 		<property name="callback" ref="selectProductionParametersViewController" />
 	</bean>
-	<bean id="selectProductionParametersViewController" class="${selectProductionParametersViewController}">
+	<bean id="selectProductionParametersViewController" class="com.sicpa.standard.sasscl.view.selection.select.SelectProductionParametersViewController">
 		<property name="handPickingview" ref="selectProductionParametersHandPickingView" />
 		<property name="barcodeView" ref="selectProductionParametersBarcodeView" />
 		<property name="viewController" ref="mainFrameController" />
@@ -250,19 +250,19 @@
 	</bean>
 	<!-- snapshotView -->
 
-	<bean id="snapshotView" class="${snapshotView}">
+	<bean id="snapshotView" class="com.sicpa.standard.sasscl.view.snapshot.SnapshotView">
 		<property name="controller" ref="snapshotViewController" />
 		<property name="model" value="#{snapshotViewController.model}" />
 	</bean>
-	<bean id="snapshotViewController" class="${snapshotViewController}" />
+	<bean id="snapshotViewController" class="com.sicpa.standard.sasscl.view.snapshot.SnapshotViewController" />
 
 	<!-- production sending on exit -->
 
-	<bean id="productionSendingView" class="${productionSendingView}">
+	<bean id="productionSendingView" class="com.sicpa.standard.sasscl.view.productionSending.ProductionSendingView">
 		<property name="controller" ref="productionSendingViewController" />
 		<property name="model" value="#{productionSendingViewController.model}" />
 	</bean>
-	<bean id="productionSendingViewController" class="${productionSendingViewController}">
+	<bean id="productionSendingViewController" class="com.sicpa.standard.sasscl.view.productionSending.ProductionSendingViewController">
 		<property name="view" ref="productionSendingView" />
 		<property name="production" ref="production" />
 		<property name="viewController" ref="mainFrameController" />

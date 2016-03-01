@@ -5,14 +5,14 @@
 		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 
-	<bean id="offlineCounting" class="${offlineCounting}">
+	<bean id="offlineCounting" class="com.sicpa.standard.sasscl.business.activation.offline.impl.PlcOfflineCounting">
 		<property name="plcProvider" ref="plcProvider" />
 		<property name="quantityVar" ref="plcOfflineCountingQtyVar" />
 		<property name="lastStopTimeVar" ref="plcOfflineCountingLastStopVar" />
 		<property name="lastProductTimeVar" ref="plcOfflineCountingLastProductVar" />
 	</bean>
 
-	<bean id="offlineCountingTrigger" class="${offlineCountingTrigger}">
+	<bean id="offlineCountingTrigger" class="com.sicpa.standard.sasscl.business.activation.offline.impl.PlcOfflineCountingTrigger">
 		<constructor-arg ref="offlineCounting" />
 		<property name="plcProvider" ref="plcProvider" />
 	</bean>

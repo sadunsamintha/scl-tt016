@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
-	<bean id="messagesMapping" class="${messagesMapping}" />
+	<bean id="messagesMapping" class="com.sicpa.standard.sasscl.messages.SASDefaultMessagesMapping" />
 
 <!-- 	<bean class="com.sicpa.standard.client.common.messages.MessagesUtils"> -->
 <!-- 		<property name="messagesMapping" ref="messagesMapping" /> -->
