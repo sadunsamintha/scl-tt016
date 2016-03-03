@@ -5,8 +5,16 @@
 		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 
+
+
 	<util:list id="plcCabinetNtf">
 		<ref bean="NTF_CAB_WAR_ERR_REGISTER_var" />
+	</util:list>
+	<util:list id="plcConveyorNtfTemplate">
+		<ref bean="NTF_LINE_SPEED_var" />
+		<ref bean="NTF_LINE_STATE_var" />
+		<ref bean="NTF_LINE_WAR_ERR_REGISTER_var" />
+		<ref bean="NTF_LINE_PRODUCT_DETECTOR_TRIGS_var" />
 	</util:list>
 
 </beans>

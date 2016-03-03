@@ -17,10 +17,10 @@ public class PlcJmxInfo implements IPlcJmxInfo {
 	private static final Logger logger = LoggerFactory.getLogger(PlcJmxInfo.class);
 
 	protected PlcProvider plcProvider;
-	protected final Collection<IPlcVariable<?>> plcCabinetVars = new ArrayList<IPlcVariable<?>>();
-	protected final Collection<IPlcVariable<?>> plcLineVars = new ArrayList<IPlcVariable<?>>();
+	protected final Collection<IPlcVariable<?>> plcCabinetVars = new ArrayList<>();
+	protected final Collection<IPlcVariable<?>> plcLineVars = new ArrayList<>();
 
-	protected final Set<Integer> indexesToCheck = new HashSet<Integer>(Arrays.asList(1, 2, 3));
+	protected final Set<Integer> indexesToCheck = new HashSet<>(Arrays.asList(1, 2, 3));
 
 	public String getPlcVersion() {
 		return readPlcVersion();
@@ -31,7 +31,7 @@ public class PlcJmxInfo implements IPlcJmxInfo {
 	}
 
 	protected Collection<IPlcVariable<?>> transformToIndex(Collection<IPlcVariable<?>> vars, int index) {
-		Collection<IPlcVariable<?>> res = new ArrayList<IPlcVariable<?>>();
+		Collection<IPlcVariable<?>> res = new ArrayList<>();
 		for (IPlcVariable<?> var : vars) {
 			res.add(PlcUtils.clone(var, index));
 		}

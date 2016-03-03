@@ -27,6 +27,7 @@ public class PlcPulseVariableDescriptor extends PlcIntegerVariableDescriptor {
 	protected int maxPulse;
 	protected int minMs;
 	protected int maxMs;
+	protected NumberFormat mmFormat;
 
 	protected IPulseToMMConverter pulseConverter;
 
@@ -103,8 +104,6 @@ public class PlcPulseVariableDescriptor extends PlcIntegerVariableDescriptor {
 		}
 	}
 
-	protected NumberFormat mmFormat;
-
 	@Override
 	protected void setFormattedValue() {
 		if (currentUnit == PlcUnit.MS) {
@@ -148,10 +147,10 @@ public class PlcPulseVariableDescriptor extends PlcIntegerVariableDescriptor {
 
 	@Override
 	public JComponent getRenderer() {
-		if (this.renderer == null) {
-			this.renderer = new PlcPulseUnitRenderer(this);
+		if (renderer == null) {
+			renderer = new PlcPulseUnitRenderer(this);
 		}
-		return this.renderer;
+		return renderer;
 	}
 
 	public void setGreaterThan(final PlcPulseVariableDescriptor[] greaterThan) {

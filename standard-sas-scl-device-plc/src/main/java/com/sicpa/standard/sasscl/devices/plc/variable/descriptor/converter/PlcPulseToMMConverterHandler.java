@@ -11,7 +11,11 @@ import com.sicpa.standard.sasscl.devices.plc.variable.descriptor.event.PulseConv
 
 public class PlcPulseToMMConverterHandler {
 
-	protected final Map<String, PlcPulseToMMConverter> converters = new HashMap<String, PlcPulseToMMConverter>();
+	private String encoderResolutionVarName;
+	private String shapeDiameterVarName;
+	private String encoderModFolEvalVarName;
+
+	private final Map<String, PlcPulseToMMConverter> converters = new HashMap<>();
 
 	@Subscribe
 	public void handlePulseConversionParamChanged(PulseConversionParamChangedEvent evt) {
@@ -47,10 +51,6 @@ public class PlcPulseToMMConverterHandler {
 		return converter.getEncoderResolution() > 0 && converter.getShapeDiameterValue() > 0
 				&& converter.getEncoderModFoldEval() > 0;
 	}
-
-	protected String encoderResolutionVarName;
-	protected String shapeDiameterVarName;
-	protected String encoderModFolEvalVarName;
 
 	protected boolean isEncoderResolutionParam(String param) {
 		return param.endsWith(encoderResolutionVarName);

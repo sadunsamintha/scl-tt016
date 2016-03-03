@@ -1,13 +1,21 @@
 import com.sicpa.standard.client.common.device.plc.PLCVariableMap
+import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.groovy.SwingEnabledGroovyApplicationContext;
 import com.sicpa.standard.plc.controller.actions.*
 import com.sicpa.standard.plc.value.*
+import com.sicpa.standard.sasscl.devices.plc.DefaultPlcRequestExecutor;
+import com.sicpa.standard.sasscl.devices.plc.IPlcRequestExecutor;
+import com.sicpa.standard.sasscl.devices.plc.PlcRequest;
 import com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcBooleanVariableDescriptor;
 import com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcByteVariableDescriptor;
 import com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcIntegerVariableDescriptor;
 import com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcPulseVariableDescriptor;
 import com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcShortVariableDescriptor;
 import com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcVariableDescriptor;
+import com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcVariablePulseParamDescriptor;
+
+import static com.sicpa.standard.sasscl.devices.plc.PlcRequest.*
+import static com.sicpa.standard.sasscl.devices.plc.PlcUtils.*
 
 beans {
 
@@ -27,7 +35,7 @@ beans {
 	//v=> var name
 	//t=> type (i)nt/(s)hort/(b)ool,(str)ing, (by)te , in fact contain the method name to call to create the var
 	//novar => if you want the var to be accessible in the plcvarmap but not create an associated plcvar (used for error template msg)
-	//notif => if the var should be register as notification
+	//pulseConvertParam => if the var is part of the pulse by mm parameters
 
 
 	plcMap['PARAM_LINE_IS_ACTIVE']=[v:'.com.stLine[#x].bLine_is_active' ,t:b]
@@ -62,8 +70,8 @@ beans {
 	plcMap['PARAM_LINE_EJECTION_EMISSION_DISTANCE']=[v:'.com.stLine[#x].stParameters.nEjectionEmissionDistance' ,t:d]
 	plcMap['PARAM_LINE_EJECTION_EMISSION_LENGTH']=[v:'.com.stLine[#x].stParameters.nEjectionEmissionLength' ,t:d]
 	plcMap['PARAM_LINE_JAVA_NTF_DISTANCE']=[v:'.com.stLine[#x].stParameters.nJavaNotificationDistance' ,t:d]
-	plcMap['PARAM_LINE_ENCODER_RESOLUTION']=[v:'.com.stLine[#x].stParameters.nEncoderResolution' ,t:i]
-	plcMap['PARAM_LINE_SHAPE_DIAMETER']=[v:'.com.stLine[#x].stParameters.nShapeDiameter' ,t:i]
+	plcMap['PARAM_LINE_ENCODER_RESOLUTION']=[v:'.com.stLine[#x].stParameters.nEncoderResolution' ,t:i ,pulseConvertParam:'true']
+	plcMap['PARAM_LINE_SHAPE_DIAMETER']=[v:'.com.stLine[#x].stParameters.nShapeDiameter' ,t:i ,pulseConvertParam:'true']
 	plcMap['PARAM_LINE_MAX_CONSECUTIVE_INVALID_CODES']=[v:'.com.stLine[#x].stParameters.nMaxConsecutiveInvalidCodes' ,t:i]
 	plcMap['PARAM_LINE_STATS_SMALL_THRESHOLD']=[v:'.com.stLine[#x].stParameters.nStatsSmallThreshold' ,t:i]
 	plcMap['PARAM_LINE_STATS_SMALL_REJECTION_LIMIT']=[v:'.com.stLine[#x].stParameters.nStatsSmallRejectionLimit' ,t:i]
@@ -72,7 +80,7 @@ beans {
 	plcMap['PARAM_LINE_TRIGGER_CONTROL_MAX_DIFF_VALUE']=[v:'.com.stLine[#x].stParameters.nTriggerControlMaxDiffValue' ,t:i]
 	plcMap['PARAM_LINE_TRIGGER_CONTROL_MAX_CHECKS_VALUE']=[v:'.com.stLine[#x].stParameters.nTriggerControlMaxChecksValue' ,t:i]
 	plcMap['PARAM_LINE_TRIGGER_CONTROL_MAX_ABS_ERRORS']=[v:'.com.stLine[#x].stParameters.nTriggerControlMaxAbsErrors' ,t:i]
-	plcMap['PARAM_LINE_ENCODER_MODULE_FOLD_EVALUATION']=[v:'.com.stLine[#x].stParameters.nEncoderModuleFoldEvaluation' ,t:i]
+	plcMap['PARAM_LINE_ENCODER_MODULE_FOLD_EVALUATION']=[v:'.com.stLine[#x].stParameters.nEncoderModuleFoldEvaluation' ,t:i ,pulseConvertParam:'true']
 	plcMap['PARAM_LINE_TEST_ADDITIONAL_CHECK']=[v:'.com.stLine[#x].stParameters.bTestAdditionalCheck' ,t:b]
 	plcMap['PARAM_LINE_TRIGGER_ACT_ON_FAILING_EDGE']=[v:'.com.stLine[#x].stParameters.bTriggerActOnFallingEdge' ,t:b]
 	plcMap['PARAM_LINE_SIMULATE_PC_EJECTION_IF_ADD_CHECK']=[v:'.com.stLine[#x].stParameters.bSimulatePCEjectionIfAddCheck' ,t:b]
@@ -203,20 +211,20 @@ beans {
 	def cabParams= new ArrayList<IPlcVariable>()
 	def lineNotifs= new ArrayList<IPlcVariable>()
 	def cabNotifs= new ArrayList<IPlcVariable>()
-
 	def PLCVarMapInternal=new HashMap<String,String>();
+
 	for ( e in plcMap ) {
 
 		String logic=e.key
-		String phy=e.value["v"]
+		String phy=e.value['v']
 		PLCVarMapInternal[logic]= phy
 
-		if(e.value["novar"]=="true"){
+		if(e.value["novar"]=='true'){
 			continue
 		}
 
 		//create the plc var
-		String typeVar=e.value["t"]
+		String typeVar=e.value['t']
 		IPlcVariable var=null
 		PlcVariableDescriptor desc = null
 
@@ -227,7 +235,12 @@ beans {
 				break
 			case i:
 				var = createPlcVar(iCreateVar,phy)
-				desc = createPlcIntegerDesc(var)
+				boolean pulseParamConverter=Boolean.parseBoolean(e.value['pulseConvertParam']);
+				if(pulseParamConverter){
+					desc =createPlcUnitConverterParamDesc(var)
+				}else{
+					desc = createPlcIntegerDesc(var)
+				}
 				break
 			case b:
 				var = createPlcVar(bCreateVar,phy)
@@ -242,6 +255,7 @@ beans {
 				desc = createPlcByteDesc(var)
 				break
 		}
+		allVars.add(var)
 
 		registerSingleton("${logic}_var",var)
 		registerSingleton("${logic}_desc",desc)
@@ -252,9 +266,6 @@ beans {
 			bean.factoryMethod='setPlcProvider'
 			arguments=[ref('plcProvider')]
 		}
-
-
-		allVars.add(var)
 
 		if(logic.startsWith('PARAM_LINE')) {
 			lineParams.add(var)
@@ -270,17 +281,38 @@ beans {
 		}
 	}
 
-	allPlcVars(ArrayList,allVars){
+	registerSingleton('allPlcVars',allVars)
+	registerSingleton('plcLineParamsTemplate',lineParams)
+	registerSingleton('plcCabinetParameters',cabParams)
+	registerSingleton('plcLineNotifs',cabParams)
+	registerSingleton('plcCabNotifs',cabNotifs)
+	registerSingleton('plcVarMap',PLCVarMapInternal)
+
+
+
+	//---PLC REQUEST---
+
+	def mapRequestRoot= [
+		(START):[REQUEST_START:true],
+		(RUN):[REQUEST_RUN:true],
+		(STOP):[REQUEST_STOP:false],
+		(RELOAD_PLC_PARAM):[REQUEST_RELOAD_PLC_PARAM:true]
+	]
+
+
+	Map<PlcRequest, IPlcRequestExecutor> mapRequest = new HashMap<>();
+	for(e in mapRequestRoot){
+		def key=e.key
+		def actions=new ArrayList<IPlcAction>()
+		for(reqStep in e.value){
+			String var=PLCVarMapInternal[reqStep.key]
+			IPlcAction action=PlcAction.request(var,reqStep.value)
+			actions.add(action)
+		}
+		DefaultPlcRequestExecutor exec=new DefaultPlcRequestExecutor(actions.toArray(new IPlcAction[actions.size]))
+		mapRequest[key]=exec
 	}
-
-	plcLineParamsTemplate(ArrayList,lineParams)
-	plcCabinetParameters(ArrayList,cabParams)
-
-	plcLineNotifs(ArrayList,lineNotifs)
-	plcCabNotifs(ArrayList,cabNotifs)
-
-	plcVarMap(PLCVariableMap,PLCVarMapInternal) {
-	}
+	registerSingleton('mapPlcRequestAction',mapRequest)
 }
 
 
@@ -303,35 +335,8 @@ def static PlcVariableDescriptor createPlcDistanceDesc(IPlcVariable var,String l
 	desc.setMaxPulse(999999)
 	desc.setMinMs(0)
 	desc.setMaxMs(999999)
-	return desc
-}
 
-def static PlcVariableDescriptor createPlcIntegerDesc(IPlcVariable var){
-	PlcIntegerVariableDescriptor desc= new PlcIntegerVariableDescriptor()
-	desc.setVariable(var)
-	desc.setMin(0)
-	desc.setMax(999999)
-	return desc
-}
 
-def static PlcVariableDescriptor createPlcBooleanDesc(IPlcVariable var){
-	PlcBooleanVariableDescriptor desc= new PlcBooleanVariableDescriptor()
-	desc.setVariable(var)
-	return desc
-}
-
-def static PlcVariableDescriptor createPlcShortDesc(IPlcVariable var){
-	PlcShortVariableDescriptor desc= new PlcShortVariableDescriptor()
-	desc.setVariable(var)
-	desc.setMin((short)0)
-	desc.setMax((short)9999)
-	return desc
-}
-
-def static PlcVariableDescriptor createPlcByteDesc(IPlcVariable var){
-	PlcByteVariableDescriptor desc= new PlcByteVariableDescriptor()
-	desc.setVariable(var)
-	desc.setMin((byte)0)
-	desc.setMax((byte)255)
+	EventBusService.register(desc)
 	return desc
 }

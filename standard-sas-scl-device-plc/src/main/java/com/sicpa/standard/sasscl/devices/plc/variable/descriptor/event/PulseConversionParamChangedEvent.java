@@ -2,8 +2,8 @@ package com.sicpa.standard.sasscl.devices.plc.variable.descriptor.event;
 
 public class PulseConversionParamChangedEvent {
 
-	protected String paramName;
-	protected int value;
+	private String paramName;
+	private int value;
 
 	public PulseConversionParamChangedEvent(String paramName, int value) {
 		this.paramName = paramName;
