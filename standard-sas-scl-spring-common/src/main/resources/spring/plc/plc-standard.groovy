@@ -1,5 +1,4 @@
 import com.sicpa.standard.client.common.utils.ConfigUtils
-import com.sicpa.standard.sasscl.devices.plc.simulator.PlcSimulatorController
 import com.sicpa.standard.plc.controller.internal.PlcControllerImpl
 beans{
 

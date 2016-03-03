@@ -18,7 +18,6 @@ import com.sicpa.standard.common.util.Messages;
 import com.sicpa.standard.sasscl.devices.plc.IPlcListener;
 import com.sicpa.standard.sasscl.devices.plc.PlcVariableMap;
 import com.sicpa.standard.sasscl.devices.plc.event.PlcEvent;
-import com.sicpa.standard.sasscl.devices.plc.impl.PlcVariables;
 import com.sicpa.standard.sasscl.messages.IssueSolvedMessage;
 import com.sicpa.standard.sasscl.provider.impl.PlcProvider;
 
@@ -27,6 +26,8 @@ public class PlcRegisterHandler implements IPlcListener {
 	private static final Logger logger = LoggerFactory.getLogger(PlcRegisterHandler.class);
 
 	protected PlcProvider plcProvider;
+	private String lineRegisterVarName;
+	private String cabRegisterVarName;
 
 	protected final List<String> cabinetErrorsList = new ArrayList<String>();
 	protected final List<String> lineErrorsList = new ArrayList<String>();
@@ -117,7 +118,7 @@ public class PlcRegisterHandler implements IPlcListener {
 
 	protected void onLineErrorRegister(Integer registerValue, String varName) {
 		synchronized (mapPreviousRegister) {
-			List<String> lineWarningErrorVariables = PlcVariables.NTF_LINE_WAR_ERR_REGISTER.getLineVariableNames();
+			List<String> lineWarningErrorVariables = PlcVariableMap.getLinesVariableName(lineRegisterVarName);
 
 			if (lineWarningErrorVariables != null && lineWarningErrorVariables.contains(varName)) {
 
@@ -136,7 +137,7 @@ public class PlcRegisterHandler implements IPlcListener {
 
 		Integer registerValue = (Integer) event.getValue();
 
-		if (PlcVariables.NTF_WAR_ERR_REGISTER.getVariableName().equals(event.getVarName())) {
+		if (cabRegisterVarName.equals(event.getVarName())) {
 			onCabinetErrorRegister(registerValue);
 		} else {
 			onLineErrorRegister(registerValue, event.getVarName());
@@ -147,8 +148,8 @@ public class PlcRegisterHandler implements IPlcListener {
 
 	public List<String> getListeningVariables() {
 		List<String> vars = new ArrayList<String>();
-		vars.add(PlcVariables.NTF_WAR_ERR_REGISTER.getVariableName());
-		vars.addAll(PlcVariables.NTF_LINE_WAR_ERR_REGISTER.getLineVariableNames());
+		vars.add(cabRegisterVarName);
+		vars.addAll(PlcVariableMap.getLinesVariableName(lineRegisterVarName));
 		return vars;
 	}
 
@@ -176,5 +177,13 @@ public class PlcRegisterHandler implements IPlcListener {
 
 	public void setLineErrorsList(List<String> linePlcWarningErrorMsgDescriptorList) {
 		this.lineErrorsList.addAll(linePlcWarningErrorMsgDescriptorList);
+	}
+
+	public void setCabRegisterVarName(String cabRegisterVarName) {
+		this.cabRegisterVarName = cabRegisterVarName;
+	}
+
+	public void setLineRegisterVarName(String lineRegisterVarName) {
+		this.lineRegisterVarName = lineRegisterVarName;
 	}
 }

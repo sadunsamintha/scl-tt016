@@ -10,5 +10,7 @@ beans{
 	plcController(PlcSimulatorController,ref('plcSimulatorModel')){b->
 		b.scope='prototype'
 		simulatorGui=ref('simulatorGui')
+		reqStopVarName="#{plcVarMap['REQUEST_STOP']}"
+		reqStartVarName="#{plcVarMap['REQUEST_START']}";
 	}
 }

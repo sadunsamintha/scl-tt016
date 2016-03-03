@@ -17,7 +17,7 @@
 		<constructor-arg value="${profile.path}/monitoring/" />
 	</bean>
 
-	<bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+	<bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean" >
 		<property name="staticMethod" value="com.sicpa.standard.sasscl.monitoring.MonitoringService.set" />
 		<property name="arguments">
 			<list>

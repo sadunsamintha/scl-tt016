@@ -16,7 +16,6 @@ import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.ioc.BeanProvider;
 import com.sicpa.standard.client.common.messages.MessageEvent;
 import com.sicpa.standard.client.common.utils.PropertiesUtils;
-import com.sicpa.standard.client.common.utils.TaskExecutor;
 import com.sicpa.standard.client.common.view.IGUIComponentGetter;
 import com.sicpa.standard.plc.value.IPlcVariable;
 import com.sicpa.standard.sasscl.business.statistics.StatisticsRestoredEvent;
@@ -29,11 +28,9 @@ import com.sicpa.standard.sasscl.controller.device.IPlcIndependentDevicesControl
 import com.sicpa.standard.sasscl.controller.device.group.DevicesGroup;
 import com.sicpa.standard.sasscl.controller.flow.IBootstrap;
 import com.sicpa.standard.sasscl.controller.scheduling.RemoteServerScheduledJobs;
-import com.sicpa.standard.sasscl.devices.DeviceException;
 import com.sicpa.standard.sasscl.devices.DeviceStatus;
 import com.sicpa.standard.sasscl.devices.DeviceStatusEvent;
 import com.sicpa.standard.sasscl.devices.IDeviceStatusListener;
-import com.sicpa.standard.sasscl.devices.plc.IPlcAdaptor;
 import com.sicpa.standard.sasscl.devices.plc.PlcVariableMap;
 import com.sicpa.standard.sasscl.devices.plc.variable.EditablePlcVariables;
 import com.sicpa.standard.sasscl.devices.plc.variable.serialisation.IPlcValuesLoader;
@@ -43,7 +40,6 @@ import com.sicpa.standard.sasscl.ioc.BeansName;
 import com.sicpa.standard.sasscl.model.ProductionParameters;
 import com.sicpa.standard.sasscl.model.statistics.StatisticsValues;
 import com.sicpa.standard.sasscl.provider.impl.AuthenticatorProvider;
-import com.sicpa.standard.sasscl.provider.impl.PlcProvider;
 import com.sicpa.standard.sasscl.provider.impl.SkuListProvider;
 import com.sicpa.standard.sasscl.provider.impl.SubsystemIdProvider;
 import com.sicpa.standard.sasscl.utils.ConfigUtilEx;
@@ -124,20 +120,20 @@ public class Bootstrap implements IBootstrap {
 	}
 
 	private void connectPlcSecure() {
-		final IPlcAdaptor plcSecure = BeanProvider.getBean(BeansName.PLC_SECURE);
-		final PlcProvider plcSecProvider = BeanProvider.getBean(BeansName.PLC_SEC_PROVIDER);
-		plcSecProvider.set(plcSecure);
-
-		TaskExecutor.execute(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					plcSecure.connect();
-				} catch (final DeviceException e) {
-					logger.error("Error while starting the PLC Secure module", e);
-				}
-			}
-		});
+//		final IPlcAdaptor plcSecure = BeanProvider.getBean(BeansName.PLC_SECURE);
+//		final PlcProvider plcSecProvider = BeanProvider.getBean(BeansName.PLC_SEC_PROVIDER);
+//		plcSecProvider.set(plcSecure);
+//
+//		TaskExecutor.execute(new Runnable() {
+//			@Override
+//			public void run() {
+//				try {
+//					plcSecure.connect();
+//				} catch (final DeviceException e) {
+//					logger.error("Error while starting the PLC Secure module", e);
+//				}
+//			}
+//		});
 	}
 
 	private void restorePreviousSelectedProductionParams() {

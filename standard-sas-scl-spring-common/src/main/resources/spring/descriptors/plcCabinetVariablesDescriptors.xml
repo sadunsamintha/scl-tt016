@@ -7,199 +7,58 @@
 	<!-- CABINET PARAMETERS -->
 	<!-- ******************************************************* -->
 
-	<bean id="timeoutLifecheckPlcVarDesc" class="com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcIntegerVariableDescriptor">
-		<property name="variable" ref="timeoutLifecheckParam" />
-		<property name="min" value="1" />
-		<property name="max" value="999999" />
-		<property name="plcProvider" ref="plcProvider" />
-	</bean>
-
-	<bean id="coolingErrActivationTimeoutPlcVarDesc" class="com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcIntegerVariableDescriptor">
-		<property name="variable" ref="coolingErrActivationTimeoutParam" />
-		<property name="min" value="1" />
-		<property name="max" value="999999" />
-		<property name="plcProvider" ref="plcProvider" />
-	</bean>
-
-	<bean id="comStrucStoredInRamPlcVarDesc" class="com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcBooleanVariableDescriptor">
-		<property name="variable" ref="comStrucStoredInRamParam" />
-		<property name="plcProvider" ref="plcProvider" />
-	</bean>
-
-	<bean id="inhibitRamWritingPlcVarDesc" class="com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcBooleanVariableDescriptor">
-		<property name="variable" ref="inhibitRamWritingParam" />
-		<property name="plcProvider" ref="plcProvider" />
-	</bean>
-
-	<bean id="multilineReqModeEnabledPlcVarDesc" class="com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcBooleanVariableDescriptor">
-		<property name="variable" ref="multilineReqModeEnabledParam" />
-		<property name="plcProvider" ref="plcProvider" />
-	</bean>
-
-	<bean id="warTempEeCabLvlPlcVarDesc" class="com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcIntegerVariableDescriptor">
-		<property name="variable" ref="warTempEeCabLvlParam" />
-		<property name="min" value="1" />
-		<property name="max" value="999999" />
-		<property name="plcProvider" ref="plcProvider" />
-	</bean>
-
-	<bean id="warTempAmbiantLvlPlcVarDesc" class="com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcIntegerVariableDescriptor">
-		<property name="variable" ref="warTempAmbiantLvlParam" />
-		<property name="min" value="1" />
-		<property name="max" value="999999" />
-		<property name="plcProvider" ref="plcProvider" />
-	</bean>
-
-	<bean id="warTempBypasstLvlPlcVarDesc" class="com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcIntegerVariableDescriptor">
-		<property name="variable" ref="warTempBypasstLvlParam" />
-		<property name="min" value="1" />
-		<property name="max" value="999999" />
-		<property name="plcProvider" ref="plcProvider" />
-	</bean>
-
-	<bean id="errTempEeCabLvlPlcVarDesc" class="com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcIntegerVariableDescriptor">
-		<property name="variable" ref="errTempEeCabLvlParam" />
-		<property name="min" value="1" />
-		<property name="max" value="999999" />
-		<property name="plcProvider" ref="plcProvider" />
-	</bean>
-
-	<bean id="errTempAmbiantLvlPlcVarDesc" class="com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcIntegerVariableDescriptor">
-		<property name="variable" ref="errTempAmbiantLvlParam" />
-		<property name="min" value="1" />
-		<property name="max" value="999999" />
-		<property name="plcProvider" ref="plcProvider" />
-	</bean>
-
-	<bean id="errTempBypassLvlPlcVarDesc" class="com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcIntegerVariableDescriptor">
-		<property name="variable" ref="errTempBypassLvlParam" />
-		<property name="min" value="1" />
-		<property name="max" value="999999" />
-		<property name="plcProvider" ref="plcProvider" />
-	</bean>
-
-	<bean id="warAirPressLvlPlcVarDesc" class="com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcIntegerVariableDescriptor">
-		<property name="variable" ref="warAirPressLvlParam" />
-		<property name="min" value="0" />
-		<property name="max" value="999999" />
-		<property name="plcProvider" ref="plcProvider" />
-	</bean>
-
-	<bean id="errAirPressLvlPlcVarDesc" class="com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcIntegerVariableDescriptor">
-		<property name="variable" ref="errAirPressLvlParam" />
-		<property name="min" value="0" />
-		<property name="max" value="999999" />
-		<property name="plcProvider" ref="plcProvider" />
-	</bean>
-
-	<bean id="warFansEeCabMinFreqPlcVarDesc" class="com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcIntegerVariableDescriptor">
-		<property name="variable" ref="warFansEeCabMinFreqParam" />
-		<property name="min" value="1" />
-		<property name="max" value="999999" />
-		<property name="plcProvider" ref="plcProvider" />
-	</bean>
-
-	<bean id="warFansEeCabMaxFreqPlcVarDesc" class="com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcIntegerVariableDescriptor">
-		<property name="variable" ref="warFansEeCabMaxFreqParam" />
-		<property name="min" value="1" />
-		<property name="max" value="999999" />
-		<property name="plcProvider" ref="plcProvider" />
-	</bean>
-
-	<bean id="warFansBypassCabMinFreqPlcVarDesc" class="com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcIntegerVariableDescriptor">
-		<property name="variable" ref="warFansBypassCabMinFreqParam" />
-		<property name="min" value="1" />
-		<property name="max" value="999999" />
-		<property name="plcProvider" ref="plcProvider" />
-	</bean>
-
-	<bean id="warFansBypassCabMaxFreqPlcVarDesc" class="com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcIntegerVariableDescriptor">
-		<property name="variable" ref="warFansBypassCabMaxFreqParam" />
-		<property name="min" value="1" />
-		<property name="max" value="999999" />
-		<property name="plcProvider" ref="plcProvider" />
-	</bean>
-
-	<bean id="fansTempOnThresholdEePlcVarDesc" class="com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcIntegerVariableDescriptor">
-		<property name="variable" ref="fansTempOnThresholdEeParam" />
-		<property name="min" value="1" />
-		<property name="max" value="999999" />
-		<property name="plcProvider" ref="plcProvider" />
-	</bean>
-
-	<bean id="fansTempOffDeltaHystEePlcVarDesc" class="com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcIntegerVariableDescriptor">
-		<property name="variable" ref="fansTempOffDeltaHystEeParam" />
-		<property name="min" value="1" />
-		<property name="max" value="999999" />
-		<property name="plcProvider" ref="plcProvider" />
-	</bean>
-
-	<bean id="fansTempOnThresholdBypassPlcVarDesc" class="com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcIntegerVariableDescriptor">
-		<property name="variable" ref="fansTempOnThresholdBypassParam" />
-		<property name="min" value="1" />
-		<property name="max" value="999999" />
-		<property name="plcProvider" ref="plcProvider" />
-	</bean>
-
-	<bean id="fansTempOffDeltaHystBypassPlcVarDesc" class="com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcIntegerVariableDescriptor">
-		<property name="variable" ref="fansTempOffDeltaHystBypassParam" />
-		<property name="min" value="1" />
-		<property name="max" value="999999" />
-		<property name="plcProvider" ref="plcProvider" />
-	</bean>
-
 	<!-- variables list -->
 	<bean id="cabinetEditablePlcVariables" class="com.sicpa.standard.sasscl.devices.plc.variable.EditablePlcVariables">
 		<constructor-arg ref="allPlcVariableValues" />
 
 		<constructor-arg>
 			<array>
-				<bean class="com.sicpa.standard.sasscl.devices.plc.variable.PlcVariableGroup">
+				<bean id="plcGrp9 " class="com.sicpa.standard.sasscl.devices.plc.variable.PlcVariableGroup">
 					<constructor-arg>
 						<array>
-							<ref bean="timeoutLifecheckPlcVarDesc" />
-							<ref bean="coolingErrActivationTimeoutPlcVarDesc" />
-							<ref bean="comStrucStoredInRamPlcVarDesc" />
-							<ref bean="inhibitRamWritingPlcVarDesc" />
-							<ref bean="multilineReqModeEnabledPlcVarDesc" />
+							<ref bean="PARAM_CAB_TIMEOUT_LIFECHECK_desc" />
+							<ref bean="PARAM_CAB_COOLING_ERR_ACTIVATION_TIMEOUT_desc" />
+							<ref bean="PARAM_CAB_COM_STRUC_STORED_IN_RAM_desc" />
+							<ref bean="PARAM_CAB_INHIBIT_RAM_WRITING_desc" />
+							<ref bean="PARAM_CAB_MULTILINE_REQ_MODE_ENABLED_desc" />
 						</array>
 					</constructor-arg>
 					<property name="description" value="plc.config.cabinet.system" />
 				</bean>
-				<bean class="com.sicpa.standard.sasscl.devices.plc.variable.PlcVariableGroup">
+				<bean id="plcGrp10" class="com.sicpa.standard.sasscl.devices.plc.variable.PlcVariableGroup">
 					<constructor-arg>
 						<array>
-							<ref bean="errTempBypassLvlPlcVarDesc" />
-							<ref bean="warTempBypasstLvlPlcVarDesc" />
-							<ref bean="errTempEeCabLvlPlcVarDesc" />
-							<ref bean="errTempAmbiantLvlPlcVarDesc" />
-							<ref bean="warTempEeCabLvlPlcVarDesc" />
-							<ref bean="warTempAmbiantLvlPlcVarDesc" />
+							<ref bean="PARAM_CAB_WAR_TEMP_EE_CAB_LVL_desc" />
+							<ref bean="PARAM_CAB_WAR_TEMP_AMBIANT_LVL_desc" />
+							<ref bean="PARAM_CAB_WAR_TEMP_BYPASS_LVL_desc" />
+							<ref bean="PARAM_CAB_ERR_TEMP_EE_CAB_LVL_desc" />
+							<ref bean="PARAM_CAB_ERR_TEMP_AMBIANT_LVL_desc" />
+							<ref bean="PARAM_CAB_ERR_TEMP_BYPASS_LVL_desc" />
 						</array>
 					</constructor-arg>
 					<property name="description" value="plc.config.cabinet.temp" />
 				</bean>
-				<bean class="com.sicpa.standard.sasscl.devices.plc.variable.PlcVariableGroup">
+				<bean id="plcGrp11" class="com.sicpa.standard.sasscl.devices.plc.variable.PlcVariableGroup">
 					<constructor-arg>
 						<array>
-							<ref bean="warAirPressLvlPlcVarDesc" />
-							<ref bean="errAirPressLvlPlcVarDesc" />
+							<ref bean="PARAM_CAB_WAR_AIR_PRESS_LVL_desc" />
+							<ref bean="PARAM_CAB_ERR_AIR_PRESS_LVL_desc" />
 						</array>
 					</constructor-arg>
 					<property name="description" value="plc.config.cabinet.air" />
 				</bean>
 
-				<bean class="com.sicpa.standard.sasscl.devices.plc.variable.PlcVariableGroup">
+				<bean id="plcGrp12" class="com.sicpa.standard.sasscl.devices.plc.variable.PlcVariableGroup">
 					<constructor-arg>
 						<array>
-							<ref bean="warFansEeCabMinFreqPlcVarDesc" />
-							<ref bean="warFansEeCabMaxFreqPlcVarDesc" />
-							<ref bean="warFansBypassCabMinFreqPlcVarDesc" />
-							<ref bean="warFansBypassCabMaxFreqPlcVarDesc" />
-							<ref bean="fansTempOnThresholdEePlcVarDesc" />
-							<ref bean="fansTempOffDeltaHystEePlcVarDesc" />
-							<ref bean="fansTempOnThresholdBypassPlcVarDesc" />
-							<ref bean="fansTempOffDeltaHystBypassPlcVarDesc" />
+							<ref bean="PARAM_CAB_WAR_FANS_EE_CAB_MIN_FREQ_desc" />
+							<ref bean="PARAM_CAB_WAR_FANS_EE_CAB_MAX_FREQ_desc" />
+							<ref bean="PARAM_CAB_WAR_FANS_BYPASS_CAB_MIN_FREQ_desc" />
+							<ref bean="PARAM_CAB_WAR_FANS_BYPASS_CAB_MAX_FREQ_desc" />
+							<ref bean="PARAM_CAB_FANS_TEMP_ON_THRESHOLD_EE_desc" />
+							<ref bean="PARAM_CAB_FANS_TEMP_OFF_DELTA_HYST_EE_desc" />
+							<ref bean="PARAM_CAB_FANS_TEMP_ON_THRESHOLD_BYPASS_desc" />
+							<ref bean="PARAM_CAB_FANS_TEMP_OFF_DELTA_HYST_BYPASS_desc" />
 						</array>
 					</constructor-arg>
 					<property name="description" value="plc.config.cabinet.fan" />

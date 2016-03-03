@@ -1,6 +1,6 @@
 <PlcValuesForAllVar>
   <PlcValue varName=".com.stCabinet.stParameters.nTimeoutLifeCheck">
-    <value class="int">10000</value>
+    <value class="short">10000</value>
   </PlcValue>
   <PlcValue varName=".com.stCabinet.stParameters.nCoolingErrorActivationTimeout">
     <value class="int">200000</value>

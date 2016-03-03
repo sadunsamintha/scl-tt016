@@ -53,10 +53,10 @@ public class PlcVariableMap {
 		variableNameMap.put(logical, nameOnPlc);
 	}
 
-	public static List<String> getLineVariableName(String key) {
-		List<String> res = new ArrayList<String>();
+	public static List<String> getLinesVariableName(String varName) {
+		List<String> res = new ArrayList<>();
 		for (int i : lineIndexes) {
-			res.add(key.replace("#x", "" + i));
+			res.add(varName.replace("#x", "" + i));
 		}
 		return res;
 	}

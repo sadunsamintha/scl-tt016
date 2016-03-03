@@ -24,7 +24,6 @@ import com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcIntegerVaria
 public class PlcIntegerVariableRenderer extends JPanel implements IPlcVariableDescriptorListener {
 
 	private static final Logger logger = LoggerFactory.getLogger(PlcIntegerVariableRenderer.class);
-
 	protected JLabel labelVarName;
 	protected JSpinner spinner;
 	protected JLabel labelFormatedValue;

@@ -158,7 +158,7 @@ public class PlcPulseVariableDescriptor extends PlcIntegerVariableDescriptor {
 		this.greaterThan = greaterThan;
 	}
 
-	public void setLowerThan(final PlcPulseVariableDescriptor[] lowerThan) {
+	public void setLowerThan(PlcPulseVariableDescriptor[] lowerThan) {
 		this.lowerThan = lowerThan;
 	}
 
@@ -166,7 +166,7 @@ public class PlcPulseVariableDescriptor extends PlcIntegerVariableDescriptor {
 		return minPulse;
 	}
 
-	public void setMinPulse(final int minPulse) {
+	public void setMinPulse(int minPulse) {
 		this.minPulse = minPulse;
 	}
 
@@ -174,7 +174,7 @@ public class PlcPulseVariableDescriptor extends PlcIntegerVariableDescriptor {
 		return maxPulse;
 	}
 
-	public void setMaxPulse(final int maxPulse) {
+	public void setMaxPulse(int maxPulse) {
 		this.maxPulse = maxPulse;
 	}
 
@@ -182,7 +182,7 @@ public class PlcPulseVariableDescriptor extends PlcIntegerVariableDescriptor {
 		return minMs;
 	}
 
-	public void setMinMs(final int minMs) {
+	public void setMinMs(int minMs) {
 		this.minMs = minMs;
 	}
 
@@ -190,17 +190,17 @@ public class PlcPulseVariableDescriptor extends PlcIntegerVariableDescriptor {
 		return maxMs;
 	}
 
-	public void setMaxMs(final int maxMs) {
+	public void setMaxMs(int maxMs) {
 		this.maxMs = maxMs;
 	}
 
 	@Override
-	public void setMin(final int min) {
+	public void setMin(int min) {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public void setMax(final int max) {
+	public void setMax(int max) {
 		throw new UnsupportedOperationException();
 	}
 

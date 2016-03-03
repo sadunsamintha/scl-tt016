@@ -65,6 +65,14 @@ public class PlcAdaptor extends AbstractPlcAdaptor implements IPlcControllerList
 
 	private static final short SYSTEM_TYPE_TOBACCO = 3;
 
+	private String lineSpeedVarName;
+	private String productFreqVarName;
+	private String systemTypeVarName;
+	private String lineActiveVarName;
+	private String plcVersionHVarName;
+	private String plcVersionMVarName;
+	private String plcVersionLVarName;
+
 	public void setPlcVariablesNameMap(Map<String, String> plcVariablesMap) {
 		PlcVariableMap.addPlcVariables(plcVariablesMap);
 	}
@@ -201,9 +209,8 @@ public class PlcAdaptor extends AbstractPlcAdaptor implements IPlcControllerList
 			@Override
 			public List<String> getListeningVariables() {
 				List<String> result = new ArrayList<String>();
-				result.addAll(PlcVariables.NTF_LINE_SPEED.getLineVariableNames());
-				result.addAll(PlcVariables.NTF_PRODUCTS_FREQ.getLineVariableNames());
-				logger.debug("getListeningVariables");
+				result.addAll(PlcVariableMap.getLinesVariableName(lineSpeedVarName));
+				result.addAll(PlcVariableMap.getLinesVariableName(productFreqVarName));
 				return result;
 			}
 		});
@@ -244,8 +251,8 @@ public class PlcAdaptor extends AbstractPlcAdaptor implements IPlcControllerList
 
 		String eventVarName = event.getVarName().substring(length);
 
-		String freqVar = PlcVariables.NTF_PRODUCTS_FREQ.getVariableName().substring(length + 1);
-		String speedVar = PlcVariables.NTF_LINE_SPEED.getVariableName().substring(length + 1);
+		String freqVar = productFreqVarName.substring(length + 1);
+		String speedVar = lineSpeedVarName.substring(length + 1);
 
 		if (eventVarName.equals(freqVar) && isTobacco(event)) {
 			handleProductFreqEvent(lineIndex, event);
@@ -286,7 +293,7 @@ public class PlcAdaptor extends AbstractPlcAdaptor implements IPlcControllerList
 		if (systemTypes == null) {
 			systemTypes = new HashMap<String, Short>();
 
-			List<String> systemTypeVarList = PlcVariables.PARAM_SYSTEM_TYPE.getLineVariableNames();
+			List<String> systemTypeVarList = PlcVariableMap.getLinesVariableName(systemTypeVarName);
 
 			for (String systemTypeVar : systemTypeVarList) {
 				for (IPlcVariable<?> var : parameters) {
@@ -312,7 +319,7 @@ public class PlcAdaptor extends AbstractPlcAdaptor implements IPlcControllerList
 		if (activeLines == null) {
 			activeLines = new HashMap<String, Boolean>();
 
-			List<String> systemTypeVarList = PlcVariables.PARAM_LINE_IS_ACTIVE.getLineVariableNames();
+			List<String> systemTypeVarList = PlcVariableMap.getLinesVariableName(lineActiveVarName);
 
 			for (String systemTypeVar : systemTypeVarList) {
 				for (IPlcVariable<?> var : parameters) {
@@ -648,9 +655,9 @@ public class PlcAdaptor extends AbstractPlcAdaptor implements IPlcControllerList
 			return "";
 		}
 
-		IPlcVariable<Integer> h = PlcVariable.createInt32Var(PlcVariables.NTF_VERSION_HIGH.getVariableName());
-		IPlcVariable<Integer> m = PlcVariable.createInt32Var(PlcVariables.NTF_VERSION_MEDIUM.getVariableName());
-		IPlcVariable<Integer> l = PlcVariable.createInt32Var(PlcVariables.NTF_VERSION_LOW.getVariableName());
+		IPlcVariable<Integer> h = PlcVariable.createInt32Var(plcVersionHVarName);
+		IPlcVariable<Integer> m = PlcVariable.createInt32Var(plcVersionMVarName);
+		IPlcVariable<Integer> l = PlcVariable.createInt32Var(plcVersionLVarName);
 		try {
 			return read(h) + "." + read(m) + "." + read(l);
 		} catch (PlcAdaptorException e) {
@@ -661,5 +668,33 @@ public class PlcAdaptor extends AbstractPlcAdaptor implements IPlcControllerList
 
 	public void setPlcConfigFolder(String plcConfigFolder) {
 		this.plcConfigFolder = plcConfigFolder;
+	}
+
+	public void setLineSpeedVarName(String lineSpeedVarName) {
+		this.lineSpeedVarName = lineSpeedVarName;
+	}
+
+	public void setProductFreqVarName(String productFreqVarName) {
+		this.productFreqVarName = productFreqVarName;
+	}
+
+	public void setSystemTypeVarName(String systemTypeVarName) {
+		this.systemTypeVarName = systemTypeVarName;
+	}
+
+	public void setLineActiveVarName(String lineActiveVarName) {
+		this.lineActiveVarName = lineActiveVarName;
+	}
+
+	public void setPlcVersionHVarName(String plcVersionHVarName) {
+		this.plcVersionHVarName = plcVersionHVarName;
+	}
+
+	public void setPlcVersionLVarName(String plcVersionLVarName) {
+		this.plcVersionLVarName = plcVersionLVarName;
+	}
+
+	public void setPlcVersionMVarName(String plcVersionMVarName) {
+		this.plcVersionMVarName = plcVersionMVarName;
 	}
 }

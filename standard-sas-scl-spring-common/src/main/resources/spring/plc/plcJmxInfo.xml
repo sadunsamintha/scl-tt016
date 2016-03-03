@@ -8,50 +8,10 @@
 
 	<bean id="plcJmxInfo" class="com.sicpa.standard.sasscl.devices.plc.PlcJmxInfo">
 		<property name="plcProvider" ref="plcProvider" />
-		<property name="plcCabinetVars" ref="cabinetVarForJmxInfo" />
-		<property name="plcLineVars" ref="lineVarsForJmxInfo" />
+		<property name="plcCabinetVars" ref="plcCabNotifs" />
+		<property name="plcLineVars" ref="plcLineNotifs" />
 	</bean>
-	<!-- plc cabinet info -->
 
-	<util:list id="cabinetVarForJmxInfo">
-		<ref bean="cxBoardTemperatureNtf" />
-		<ref bean="cxCpuTemperatureNtf" />
-		<ref bean="temperatureEeCabNtf" />
-		<ref bean="temperatureAmbiantNtf" />
-		<ref bean="temperatureBypassNtf" />
-		<ref bean="relHumidityAmbiantNtf" />
-		<ref bean="relHumidityVoltageLvlNtf" />
-		<ref bean="airPressLvlNtf" />
-		<ref bean="airPressVoltageLvlNtf" />
-		<ref bean="warErrRegisterNtf" />
-	</util:list>
-
-	<!-- plc line info -->
-	<util:list id="lineVarsForJmxInfo">
-		<ref bean="lineSpeedNtf" />
-		<ref bean="prodsPerSecondNtf" />
-		<ref bean="lineStateNtf" />
-		<ref bean="goodTrigsNtf" />
-		<ref bean="badTrigsNtf" />
-		<ref bean="noCapTrigsNtf" />
-		<ref bean="counterTrigsNtf" />
-		<ref bean="productDetectorTrigsNtf" />
-		<ref bean="productsFreqNtf" />
-		<ref bean="cptProductsEjectionsNtf" />
-		<ref bean="tempIjCabNtf" />
-		<ref bean="tempIjInkNtf" />
-		<ref bean="lineRelHumidityAmbiantNtf" />
-		<ref bean="lineRelHumidityVoltageLvlNtf" />
-		<ref bean="lineAirPressLvlNtf" />
-		<ref bean="lineAirPressVoltageLvlNtf" />
-		<ref bean="lineWarErrRegisterNtf" />
-	</util:list>
-
-	<!-- <bean id="injectPlcLineParamfIntoJmxInfo" class="com.sicpa.standard.client.common.ioc.InjectByMethodBean"> -->
-	<!-- <property name="target" ref="plcJmxInfo" /> -->
-	<!-- <property name="methodName" value="addPlcLineVars" /> -->
-	<!-- <property name="param" ref="plcLineParamsTemplate" /> -->
-	<!-- </bean> -->
 </beans>
 
 

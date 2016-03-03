@@ -47,7 +47,6 @@ import com.sicpa.standard.plc.driver.event.PlcEventArgs;
 import com.sicpa.standard.plc.driver.event.PlcEventCode;
 import com.sicpa.standard.plc.value.IPlcVariable;
 import com.sicpa.standard.plc.value.PlcVariable;
-import com.sicpa.standard.sasscl.devices.plc.impl.PlcVariables;
 import com.sicpa.standard.sasscl.devices.simulator.gui.SimulatorControlView;
 import com.sicpa.standard.sasscl.messages.MessageEventKey;
 
@@ -56,19 +55,14 @@ public class PlcSimulatorController implements IPlcController<PlcSimulatorConfig
 	protected final static Logger logger = LoggerFactory.getLogger(PlcSimulatorController.class);
 
 	protected PlcSimulatorConfig config;
+	private String reqStopVarName;
+	private String reqStartVarName;
+	protected SimulatorControlView simulatorGui;
 
 	protected final List<IPlcControllerListener> listeners = new ArrayList<IPlcControllerListener>();
-
 	protected Thread notificationWorkerThread;
-
 	protected boolean running;
-
 	protected boolean connected;
-
-	/*
-	 *
-	 */
-	protected SimulatorControlView simulatorGui;
 
 	/*
 	 * variable to keep notification request in a queue to be processed later
@@ -606,23 +600,23 @@ public class PlcSimulatorController implements IPlcController<PlcSimulatorConfig
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	protected void execute(final PlcRequestAction<?> action) throws PlcException {
-		
+
 		final IPlcVariable<?> plcVar = action.getVariable();
 		if (plcVar == null)
 			return;
-		
+
 		String varName = plcVar.getVariableName();
 		if (varName == null)
 			return;
-		
-		if (varName.equals(PlcVariables.REQUEST_STOP.getVariableName())) {
+
+		if (varName.equals(reqStopVarName)) {
 			// stop timer
-			this.doStop();
+			doStop();
 		}
 
-		else if (varName.equals(PlcVariables.REQUEST_START.getVariableName())) {
+		else if (varName.equals(reqStartVarName)) {
 			// start timer
-			this.doStart();
+			doStart();
 		}
 
 		logger.debug("Writing value of PLC variable : {}, value : {}", varName, plcVar.getValue());
@@ -715,10 +709,18 @@ public class PlcSimulatorController implements IPlcController<PlcSimulatorConfig
 	}
 
 	public PlcSimulatorConfig getModel() {
-		return this.config;
+		return config;
 	}
 
 	public void setModel(PlcSimulatorConfig plcModel) {
 		this.config = plcModel;
+	}
+
+	public void setReqStartVarName(String reqStartVarName) {
+		this.reqStartVarName = reqStartVarName;
+	}
+
+	public void setReqStopVarName(String reqStopVarName) {
+		this.reqStopVarName = reqStopVarName;
 	}
 }

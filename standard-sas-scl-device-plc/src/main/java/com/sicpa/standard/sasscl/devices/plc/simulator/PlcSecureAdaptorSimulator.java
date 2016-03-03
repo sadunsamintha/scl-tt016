@@ -9,14 +9,13 @@ import com.sicpa.standard.plc.controller.IPlcController;
 import com.sicpa.standard.sasscl.devices.plc.PlcAdaptorException;
 import com.sicpa.standard.sasscl.devices.plc.event.PlcEvent;
 import com.sicpa.standard.sasscl.devices.plc.impl.PlcSecureAdaptor;
-import static com.sicpa.standard.sasscl.devices.plc.impl.PlcSecureVariables.*;
 import com.sicpa.standard.sasscl.event.LoginAttemptEvent;
 import com.sicpa.standard.sasscl.security.UserId;
 
 public class PlcSecureAdaptorSimulator extends PlcSecureAdaptor {
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(PlcSecureAdaptorSimulator.class);
-	
+
 	public PlcSecureAdaptorSimulator(IPlcController<?> controller) {
 		super(controller);
 		EventBusService.register(this);
@@ -25,17 +24,15 @@ public class PlcSecureAdaptorSimulator extends PlcSecureAdaptor {
 	@Subscribe
 	public void onLoginAttempt(LoginAttemptEvent event) {
 		logger.debug("LoginAttemptEvent {}", event.getLogin());
-		
+
 		currentUserId = getUserId(event.getLogin());
-		handleEvent(new PlcEvent(
-				NTF_USER_AUTHENTICATION.getVariableName(), true));
+		handleEvent(new PlcEvent(userAuthVarName, true));
 	}
-	
+
 	@Override
 	protected UserId checkPlcUser() throws PlcAdaptorException {
 		if (currentUserId != null)
 			return currentUserId;
 		throw new PlcAdaptorException("User login invalid");
 	}
-
 }

@@ -20,17 +20,22 @@ public class PlcShortVariableDescriptor extends PlcVariableDescriptor<Short> {
 
 	@Override
 	public void validate() throws ValidatorException {
+		try {
+			Short value = variable.getValue();
+			if (value == null) {
+				throw new ValidatorException(MessageEventKey.PLC.VALIDATOR_NULL, variable.getVariableName(),
+						variable.getVariableName());
+			}
 
-		Short value = variable.getValue();
-		if (value == null) {
-			throw new ValidatorException(MessageEventKey.PLC.VALIDATOR_NULL, variable.getVariableName(),
-					variable.getVariableName());
+			if (this.min > value || value > max) {
+				throw new ValidatorException(MessageEventKey.PLC.VALIDATOR_RANGE, variable.getVariableName(),
+						variable.getVariableName(), value, min, max);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println(variable.getVariableName() + " " + variable.getVariableName() + "--" + variable);
 		}
 
-		if (this.min > value || value > max) {
-			throw new ValidatorException(MessageEventKey.PLC.VALIDATOR_RANGE, variable.getVariableName(),
-					variable.getVariableName(), value, min, max);
-		}
 	}
 
 	public short getMin() {

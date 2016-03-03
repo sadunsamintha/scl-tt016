@@ -13,6 +13,7 @@
 			</bean>
 		</property>
 		<property name="plcProvider" ref="plcProvider" />
+		<property name="productFreqVarName" value="#{plcVarMap['NTF_LINE_PRODUCTS_FREQ']}" />
 	</bean>
 
 	<bean id="alertAddTaskAplcActivationCrossCheckTask" class="com.sicpa.standard.client.common.ioc.InjectByMethodBean">
