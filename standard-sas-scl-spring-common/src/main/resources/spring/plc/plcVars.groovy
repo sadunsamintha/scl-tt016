@@ -7,6 +7,7 @@ import com.sicpa.standard.plc.value.*
 import com.sicpa.standard.sasscl.devices.plc.DefaultPlcRequestExecutor;
 import com.sicpa.standard.sasscl.devices.plc.IPlcRequestExecutor;
 import com.sicpa.standard.sasscl.devices.plc.PlcRequest;
+import com.sicpa.standard.sasscl.devices.plc.variable.PlcVariableGroup;
 import com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcBooleanVariableDescriptor;
 import com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcByteVariableDescriptor;
 import com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcIntegerVariableDescriptor;
@@ -37,14 +38,19 @@ import groovy.transform.Field;
 @Field def plcMap=new HashMap()
 @Field def requestMapping=new HashMap()
 
+@Field def lineGroups=new TreeMap<String, PlcVariableGroup>()
+@Field def cabGroups=new TreeMap<String, PlcVariableGroup>()
+
+
 beans {
 
 	//v=> var name
 	//t=> type (i)nt/(s)hort/(b)ool,(str)ing, (by)te , in fact contain the method name to call to create the var
-	//novar => if you want the var to be accessible in the plcvarmap but not create an associated plcvar (used for error template msg)
 	//pulseConvertParam => if the var is part of the pulse by mm parameters
 	//cabNtf => notif on cabinet var
 	//lineNtf => notif on line
+	//lineGrp
+	//cabGrp
 
 	plcMap['PARAM_LINE_IS_ACTIVE']=[v:'.com.stLine[#x].bLine_is_active' ,t:b]
 	plcMap['PARAM_LINE_COM_STRUC_STORED_IN_RAM']=[v:'.com.stLine[#x].stParameters.bComStructureStoredInRAM' ,t:b]
@@ -63,65 +69,65 @@ beans {
 	plcMap['PARAM_LINE_EJECTION_EMISSION_DISTANCE_TYPE']=[v:'.com.stLine[#x].stParameters.bEjectionEmissionDistanceType' ,t:b]
 	plcMap['PARAM_LINE_EJECTION_EMISSION_LENGTH_TYPE']=[v:'.com.stLine[#x].stParameters.bEjectionEmissionLengthType' ,t:b]
 	plcMap['PARAM_LINE_JAVA_NTF_DISTANCE_TYPE']=[v:'.com.stLine[#x].stParameters.bJavaNotificationDistanceType' ,t:b]
-	plcMap['PARAM_LINE_COUNTER_FILTER']=[v:'.com.stLine[#x].stParameters.nCounterFilter' ,t:d]
-	plcMap['PARAM_LINE_PRODUCT_DETECTOR_FILTER']=[v:'.com.stLine[#x].stParameters.nProductDetectorFilter' ,t:i]
-	plcMap['PARAM_LINE_CAMERA_DISTANCE']=[v:'.com.stLine[#x].stParameters.nCameraDistance' ,t:d]
-	plcMap['PARAM_LINE_CAMERA_LENGTH']=[v:'.com.stLine[#x].stParameters.nCameraLength' ,t:d]
-	plcMap['PARAM_LINE_VALIDE_CODE_TIMEOUT']=[v:'.com.stLine[#x].stParameters.nValideCodeTimeout' ,t:d]
-	plcMap['PARAM_LINE_AUDIO_VISUAL_EMISSION_DISTANCE']=[v:'.com.stLine[#x].stParameters.nAudioVisualEmissionDistance' ,t:d]
-	plcMap['PARAM_LINE_AUDIO_VISUAL_EMISSION_LENGTH']=[v:'.com.stLine[#x].stParameters.nAudioVisualEmissionLength' ,t:d]
-	plcMap['PARAM_LINE_PRINTER_DISTANCE']=[v:'.com.stLine[#x].stParameters.nPrinterDistance' ,t:d]
-	plcMap['PARAM_LINE_PRINTER_LENGTH']=[v:'.com.stLine[#x].stParameters.nPrinterLength' ,t:d]
-	plcMap['PARAM_LINE_PC_EJECTION_RECEPTION_DISTANCE']=[v:'.com.stLine[#x].stParameters.nPCEjectionReceptionDistance' ,t:d]
+	plcMap['PARAM_LINE_COUNTER_FILTER']=[v:'.com.stLine[#x].stParameters.nCounterFilter' ,t:d ,lineGrp:'misc']
+	plcMap['PARAM_LINE_PRODUCT_DETECTOR_FILTER']=[v:'.com.stLine[#x].stParameters.nProductDetectorFilter' ,t:i ,lineGrp:'misc']
+	plcMap['PARAM_LINE_CAMERA_DISTANCE']=[v:'.com.stLine[#x].stParameters.nCameraDistance' ,t:d ,lineGrp:'camera']
+	plcMap['PARAM_LINE_CAMERA_LENGTH']=[v:'.com.stLine[#x].stParameters.nCameraLength' ,t:d ,lineGrp:'camera']
+	plcMap['PARAM_LINE_VALIDE_CODE_TIMEOUT']=[v:'.com.stLine[#x].stParameters.nValideCodeTimeout' ,t:d ,lineGrp:'misc']
+	plcMap['PARAM_LINE_AUDIO_VISUAL_EMISSION_DISTANCE']=[v:'.com.stLine[#x].stParameters.nAudioVisualEmissionDistance' ,t:d ,lineGrp:'misc']
+	plcMap['PARAM_LINE_AUDIO_VISUAL_EMISSION_LENGTH']=[v:'.com.stLine[#x].stParameters.nAudioVisualEmissionLength' ,t:d ,lineGrp:'misc']
+	plcMap['PARAM_LINE_PRINTER_DISTANCE']=[v:'.com.stLine[#x].stParameters.nPrinterDistance' ,t:d,lineGrp:'printer']
+	plcMap['PARAM_LINE_PRINTER_LENGTH']=[v:'.com.stLine[#x].stParameters.nPrinterLength' ,t:d ,lineGrp:'printer']
+	plcMap['PARAM_LINE_PC_EJECTION_RECEPTION_DISTANCE']=[v:'.com.stLine[#x].stParameters.nPCEjectionReceptionDistance' ,t:d ,lineGrp:'ejection']
 	plcMap['PARAM_LINE_PC_EJECTION_RECEPTION_LENGTH']=[v:'.com.stLine[#x].stParameters.nPCEjectionReceptionLength' ,t:i]
-	plcMap['PARAM_LINE_PROD_CONTROL_DETECTOR_FILTER']=[v:'.com.stLine[#x].stParameters.nProdControlDetectorFilter' ,t:d]
-	plcMap['PARAM_LINE_EJECTION_EMISSION_DISTANCE']=[v:'.com.stLine[#x].stParameters.nEjectionEmissionDistance' ,t:d]
-	plcMap['PARAM_LINE_EJECTION_EMISSION_LENGTH']=[v:'.com.stLine[#x].stParameters.nEjectionEmissionLength' ,t:d]
-	plcMap['PARAM_LINE_JAVA_NTF_DISTANCE']=[v:'.com.stLine[#x].stParameters.nJavaNotificationDistance' ,t:d]
-	plcMap['PARAM_LINE_ENCODER_RESOLUTION']=[v:'.com.stLine[#x].stParameters.nEncoderResolution' ,t:i ,pulseConvertParam:'true']
-	plcMap['PARAM_LINE_SHAPE_DIAMETER']=[v:'.com.stLine[#x].stParameters.nShapeDiameter' ,t:i ,pulseConvertParam:'true']
-	plcMap['PARAM_LINE_MAX_CONSECUTIVE_INVALID_CODES']=[v:'.com.stLine[#x].stParameters.nMaxConsecutiveInvalidCodes' ,t:i]
-	plcMap['PARAM_LINE_STATS_SMALL_THRESHOLD']=[v:'.com.stLine[#x].stParameters.nStatsSmallThreshold' ,t:i]
-	plcMap['PARAM_LINE_STATS_SMALL_REJECTION_LIMIT']=[v:'.com.stLine[#x].stParameters.nStatsSmallRejectionLimit' ,t:i]
-	plcMap['PARAM_LINE_STATS_LARGE_THRESHOLD']=[v:'.com.stLine[#x].stParameters.nStatsLargeThreshold' ,t:i]
-	plcMap['PARAM_LINE_STATS_LARGE_REJECTION_LIMIT']=[v:'.com.stLine[#x].stParameters.nStatsLargeRejectionLimit' ,t:i]
-	plcMap['PARAM_LINE_TRIGGER_CONTROL_MAX_DIFF_VALUE']=[v:'.com.stLine[#x].stParameters.nTriggerControlMaxDiffValue' ,t:i]
-	plcMap['PARAM_LINE_TRIGGER_CONTROL_MAX_CHECKS_VALUE']=[v:'.com.stLine[#x].stParameters.nTriggerControlMaxChecksValue' ,t:i]
-	plcMap['PARAM_LINE_TRIGGER_CONTROL_MAX_ABS_ERRORS']=[v:'.com.stLine[#x].stParameters.nTriggerControlMaxAbsErrors' ,t:i]
-	plcMap['PARAM_LINE_ENCODER_MODULE_FOLD_EVALUATION']=[v:'.com.stLine[#x].stParameters.nEncoderModuleFoldEvaluation' ,t:i ,pulseConvertParam:'true']
-	plcMap['PARAM_LINE_TEST_ADDITIONAL_CHECK']=[v:'.com.stLine[#x].stParameters.bTestAdditionalCheck' ,t:b]
-	plcMap['PARAM_LINE_TRIGGER_ACT_ON_FAILING_EDGE']=[v:'.com.stLine[#x].stParameters.bTriggerActOnFallingEdge' ,t:b]
-	plcMap['PARAM_LINE_SIMULATE_PC_EJECTION_IF_ADD_CHECK']=[v:'.com.stLine[#x].stParameters.bSimulatePCEjectionIfAddCheck' ,t:b]
-	plcMap['PARAM_LINE_TRIG_CAMERA_IF_PC_EJECTION_SIMULATED']=[v:'.com.stLine[#x].stParameters.bTrigCameraIfPCEjectionSimulated' ,t:b]
-	plcMap['PARAM_LINE_INHIBIT_PC_EJECTION_IF_ADD_CHECK']=[v:'.com.stLine[#x].stParameters.bInhibitPCEjectionIfAddCheck' ,t:b]
-	plcMap['PARAM_LINE_TRIG_EJECTION_ONLY_FOR_SICPA_EJECTIONS']=[v:'.com.stLine[#x].stParameters.bTrigEjectionOnlyForSicpaEjections' ,t:b]
-	plcMap['PARAM_LINE_TRIG_AUDIO_VISUAL_ONLY_FOR_SICPA_EJECTIONS']=[v:'.com.stLine[#x].stParameters.bTrigAudioVisualOnlyForSicpaEjections' ,t:b]
-	plcMap['PARAM_LINE_SYSTEM_TYPE']=[v:'.com.stLine[#x].stParameters.nSystemType' ,t:s]
-	plcMap['PARAM_LINE_ENCODER_USED']=[v:'.com.stLine[#x].stParameters.bEncoderUsed' ,t:b]
-	plcMap['PARAM_LINE_INDEXED_PRODUCTS']=[v:'.com.stLine[#x].stParameters.bIndexedProducts' ,t:b]
-	plcMap['PARAM_LINE_INHIBIT_PRINTER']=[v:'.com.stLine[#x].stParameters.bInhibitPrinter' ,t:b]
-	plcMap['PARAM_LINE_INHIBIT_CAMERA']=[v:'.com.stLine[#x].stParameters.bInhibitCamera' ,t:b]
-	plcMap['PARAM_LINE_INHIBIT_PC_EJECTION_RECEPTION']=[v:'.com.stLine[#x].stParameters.bInhibitPCEjectionReception' ,t:b]
-	plcMap['PARAM_LINE_INHIBIT_EJECTION_EMISSION']=[v:'.com.stLine[#x].stParameters.bInhibitEjectionEmission' ,t:b]
-	plcMap['PARAM_LINE_INHIBIT_EJECTION_AUDIO_VISUALS']=[v:'.com.stLine[#x].stParameters.bInhibitEjectionAudiovisuals' ,t:b]
-	plcMap['PARAM_LINE_INHIBIT_PC_EJECTION_SIMULATION']=[v:'.com.stLine[#x].stParameters.bInhibitPCEjectionSimulation' ,t:b]
-	plcMap['PARAM_LINE_INHIBIT_JAVA_NTF_EMISSION']=[v:'.com.stLine[#x].stParameters.bInhibitJavaNtfEmission' ,t:b]
-	plcMap['PARAM_LINE_INHIBIT_LBL_APP_OR_AIR_DRYER']=[v:'.com.stLine[#x].stParameters.bInhibitLblAppOrAirDryer' ,t:b]
+	plcMap['PARAM_LINE_PROD_CONTROL_DETECTOR_FILTER']=[v:'.com.stLine[#x].stParameters.nProdControlDetectorFilter' ,t:d ,lineGrp:'misc']
+	plcMap['PARAM_LINE_EJECTION_EMISSION_DISTANCE']=[v:'.com.stLine[#x].stParameters.nEjectionEmissionDistance' ,t:d ,lineGrp:'ejection']
+	plcMap['PARAM_LINE_EJECTION_EMISSION_LENGTH']=[v:'.com.stLine[#x].stParameters.nEjectionEmissionLength' ,t:d ,lineGrp:'ejection']
+	plcMap['PARAM_LINE_JAVA_NTF_DISTANCE']=[v:'.com.stLine[#x].stParameters.nJavaNotificationDistance' ,t:d ,lineGrp:'misc']
+	plcMap['PARAM_LINE_ENCODER_RESOLUTION']=[v:'.com.stLine[#x].stParameters.nEncoderResolution' ,t:i ,pulseConvertParam:'true' ,lineGrp:'system']
+	plcMap['PARAM_LINE_SHAPE_DIAMETER']=[v:'.com.stLine[#x].stParameters.nShapeDiameter' ,t:i ,pulseConvertParam:'true' ,lineGrp:'system']
+	plcMap['PARAM_LINE_MAX_CONSECUTIVE_INVALID_CODES']=[v:'.com.stLine[#x].stParameters.nMaxConsecutiveInvalidCodes' ,t:i ,lineGrp:'stats']
+	plcMap['PARAM_LINE_STATS_SMALL_THRESHOLD']=[v:'.com.stLine[#x].stParameters.nStatsSmallThreshold' ,t:i ,lineGrp:'stats']
+	plcMap['PARAM_LINE_STATS_SMALL_REJECTION_LIMIT']=[v:'.com.stLine[#x].stParameters.nStatsSmallRejectionLimit' ,t:i ,lineGrp:'stats']
+	plcMap['PARAM_LINE_STATS_LARGE_THRESHOLD']=[v:'.com.stLine[#x].stParameters.nStatsLargeThreshold' ,t:i ,lineGrp:'stats']
+	plcMap['PARAM_LINE_STATS_LARGE_REJECTION_LIMIT']=[v:'.com.stLine[#x].stParameters.nStatsLargeRejectionLimit' ,t:i ,lineGrp:'stats']
+	plcMap['PARAM_LINE_TRIGGER_CONTROL_MAX_DIFF_VALUE']=[v:'.com.stLine[#x].stParameters.nTriggerControlMaxDiffValue' ,t:i ,lineGrp:'misc']
+	plcMap['PARAM_LINE_TRIGGER_CONTROL_MAX_CHECKS_VALUE']=[v:'.com.stLine[#x].stParameters.nTriggerControlMaxChecksValue' ,t:i ,lineGrp:'misc']
+	plcMap['PARAM_LINE_TRIGGER_CONTROL_MAX_ABS_ERRORS']=[v:'.com.stLine[#x].stParameters.nTriggerControlMaxAbsErrors' ,t:i ,lineGrp:'misc']
+	plcMap['PARAM_LINE_ENCODER_MODULE_FOLD_EVALUATION']=[v:'.com.stLine[#x].stParameters.nEncoderModuleFoldEvaluation' ,t:i ,pulseConvertParam:'true' ,lineGrp:'system']
+	plcMap['PARAM_LINE_TEST_ADDITIONAL_CHECK']=[v:'.com.stLine[#x].stParameters.bTestAdditionalCheck' ,t:b ,lineGrp:'misc']
+	plcMap['PARAM_LINE_TRIGGER_ACT_ON_FAILING_EDGE']=[v:'.com.stLine[#x].stParameters.bTriggerActOnFallingEdge' ,t:b ,lineGrp:'misc']
+	plcMap['PARAM_LINE_SIMULATE_PC_EJECTION_IF_ADD_CHECK']=[v:'.com.stLine[#x].stParameters.bSimulatePCEjectionIfAddCheck' ,t:b ,lineGrp:'ejection']
+	plcMap['PARAM_LINE_TRIG_CAMERA_IF_PC_EJECTION_SIMULATED']=[v:'.com.stLine[#x].stParameters.bTrigCameraIfPCEjectionSimulated' ,t:b ,lineGrp:'ejection']
+	plcMap['PARAM_LINE_INHIBIT_PC_EJECTION_IF_ADD_CHECK']=[v:'.com.stLine[#x].stParameters.bInhibitPCEjectionIfAddCheck' ,t:b ,lineGrp:'ejection']
+	plcMap['PARAM_LINE_TRIG_EJECTION_ONLY_FOR_SICPA_EJECTIONS']=[v:'.com.stLine[#x].stParameters.bTrigEjectionOnlyForSicpaEjections' ,t:b ,lineGrp:'ejection']
+	plcMap['PARAM_LINE_TRIG_AUDIO_VISUAL_ONLY_FOR_SICPA_EJECTIONS']=[v:'.com.stLine[#x].stParameters.bTrigAudioVisualOnlyForSicpaEjections' ,t:b ,lineGrp:'ejection']
+	plcMap['PARAM_LINE_SYSTEM_TYPE']=[v:'.com.stLine[#x].stParameters.nSystemType' ,t:s ,lineGrp:'system']
+	plcMap['PARAM_LINE_ENCODER_USED']=[v:'.com.stLine[#x].stParameters.bEncoderUsed' ,t:b ,lineGrp:'system']
+	plcMap['PARAM_LINE_INDEXED_PRODUCTS']=[v:'.com.stLine[#x].stParameters.bIndexedProducts' ,t:b ,lineGrp:'misc']
+	plcMap['PARAM_LINE_INHIBIT_PRINTER']=[v:'.com.stLine[#x].stParameters.bInhibitPrinter' ,t:b ,lineGrp:'printer']
+	plcMap['PARAM_LINE_INHIBIT_CAMERA']=[v:'.com.stLine[#x].stParameters.bInhibitCamera' ,t:b ,lineGrp:'camera']
+	plcMap['PARAM_LINE_INHIBIT_PC_EJECTION_RECEPTION']=[v:'.com.stLine[#x].stParameters.bInhibitPCEjectionReception' ,t:b ,lineGrp:'ejection']
+	plcMap['PARAM_LINE_INHIBIT_EJECTION_EMISSION']=[v:'.com.stLine[#x].stParameters.bInhibitEjectionEmission' ,t:b ,lineGrp:'ejection']
+	plcMap['PARAM_LINE_INHIBIT_EJECTION_AUDIO_VISUALS']=[v:'.com.stLine[#x].stParameters.bInhibitEjectionAudiovisuals' ,t:b ,lineGrp:'ejection']
+	plcMap['PARAM_LINE_INHIBIT_PC_EJECTION_SIMULATION']=[v:'.com.stLine[#x].stParameters.bInhibitPCEjectionSimulation' ,t:b ,lineGrp:'ejection']
+	plcMap['PARAM_LINE_INHIBIT_JAVA_NTF_EMISSION']=[v:'.com.stLine[#x].stParameters.bInhibitJavaNtfEmission' ,t:b ,lineGrp:'misc']
+	plcMap['PARAM_LINE_INHIBIT_LBL_APP_OR_AIR_DRYER']=[v:'.com.stLine[#x].stParameters.bInhibitLblAppOrAirDryer' ,t:b ,lineGrp:'misc']
 	plcMap['PARAM_LINE_EXPORT_MODE_ENABLED']=[v:'.com.stLine[#x].stParameters.bExportModeEnabled' ,t:b]
 	plcMap['PARAM_LINE_MAINTENANCE_MODE_ENABLED']=[v:'.com.stLine[#x].stParameters.bMaintenanceModeEnabled' ,t:s]
 	plcMap['PARAM_LINE_REFEED_MODE_ENABLED']=[v:'.com.stLine[#x].stParameters.bRefeedModeEnabled' ,t:b]
 	plcMap['PARAM_LINE_DRS_TYPE']=[v:'.com.stLine[#x].stParameters.nDRS_Type' ,t:s]
-	plcMap['PARAM_LINE_EJECTION_TYPE']=[v:'.com.stLine[#x].stParameters.nEjectionType' ,t:s]
-	plcMap['PARAM_LINE_WAR_TEMP_IJ_CAB_LVL']=[v:'.com.stLine[#x].stParameters.nWar_Temperature_IJ_cabinet_level' ,t:s]
-	plcMap['PARAM_LINE_WAR_TEMP_IJ_INK_LVL']=[v:'.com.stLine[#x].stParameters.nWar_Temperature_IJ_ink_level' ,t:s]
-	plcMap['PARAM_LINE_ERR_TEMP_IJ_CAB_LVL']=[v:'.com.stLine[#x].stParameters.nErr_Temperature_IJ_cabinet_level' ,t:s]
-	plcMap['PARAM_LINE_ERR_TEMP_IJ_INK_LVL']=[v:'.com.stLine[#x].stParameters.nErr_Temperature_IJ_ink_level' ,t:s]
-	plcMap['PARAM_LINE_WAR_FANS_PRINTER_CAB_MIN_FREQ']=[v:'.com.stLine[#x].stParameters.nWar_Fans_Printer_cabinet_MIN_freq' ,t:s]
-	plcMap['PARAM_LINE_WAR_FANS_PRINTER_CAB_MAX_FREQ']=[v:'.com.stLine[#x].stParameters.nWar_Fans_Printer_cabinet_MAX_freq' ,t:s]
-	plcMap['PARAM_LINE_FANS_TEMP_ON_THRESHOLD_PRINTER']=[v:'.com.stLine[#x].stParameters.nFans_Temp_ON_threshold_Printer' ,t:s]
-	plcMap['PARAM_LINE_FANS_TEMP_OFF_DELTA_HYST_PRINTER']=[v:'.com.stLine[#x].stParameters.nFans_Temp_OFF_delta_hyst_Printer' ,t:s]
-	plcMap['PARAM_LINE_INK_VORTEX_ON_THRESHOLD']=[v:'.com.stLine[#x].stParameters.nInk_Vortex_ON_threshold' ,t:s]
-	plcMap['PARAM_LINE_INK_VORTEX_OFF_DELTA_HYSTERESIS']=[v:'.com.stLine[#x].stParameters.nInk_Vortex_OFF_delta_hysteresis' ,t:s]
+	plcMap['PARAM_LINE_EJECTION_TYPE']=[v:'.com.stLine[#x].stParameters.nEjectionType' ,t:s ,lineGrp:'ejection']
+	plcMap['PARAM_LINE_WAR_TEMP_IJ_CAB_LVL']=[v:'.com.stLine[#x].stParameters.nWar_Temperature_IJ_cabinet_level' ,t:s ,lineGrp:'temp']
+	plcMap['PARAM_LINE_WAR_TEMP_IJ_INK_LVL']=[v:'.com.stLine[#x].stParameters.nWar_Temperature_IJ_ink_level' ,t:s ,lineGrp:'temp']
+	plcMap['PARAM_LINE_ERR_TEMP_IJ_CAB_LVL']=[v:'.com.stLine[#x].stParameters.nErr_Temperature_IJ_cabinet_level' ,t:s ,lineGrp:'temp']
+	plcMap['PARAM_LINE_ERR_TEMP_IJ_INK_LVL']=[v:'.com.stLine[#x].stParameters.nErr_Temperature_IJ_ink_level' ,t:s ,lineGrp:'temp']
+	plcMap['PARAM_LINE_WAR_FANS_PRINTER_CAB_MIN_FREQ']=[v:'.com.stLine[#x].stParameters.nWar_Fans_Printer_cabinet_MIN_freq' ,t:s ,lineGrp:'fan']
+	plcMap['PARAM_LINE_WAR_FANS_PRINTER_CAB_MAX_FREQ']=[v:'.com.stLine[#x].stParameters.nWar_Fans_Printer_cabinet_MAX_freq' ,t:s ,lineGrp:'fan']
+	plcMap['PARAM_LINE_FANS_TEMP_ON_THRESHOLD_PRINTER']=[v:'.com.stLine[#x].stParameters.nFans_Temp_ON_threshold_Printer' ,t:s ,lineGrp:'temp']
+	plcMap['PARAM_LINE_FANS_TEMP_OFF_DELTA_HYST_PRINTER']=[v:'.com.stLine[#x].stParameters.nFans_Temp_OFF_delta_hyst_Printer' ,t:s ,lineGrp:'temp']
+	plcMap['PARAM_LINE_INK_VORTEX_ON_THRESHOLD']=[v:'.com.stLine[#x].stParameters.nInk_Vortex_ON_threshold' ,t:s ,lineGrp:'misc']
+	plcMap['PARAM_LINE_INK_VORTEX_OFF_DELTA_HYSTERESIS']=[v:'.com.stLine[#x].stParameters.nInk_Vortex_OFF_delta_hysteresis' ,t:s ,lineGrp:'misc']
 	plcMap['PARAM_LINE_PRODUCT_DETECTOR_ACTIVE_LOW']=[v:'.com.stLine[#x].stParameters.bProductDetectorIsActiveLow' ,t:b]
 
 
@@ -160,27 +166,27 @@ beans {
 	plcMap['NTF_LINE_JAVA_CPT_ACQ_ERRORS']=[v:'.com.stLine[#x].stNotifications.nJavaCpt_AcquisitionErrors' ,t:i ]
 
 	//	<!-- CABINET -->
-	plcMap['PARAM_CAB_TIMEOUT_LIFECHECK']=[v:'.com.stCabinet.stParameters.nTimeoutLifeCheck' ,t:i]
-	plcMap['PARAM_CAB_COOLING_ERR_ACTIVATION_TIMEOUT']=[v:'.com.stCabinet.stParameters.nCoolingErrorActivationTimeout' ,t:i]
-	plcMap['PARAM_CAB_COM_STRUC_STORED_IN_RAM']=[v:'.com.stCabinet.stParameters.bComStructureStoredInRAM' ,t:b]
-	plcMap['PARAM_CAB_INHIBIT_RAM_WRITING']=[v:'.com.stCabinet.stParameters.bInhibitRamWriting' ,t:b]
-	plcMap['PARAM_CAB_MULTILINE_REQ_MODE_ENABLED']=[v:'.com.stCabinet.stParameters.bMultiLineRequestsModeEnabled' ,t:b]
-	plcMap['PARAM_CAB_WAR_TEMP_EE_CAB_LVL']=[v:'.com.stCabinet.stParameters.nWar_Temperature_EE_cabinet_level' ,t:i]
-	plcMap['PARAM_CAB_WAR_TEMP_AMBIANT_LVL']=[v:'.com.stCabinet.stParameters.nWar_Temperature_ambiant_level' ,t:i]
-	plcMap['PARAM_CAB_WAR_TEMP_BYPASS_LVL']=[v:'.com.stCabinet.stParameters.nWar_Temperature_bypass_level' ,t:i]
-	plcMap['PARAM_CAB_ERR_TEMP_EE_CAB_LVL']=[v:'.com.stCabinet.stParameters.nErr_Temperature_EE_cabinet_level' ,t:i]
-	plcMap['PARAM_CAB_ERR_TEMP_AMBIANT_LVL']=[v:'.com.stCabinet.stParameters.nErr_Temperature_ambiant_level' ,t:i]
-	plcMap['PARAM_CAB_ERR_TEMP_BYPASS_LVL']=[v:'.com.stCabinet.stParameters.nErr_Temperature_bypass_level' ,t:i]
-	plcMap['PARAM_CAB_WAR_AIR_PRESS_LVL']=[v:'.com.stCabinet.stParameters.nWar_air_pressure_level' ,t:i]
-	plcMap['PARAM_CAB_ERR_AIR_PRESS_LVL']=[v:'.com.stCabinet.stParameters.nErr_air_pressure_level' ,t:i]
-	plcMap['PARAM_CAB_WAR_FANS_EE_CAB_MIN_FREQ']=[v:'.com.stCabinet.stParameters.nWar_Fans_EE_cabinet_MIN_freq' ,t:i]
-	plcMap['PARAM_CAB_WAR_FANS_EE_CAB_MAX_FREQ']=[v:'.com.stCabinet.stParameters.nWar_Fans_EE_cabinet_MAX_freq' ,t:i]
-	plcMap['PARAM_CAB_WAR_FANS_BYPASS_CAB_MIN_FREQ']=[v:'.com.stCabinet.stParameters.nWar_Fans_Bypass_cabinet_MIN_freq' ,t:i]
-	plcMap['PARAM_CAB_WAR_FANS_BYPASS_CAB_MAX_FREQ']=[v:'.com.stCabinet.stParameters.nWar_Fans_Bypass_cabinet_MAX_freq' ,t:i]
-	plcMap['PARAM_CAB_FANS_TEMP_ON_THRESHOLD_EE']=[v:'.com.stCabinet.stParameters.nFans_Temp_ON_threshold_EE' ,t:i]
-	plcMap['PARAM_CAB_FANS_TEMP_OFF_DELTA_HYST_EE']=[v:'.com.stCabinet.stParameters.nFans_Temp_OFF_delta_hyst_EE' ,t:i]
-	plcMap['PARAM_CAB_FANS_TEMP_ON_THRESHOLD_BYPASS']=[v:'.com.stCabinet.stParameters.nFans_Temp_ON_threshold_Bypass' ,t:i]
-	plcMap['PARAM_CAB_FANS_TEMP_OFF_DELTA_HYST_BYPASS']=[v:'.com.stCabinet.stParameters.nFans_Temp_OFF_delta_hyst_Bypass' ,t:i]
+	plcMap['PARAM_CAB_TIMEOUT_LIFECHECK']=[v:'.com.stCabinet.stParameters.nTimeoutLifeCheck' ,t:i ,cabGrp:'system']
+	plcMap['PARAM_CAB_COOLING_ERR_ACTIVATION_TIMEOUT']=[v:'.com.stCabinet.stParameters.nCoolingErrorActivationTimeout' ,t:i ,cabGrp:'system']
+	plcMap['PARAM_CAB_COM_STRUC_STORED_IN_RAM']=[v:'.com.stCabinet.stParameters.bComStructureStoredInRAM' ,t:b ,cabGrp:'system']
+	plcMap['PARAM_CAB_INHIBIT_RAM_WRITING']=[v:'.com.stCabinet.stParameters.bInhibitRamWriting' ,t:b ,cabGrp:'system']
+	plcMap['PARAM_CAB_MULTILINE_REQ_MODE_ENABLED']=[v:'.com.stCabinet.stParameters.bMultiLineRequestsModeEnabled' ,t:b ,cabGrp:'system']
+	plcMap['PARAM_CAB_WAR_TEMP_EE_CAB_LVL']=[v:'.com.stCabinet.stParameters.nWar_Temperature_EE_cabinet_level' ,t:i ,cabGrp:'temp']
+	plcMap['PARAM_CAB_WAR_TEMP_AMBIANT_LVL']=[v:'.com.stCabinet.stParameters.nWar_Temperature_ambiant_level' ,t:i ,cabGrp:'temp']
+	plcMap['PARAM_CAB_WAR_TEMP_BYPASS_LVL']=[v:'.com.stCabinet.stParameters.nWar_Temperature_bypass_level' ,t:i ,cabGrp:'temp']
+	plcMap['PARAM_CAB_ERR_TEMP_EE_CAB_LVL']=[v:'.com.stCabinet.stParameters.nErr_Temperature_EE_cabinet_level' ,t:i ,cabGrp:'temp']
+	plcMap['PARAM_CAB_ERR_TEMP_AMBIANT_LVL']=[v:'.com.stCabinet.stParameters.nErr_Temperature_ambiant_level' ,t:i ,cabGrp:'temp']
+	plcMap['PARAM_CAB_ERR_TEMP_BYPASS_LVL']=[v:'.com.stCabinet.stParameters.nErr_Temperature_bypass_level' ,t:i ,cabGrp:'temp']
+	plcMap['PARAM_CAB_WAR_AIR_PRESS_LVL']=[v:'.com.stCabinet.stParameters.nWar_air_pressure_level' ,t:i ,cabGrp:'air']
+	plcMap['PARAM_CAB_ERR_AIR_PRESS_LVL']=[v:'.com.stCabinet.stParameters.nErr_air_pressure_level' ,t:i ,cabGrp:'air']
+	plcMap['PARAM_CAB_WAR_FANS_EE_CAB_MIN_FREQ']=[v:'.com.stCabinet.stParameters.nWar_Fans_EE_cabinet_MIN_freq' ,t:i ,cabGrp:'fan']
+	plcMap['PARAM_CAB_WAR_FANS_EE_CAB_MAX_FREQ']=[v:'.com.stCabinet.stParameters.nWar_Fans_EE_cabinet_MAX_freq' ,t:i ,cabGrp:'fan']
+	plcMap['PARAM_CAB_WAR_FANS_BYPASS_CAB_MIN_FREQ']=[v:'.com.stCabinet.stParameters.nWar_Fans_Bypass_cabinet_MIN_freq' ,t:i ,cabGrp:'fan']
+	plcMap['PARAM_CAB_WAR_FANS_BYPASS_CAB_MAX_FREQ']=[v:'.com.stCabinet.stParameters.nWar_Fans_Bypass_cabinet_MAX_freq' ,t:i ,cabGrp:'fan']
+	plcMap['PARAM_CAB_FANS_TEMP_ON_THRESHOLD_EE']=[v:'.com.stCabinet.stParameters.nFans_Temp_ON_threshold_EE' ,t:i ,cabGrp:'fan']
+	plcMap['PARAM_CAB_FANS_TEMP_OFF_DELTA_HYST_EE']=[v:'.com.stCabinet.stParameters.nFans_Temp_OFF_delta_hyst_EE' ,t:i ,cabGrp:'fan']
+	plcMap['PARAM_CAB_FANS_TEMP_ON_THRESHOLD_BYPASS']=[v:'.com.stCabinet.stParameters.nFans_Temp_ON_threshold_Bypass' ,t:i ,cabGrp:'fan']
+	plcMap['PARAM_CAB_FANS_TEMP_OFF_DELTA_HYST_BYPASS']=[v:'.com.stCabinet.stParameters.nFans_Temp_OFF_delta_hyst_Bypass' ,t:i ,cabGrp:'fan']
 
 
 	plcMap['NTF_CAB_VERSION_HIGH']=[v:'.com.stCabinet.stNotifications.nVersionHigh' ,t:i ]
@@ -219,19 +225,12 @@ beans {
 	requestMapping[(STOP)]=[REQUEST_STOP:true]
 	requestMapping[(RELOAD_PLC_PARAM)]=[REQUEST_RELOAD_PLC_PARAM:true]
 
-
-
 	for ( e in plcMap ) {
-
 		String logic=e.key
 		String phy=e.value['v']
 		plcVarMapping[logic]= phy
 
-		if(e.value["novar"]=='true'){
-			continue
-		}
-
-		Map vd=createVarAndDescriptor(phy, logic, e)
+		Map vd=createVarAndDescriptor(phy, logic, e.value)
 		IPlcVariable var=vd['var']
 		PlcVariableDescriptor desc =vd['desc']
 
@@ -244,8 +243,12 @@ beans {
 			methodName='setPlcProvider'
 			params=[ref('plcProvider')]
 		}
-		addVarToLists(var, logic, e)
+		addVarToLists(var, logic, e.value)
+		insertVarToGroup(desc,e.value)
 	}
+
+	registerSingleton('linePlcVarGroup',createLineGroupList())
+	registerSingleton('cabPlcVarGroups',createCabGroupList())
 
 	registerSingleton('allPlcVars',allVars)
 	registerSingleton('plcLineParamsTemplate',lineParams)
@@ -256,9 +259,7 @@ beans {
 	registerSingleton('plcCabinetNtf',cabNotif)
 	registerSingleton('plcVarMap',plcVarMapping)
 
-
-	def mapRequest = createRequests();
-	registerSingleton('mapPlcRequestAction',mapRequest)
+	registerSingleton('mapPlcRequestAction',createRequests())
 }
 
 def void addVarToLists(def var,String logicName,def varInfo){
@@ -288,6 +289,56 @@ def void addVarToLists(def var,String logicName,def varInfo){
 		lineNotif.add(var)
 	}
 }
+def List<PlcVariableGroup> createCabGroupList(){
+	return createGroupList(cabGroups)
+}
+
+def List<PlcVariableGroup> createLineGroupList(){
+	return createGroupList(lineGroups)
+}
+
+def List<PlcVariableGroup> createGroupList(Map<String, PlcVariableGroup> map){
+	return new ArrayList<>(map.values())
+}
+
+def void insertVarToGroup(PlcVariableDescriptor desc,def varInfo){
+	String lineGrp=varInfo['lineGrp']
+	String cabGrp=varInfo['cabGrp']
+
+	if(lineGrp!=null){
+		insertVarToLineGroups(desc,varInfo)
+	}else if(cabGrp!=null){
+		insertVarToCabGroups(desc,varInfo)
+	}
+}
+
+def void insertVarToLineGroups(PlcVariableDescriptor desc,def varInfo){
+	def groupPrefix='plc.config.line.group.'
+	def grpName=groupPrefix+varInfo['lineGrp']
+
+	insertVarToGroup(lineGroups, grpName,  desc, varInfo)
+}
+def void insertVarToCabGroups(PlcVariableDescriptor desc,def varInfo){
+	def groupPrefix='plc.config.cabinet.group.'
+	def grpName=groupPrefix+varInfo['cabGrp']
+
+	insertVarToGroup(cabGroups, grpName,  desc, varInfo)
+}
+
+def void insertVarToGroup(Map<String, PlcVariableGroup> groups,String grpName, PlcVariableDescriptor desc,def varInfo){
+	def grp=groups[grpName]
+	if(grp==null){
+		grp=createGroup(grpName)
+		groups.put(grpName,grp)
+	}
+	grp.addDescriptor(desc)
+}
+
+def PlcVariableGroup createGroup(String grpName){
+	PlcVariableGroup res=new PlcVariableGroup()
+	res.setDescription(grpName)
+	return res;
+}
 
 def  Map<PlcRequest, IPlcRequestExecutor> createRequests(){
 	Map<PlcRequest, IPlcRequestExecutor> mapRequest = new HashMap<>();
@@ -306,7 +357,7 @@ def  Map<PlcRequest, IPlcRequestExecutor> createRequests(){
 }
 
 def Map createVarAndDescriptor(String varPhyName,varLogicName,def varInfo){
-	String typeVar=varInfo.value['t']
+	String typeVar=varInfo['t']
 	def res = new HashMap()
 	PlcVariableDescriptor desc
 	IPlcVariable var
@@ -389,13 +440,11 @@ def  boolean isLineJmxReport(String varName){
 	return varName.startsWith('NTF_LINE')
 }
 def  boolean isCabinetNotif(def map){
-	return Boolean.parseBoolean(map.value['lineNotif'])
+	return Boolean.parseBoolean(map['lineNotif'])
 }
 def  boolean isLineNotif(def map){
-	return Boolean.parseBoolean(map.value['lineNotif'])
+	return Boolean.parseBoolean(map['lineNotif'])
 }
 def  boolean isPulseConverterParam(def map){
-	return Boolean.parseBoolean(map.value['pulseConvertParam'])
+	return Boolean.parseBoolean(map['pulseConvertParam'])
 }
-
-

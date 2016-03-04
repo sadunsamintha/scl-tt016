@@ -24,7 +24,7 @@ public class EditablePlcVariables {
 
 	protected PlcValuesForAllVar listValues;
 
-	protected final List<PlcVariableGroup> plcGroup = new ArrayList<PlcVariableGroup>();
+	protected final List<PlcVariableGroup> plcGroup = new ArrayList<>();
 
 	// where to save the var when they changed
 	protected String file;

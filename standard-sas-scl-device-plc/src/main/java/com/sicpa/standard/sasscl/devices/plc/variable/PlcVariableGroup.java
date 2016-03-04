@@ -7,7 +7,7 @@ import com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcVariableDesc
 
 public class PlcVariableGroup {
 
-	protected final List<PlcVariableDescriptor<?>> plcVars = new ArrayList<PlcVariableDescriptor<?>>();
+	protected final List<PlcVariableDescriptor<?>> plcVars = new ArrayList<>();
 	protected String description;
 
 	public PlcVariableGroup(final PlcVariableDescriptor<?>... descriptors) {

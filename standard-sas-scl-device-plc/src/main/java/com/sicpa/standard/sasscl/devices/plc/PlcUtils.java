@@ -1,11 +1,5 @@
 package com.sicpa.standard.sasscl.devices.plc;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-
-import com.sicpa.standard.plc.controller.actions.IPlcAction;
-import com.sicpa.standard.plc.controller.actions.PlcAction;
 import com.sicpa.standard.plc.value.IPlcVariable;
 import com.sicpa.standard.plc.value.PlcVariable;
 import com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcBooleanVariableDescriptor;

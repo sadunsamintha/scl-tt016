@@ -204,12 +204,8 @@ public class MainAppWithProfile extends MainApp implements IProfileSelectorListe
 		config.add("spring/devicesController.xml");
 		config.add("spring/hardwareController.xml");
 		config.add("spring/plc/plc-import.groovy");
-		config.add("spring/plc/plcErrorRegister.groovy");
 		config.add("spring/flowControl.xml");
 		config.add("spring/barcode.xml");
-
-		config.add("spring/descriptors/plcCabinetVariablesDescriptors.xml");
-		config.add("spring/descriptors/plcLineVariablesDescriptorsTemplate.xml");
 
 		config.add("spring/messages.xml");
 		config.add("spring/duplicatedCodeFilter.xml");
