@@ -1,5 +1,8 @@
 package com.sicpa.standard.sasscl.devices.plc;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.sicpa.standard.plc.value.IPlcVariable;
 import com.sicpa.standard.plc.value.PlcVariable;
 import com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcBooleanVariableDescriptor;
@@ -9,6 +12,19 @@ import com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcShortVariabl
 import com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcVariablePulseParamDescriptor;
 
 public class PlcUtils {
+
+	// tag to create the correct plc var in the plc map , see plc.Vars.groovy
+	public static final String d = "distance";
+	public static final String i = "int";
+	public static final String s = "short";
+	public static final String b = "bool";
+	public static final String by = "byte";
+
+	public static final Map<String, Map<String, String>> custoInfo = new HashMap<>();
+
+	public static void injectPlcVar(String logicName, Map<String, String> info) {
+		custoInfo.put(logicName, info);
+	}
 
 	public static IPlcVariable<?> clone(IPlcVariable<?> source, int lineIndex) {
 		return PlcVariable.create(

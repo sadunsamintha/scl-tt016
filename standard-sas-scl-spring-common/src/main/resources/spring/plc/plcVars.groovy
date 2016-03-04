@@ -7,6 +7,7 @@ import com.sicpa.standard.plc.value.*
 import com.sicpa.standard.sasscl.devices.plc.DefaultPlcRequestExecutor;
 import com.sicpa.standard.sasscl.devices.plc.IPlcRequestExecutor;
 import com.sicpa.standard.sasscl.devices.plc.PlcRequest;
+import com.sicpa.standard.sasscl.devices.plc.PlcUtils;
 import com.sicpa.standard.sasscl.devices.plc.variable.PlcVariableGroup;
 import com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcBooleanVariableDescriptor;
 import com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcByteVariableDescriptor;
@@ -19,13 +20,6 @@ import com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcVariablePuls
 import static com.sicpa.standard.sasscl.devices.plc.PlcRequest.*
 import static com.sicpa.standard.sasscl.devices.plc.PlcUtils.*
 import groovy.transform.Field;
-
-//type tag
-@Field String d='distance'
-@Field String i='int'
-@Field String s='short'
-@Field String b='bool'
-@Field String by='byte'
 
 @Field def allVars = new ArrayList<IPlcVariable>()
 @Field def lineParams= new ArrayList<IPlcVariable>()
@@ -49,9 +43,10 @@ beans {
 	//pulseConvertParam => if the var is part of the pulse by mm parameters
 	//cabNtf => notif on cabinet var
 	//lineNtf => notif on line
-	//lineGrp
-	//cabGrp
+	//lineGrp => add the var to the edit line var gui, grouped with over var sharing the same group name
+	//cabGrp => add the var to the edit cabinet var gui, grouped with over var sharing the same group name
 
+	//LINE PARAM
 	plcMap['PARAM_LINE_IS_ACTIVE']=[v:'.com.stLine[#x].bLine_is_active' ,t:b]
 	plcMap['PARAM_LINE_COM_STRUC_STORED_IN_RAM']=[v:'.com.stLine[#x].stParameters.bComStructureStoredInRAM' ,t:b]
 	plcMap['PARAM_LINE_COUNTER_FILTER_TYPE']=[v:'.com.stLine[#x].stParameters.bCounterFilterType' ,t:b]
@@ -130,7 +125,7 @@ beans {
 	plcMap['PARAM_LINE_INK_VORTEX_OFF_DELTA_HYSTERESIS']=[v:'.com.stLine[#x].stParameters.nInk_Vortex_OFF_delta_hysteresis' ,t:s ,lineGrp:'misc']
 	plcMap['PARAM_LINE_PRODUCT_DETECTOR_ACTIVE_LOW']=[v:'.com.stLine[#x].stParameters.bProductDetectorIsActiveLow' ,t:b]
 
-
+	//LINE NOTIF
 	plcMap['NTF_LINE_SPEED']=[v:'.com.stLine[#x].stNotifications.nLineSpeed' ,t:i ,lineNtf:'true']
 	plcMap['NTF_LINE_PRODS_PER_SECOND']=[v:'.com.stLine[#x].stNotifications.nProdsPerSecond' ,t:i ]
 	plcMap['NTF_LINE_STATE']=[v:'.com.stLine[#x].stNotifications.nState' ,t:i ,lineNtf:'true']
@@ -165,7 +160,7 @@ beans {
 	plcMap['NTF_LINE_JAVA_CPT_NO_INK_DETECTED']=[v:'.com.stLine[#x].stNotifications.nJavaCpt_NoInkDetected' ,t:i ]
 	plcMap['NTF_LINE_JAVA_CPT_ACQ_ERRORS']=[v:'.com.stLine[#x].stNotifications.nJavaCpt_AcquisitionErrors' ,t:i ]
 
-	//	<!-- CABINET -->
+	//CABINET PARAM
 	plcMap['PARAM_CAB_TIMEOUT_LIFECHECK']=[v:'.com.stCabinet.stParameters.nTimeoutLifeCheck' ,t:i ,cabGrp:'system']
 	plcMap['PARAM_CAB_COOLING_ERR_ACTIVATION_TIMEOUT']=[v:'.com.stCabinet.stParameters.nCoolingErrorActivationTimeout' ,t:i ,cabGrp:'system']
 	plcMap['PARAM_CAB_COM_STRUC_STORED_IN_RAM']=[v:'.com.stCabinet.stParameters.bComStructureStoredInRAM' ,t:b ,cabGrp:'system']
@@ -188,7 +183,7 @@ beans {
 	plcMap['PARAM_CAB_FANS_TEMP_ON_THRESHOLD_BYPASS']=[v:'.com.stCabinet.stParameters.nFans_Temp_ON_threshold_Bypass' ,t:i ,cabGrp:'fan']
 	plcMap['PARAM_CAB_FANS_TEMP_OFF_DELTA_HYST_BYPASS']=[v:'.com.stCabinet.stParameters.nFans_Temp_OFF_delta_hyst_Bypass' ,t:i ,cabGrp:'fan']
 
-
+	//CABINET NOTIF
 	plcMap['NTF_CAB_VERSION_HIGH']=[v:'.com.stCabinet.stNotifications.nVersionHigh' ,t:i ]
 	plcMap['NTF_CAB_VERSION_MEDIUM']=[v:'.com.stCabinet.stNotifications.nVersionMedium' ,t:i ]
 	plcMap['NTF_CAB_VERSION_LOW']=[v:'.com.stCabinet.stNotifications.nVersionLow' ,t:i ]
@@ -206,7 +201,7 @@ beans {
 	plcMap['NTF_CAB_AIR_PRESS_VOLTAGE_LVL']=[v:'.com.stCabinet.stNotifications.nAir_pressure_voltage_level' ,t:i ]
 	plcMap['NTF_CAB_WAR_ERR_REGISTER']=[v:'.com.stCabinet.stNotifications.nWar_err_register' ,t:i  ,cabNtf:'true']
 
-	//		 REQUEST
+	//REQUEST
 	plcMap['REQUEST_START']=[v:'.com.stMultilineRequests.bStart' ,t:b]
 	plcMap['REQUEST_RUN']=[v:'.com.stMultilineRequests.bRun' ,t:b]
 	plcMap['REQUEST_STOP']=[v:'.com.stMultilineRequests.bStop' ,t:b]
@@ -218,6 +213,8 @@ beans {
 	plcMap['OFFLINE_COUNTING_QTY']=[v:'.offline.counting.qty' ,t:i]
 	plcMap['OFFLINE_COUNTING_LAST_STOP']=[v:'.offline.counting.last.stop' ,t:i]
 	plcMap['OFFLINE_COUNTING_LAST_PRODUCT']=[v:'.offline.counting.last.product' ,t:i]
+
+	injectCustoVar();
 
 	//REQUEST
 	requestMapping[(START)]=[REQUEST_START:true]
@@ -260,6 +257,14 @@ beans {
 	registerSingleton('plcVarMap',plcVarMapping)
 
 	registerSingleton('mapPlcRequestAction',createRequests())
+}
+
+def void injectCustoVar(){
+	for(e in PlcUtils.custoInfo){
+		String logic=e.key
+		def map=e.value
+		plcMap[logic]=map
+	}
 }
 
 def void addVarToLists(def var,String logicName,def varInfo){
