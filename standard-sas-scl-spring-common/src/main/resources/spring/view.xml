@@ -16,7 +16,6 @@
 		<property name="securedPanels">
 			<util:list>
 				<ref bean="plcVariablesPanel" />
-				<ref bean="plcSecureVariablesPanel" />
 				<ref bean="productionStatisticsPanel" />
 				<ref bean="systemEventPanel" />
 				<ref bean="MBeanViewer" />
@@ -37,7 +36,6 @@
 		<property name="messagesView" ref="messagesView" />
 		<property name="mainPanelGetter" ref="mainPanelGetter" />
 		<property name="snapshotView" ref="snapshotView" />
-		<property name="fingerPrintLogin" value="${fingerprint.login}" />
 	</bean>
 
 	<bean id="MBeanViewer" class="com.sicpa.standard.sasscl.view.monitoring.mbean.MBeanViewerGetter">
@@ -46,10 +44,6 @@
 
 	<bean id="plcVariablesPanel" class="com.sicpa.standard.sasscl.view.config.plc.PlcVariablesPanelGetter">
 		<property name="cabinetVariables" ref="cabinetEditablePlcVariables" />
-	</bean>
-
-	<bean id="plcSecureVariablesPanel" class="com.sicpa.standard.sasscl.view.config.plc.PlcSecureVariablesPanelGetter">
-		<property name="cabinetVariables" ref="plcSecureEditablePlcVariables" />
 	</bean>
 
 	<bean id="productionStatisticsPanel" class="com.sicpa.standard.sasscl.view.monitoring.ProductionStatisticsPanelGetter" />
@@ -200,7 +194,6 @@
 	<bean id="systemInfoViewController" class="com.sicpa.standard.sasscl.view.main.systemInfo.SystemInfoViewController">
 		<property name="remoteServer" ref="remoteServer" />
 		<property name="plcProvider" ref="plcProvider" />
-		<property name="plcSecure" ref="plcSecureAdaptor" />
 	</bean>
 
 	<!-- STATISTICS VIEW -->

@@ -17,4 +17,9 @@ public class PulseConversionParamChangedEvent {
 	public int getValue() {
 		return value;
 	}
+
+	@Override
+	public String toString() {
+		return "PulseConversionParamChangedEvent [paramName=" + paramName + ", value=" + value + "]";
+	}
 }

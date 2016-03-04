@@ -1,7 +1,6 @@
 package com.sicpa.standard.sasscl.view;
 
 import static com.sicpa.standard.client.common.security.SecurityService.hasPermission;
-import static com.sicpa.standard.sasscl.security.SasSclPermission.PRODUCTION_CHANGE_PARAMETERS;
 
 import java.awt.Component;
 import java.awt.Point;
@@ -55,7 +54,7 @@ public class MainFrame extends AbstractMachineFrame {
 
 	public MainFrame(final MainFrameController controller, JComponent startStopView, JComponent changeSelectionView,
 			JComponent exitView, JComponent optionsView, JComponent messagesView, JComponent mainPanel,
-			JComponent snapshotView, boolean fingerPrintLogin) {
+			JComponent snapshotView) {
 		super(controller);
 		this.snapshotView = snapshotView;
 		this.startStopView = startStopView;
@@ -64,8 +63,6 @@ public class MainFrame extends AbstractMachineFrame {
 		this.optionsView = optionsView;
 		this.messagesView = messagesView;
 		this.mainPanel = mainPanel;
-
-		((LineIdWithAuthenticateButton) getLineIdPanel()).setFingerPrintLogin(fingerPrintLogin);
 
 		initGUI();
 		I18nableLockingErrorModel lockModel = new I18nableLockingErrorModel();

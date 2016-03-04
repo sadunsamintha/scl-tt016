@@ -18,7 +18,7 @@ import com.sicpa.standard.sasscl.business.alert.task.model.PlcActivationCounterC
 import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState;
 import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowStateChangedEvent;
 import com.sicpa.standard.sasscl.devices.plc.IPlcListener;
-import com.sicpa.standard.sasscl.devices.plc.PlcVariableMap;
+import com.sicpa.standard.sasscl.devices.plc.PlcLineHelper;
 import com.sicpa.standard.sasscl.devices.plc.event.PlcEvent;
 import com.sicpa.standard.sasscl.messages.MessageEventKey;
 import com.sicpa.standard.sasscl.provider.impl.PlcProvider;
@@ -44,7 +44,7 @@ public class PlcActivationCounterCheck extends AbstractAlertTask implements IPlc
 		// TOO MANY NOTIFICATION BETWEEN PLC AND JAVA FOR A HIGH SPEED LINE
 		// THIS MODULE IS NOT ACTIVE BY DEFAULT
 
-		List<String> productCounterVariables = PlcVariableMap.getLinesVariableName(productFreqVarName);
+		List<String> productCounterVariables = PlcLineHelper.getLinesVariableName(productFreqVarName);
 
 		if (productCounterVariables == null || productCounterVariables.size() == 0)
 			return;

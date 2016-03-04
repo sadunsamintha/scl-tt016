@@ -14,8 +14,6 @@
 
 	<bean id="plcProvider" class="com.sicpa.standard.sasscl.provider.impl.PlcProvider" />
 
-	<bean id="plcSecureProvider" class="com.sicpa.standard.sasscl.provider.impl.PlcProvider" />
-
 	<bean id="productionConfigProvider" class="com.sicpa.standard.sasscl.provider.impl.ProductionConfigProvider" />
 
 	<bean id="activationBehaviorProvider" class="com.sicpa.standard.sasscl.provider.impl.ActivationBehaviorProvider" />

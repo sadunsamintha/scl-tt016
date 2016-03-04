@@ -9,7 +9,7 @@
     <value class="int">1000</value>
   </PlcValueWithUnit>
   <PlcValueWithUnit varName=".com.stLine[1].stParameters.nCameraDistance" unit="PULSE" unitVariable=".com.stLine[1].stParameters.bCameraDistanceType">
-    <value class="int">15000</value>
+    <value class="int">15001</value>
   </PlcValueWithUnit>
   <PlcValueWithUnit varName=".com.stLine[1].stParameters.nCameraLength" unit="PULSE" unitVariable=".com.stLine[1].stParameters.bCameraLengthType">
     <value class="int">120</value>

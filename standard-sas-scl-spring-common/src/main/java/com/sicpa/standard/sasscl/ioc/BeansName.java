@@ -88,14 +88,9 @@ public interface BeansName {
 	 */
 	String PLC = "plc";
 	/**
-	 * IPlcAdaptor
-	 */
-	String PLC_SECURE = "plcSecureAdaptor";
-	/**
 	 * IProvider
 	 */
 	String PLC_PROVIDER = "plcProvider";
-	String PLC_SEC_PROVIDER = "plcSecureProvider";
 	/**
 	 * EditablePlcVariables
 	 */
@@ -276,7 +271,6 @@ public interface BeansName {
 	 * Map<String-logicalVarName,String-nameInPlc>
 	 */
 	String PLC_VAR_MAPPING = "plcVarMap";
-	String PLC_SECURE_VAR_MAPPING = "securePlcVarMap";
 
 	/**
 	 * List<IPLCVariable>
@@ -284,10 +278,6 @@ public interface BeansName {
 	String PLC_PARAMETERS = "plcCabinetParameters";
 
 	String PLC_CABINET_VARIABLES_VALUE = "allPlcVariableValues";
-
-	String PLC_SECURE_PARAMETERS = "plcSecureParameters";
-
-	String PLC_SECURE_VARIABLE_VALUES = "plcSecureVariableValues";
 
 	/**
 	 * IMessagesMapping

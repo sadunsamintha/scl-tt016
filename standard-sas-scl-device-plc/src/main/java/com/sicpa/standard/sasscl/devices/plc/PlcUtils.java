@@ -18,7 +18,7 @@ public class PlcUtils {
 
 	public static IPlcVariable<?> clone(IPlcVariable<?> source, int lineIndex) {
 		return PlcVariable.create(
-				source.getVariableName().replaceAll(PlcVariableMap.lineIndexPlaceholder, String.valueOf(lineIndex)),
+				source.getVariableName().replaceAll(PlcLineHelper.lineIndexPlaceholder, String.valueOf(lineIndex)),
 				source.getVariableType());
 	}
 

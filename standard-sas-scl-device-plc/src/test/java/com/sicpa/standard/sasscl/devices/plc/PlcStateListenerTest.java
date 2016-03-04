@@ -25,7 +25,7 @@ public class PlcStateListenerTest {
 		plc = mock(IPlcAdaptor.class);
 		stateListener = new PlcStateListener();
 		stateListener.setLineStateVarName(varName);
-		PlcVariableMap.addLineIndex(1);
+		PlcLineHelper.addLineIndex(1);
 	}
 
 	boolean msgCatched = false;

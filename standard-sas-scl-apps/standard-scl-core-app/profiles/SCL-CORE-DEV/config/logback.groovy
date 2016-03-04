@@ -20,7 +20,13 @@ turboFilter(RepeatedMessageThreadFilter) {
 	minRepetitionPeriodInMs = 200
 }
 
-repeatedMessageThreadFilters = [""]
+repeatedMessageThreadFilters = [
+	"updateSysUsage",
+	"Camera Life Check Worker",
+	"SCD2 UDP",
+	"LifeCheckWorker of Scd2Connector",
+	"PrtConnStatus-Notifier",
+]
 
 repeatedMessageThreadFilters.each { name ->
 	turboFilter(RepeatedMessageThreadFilter) { threadName = name }
@@ -68,7 +74,7 @@ rollingFileAppendersSize.each { c ->
 }
 
 logger("com.sicpa.standard.sasscl",     	                    DEBUG,  ["SASSCL"],      true)
-logger("com.sicpa.standard.sasscl.common.log.OperatorLogger",   INFO,   ["STDOPERATOR"],  true)
+logger("com.sicpa.standard.sasscl.common.log",   				INFO,   ["STDOPERATOR"],  true)
 logger("com.sicpa.standard.sasscl.devices.brs",                 DEBUG,  ["BRS"],		  true)
 logger("com.sicpa.standard.camera",                             INFO,   ["STDCAMERA"],   true)
 logger("com.sicpa.standard.printer",                            WARN,   ["STDPRINTER"],  true)

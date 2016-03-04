@@ -124,7 +124,7 @@ public abstract class PlcVariableDescriptor<T> {
 
 	public void addListener(final IPlcVariableDescriptorListener lis) {
 		if (listeners == null) {
-			listeners = new ArrayList<IPlcVariableDescriptorListener>();
+			listeners = new ArrayList<>();
 		}
 		listeners.add(lis);
 	}

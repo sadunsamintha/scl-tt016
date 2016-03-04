@@ -16,7 +16,7 @@ import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.messages.MessageEvent;
 import com.sicpa.standard.common.util.Messages;
 import com.sicpa.standard.sasscl.devices.plc.IPlcListener;
-import com.sicpa.standard.sasscl.devices.plc.PlcVariableMap;
+import com.sicpa.standard.sasscl.devices.plc.PlcLineHelper;
 import com.sicpa.standard.sasscl.devices.plc.event.PlcEvent;
 import com.sicpa.standard.sasscl.messages.IssueSolvedMessage;
 import com.sicpa.standard.sasscl.provider.impl.PlcProvider;
@@ -29,8 +29,12 @@ public class PlcRegisterHandler implements IPlcListener {
 	private String lineRegisterVarName;
 	private String cabRegisterVarName;
 
-	protected final List<String> cabinetErrorsList = new ArrayList<String>();
-	protected final List<String> lineErrorsList = new ArrayList<String>();
+	protected final List<String> cabinetErrorsList = new ArrayList<>();
+	protected final List<String> lineErrorsList = new ArrayList<>();
+
+	// previous register value, in order to fire issue solved event
+	protected Integer previousCabinetRegisterValue = 0;
+	protected final Map<String, Integer> mapPreviousRegister = new HashMap<String, Integer>();
 
 	public PlcRegisterHandler() {
 	}
@@ -75,10 +79,6 @@ public class PlcRegisterHandler implements IPlcListener {
 		EventBusService.post(msg);
 	}
 
-	// previous register value, in order to fire issue solved event
-	protected Integer previousCabinetRegisterValue = 0;
-	protected final Map<String, Integer> mapPreviousRegister = new HashMap<String, Integer>();
-
 	protected void onCabinetErrorRegister(Integer registerValue) {
 		synchronized (mapPreviousRegister) {
 			handleCabinetRegister(previousCabinetRegisterValue, registerValue);
@@ -118,7 +118,7 @@ public class PlcRegisterHandler implements IPlcListener {
 
 	protected void onLineErrorRegister(Integer registerValue, String varName) {
 		synchronized (mapPreviousRegister) {
-			List<String> lineWarningErrorVariables = PlcVariableMap.getLinesVariableName(lineRegisterVarName);
+			List<String> lineWarningErrorVariables = PlcLineHelper.getLinesVariableName(lineRegisterVarName);
 
 			if (lineWarningErrorVariables != null && lineWarningErrorVariables.contains(varName)) {
 
@@ -126,7 +126,7 @@ public class PlcRegisterHandler implements IPlcListener {
 				if (previousRegister == null) {
 					previousRegister = 0;
 				}
-				handleLineRegister(previousRegister, registerValue, PlcVariableMap.getLineIndex(varName));
+				handleLineRegister(previousRegister, registerValue, PlcLineHelper.getLineIndex(varName));
 				mapPreviousRegister.put(varName, registerValue);
 			}
 		}
@@ -149,11 +149,11 @@ public class PlcRegisterHandler implements IPlcListener {
 	public List<String> getListeningVariables() {
 		List<String> vars = new ArrayList<String>();
 		vars.add(cabRegisterVarName);
-		vars.addAll(PlcVariableMap.getLinesVariableName(lineRegisterVarName));
+		vars.addAll(PlcLineHelper.getLinesVariableName(lineRegisterVarName));
 		return vars;
 	}
 
-	public void setPlcProvider(final PlcProvider plcProvider) {
+	public void setPlcProvider(PlcProvider plcProvider) {
 		this.plcProvider = plcProvider;
 		this.plcProvider.addChangeListener(new PropertyChangeListener() {
 			@Override

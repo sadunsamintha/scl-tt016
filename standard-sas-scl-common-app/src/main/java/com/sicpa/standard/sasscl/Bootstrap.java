@@ -2,7 +2,6 @@ package com.sicpa.standard.sasscl;
 
 import java.io.File;
 import java.util.List;
-import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,9 +28,6 @@ import com.sicpa.standard.sasscl.controller.device.group.DevicesGroup;
 import com.sicpa.standard.sasscl.controller.flow.IBootstrap;
 import com.sicpa.standard.sasscl.controller.scheduling.RemoteServerScheduledJobs;
 import com.sicpa.standard.sasscl.devices.DeviceStatus;
-import com.sicpa.standard.sasscl.devices.DeviceStatusEvent;
-import com.sicpa.standard.sasscl.devices.IDeviceStatusListener;
-import com.sicpa.standard.sasscl.devices.plc.PlcVariableMap;
 import com.sicpa.standard.sasscl.devices.plc.variable.EditablePlcVariables;
 import com.sicpa.standard.sasscl.devices.plc.variable.serialisation.IPlcValuesLoader;
 import com.sicpa.standard.sasscl.devices.plc.variable.serialisation.PlcValuesForAllVar;
@@ -54,11 +50,9 @@ public class Bootstrap implements IBootstrap {
 
 	@Override
 	public void executeSpringInitTasks() {
-
 		IStorage storage = BeanProvider.getBean(BeansName.STORAGE);
 		restoreStatistics(storage);
 		initPlc();
-		// needed to init the selection model for the gui
 		initProductionParameter(storage);
 		initAuthenticator(storage);
 		initCrypto();
@@ -66,24 +60,18 @@ public class Bootstrap implements IBootstrap {
 		addConnectionListenerOnServer();
 		initOperatorLogger();
 		connectRemoteServer();
-		connectPlcSecure();
-		// this need the view so cannot put in init
 		restorePreviousSelectedProductionParams();
 		executeModelValidator();
 		executePlcVarValidator();
 	}
 
 	private void addConnectionListenerOnServer() {
-		final IRemoteServer server = BeanProvider.getBean(BeansName.REMOTE_SERVER);
-		IDeviceStatusListener lis = new IDeviceStatusListener() {
-			@Override
-			public void deviceStatusChanged(final DeviceStatusEvent evt) {
-				if (evt.getDevice() instanceof IRemoteServer && evt.getStatus() == DeviceStatus.CONNECTED) {
-					initRemoteServerConnected();
-				}
+		IRemoteServer server = BeanProvider.getBean(BeansName.REMOTE_SERVER);
+		server.addDeviceStatusListener(evt -> {
+			if (evt.getDevice() instanceof IRemoteServer && evt.getStatus() == DeviceStatus.CONNECTED) {
+				initRemoteServerConnected();
 			}
-		};
-		server.addDeviceStatusListener(lis);
+		});
 	}
 
 	private void executeModelValidator() {
@@ -101,7 +89,6 @@ public class Bootstrap implements IBootstrap {
 				}
 			} catch (ValidatorsException e) {
 				for (final ValidatorException ex : e.getValidatorExceptions()) {
-
 					// for each validator exception show it on the gui
 					EventBusService.post(new MessageEvent(this, ex.getLangKey(), ex.getSource(), ex, ex.getParams()));
 				}
@@ -117,23 +104,6 @@ public class Bootstrap implements IBootstrap {
 	private void connectRemoteServer() {
 		IPlcIndependentDevicesController controller = BeanProvider.getBean(BeansName.OTHER_DEVICES_CONTROLLER);
 		controller.startDevicesGroup(DevicesGroup.STARTUP_GROUP);
-	}
-
-	private void connectPlcSecure() {
-//		final IPlcAdaptor plcSecure = BeanProvider.getBean(BeansName.PLC_SECURE);
-//		final PlcProvider plcSecProvider = BeanProvider.getBean(BeansName.PLC_SEC_PROVIDER);
-//		plcSecProvider.set(plcSecure);
-//
-//		TaskExecutor.execute(new Runnable() {
-//			@Override
-//			public void run() {
-//				try {
-//					plcSecure.connect();
-//				} catch (final DeviceException e) {
-//					logger.error("Error while starting the PLC Secure module", e);
-//				}
-//			}
-//		});
 	}
 
 	private void restorePreviousSelectedProductionParams() {
@@ -156,22 +126,11 @@ public class Bootstrap implements IBootstrap {
 
 	@SuppressWarnings("rawtypes")
 	private void initPlc() {
-
-		Map<String, String> plcVarMap = BeanProvider.getBean(BeansName.PLC_VAR_MAPPING);
-		PlcVariableMap.addPlcVariables(plcVarMap);
-		Map<String, String> plcSecureVarMap = BeanProvider.getBean(BeansName.PLC_SECURE_VAR_MAPPING);
-		PlcVariableMap.addPlcVariables(plcSecureVarMap);
-
 		IPlcValuesLoader loader = BeanProvider.getBean(BeansName.PLC_VALUES_LOADER);
 		List<IPlcVariable> variables = BeanProvider.getBean(BeansName.PLC_PARAMETERS);
 		PlcValuesForAllVar values = BeanProvider.getBean(BeansName.PLC_CABINET_VARIABLES_VALUE);
 
 		loader.load(variables, values);
-
-		List<IPlcVariable> variablesSecure = BeanProvider.getBean(BeansName.PLC_SECURE_PARAMETERS);
-		PlcValuesForAllVar valuesSecure = BeanProvider.getBean(BeansName.PLC_SECURE_VARIABLE_VALUES);
-
-		loader.load(variablesSecure, valuesSecure);
 	}
 
 	private void initOperatorLogger() {

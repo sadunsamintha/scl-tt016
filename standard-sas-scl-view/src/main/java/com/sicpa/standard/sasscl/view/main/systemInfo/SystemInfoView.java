@@ -29,9 +29,7 @@ public class SystemInfoView extends AbstractView<ISystemInfoViewListener, System
 	protected DateTimeLabel labelDateValue;
 
 	protected JLabel labelServerStatus;
-	
-	protected JLabel labelPlcSecureStatus;
-	
+
 	protected JLabel labelTitle;
 
 	protected JLabel labelPlcVersionText;
@@ -60,7 +58,6 @@ public class SystemInfoView extends AbstractView<ISystemInfoViewListener, System
 		add(getLabelDateValue(), "");
 
 		add(getLabelServerStatus(), "newline ,gapleft 5 , spanx");
-		add(getLabelPlcSecureStatus(), "newline ,gapleft 5 , spanx");
 	}
 
 	@Override
@@ -68,7 +65,6 @@ public class SystemInfoView extends AbstractView<ISystemInfoViewListener, System
 		getLabelAppVersionValue().setText(model.getAppVersion());
 		getLabelPlcVersionValue().setText(model.getPlcVersion());
 		getLabelServerStatus().setVisible(!model.isRemoteServerConnected());
-		getLabelPlcSecureStatus().setVisible(!model.isPlcSecureConnected());
 	}
 
 	public JLabel getLabelPlcVersionText() {
@@ -99,15 +95,6 @@ public class SystemInfoView extends AbstractView<ISystemInfoViewListener, System
 			labelServerStatus.setForeground(SicpaColor.RED);
 		}
 		return labelServerStatus;
-	}
-	
-	public JLabel getLabelPlcSecureStatus() {
-		if (labelPlcSecureStatus == null) {
-			labelPlcSecureStatus = new JLabel();
-			labelPlcSecureStatus = new JLabel();
-			labelPlcSecureStatus.setForeground(SicpaColor.RED);
-		}
-		return labelPlcSecureStatus;
 	}
 
 	public JLabel getLabelTime() {
@@ -152,7 +139,6 @@ public class SystemInfoView extends AbstractView<ISystemInfoViewListener, System
 		updateDateFormat();
 		getLabelTime().setText(Messages.get("systeminfo.date"));
 		getLabelServerStatus().setText(Messages.get("remote.server.disconnected"));
-		getLabelPlcSecureStatus().setText("PLC Secure module disconnected");
 		getLabelAppVersionText().setText(Messages.get("systeminfo.app.version"));
 		getLabelPlcVersionText().setText(Messages.get("systeminfo.plc.version"));
 		getLabelTitle().setText(Messages.get("systeminfo.title"));

@@ -19,7 +19,7 @@ import com.sicpa.standard.sasscl.devices.IStartableDevice;
 import com.sicpa.standard.sasscl.devices.camera.ICameraAdaptor;
 import com.sicpa.standard.sasscl.devices.camera.simulator.ICameraAdaptorSimulator;
 import com.sicpa.standard.sasscl.devices.camera.simulator.ICodeProvider;
-import com.sicpa.standard.sasscl.devices.plc.PlcVariableMap;
+import com.sicpa.standard.sasscl.devices.plc.PlcLineHelper;
 import com.sicpa.standard.sasscl.provider.impl.ActivationBehaviorProvider;
 import com.sicpa.standard.sasscl.provider.impl.AuthenticatorModeProvider;
 import com.sicpa.standard.sasscl.provider.impl.PlcProvider;
@@ -77,12 +77,12 @@ public class ProductionInitiator implements IProductionInitiator {
 
 	protected void setAvailableLineIndexes() {
 		int index1 = Integer.parseInt(productionConfig.getPlcConfig().getLine1Index());
-		PlcVariableMap.addLineIndex(index1);
+		PlcLineHelper.addLineIndex(index1);
 
 		String sIndex2 = productionConfig.getPlcConfig().getLine2Index();
 		if (StringUtils.isNotEmpty(sIndex2)) {
 			int index2 = Integer.parseInt(sIndex2);
-			PlcVariableMap.addLineIndex(index2);
+			PlcLineHelper.addLineIndex(index2);
 		}
 	}
 

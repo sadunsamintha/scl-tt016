@@ -79,8 +79,6 @@ public class PlcTest {
 
 		plcVariableToSet.put("COM.stCabinet.stNotifications.nWar_err_register", warErrVar);
 
-		PlcVariableMap.addPlcVariables(plcVariableMap);
-
 		// --------------- setup multiconveyor handler (For )----------------------
 
 		List<IPlcVariable<?>> notificationList = new ArrayList<IPlcVariable<?>>();

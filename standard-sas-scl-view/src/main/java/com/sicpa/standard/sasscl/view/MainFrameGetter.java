@@ -24,7 +24,6 @@ public class MainFrameGetter implements IGUIComponentGetter {
 	protected JPanel messagesView;
 	protected IGUIComponentGetter mainPanelGetter;
 	protected IView<?> snapshotView;
-	private boolean fingerPrintLogin;
 
 	@Override
 	public Component getComponent() {
@@ -33,8 +32,7 @@ public class MainFrameGetter implements IGUIComponentGetter {
 				if (!AppUtils.isHeadless()) {
 					this.frame = new MainFrame(this.viewController, startStopView.getComponent(),
 							selectionChangeView.getComponent(), exitView.getComponent(), optionsView.getComponent(),
-							messagesView, (JComponent) mainPanelGetter.getComponent(), snapshotView.getComponent(),
-							fingerPrintLogin);
+							messagesView, (JComponent) mainPanelGetter.getComponent(), snapshotView.getComponent());
 				}
 			} catch (HeadlessException e) {
 			}
@@ -76,13 +74,5 @@ public class MainFrameGetter implements IGUIComponentGetter {
 
 	public void setSnapshotView(IView<?> snapshotView) {
 		this.snapshotView = snapshotView;
-	}
-
-	public boolean isFingerPrintLogin() {
-		return fingerPrintLogin;
-	}
-
-	public void setFingerPrintLogin(boolean fingerPrintLogin) {
-		this.fingerPrintLogin = fingerPrintLogin;
 	}
 }

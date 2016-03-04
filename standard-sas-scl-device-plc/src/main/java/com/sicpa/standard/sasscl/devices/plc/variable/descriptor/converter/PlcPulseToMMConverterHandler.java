@@ -5,7 +5,7 @@ import java.util.Map;
 
 import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
-import com.sicpa.standard.sasscl.devices.plc.PlcVariableMap;
+import com.sicpa.standard.sasscl.devices.plc.PlcLineHelper;
 import com.sicpa.standard.sasscl.devices.plc.variable.descriptor.event.PulseConversionChangedEvent;
 import com.sicpa.standard.sasscl.devices.plc.variable.descriptor.event.PulseConversionParamChangedEvent;
 
@@ -20,7 +20,7 @@ public class PlcPulseToMMConverterHandler {
 	@Subscribe
 	public void handlePulseConversionParamChanged(PulseConversionParamChangedEvent evt) {
 
-		String line = PlcVariableMap.getLineIndex(evt.getParamName());
+		String line = PlcLineHelper.getLineIndex(evt.getParamName());
 		PlcPulseToMMConverter converter = converters.get(line);
 		if (converter == null) {
 			converter = createConverter();

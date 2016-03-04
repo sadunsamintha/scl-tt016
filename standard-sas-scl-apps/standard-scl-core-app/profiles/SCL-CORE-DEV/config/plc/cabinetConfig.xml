@@ -62,5 +62,4 @@
   <PlcValue varName=".com.stCabinet.stParameters.nFans_Temp_OFF_delta_hyst_Bypass">
     <value class="int">0</value>
   </PlcValue>
-
 </PlcValuesForAllVar>

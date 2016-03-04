@@ -4,6 +4,8 @@ import com.sicpa.standard.sasscl.devices.plc.remoteserver.PlcRemoteServerConnect
 import com.sicpa.standard.sasscl.devices.plc.PlcStateListener
 import com.sicpa.standard.sasscl.devices.plc.warningerror.PlcRegisterHandler
 import com.sicpa.standard.sasscl.devices.plc.impl.PlcAdaptor
+import com.sicpa.standard.sasscl.devices.plc.PlcJmxInfo
+
 beans{
 
 	plcValuesLoader(PlcValuesLoader)
@@ -39,7 +41,7 @@ beans{
 		parameters=ref('plcCabinetParameters')
 		loader=ref('plcValuesLoader')
 		parameterLine=ref('plcLineParamsTemplate')
-		notificationLine=ref('plcConveyorNtfTemplate')
+		notificationLine=ref('plcLineNtfTemplate')
 		lineVarGroups=ref('lineVarGroups')
 		plcConfigFolder=profilePath+'/config/plc'
 
@@ -50,6 +52,12 @@ beans{
 		plcVersionHVarName="#{plcVarMap['NTF_CAB_VERSION_HIGH']}"
 		plcVersionMVarName="#{plcVarMap['NTF_CAB_VERSION_MEDIUM']}"
 		plcVersionLVarName="#{plcVarMap['NTF_CAB_VERSION_LOW']}"
+	}
+	
+	plcJmxInfo(PlcJmxInfo){
+		plcProvider=ref('plcProvider')
+		plcCabinetVars=ref('plcCabJmxReport')
+		plcLineVars=ref('plcLineJmxReport')
 	}
 }
 

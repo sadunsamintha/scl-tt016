@@ -1,6 +1,7 @@
 import com.sicpa.standard.client.common.device.plc.PLCVariableMap
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.groovy.SwingEnabledGroovyApplicationContext;
+import com.sicpa.standard.client.common.ioc.InjectByMethodBean;
 import com.sicpa.standard.plc.controller.actions.*
 import com.sicpa.standard.plc.value.*
 import com.sicpa.standard.sasscl.devices.plc.DefaultPlcRequestExecutor;
@@ -16,27 +17,34 @@ import com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcVariablePuls
 
 import static com.sicpa.standard.sasscl.devices.plc.PlcRequest.*
 import static com.sicpa.standard.sasscl.devices.plc.PlcUtils.*
+import groovy.transform.Field;
+
+//type tag
+@Field String d='distance'
+@Field String i='int'
+@Field String s='short'
+@Field String b='bool'
+@Field String by='byte'
+
+@Field def allVars = new ArrayList<IPlcVariable>()
+@Field def lineParams= new ArrayList<IPlcVariable>()
+@Field def cabParams= new ArrayList<IPlcVariable>()
+@Field def lineJmxReport= new ArrayList<IPlcVariable>()
+@Field def cabJmxReport= new ArrayList<IPlcVariable>()
+@Field def lineNotif= new ArrayList<IPlcVariable>()
+@Field def cabNotif= new ArrayList<IPlcVariable>()
+@Field def plcVarMapping=new HashMap<String,String>();
+@Field def plcMap=new HashMap()
+@Field def requestMapping=new HashMap()
 
 beans {
 
-	String d='distance'
-	String i='int'
-	String s='short'
-	String b='bool'
-	String by='byte'
-
-	String iCreateVar='createInt32Var'
-	String sCreateVar='createShortVar'
-	String bCreateVar='createBooleanVar'
-	String byCreateVar='createByteVar'
-
-
-	def plcMap=new HashMap()
 	//v=> var name
 	//t=> type (i)nt/(s)hort/(b)ool,(str)ing, (by)te , in fact contain the method name to call to create the var
 	//novar => if you want the var to be accessible in the plcvarmap but not create an associated plcvar (used for error template msg)
 	//pulseConvertParam => if the var is part of the pulse by mm parameters
-
+	//cabNtf => notif on cabinet var
+	//lineNtf => notif on line
 
 	plcMap['PARAM_LINE_IS_ACTIVE']=[v:'.com.stLine[#x].bLine_is_active' ,t:b]
 	plcMap['PARAM_LINE_COM_STRUC_STORED_IN_RAM']=[v:'.com.stLine[#x].stParameters.bComStructureStoredInRAM' ,t:b]
@@ -117,14 +125,14 @@ beans {
 	plcMap['PARAM_LINE_PRODUCT_DETECTOR_ACTIVE_LOW']=[v:'.com.stLine[#x].stParameters.bProductDetectorIsActiveLow' ,t:b]
 
 
-	plcMap['NTF_LINE_SPEED']=[v:'.com.stLine[#x].stNotifications.nLineSpeed' ,t:i ,notif:'true']
+	plcMap['NTF_LINE_SPEED']=[v:'.com.stLine[#x].stNotifications.nLineSpeed' ,t:i ,lineNtf:'true']
 	plcMap['NTF_LINE_PRODS_PER_SECOND']=[v:'.com.stLine[#x].stNotifications.nProdsPerSecond' ,t:i ]
-	plcMap['NTF_LINE_STATE']=[v:'.com.stLine[#x].stNotifications.nState' ,t:i ,notif:'true']
+	plcMap['NTF_LINE_STATE']=[v:'.com.stLine[#x].stNotifications.nState' ,t:i ,lineNtf:'true']
 	plcMap['NTF_LINE_GOOD_TRIGS']=[v:'.com.stLine[#x].stNotifications.nGoodTrigs' ,t:i ]
 	plcMap['NTF_LINE_BAD_TRIGS']=[v:'.com.stLine[#x].stNotifications.nBadTrigs' ,t:i ]
 	plcMap['NTF_LINE_NO_CAP_TRIGS']=[v:'.com.stLine[#x].stNotifications.nNoCapTrigs' ,t:i ]
 	plcMap['NTF_LINE_COUNTER_TRIGS']=[v:'.com.stLine[#x].stNotifications.nCounterTrigs' ,t:i ]
-	plcMap['NTF_LINE_PRODUCT_DETECTOR_TRIGS']=[v:'.com.stLine[#x].stNotifications.nProductDetectorTrigs' ,t:i ,notif:'true']
+	plcMap['NTF_LINE_PRODUCT_DETECTOR_TRIGS']=[v:'.com.stLine[#x].stNotifications.nProductDetectorTrigs' ,t:i ,lineNtf:'true']
 	plcMap['NTF_LINE_PRODUCTS_FREQ']=[v:'.com.stLine[#x].stNotifications.nProductsFrequency' ,t:i ]
 	plcMap['NTF_LINE_TRILIGHT_GREEN']=[v:'.com.stLine[#x].stNotifications.nLineTrilightGreen' ,t:i ]
 	plcMap['NTF_LINE_TRILIGHT_YELLOW']=[v:'.com.stLine[#x].stNotifications.nLineTrilightYellow' ,t:i ]
@@ -143,7 +151,7 @@ beans {
 	plcMap['NTF_LINE_REL_HUMIDITY_VOLTAGE_LVL']=[v:'.com.stLine[#x].stNotifications.nRel_humidity_voltage_level' ,t:i ]
 	plcMap['NTF_LINE_AIR_PRESS_LVL']=[v:'.com.stLine[#x].stNotifications.nAir_pressure_level' ,t:i ]
 	plcMap['NTF_LINE_AIR_PRESS_VOLTAGE_LVL']=[v:'.com.stLine[#x].stNotifications.nAir_pressure_voltage_level' ,t:i ]
-	plcMap['NTF_LINE_WAR_ERR_REGISTER']=[v:'.com.stLine[#x].stNotifications.nWar_err_register' ,t:i ,notif:'true']
+	plcMap['NTF_LINE_WAR_ERR_REGISTER']=[v:'.com.stLine[#x].stNotifications.nWar_err_register' ,t:i ,lineNtf:'true']
 	plcMap['NTF_LINE_CPT_PRINTER_TRIGS']=[v:'.com.stLine[#x].stNotifications.nCptPrinterTrigs' ,t:i ]
 	plcMap['NTF_LINE_CPT_CAMERA_TRIGS']=[v:'.com.stLine[#x].stNotifications.nCptCameraTrigs' ,t:i ]
 	plcMap['NTF_LINE_JAVA_CPT_GOOD_PRODUCTS']=[v:'.com.stLine[#x].stNotifications.nJavaCpt_GoodProducts' ,t:i ]
@@ -190,7 +198,7 @@ beans {
 	plcMap['NTF_CAB_REL_HUMIDITY_VOLTAGE_LVL']=[v:'.com.stCabinet.stNotifications.nRel_humidity_voltage_level' ,t:i ]
 	plcMap['NTF_CAB_AIR_PRESS_LVL']=[v:'.com.stCabinet.stNotifications.nAir_pressure_level' ,t:i ]
 	plcMap['NTF_CAB_AIR_PRESS_VOLTAGE_LVL']=[v:'.com.stCabinet.stNotifications.nAir_pressure_voltage_level' ,t:i ]
-	plcMap['NTF_CAB_WAR_ERR_REGISTER']=[v:'.com.stCabinet.stNotifications.nWar_err_register' ,t:i  ,notif:'true']
+	plcMap['NTF_CAB_WAR_ERR_REGISTER']=[v:'.com.stCabinet.stNotifications.nWar_err_register' ,t:i  ,cabNtf:'true']
 
 	//		 REQUEST
 	plcMap['REQUEST_START']=[v:'.com.stMultilineRequests.bStart' ,t:b]
@@ -200,127 +208,156 @@ beans {
 	plcMap['REQUEST_LIFE_CHECK']=[v:'.com.stCabinet.stRequests.bLifeCheck' ,t:b]
 	plcMap['REQUEST_JAVA_WARNINGS_AND_ERRORS_REGISTER']=[v:'.com.nJavaWarningsAndErrorsRegister' ,t:i]
 
-	//        OFFLINE
+	//OFFLINE
 	plcMap['OFFLINE_COUNTING_QTY']=[v:'.offline.counting.qty' ,t:i]
 	plcMap['OFFLINE_COUNTING_LAST_STOP']=[v:'.offline.counting.last.stop' ,t:i]
 	plcMap['OFFLINE_COUNTING_LAST_PRODUCT']=[v:'.offline.counting.last.product' ,t:i]
 
+	//REQUEST
+	requestMapping[(START)]=[REQUEST_START:true]
+	requestMapping[(RUN)]=[REQUEST_RUN:true]
+	requestMapping[(STOP)]=[REQUEST_STOP:true]
+	requestMapping[(RELOAD_PLC_PARAM)]=[REQUEST_RELOAD_PLC_PARAM:true]
 
-	def allVars = new ArrayList<IPlcVariable>()
-	def lineParams= new ArrayList<IPlcVariable>()
-	def cabParams= new ArrayList<IPlcVariable>()
-	def lineNotifs= new ArrayList<IPlcVariable>()
-	def cabNotifs= new ArrayList<IPlcVariable>()
-	def PLCVarMapInternal=new HashMap<String,String>();
+
 
 	for ( e in plcMap ) {
 
 		String logic=e.key
 		String phy=e.value['v']
-		PLCVarMapInternal[logic]= phy
+		plcVarMapping[logic]= phy
 
 		if(e.value["novar"]=='true'){
 			continue
 		}
 
-		//create the plc var
-		String typeVar=e.value['t']
-		IPlcVariable var=null
-		PlcVariableDescriptor desc = null
-
-		switch(typeVar){
-			case d:
-				var = createPlcVar(iCreateVar,phy)
-				desc = createPlcDistanceDesc(var,logic,plcMap)
-				break
-			case i:
-				var = createPlcVar(iCreateVar,phy)
-				boolean pulseParamConverter=Boolean.parseBoolean(e.value['pulseConvertParam']);
-				if(pulseParamConverter){
-					desc =createPlcUnitConverterParamDesc(var)
-				}else{
-					desc = createPlcIntegerDesc(var)
-				}
-				break
-			case b:
-				var = createPlcVar(bCreateVar,phy)
-				desc = createPlcBooleanDesc(var)
-				break
-			case s:
-				var = createPlcVar(sCreateVar,phy)
-				desc = createPlcShortDesc(var)
-				break
-			case by:
-				var = createPlcVar(byCreateVar,phy)
-				desc = createPlcByteDesc(var)
-				break
-		}
-		allVars.add(var)
+		Map vd=createVarAndDescriptor(phy, logic, e)
+		IPlcVariable var=vd['var']
+		PlcVariableDescriptor desc =vd['desc']
 
 		registerSingleton("${logic}_var",var)
 		registerSingleton("${logic}_desc",desc)
 
 		//inject plc provider into the plc var descriptor
-		"${logic}_desc_inject"(){bean->
-			bean.factoryBean=desc
-			bean.factoryMethod='setPlcProvider'
-			arguments=[ref('plcProvider')]
+		"${logic}_desc_inject"(InjectByMethodBean){bean->
+			target=desc
+			methodName='setPlcProvider'
+			params=[ref('plcProvider')]
 		}
-
-		if(logic.startsWith('PARAM_LINE')) {
-			lineParams.add(var)
-		}
-		if(logic.startsWith('NTF_LINE')) {
-			lineNotifs.add(var)
-		}
-		if(logic.startsWith('PARAM_CAB')) {
-			cabParams.add(var)
-		}
-		if(logic.startsWith('NTF_CAB')) {
-			cabNotifs.add(var)
-		}
+		addVarToLists(var, logic, e)
 	}
 
 	registerSingleton('allPlcVars',allVars)
 	registerSingleton('plcLineParamsTemplate',lineParams)
 	registerSingleton('plcCabinetParameters',cabParams)
-	registerSingleton('plcLineNotifs',cabParams)
-	registerSingleton('plcCabNotifs',cabNotifs)
-	registerSingleton('plcVarMap',PLCVarMapInternal)
+	registerSingleton('plcLineJmxReport',lineJmxReport)
+	registerSingleton('plcCabJmxReport',cabJmxReport)
+	registerSingleton('plcLineNtfTemplate',lineNotif)
+	registerSingleton('plcCabinetNtf',cabNotif)
+	registerSingleton('plcVarMap',plcVarMapping)
 
 
+	def mapRequest = createRequests();
+	registerSingleton('mapPlcRequestAction',mapRequest)
+}
 
-	//---PLC REQUEST---
+def void addVarToLists(def var,String logicName,def varInfo){
+	allVars.add(var)
 
-	def mapRequestRoot= [
-		(START):[REQUEST_START:true],
-		(RUN):[REQUEST_RUN:true],
-		(STOP):[REQUEST_STOP:false],
-		(RELOAD_PLC_PARAM):[REQUEST_RELOAD_PLC_PARAM:true]
-	]
+	//PARAM
+	if(isLineParam(logicName)) {
+		lineParams.add(var)
+	}
+	if(isCabinetParam(logicName)) {
+		cabParams.add(var)
+	}
 
+	//JMX REPORT
+	if(isLineJmxReport(logicName)) {
+		lineJmxReport.add(var)
+	}
+	if(isCabinetJmxReport(logicName)) {
+		cabJmxReport.add(var)
+	}
 
+	//NOTIF
+	if(isCabinetNotif(varInfo)){
+		cabNotif.add(var)
+	}
+	if(isLineNotif(varInfo)){
+		lineNotif.add(var)
+	}
+}
+
+def  Map<PlcRequest, IPlcRequestExecutor> createRequests(){
 	Map<PlcRequest, IPlcRequestExecutor> mapRequest = new HashMap<>();
-	for(e in mapRequestRoot){
+	for(e in requestMapping){
 		def key=e.key
 		def actions=new ArrayList<IPlcAction>()
 		for(reqStep in e.value){
-			String var=PLCVarMapInternal[reqStep.key]
+			String var=plcVarMapping[reqStep.key]
 			IPlcAction action=PlcAction.request(var,reqStep.value)
 			actions.add(action)
 		}
 		DefaultPlcRequestExecutor exec=new DefaultPlcRequestExecutor(actions.toArray(new IPlcAction[actions.size]))
 		mapRequest[key]=exec
 	}
-	registerSingleton('mapPlcRequestAction',mapRequest)
+	return mapRequest
 }
 
+def Map createVarAndDescriptor(String varPhyName,varLogicName,def varInfo){
+	String typeVar=varInfo.value['t']
+	def res = new HashMap()
+	PlcVariableDescriptor desc
+	IPlcVariable var
+	switch(typeVar){
+		case d:
+			var = createIntVar(varPhyName)
+			desc = createPlcDistanceDesc(var,varLogicName)
+			break
+		case i:
+			var = createIntVar(varPhyName)
+			if(isPulseConverterParam(varInfo)){
+				desc =createPlcUnitConverterParamDesc(var)
+			}else{
+				desc = createPlcIntegerDesc(var)
+			}
+			break
+		case b:
+			var = createBooleanVar(varPhyName)
+			desc = createPlcBooleanDesc(var)
+			break
+		case s:
+			var = createShortVar(varPhyName)
+			desc = createPlcShortDesc(var)
+			break
+		case by:
+			var = createByteVar(varPhyName)
+			desc = createPlcByteDesc(var)
+			break
+	}
+	res['var']=var
+	res['desc']=desc
+	return res;
+}
 
-def static IPlcVariable createPlcVar(String method,String physName){
+def  IPlcVariable createBooleanVar(String physName){
+	return createVar('createBooleanVar', physName)
+}
+def  IPlcVariable createByteVar(String physName){
+	return createVar('createByteVar', physName)
+}
+def  IPlcVariable createShortVar(String physName){
+	return createVar('createShortVar', physName)
+}
+def  IPlcVariable createIntVar(String physName){
+	return createVar('createInt32Var', physName)
+}
+def  IPlcVariable createVar(String method,String physName){
 	return PlcVariable."$method"(physName)
 }
 
-def static PlcVariableDescriptor createPlcDistanceDesc(IPlcVariable var,String logicVarName, Map<String,String> plcMap){
+def  PlcVariableDescriptor createPlcDistanceDesc(IPlcVariable var,String logicVarName){
 
 	String unitVarName=plcMap.get(logicVarName+'_TYPE')['v']
 	if(unitVarName==null){
@@ -336,7 +373,29 @@ def static PlcVariableDescriptor createPlcDistanceDesc(IPlcVariable var,String l
 	desc.setMinMs(0)
 	desc.setMaxMs(999999)
 
-
 	EventBusService.register(desc)
 	return desc
 }
+def  boolean isCabinetParam(String varName){
+	return varName.startsWith('PARAM_CAB')
+}
+def  boolean isLineParam(String varName){
+	return varName.startsWith('PARAM_LINE')
+}
+def  boolean isCabinetJmxReport(String varName){
+	return varName.startsWith('NTF_CAB')
+}
+def  boolean isLineJmxReport(String varName){
+	return varName.startsWith('NTF_LINE')
+}
+def  boolean isCabinetNotif(def map){
+	return Boolean.parseBoolean(map.value['lineNotif'])
+}
+def  boolean isLineNotif(def map){
+	return Boolean.parseBoolean(map.value['lineNotif'])
+}
+def  boolean isPulseConverterParam(def map){
+	return Boolean.parseBoolean(map.value['pulseConvertParam'])
+}
+
+

@@ -26,6 +26,7 @@ import com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcPulseVariabl
 import com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcVariableDescriptor;
 import com.sicpa.standard.sasscl.devices.plc.variable.serialisation.IPlcValuesLoader;
 import com.sicpa.standard.sasscl.devices.plc.variable.serialisation.PlcValuesForAllVar;
+
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,30 +41,16 @@ public class PlcAdaptor extends AbstractPlcAdaptor implements IPlcControllerList
 		IConfigurable<PlcConfig, PlcAdaptor> {
 
 	private static final Logger logger = LoggerFactory.getLogger(PlcAdaptor.class);
-
-	protected IPlcController<? extends IPlcModel> controller;
-
-	protected String plcConfigFolder;
-
-	/**
-	 * to get actions for specific PLCRequest in a particular production mode
-	 */
-	protected final Map<PlcRequest, IPlcRequestExecutor> plcRequestActionMap = new HashMap<PlcRequest, IPlcRequestExecutor>();
-
-	/**
-	 * PLC notifications (for instance line speed, good trigger & bad trigger etc) - excludes errors & warnings
-	 */
-	protected List<IPlcVariable<?>> notificationVariables = new ArrayList<IPlcVariable<?>>();
-
-	protected final Collection<IPlcVariable> parameters = new ArrayList<IPlcVariable>();
-
-	private Map<String, Short> systemTypes;
-
-	private Map<String, Boolean> activeLines;
-
-	protected final AtomicBoolean notificationCreated = new AtomicBoolean(false);
-
 	private static final short SYSTEM_TYPE_TOBACCO = 3;
+
+	private IPlcController<? extends IPlcModel> controller;
+	private String plcConfigFolder;
+	private final Map<PlcRequest, IPlcRequestExecutor> plcRequestActionMap = new HashMap<>();
+	private List<IPlcVariable<?>> notificationVariables = new ArrayList<IPlcVariable<?>>();
+	private final Collection<IPlcVariable> parameters = new ArrayList<IPlcVariable>();
+	private IPlcValuesLoader loader;
+	private List<IPlcVariable> parameterLine;
+	private List<IPlcVariable> notificationLine;
 
 	private String lineSpeedVarName;
 	private String productFreqVarName;
@@ -73,9 +60,9 @@ public class PlcAdaptor extends AbstractPlcAdaptor implements IPlcControllerList
 	private String plcVersionMVarName;
 	private String plcVersionLVarName;
 
-	public void setPlcVariablesNameMap(Map<String, String> plcVariablesMap) {
-		PlcVariableMap.addPlcVariables(plcVariablesMap);
-	}
+	private final AtomicBoolean notificationCreated = new AtomicBoolean(false);
+	private Map<String, Short> systemTypes;
+	private Map<String, Boolean> activeLines;
 
 	public PlcAdaptor() {
 	}
@@ -209,8 +196,8 @@ public class PlcAdaptor extends AbstractPlcAdaptor implements IPlcControllerList
 			@Override
 			public List<String> getListeningVariables() {
 				List<String> result = new ArrayList<String>();
-				result.addAll(PlcVariableMap.getLinesVariableName(lineSpeedVarName));
-				result.addAll(PlcVariableMap.getLinesVariableName(productFreqVarName));
+				result.addAll(PlcLineHelper.getLinesVariableName(lineSpeedVarName));
+				result.addAll(PlcLineHelper.getLinesVariableName(productFreqVarName));
 				return result;
 			}
 		});
@@ -240,7 +227,7 @@ public class PlcAdaptor extends AbstractPlcAdaptor implements IPlcControllerList
 
 		// logger.debug("Event {} {}", event.getVarName(), event.getValue());
 
-		String lineIndex = PlcVariableMap.getLineIndex(event.getVarName());
+		String lineIndex = PlcLineHelper.getLineIndex(event.getVarName());
 
 		if (!isLineActive(lineIndex)) {
 			logger.debug("line not active");
@@ -293,12 +280,12 @@ public class PlcAdaptor extends AbstractPlcAdaptor implements IPlcControllerList
 		if (systemTypes == null) {
 			systemTypes = new HashMap<String, Short>();
 
-			List<String> systemTypeVarList = PlcVariableMap.getLinesVariableName(systemTypeVarName);
+			List<String> systemTypeVarList = PlcLineHelper.getLinesVariableName(systemTypeVarName);
 
 			for (String systemTypeVar : systemTypeVarList) {
 				for (IPlcVariable<?> var : parameters) {
 					if (var.getVariableName().equals(systemTypeVar)) {
-						systemTypes.put(PlcVariableMap.getLineIndex(systemTypeVar), (Short) var.getValue());
+						systemTypes.put(PlcLineHelper.getLineIndex(systemTypeVar), (Short) var.getValue());
 					}
 				}
 			}
@@ -319,12 +306,12 @@ public class PlcAdaptor extends AbstractPlcAdaptor implements IPlcControllerList
 		if (activeLines == null) {
 			activeLines = new HashMap<String, Boolean>();
 
-			List<String> systemTypeVarList = PlcVariableMap.getLinesVariableName(lineActiveVarName);
+			List<String> systemTypeVarList = PlcLineHelper.getLinesVariableName(lineActiveVarName);
 
 			for (String systemTypeVar : systemTypeVarList) {
 				for (IPlcVariable<?> var : parameters) {
 					if (var.getVariableName().equals(systemTypeVar)) {
-						activeLines.put(PlcVariableMap.getLineIndex(systemTypeVar), (Boolean) var.getValue());
+						activeLines.put(PlcLineHelper.getLineIndex(systemTypeVar), (Boolean) var.getValue());
 					}
 				}
 			}
@@ -345,7 +332,7 @@ public class PlcAdaptor extends AbstractPlcAdaptor implements IPlcControllerList
 	 */
 	private boolean isTobacco(PlcEvent event) {
 
-		Short systemType = getSystemTypes().get(PlcVariableMap.getLineIndex(event.getVarName()));
+		Short systemType = getSystemTypes().get(PlcLineHelper.getLineIndex(event.getVarName()));
 		return (systemType != null) && systemType.equals(SYSTEM_TYPE_TOBACCO);
 	}
 
@@ -355,7 +342,7 @@ public class PlcAdaptor extends AbstractPlcAdaptor implements IPlcControllerList
 	@Override
 	public void executeRequest(final PlcRequest request) throws PlcAdaptorException {
 
-		logger.debug("PLC - execute request: {}", request.getDescription());
+		logger.info("PLC - execute request: {}", request.getDescription());
 
 		IPlcRequestExecutor executor = getRequestExecutor(request);
 		if (executor == null) {
@@ -461,6 +448,7 @@ public class PlcAdaptor extends AbstractPlcAdaptor implements IPlcControllerList
 	@Override
 	public void write(IPlcVariable<?> var) throws PlcAdaptorException {
 		try {
+			logger.info("writing plc var {} - {}", var.getVariableName(), var.getValue());
 			controller.createRequest(PlcAction.request(var)).execute();
 		} catch (PlcException e) {
 			throw new PlcAdaptorException(e);
@@ -484,10 +472,6 @@ public class PlcAdaptor extends AbstractPlcAdaptor implements IPlcControllerList
 			}
 		};
 	}
-
-	protected IPlcValuesLoader loader;
-	protected List<IPlcVariable> parameterLine;
-	protected List<IPlcVariable> notificationLine;
 
 	protected void configure(PlcConfig config) throws Exception {
 		unregisterAllActivePlcVarGroup();

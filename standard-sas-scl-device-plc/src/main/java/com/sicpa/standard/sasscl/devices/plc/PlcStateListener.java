@@ -42,7 +42,7 @@ public class PlcStateListener extends PlcListenerAdaptor {
 	@Override
 	public void onPlcEvent(PlcEvent event) {
 
-		List<String> lineStateVariablesName = PlcVariableMap.getLinesVariableName(lineStateVarName);
+		List<String> lineStateVariablesName = PlcLineHelper.getLinesVariableName(lineStateVarName);
 
 		if (lineStateVariablesName != null && lineStateVariablesName.contains(event.getVarName())) {
 

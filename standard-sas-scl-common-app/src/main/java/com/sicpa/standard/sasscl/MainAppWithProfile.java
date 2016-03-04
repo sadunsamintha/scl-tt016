@@ -204,21 +204,11 @@ public class MainAppWithProfile extends MainApp implements IProfileSelectorListe
 		config.add("spring/devicesController.xml");
 		config.add("spring/hardwareController.xml");
 		config.add("spring/plc/plc-import.groovy");
-		config.add("spring/plc/secure/plc-secure-import.groovy");
-		config.add("spring/plc/plcJmxInfo.xml");
-		config.add("spring/plc/plcLineNotificationsTemplate.xml");
-		config.add("spring/plc/plcCabinetNotifications.xml");
-		config.add("spring/plc/plcCabinetErrorRegister.xml");
-		config.add("spring/plc/plcLineErrorRegister.xml");
-		config.add("spring/plc/plcRequests.xml");
-		config.add("spring/plc/plcCabinetParameters.xml");
-		config.add("spring/plc/plcLineParametersTemplate.xml");
+		config.add("spring/plc/plcErrorRegister.groovy");
 		config.add("spring/flowControl.xml");
 		config.add("spring/barcode.xml");
 
-		// PLC variables descriptors for cabinet
 		config.add("spring/descriptors/plcCabinetVariablesDescriptors.xml");
-
 		config.add("spring/descriptors/plcLineVariablesDescriptorsTemplate.xml");
 
 		config.add("spring/messages.xml");
