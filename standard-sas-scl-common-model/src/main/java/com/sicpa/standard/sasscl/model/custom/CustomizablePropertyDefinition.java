@@ -9,7 +9,7 @@ import java.util.Map;
  */
 public class CustomizablePropertyDefinition implements ICustomizablePropertyDefinition {
 
-	private Map<Class<?>, Map<String, ICustomProperty<?>>> customPropertiesMap = new HashMap<Class<?>, Map<String, ICustomProperty<?>>>();
+	private Map<Class<?>, Map<String, ICustomProperty<?>>> customPropertiesMap = new HashMap<>();
 
 	@Override
 	public Map<Class<?>, Map<String, ICustomProperty<?>>> getPropertyDefinition() {
@@ -20,7 +20,7 @@ public class CustomizablePropertyDefinition implements ICustomizablePropertyDefi
 	public void addProperty(Class<? extends ICustomizable> clazz, ICustomProperty<?> customProperty) {
 		Map<String, ICustomProperty<?>> customProperties = this.customPropertiesMap.get(clazz);
 		if (customProperties == null) {
-			customProperties = new HashMap<String, ICustomProperty<?>>();
+			customProperties = new HashMap<>();
 			this.customPropertiesMap.put(clazz, customProperties);
 		}
 		customProperties.put(customProperty.getName(), customProperty);

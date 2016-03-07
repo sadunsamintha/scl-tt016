@@ -12,14 +12,12 @@ public class CustomProperty<T> implements ICustomProperty<T> {
 
 	private final Class<T> propertyClass;
 
-	/**
-	 * 
-	 * @param name
-	 * @param propertyClass
-	 */
-	public CustomProperty(String name, Class<T> propertyClass) {
+	private final T defaultValue;
+
+	public CustomProperty(String name, Class<T> propertyClass, T defaultValue) {
 		this.name = name;
 		this.propertyClass = propertyClass;
+		this.defaultValue = defaultValue;
 	}
 
 	public Class<T> getPropertyClass() {
@@ -28,6 +26,10 @@ public class CustomProperty<T> implements ICustomProperty<T> {
 
 	public String getName() {
 		return name;
+	}
+
+	public T getDefaultValue() {
+		return defaultValue;
 	}
 
 	@Override

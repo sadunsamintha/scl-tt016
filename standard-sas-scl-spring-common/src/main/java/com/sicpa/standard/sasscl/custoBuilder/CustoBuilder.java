@@ -91,7 +91,7 @@ public class CustoBuilder {
 		}
 
 		public static abstract class Plc {
-			public static void AddToMapping(String logicalName, String nameOnPlc) {
+			public static void addToMapping(String logicalName, String nameOnPlc) {
 				Map<Object, Object> map = BeanProvider.getBean(BeansName.PLC_VAR_MAPPING);
 				map.put(logicalName, nameOnPlc);
 			}
@@ -157,7 +157,9 @@ public class CustoBuilder {
 		 * without previously adding it to the class, will result in an exception.
 		 * @param classToCustomize class to add property to
 		 * @param property custom property to add
-		 * @param <T> the type of custom property to add
+		 * @param <T> the type of custom property to ad
+		 * @see CustoBuilderTest.testModelAddCustomPropertySuccess
+		 *
 		 */
 		public static <T> void addPropertyToClass(Class<? extends ICustomizable> classToCustomize, CustomProperty<T>
 				property) {

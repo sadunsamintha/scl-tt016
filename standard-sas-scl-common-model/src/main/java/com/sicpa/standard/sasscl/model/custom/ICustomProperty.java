@@ -26,4 +26,12 @@ public interface ICustomProperty<T> {
 	 */
 	Class<T> getPropertyClass();
 
+
+	/**
+	 *
+	 * return the default value of a custom property
+	 *
+	 * @return default value
+	 */
+	T getDefaultValue();
 }

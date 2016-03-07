@@ -12,7 +12,7 @@ import org.junit.Test;
 public class CustoBuilderTest {
 
 	SKU sku;
-	CustomProperty<Boolean> isCompliant = new CustomProperty<>("compliant", Boolean.class);
+	CustomProperty<Boolean> isCompliant = new CustomProperty<>("compliant", Boolean.class, Boolean.TRUE);
 
 	@Before
 	public void before() {
