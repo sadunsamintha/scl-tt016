@@ -7,8 +7,8 @@ package com.sicpa.standard.sasscl.model.custom;
  */
 public class StringCustomProperty extends CustomProperty<String> {
 
-	public StringCustomProperty(String name) {
-		super(name, String.class);
+	public StringCustomProperty(String name, String defaultValue) {
+		super(name, String.class, defaultValue);
 	}
 
 }

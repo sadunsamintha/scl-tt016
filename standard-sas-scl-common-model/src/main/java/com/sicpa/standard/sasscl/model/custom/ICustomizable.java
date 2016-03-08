@@ -12,45 +12,13 @@ import java.util.Map;
  */
 public interface ICustomizable {
 
-	/**
-	 * to set the value of a custom property
-	 * 
-	 * @param <T>
-	 * @param customProperty
-	 * @param object
-	 */
 	<T> void setProperty(ICustomProperty<T> customProperty, T object);
 
-	/**
-	 * to set a list of custom properties
-	 * 
-	 * @param <T>
-	 * @param properties
-	 */
 	void setProperties(Map<ICustomProperty<?>, Object> properties);
 
-	/**
-	 * 
-	 * to get the value of a property
-	 * 
-	 * @param <T>
-	 * @param customProperty
-	 * @return
-	 */
 	<T> T getProperty(ICustomProperty<T> customProperty);
 
-	/**
-	 * to remove the property value from the instance
-	 * 
-	 * 
-	 * @param <T>
-	 * @param customProperty
-	 */
 	<T> void clearProperty(ICustomProperty<T> customProperty);
 
-	/**
-	 * make a copy of all the properties
-	 */
 	Map<ICustomProperty<?>, Object> copyProperties();
-
 }

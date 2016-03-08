@@ -1,5 +1,6 @@
 package com.sicpa.standard.sasscl.model;
 
+import com.sun.xml.internal.bind.v2.runtime.reflect.Lister;
 import junit.framework.Assert;
 
 import org.junit.Before;
@@ -12,9 +13,10 @@ import com.sicpa.standard.sasscl.model.custom.StringCustomProperty;
 
 public class CustomizableTest {
 
-	public static final CustomProperty<Boolean> SKU_IS_EXPORT = new CustomProperty<Boolean>("isExport", Boolean.class);
-	public static final CustomProperty<PackType> SKU_PACK_TYPE = new CustomProperty<PackType>("packType",
-			PackType.class);
+	public static final CustomProperty<Boolean> SKU_IS_EXPORT = new CustomProperty<>("isExport", Boolean
+			.class, true);
+	public static final CustomProperty<PackType> SKU_PACK_TYPE = new CustomProperty<>("packType",
+			PackType.class, new PackType("defaultPackType"));
 
 	@Before
 	public void setup() {
@@ -29,7 +31,8 @@ public class CustomizableTest {
 
 		SKU sku = new SKU();
 		Code code = new Code();
-		CustomProperty<String> customProperty = new StringCustomProperty("customProperty1");
+		CustomProperty<String> customProperty = new StringCustomProperty("customProperty1",
+				"defaultStringCustomProperty");
 
 		try {
 			code.setProperty(customProperty, "test");

@@ -13,7 +13,7 @@ public class Customizable implements ICustomizable, Serializable, Cloneable {
 
 	private static final long serialVersionUID = 1L;
 
-	private Map<ICustomProperty<?>, Object> customPropertiesMap = new HashMap<>();
+	private final Map<ICustomProperty<?>, Object> customPropertiesMap = new HashMap<>();
 
 	@Override
 	public <T> void setProperty(ICustomProperty<T> customProperty, T value) {

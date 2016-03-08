@@ -44,4 +44,19 @@ public class CustoBuilderTest {
 
 		Assert.assertEquals(true, skuFromXML.getProperty(isCompliant).booleanValue());
 	}
+
+	@Test
+	public void testModelGetDefaultValue() {
+		CustoBuilder.Model.addPropertyToClass(sku.getClass(), isCompliant);
+
+		Assert.assertEquals(true, sku.getProperty(isCompliant).booleanValue());
+	}
+
+	@Test
+	public void testModelOverwriteDefaultValue() {
+		CustoBuilder.Model.addPropertyToClass(sku.getClass(), isCompliant);
+		sku.setProperty(isCompliant, false);
+
+		Assert.assertEquals(false, sku.getProperty(isCompliant).booleanValue());
+	}
 }
