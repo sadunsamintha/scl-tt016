@@ -12,27 +12,27 @@ import com.sicpa.standard.sasscl.model.statistics.ViewStatisticsDescriptor;
 
 public class StatisticsViewModel extends AbstractObservableModel {
 
-	protected final Map<ViewStatisticsDescriptor, Integer> mapStats = new HashMap<ViewStatisticsDescriptor, Integer>();
-	protected final Map<String, String> mapSpeed = new TreeMap<String, String>();
+	protected final Map<ViewStatisticsDescriptor, Integer> mapStats = new HashMap<>();
+	protected final Map<Integer, String> mapSpeed = new TreeMap<>();
 
 	protected int total = 0;
 
 	// in second
 	protected int uptime;
 
-	public void setSpeed(String line, String speed) {
+	public void setSpeed(int line, String speed) {
 		mapSpeed.put(line, speed);
 	}
 
-	public Map<String, String> getLineSpeed() {
+	public Map<Integer, String> getLineSpeed() {
 		return mapSpeed;
 	}
 
-	public Map<ViewStatisticsDescriptor, Integer> getStatistics(String line) {
+	public Map<ViewStatisticsDescriptor, Integer> getStatistics(int line) {
 		synchronized (mapStats) {
-			Map<ViewStatisticsDescriptor, Integer> res = new HashMap<ViewStatisticsDescriptor, Integer>();
+			Map<ViewStatisticsDescriptor, Integer> res = new HashMap<>();
 			for (Entry<ViewStatisticsDescriptor, Integer> entry : mapStats.entrySet()) {
-				if (entry.getKey().getLine().equals(line)) {
+				if (entry.getKey().getLine() == line) {
 					res.put(entry.getKey(), entry.getValue());
 				}
 			}
@@ -40,8 +40,8 @@ public class StatisticsViewModel extends AbstractObservableModel {
 		}
 	}
 
-	public Collection<String> getLineIndexes() {
-		Collection<String> res = new HashSet<String>();
+	public Collection<Integer> getLineIndexes() {
+		Collection<Integer> res = new HashSet<>();
 		for (Entry<ViewStatisticsDescriptor, Integer> entry : mapStats.entrySet()) {
 			res.add(entry.getKey().getLine());
 		}

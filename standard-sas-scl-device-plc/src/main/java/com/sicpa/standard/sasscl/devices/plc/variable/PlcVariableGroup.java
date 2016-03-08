@@ -7,20 +7,20 @@ import com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcVariableDesc
 
 public class PlcVariableGroup {
 
-	protected final List<PlcVariableDescriptor<?>> plcVars = new ArrayList<>();
-	protected String description;
+	private final List<PlcVariableDescriptor> plcVars = new ArrayList<>();
+	private String description;
 
-	public PlcVariableGroup(final PlcVariableDescriptor<?>... descriptors) {
-		for (PlcVariableDescriptor<?> descriptor : descriptors) {
+	public PlcVariableGroup(final PlcVariableDescriptor... descriptors) {
+		for (PlcVariableDescriptor descriptor : descriptors) {
 			addDescriptor(descriptor);
 		}
 	}
 
-	public void addDescriptor(PlcVariableDescriptor<?> descriptor) {
+	public void addDescriptor(PlcVariableDescriptor descriptor) {
 		plcVars.add(descriptor);
 	}
 
-	public List<PlcVariableDescriptor<?>> getPlcVars() {
+	public List<PlcVariableDescriptor> getPlcVars() {
 		return plcVars;
 	}
 

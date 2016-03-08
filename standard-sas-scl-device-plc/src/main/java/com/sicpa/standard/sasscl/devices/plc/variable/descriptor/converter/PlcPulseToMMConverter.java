@@ -1,17 +1,15 @@
 package com.sicpa.standard.sasscl.devices.plc.variable.descriptor.converter;
 
-public class PlcPulseToMMConverter implements IPulseToMMConverter {
+import com.sicpa.standard.client.common.device.plc.converter.DefaultPulseMMConverter;
 
-	protected int shapeDiameterValue;
-	protected int encoderResolution;
-	protected int encoderModFoldEval;
+public class PlcPulseToMMConverter extends DefaultPulseMMConverter {
 
-	public PlcPulseToMMConverter() {
-	}
+	private volatile int shapeDiameterValue = 100;
+	private volatile int encoderResolution = 5000;
+	private volatile int encoderModFoldEval = 4;
 
-	@Override
-	public double convertToMM(final int pulseValue) {
-		return Math.PI * shapeDiameterValue * (1f * pulseValue / encoderResolution) / encoderModFoldEval;
+	public void computeCoef() {
+		setCoef((int) ((encoderResolution * encoderModFoldEval) / (Math.PI * shapeDiameterValue)));
 	}
 
 	public void setShapeDiameterValue(int shapeDiameterValue) {

@@ -9,7 +9,6 @@ import javax.swing.SpinnerNumberModel;
 
 import net.miginfocom.swing.MigLayout;
 
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,23 +16,23 @@ import com.sicpa.standard.gui.listener.CoalescentChangeListener;
 import com.sicpa.standard.gui.plaf.SicpaFont;
 import com.sicpa.standard.gui.utils.TextUtils;
 import com.sicpa.standard.gui.utils.ThreadUtils;
-import com.sicpa.standard.sasscl.common.log.OperatorLogger;
 import com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcByteVariableDescriptor;
 
 @SuppressWarnings("serial")
 public class PlcByteVariableRenderer extends JPanel implements IPlcVariableDescriptorListener {
 
 	private static final Logger logger = LoggerFactory.getLogger(PlcByteVariableRenderer.class);
-	protected JLabel labelVarName;
-	protected JSpinner spinner;
-	protected JLabel labelFormatedValue;
-	protected PlcByteVariableDescriptor plcVar;
+	private JLabel labelVarName;
+	private JSpinner spinner;
+	private PlcByteVariableDescriptor desc;
 
-	public PlcByteVariableRenderer(final PlcByteVariableDescriptor plcVar) {
-		this.plcVar = plcVar;
-		plcVar.addListener(this);
+	public PlcByteVariableRenderer(PlcByteVariableDescriptor desc) {
+		this.desc = desc;
+		desc.setInit(true);
+		desc.addListener(this);
 		initGUI();
 		valueChanged();
+		desc.setInit(false);
 	}
 
 	public static int LABEL_WIDTH = 250;
@@ -42,12 +41,11 @@ public class PlcByteVariableRenderer extends JPanel implements IPlcVariableDescr
 		setLayout(new MigLayout("ltr"));
 		add(getLabelVarName(), "w " + LABEL_WIDTH + "!");
 		add(getSpinner(), "");
-		add(getLabelFormatedValue());
 	}
 
 	public JLabel getLabelVarName() {
 		if (labelVarName == null) {
-			labelVarName = new JLabel(plcVar.getShortVarName());
+			labelVarName = new JLabel(desc.getVarName());
 			labelVarName.setFont(SicpaFont.getFont(12));
 			Font f = TextUtils.getOptimumFont(labelVarName.getText(), LABEL_WIDTH, labelVarName.getFont());
 			if (f.getSize() < 8) {
@@ -58,18 +56,10 @@ public class PlcByteVariableRenderer extends JPanel implements IPlcVariableDescr
 		return this.labelVarName;
 	}
 
-	public JLabel getLabelFormatedValue() {
-		if (labelFormatedValue == null) {
-			labelFormatedValue = new JLabel(plcVar.getFormattedValue());
-			labelFormatedValue.setFont(SicpaFont.getFont(12));
-		}
-		return this.labelFormatedValue;
-	}
-
 	public JSpinner getSpinner() {
 		if (spinner == null) {
-			SpinnerNumberModel model = new SpinnerNumberModel(new Short(plcVar.getMin()), new Short(plcVar.getMin()),
-					new Short(plcVar.getMax()), new Short((short) 1));
+			SpinnerNumberModel model = new SpinnerNumberModel(new Short((short) 0), new Short((short) 0), new Short(
+					Short.MAX_VALUE), new Short((short) 1));
 
 			spinner = new JSpinner(model);
 
@@ -91,47 +81,18 @@ public class PlcByteVariableRenderer extends JPanel implements IPlcVariableDescr
 	}
 
 	protected void spinnerChangeListener() {
-		plcVar.setValue((Short) getSpinner().getValue());
-		getLabelFormatedValue().setText(plcVar.getFormattedValue());
-
-		if (!StringUtils.isEmpty(plcVar.getFormattedValue())) {
-			OperatorLogger.log("PLC Variables - {} = {}",
-					new Object[] { plcVar.getVarName(), plcVar.getFormattedValue() });
-		} else {
-			OperatorLogger.log("PLC Variables - {} = {}", new Object[] { plcVar.getVarName(), plcVar.getValue() });
-		}
-	}
-
-	public PlcByteVariableDescriptor getPlcVar() {
-		return plcVar;
-	}
-
-	@Override
-	public void formatedValueChanged() {
-		ThreadUtils.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				getLabelFormatedValue().setText(plcVar.getFormattedValue());
-			}
-		});
+		desc.setValue("" + (Short) getSpinner().getValue());
 	}
 
 	@Override
 	public void valueChanged() {
-		ThreadUtils.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				Object value = getPlcVar().getValue();
-				if (value == null) {
-					value = Short.valueOf((short) 0);
-				}
-				try {
-					getSpinner().setValue(value);
-				} catch (Exception e) {
-					logger.error("error setting value for:" + plcVar.getVarName());
-				}
+		ThreadUtils.invokeLater(() -> {
+			Short value = Short.parseShort(desc.getValue());
+			try {
+				getSpinner().setValue(value);
+			} catch (Exception e) {
+				logger.error("error setting value for:" + desc.getVarName());
 			}
 		});
 	}
-
 }

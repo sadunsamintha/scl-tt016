@@ -11,7 +11,7 @@ public class ViewStatisticsDescriptor {
 
 	protected Color color;
 	protected String key;
-	protected String line;
+	protected int line;
 	protected int index;
 
 	public ViewStatisticsDescriptor() {
@@ -28,8 +28,9 @@ public class ViewStatisticsDescriptor {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((color == null) ? 0 : color.hashCode());
+		result = prime * result + index;
 		result = prime * result + ((key == null) ? 0 : key.hashCode());
-		result = prime * result + ((line == null) ? 0 : line.hashCode());
+		result = prime * result + line;
 		return result;
 	}
 
@@ -47,15 +48,14 @@ public class ViewStatisticsDescriptor {
 				return false;
 		} else if (!color.equals(other.color))
 			return false;
+		if (index != other.index)
+			return false;
 		if (key == null) {
 			if (other.key != null)
 				return false;
 		} else if (!key.equals(other.key))
 			return false;
-		if (line == null) {
-			if (other.line != null)
-				return false;
-		} else if (!line.equals(other.line))
+		if (line != other.line)
 			return false;
 		return true;
 	}
@@ -76,11 +76,11 @@ public class ViewStatisticsDescriptor {
 		this.key = key;
 	}
 
-	public String getLine() {
+	public int getLine() {
 		return line;
 	}
 
-	public void setLine(String line) {
+	public void setLine(int line) {
 		this.line = line;
 	}
 

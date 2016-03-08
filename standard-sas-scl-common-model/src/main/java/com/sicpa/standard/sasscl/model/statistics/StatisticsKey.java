@@ -17,13 +17,13 @@ public class StatisticsKey implements Serializable {
 
 	protected String description;
 
-	protected String line="";
+	protected int line;
 
 	public StatisticsKey(final String description) {
 		this.description = description;
 	}
 
-	public void setLine(String line) {
+	public void setLine(int line) {
 		this.line = line;
 	}
 
@@ -32,7 +32,7 @@ public class StatisticsKey implements Serializable {
 		return line + " " + description;
 	}
 
-	public String getLine() {
+	public int getLine() {
 		return line;
 	}
 
@@ -41,7 +41,7 @@ public class StatisticsKey implements Serializable {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((description == null) ? 0 : description.hashCode());
-		result = prime * result + ((line == null) ? 0 : line.hashCode());
+		result = prime * result + line;
 		return result;
 	}
 
@@ -59,10 +59,7 @@ public class StatisticsKey implements Serializable {
 				return false;
 		} else if (!description.equals(other.description))
 			return false;
-		if (line == null) {
-			if (other.line != null)
-				return false;
-		} else if (!line.equals(other.line))
+		if (line != other.line)
 			return false;
 		return true;
 	}

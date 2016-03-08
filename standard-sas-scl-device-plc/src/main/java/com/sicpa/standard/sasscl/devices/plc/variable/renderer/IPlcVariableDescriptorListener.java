@@ -4,5 +4,4 @@ public interface IPlcVariableDescriptorListener {
 
 	void valueChanged();
 
-	void formatedValueChanged();
 }

@@ -101,7 +101,7 @@ public class PlcRegisterHandler implements IPlcListener {
 		}
 	}
 
-	protected void handleLineRegister(Integer previousRegister, Integer currentRegister, String lineIndex) {
+	protected void handleLineRegister(Integer previousRegister, Integer currentRegister, int lineIndex) {
 		List<String> previouses = getLineErrorsInRegister(previousRegister);
 		List<String> currents = getLineErrorsInRegister(currentRegister);
 

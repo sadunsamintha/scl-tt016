@@ -17,7 +17,7 @@
 		<constructor-arg value="${profile.path}/monitoring/" />
 	</bean>
 
-	<bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean" >
+	<bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
 		<property name="staticMethod" value="com.sicpa.standard.sasscl.monitoring.MonitoringService.set" />
 		<property name="arguments">
 			<list>
@@ -33,34 +33,9 @@
 		<property name="productionConfigProvider" ref="productionConfigProvider" />
 	</bean>
 
-	<bean id="remoteControlMBean" class="com.sicpa.standard.sasscl.monitoring.mbean.scl.RemoteControlScl">
-		<property name="appBean" ref="statsMBean" />
-		<property name="defaultSaveTask">
-			<ref bean="defaultSaveRemotelyChangedBeanTask" />
-		</property>
-	</bean>
-
-	<bean id="defaultSaveRemotelyChangedBeanTask" class="com.sicpa.standard.sasscl.monitoring.mbean.sas.DefaultSaveRemotelyUpdateBeanTask" />
-
 	<bean id="MBeanStatsDelegate" class="com.sicpa.standard.sasscl.monitoring.mbean.scl.SclAppBeanStatistics">
 		<property name="storage" ref="storage" />
 		<property name="productionParameters" ref="productionParameters" />
-	</bean>
-
-
-	<bean id="injectSavePlcVarRemotely" class="com.sicpa.standard.client.common.ioc.InjectByMethodBean">
-		<property name="target" ref="remoteControlMBean" />
-		<property name="methodName" value="addSaveTask" />
-		<property name="params">
-			<array>
-				<value>plcVarSaving</value>
-				<ref bean="plcVarSaveRemotelyChangedBeanTask" />
-			</array>
-		</property>
-	</bean>
-
-	<bean id="plcVarSaveRemotelyChangedBeanTask" class="com.sicpa.standard.sasscl.devices.plc.variable.SavePlcVarRemotlyChanged">
-		<property name="plcProvider" ref="plcProvider" />
 	</bean>
 
 </beans>

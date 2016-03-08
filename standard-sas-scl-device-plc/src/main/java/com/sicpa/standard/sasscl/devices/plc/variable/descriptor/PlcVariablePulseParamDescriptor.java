@@ -8,23 +8,19 @@ public class PlcVariablePulseParamDescriptor extends PlcIntegerVariableDescripto
 	@Override
 	protected void fireValueChanged() {
 		super.fireValueChanged();
-		if (getVariable().getValue() == null){
+		if (getValue() == null) {
 			logger.error("variable {} not defined", getVarName());
 			return;
 		}
-		EventBusService.post(new PulseConversionParamChangedEvent(
-					getVarName(), getVariable().getValue().intValue()));
+		EventBusService
+				.post(new PulseConversionParamChangedEvent(getVarName(), Integer.parseInt(getValue()), lineIndex));
 	}
 
 	@Override
 	public PlcVariablePulseParamDescriptor clone() {
 		PlcVariablePulseParamDescriptor descriptor = new PlcVariablePulseParamDescriptor();
-		descriptor.plcProvider = plcProvider;
-		descriptor.editablePlcVariables = editablePlcVariables;
-		descriptor.variable = variable;
-
-		descriptor.min = min;
-		descriptor.max = max;
+		descriptor.listeners.addAll(listeners);
+		descriptor.value = value;
 		return descriptor;
 	}
 

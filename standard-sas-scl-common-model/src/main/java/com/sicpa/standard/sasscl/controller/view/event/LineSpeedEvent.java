@@ -9,11 +9,11 @@ package com.sicpa.standard.sasscl.controller.view.event;
  */
 public class LineSpeedEvent {
 
-	protected final String line;
+	private final int line;
 
-	protected final String speed;
+	private final String speed;
 
-	public LineSpeedEvent(String line, String speed) {
+	public LineSpeedEvent(int line, String speed) {
 		this.speed = speed;
 		this.line = line;
 	}
@@ -22,7 +22,7 @@ public class LineSpeedEvent {
 		return speed;
 	}
 
-	public String getLine() {
+	public int getLine() {
 		return line;
 	}
 

@@ -4,10 +4,16 @@ public class PulseConversionParamChangedEvent {
 
 	private String paramName;
 	private int value;
+	private int line;
 
-	public PulseConversionParamChangedEvent(String paramName, int value) {
+	public PulseConversionParamChangedEvent(String paramName, int value, int line) {
 		this.paramName = paramName;
 		this.value = value;
+		this.line = line;
+	}
+
+	public int getLine() {
+		return line;
 	}
 
 	public String getParamName() {
@@ -20,6 +26,7 @@ public class PulseConversionParamChangedEvent {
 
 	@Override
 	public String toString() {
-		return "PulseConversionParamChangedEvent [paramName=" + paramName + ", value=" + value + "]";
+		return "PulseConversionParamChangedEvent [paramName=" + paramName + ", value=" + value + ", line=" + line + "]";
 	}
+
 }

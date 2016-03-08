@@ -54,10 +54,7 @@ public class SASDefaultMessagesMapping implements IMessageCodeMapper {
 
 	protected void populateMap() {
 
-		addEntry(PLC.VALIDATOR_LOWER, "[PLC_01]", WARNING);
 		addEntry(PLC.VALIDATOR_NULL, "[PLC_02]", WARNING);
-		addEntry(PLC.VALIDATOR_RANGE, "[PLC_03]", WARNING);
-		addEntry(PLC.VALIDATOR_HIGHER, "[PLC_04]", WARNING);
 		addEntry(PLC.EXCEPTION_FAIL_SAVE_VARIABLE_TO_FILE, "[PLC_05]", WARNING);
 		addEntry(PLC.PLC_STATE_NOT_RUNNING, "[PLC_06]", ERROR);
 		addEntry(PLC.ERROR_SENDING_PARAM, "[PLC_07]", WARNING);

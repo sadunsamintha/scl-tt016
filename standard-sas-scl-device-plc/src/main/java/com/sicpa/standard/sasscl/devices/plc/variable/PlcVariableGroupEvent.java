@@ -1,17 +1,19 @@
 package com.sicpa.standard.sasscl.devices.plc.variable;
 
+import java.util.List;
+
 public class PlcVariableGroupEvent {
 
-	protected EditablePlcVariables group;
-	protected String lineId;
+	private final List<PlcVariableGroup> groups;
+	private final String lineId;
 
-	public PlcVariableGroupEvent(EditablePlcVariables group, String lineId) {
-		this.group = group;
+	public PlcVariableGroupEvent(List<PlcVariableGroup> groups, String lineId) {
+		this.groups = groups;
 		this.lineId = lineId;
 	}
 
-	public EditablePlcVariables getGroup() {
-		return group;
+	public List<PlcVariableGroup> getGroups() {
+		return groups;
 	}
 
 	public String getLineId() {

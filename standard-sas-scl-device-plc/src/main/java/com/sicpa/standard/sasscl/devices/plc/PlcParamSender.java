@@ -1,0 +1,119 @@
+package com.sicpa.standard.sasscl.devices.plc;
+
+import com.sicpa.standard.client.common.device.plc.IPLCVariableMappping;
+import com.sicpa.standard.plc.value.IPlcVariable;
+import com.sicpa.standard.plc.value.PlcVariable;
+import com.sicpa.standard.sasscl.devices.plc.variable.descriptor.converter.PlcPulseToMMConverterHandler;
+import com.sicpa.standard.sasscl.devices.plc.variable.descriptor.unit.PlcUnit;
+import com.sicpa.standard.sasscl.provider.impl.PlcProvider;
+
+public class PlcParamSender implements IPlcParamSender {
+
+	private static final String UNIT_SUFFIX = "_TYPE";
+
+	private PlcProvider plcProvider;
+	private IPLCVariableMappping plcVarMapping;
+	private PlcPulseToMMConverterHandler converterMMtoPulse;
+
+	public void sendToPlc(String plcLogicalVarName, String value, int lineIndex) throws PlcAdaptorException {
+
+		String valueToSend;
+		if (convertionNeeded(value)) {
+			valueToSend = convertValue(plcLogicalVarName, value, lineIndex);
+			sendUnitVar(plcLogicalVarName, value);
+		} else {
+			valueToSend = value;
+		}
+		findVarTypeAndsendToPlc(plcLogicalVarName, valueToSend, lineIndex);
+	}
+
+	private IPlcVariable<?> createVar(String logicalName, String value, int lineIndex) {
+		// create a plc variable, guess the type from the value
+		String physicalName = plcVarMapping.getPhysicalVariableName(logicalName);
+		PlcLineHelper.replaceLinePlaceholder(physicalName, lineIndex);
+		try {
+			return createByteVar(physicalName, value);
+		} catch (NumberFormatException e) {
+			try {
+				return createShortVar(physicalName, value);
+			} catch (NumberFormatException e2) {
+				try {
+					return createIntVar(physicalName, value);
+				} catch (NumberFormatException e3) {
+					return createBooleanVar(physicalName, value);
+				}
+			}
+		}
+	}
+
+	private IPlcVariable<Byte> createByteVar(String name, String value) {
+		byte bval = Byte.parseByte(value);
+		IPlcVariable<Byte> var = PlcVariable.createByteVar(name);
+		var.setValue(bval);
+		return var;
+	}
+
+	private IPlcVariable<Short> createShortVar(String name, String value) {
+		short sval = Short.parseShort(value);
+		IPlcVariable<Short> var = PlcVariable.createShortVar(name, sval);
+		return var;
+	}
+
+	private IPlcVariable<Integer> createIntVar(String name, String value) {
+		int ival = Integer.parseInt(value);
+		IPlcVariable<Integer> var = PlcVariable.createInt32Var(name);
+		var.setValue(ival);
+		return var;
+	}
+
+	private IPlcVariable<Boolean> createBooleanVar(String name, String value) {
+		boolean bval = Boolean.parseBoolean(value);
+		return PlcVariable.createBooleanVar(name, bval);
+	}
+
+	private void sendUnitVar(String parentVarName, String value) throws PlcAdaptorException {
+		String physicalName = plcVarMapping.getPhysicalVariableName(parentVarName + UNIT_SUFFIX);
+		IPlcVariable<Boolean> var = createBooleanVar(physicalName, createUnitValue(value) + "");
+		plcProvider.get().write(var);
+	}
+
+	private String convertValue(String varName, String value, int lineIndex) {
+		if (value.endsWith(PlcUnit.MM.getSuffix())) {
+			return convertToPulses(value, lineIndex) + "";
+		} else if (value.endsWith(PlcUnit.MS.getSuffix())) {
+			return value.replace(PlcUnit.MS.getSuffix(), "").trim();
+		} else {
+			throw new IllegalArgumentException("unit is missing for " + varName);
+		}
+	}
+
+	private int convertToPulses(String value, int lineIndex) {
+		String extractedValue = value.replace(PlcUnit.MM.getSuffix(), "").trim();
+		return converterMMtoPulse.convertToPulse(Float.parseFloat(extractedValue), lineIndex);
+	}
+
+	private boolean createUnitValue(String value) {
+		// value of the plc value is true for mm
+		return value.endsWith(PlcUnit.MM.getSuffix());
+	}
+
+	private boolean convertionNeeded(String value) {
+		return value.endsWith(PlcUnit.MM.getSuffix()) || value.endsWith(PlcUnit.MS.getSuffix());
+	}
+
+	private void findVarTypeAndsendToPlc(String varName, String value, int lineIndex) throws PlcAdaptorException {
+		plcProvider.get().write(createVar(varName, value, lineIndex));
+	}
+
+	public void setPlcProvider(PlcProvider plcProvider) {
+		this.plcProvider = plcProvider;
+	}
+
+	public void setPlcVarMapping(IPLCVariableMappping plcVarMapping) {
+		this.plcVarMapping = plcVarMapping;
+	}
+
+	public void setConverterMMtoPulse(PlcPulseToMMConverterHandler converterMMtoPulse) {
+		this.converterMMtoPulse = converterMMtoPulse;
+	}
+}

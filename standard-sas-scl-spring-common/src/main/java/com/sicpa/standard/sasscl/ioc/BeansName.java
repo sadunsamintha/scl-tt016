@@ -91,10 +91,6 @@ public interface BeansName {
 	 * IProvider
 	 */
 	String PLC_PROVIDER = "plcProvider";
-	/**
-	 * EditablePlcVariables
-	 */
-	String PLC_EDITABLE_VARIABLES = "cabinetEditablePlcVariables";
 	String PLC_MODEL = "stdPlcModel";
 	/**
 	 * IPlcController
@@ -325,8 +321,6 @@ public interface BeansName {
 
 	String BIS = "bis";
 	String IMPLEMENTATION_PROVIDER = "implementationProvider";
-	String OPERATOR_LOGGER = "operatorLoggerBehavior";
-
 	/**
 	 * IdeviceIncidentContext
 	 */

@@ -6,10 +6,7 @@ import com.sicpa.standard.printer.controller.model.command.PrinterMessageId;
 public interface MessageEventKey {
 
 	public static interface PLC {
-		String VALIDATOR_RANGE = "plc.validator.error.range";
 		String VALIDATOR_NULL = "plc.validator.error.null";
-		String VALIDATOR_LOWER = "plc.validator.error.linked.lower.pulse";
-		String VALIDATOR_HIGHER = "plc.validator.error.higher.linked.pulse";
 
 		String ERROR_SENDING_PARAM = "PLC.ERR.SENT.PARAM";
 

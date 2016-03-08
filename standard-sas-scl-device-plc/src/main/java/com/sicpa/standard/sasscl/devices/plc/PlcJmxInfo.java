@@ -33,7 +33,7 @@ public class PlcJmxInfo implements IPlcJmxInfo {
 	protected Collection<IPlcVariable<?>> transformToIndex(Collection<IPlcVariable<?>> vars, int index) {
 		Collection<IPlcVariable<?>> res = new ArrayList<>();
 		for (IPlcVariable<?> var : vars) {
-			res.add(PlcUtils.clone(var, index));
+			res.add(PlcLineHelper.clone(var, index));
 		}
 		return res;
 	}

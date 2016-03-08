@@ -1,70 +1,59 @@
 package com.sicpa.standard.sasscl.devices.plc.variable.renderer;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
 import javax.swing.JComboBox;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.sicpa.standard.gui.listener.CoalescentChangeListener;
+import com.sicpa.standard.gui.utils.ThreadUtils;
 import com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcPulseVariableDescriptor;
 import com.sicpa.standard.sasscl.devices.plc.variable.descriptor.unit.PlcUnit;
 
 public class PlcPulseUnitRenderer extends PlcIntegerVariableRenderer {
+	private static final Logger logger = LoggerFactory.getLogger(PlcPulseUnitRenderer.class);
 
 	private static final long serialVersionUID = 1L;
-	protected JComboBox comboUnit;
+	protected JComboBox<PlcUnit> comboUnit;
 
-	public PlcPulseUnitRenderer(final PlcPulseVariableDescriptor plcVar) {
-		super(plcVar);
-		plcVar.setInit(true);
+	public PlcPulseUnitRenderer(PlcPulseVariableDescriptor desc) {
+		super(desc);
+		desc.setInit(true);
 		initGUI();
-		valueChanged();
 		comboUnitActionPerformed();
-		plcVar.setInit(false);
+		desc.setInit(false);
 	}
 
 	private void initGUI() {
 		add(getComboUnit(), "growx , w 100");
 	}
 
-	@Override
-	public PlcPulseVariableDescriptor getPlcVar() {
-		return (PlcPulseVariableDescriptor) super.getPlcVar();
+	private PlcPulseVariableDescriptor getPulseDescriptor() {
+		return (PlcPulseVariableDescriptor) desc;
 	}
 
-	public JComboBox getComboUnit() {
+	public JComboBox<PlcUnit> getComboUnit() {
 		if (comboUnit == null) {
-			comboUnit = new JComboBox();
+			comboUnit = new JComboBox<>();
 
-			comboUnit.addItem(PlcUnit.PULSE);
+			comboUnit.addItem(PlcUnit.MM);
 			comboUnit.addItem(PlcUnit.MS);
 
-			comboUnit.setSelectedItem(getPlcVar().getCurrentUnit());
-			comboUnit.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(final ActionEvent e) {
-					comboUnitActionPerformed();
-				}
-			});
+			comboUnit.addActionListener(e -> comboUnitActionPerformed());
 		}
 		return this.comboUnit;
 	}
 
-	protected void comboUnitActionPerformed() {
-		getPlcVar().setCurrentUnit((PlcUnit) getComboUnit().getSelectedItem());
-		Integer value = (Integer) getSpinner().getValue();
-		getSpinner().setModel(createSpinnerModel());
-		getSpinner().setValue(value);
-		getLabelFormatedValue().setText(getPlcVar().getFormattedValue());
-
+	private void comboUnitActionPerformed() {
+		selectionChanged();
 	}
 
 	@Override
 	public JSpinner getSpinner() {
 		if (spinner == null) {
-			spinner = new JSpinner(createSpinnerModel());
+			spinner = new JSpinner(new SpinnerNumberModel(0, 0, MAX_VALUE, 1));
 			spinner.addChangeListener(new CoalescentChangeListener(1000) {
 				@Override
 				public void doAction() {
@@ -82,15 +71,32 @@ public class PlcPulseUnitRenderer extends PlcIntegerVariableRenderer {
 		return spinner;
 	}
 
-	protected SpinnerNumberModel createSpinnerModel() {
-		SpinnerNumberModel model = null;
+	protected void spinnerChangeListener() {
+		selectionChanged();
+	}
 
-		if (getPlcVar().getCurrentUnit() == null || getPlcVar().getCurrentUnit().equals(PlcUnit.MS)) {
-			model = new SpinnerNumberModel(getPlcVar().getMinPulse(), getPlcVar().getMinMs(), getPlcVar().getMaxMs(), 1);
-		} else {
-			model = new SpinnerNumberModel(getPlcVar().getMinPulse(), getPlcVar().getMinPulse(), getPlcVar()
-					.getMaxPulse(), 1);
+	private void selectionChanged() {
+		desc.setValue("" + getSpinner().getValue() + getComboUnit().getSelectedItem());
+	}
+
+	@Override
+	public void valueChanged() {
+		ThreadUtils.invokeLater(() -> ValueChangedInEDT());
+	}
+
+	private void ValueChangedInEDT() {
+		try {
+			int valueInt = getValueOnly();
+			getSpinner().setValue(valueInt);
+			getComboUnit().setSelectedItem(getPulseDescriptor().getCurrentUnit());
+		} catch (Exception e) {
+			logger.error("error setting value for:" + desc.getVarName() + " value:" + desc.getValue(), e);
 		}
-		return model;
+	}
+
+	private int getValueOnly() {
+		String valueWithUnit = desc.getValue();
+		String valueOnly = valueWithUnit.replace(getPulseDescriptor().getCurrentUnit().getSuffix(), "");
+		return Integer.parseInt(valueOnly);
 	}
 }

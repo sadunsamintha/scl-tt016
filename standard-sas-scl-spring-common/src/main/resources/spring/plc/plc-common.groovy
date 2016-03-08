@@ -1,19 +1,37 @@
 import com.sicpa.standard.client.common.utils.ConfigUtils;
-import com.sicpa.standard.sasscl.devices.plc.variable.EditablePlcVariables;
-import com.sicpa.standard.sasscl.devices.plc.variable.serialisation.PlcValuesLoader
+import com.sicpa.standard.sasscl.devices.plc.variable.PlcVarValueChangeHandler;
 import com.sicpa.standard.sasscl.devices.plc.variable.descriptor.converter.PlcPulseToMMConverterHandler
 import com.sicpa.standard.sasscl.devices.plc.remoteserver.PlcRemoteServerConnectionHandler
+import com.sicpa.standard.sasscl.devices.plc.PlcParamSender;
 import com.sicpa.standard.sasscl.devices.plc.PlcStateListener
+import com.sicpa.standard.sasscl.devices.plc.PlcValuesLoader;
 import com.sicpa.standard.sasscl.devices.plc.warningerror.PlcRegisterHandler
 import com.sicpa.standard.sasscl.devices.plc.impl.PlcAdaptor
 import com.sicpa.standard.sasscl.devices.plc.PlcJmxInfo
+
 import static com.sicpa.standard.sasscl.messages.MessageEventKey.PLC.*
 
 import com.sicpa.standard.client.common.ioc.InjectByMethodBean;
 
 beans{
 
-	plcValuesLoader(PlcValuesLoader)
+	plcParamSender(PlcParamSender){
+		plcProvider=ref('plcProvider')
+		plcVarMapping=ref('plcVarMap')
+		converterMMtoPulse=ref('plcPulseToMMConverterHandler')
+	}
+
+	plcValuesLoader(PlcValuesLoader){
+		lineCount=props['line.count']
+		configFolder=profilePath+'/config/plc'
+		paramSender= ref('plcParamSender')
+	}
+
+	plcVarValueChangeHandler(PlcVarValueChangeHandler){
+		plcProvider=ref('plcProvider')
+		paramSender= ref('plcParamSender')
+		loader=ref('plcValuesLoader')
+	}
 
 	plcPulseToMMConverterHandler(PlcPulseToMMConverterHandler){
 		encoderModFolEvalVarName='.stParameters.nEncoderModuleFoldEvaluation'
@@ -47,13 +65,11 @@ beans{
 		loader=ref('plcValuesLoader')
 		parameterLine=ref('plcLineParamsTemplate')
 		notificationLine=ref('plcLineNtfTemplate')
-		lineVarGroups=ref('linePlcVarGroup')
-		plcConfigFolder=profilePath+'/config/plc'
 
 		lineSpeedVarName="#{plcVarMap['NTF_LINE_SPEED']}"
 		productFreqVarName="#{plcVarMap['NTF_LINE_PRODS_PER_SECOND']}"
-		systemTypeVarName="#{plcVarMap['PARAM_LINE_SYSTEM_TYPE']}"
-		lineActiveVarName="#{plcVarMap['PARAM_LINE_IS_ACTIVE']}"
+		systemTypeVarName='PARAM_LINE_SYSTEM_TYPE'
+		lineActiveVarName='PARAM_LINE_IS_ACTIVE'
 		plcVersionHVarName="#{plcVarMap['NTF_CAB_VERSION_HIGH']}"
 		plcVersionMVarName="#{plcVarMap['NTF_CAB_VERSION_MEDIUM']}"
 		plcVersionLVarName="#{plcVarMap['NTF_CAB_VERSION_LOW']}"
@@ -64,16 +80,6 @@ beans{
 		plcCabinetVars=ref('plcCabJmxReport')
 		plcLineVars=ref('plcLineJmxReport')
 	}
-
-
-	def cabConfigFile=profilePath+'/config/plc/cabinetConfig.xml'
-
-	allPlcVariableValues(ConfigUtils,cabConfigFile){b->
-		b.factoryMethod='load'
-	}
-
-	cabinetEditablePlcVariables(EditablePlcVariables,ref('allPlcVariableValues'),ref('cabPlcVarGroups')){ file=cabConfigFile }
-
 
 	def cab_msg=[
 		PLC_WAR_JAVA_WARNING,

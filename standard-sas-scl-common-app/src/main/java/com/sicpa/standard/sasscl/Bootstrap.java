@@ -2,6 +2,7 @@ package com.sicpa.standard.sasscl;
 
 import java.io.File;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,12 +16,10 @@ import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.ioc.BeanProvider;
 import com.sicpa.standard.client.common.messages.MessageEvent;
 import com.sicpa.standard.client.common.utils.PropertiesUtils;
+import com.sicpa.standard.client.common.utils.StringMap;
 import com.sicpa.standard.client.common.view.IGUIComponentGetter;
-import com.sicpa.standard.plc.value.IPlcVariable;
 import com.sicpa.standard.sasscl.business.statistics.StatisticsRestoredEvent;
 import com.sicpa.standard.sasscl.business.statistics.impl.Statistics;
-import com.sicpa.standard.sasscl.common.log.ILoggerBehavior;
-import com.sicpa.standard.sasscl.common.log.OperatorLogger;
 import com.sicpa.standard.sasscl.common.storage.IStorage;
 import com.sicpa.standard.sasscl.controller.ProductionParametersEvent;
 import com.sicpa.standard.sasscl.controller.device.IPlcIndependentDevicesController;
@@ -28,9 +27,11 @@ import com.sicpa.standard.sasscl.controller.device.group.DevicesGroup;
 import com.sicpa.standard.sasscl.controller.flow.IBootstrap;
 import com.sicpa.standard.sasscl.controller.scheduling.RemoteServerScheduledJobs;
 import com.sicpa.standard.sasscl.devices.DeviceStatus;
-import com.sicpa.standard.sasscl.devices.plc.variable.EditablePlcVariables;
-import com.sicpa.standard.sasscl.devices.plc.variable.serialisation.IPlcValuesLoader;
-import com.sicpa.standard.sasscl.devices.plc.variable.serialisation.PlcValuesForAllVar;
+import com.sicpa.standard.sasscl.devices.plc.IPlcValuesLoader;
+import com.sicpa.standard.sasscl.devices.plc.PlcLineHelper;
+import com.sicpa.standard.sasscl.devices.plc.variable.PlcVariableGroup;
+import com.sicpa.standard.sasscl.devices.plc.variable.PlcVariableGroupEvent;
+import com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcVariableDescriptor;
 import com.sicpa.standard.sasscl.devices.remote.IRemoteServer;
 import com.sicpa.standard.sasscl.ioc.BeansName;
 import com.sicpa.standard.sasscl.model.ProductionParameters;
@@ -58,11 +59,9 @@ public class Bootstrap implements IBootstrap {
 		initCrypto();
 		handleHistoryBean();
 		addConnectionListenerOnServer();
-		initOperatorLogger();
 		connectRemoteServer();
 		restorePreviousSelectedProductionParams();
 		executeModelValidator();
-		executePlcVarValidator();
 	}
 
 	private void addConnectionListenerOnServer() {
@@ -96,11 +95,6 @@ public class Bootstrap implements IBootstrap {
 		}
 	}
 
-	private void executePlcVarValidator() {
-		EditablePlcVariables plcvars = BeanProvider.getBean(BeansName.PLC_EDITABLE_VARIABLES);
-		plcvars.validate();
-	}
-
 	private void connectRemoteServer() {
 		IPlcIndependentDevicesController controller = BeanProvider.getBean(BeansName.OTHER_DEVICES_CONTROLLER);
 		controller.startDevicesGroup(DevicesGroup.STARTUP_GROUP);
@@ -124,18 +118,9 @@ public class Bootstrap implements IBootstrap {
 		return (MainFrame) compGetter.getComponent();
 	}
 
-	@SuppressWarnings("rawtypes")
 	private void initPlc() {
 		IPlcValuesLoader loader = BeanProvider.getBean(BeansName.PLC_VALUES_LOADER);
-		List<IPlcVariable> variables = BeanProvider.getBean(BeansName.PLC_PARAMETERS);
-		PlcValuesForAllVar values = BeanProvider.getBean(BeansName.PLC_CABINET_VARIABLES_VALUE);
-
-		loader.load(variables, values);
-	}
-
-	private void initOperatorLogger() {
-		ILoggerBehavior loggerBehavior = BeanProvider.getBean(BeansName.OPERATOR_LOGGER);
-		OperatorLogger.setLoggerBehavior(loggerBehavior);
+		generateAllEditableVariableGroup(loader.getValues());
 	}
 
 	private void initProductionParameter(IStorage storage) {
@@ -206,4 +191,37 @@ public class Bootstrap implements IBootstrap {
 		manager.checkForModification();
 	}
 
+	private void generateAllEditableVariableGroup(Map<Integer, StringMap> values) {
+		generateCabinetGroup(values.get(0));
+		generateAllLinesEditableVariable(values);
+	}
+
+	private void generateAllLinesEditableVariable(Map<Integer, StringMap> values) {
+
+		List<PlcVariableGroup> lineVarGroups = BeanProvider.getBean("linePlcVarGroup");
+		IPlcValuesLoader loader = BeanProvider.getBean("plcValuesLoader");
+		for (int i = 1; i < loader.getLineCount() + 1; i++) {
+			generateLineEditableVariables(i, lineVarGroups, values.get(i));
+		}
+	}
+
+	private void generateCabinetGroup(StringMap values) {
+		List<PlcVariableGroup> groups = BeanProvider.getBean("cabPlcVarGroups");
+		for (PlcVariableGroup grp : groups) {
+			for (PlcVariableDescriptor desc : grp.getPlcVars()) {
+				desc.initValue(values.get(desc.getVarName()));
+			}
+		}
+		EventBusService.post(new PlcVariableGroupEvent(groups, "cabinet"));
+	}
+
+	private void generateLineEditableVariables(int index, List<PlcVariableGroup> lineVarGroups, StringMap values) {
+		List<PlcVariableGroup> groups = PlcLineHelper.replaceLinePlaceholder(lineVarGroups, index);
+		for (PlcVariableGroup grp : groups) {
+			for (PlcVariableDescriptor desc : grp.getPlcVars()) {
+				desc.initValue(values.get(desc.getVarName()));
+			}
+		}
+		EventBusService.post(new PlcVariableGroupEvent(groups, "" + index));
+	}
 }

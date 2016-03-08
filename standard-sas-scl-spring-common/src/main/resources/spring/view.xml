@@ -42,9 +42,7 @@
 		<property name="bean" ref="statsMBean" />
 	</bean>
 
-	<bean id="plcVariablesPanel" class="com.sicpa.standard.sasscl.view.config.plc.PlcVariablesPanelGetter">
-		<property name="cabinetVariables" ref="cabinetEditablePlcVariables" />
-	</bean>
+	<bean id="plcVariablesPanel" class="com.sicpa.standard.sasscl.view.config.plc.PlcVariablesPanelGetter"/>
 
 	<bean id="productionStatisticsPanel" class="com.sicpa.standard.sasscl.view.monitoring.ProductionStatisticsPanelGetter" />
 	<bean id="systemEventPanel" class="com.sicpa.standard.sasscl.view.monitoring.SystemEventPanelGetter" />
@@ -123,10 +121,7 @@
 		</bean>
 
 	</util:list>
-
-	<bean id="operatorLoggerBehavior" class="com.sicpa.standard.sasscl.common.log.OperatorLoggerBehavior" />
-
-
+	
 	<bean id="screensFlow" class="com.sicpa.standard.sasscl.controller.view.flow.DefaultScreensFlow" init-method="buildScreensFlow">
 		<property name="initialScreen" ref="mainPanelGetter" />
 		<property name="selectionScreen" ref="selectProductionParametersViewController" />
