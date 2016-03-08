@@ -56,7 +56,7 @@ public abstract class PlcVariableDescriptor {
 		if (init) {
 			return;
 		}
-		EventBusService.post(new PlcVarValueChangeEvent(varName, getFormattedValueForSending(), lineIndex));
+		EventBusService.post(new PlcVarValueChangeEvent(varName, value, lineIndex));
 	}
 
 	protected String getFormattedValueForSending() {

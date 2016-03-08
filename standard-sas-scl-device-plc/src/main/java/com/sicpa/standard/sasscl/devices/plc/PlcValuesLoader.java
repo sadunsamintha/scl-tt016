@@ -8,11 +8,13 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 
+import org.apache.commons.configuration.ConfigurationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.messages.MessageEvent;
+import com.sicpa.standard.client.common.utils.PropertiesUtils;
 import com.sicpa.standard.client.common.utils.StringMap;
 import com.sicpa.standard.sasscl.messages.MessageEventKey;
 
@@ -105,12 +107,27 @@ public class PlcValuesLoader implements IPlcValuesLoader {
 	public void saveCabinetNewValue(String varName, String value) {
 		// TODO Auto-generated method stub
 		System.out.println("saveCabinetNewValue-" + varName + "-" + value);
+		StringMap values = valuesByLines.get(0);
+		values.put(varName, value);
+		save(cabinetConfigFile, values);
 	}
 
 	@Override
 	public void saveLineNewValue(String varName, String value, int lineIndex) {
 		// TODO Auto-generated method stub
 		System.out.println("saveLineNewValue-" + varName + "-" + value);
+
+		StringMap values = valuesByLines.get(lineIndex);
+		values.put(varName, value);
+		save(getLinePropertiesFileName(lineIndex), values);
+	}
+
+	private void save(String fileName, StringMap values) {
+		try {
+			PropertiesUtils.savePropertiesKeepOrderAndComment(new File(configFolder + "/" + fileName), values);
+		} catch (ConfigurationException e) {
+			logger.error("", e);
+		}
 	}
 
 	@Override

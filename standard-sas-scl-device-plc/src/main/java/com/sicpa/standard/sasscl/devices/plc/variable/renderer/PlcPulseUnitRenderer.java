@@ -1,13 +1,10 @@
 package com.sicpa.standard.sasscl.devices.plc.variable.renderer;
 
 import javax.swing.JComboBox;
-import javax.swing.JSpinner;
-import javax.swing.SpinnerNumberModel;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sicpa.standard.gui.listener.CoalescentChangeListener;
 import com.sicpa.standard.gui.utils.ThreadUtils;
 import com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcPulseVariableDescriptor;
 import com.sicpa.standard.sasscl.devices.plc.variable.descriptor.unit.PlcUnit;
@@ -16,7 +13,7 @@ public class PlcPulseUnitRenderer extends PlcIntegerVariableRenderer {
 	private static final Logger logger = LoggerFactory.getLogger(PlcPulseUnitRenderer.class);
 
 	private static final long serialVersionUID = 1L;
-	protected JComboBox<PlcUnit> comboUnit;
+	private JComboBox<PlcUnit> comboUnit;
 
 	public PlcPulseUnitRenderer(PlcPulseVariableDescriptor desc) {
 		super(desc);
@@ -43,32 +40,11 @@ public class PlcPulseUnitRenderer extends PlcIntegerVariableRenderer {
 
 			comboUnit.addActionListener(e -> comboUnitActionPerformed());
 		}
-		return this.comboUnit;
+		return comboUnit;
 	}
 
 	private void comboUnitActionPerformed() {
 		selectionChanged();
-	}
-
-	@Override
-	public JSpinner getSpinner() {
-		if (spinner == null) {
-			spinner = new JSpinner(new SpinnerNumberModel(0, 0, MAX_VALUE, 1));
-			spinner.addChangeListener(new CoalescentChangeListener(1000) {
-				@Override
-				public void doAction() {
-					spinnerChangeListener();
-				}
-
-				@Override
-				public void eventReceived() {
-					if (isShowing()) {
-						super.eventReceived();
-					}
-				}
-			});
-		}
-		return spinner;
 	}
 
 	protected void spinnerChangeListener() {
@@ -86,7 +62,7 @@ public class PlcPulseUnitRenderer extends PlcIntegerVariableRenderer {
 
 	private void ValueChangedInEDT() {
 		try {
-			int valueInt = getValueOnly();
+			int valueInt = extractValueOnly();
 			getSpinner().setValue(valueInt);
 			getComboUnit().setSelectedItem(getPulseDescriptor().getCurrentUnit());
 		} catch (Exception e) {
@@ -94,7 +70,7 @@ public class PlcPulseUnitRenderer extends PlcIntegerVariableRenderer {
 		}
 	}
 
-	private int getValueOnly() {
+	private int extractValueOnly() {
 		String valueWithUnit = desc.getValue();
 		String valueOnly = valueWithUnit.replace(getPulseDescriptor().getCurrentUnit().getSuffix(), "");
 		return Integer.parseInt(valueOnly);

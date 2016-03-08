@@ -34,11 +34,6 @@ public class PlcPulseVariableDescriptor extends PlcIntegerVariableDescriptor {
 	}
 
 	@Override
-	protected String getFormattedValueForSending() {
-		return super.getFormattedValueForSending() + currentUnit.getSuffix();
-	}
-
-	@Override
 	public JComponent getRenderer() {
 		if (renderer == null) {
 			renderer = new PlcPulseUnitRenderer(this);

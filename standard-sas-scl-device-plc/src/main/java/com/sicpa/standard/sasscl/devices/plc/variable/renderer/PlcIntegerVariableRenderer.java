@@ -22,13 +22,13 @@ import com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcIntegerVaria
 public class PlcIntegerVariableRenderer extends JPanel implements IPlcVariableDescriptorListener {
 
 	private static final Logger logger = LoggerFactory.getLogger(PlcIntegerVariableRenderer.class);
-	public static final int MAX_VALUE = 999999;
+	
 	public static final int DEFAULT_FONT_SIZE = 18;
 	public static final int MIN_FONT_SIZE = 8;
 	public static final int LABEL_WIDTH = 370;
 
 	private JLabel labelVarName;
-	protected JSpinner spinner;
+	private JSpinner spinner;
 	protected PlcIntegerVariableDescriptor desc;
 
 	public PlcIntegerVariableRenderer(PlcIntegerVariableDescriptor desc) {
@@ -56,15 +56,13 @@ public class PlcIntegerVariableRenderer extends JPanel implements IPlcVariableDe
 			}
 			labelVarName.setFont(f);
 		}
-		return this.labelVarName;
+		return labelVarName;
 	}
 
 	public JSpinner getSpinner() {
 		if (spinner == null) {
-			SpinnerNumberModel model = new SpinnerNumberModel(0, 0, MAX_VALUE, 1);
-			spinner = new JSpinner(model);
-
-			this.spinner.addChangeListener(new CoalescentChangeListener(1000) {
+			spinner = new JSpinner(new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, 1));
+			spinner.addChangeListener(new CoalescentChangeListener(1000) {
 				@Override
 				public void doAction() {
 					spinnerChangeListener();
@@ -78,7 +76,7 @@ public class PlcIntegerVariableRenderer extends JPanel implements IPlcVariableDe
 				}
 			});
 		}
-		return this.spinner;
+		return spinner;
 	}
 
 	protected void spinnerChangeListener() {
