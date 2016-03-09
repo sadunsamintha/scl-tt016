@@ -12,7 +12,12 @@ public class CustomProperty<T> implements ICustomProperty<T> {
 
 	private final Class<T> propertyClass;
 
-	private final T defaultValue;
+	private T defaultValue;
+
+	public CustomProperty(String name, Class<T> propertyClass) {
+		this.name = name;
+		this.propertyClass = propertyClass;
+	}
 
 	public CustomProperty(String name, Class<T> propertyClass, T defaultValue) {
 		this.name = name;
