@@ -8,34 +8,6 @@
 		<constructor-arg type="java.lang.String" value="${profile.path}/config/camera/cameraJobConfig.xml" />
 	</bean>
 
-	<!-- section to setup ConfigUtils ignored fields -->
-
-	<!-- ignore parameters in standard plc model -->
-	<bean id="ignorePlcParamsInStandardPlcModel" class="com.sicpa.standard.client.common.utils.ConfigUtils"
-		factory-method="addSerializationOmittedField">
-		<constructor-arg value="com.sicpa.standard.plc.controller.model.PlcModel" />
-		<constructor-arg value="mParameters" />
-	</bean>
-
-	<bean id="ignoreReloadConfigRequestInStandardPlcModel" class="com.sicpa.standard.client.common.utils.ConfigUtils"
-		factory-method="addSerializationOmittedField">
-		<constructor-arg value="com.sicpa.standard.plc.controller.model.PlcModel" />
-		<constructor-arg value="mReloadConfigRequest" />
-	</bean>
-
-	<bean id="ignoreLifeCheckRequestInStandardPlcModel" class="com.sicpa.standard.client.common.utils.ConfigUtils"
-		factory-method="addSerializationOmittedField">
-		<constructor-arg value="com.sicpa.standard.plc.controller.model.PlcModel" />
-		<constructor-arg value="mLifeCheckRequest" />
-	</bean>
-
-
-	<bean id="beanHistoryManager" class="com.sicpa.standard.sasscl.config.DefaultBeanHistoryManager">
-		<constructor-arg value="${profile.path}/configHistory" />
-		<constructor-arg value="${profile.path}" />
-	</bean>
-
-
 </beans>
 
 

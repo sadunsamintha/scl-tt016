@@ -1,6 +1,5 @@
 package com.sicpa.standard.sasscl.messages;
 
-import com.sicpa.standard.client.common.descriptor.validator.ValidatorMessages;
 import com.sicpa.standard.printer.controller.model.command.PrinterMessageId;
 
 public interface MessageEventKey {
@@ -87,12 +86,12 @@ public interface MessageEventKey {
 		String PLC_ERR_TEMPERATURE_IJ_CABINET = "PLC.ERROR.TEMPERATURE_IJ_CABINET";
 		String PLC_ERR_TEMPERATURE_IJ_INK = "PLC.ERROR.TEMPERATURE_IJ_INK";
 		String PLC_ERR_DOOR_SWITCH_IJ_OPEN = "PLC.ERROR.DOOR_SWITCH_IJ_OPEN";
-		
+
 		/**
 		 * SECURE MODULE
 		 */
-		
-		String UNABLE_AUTHENTICATE_USER="UNABLE.AUTHENTICATE.USER";
+
+		String UNABLE_AUTHENTICATE_USER = "UNABLE.AUTHENTICATE.USER";
 	}
 
 	public static interface Alert {
@@ -128,14 +127,6 @@ public interface MessageEventKey {
 	public static interface ProductionParameters {
 		String NONE_AVAILABLE = "sku.none.available";
 		String NO_LONGER_AVAILABLE = "production.parameters.notAvailable";
-	}
-
-	public static interface Validator {
-		String CONSTANT_PROP = ValidatorMessages.CONSTANT_PROP;
-		String RANGE_PROP = ValidatorMessages.RANGE_PROP;
-		String DATE_PROP = ValidatorMessages.DATE_PROP;
-		String NULL_PROP = ValidatorMessages.NULL_PROP;
-		String TEXT_MAX_LENGHT = ValidatorMessages.TEXT_MAX_LENGHT;
 	}
 
 	public static interface Storage {
@@ -175,7 +166,6 @@ public interface MessageEventKey {
 
 		String TOO_MANY_PRODUCTS_COUNTED_ERROR = "maintenace.toomany.products.error";
 	}
-
 
 	public static interface SkuCheck {
 		String UNKOWN_SKU = "sku.check.unknown";

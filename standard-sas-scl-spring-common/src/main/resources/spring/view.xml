@@ -8,7 +8,6 @@
 	<bean id="reportScreen" class="com.sicpa.standard.sasscl.view.report.ReportScreenGetter" />
 
 	<bean id="mainFrameController" class="com.sicpa.standard.sasscl.view.MainFrameController">
-		<constructor-arg ref="skuListProvider" />
 		<property name="productionParameters" ref="productionParameters" />
 		<property name="lineId" value="${lineId}" />
 		<property name="messageCodeMapper" ref="messagesMapping" />

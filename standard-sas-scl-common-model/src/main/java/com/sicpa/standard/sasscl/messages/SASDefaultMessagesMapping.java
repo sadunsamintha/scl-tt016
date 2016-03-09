@@ -151,12 +151,6 @@ public class SASDefaultMessagesMapping implements IMessageCodeMapper {
 
 		addEntry(FlowControl.UNCAUGHT_EXCEPTION, "[EXC_GEN_001]", ERROR_DISPLAY);
 
-		addEntry(Validator.CONSTANT_PROP, "[MODEL_VAL_01]", WARNING);
-		addEntry(Validator.RANGE_PROP, "[MODEL_VAL_02]", WARNING);
-		addEntry(Validator.DATE_PROP, "[MODEL_VAL_03]", WARNING);
-		addEntry(Validator.NULL_PROP, "[MODEL_VAL_04]", WARNING);
-		addEntry(Validator.TEXT_MAX_LENGHT, "[MODEL_VAL_05]", WARNING);
-
 		addEntry(Storage.ERROR_CANNOT_SAVE, "[STOR_01]", ERROR);
 		addEntry(Storage.ERROR_CANNOT_LOAD, "[STOR_02]", ERROR);
 		addEntry(Storage.ERROR_PACKAGE_FAIL, "[STOR_03]", WARNING);

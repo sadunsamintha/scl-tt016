@@ -40,10 +40,6 @@
 			<groupId>com.sicpa.standard.plc</groupId>
 			<artifactId>standard-plc</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>com.sicpa.standard.sasscl</groupId>
-			<artifactId>device-brs</artifactId>
-		</dependency>
 	</dependencies>
 
 

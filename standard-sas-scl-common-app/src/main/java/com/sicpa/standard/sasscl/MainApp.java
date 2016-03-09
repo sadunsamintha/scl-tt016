@@ -6,7 +6,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
 import org.springframework.context.support.AbstractApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.sicpa.standard.client.common.app.profile.LoaderConfigWithProfile;
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
@@ -16,9 +15,7 @@ import com.sicpa.standard.client.common.launcher.CommonMainApp;
 import com.sicpa.standard.client.common.launcher.display.IProgressDisplay;
 import com.sicpa.standard.client.common.launcher.spring.ILoadingMonitor;
 import com.sicpa.standard.client.common.launcher.spring.impl.DefaultLoadingMonitor;
-import com.sicpa.standard.client.common.utils.ConfigUtils;
 import com.sicpa.standard.client.common.view.IGUIComponentGetter;
-import com.sicpa.standard.client.common.xstream.IXStreamConfigurator;
 import com.sicpa.standard.gui.screen.loader.AbstractApplicationLoader;
 import com.sicpa.standard.gui.screen.machine.impl.SPL.AbstractSplFrame;
 import com.sicpa.standard.sasscl.common.utils.LangUtils;
@@ -94,15 +91,9 @@ public class MainApp extends CommonMainApp<LoaderConfigWithProfile> {
 	@Override
 	protected void initSpring(LoaderConfigWithProfile config, String... profiles) {
 
-		setLoadingProgress("init event bus", 0);
-		initEventBus();
-		setLoadingProgress("init xtream", 0);
-		initXstreamConfig();
 		setLoadingProgress("init language", 0);
-
 		initLanguage();
-
-		setLoadingProgress("init spring", 10);
+		setLoadingProgress("init spring", 0);
 
 		BeanProvider.initSpring(config.getContext(), createProgressMonitor(progressDisplay));
 		if (config.getInitTask() != null) {
@@ -113,23 +104,6 @@ public class MainApp extends CommonMainApp<LoaderConfigWithProfile> {
 
 	private void initLanguage() {
 		LangUtils.initLanguageFiles(getProperties().getProperty("language"));
-	}
-
-	private void initEventBus() {
-		initContext("spring/eventBus.xml");
-	}
-
-	private void initXstreamConfig() {
-		try {
-			// it has to be executed before the main spring has been initialized
-			ClassPathXmlApplicationContext context = initContext("spring/xstream.xml");
-			IXStreamConfigurator configurator = (IXStreamConfigurator) context.getBean(BeansName.XSTREAM_CONFIGURATOR);
-			configurator.configure(ConfigUtils.getXStream());
-			context.close();
-		} catch (Exception e) {
-			logger.error("", e);
-			System.exit(-1);
-		}
 	}
 
 	protected Properties getProperties() {
@@ -144,23 +118,9 @@ public class MainApp extends CommonMainApp<LoaderConfigWithProfile> {
 		return loadedProperties;
 	}
 
-	private ClassPathXmlApplicationContext initContext(String... path) {
-		try {
-			ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext();
-			addPropertyPlaceholder(context);
-			context.setConfigLocations(path);
-			context.refresh();
-			return context;
-		} catch (Exception e) {
-			logger.error("", e);
-			System.exit(-1);
-		}
-		return null;
-	}
-
 	@Override
 	protected ILoadingMonitor createProgressMonitor(IProgressDisplay display) {
-		return new DefaultLoadingMonitor(display, 10);
+		return new DefaultLoadingMonitor(display, 0);
 	}
 
 	private void setLoadingProgress(String loadingItem, int progress) {

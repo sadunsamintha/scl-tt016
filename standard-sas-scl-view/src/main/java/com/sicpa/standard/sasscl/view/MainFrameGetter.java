@@ -9,43 +9,37 @@ import javax.swing.JPanel;
 import com.sicpa.standard.client.common.utils.AppUtils;
 import com.sicpa.standard.client.common.view.IGUIComponentGetter;
 import com.sicpa.standard.client.common.view.mvc.IView;
-import com.sicpa.standard.gui.screen.machine.component.SelectionFlow.SelectionFlowViewFactory;
 
 public class MainFrameGetter implements IGUIComponentGetter {
 
-	protected MainFrame frame;
-	protected MainFrameController viewController;
-	protected SelectionFlowViewFactory viewFactory;
+	private MainFrame frame;
+	private MainFrameController viewController;
 
-	protected IView<?> startStopView;
-	protected IView<?> exitView;
-	protected IView<?> optionsView;
-	protected IView<?> selectionChangeView;
-	protected JPanel messagesView;
-	protected IGUIComponentGetter mainPanelGetter;
-	protected IView<?> snapshotView;
+	private IView<?> startStopView;
+	private IView<?> exitView;
+	private IView<?> optionsView;
+	private IView<?> selectionChangeView;
+	private JPanel messagesView;
+	private IGUIComponentGetter mainPanelGetter;
+	private IView<?> snapshotView;
 
 	@Override
 	public Component getComponent() {
-		if (this.frame == null) {
+		if (frame == null) {
 			try {
 				if (!AppUtils.isHeadless()) {
-					this.frame = new MainFrame(this.viewController, startStopView.getComponent(),
+					frame = new MainFrame(viewController, startStopView.getComponent(),
 							selectionChangeView.getComponent(), exitView.getComponent(), optionsView.getComponent(),
 							messagesView, (JComponent) mainPanelGetter.getComponent(), snapshotView.getComponent());
 				}
 			} catch (HeadlessException e) {
 			}
 		}
-		return this.frame;
+		return frame;
 	}
 
 	public void setViewController(final MainFrameController viewController) {
 		this.viewController = viewController;
-	}
-
-	public void setViewFactory(SelectionFlowViewFactory viewFactory) {
-		this.viewFactory = viewFactory;
 	}
 
 	public void setStartStopView(IView<?> startStopView) {

@@ -186,6 +186,9 @@ public class MainAppWithProfile extends MainApp implements IProfileSelectorListe
 
 	protected List<String> createSpringFilesToLoad() {
 		List<String> config = new ArrayList<>();
+		config.add("spring/eventBus.groovy");
+		config.add("spring/xstream.groovy");
+		config.add("spring/backup.groovy");
 		config.add("spring/operatorLog.groovy");
 		config.add("spring/customizableProperties.xml");
 		config.add("spring/activation.xml");

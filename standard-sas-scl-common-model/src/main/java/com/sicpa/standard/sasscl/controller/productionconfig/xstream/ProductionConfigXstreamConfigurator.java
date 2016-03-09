@@ -4,8 +4,6 @@ import com.sicpa.standard.client.common.xstream.IXStreamConfigurator;
 import com.sicpa.standard.sasscl.controller.productionconfig.ProductionConfig;
 import com.sicpa.standard.sasscl.controller.productionconfig.config.CameraConfig;
 import com.sicpa.standard.sasscl.controller.productionconfig.config.PrinterConfig;
-import com.sicpa.standard.sasscl.devices.brs.model.BrsModel;
-import com.sicpa.standard.sasscl.devices.brs.simulator.BrsSimulatorConfig;
 import com.thoughtworks.xstream.XStream;
 
 public class ProductionConfigXstreamConfigurator implements IXStreamConfigurator {
@@ -15,8 +13,6 @@ public class ProductionConfigXstreamConfigurator implements IXStreamConfigurator
 		x.alias("ProductionConfig", ProductionConfig.class);
 		x.alias("PrinterConfig", PrinterConfig.class);
 		x.alias("CameraConfig", CameraConfig.class);
-		x.alias("BrsModel", BrsModel.class);
-		x.alias("BrsSimulatorConfig", BrsSimulatorConfig.class);
 		x.aliasField("PlcConfig", ProductionConfig.class, "plcConfig");
 		x.aliasField("BisConfig", ProductionConfig.class, "bisConfig");
         x.aliasField("BrsConfig", ProductionConfig.class, "brsConfig");

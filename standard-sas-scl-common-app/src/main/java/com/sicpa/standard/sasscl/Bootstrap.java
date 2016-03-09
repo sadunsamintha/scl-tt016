@@ -8,16 +8,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
 
-import com.sicpa.standard.client.common.config.history.BeanHistoryManager;
-import com.sicpa.standard.client.common.descriptor.validator.ValidatorException;
-import com.sicpa.standard.client.common.descriptor.validator.Validators;
-import com.sicpa.standard.client.common.descriptor.validator.ValidatorsException;
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.ioc.BeanProvider;
-import com.sicpa.standard.client.common.messages.MessageEvent;
 import com.sicpa.standard.client.common.utils.PropertiesUtils;
 import com.sicpa.standard.client.common.utils.StringMap;
-import com.sicpa.standard.client.common.view.IGUIComponentGetter;
 import com.sicpa.standard.sasscl.business.statistics.StatisticsRestoredEvent;
 import com.sicpa.standard.sasscl.business.statistics.impl.Statistics;
 import com.sicpa.standard.sasscl.common.storage.IStorage;
@@ -40,8 +34,6 @@ import com.sicpa.standard.sasscl.provider.impl.AuthenticatorProvider;
 import com.sicpa.standard.sasscl.provider.impl.SkuListProvider;
 import com.sicpa.standard.sasscl.provider.impl.SubsystemIdProvider;
 import com.sicpa.standard.sasscl.utils.ConfigUtilEx;
-import com.sicpa.standard.sasscl.view.MainFrame;
-import com.sicpa.standard.sasscl.view.MainFrameController;
 import com.sicpa.standard.sicpadata.spi.manager.SimpleServiceProviderManager;
 import com.sicpa.standard.sicpadata.spi.manager.StaticServiceProviderManager;
 
@@ -57,11 +49,9 @@ public class Bootstrap implements IBootstrap {
 		initProductionParameter(storage);
 		initAuthenticator(storage);
 		initCrypto();
-		handleHistoryBean();
 		addConnectionListenerOnServer();
 		connectRemoteServer();
 		restorePreviousSelectedProductionParams();
-		executeModelValidator();
 	}
 
 	private void addConnectionListenerOnServer() {
@@ -71,28 +61,6 @@ public class Bootstrap implements IBootstrap {
 				initRemoteServerConnected();
 			}
 		});
-	}
-
-	private void executeModelValidator() {
-		MainFrame main = getMainFrame();
-		MainFrameController controller = null;
-		if (main != null) {
-			controller = main.getController();
-		}
-
-		if (controller != null) {
-			Validators vali = controller.getBeanValidators();
-			try {
-				if (vali != null) {
-					vali.validateAll();
-				}
-			} catch (ValidatorsException e) {
-				for (final ValidatorException ex : e.getValidatorExceptions()) {
-					// for each validator exception show it on the gui
-					EventBusService.post(new MessageEvent(this, ex.getLangKey(), ex.getSource(), ex, ex.getParams()));
-				}
-			}
-		}
 	}
 
 	private void connectRemoteServer() {
@@ -111,11 +79,6 @@ public class Bootstrap implements IBootstrap {
 			productionParameters.setProductionMode(previous.getProductionMode());
 			EventBusService.post(new ProductionParametersEvent(previous));
 		}
-	}
-
-	private MainFrame getMainFrame() {
-		IGUIComponentGetter compGetter = BeanProvider.getBean(BeansName.MAIN_FRAME);
-		return (MainFrame) compGetter.getComponent();
 	}
 
 	private void initPlc() {
@@ -184,11 +147,6 @@ public class Bootstrap implements IBootstrap {
 	private void initCrypto() {
 		SimpleServiceProviderManager provider = BeanProvider.getBean(BeansName.CRYPTO_PROVIDER_MANAGER);
 		StaticServiceProviderManager.register(provider);
-	}
-
-	private void handleHistoryBean() {
-		BeanHistoryManager manager = BeanProvider.getBean(BeansName.BEAN_HISTORY_MANAGER);
-		manager.checkForModification();
 	}
 
 	private void generateAllEditableVariableGroup(Map<Integer, StringMap> values) {

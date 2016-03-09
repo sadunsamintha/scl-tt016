@@ -15,6 +15,10 @@ beans{
 	aop.'aspectj-autoproxy'()
 
 
+	def xstreamConfigurator= new RemoteServerXStreamConfigurator()
+	xstreamConfigurator.configure(ConfigUtils.getXStream())
+
+
 	stdRemoteModel(ConfigUtils,profilePath+'/config/server/remoteServer.xml'){ b->
 		b.factoryMethod='load'
 	}

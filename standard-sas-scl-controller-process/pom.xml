@@ -29,12 +29,6 @@
 			<groupId>com.sicpa.standard.sasscl</groupId>
 			<artifactId>business-production</artifactId>
 		</dependency>
-
-		<dependency>
-			<groupId>com.sicpa.standard.sasscl</groupId>
-			<artifactId>business-production</artifactId>
-		</dependency>
-
 		<dependency>
 			<groupId>com.sicpa.standard.sasscl</groupId>
 			<artifactId>service-monitoring</artifactId>

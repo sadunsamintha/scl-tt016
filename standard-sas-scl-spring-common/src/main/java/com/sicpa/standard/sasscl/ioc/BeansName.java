@@ -167,7 +167,6 @@ public interface BeansName {
 	 * IStorage
 	 */
 	String STORAGE = "storage";
-	String VALIDATORS = "modelPropertiesValidators";
 	/**
 	 * MainFrameController
 	 */
@@ -257,11 +256,6 @@ public interface BeansName {
 	 * IProductionModeMapping
 	 */
 	String PRODUCTION_MODE_MAPPING = "productionModeMapping";
-
-	/**
-	 * BeanHistoryManager
-	 */
-	String BEAN_HISTORY_MANAGER = "beanHistoryManager";
 
 	/**
 	 * Map<String-logicalVarName,String-nameInPlc>

@@ -79,13 +79,6 @@ public class CustoBuilder {
 		}
 	}
 
-	public static abstract class View {
-		public static void setSelectionFlowFactory(SelectionFlowViewFactory viewFactory) {
-			MainFrameGetter getter = BeanProvider.getBean(BeansName.MAIN_FRAME);
-			getter.setViewFactory(viewFactory);
-		}
-	}
-
 	public static abstract class ImplementationProvider {
 		public static void addAvailableBean(String beanName, Object bean) {
 			SpringImplementationProvider implementationProvider = BeanProvider
