@@ -1,15 +1,12 @@
 package com.sicpa.standard.sasscl.model;
 
-import com.sun.xml.internal.bind.v2.runtime.reflect.Lister;
-import junit.framework.Assert;
-
-import org.junit.Before;
-import org.junit.Test;
-
 import com.sicpa.standard.sasscl.model.custom.CustomProperty;
 import com.sicpa.standard.sasscl.model.custom.CustomizablePropertyDefinition;
 import com.sicpa.standard.sasscl.model.custom.CustomizablePropertyFactory;
 import com.sicpa.standard.sasscl.model.custom.StringCustomProperty;
+import junit.framework.Assert;
+import org.junit.Before;
+import org.junit.Test;
 
 public class CustomizableTest {
 
