@@ -12,13 +12,11 @@ import com.sicpa.standard.sasscl.model.statistics.ViewStatisticsDescriptor;
 
 public class StatisticsViewModel extends AbstractObservableModel {
 
-	protected final Map<ViewStatisticsDescriptor, Integer> mapStats = new HashMap<>();
-	protected final Map<Integer, String> mapSpeed = new TreeMap<>();
+	private final Map<ViewStatisticsDescriptor, Integer> mapStats = new HashMap<>();
+	private final Map<Integer, String> mapSpeed = new TreeMap<>();
 
-	protected int total = 0;
-
-	// in second
-	protected int uptime;
+	private int total = 0;
+	private int uptimeInSec;
 
 	public void setSpeed(int line, String speed) {
 		mapSpeed.put(line, speed);
@@ -28,11 +26,11 @@ public class StatisticsViewModel extends AbstractObservableModel {
 		return mapSpeed;
 	}
 
-	public Map<ViewStatisticsDescriptor, Integer> getStatistics(int line) {
+	public Map<ViewStatisticsDescriptor, Integer> getStatistics(String line) {
 		synchronized (mapStats) {
 			Map<ViewStatisticsDescriptor, Integer> res = new HashMap<>();
 			for (Entry<ViewStatisticsDescriptor, Integer> entry : mapStats.entrySet()) {
-				if (entry.getKey().getLine() == line) {
+				if (entry.getKey().getLine().equals(line)) {
 					res.put(entry.getKey(), entry.getValue());
 				}
 			}
@@ -40,8 +38,8 @@ public class StatisticsViewModel extends AbstractObservableModel {
 		}
 	}
 
-	public Collection<Integer> getLineIndexes() {
-		Collection<Integer> res = new HashSet<>();
+	public Collection<String> getLineIndexes() {
+		Collection<String> res = new HashSet<>();
 		for (Entry<ViewStatisticsDescriptor, Integer> entry : mapStats.entrySet()) {
 			res.add(entry.getKey().getLine());
 		}
@@ -63,11 +61,11 @@ public class StatisticsViewModel extends AbstractObservableModel {
 	}
 
 	public void setUptime(int uptime) {
-		this.uptime = uptime;
+		this.uptimeInSec = uptime;
 	}
 
 	public int getUptime() {
-		return uptime;
+		return uptimeInSec;
 	}
 
 	public int getStatisticsDescriptorCount() {
@@ -78,6 +76,6 @@ public class StatisticsViewModel extends AbstractObservableModel {
 		mapSpeed.clear();
 		mapStats.clear();
 		total = 0;
-		uptime = 0;
+		uptimeInSec = 0;
 	}
 }

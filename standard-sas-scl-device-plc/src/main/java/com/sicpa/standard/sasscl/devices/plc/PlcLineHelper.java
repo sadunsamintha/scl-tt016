@@ -3,20 +3,15 @@ package com.sicpa.standard.sasscl.devices.plc;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.sicpa.standard.client.common.eventbus.service.EventBusService;
-import com.sicpa.standard.client.common.ioc.BeanProvider;
 import com.sicpa.standard.plc.value.IPlcVariable;
 import com.sicpa.standard.plc.value.PlcVariable;
 import com.sicpa.standard.sasscl.devices.plc.variable.PlcVariableGroup;
-import com.sicpa.standard.sasscl.devices.plc.variable.PlcVariableGroupEvent;
 import com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcVariableDescriptor;
-import com.sicpa.standard.sasscl.devices.plc.variable.descriptor.converter.PlcPulseToMMConverterHandler;
-import com.sicpa.standard.sasscl.devices.plc.variable.descriptor.unit.PlcUnit;
 
 public class PlcLineHelper {
 
 	private static final List<Integer> lineIndexes = new ArrayList<>();
-	public static String lineIndexPlaceholder = "#x";
+	public static final String LINE_INDEX_PLACEHOLDER = "#x";
 
 	public static List<String> getLinesVariableName(String varName) {
 		List<String> res = new ArrayList<>();
@@ -30,13 +25,17 @@ public class PlcLineHelper {
 		lineIndexes.add(index);
 	}
 
+	public static List<Integer> getLineIndexes() {
+		return lineIndexes;
+	}
+
 	public static int getLineIndex(String param) {
 		int lineIndexPosition = ".com.stLine[1]".length();
 		return Integer.parseInt(param.substring(0, lineIndexPosition));
 	}
 
 	public static String replaceLinePlaceholder(String varName, int lineIndex) {
-		return varName.replace(lineIndexPlaceholder, lineIndex + "");
+		return varName.replace(LINE_INDEX_PLACEHOLDER, lineIndex + "");
 
 	}
 
@@ -61,7 +60,5 @@ public class PlcLineHelper {
 		}
 		return res;
 	}
-
-	
 
 }

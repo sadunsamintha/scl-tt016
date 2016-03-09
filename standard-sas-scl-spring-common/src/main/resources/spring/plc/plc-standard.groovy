@@ -1,11 +1,19 @@
 import com.sicpa.standard.client.common.utils.ConfigUtils
 import com.sicpa.standard.plc.controller.internal.PlcControllerImpl
+import com.sicpa.standard.plc.controller.model.LifeCheckType;
+import com.sicpa.standard.plc.controller.model.PlcExecutionMode;
+import com.sicpa.standard.plc.controller.model.PlcModel;
 beans{
 
-	stdPlcModel(ConfigUtils,profilePath+'/config/plc/plc.xml'){b->
-		b.factoryMethod='load'
-		b.scope='prototype'
-		lifeCheckRequest=ref('lifeCheckVar')
+
+	stdPlcModel(PlcModel){
+		driverName='JBeckPlcDriver'
+		lifeCheckType=LifeCheckType.ON_READ_WRITE_VALUE_SYNC_CHECK
+		littleEndian=true
+		useSimulator=false
+		executionMode=PlcExecutionMode.MULTITHREADED
+		ip=props['plc.ip']
+		lifeCheckRequest=ref('REQUEST_LIFE_CHECK_var')
 	}
 
 	plcController(PlcControllerImpl,ref('plcSimulatorModel')){b->

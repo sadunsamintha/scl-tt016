@@ -105,8 +105,6 @@ public class PlcValuesLoader implements IPlcValuesLoader {
 
 	@Override
 	public void saveCabinetNewValue(String varName, String value) {
-		// TODO Auto-generated method stub
-		System.out.println("saveCabinetNewValue-" + varName + "-" + value);
 		StringMap values = valuesByLines.get(0);
 		values.put(varName, value);
 		save(cabinetConfigFile, values);
@@ -114,9 +112,6 @@ public class PlcValuesLoader implements IPlcValuesLoader {
 
 	@Override
 	public void saveLineNewValue(String varName, String value, int lineIndex) {
-		// TODO Auto-generated method stub
-		System.out.println("saveLineNewValue-" + varName + "-" + value);
-
 		StringMap values = valuesByLines.get(lineIndex);
 		values.put(varName, value);
 		save(getLinePropertiesFileName(lineIndex), values);

@@ -6,12 +6,12 @@ import com.sicpa.standard.sasscl.devices.plc.variable.descriptor.event.PulseConv
 public class PlcVariablePulseParamDescriptor extends PlcIntegerVariableDescriptor {
 
 	@Override
-	protected void fireValueChanged() {
-		super.fireValueChanged();
-		if (getValue() == null) {
-			logger.error("variable {} not defined", getVarName());
-			return;
-		}
+	public void initValue(String value) {
+		super.initValue(value);
+		sendPulseConversionChangedEvent();
+	}
+
+	private void sendPulseConversionChangedEvent() {
 		EventBusService
 				.post(new PulseConversionParamChangedEvent(getVarName(), Integer.parseInt(getValue()), lineIndex));
 	}

@@ -7,6 +7,7 @@ import com.sicpa.standard.sasscl.devices.plc.PlcStateListener
 import com.sicpa.standard.sasscl.devices.plc.PlcValuesLoader;
 import com.sicpa.standard.sasscl.devices.plc.warningerror.PlcRegisterHandler
 import com.sicpa.standard.sasscl.devices.plc.impl.PlcAdaptor
+import com.sicpa.standard.sasscl.devices.plc.impl.PlcSpeedHandler;
 import com.sicpa.standard.sasscl.devices.plc.PlcJmxInfo
 
 import static com.sicpa.standard.sasscl.messages.MessageEventKey.PLC.*
@@ -61,19 +62,23 @@ beans{
 		b.scope='prototype'
 		notificationVariables=ref('plcCabinetNtf')
 		plcRequestActionMap=ref('mapPlcRequestAction')
-		parameters=ref('plcCabinetParameters')
 		loader=ref('plcValuesLoader')
-		parameterLine=ref('plcLineParamsTemplate')
 		notificationLine=ref('plcLineNtfTemplate')
+		lineActiveVarName='PARAM_LINE_IS_ACTIVE'
+		plcVersionHVar=ref('NTF_CAB_VERSION_HIGH_var')
+		plcVersionMVar=ref('NTF_CAB_VERSION_MEDIUM_var')
+		plcVersionLVar=ref('NTF_CAB_VERSION_LOW_var')
+		paramSender= ref('plcParamSender')
+	}
 
+	plcSpeedHandler(PlcSpeedHandler){
+		systemTypeVarName='PARAM_LINE_SYSTEM_TYPE'
 		lineSpeedVarName="#{plcVarMap['NTF_LINE_SPEED']}"
 		productFreqVarName="#{plcVarMap['NTF_LINE_PRODS_PER_SECOND']}"
-		systemTypeVarName='PARAM_LINE_SYSTEM_TYPE'
-		lineActiveVarName='PARAM_LINE_IS_ACTIVE'
-		plcVersionHVarName="#{plcVarMap['NTF_CAB_VERSION_HIGH']}"
-		plcVersionMVarName="#{plcVarMap['NTF_CAB_VERSION_MEDIUM']}"
-		plcVersionLVarName="#{plcVarMap['NTF_CAB_VERSION_LOW']}"
+		loader=ref('plcValuesLoader')
+		plcProvider=ref('plcProvider')
 	}
+
 
 	plcJmxInfo(PlcJmxInfo){
 		plcProvider=ref('plcProvider')

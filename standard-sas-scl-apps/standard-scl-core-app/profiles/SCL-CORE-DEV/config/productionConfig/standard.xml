@@ -2,7 +2,6 @@
 
 	<PrinterConfig deviceType="LEIBINGER" id="leibinger_1" validatedBy="qc_scl_1" />
 	<!--<PrinterConfig deviceType="DOMINO" id="domino_1" validatedBy="qc_scl_2"/> -->
-	<!--<PrinterConfig deviceType="OI2JET" id="oi2jet_1" validatedBy="qc_scl_1"/> -->
 
 	<CameraConfig deviceType="COGNEX" id="qc_scl_1" />
 	<!--<CameraConfig deviceType="COGNEX" id="qc_scl_2"/> -->
@@ -12,17 +11,10 @@
 
 
 	<PlcConfig>
-		<cabinet />
+		<cabinet>
+			<property key="PARAM_CAB_MULTILINE_REQ_MODE_ENABLED" value="true" />
+		</cabinet>
 		<line index="1">
-			<property key="PARAM_LINE_IS_ACTIVE" value="true" />
-			<property key="PARAM_LINE_EXPORT_MODE_ENABLED" value="false" />
-			<property key="PARAM_LINE_MAINTENANCE_MODE_ENABLED" value="false" />
-			<property key="PARAM_LINE_REFEED_MODE_ENABLED" value="false" />
-		</line>
-		<line index="2">
-			<property key="PARAM_LINE_IS_ACTIVE" value="true" />
-		</line>
-		<line index="3">
 			<property key="PARAM_LINE_IS_ACTIVE" value="true" />
 		</line>
 	</PlcConfig>

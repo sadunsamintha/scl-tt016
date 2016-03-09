@@ -56,7 +56,7 @@ public class StatisticsViewController implements IStatisticsViewListener {
 		for (Entry<StatisticsKey, Integer> entry : values.getMapValues().entrySet()) {
 			if (entry.getKey() != StatisticsKey.TOTAL) {
 				for (ViewStatisticsDescriptor desc : descriptorMapping.getDescriptor(entry.getKey())) {
-					int line = entry.getKey().getLine();
+					String line = entry.getKey().getLine();
 					desc.setLine(line);
 					model.setStatistics(desc, entry.getValue());
 				}

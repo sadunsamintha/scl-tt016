@@ -5,7 +5,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,9 +38,9 @@ public class ProductionInitiator implements IProductionInitiator {
 
 	protected IStartableDevice bis;
 
-    protected IStartableDevice brs;
+	protected IStartableDevice brs;
 
-    protected IHardwareController hardwareController;
+	protected IHardwareController hardwareController;
 
 	protected AuthenticatorModeProvider authenticatorModeProvider;
 
@@ -53,8 +52,8 @@ public class ProductionInitiator implements IProductionInitiator {
 		deviceFactory.reset();
 		cameras.clear();
 		printers.clear();
-        bis = null;
-        brs = null;
+		bis = null;
+		brs = null;
 	}
 
 	@Override
@@ -76,14 +75,7 @@ public class ProductionInitiator implements IProductionInitiator {
 	}
 
 	protected void setAvailableLineIndexes() {
-		int index1 = Integer.parseInt(productionConfig.getPlcConfig().getLine1Index());
-		PlcLineHelper.addLineIndex(index1);
-
-		String sIndex2 = productionConfig.getPlcConfig().getLine2Index();
-		if (StringUtils.isNotEmpty(sIndex2)) {
-			int index2 = Integer.parseInt(sIndex2);
-			PlcLineHelper.addLineIndex(index2);
-		}
+		productionConfig.getPlcConfig().getLinesProperties().keySet().forEach(i -> PlcLineHelper.addLineIndex(i));
 	}
 
 	protected void prepareSimulator() {
@@ -91,8 +83,7 @@ public class ProductionInitiator implements IProductionInitiator {
 			if (dev instanceof ICodeProvider) {
 				ICameraAdaptor camera = getCameraAssociatedWithPrinter(dev.getName());
 				if (camera instanceof ICameraAdaptorSimulator) {
-					((ICameraAdaptorSimulator) camera).getSimulatorController().setCodeProvider(
-							((ICodeProvider) dev));
+					((ICameraAdaptorSimulator) camera).getSimulatorController().setCodeProvider(((ICodeProvider) dev));
 				}
 			}
 		}
@@ -114,7 +105,7 @@ public class ProductionInitiator implements IProductionInitiator {
 		createPrinter();
 		createPlc();
 		createBis();
-        createBrs();
+		createBrs();
 	}
 
 	protected void createPlc() {
@@ -143,9 +134,9 @@ public class ProductionInitiator implements IProductionInitiator {
 			devices.add(bis);
 		}
 
-        if(brs != null) {
-            devices.add(brs);
-        }
+		if (brs != null) {
+			devices.add(brs);
+		}
 
 		String devicesName = "";
 		for (IStartableDevice dev : devices) {
@@ -165,13 +156,13 @@ public class ProductionInitiator implements IProductionInitiator {
 		}
 	}
 
-    protected void createBrs() {
-        if (productionConfig.getBrsConfig() != null) {
-            logger.debug("creating BRS");
-            brs = deviceFactory.getBrs(productionConfig.getBrsConfig());
-            logger.debug("BRS created:{}", brs.getName());
-        }
-    }
+	protected void createBrs() {
+		if (productionConfig.getBrsConfig() != null) {
+			logger.debug("creating BRS");
+			brs = deviceFactory.getBrs(productionConfig.getBrsConfig());
+			logger.debug("BRS created:{}", brs.getName());
+		}
+	}
 
 	protected void createCamera() {
 		logger.debug("creating cameras");

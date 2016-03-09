@@ -1,16 +1,14 @@
 package com.sicpa.standard.sasscl.devices.plc.impl;
 
-import static com.sicpa.standard.sasscl.devices.plc.PlcLineHelper.getLineIndex;
-
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,15 +23,12 @@ import com.sicpa.standard.plc.controller.model.IPlcModel;
 import com.sicpa.standard.plc.controller.notification.IPlcNotificationListener;
 import com.sicpa.standard.plc.driver.event.PlcEventArgs;
 import com.sicpa.standard.plc.value.IPlcVariable;
-import com.sicpa.standard.plc.value.PlcVariable;
 import com.sicpa.standard.sasscl.controller.productionconfig.ConfigurationFailedException;
 import com.sicpa.standard.sasscl.controller.productionconfig.IConfigurable;
 import com.sicpa.standard.sasscl.controller.productionconfig.IConfigurator;
 import com.sicpa.standard.sasscl.controller.productionconfig.config.PlcConfig;
-import com.sicpa.standard.sasscl.controller.view.event.LineSpeedEvent;
 import com.sicpa.standard.sasscl.devices.DeviceStatus;
 import com.sicpa.standard.sasscl.devices.plc.AbstractPlcAdaptor;
-import com.sicpa.standard.sasscl.devices.plc.IPlcListener;
 import com.sicpa.standard.sasscl.devices.plc.IPlcParamSender;
 import com.sicpa.standard.sasscl.devices.plc.IPlcRequestExecutor;
 import com.sicpa.standard.sasscl.devices.plc.IPlcValuesLoader;
@@ -48,26 +43,21 @@ public class PlcAdaptor extends AbstractPlcAdaptor implements IPlcControllerList
 		IConfigurable<PlcConfig, PlcAdaptor> {
 
 	private static final Logger logger = LoggerFactory.getLogger(PlcAdaptor.class);
-	private static final short SYSTEM_TYPE_TOBACCO = 3;
 
 	private IPlcController<? extends IPlcModel> controller;
 	private final Map<PlcRequest, IPlcRequestExecutor> plcRequestActionMap = new HashMap<>();
 	private final List<IPlcVariable<?>> notificationVariables = new ArrayList<>();
 	private IPlcValuesLoader loader;
-	private IPlcParamSender paramSender;// TODO to be used later
+	private IPlcParamSender paramSender;
 	private List<IPlcVariable> notificationLine;
-	private String lineSpeedVarName;
-	private String productFreqVarName;
-	private String systemTypeVarName;
 	private String lineActiveVarName;
-	private String plcVersionHVarName;
-	private String plcVersionMVarName;
-	private String plcVersionLVarName;
+	private IPlcVariable<Integer> plcVersionHVar;
+	private IPlcVariable<Integer> plcVersionMVar;
+	private IPlcVariable<Integer> plcVersionLVar;
 
 	private final AtomicBoolean notificationCreated = new AtomicBoolean(false);
-	private final Map<Integer, Short> systemTypes = new HashMap<>();
-	private final Map<Integer, Boolean> activeLines = new HashMap<>();
 	private PlcConfig currentProdConfig;
+	private final Collection<Integer> activeLines = new ArrayList<>();
 
 	public PlcAdaptor() {
 	}
@@ -89,7 +79,6 @@ public class PlcAdaptor extends AbstractPlcAdaptor implements IPlcControllerList
 	}
 
 	private void createNotifications() {
-
 		if (notificationCreated.get()) {
 			return;
 		}
@@ -116,7 +105,7 @@ public class PlcAdaptor extends AbstractPlcAdaptor implements IPlcControllerList
 	public void registerNotificationInternal(IPlcVariable<?> var) {
 		controller.createNotification(var, new IPlcNotificationListener() {
 			@Override
-			public void onPlcNotify(final IPlcController sender, final IPlcVariable variable, final Object value) {
+			public void onPlcNotify(IPlcController sender, IPlcVariable variable, Object value) {
 				firePlcEvent(new PlcEvent(variable.getVariableName(), value));
 			}
 		});
@@ -134,47 +123,34 @@ public class PlcAdaptor extends AbstractPlcAdaptor implements IPlcControllerList
 	 */
 	@Override
 	public void doStart() throws PlcAdaptorException {
-
 		if (!isConnected()) {
 			throw new PlcAdaptorException("PLC is not connected");
 		}
-
 		executeRequest(PlcRequest.START);
-
 		fireDeviceStatusChanged(DeviceStatus.STARTED);
 	}
 
 	@Override
 	public void doRun() throws PlcAdaptorException {
-
 		if (!isConnected()) {
 			throw new PlcAdaptorException("PLC is not connected");
 		}
-
 		executeRequest(PlcRequest.RUN);
-
 		fireDeviceStatusChanged(DeviceStatus.STARTED);
 	}
 
-	/**
-	 * send stop request
-	 */
 	@Override
 	public void doStop() throws PlcAdaptorException {
-
 		if (!isConnected()) {
 			throw new PlcAdaptorException("PLC is not connected");
 		}
 		executeRequest(PlcRequest.STOP);
 		fireDeviceStatusChanged(DeviceStatus.STOPPED);
-
 	}
 
 	@Override
-	public void onPlcEventReceived(final IPlcController<?> controller, final PlcEventArgs eventArgs) {
-
+	public void onPlcEventReceived(IPlcController<?> controller, PlcEventArgs eventArgs) {
 		logger.debug("{} - event status changed: {}", getName(), eventArgs.getEventCode().name());
-
 		switch (eventArgs.getEventCode()) {
 		case CONNECTED:
 			onPlcConnected();
@@ -190,118 +166,19 @@ public class PlcAdaptor extends AbstractPlcAdaptor implements IPlcControllerList
 	private void onPlcConnected() {
 		sendAllParameters();
 		sendProductionVariableConfig();
-		addLineSpeedAndFreqListener();
-
+		sendReloadPlcParametersRequest();
 		createNotifications();
-
 		fireDeviceStatusChanged(DeviceStatus.CONNECTED);
 	}
 
-	private void addLineSpeedAndFreqListener() {
-
-		addPlcListener(new IPlcListener() {
-			@Override
-			public void onPlcEvent(PlcEvent event) {
-				handleSpeedEvent(event);
-			}
-
-			@Override
-			public List<String> getListeningVariables() {
-				List<String> result = new ArrayList<String>();
-				result.addAll(PlcLineHelper.getLinesVariableName(lineSpeedVarName));
-				result.addAll(PlcLineHelper.getLinesVariableName(productFreqVarName));
-				return result;
-			}
-		});
-	}
-
-	protected void sendAllParameters() {
+	private void sendAllParameters() {
 		loader.sendValues();
 		sendProductionVariableConfig();
-		sendReloadPlcParametersRequest();
-	}
-
-	protected void handleSpeedEvent(final PlcEvent event) {
-
-		// logger.debug("Event {} {}", event.getVarName(), event.getValue());
-
-		int lineIndex = getLineIndex(event.getVarName());
-
-		if (!isLineActive(lineIndex)) {
-			logger.debug("line not active");
-			return;
-		}
-
-		int length = (lineIndex + "").length() + 1;
-
-		String eventVarName = event.getVarName().substring(length);
-
-		String freqVar = productFreqVarName.substring(length + 1);
-		String speedVar = lineSpeedVarName.substring(length + 1);
-
-		if (eventVarName.equals(freqVar) && isTobacco(event)) {
-			handleProductFreqEvent(lineIndex, event);
-		} else if (eventVarName.equals(speedVar) && !isTobacco(event)) {
-			handleLineSpeedEvent(lineIndex, event);
-		}
-
-	}
-
-	private void handleProductFreqEvent(int lineIndex, PlcEvent event) {
-		String value = String.valueOf(event.getValue()) + " PACKS/MIN";
-		EventBusService.post(new LineSpeedEvent(lineIndex, value));
-	}
-
-	private void handleLineSpeedEvent(int lineIndex, PlcEvent event) {
-		String value = String.valueOf(event.getValue()) + " M/MIN";
-		EventBusService.post(new LineSpeedEvent(lineIndex, value));
-	}
-
-	private Map<Integer, Short> getSystemTypesByLine() {
-		if (systemTypes.isEmpty()) {
-			for (Entry<Integer, StringMap> entry : loader.getValues().entrySet()) {
-				int lineIndex = entry.getKey();
-				for (Entry<String, String> e : entry.getValue().entrySet()) {
-					if (e.getKey().equals(systemTypeVarName)) {
-						systemTypes.put(lineIndex, Short.parseShort(e.getValue()));
-					}
-				}
-			}
-		}
-		return systemTypes;
-	}
-
-	private Map<Integer, Boolean> getActiveLines() {
-		if (activeLines.isEmpty()) {
-
-			for (Entry<Integer, StringMap> entry : loader.getValues().entrySet()) {
-				int lineIndex = entry.getKey();
-				for (Entry<String, String> e : entry.getValue().entrySet()) {
-					if (e.getKey().equals(lineActiveVarName)) {
-						activeLines.put(lineIndex, Boolean.parseBoolean(e.getValue()));
-					}
-				}
-			}
-		}
-
-		return activeLines;
-	}
-
-	private boolean isLineActive(int lineIndex) {
-		return getActiveLines().get(lineIndex);
-	}
-
-	private boolean isTobacco(PlcEvent event) {
-
-		Short systemType = getSystemTypesByLine().get(getLineIndex(event.getVarName()));
-		return (systemType != null) && systemType.equals(SYSTEM_TYPE_TOBACCO);
 	}
 
 	@Override
 	public void executeRequest(final PlcRequest request) throws PlcAdaptorException {
-
 		logger.info("PLC - execute request: {}", request.getDescription());
-
 		IPlcRequestExecutor executor = getRequestExecutor(request);
 		if (executor == null) {
 			throw new PlcAdaptorException(MessageFormat.format("No request action(s) defined for {0}",
@@ -310,15 +187,6 @@ public class PlcAdaptor extends AbstractPlcAdaptor implements IPlcControllerList
 		executor.execute(controller);
 	}
 
-	/**
-	 * retrieve request executor based on passed in PLCRequest
-	 * 
-	 * @param request
-	 *            to be executed
-	 * @return executor
-	 * @throws com.sicpa.standard.sasscl.devices.plc.PlcAdaptorException
-	 *             wrapping exception
-	 */
 	private IPlcRequestExecutor getRequestExecutor(final PlcRequest request) throws PlcAdaptorException {
 		if (plcRequestActionMap == null) {
 			throw new PlcAdaptorException("PLC request actions are not setup");
@@ -404,42 +272,42 @@ public class PlcAdaptor extends AbstractPlcAdaptor implements IPlcControllerList
 
 	private void configure(PlcConfig config) throws Exception {
 		this.currentProdConfig = config;
-		addNotifIfNeededLine1(config);
-		addNotifIfNeededLine2(config);
-		addNotifIfNeededLine3(config);
+		addNotifForActiveLines(config);
 	}
 
 	private void sendProductionVariableConfig() {
-		for (Entry<String, String> entry : currentProdConfig.getProperties().entrySet()) {
-			try {
-				// TODO paramSender.sendToPlc(entry.getKey(), entry.getValue());
-			} catch (Exception e) {
-				logger.error("failed to send param " + entry.getKey() + ":" + entry.getValue(), e);
-				EventBusService.post(new MessageEvent(this, MessageEventKey.PLC.ERROR_SENDING_PARAM, entry.getKey(),
-						entry.getValue() + ""));
-			}
+		sendCabinetProductionConfig();
+		sendLinesProductionConfig();
+	}
+
+	private void sendCabinetProductionConfig() {
+		int notaLine = 0;
+		sentViaParamSender(currentProdConfig.getCabinetProperties(), notaLine);
+	}
+
+	private void sendLinesProductionConfig() {
+		for (Entry<Integer, StringMap> entry : currentProdConfig.getLinesProperties().entrySet()) {
+			sentViaParamSender(entry.getValue(), entry.getKey());
 		}
 	}
 
-	private void addNotifIfNeededLine1(PlcConfig config) throws Exception {
-		if (StringUtils.isNotEmpty(config.getLine1Index())) {
-			int index1 = Integer.parseInt(config.getLine1Index());
-			loadLineNotification(index1);
+	private void sentViaParamSender(StringMap properties, int lineIndex) {
+		for (Entry<String, String> entry : properties.entrySet()) {
+			sentViaParamSender(entry.getKey(), entry.getValue(), lineIndex);
 		}
 	}
 
-	private void addNotifIfNeededLine2(PlcConfig config) throws Exception {
-		if (StringUtils.isNotEmpty(config.getLine2Index())) {
-			int index2 = Integer.parseInt(config.getLine2Index());
-			loadLineNotification(index2);
+	private void sentViaParamSender(String var, String value, int lineIndex) {
+		try {
+			paramSender.sendToPlc(var, value, lineIndex);
+		} catch (PlcAdaptorException e) {
+			logger.error("failed to send param " + var + ":" + value, e);
+			EventBusService.post(new MessageEvent(this, MessageEventKey.PLC.ERROR_SENDING_PARAM, var, value + ""));
 		}
 	}
 
-	private void addNotifIfNeededLine3(PlcConfig config) throws Exception {
-		if (StringUtils.isNotEmpty(config.getLine3Index())) {
-			int index3 = Integer.parseInt(config.getLine3Index());
-			loadLineNotification(index3);
-		}
+	private void addNotifForActiveLines(PlcConfig config) throws Exception {
+		getActiveLines().forEach(i -> loadLineNotification(i));
 	}
 
 	private void loadLineNotification(int index) {
@@ -463,48 +331,53 @@ public class PlcAdaptor extends AbstractPlcAdaptor implements IPlcControllerList
 
 	@Override
 	public String getPlcVersion() {
-
 		if (!isConnected()) {
 			return "";
 		}
-
-		IPlcVariable<Integer> h = PlcVariable.createInt32Var(plcVersionHVarName);
-		IPlcVariable<Integer> m = PlcVariable.createInt32Var(plcVersionMVarName);
-		IPlcVariable<Integer> l = PlcVariable.createInt32Var(plcVersionLVarName);
 		try {
-			return read(h) + "." + read(m) + "." + read(l);
+			return read(plcVersionHVar) + "." + read(plcVersionMVar) + "." + read(plcVersionLVar);
 		} catch (PlcAdaptorException e) {
 			logger.error("", e);
 			return "error reading plc version";
 		}
 	}
 
-	public void setLineSpeedVarName(String lineSpeedVarName) {
-		this.lineSpeedVarName = lineSpeedVarName;
+	@Override
+	public boolean isLineActive(int lineIndex) {
+		return getActiveLines().contains(lineIndex);
 	}
 
-	public void setProductFreqVarName(String productFreqVarName) {
-		this.productFreqVarName = productFreqVarName;
-	}
+	private Collection<Integer> getActiveLines() {
+		if (activeLines.isEmpty()) {
+			for (Entry<Integer, StringMap> entry : loader.getValues().entrySet()) {
+				int lineIndex = entry.getKey();
+				for (Entry<String, String> e : entry.getValue().entrySet()) {
+					if (e.getKey().equals(lineActiveVarName)) {
+						if (Boolean.parseBoolean(e.getValue())) {
+							activeLines.add(lineIndex);
+						}
+					}
+				}
+			}
+		}
 
-	public void setSystemTypeVarName(String systemTypeVarName) {
-		this.systemTypeVarName = systemTypeVarName;
+		return activeLines;
 	}
 
 	public void setLineActiveVarName(String lineActiveVarName) {
 		this.lineActiveVarName = lineActiveVarName;
 	}
 
-	public void setPlcVersionHVarName(String plcVersionHVarName) {
-		this.plcVersionHVarName = plcVersionHVarName;
+	public void setPlcVersionHVar(IPlcVariable<Integer> plcVersionHVar) {
+		this.plcVersionHVar = plcVersionHVar;
 	}
 
-	public void setPlcVersionLVarName(String plcVersionLVarName) {
-		this.plcVersionLVarName = plcVersionLVarName;
+	public void setPlcVersionLVar(IPlcVariable<Integer> plcVersionLVar) {
+		this.plcVersionLVar = plcVersionLVar;
 	}
 
-	public void setPlcVersionMVarName(String plcVersionMVarName) {
-		this.plcVersionMVarName = plcVersionMVarName;
+	public void setPlcVersionMVar(IPlcVariable<Integer> plcVersionMVar) {
+		this.plcVersionMVar = plcVersionMVar;
 	}
 
 	public void setParamSender(IPlcParamSender paramSender) {

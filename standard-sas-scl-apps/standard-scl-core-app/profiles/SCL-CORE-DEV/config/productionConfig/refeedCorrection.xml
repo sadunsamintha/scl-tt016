@@ -1,20 +1,17 @@
 <ProductionConfig activationBehavior="refeedActivationBehavior" authenticatorMode="SCL">
 
-    <CameraConfig deviceType="COGNEX" id="qc_scl_1"/>
-    <CameraConfig deviceType="COGNEX" id="qc_scl_2"/>
+	<CameraConfig deviceType="COGNEX" id="qc_scl_1" />
+	<CameraConfig deviceType="COGNEX" id="qc_scl_2" />
 
-    <plcConfig line1File="line1Config.xml" line2File="line2Config.xml" line1Index="1" line2Index="2">
-        <property key=".com.stLine[1].bLine_is_active" value="true"/>
-        <property key=".com.stLine[2].bLine_is_active" value="true"/>
-        <property key=".com.stLine[3].bLine_is_active" value="false"/>
-
-        <property key=".com.stLine[1].stParameters.bExportModeEnabled" value="false"/>
-        <property key=".com.stLine[1].stParameters.bMaintenanceModeEnabled" value="false"/>
-        <property key=".com.stLine[1].stParameters.bRefeedModeEnabled" value="true"/>
-
-        <property key=".com.stLine[2].stParameters.bExportModeEnabled" value="false"/>
-        <property key=".com.stLine[2].stParameters.bMaintenanceModeEnabled" value="false"/>
-        <property key=".com.stLine[2].stParameters.bRefeedModeEnabled" value="true"/>
-    </plcConfig>
+	<plcConfig>
+		<line index="1">
+			<property key="PARAM_LINE_IS_ACTIVE" value="true" />
+			<property key="PARAM_LINE_REFEED_MODE_ENABLED" value="true" />
+		</line>
+		<line index="2">
+			<property key="PARAM_LINE_IS_ACTIVE" value="true" />
+			<property key="PARAM_LINE_REFEED_MODE_ENABLED" value="true" />
+		</line>
+	</plcConfig>
 
 </ProductionConfig>

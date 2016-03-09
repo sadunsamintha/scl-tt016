@@ -17,8 +17,6 @@ public class PlcPulseVariableDescriptor extends PlcIntegerVariableDescriptor {
 	public void setValue(String value) {
 		if (this.value.equals(value)) {
 			return;
-		} else {
-			System.out.println("value changed:" + this.value + "-" + value);
 		}
 		this.value = value;
 		OperatorLogger.log("PLC Variables - {} = {}", new Object[] { getVarName(), value });
@@ -28,7 +26,6 @@ public class PlcPulseVariableDescriptor extends PlcIntegerVariableDescriptor {
 	}
 
 	public void initValue(String value) {
-		System.out.println("init val for :" + varName + " - " + value);
 		this.value = value;
 		currentUnit = PlcUnit.extractUnitFromValue(value);
 	}

@@ -269,13 +269,6 @@ public interface BeansName {
 	String PLC_VAR_MAPPING = "plcVarMap";
 
 	/**
-	 * List<IPLCVariable>
-	 */
-	String PLC_PARAMETERS = "plcCabinetParameters";
-
-	String PLC_CABINET_VARIABLES_VALUE = "allPlcVariableValues";
-
-	/**
 	 * IMessagesMapping
 	 */
 	String MESSAGES_MAPPING = "messagesMapping";

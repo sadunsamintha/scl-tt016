@@ -30,7 +30,6 @@ public abstract class PlcVariableDescriptor {
 	}
 
 	public void initValue(String value) {
-		System.out.println("init val for :" + varName + " - " + value);
 		this.value = value;
 	}
 

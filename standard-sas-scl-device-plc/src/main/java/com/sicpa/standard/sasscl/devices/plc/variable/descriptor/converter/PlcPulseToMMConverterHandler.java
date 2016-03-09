@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.google.common.eventbus.Subscribe;
-import com.sicpa.standard.sasscl.devices.plc.PlcLineHelper;
 import com.sicpa.standard.sasscl.devices.plc.variable.descriptor.event.PulseConversionParamChangedEvent;
 
 public class PlcPulseToMMConverterHandler {

@@ -22,8 +22,6 @@ import static com.sicpa.standard.sasscl.devices.plc.PlcUtils.*
 import groovy.transform.Field;
 
 @Field def allVars = new ArrayList<IPlcVariable>()
-@Field def lineParams= new ArrayList<IPlcVariable>()
-@Field def cabParams= new ArrayList<IPlcVariable>()
 @Field def lineJmxReport= new ArrayList<IPlcVariable>()
 @Field def cabJmxReport= new ArrayList<IPlcVariable>()
 @Field def lineNotif= new ArrayList<IPlcVariable>()
@@ -49,7 +47,7 @@ beans {
 
 
 	//LINE PARAM
-	plcMap['PARAM_LINE_IS_ACTIVE']=[v:LINE+'.bLine_is_active' ,t:B]
+	plcMap['PARAM_LINE_IS_ACTIVE']=[v:LINE+'bLine_is_active' ,t:B]
 	plcMap['PARAM_LINE_COM_STRUC_STORED_IN_RAM']=[v:LINE_PRM+'bComStructureStoredInRAM' ,t:B]
 	plcMap['PARAM_LINE_COUNTER_FILTER_TYPE']=[v:LINE_PRM+'bCounterFilterType' ,t:B]
 	plcMap['PARAM_LINE_PRODUCT_DETECTOR_FILTER_TYPE']=[v:LINE_PRM+'bProductDetectorFilterType' ,t:B]
@@ -61,7 +59,7 @@ beans {
 	plcMap['PARAM_LINE_PRINTER_DISTANCE_TYPE']=[v:LINE_PRM+'bPrinterDistanceType' ,t:B]
 	plcMap['PARAM_LINE_PRINTER_LENGTH_TYPE']=[v:LINE_PRM+'bPrinterLengthType' ,t:B]
 	plcMap['PARAM_LINE_PC_EJECTION_RECEPTION_DISTANCE_TYPE']=[v:LINE_PRM+'bPCEjectionReceptionDistanceType' ,t:B]
-	plcMap['PARAM_LINE_PC_EJECTION_RECEIPTION_LENGTH_TYPE']=[v:LINE_PRM+'bPCEjectionReceptionLengthType' ,t:B]
+	plcMap['PARAM_LINE_PC_EJECTION_RECEPTION_LENGTH_TYPE']=[v:LINE_PRM+'bPCEjectionReceptionLengthType' ,t:B]
 	plcMap['PARAM_LINE_PROD_CONTROL_DETECTOR_FILTER_TYPE']=[v:LINE_PRM+'bProdControlDetectorFilterType' ,t:B]
 	plcMap['PARAM_LINE_EJECTION_EMISSION_DISTANCE_TYPE']=[v:LINE_PRM+'bEjectionEmissionDistanceType' ,t:B]
 	plcMap['PARAM_LINE_EJECTION_EMISSION_LENGTH_TYPE']=[v:LINE_PRM+'bEjectionEmissionLengthType' ,t:B]
@@ -244,8 +242,6 @@ beans {
 	registerSingleton('cabPlcVarGroups',createCabGroupList())
 
 	registerSingleton('allPlcVars',allVars)
-	registerSingleton('plcLineParamsTemplate',lineParams)
-	registerSingleton('plcCabinetParameters',cabParams)
 	registerSingleton('plcLineJmxReport',lineJmxReport)
 	registerSingleton('plcCabJmxReport',cabJmxReport)
 	registerSingleton('plcLineNtfTemplate',lineNotif)
@@ -266,15 +262,7 @@ def void injectCustoVar(){
 def void addVarToLists(def var,String logicName,def varInfo){
 	allVars.add(var)
 
-	//PARAM
-	if(isLineParam(logicName)) {
-		lineParams.add(var)
-	}
-	if(isCabinetParam(logicName)) {
-		cabParams.add(var)
-	}
-
-	//JMX REPORT
+		//JMX REPORT
 	if(isLineJmxReport(logicName)) {
 		lineJmxReport.add(var)
 	}

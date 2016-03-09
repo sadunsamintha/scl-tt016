@@ -28,7 +28,7 @@ import com.sicpa.standard.sasscl.view.LanguageSwitchEvent;
 public class StatisticsView extends AbstractView<IStatisticsViewListener, StatisticsViewModel> {
 
 	// map < line index , map < stats descriptor , panel > >
-	protected final Map<Integer, Map<ViewStatisticsDescriptor, SingleStatsPanel>> mapDescriptors = new HashMap<>();
+	protected final Map<String, Map<ViewStatisticsDescriptor, SingleStatsPanel>> mapDescriptors = new HashMap<>();
 
 	// map < line index , panel >
 	protected final Map<Integer, LineSpeedPanel> mapLineSpeed = new TreeMap<>();
@@ -104,7 +104,7 @@ public class StatisticsView extends AbstractView<IStatisticsViewListener, Statis
 	}
 
 	protected void buildStatsPanel() {
-		for (int index : model.getLineIndexes()) {
+		for (String index : model.getLineIndexes()) {
 			Map<ViewStatisticsDescriptor, SingleStatsPanel> panels = mapDescriptors.get(index);
 			int total = 0;
 			if (panels == null) {
@@ -123,8 +123,8 @@ public class StatisticsView extends AbstractView<IStatisticsViewListener, Statis
 		updateTotal();
 	}
 
-	protected List<Entry<ViewStatisticsDescriptor, Integer>> getSortedDescriptorList(int index) {
-		List<Entry<ViewStatisticsDescriptor, Integer>> list = new ArrayList<Map.Entry<ViewStatisticsDescriptor, Integer>>();
+	protected List<Entry<ViewStatisticsDescriptor, Integer>> getSortedDescriptorList(String index) {
+		List<Entry<ViewStatisticsDescriptor, Integer>> list = new ArrayList<>();
 		list.addAll(model.getStatistics(index).entrySet());
 		Collections.sort(list, new Comparator<Entry<ViewStatisticsDescriptor, Integer>>() {
 			@Override
@@ -166,6 +166,7 @@ public class StatisticsView extends AbstractView<IStatisticsViewListener, Statis
 		if (panelTotal == null) {
 			ViewStatisticsDescriptor desc = new ViewStatisticsDescriptor(SicpaColor.BLUE_MEDIUM, "stats.display.total",
 					999);
+			desc.setLine("total");
 			panelTotal = new SingleStatsPanel(desc);
 			panelTotal.labelPercent.setVisible(false);
 		}

@@ -97,4 +97,6 @@ public interface IPlcAdaptor extends IStartableDevice {
 	public void registerNotification(IPlcVariable<?> var);
 
 	String getPlcVersion();
+
+	boolean isLineActive(int lineIndex);
 }

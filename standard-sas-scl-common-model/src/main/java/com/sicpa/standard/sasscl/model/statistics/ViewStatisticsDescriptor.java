@@ -6,13 +6,14 @@ public class ViewStatisticsDescriptor {
 
 	@Override
 	public String toString() {
-		return "VStatsDesc[key=" + key + ", line=" + line + ", index=" + index + "]";
+		return "ViewStatisticsDescriptor [color=" + color + ", key=" + key + ", line=" + line + ", index=" + index
+				+ "]";
 	}
 
-	protected Color color;
-	protected String key;
-	protected int line;
-	protected int index;
+	private Color color;
+	private String key;
+	private String line;
+	private int index;
 
 	public ViewStatisticsDescriptor() {
 	}
@@ -30,7 +31,7 @@ public class ViewStatisticsDescriptor {
 		result = prime * result + ((color == null) ? 0 : color.hashCode());
 		result = prime * result + index;
 		result = prime * result + ((key == null) ? 0 : key.hashCode());
-		result = prime * result + line;
+		result = prime * result + ((line == null) ? 0 : line.hashCode());
 		return result;
 	}
 
@@ -55,7 +56,10 @@ public class ViewStatisticsDescriptor {
 				return false;
 		} else if (!key.equals(other.key))
 			return false;
-		if (line != other.line)
+		if (line == null) {
+			if (other.line != null)
+				return false;
+		} else if (!line.equals(other.line))
 			return false;
 		return true;
 	}
@@ -76,11 +80,11 @@ public class ViewStatisticsDescriptor {
 		this.key = key;
 	}
 
-	public int getLine() {
+	public String getLine() {
 		return line;
 	}
 
-	public void setLine(int line) {
+	public void setLine(String line) {
 		this.line = line;
 	}
 

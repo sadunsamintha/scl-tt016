@@ -25,16 +25,16 @@ public class PlcRegisterHandler implements IPlcListener {
 
 	private static final Logger logger = LoggerFactory.getLogger(PlcRegisterHandler.class);
 
-	protected PlcProvider plcProvider;
+	private PlcProvider plcProvider;
 	private String lineRegisterVarName;
 	private String cabRegisterVarName;
 
-	protected final List<String> cabinetErrorsList = new ArrayList<>();
-	protected final List<String> lineErrorsList = new ArrayList<>();
+	private final List<String> cabinetErrorsList = new ArrayList<>();
+	private final List<String> lineErrorsList = new ArrayList<>();
 
 	// previous register value, in order to fire issue solved event
-	protected Integer previousCabinetRegisterValue = 0;
-	protected final Map<String, Integer> mapPreviousRegister = new HashMap<String, Integer>();
+	private Integer previousCabinetRegisterValue = 0;
+	private final Map<String, Integer> mapPreviousRegister = new HashMap<>();
 
 	public PlcRegisterHandler() {
 	}

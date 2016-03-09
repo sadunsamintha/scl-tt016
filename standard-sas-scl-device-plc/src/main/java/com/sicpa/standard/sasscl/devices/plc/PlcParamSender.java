@@ -15,12 +15,13 @@ public class PlcParamSender implements IPlcParamSender {
 	private IPLCVariableMappping plcVarMapping;
 	private PlcPulseToMMConverterHandler converterMMtoPulse;
 
+	@Override
 	public void sendToPlc(String plcLogicalVarName, String value, int lineIndex) throws PlcAdaptorException {
 
 		String valueToSend;
 		if (convertionNeeded(value)) {
 			valueToSend = convertValue(plcLogicalVarName, value, lineIndex);
-			sendUnitVar(plcLogicalVarName, value);
+			sendUnitVar(plcLogicalVarName, value, lineIndex);
 		} else {
 			valueToSend = value;
 		}
@@ -29,8 +30,7 @@ public class PlcParamSender implements IPlcParamSender {
 
 	private IPlcVariable<?> createVar(String logicalName, String value, int lineIndex) {
 		// create a plc variable, guess the type from the value
-		String physicalName = plcVarMapping.getPhysicalVariableName(logicalName);
-		PlcLineHelper.replaceLinePlaceholder(physicalName, lineIndex);
+		String physicalName = getPhysicalLineVariable(logicalName, lineIndex);
 		try {
 			return createByteVar(physicalName, value);
 		} catch (NumberFormatException e) {
@@ -44,6 +44,12 @@ public class PlcParamSender implements IPlcParamSender {
 				}
 			}
 		}
+	}
+
+	private String getPhysicalLineVariable(String logicalName, int lineIndex) {
+		String physicalName = plcVarMapping.getPhysicalVariableName(logicalName);
+		physicalName = PlcLineHelper.replaceLinePlaceholder(physicalName, lineIndex);
+		return physicalName;
 	}
 
 	private IPlcVariable<Byte> createByteVar(String name, String value) {
@@ -71,8 +77,9 @@ public class PlcParamSender implements IPlcParamSender {
 		return PlcVariable.createBooleanVar(name, bval);
 	}
 
-	private void sendUnitVar(String parentVarName, String value) throws PlcAdaptorException {
-		String physicalName = plcVarMapping.getPhysicalVariableName(parentVarName + UNIT_SUFFIX);
+	private void sendUnitVar(String parentVarName, String value, int lineIndex) throws PlcAdaptorException {
+		String unitLogicalVarName = parentVarName + UNIT_SUFFIX;
+		String physicalName = getPhysicalLineVariable(unitLogicalVarName, lineIndex);
 		IPlcVariable<Boolean> var = createBooleanVar(physicalName, createUnitValue(value) + "");
 		plcProvider.get().write(var);
 	}
