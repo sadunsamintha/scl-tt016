@@ -17,8 +17,8 @@ import com.sicpa.standard.sasscl.view.LanguageSwitchEvent;
 @SuppressWarnings("serial")
 public class StartStopView extends AbstractStartStopView {
 
-	protected AbstractButton buttonStart;
-	protected AbstractButton buttonStop;
+	private AbstractButton buttonStart;
+	private AbstractButton buttonStop;
 
 	public StartStopView() {
 		setOpaque(false);
@@ -46,7 +46,7 @@ public class StartStopView extends AbstractStartStopView {
 		return buttonStart;
 	}
 
-	protected void buttonStartActionPerformed() {
+	private void buttonStartActionPerformed() {
 		getButtonStart().setEnabled(false);
 		fireStart();
 	}
@@ -66,7 +66,7 @@ public class StartStopView extends AbstractStartStopView {
 		return buttonStop;
 	}
 
-	protected void buttonStopActionPerformed() {
+	private void buttonStopActionPerformed() {
 		getButtonStop().setEnabled(false);
 		fireStop();
 	}

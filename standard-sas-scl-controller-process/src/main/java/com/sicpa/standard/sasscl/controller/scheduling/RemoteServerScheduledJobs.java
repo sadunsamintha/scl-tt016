@@ -1,5 +1,8 @@
 package com.sicpa.standard.sasscl.controller.scheduling;
 
+import static com.sicpa.standard.sasscl.common.storage.FileStorage.FOLDER_PRODUCTION;
+import static com.sicpa.standard.sasscl.common.storage.FileStorage.FOLDER_PRODUCTION_PACKAGED;
+
 import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.ioc.BeanProvider;
@@ -17,6 +20,7 @@ import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.Producti
 import com.sicpa.standard.sasscl.provider.impl.AuthenticatorProvider;
 import com.sicpa.standard.sasscl.provider.impl.SkuListProvider;
 import com.sicpa.standard.sasscl.sicpadata.reader.IAuthenticator;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,11 +37,15 @@ import java.util.ResourceBundle;
 public class RemoteServerScheduledJobs {
 	private static final Logger logger = LoggerFactory.getLogger(RemoteServerScheduledJobs.class);
 
-	protected int remoteServerMaxDownTime_day;
+	private static int MS_BY_DAY = 1000 * 60 * 60 * 24;
+
+	private int remoteServerMaxDownTime_day;
 	protected IStorage storage;
 	protected IRemoteServer remoteServer;
 	protected SkuListProvider skuListProvider;
-	protected AuthenticatorProvider authenticatorProvider;
+	private AuthenticatorProvider authenticatorProvider;
+
+	private ApplicationFlowState currentApplicationState = ApplicationFlowState.STT_NO_SELECTION;
 
 	public RemoteServerScheduledJobs(final IStorage storage, final IRemoteServer remoteServer,
 			final SkuListProvider skuList, final AuthenticatorProvider authenticatorProvider) {
@@ -106,52 +114,53 @@ public class RemoteServerScheduledJobs {
 	public synchronized void getLanguageFileFromRemoteServer() {
 		logger.info("Executing job: Trying to download language files");
 		if (remoteServer.isConnected()) {
-			FileWriter writer = null;
 			try {
 				Map<String, ? extends ResourceBundle> mapBundles = remoteServer.getLanguageBundles();
 				if (mapBundles != null) {
-					// for each language
 					for (Entry<String, ? extends ResourceBundle> entry : mapBundles.entrySet()) {
-						// for each key
-						File file = new File("language/sasscl_" + entry.getKey().toLowerCase() + ".properties");
-						// load current properties in order to not remove a property that does not exit in the remote
-						// server
-						Properties currentLanguage = getCurrentLanguageProperties(file);
-						Properties prop = new Properties();
-						prop.putAll(currentLanguage);
-
-						Enumeration<String> keys = entry.getValue().getKeys();
-						while (keys.hasMoreElements()) {
-							String key = keys.nextElement();
-							String message = entry.getValue().getString(key);
-							prop.put(key, message);
-						}
-
-						file.getParentFile().mkdirs();
-						writer = new FileWriter(file);
-						prop.store(writer, "");
+						saveLanguage(entry.getKey(), entry.getValue());
 					}
 				}
 			} catch (Exception e) {
-				logger.error("Failed to download and save languages files", e);
-			} finally {
-				if (writer != null) {
-					try {
-						writer.close();
-					} catch (IOException e) {
-					}
-				}
+				logger.error("Failed to download languages files", e);
 			}
 		}
 	}
 
-	/**
-	 * 
-	 * @param f
-	 *            the language properties file
-	 * @return the properties loaded from the given file
-	 */
-	protected Properties getCurrentLanguageProperties(final File f) {
+	private void saveLanguage(String langKey, ResourceBundle bundle) {
+		FileWriter writer = null;
+		try {
+			File file = new File("language/sasscl_" + langKey.toLowerCase() + ".properties");
+			// load current properties in order to not remove a property that does not exit in the remote
+			// server
+			Properties currentLanguage = getCurrentLanguageProperties(file);
+			Properties prop = new Properties();
+			prop.putAll(currentLanguage);
+
+			Enumeration<String> keys = bundle.getKeys();
+			while (keys.hasMoreElements()) {
+				String key = keys.nextElement();
+				String message = bundle.getString(key);
+				prop.put(key, message);
+			}
+
+			file.getParentFile().mkdirs();
+			writer = new FileWriter(file);
+			prop.store(writer, "");
+		} catch (Exception e) {
+			logger.error("Failed to download and save languages files", e);
+		} finally {
+			if (writer != null) {
+				try {
+					writer.close();
+				} catch (IOException e) {
+				}
+			}
+		}
+
+	}
+
+	private Properties getCurrentLanguageProperties(File f) {
 		Properties p = new Properties();
 		FileReader reader = null;
 		try {
@@ -172,32 +181,10 @@ public class RemoteServerScheduledJobs {
 		logger.info("Executing job: Trying to check remote server max downtime");
 		if (remoteServerMaxDownTime_day > 0) {
 			if (!remoteServer.isConnected()) {
-				// check if some file in the package folder is older than the max down time
-				// if that's the case the max down time is reached
-				if (storage instanceof FileStorage) {
-					File packageFolder = new File(((FileStorage) storage).getDataFolder() + File.separator
-							+ FileStorage.FOLDER_PRODUCTION + File.separator + FileStorage.FOLDER_PRODUCTION_PACKAGED);
-
-					int miliByDay = 1000 * 60 * 60 * 24;
-					if (packageFolder.exists()) {
-						for (File f : packageFolder.listFiles()) {
-							long lastModified = f.lastModified();
-							if (lastModified <= 0) {
-								// getting the last modified time failed some time so make sure to ignore it
-								continue;
-							}
-							long delta = System.currentTimeMillis() - lastModified;
-							int days = (int) (delta / miliByDay);
-							if (days >= remoteServerMaxDownTime_day) {
-								fireMaxDownTime(true);
-								return;
-							}
-						}
-					}
-					fireMaxDownTime(false);
+				if (containsFileOlderThanThreshold(getPackageFolder())) {
+					fireMaxDownTime(true);
 				} else {
-					throw new UnsupportedOperationException(
-							"Can only check max remote server down time when using an AbstractFileStorage");
+					fireMaxDownTime(false);
 				}
 			} else {
 				fireMaxDownTime(false);
@@ -205,11 +192,34 @@ public class RemoteServerScheduledJobs {
 		}
 	}
 
+	private File getPackageFolder() {
+		return new File(((FileStorage) storage).getDataFolder() + "/" + FOLDER_PRODUCTION + "/"
+				+ FOLDER_PRODUCTION_PACKAGED);
+	}
+
+	private boolean containsFileOlderThanThreshold(File packageFolder) {
+		if (packageFolder.exists()) {
+			for (File f : packageFolder.listFiles()) {
+				long lastModified = f.lastModified();
+				if (lastModified <= 0) {
+					// getting the last modified time failed some time so make sure to ignore it
+					continue;
+				}
+				long delta = System.currentTimeMillis() - lastModified;
+				int days = (int) (delta / MS_BY_DAY);
+				if (days >= remoteServerMaxDownTime_day) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
 	public void setRemoteServerMaxDownTime_day(int remoteServerMaxDownTime_day) {
 		this.remoteServerMaxDownTime_day = remoteServerMaxDownTime_day;
 	}
 
-	protected void fireMaxDownTime(final boolean reached) {
+	private void fireMaxDownTime(final boolean reached) {
 		EventBusService.post(new MaxDownTimeReachedEvent(reached));
 	}
 
@@ -229,8 +239,6 @@ public class RemoteServerScheduledJobs {
 			}
 		});
 	}
-
-	protected ApplicationFlowState currentApplicationState = ApplicationFlowState.STT_NO_SELECTION;
 
 	@Subscribe
 	public void handleFlowControlStateChanged(ApplicationFlowStateChangedEvent evt) {

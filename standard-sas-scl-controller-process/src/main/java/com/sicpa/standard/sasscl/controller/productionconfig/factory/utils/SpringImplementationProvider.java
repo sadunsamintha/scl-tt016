@@ -8,7 +8,7 @@ import com.sicpa.standard.sasscl.controller.productionconfig.IImplementationProv
 
 public class SpringImplementationProvider implements IImplementationProvider {
 
-	protected Map<String, Object> localImplementations = new HashMap<String, Object>();
+	private Map<String, Object> localImplementations = new HashMap<>();
 
 	@Override
 	public Object getImplementation(String beanName) {

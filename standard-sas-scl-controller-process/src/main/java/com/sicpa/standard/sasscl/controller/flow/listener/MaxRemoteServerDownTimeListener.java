@@ -12,7 +12,7 @@ import com.sicpa.standard.sasscl.messages.MessageEventKey;
 
 public class MaxRemoteServerDownTimeListener implements IStartProductionValidator {
 
-	protected boolean remoteServerMaxDownTimeReached;
+	private boolean remoteServerMaxDownTimeReached;
 
 	@Subscribe
 	public void notifyMaxDownTimeReached(final MaxDownTimeReachedEvent event) {

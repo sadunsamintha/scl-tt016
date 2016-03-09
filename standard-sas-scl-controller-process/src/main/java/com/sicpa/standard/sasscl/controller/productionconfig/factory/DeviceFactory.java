@@ -15,15 +15,15 @@ public class DeviceFactory implements IDeviceFactory {
 
 	private static final Logger logger = LoggerFactory.getLogger(DeviceFactory.class);
 
-	protected IImplementationProvider implementationProvider;
-	protected Cache cache = new Cache();
+	private IImplementationProvider implementationProvider;
+	private final Cache cache = new Cache();
 
-	protected ICameraFactoryMapping cameraFactoryMapping;
-	protected IPrinterFactoryMapping printerFactoryMapping;
+	private ICameraFactoryMapping cameraFactoryMapping;
+	private IPrinterFactoryMapping printerFactoryMapping;
 
-	protected IDeviceModelNamePostfixProperty deviceModelNamePostfixProperty;
+	private IDeviceModelNamePostfixProperty deviceModelNamePostfixProperty;
 
-	protected final List<ConfigurationAction> configurationAction = new ArrayList<ConfigurationAction>();
+	private final List<ConfigurationAction> configurationAction = new ArrayList<>();
 
 	@Override
 	public IStartableDevice getCamera(CameraConfig cameraConfig) {
@@ -69,19 +69,19 @@ public class DeviceFactory implements IDeviceFactory {
 		return value;
 	}
 
-    @Override
-    public IStartableDevice getBrs(BrsConfig brsConfig) {
-        IStartableDevice value = cache.get(brsConfig.getId(), IStartableDevice.class);
-        if (value == null) {
-            deviceModelNamePostfixProperty.set(brsConfig.getId());
-            String beanName = "brsAdaptor";
-            logger.info("retrieving BRS from implProvider {} - {}", beanName, brsConfig.getId());
-            value = (IStartableDevice) implementationProvider.getImplementation(beanName);
-            cache.put(brsConfig.getId(), IStartableDevice.class, value);
-            createConfigurator(value, brsConfig);
-        }
-        return value;
-    }
+	@Override
+	public IStartableDevice getBrs(BrsConfig brsConfig) {
+		IStartableDevice value = cache.get(brsConfig.getId(), IStartableDevice.class);
+		if (value == null) {
+			deviceModelNamePostfixProperty.set(brsConfig.getId());
+			String beanName = "brsAdaptor";
+			logger.info("retrieving BRS from implProvider {} - {}", beanName, brsConfig.getId());
+			value = (IStartableDevice) implementationProvider.getImplementation(beanName);
+			cache.put(brsConfig.getId(), IStartableDevice.class, value);
+			createConfigurator(value, brsConfig);
+		}
+		return value;
+	}
 
 	@Override
 	public IPlcAdaptor getPlc(PlcConfig config) {

@@ -16,8 +16,7 @@ import com.sicpa.standard.sasscl.business.statistics.StatisticsRestoredEvent;
 import com.sicpa.standard.sasscl.business.statistics.impl.Statistics;
 import com.sicpa.standard.sasscl.common.storage.IStorage;
 import com.sicpa.standard.sasscl.controller.ProductionParametersEvent;
-import com.sicpa.standard.sasscl.controller.device.IPlcIndependentDevicesController;
-import com.sicpa.standard.sasscl.controller.device.group.DevicesGroup;
+import com.sicpa.standard.sasscl.controller.device.group.IGroupDevicesController;
 import com.sicpa.standard.sasscl.controller.flow.IBootstrap;
 import com.sicpa.standard.sasscl.controller.scheduling.RemoteServerScheduledJobs;
 import com.sicpa.standard.sasscl.devices.DeviceStatus;
@@ -64,8 +63,8 @@ public class Bootstrap implements IBootstrap {
 	}
 
 	private void connectRemoteServer() {
-		IPlcIndependentDevicesController controller = BeanProvider.getBean(BeansName.OTHER_DEVICES_CONTROLLER);
-		controller.startDevicesGroup(DevicesGroup.STARTUP_GROUP);
+		IGroupDevicesController controller = BeanProvider.getBean("startupDevicesGroup");
+		controller.start();
 	}
 
 	private void restorePreviousSelectedProductionParams() {

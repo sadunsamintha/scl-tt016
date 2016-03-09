@@ -12,7 +12,7 @@ public class ProductionConfigFileLoader implements IProductionConfigLoader {
 
 	private static final Logger logger = LoggerFactory.getLogger(ProductionConfigFileLoader.class);
 
-	protected IProductionConfigMapping mapping;
+	private IProductionConfigMapping mapping;
 	private String folder;
 
 	/**

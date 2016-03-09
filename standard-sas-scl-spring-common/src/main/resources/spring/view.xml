@@ -41,7 +41,7 @@
 		<property name="bean" ref="statsMBean" />
 	</bean>
 
-	<bean id="plcVariablesPanel" class="com.sicpa.standard.sasscl.view.config.plc.PlcVariablesPanelGetter"/>
+	<bean id="plcVariablesPanel" class="com.sicpa.standard.sasscl.view.config.plc.PlcVariablesPanelGetter" />
 
 	<bean id="productionStatisticsPanel" class="com.sicpa.standard.sasscl.view.monitoring.ProductionStatisticsPanelGetter" />
 	<bean id="systemEventPanel" class="com.sicpa.standard.sasscl.view.monitoring.SystemEventPanelGetter" />
@@ -120,7 +120,7 @@
 		</bean>
 
 	</util:list>
-	
+
 	<bean id="screensFlow" class="com.sicpa.standard.sasscl.controller.view.flow.DefaultScreensFlow" init-method="buildScreensFlow">
 		<property name="initialScreen" ref="mainPanelGetter" />
 		<property name="selectionScreen" ref="selectProductionParametersViewController" />
@@ -241,7 +241,9 @@
 		<property name="controller" ref="snapshotViewController" />
 		<property name="model" value="#{snapshotViewController.model}" />
 	</bean>
-	<bean id="snapshotViewController" class="com.sicpa.standard.sasscl.view.snapshot.SnapshotViewController" />
+	<bean id="snapshotViewController" class="com.sicpa.standard.sasscl.view.snapshot.SnapshotViewController">
+		<property name="folder" value="${profile.path}/screenshot" />
+	</bean>
 
 	<!-- production sending on exit -->
 

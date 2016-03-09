@@ -12,27 +12,22 @@ import org.slf4j.LoggerFactory;
 
 public class PrinterListener {
 
+	private static final Logger logger = LoggerFactory.getLogger(PrinterListener.class);
 
-    private static final Logger logger = LoggerFactory.getLogger(PrinterListener.class);
+	private IStateMachine stateMachine;
 
-    protected IStateMachine stateMachine;
+	@Subscribe
+	public void onPrinterStopped(PrinterStoppedEvent evt) {
+		logger.debug("Printer Stopped Event receive {}", evt);
+		ApplicationFlowState currentState = stateMachine.getCurrentState();
+		if (currentState.equals(ApplicationFlowState.STT_STARTED)) {
+			// The printer has been stopped while doing production. Let's stop production.
+			EventBusService.post(new PrinterMessage(MessageEventKey.Printer.PRINTER_STOPPED_DURING_PRODUCTION));
+		}
+	}
 
-    @Subscribe
-    public void onPrinterStopped(PrinterStoppedEvent evt) {
-        logger.debug("Printer Stopped Event receive {}", evt);
-        ApplicationFlowState currentState = stateMachine.getCurrentState();
-        if(currentState.equals(ApplicationFlowState.STT_STARTED)){
-            /**
-             * The printer has been stopped while doing production.
-             * Let's stop production.
-             */
-            EventBusService.post(new PrinterMessage(MessageEventKey.Printer.PRINTER_STOPPED_DURING_PRODUCTION));
-        }
-    }
-
-    public void setStateMachine(IStateMachine stateMachine) {
-        this.stateMachine = stateMachine;
-    }
-
+	public void setStateMachine(IStateMachine stateMachine) {
+		this.stateMachine = stateMachine;
+	}
 
 }

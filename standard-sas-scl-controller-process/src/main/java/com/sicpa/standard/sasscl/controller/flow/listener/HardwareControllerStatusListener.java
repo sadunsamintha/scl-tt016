@@ -7,7 +7,7 @@ import com.sicpa.standard.sasscl.controller.hardware.HardwareControllerStatusEve
 
 public class HardwareControllerStatusListener {
 
-	protected IFlowControl flowControl;
+	private IFlowControl flowControl;
 
 	@Subscribe
 	public void hardwareControllerStatusChanged(HardwareControllerStatusEvent evt) {

@@ -12,7 +12,7 @@ import com.sicpa.standard.sasscl.monitoring.system.event.BasicSystemEvent;
 
 public class MessageHandlerError {
 
-	protected IFlowControl flowControl;
+	private IFlowControl flowControl;
 
 	@Subscribe
 	public void handleMessage(ActionEventError error) {

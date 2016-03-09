@@ -1,8 +1,9 @@
 package com.sicpa.standard.sasscl.view.startstop;
 
+import static com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState.STT_CONNECTED;
+import static com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState.STT_STARTED;
 import static java.util.Arrays.asList;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.google.common.eventbus.Subscribe;
@@ -13,13 +14,11 @@ import com.sicpa.standard.sasscl.controller.flow.IFlowControl;
 
 public class StartStopViewController implements IStartStopViewListener {
 
-	protected final List<ApplicationFlowState> enableStartState = new ArrayList<ApplicationFlowState>(
-			asList(ApplicationFlowState.STT_CONNECTED));
-	protected final List<ApplicationFlowState> enableStopState = new ArrayList<ApplicationFlowState>(
-			asList(ApplicationFlowState.STT_STARTED));
+	private final List<ApplicationFlowState> enableStartState = asList(STT_CONNECTED);
+	private final List<ApplicationFlowState> enableStopState = asList(STT_STARTED);
 
-	protected StartStopModel model;
-	protected IFlowControl flowControl;
+	private StartStopModel model;
+	private IFlowControl flowControl;
 
 	public StartStopViewController(StartStopModel model) {
 		this.model = model;

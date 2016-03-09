@@ -63,10 +63,6 @@ public interface BeansName {
 	String CODING = "coding";
 
 	/**
-	 * IDevicesController
-	 */
-	String OTHER_DEVICES_CONTROLLER = "otherDevicesController";
-	/**
 	 * IGroupDevicesController
 	 */
 	String DEVICES_GROUP_STARTUP = "startupDevicesGroup";
