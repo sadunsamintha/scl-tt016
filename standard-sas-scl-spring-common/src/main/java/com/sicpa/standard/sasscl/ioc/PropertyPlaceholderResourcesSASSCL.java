@@ -8,8 +8,6 @@ public class PropertyPlaceholderResourcesSASSCL extends PropertyPlaceholderResou
 		defaultFiles.add("spring/defaultConfig.properties");
 		defaultFiles.add("spring/skuCheckBeans.properties");
 		defaultFiles.add("spring/visionSystemBeans.properties");
-		defaultFiles.add("spring/brsBeans.properties");
-		defaultFiles.add("spring/brs.properties");
 		
 		defaultFiles.add("config/printer/printer-leibinger.properties");
 		defaultFiles.add("config/printer/jobConfig-leibinger.properties");

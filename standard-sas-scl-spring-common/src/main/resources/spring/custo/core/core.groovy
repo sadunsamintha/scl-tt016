@@ -7,5 +7,8 @@ beans{
 		importBeans('spring/server/server-core5.groovy')
 	}
 
-	bootstrap(CoreBootstrap)
+	addAlias('bootstrapAlias','bootstrap')
+	bootstrap(CoreBootstrap){b->
+		b.parent=ref('bootstrapAlias')
+	}
 }

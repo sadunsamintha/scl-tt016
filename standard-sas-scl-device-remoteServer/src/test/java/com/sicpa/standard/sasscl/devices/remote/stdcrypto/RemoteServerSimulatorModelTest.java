@@ -123,7 +123,7 @@ public class RemoteServerSimulatorModelTest {
 
 		RemoteServerSimulatorModel model = new RemoteServerSimulatorModel();
 		model.setUseCrypto(true);
-		model.setRequestNumberOfCodes(99000);
+		model.setNumberOfCodesByEncoder(99000);
 
 		RemoteServerSimulator simulator = new RemoteServerSimulator(model);
 		simulator.setCryptoFieldsConfig(new CryptoFieldsConfig());

@@ -50,86 +50,26 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.Map.Entry;
 
-/**
- * 
- * Implementation for remote server simulator.
- * 
- * <p>
- * This implementation simulates the real remote server. It uses the standard crypto library to provides the encoders
- * and decoder.
- * </p>
- * 
- * @See RemoteServerSimulatorModel
- * 
- */
 public class RemoteServerSimulator extends AbstractRemoteServer implements ISimulatorGetEncoder {
 
 	private final static Logger logger = LoggerFactory.getLogger(RemoteServerSimulator.class);
 
-	// version defined in stdCrypto.ini
-	protected int cryptoVersion = 0;
-	protected String cryptoMode = "MY_MODE";
-
-	// specify the starting year, used in date calculation (value to be set in {@link DescriptorBean#setDate(long)}.
-	protected int cryptoStartYear = 2010;
-
-	// to keep track the current batch index
-	protected int currentEncoderIndex = 0;
-
-	// business crypto from standard crypto library
-	protected IBSicpadataModule module;
-
 	protected final RemoteServerSimulatorModel simulatorModel;
+	private SimulatorControlView simulatorGui;
+	private String remoteServerSimulatorOutputFolder;
+	private ProductionParameters productionParameters;
+	private IStorage storage;
 
-	protected SimulatorControlView simulatorGui;
-
-	protected String remoteServerSimulatorOutputFolder;
-
-	protected ProductionParameters productionParameters;
-
-	protected IServiceProviderManager serviceProviderManager;
-
-	protected IStorage storage;
-
-	protected FileSequenceStorageProvider fileSequenceStorageProvider;
-
-	protected boolean setupBusinessCryptoDone = false;
-	protected StdCoreModelPreset cryptoModelPreset = StdCoreModelPreset.CRYPTO_12x26;
-
-	// /**
-	// * main method, maintained to test cryptography library.
-	// */
-	// public static void main(String[] args) throws RemoteServerException, CryptoException, GeneratorCapacityException,
-	// SicpadataException, ServiceProviderException, CryptographyException {
-	//
-	// StaticServiceProviderManager.register(new CryptoServiceProviderManager(new UniquePasswordProvider("dummy"),
-	// new FileSequenceStorageProvider("./simulation/storage/encoder-sequence")));
-	//
-	// RemoteServerSimulator remoteServerSimulator = new RemoteServerSimulator(new RemoteServerSimulatorModel());
-	// remoteServerSimulator.setServiceProviderManager(StaticServiceProviderManager.getInstance());
-	// remoteServerSimulator.setCryptoFieldsConfig(new CryptoFieldsConfig());
-	// remoteServerSimulator.setConfig(new GlobalConfig());
-	// remoteServerSimulator.simulatorModel.useCrypto = true;
-	//
-	// remoteServerSimulator.setupBusinessCrypto();
-	//
-	// IEncoder encoder = remoteServerSimulator.createOneEncoder(2012, 1);
-	//
-	// IBSicpadataGenerator generator = remoteServerSimulator.generateEncoders(123, 321);
-	// generator.setId(3123L);
-	//
-	// System.out.println("Encoder: ");
-	//
-	// for (String sicpadata : encoder.getEncryptedCodes(10)) {
-	// System.out.println(sicpadata);
-	// }
-	//
-	// System.out.println("Geneartor: ");
-	//
-	// for (String sicpadata : generator.generate(10)) {
-	// System.out.println(sicpadata);
-	// }
-	// }
+	private boolean setupBusinessCryptoDone = false;
+	private StdCoreModelPreset cryptoModelPreset = StdCoreModelPreset.CRYPTO_12x26;
+	private FileSequenceStorageProvider fileSequenceStorageProvider;
+	private int cryptoVersion = 0;
+	private String cryptoMode = "MY_MODE";
+	private IServiceProviderManager serviceProviderManager;
+	// specify the starting year, used in date calculation (value to be set in {@link DescriptorBean#setDate(long)}.
+	private int cryptoStartYear = 2010;
+	private int currentEncoderIndex = 0;
+	private IBSicpadataModule sicpadataModule;
 
 	public IServiceProviderManager getServiceProviderManager() {
 		return serviceProviderManager;
@@ -162,11 +102,11 @@ public class RemoteServerSimulator extends AbstractRemoteServer implements ISimu
 			}
 
 			// PREPARE THE MODEL
-			List<FieldModel> fixedFieldModels = new ArrayList<FieldModel>(Arrays.asList(//
+			List<FieldModel> fixedFieldModels = new ArrayList<>(Arrays.asList(//
 					new FieldModel("batchId", (1L << 10) - 1L),//
 					new FieldModel("codeType", (1L << 10) - 1L),//
 					new FieldModel("date", (1L << 19) - 1L)));//
-			List<FieldModel> varFieldModels = new ArrayList<FieldModel>(Arrays.asList(//
+			List<FieldModel> varFieldModels = new ArrayList<>(Arrays.asList(//
 					new FieldModel("sequence", (1L << 39) - 1L)//
 					));//
 
@@ -179,11 +119,10 @@ public class RemoteServerSimulator extends AbstractRemoteServer implements ISimu
 			sicpadataModel.addModeModel(cryptoMode, modeModel);
 
 			// PUT THE MODEL
-			module = null;
+			sicpadataModule = null;
 			try {
-				module = BSicpadataModuleFactory.getInstance(serviceProviderManager);
-
-				module.setSicpadataModel(sicpadataModel);
+				sicpadataModule = BSicpadataModuleFactory.getInstance(serviceProviderManager);
+				sicpadataModule.setSicpadataModel(sicpadataModel);
 
 				// GENERATE THE KEYS
 				IKeyManager keyManager = null;
@@ -199,25 +138,11 @@ public class RemoteServerSimulator extends AbstractRemoteServer implements ISimu
 		}
 	}
 
-	/**
-	 * 
-	 * 
-	 * @param model
-	 * 
-	 * @throws RemoteServerException
-	 *             throw RemoteServerException if the key set failed to be generated
-	 */
-	public RemoteServerSimulator(final RemoteServerSimulatorModel model) throws RemoteServerException {
+	public RemoteServerSimulator(RemoteServerSimulatorModel model) {
 		this.simulatorModel = model;
 	}
 
-	/**
-	 * 
-	 * @param configFile
-	 * @throws RemoteServerException
-	 *             throw RemoteServerException if the key set failed to be generated
-	 */
-	public RemoteServerSimulator(final String configFile) throws RemoteServerException {
+	public RemoteServerSimulator(String configFile) throws RemoteServerException {
 		try {
 			simulatorModel = ConfigUtils.load(RemoteServerSimulatorModel.class, configFile);
 		} catch (Exception e) {
@@ -225,27 +150,17 @@ public class RemoteServerSimulator extends AbstractRemoteServer implements ISimu
 		}
 	}
 
-	/**
-	 * 
-	 * Generate encoders using given batch id
-	 * 
-	 * @return List of IBEncoder generated for the given batch
-	 * @throws SicpadataException
-	 * @throws UnknownSystemTypeException
-	 * @throws UnknownVersionException
-	 * @throws UnknownModeException
-	 */
-	protected IBSicpadataGenerator generateEncoders(final long batchId, final long codeType)
-			throws UnknownModeException, UnknownVersionException, UnknownSystemTypeException, SicpadataException {
+	private IBSicpadataGenerator generateEncoders(long batchId, long codeType) throws UnknownModeException,
+			UnknownVersionException, UnknownSystemTypeException, SicpadataException {
 
 		// setup descriptor bean
 		DescriptorBean descBean = new DescriptorBean();
 
 		descBean.setBatchId(batchId);
-		descBean.setDate(getDate());
+		descBean.setDate(getNumberOfYearSinceProjectStart());
 		descBean.setType(codeType);
 
-		IBSicpadataGenerator generator = module.createSicpadataGenerator(cryptoMode, cryptoVersion,
+		IBSicpadataGenerator generator = sicpadataModule.createSicpadataGenerator(cryptoMode, cryptoVersion,
 				ICoreModelPreset.DEFAULT_SYSTEM_TYPE, descBean);
 
 		generator.setId(batchId);
@@ -254,10 +169,7 @@ public class RemoteServerSimulator extends AbstractRemoteServer implements ISimu
 	}
 
 	/**
-	 * 
 	 * Generate and return an instance of authenticator using standard crypto business.
-	 * 
-	 * @see com.sicpa.standard.sasscl.devices.remote.IRemoteServer#getAuthenticator()
 	 */
 	@Override
 	public IAuthenticator getAuthenticator() throws RemoteServerException {
@@ -268,11 +180,10 @@ public class RemoteServerSimulator extends AbstractRemoteServer implements ISimu
 
 		setupBusinessCrypto();
 
-		if (this.simulatorModel.isUseCrypto()) {
+		if (simulatorModel.isUseCrypto()) {
 			IBSicpadataReader authenticator = null;
 			try {
-				authenticator = module.createSicpadataReader(ICoreModelPreset.DEFAULT_SYSTEM_TYPE);
-
+				authenticator = sicpadataModule.createSicpadataReader(ICoreModelPreset.DEFAULT_SYSTEM_TYPE);
 				return new StdCryptoAuthenticatorWrapperSimulator(authenticator, cryptoFieldsConfig);
 			} catch (Exception e) {
 				throw new RemoteServerException(e);
@@ -285,25 +196,16 @@ public class RemoteServerSimulator extends AbstractRemoteServer implements ISimu
 		}
 	}
 
-	/**
-	 * 
-	 * Calculate date and return as long
-	 * 
-	 * @return
-	 */
-	protected final long getDate() {
+	private final long getNumberOfYearSinceProjectStart() {
 		Calendar c = Calendar.getInstance();
 		int year = c.get(Calendar.YEAR);
 		return year - cryptoStartYear;
 	}
 
 	/**
-	 * 
 	 * Generates encoders based on the batches quantity. This method uses the standard crypto business to generate a
 	 * list of the business encoder - <code>IBEncoder</code>. This list of <code>IBEncoder</code> is wrapped in the
 	 * StdCryptoEncoderWrapper to be returned
-	 * 
-	 * 
 	 */
 	@Override
 	public void downloadEncoder(int quantity, CodeType codeType, int year) throws RemoteServerException {
@@ -320,7 +222,7 @@ public class RemoteServerSimulator extends AbstractRemoteServer implements ISimu
 		try {
 			for (int i = 0; i < quantity; i++) {
 				currentEncoderIndex++;
-				logger.debug("Generating encoders for batch number : {}", this.currentEncoderIndex);
+				logger.debug("Generating encoders for batch number : {}", currentEncoderIndex);
 				IEncoder encoder = createOneEncoder(year, (int) codeType.getId());
 				storeEncoder(encoder, year);
 				storeSequence(encoder, 0);
@@ -331,13 +233,13 @@ public class RemoteServerSimulator extends AbstractRemoteServer implements ISimu
 		}
 	}
 
-	protected void storeEncoder(IEncoder encoder, int year) {
+	private void storeEncoder(IEncoder encoder, int year) {
 		storage.saveEncoders(year, encoder);
 		storage.confirmEncoder(encoder.getId());
 
 	}
 
-	protected void storeSequence(IEncoder encoder, long sequence) {
+	private void storeSequence(IEncoder encoder, long sequence) {
 		try {
 			fileSequenceStorageProvider.storeSequence(encoder.getId(), sequence);
 		} catch (ServiceProviderException e) {
@@ -349,23 +251,27 @@ public class RemoteServerSimulator extends AbstractRemoteServer implements ISimu
 			UnknownSystemTypeException, SicpadataException, NoSuchPasswordException {
 		IEncoder encoder;
 		if (simulatorModel.isUseCrypto()) {
-			IBSicpadataGenerator bEncoder = this.generateEncoders(currentEncoderIndex, codeTypeId);
-			int id = new Random().nextInt(Integer.MAX_VALUE);
-			encoder = new StdCryptoEncoderWrapperSimulator(id, id, bEncoder, year, getSubsystemID(),
-					simulatorModel.requestNumberOfCodes, cryptoFieldsConfig, codeTypeId);
+			encoder = createCryptoEncoder(year, codeTypeId);
 		} else {
-			encoder = new EncoderNoEncryptionSimulator(0, new Random().nextInt(Integer.MAX_VALUE), 0,
-					simulatorModel.requestNumberOfCodes, year, getSubsystemID(), codeTypeId);
+			encoder = createNoEncryptionEncoder(year, codeTypeId);
 		}
 		encoder.setOnClientDate(new Date());
 		return encoder;
 	}
 
-	/**
-	 * 
-	 * return list of sku from RemoteServerSimulatorModel
-	 * 
-	 */
+	private IEncoder createCryptoEncoder(int year, int codeTypeId) throws UnknownModeException,
+			UnknownVersionException, UnknownSystemTypeException, SicpadataException {
+		IBSicpadataGenerator bEncoder = generateEncoders(currentEncoderIndex, codeTypeId);
+		int id = new Random().nextInt(Integer.MAX_VALUE);
+		return new StdCryptoEncoderWrapperSimulator(id, id, bEncoder, year, getSubsystemID(),
+				simulatorModel.getNumberOfCodesByEncoder(), cryptoFieldsConfig, codeTypeId);
+	}
+
+	private IEncoder createNoEncryptionEncoder(int year, int codeTypeId) {
+		return new EncoderNoEncryptionSimulator(0, new Random().nextInt(Integer.MAX_VALUE), 0,
+				simulatorModel.getNumberOfCodesByEncoder(), year, getSubsystemID(), codeTypeId);
+	}
+
 	@Override
 	public ProductionParameterRootNode getTreeProductionParameters() throws RemoteServerException {
 		if (simulatorModel == null) {
@@ -387,7 +293,7 @@ public class RemoteServerSimulator extends AbstractRemoteServer implements ISimu
 		fireDeviceStatusChanged(DeviceStatus.DISCONNECTED);
 	}
 
-	protected static class MapKey {
+	protected static class StatusAndSkuKey {
 		ProductStatus status;
 		SKU sku;
 
@@ -411,7 +317,7 @@ public class RemoteServerSimulator extends AbstractRemoteServer implements ISimu
 			if (getClass() != obj.getClass()) {
 				return false;
 			}
-			MapKey other = (MapKey) obj;
+			StatusAndSkuKey other = (StatusAndSkuKey) obj;
 			if (this.sku == null) {
 				if (other.sku != null) {
 					return false;
@@ -429,7 +335,7 @@ public class RemoteServerSimulator extends AbstractRemoteServer implements ISimu
 			return true;
 		}
 
-		public MapKey(final ProductStatus status, final SKU sku) {
+		public StatusAndSkuKey(final ProductStatus status, final SKU sku) {
 			this.status = status;
 			this.sku = sku;
 		}
@@ -453,7 +359,7 @@ public class RemoteServerSimulator extends AbstractRemoteServer implements ISimu
 		MonitoringService.addSystemEvent(new BasicSystemEvent(SystemEventType.LAST_SENT_TO_REMOTE_SERVER, products
 				.getProducts().size() + ""));
 
-		File dir = new File(this.getRemoteServerSimulatorOutputFolder());
+		File dir = new File(getRemoteServerSimulatorOutputFolder());
 		dir.mkdirs();
 
 		SimpleDateFormat timeStampFormatFileName = new SimpleDateFormat("yyyy-MM-dd--HH-mm-ss-SSS");
@@ -461,7 +367,7 @@ public class RemoteServerSimulator extends AbstractRemoteServer implements ISimu
 		File f = new File(getRemoteServerSimulatorOutputFolder() + File.separator
 				+ timeStampFormatFileName.format(new Date()));
 
-		Map<MapKey, Integer> map = new HashMap<MapKey, Integer>();
+		Map<StatusAndSkuKey, Integer> countBySkuAndStatus = new HashMap<>();
 
 		String productsOut = "";
 		for (Product p : products.getProducts()) {
@@ -469,19 +375,18 @@ public class RemoteServerSimulator extends AbstractRemoteServer implements ISimu
 			productsOut += " " + timeStampFormat.format(p.getActivationDate());
 			productsOut += " " + products.getProductionBatchId();
 			productsOut += " " + p.getCode();
-			// productsOut += " " + p.getProductionMode();
 			productsOut += " " + p.getSku();
 			productsOut += "\n";
-			MapKey key = new MapKey(p.getStatus(), p.getSku());
-			Integer count = map.get(key);
+			StatusAndSkuKey key = new StatusAndSkuKey(p.getStatus(), p.getSku());
+			Integer count = countBySkuAndStatus.get(key);
 			if (count == null) {
 				count = 0;
 			}
 			count++;
-			map.put(key, count);
+			countBySkuAndStatus.put(key, count);
 		}
 		String output = "";
-		for (Entry<MapKey, Integer> entry : map.entrySet()) {
+		for (Entry<StatusAndSkuKey, Integer> entry : countBySkuAndStatus.entrySet()) {
 			output += entry.getKey() + " count=" + entry.getValue() + "\n";
 		}
 
@@ -506,13 +411,8 @@ public class RemoteServerSimulator extends AbstractRemoteServer implements ISimu
 		}
 	}
 
-	protected void showGui() {
-		ThreadUtils.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				simulatorGui.addSimulator("remote server", new RemoteServerSimulatorView(RemoteServerSimulator.this));
-			}
-		});
+	private void showGui() {
+		ThreadUtils.invokeLater(() -> simulatorGui.addSimulator("remote server", new RemoteServerSimulatorView(this)));
 	}
 
 	public void setSimulatorGui(final SimulatorControlView simulatorGui) {

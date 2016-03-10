@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
 
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
-import com.sicpa.standard.client.common.ioc.BeanProvider;
 import com.sicpa.standard.client.common.utils.PropertiesUtils;
 import com.sicpa.standard.client.common.utils.StringMap;
 import com.sicpa.standard.sasscl.business.statistics.StatisticsRestoredEvent;
@@ -26,7 +25,6 @@ import com.sicpa.standard.sasscl.devices.plc.variable.PlcVariableGroup;
 import com.sicpa.standard.sasscl.devices.plc.variable.PlcVariableGroupEvent;
 import com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcVariableDescriptor;
 import com.sicpa.standard.sasscl.devices.remote.IRemoteServer;
-import com.sicpa.standard.sasscl.ioc.BeansName;
 import com.sicpa.standard.sasscl.model.ProductionParameters;
 import com.sicpa.standard.sasscl.model.statistics.StatisticsValues;
 import com.sicpa.standard.sasscl.provider.impl.AuthenticatorProvider;
@@ -56,11 +54,10 @@ public class Bootstrap implements IBootstrap {
 
 	@Override
 	public void executeSpringInitTasks() {
-		IStorage storage = BeanProvider.getBean(BeansName.STORAGE);
-		restoreStatistics(storage);
+		restoreStatistics();
 		initPlc();
-		initProductionParameter(storage);
-		initAuthenticator(storage);
+		initProductionParameter();
+		initAuthenticator();
 		initCrypto();
 		addConnectionListenerOnServer();
 		connectStartupDevices();
@@ -94,11 +91,11 @@ public class Bootstrap implements IBootstrap {
 		generateAllEditableVariableGroup(plcLoader.getValues());
 	}
 
-	private void initProductionParameter(IStorage storage) {
+	private void initProductionParameter() {
 		skuListProvider.set(storage.getProductionParameters());
 	}
 
-	private void initAuthenticator(IStorage storage) {
+	private void initAuthenticator() {
 		authenticatorProvider.set(storage.getAuthenticator());
 	}
 
@@ -130,7 +127,7 @@ public class Bootstrap implements IBootstrap {
 		return server.getSubsystemID();
 	}
 
-	private void restoreStatistics(IStorage storage) {
+	private void restoreStatistics() {
 		StatisticsValues statsValues = storage.getStatistics();
 		boolean restored = false;
 		if (statsValues != null) {

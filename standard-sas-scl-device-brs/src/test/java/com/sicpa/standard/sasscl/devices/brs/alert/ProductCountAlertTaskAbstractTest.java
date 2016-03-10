@@ -24,8 +24,6 @@ public abstract class ProductCountAlertTaskAbstractTest {
     @Mock
     private IProductionConfig productionConfig;
 
-
-
     protected AbstractBrsProductCountAlertTask task;
 
     public abstract AbstractBrsProductCountAlertTask instantiateAlertTask();

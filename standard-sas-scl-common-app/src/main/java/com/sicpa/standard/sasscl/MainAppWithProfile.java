@@ -222,6 +222,8 @@ public class MainAppWithProfile extends MainApp implements IProfileSelectorListe
 		config.add("spring/productionConfig.xml");
 
 		config.add("spring/server/server-import.groovy");
+		
+		config.add("spring/brs/brs-import.groovy");
 
 		// SCL
 
