@@ -1,60 +1,35 @@
 package com.sicpa.standard.sasscl.messages;
 
-import com.sicpa.standard.client.common.messages.IMessageCodeMapper;
-import com.sicpa.standard.sasscl.messages.MessageEventKey.*;
+import static com.sicpa.standard.sasscl.messages.ActionMessageType.ERROR;
+import static com.sicpa.standard.sasscl.messages.ActionMessageType.ERROR_DEVICE;
+import static com.sicpa.standard.sasscl.messages.ActionMessageType.ERROR_DISPLAY;
+import static com.sicpa.standard.sasscl.messages.ActionMessageType.IGNORE;
+import static com.sicpa.standard.sasscl.messages.ActionMessageType.WARNING;
 
-import java.util.HashMap;
-import java.util.Map;
+import com.sicpa.standard.client.common.messages.DefaultMessagesMapping;
+import com.sicpa.standard.sasscl.messages.MessageEventKey.Activation;
+import com.sicpa.standard.sasscl.messages.MessageEventKey.Alert;
+import com.sicpa.standard.sasscl.messages.MessageEventKey.BIS;
+import com.sicpa.standard.sasscl.messages.MessageEventKey.BRS;
+import com.sicpa.standard.sasscl.messages.MessageEventKey.Camera;
+import com.sicpa.standard.sasscl.messages.MessageEventKey.Coding;
+import com.sicpa.standard.sasscl.messages.MessageEventKey.DevicesController;
+import com.sicpa.standard.sasscl.messages.MessageEventKey.FlowControl;
+import com.sicpa.standard.sasscl.messages.MessageEventKey.MAINTENACE;
+import com.sicpa.standard.sasscl.messages.MessageEventKey.ModelEditing;
+import com.sicpa.standard.sasscl.messages.MessageEventKey.PLC;
+import com.sicpa.standard.sasscl.messages.MessageEventKey.Printer;
+import com.sicpa.standard.sasscl.messages.MessageEventKey.Production;
+import com.sicpa.standard.sasscl.messages.MessageEventKey.ProductionParameters;
+import com.sicpa.standard.sasscl.messages.MessageEventKey.RemoteServer;
+import com.sicpa.standard.sasscl.messages.MessageEventKey.Simulator;
+import com.sicpa.standard.sasscl.messages.MessageEventKey.SkuCheck;
+import com.sicpa.standard.sasscl.messages.MessageEventKey.Storage;
 
-import static com.sicpa.standard.sasscl.messages.ActionMessageType.*;
-
-public class SASDefaultMessagesMapping implements IMessageCodeMapper {
-	
-	protected Map<String, ActionMessageType> typeMap;
-	protected Map<String, String> codeMap;
-
-	public SASDefaultMessagesMapping() {
-		this.typeMap = new HashMap<String, ActionMessageType>();
-		codeMap = new HashMap<String, String>();
-		populateMap();
-	}
-
-	public ActionMessageType getMessageType(final String key) {
-		return this.typeMap.get(key);
-	}
-
-	/**
-	 * @param langKey
-	 *            key for i18n
-	 * @param messageCode
-	 *            msg key, display as part of the message, must be unique
-	 * @param type
-	 */
-	public void addEntry(final String langKey, String messageCode, final ActionMessageType type) {
-
-		this.typeMap.put(langKey, type);
-		this.codeMap.put(langKey, messageCode);
-	}
-
-	public void addEntry(String langKey, String messageCode) {
-		this.codeMap.put(langKey, messageCode);
-	}
-
-	public String getMessageCode(String langKey) {
-		return codeMap.get(langKey);
-	}
-
-	public void add(String key, ActionMessageType type) {
-		typeMap.put(key, type);
-	}
-
-	public void add(String code, String langKey) {
-		this.codeMap.put(langKey, code);
-	}
+public class SASDefaultMessagesMapping extends DefaultMessagesMapping {
 
 	protected void populateMap() {
 
-		addEntry(PLC.VALIDATOR_NULL, "[PLC_02]", WARNING);
 		addEntry(PLC.EXCEPTION_FAIL_SAVE_VARIABLE_TO_FILE, "[PLC_05]", WARNING);
 		addEntry(PLC.PLC_STATE_NOT_RUNNING, "[PLC_06]", ERROR);
 		addEntry(PLC.ERROR_SENDING_PARAM, "[PLC_07]", WARNING);
@@ -144,7 +119,6 @@ public class SASDefaultMessagesMapping implements IMessageCodeMapper {
 		addEntry(Simulator.CAMERA_READ_CODE_FROM_FILE, "[SIMU7]", WARNING);
 		addEntry(Simulator.BRS, "[SIMU8]", WARNING);
 
-
 		addEntry(ProductionParameters.NO_LONGER_AVAILABLE, "[SKU_01]", WARNING);
 
 		// ------------------
@@ -201,67 +175,67 @@ public class SASDefaultMessagesMapping implements IMessageCodeMapper {
 		addEntry(Printer.WATCHDOG_RESET, "[PR_16]", ERROR_DEVICE);
 		addEntry(Printer.NOT_READY_TO_PRINT, "[PR_17]", ERROR_DEVICE);
 		addEntry(Printer.BLANK_MESSAGE, "[PR_18]", WARNING);
-        addEntry(Printer.MAKE_UP_EMPTY, "[PR_19]", WARNING);
-        addEntry(Printer.STROKE_RATE_TOO_FAST, "[PR_20]", WARNING);
-        addEntry(Printer.INVALID_CONTROL_CHARACTER, "[PR_21]", WARNING);
-        addEntry(Printer.MESSAGE_LONGER_THAN_APERTURE, "[PR_22]", WARNING);
-        addEntry(Printer.PRINT_RATE_TOO_FAST, "[PR_23]", WARNING);
-        addEntry(Printer.INVALID_LOGO, "[PR_24]", WARNING);
-        addEntry(Printer.MESSAGE_NUMBER_NOT_IN_SEQUENCE, "[PR_25]", WARNING);
-        addEntry(Printer.MESSAGE_CHECKSUM_INCORRECT, "[PR_26]", WARNING);
-        addEntry(Printer.READY_TO_PRINT, "[PR_27]", WARNING);
-        //Leibinger messages
-        addEntry(Printer.NO_FAULT, "[PR_28]", WARNING);
-        addEntry(Printer.MAILING_BUFFER_FULL, "[PR_29]", WARNING);
-        addEntry(Printer.LOW_BATTERY_VOLTAGE, "[PR_30]", WARNING);
-        addEntry(Printer.PRINTGO_ERROR, "[PR_31]", WARNING);
-        addEntry(Printer.TOO_MUCH_STROKE, "[PR_32]", WARNING);
-        addEntry(Printer.POWER_IN_OVERLOAD, "[PR_33]", ERROR_DEVICE);
-        addEntry(Printer.FAULTY_VISCO_MSMT, "[PR_34]", WARNING);
-        addEntry(Printer.INK_TOO_THICK, "[PR_35]", WARNING);
-        addEntry(Printer.INK_TOO_THIN, "[PR_36]", WARNING);
-        addEntry(Printer.INK_PRESSURE_FAULT, "[PR_37]", ERROR_DEVICE);
-        addEntry(Printer.PRESSURE_FAULT, "[PR_38]", ERROR_DEVICE);
-        addEntry(Printer.INK_FLOW_SENSOR, "[PR_39]", ERROR_DEVICE);
-        addEntry(Printer.INK_TANK_LOW, "[PR_40]", WARNING);
-        addEntry(Printer.SOLVENT_TANK_LOW, "[PR_41]", WARNING);
-        addEntry(Printer.HYDRAULIC_LEAKAGE, "[PR_42]", ERROR_DEVICE);
-        addEntry(Printer.INK_TYPE_NOT_SUPPORTED, "[PR_43]", WARNING);
-        addEntry(Printer.CHARGE_DIRTY, "[PR_44]", ERROR_DEVICE);
-        addEntry(Printer.PHASING_ERROR, "[PR_45]", ERROR_DEVICE);
-        addEntry(Printer.DROP_BREAKOFF_POINT, "[PR_46]", WARNING);
-        addEntry(Printer.PHASING_WARNING, "[PR_47]", WARNING);
-        addEntry(Printer.NOZZLE_OC_ERROR, "[PR_48]", ERROR_DEVICE);
-        addEntry(Printer.MOTOR_DIRECTION_ERROR, "[PR_49]", ERROR_DEVICE);
-        addEntry(Printer.NOZZLE_ALREADY_OPEN, "[PR_50]", ERROR_DEVICE);
-        addEntry(Printer.HV_CURRENT_TOO_HIGH, "[PR_51]", ERROR_DEVICE);
-        addEntry(Printer.STROKE_GO, "[PR_52]", WARNING);
-        addEntry(Printer.PRINTING_SPEED_TOO_HIGH, "[PR_53]", WARNING);
-        addEntry(Printer.DROP_CALCULATION_TOO_SLOW, "[PR_54]", WARNING);
-        addEntry(Printer.MAILING_BUFFER_EMPTY, "[PR_55]", ERROR_DEVICE);
-        addEntry(Printer.PRINTGO_DISTANCE, "[PR_56]", WARNING);
-        addEntry(Printer.CHARGE_VOLTAGE_OVERLOAD, "[PR_57]", ERROR_DEVICE);
-        addEntry(Printer.PIEZO_VOLTAGE_OVERLOAD, "[PR_58]", ERROR_DEVICE);
-        addEntry(Printer.SERVICE_REQUIRED, "[PR_59]", WARNING);
-        addEntry(Printer.HEAD_COVER_OPEN, "[PR_60]", ERROR_DEVICE);
-        addEntry(Printer.NOZZLE_MOVES_UNCONTROLLED, "[PR_61]", ERROR_DEVICE);
-        addEntry(Printer.NOZZLE_NOT_CLOSED, "[PR_62]", WARNING);
-        addEntry(Printer.CANT_OPEN_NOZZLE, "[PR_63]", ERROR_DEVICE);
-        addEntry(Printer.CANT_CLOSE_NOZZLE, "[PR_64]", WARNING);
-        addEntry(Printer.NO_PHASING, "[PR_65]", ERROR_DEVICE);
-        addEntry(Printer.CANT_LOAD_JOB, "[PR_66]", ERROR_DEVICE);
-        addEntry(Printer.PRINTSTART_NOT_POSSIBLE, "[PR_67]", ERROR_DEVICE);
-        addEntry(Printer.ACTIVATE_NEW_INK, "[PR_68]", WARNING);
-        addEntry(Printer.ACTIVATE_NEW_SOLVENT, "[PR_69]", WARNING);
-        addEntry(Printer.INK_JET_LOCKED, "[PR_70]", ERROR_DEVICE);
-        addEntry(Printer.INK_REFILLED_WITHOUT_ACTIVATION, "[PR_71]", WARNING);
-        addEntry(Printer.SOLVENT_REFILLED_WITHOUT_ACTIVATION, "[PR_72]", WARNING);
-        addEntry(Printer.INK_ACTIVATION_OK, "[PR_73]", WARNING);
-        addEntry(Printer.SOLVENT_ACTIVATION_OK, "[PR_74]", WARNING);
-        addEntry(Printer.NOZZLE_NOT_OPENED, "[PR_75]", ERROR_DEVICE);
+		addEntry(Printer.MAKE_UP_EMPTY, "[PR_19]", WARNING);
+		addEntry(Printer.STROKE_RATE_TOO_FAST, "[PR_20]", WARNING);
+		addEntry(Printer.INVALID_CONTROL_CHARACTER, "[PR_21]", WARNING);
+		addEntry(Printer.MESSAGE_LONGER_THAN_APERTURE, "[PR_22]", WARNING);
+		addEntry(Printer.PRINT_RATE_TOO_FAST, "[PR_23]", WARNING);
+		addEntry(Printer.INVALID_LOGO, "[PR_24]", WARNING);
+		addEntry(Printer.MESSAGE_NUMBER_NOT_IN_SEQUENCE, "[PR_25]", WARNING);
+		addEntry(Printer.MESSAGE_CHECKSUM_INCORRECT, "[PR_26]", WARNING);
+		addEntry(Printer.READY_TO_PRINT, "[PR_27]", WARNING);
+		// Leibinger messages
+		addEntry(Printer.NO_FAULT, "[PR_28]", WARNING);
+		addEntry(Printer.MAILING_BUFFER_FULL, "[PR_29]", WARNING);
+		addEntry(Printer.LOW_BATTERY_VOLTAGE, "[PR_30]", WARNING);
+		addEntry(Printer.PRINTGO_ERROR, "[PR_31]", WARNING);
+		addEntry(Printer.TOO_MUCH_STROKE, "[PR_32]", WARNING);
+		addEntry(Printer.POWER_IN_OVERLOAD, "[PR_33]", ERROR_DEVICE);
+		addEntry(Printer.FAULTY_VISCO_MSMT, "[PR_34]", WARNING);
+		addEntry(Printer.INK_TOO_THICK, "[PR_35]", WARNING);
+		addEntry(Printer.INK_TOO_THIN, "[PR_36]", WARNING);
+		addEntry(Printer.INK_PRESSURE_FAULT, "[PR_37]", ERROR_DEVICE);
+		addEntry(Printer.PRESSURE_FAULT, "[PR_38]", ERROR_DEVICE);
+		addEntry(Printer.INK_FLOW_SENSOR, "[PR_39]", ERROR_DEVICE);
+		addEntry(Printer.INK_TANK_LOW, "[PR_40]", WARNING);
+		addEntry(Printer.SOLVENT_TANK_LOW, "[PR_41]", WARNING);
+		addEntry(Printer.HYDRAULIC_LEAKAGE, "[PR_42]", ERROR_DEVICE);
+		addEntry(Printer.INK_TYPE_NOT_SUPPORTED, "[PR_43]", WARNING);
+		addEntry(Printer.CHARGE_DIRTY, "[PR_44]", ERROR_DEVICE);
+		addEntry(Printer.PHASING_ERROR, "[PR_45]", ERROR_DEVICE);
+		addEntry(Printer.DROP_BREAKOFF_POINT, "[PR_46]", WARNING);
+		addEntry(Printer.PHASING_WARNING, "[PR_47]", WARNING);
+		addEntry(Printer.NOZZLE_OC_ERROR, "[PR_48]", ERROR_DEVICE);
+		addEntry(Printer.MOTOR_DIRECTION_ERROR, "[PR_49]", ERROR_DEVICE);
+		addEntry(Printer.NOZZLE_ALREADY_OPEN, "[PR_50]", ERROR_DEVICE);
+		addEntry(Printer.HV_CURRENT_TOO_HIGH, "[PR_51]", ERROR_DEVICE);
+		addEntry(Printer.STROKE_GO, "[PR_52]", WARNING);
+		addEntry(Printer.PRINTING_SPEED_TOO_HIGH, "[PR_53]", WARNING);
+		addEntry(Printer.DROP_CALCULATION_TOO_SLOW, "[PR_54]", WARNING);
+		addEntry(Printer.MAILING_BUFFER_EMPTY, "[PR_55]", ERROR_DEVICE);
+		addEntry(Printer.PRINTGO_DISTANCE, "[PR_56]", WARNING);
+		addEntry(Printer.CHARGE_VOLTAGE_OVERLOAD, "[PR_57]", ERROR_DEVICE);
+		addEntry(Printer.PIEZO_VOLTAGE_OVERLOAD, "[PR_58]", ERROR_DEVICE);
+		addEntry(Printer.SERVICE_REQUIRED, "[PR_59]", WARNING);
+		addEntry(Printer.HEAD_COVER_OPEN, "[PR_60]", ERROR_DEVICE);
+		addEntry(Printer.NOZZLE_MOVES_UNCONTROLLED, "[PR_61]", ERROR_DEVICE);
+		addEntry(Printer.NOZZLE_NOT_CLOSED, "[PR_62]", WARNING);
+		addEntry(Printer.CANT_OPEN_NOZZLE, "[PR_63]", ERROR_DEVICE);
+		addEntry(Printer.CANT_CLOSE_NOZZLE, "[PR_64]", WARNING);
+		addEntry(Printer.NO_PHASING, "[PR_65]", ERROR_DEVICE);
+		addEntry(Printer.CANT_LOAD_JOB, "[PR_66]", ERROR_DEVICE);
+		addEntry(Printer.PRINTSTART_NOT_POSSIBLE, "[PR_67]", ERROR_DEVICE);
+		addEntry(Printer.ACTIVATE_NEW_INK, "[PR_68]", WARNING);
+		addEntry(Printer.ACTIVATE_NEW_SOLVENT, "[PR_69]", WARNING);
+		addEntry(Printer.INK_JET_LOCKED, "[PR_70]", ERROR_DEVICE);
+		addEntry(Printer.INK_REFILLED_WITHOUT_ACTIVATION, "[PR_71]", WARNING);
+		addEntry(Printer.SOLVENT_REFILLED_WITHOUT_ACTIVATION, "[PR_72]", WARNING);
+		addEntry(Printer.INK_ACTIVATION_OK, "[PR_73]", WARNING);
+		addEntry(Printer.SOLVENT_ACTIVATION_OK, "[PR_74]", WARNING);
+		addEntry(Printer.NOZZLE_NOT_OPENED, "[PR_75]", ERROR_DEVICE);
 		addEntry(Printer.PRINTER_STOPPED_DURING_PRODUCTION, "[PR_76]", ERROR);
-        
-        addEntry(Coding.ERROR_NO_ENCODERS_IN_STORAGE, "[COD_01]", ERROR);
+
+		addEntry(Coding.ERROR_NO_ENCODERS_IN_STORAGE, "[COD_01]", ERROR);
 		addEntry(Coding.ERROR_GETTING_CODES_FROM_ENCODER, "[COD_02]", ERROR);
 		addEntry(Coding.INVALID_ENCODER, "[COD_03]", ERROR);
 		addEntry(Coding.FAILED_TO_PROVIDE_CODES, "[COD_04]", ERROR);

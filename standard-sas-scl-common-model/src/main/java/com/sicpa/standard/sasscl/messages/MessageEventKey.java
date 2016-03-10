@@ -5,8 +5,6 @@ import com.sicpa.standard.printer.controller.model.command.PrinterMessageId;
 public interface MessageEventKey {
 
 	public static interface PLC {
-		String VALIDATOR_NULL = "plc.validator.error.null";
-
 		String ERROR_SENDING_PARAM = "PLC.ERR.SENT.PARAM";
 
 		String EXCEPTION_FAIL_SAVE_VARIABLE_TO_FILE = "plc.save.file.fail";

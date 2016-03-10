@@ -23,47 +23,65 @@ import com.sicpa.standard.sasscl.messages.SASDefaultMessagesMapping;
 public class MessagesHandler {
 
 	private static Logger logger = LoggerFactory.getLogger(MessagesHandler.class);
+	
+	SASDefaultMessagesMapping messagesMapping;
 
-	private SASDefaultMessagesMapping messagesMapping;
+	public MessagesHandler() {
+
+	}
+	
 
 	/**
 	 * Retrieves the ActionMessageType then constructs and sends the event
 	 */
 	@Subscribe
-	public void notifyMessage(MessageEvent evt) {
-
+	public void notifyMessage(final MessageEvent evt) {
+		
 		String key = evt.getKey();
-
+		
 		ActionMessageType type = getType(key);
-
+		
 		if (type == null || type == ActionMessageType.IGNORE) {
 			logger.info("Ignoring message {}", evt.getKey());
 			return;
-		} else if (type == ActionMessageType.LOG) {
+		} 
+		else if (type == ActionMessageType.LOG) {
 			logger.info(MessagesUtils.getMessage(evt.getKey(), evt.getParams()));
 			return;
 		}
 
 		String paramString = "";
 		if (evt.getParams() != null) {
-			List<Object> params = new ArrayList<>();
+			List<Object> params = new ArrayList<Object>();
 			for (Object o : evt.getParams()) {
 				params.add(o);
 			}
 			paramString = params.toString();
 		}
 
-		logger.debug("message received {}- params {}- fowarding {}",
+		logger.debug("message received {}- params {}- fowarding {}", 
 				new Object[] { evt.getKey(), paramString, evt.getParams(), type.getActionEventClass() });
-
+		
 		ActionEvent actionEvt = createActionEvent(evt, type.getActionEventClass());
 		if (actionEvt != null) {
 			post(actionEvt);
 		}
 	}
 
+	/**
+	 * Get the action message type based on the specified message key.
+	 * @param key message key
+	 * @return action message type. Action message warning will be returned if no action message matches specified
+	 * key.
+	 */
 	private ActionMessageType getType(String key) {
-		return messagesMapping.getMessageType(key);
+		ActionMessageType type = (ActionMessageType) messagesMapping.getMessageType(key);
+
+		if (type == null) {
+			return ActionMessageType.WARNING;
+		}
+
+		return type;
 	}
 
 	protected ActionEvent createActionEvent(MessageEvent sourceEvent, Class<? extends ActionEvent> clazz) {
@@ -87,7 +105,7 @@ public class MessagesHandler {
 		return null;
 	}
 
-	private void post(ActionEvent evt) {
+	protected void post(ActionEvent evt) {
 		EventBusService.post(evt);
 	}
 

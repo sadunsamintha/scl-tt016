@@ -294,7 +294,7 @@ public class PrinterAdaptor extends AbstractPrinterAdaptor implements IPrinterCo
 			msg.setSource(this);
 
 			// for the moment a specific case for the PrinterMessage
-			if (keySplit.length == 3 && keySplit[0].equals(ActionMessageType.MONITORING.name())) {
+			if (keySplit.length == 3 && keySplit[0].equals(ActionMessageType.MONITORING.toString())) {
 
 				SystemEventType sEvent = new SystemEventType(msg.getKey());
 				MonitoringService.addSystemEvent(new BasicSystemEvent(sEvent, String.valueOf(msg.getParams()[0])));
@@ -333,7 +333,8 @@ public class PrinterAdaptor extends AbstractPrinterAdaptor implements IPrinterCo
 		try {
 			// FIXME this has to be moved to some Leibinger specific
 			// implementation
-			controller.sendSpecificSettings(LeibingerSpecificSettings.CMD_SET_USER_LEVEL.getValue(), LeibingerUserLevel.get(event.getLevel()));
+			controller.sendSpecificSettings(LeibingerSpecificSettings.CMD_SET_USER_LEVEL.getValue(),
+					LeibingerUserLevel.get(event.getLevel()));
 		} catch (PrinterException e) {
 			logger.error("", e.getMessage());
 		}

@@ -12,7 +12,6 @@ import com.sicpa.standard.client.common.messages.MessageEvent;
 import com.sicpa.standard.client.common.statemachine.IStateAction;
 import com.sicpa.standard.client.common.utils.TaskExecutor;
 import com.sicpa.standard.sasscl.business.alert.IAlert;
-import com.sicpa.standard.sasscl.business.statistics.IStatistics;
 import com.sicpa.standard.sasscl.common.utils.Timeout;
 import com.sicpa.standard.sasscl.controller.hardware.IHardwareController;
 import com.sicpa.standard.sasscl.messages.MessageEventKey;
@@ -22,70 +21,68 @@ public class ExecutorStarting implements IStateAction {
 
 	private final static Logger logger = LoggerFactory.getLogger(ExecutorStarting.class);
 
+	private IStartProductionValidator startValidators;
+	private int timeoutDelay = 30000;
+	private ProductionBatchProvider productionBatchProvider;
+	private IAlert alert;
+	private IHardwareController hardwareController;
+
 	// to be able to stop the production if the start takes too long
-	protected Timeout timeoutStart;
-
-	protected IStatistics statistics;
-	protected IStartProductionValidator startValidators;
-
-	protected int timeoutDelay = 30000;
-	protected ProductionBatchProvider productionBatchProvider;
-	protected IAlert alert;
-
-	protected IHardwareController hardwareController;
+	private Timeout timeoutStart;
 
 	@Override
 	public void enter() {
-		TaskExecutor.execute(new Runnable() {
-			@Override
-			public void run() {
-				startProduction();
-			}
-		});
+		TaskExecutor.execute(() -> startProduction());
 	}
 
 	public void startProduction() {
 
-		NoStartReason reasons = startValidators.isPossibleToStartProduction();
-		if (!reasons.isEmpty()) {
-			for (String r : reasons.getReasons()) {
-				logger.error("failed to start:" + r);
-				EventBusService.post(new MessageEvent(r));
-			}
+		if (!validatePossibleToStart()) {
 			return;
 		}
 
 		startTimeoutStart();
-
-		String stime = System.currentTimeMillis() + "";
-		productionBatchProvider.set(stime);
+		updateNextProductionBatchTime();
 		alert.start();
+		startHardware();
+		stopTimeoutStart();
+	}
 
+	private void startHardware() {
 		try {
 			hardwareController.start();
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 			EventBusService.post(new MessageEvent(MessageEventKey.FlowControl.START_FAILED));
 		}
-		stopTimeoutStart();
 	}
 
-	public void setStatistics(IStatistics statistics) {
-		this.statistics = statistics;
+	private void updateNextProductionBatchTime() {
+		String stime = System.currentTimeMillis() + "";
+		productionBatchProvider.set(stime);
 	}
 
-	protected void startTimeoutStart() {
+	private boolean validatePossibleToStart() {
+		NoStartReason reasons = startValidators.isPossibleToStartProduction();
+		for (String r : reasons.getReasons()) {
+			logger.error("failed to start:" + r);
+			EventBusService.post(new MessageEvent(r));
+		}
+		return reasons.isEmpty();
+	}
+
+	private void startTimeoutStart() {
 		timeoutStart = createStartTimeout();
 		timeoutStart.start();
 	}
 
-	protected void stopTimeoutStart() {
+	private void stopTimeoutStart() {
 		if (timeoutStart != null) {
 			timeoutStart.stop();
 		}
 	}
 
-	protected Timeout createStartTimeout() {
+	private Timeout createStartTimeout() {
 		return new Timeout("Start timeout", new TimerTask() {
 			@Override
 			public void run() {

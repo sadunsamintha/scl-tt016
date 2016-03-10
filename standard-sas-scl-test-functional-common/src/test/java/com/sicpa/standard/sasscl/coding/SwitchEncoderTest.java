@@ -17,7 +17,7 @@ public class SwitchEncoderTest extends AbstractFunctionnalTest {
 	public void test() throws RemoteServerException, CryptographyException {
 		init();
 
-		((RemoteServerSimulator) remoteServer).getSimulatorModel().setRequestNumberOfCodes(10);
+		((RemoteServerSimulator) remoteServer).getSimulatorModel().setNumberOfCodesByEncoder(10);
 
 		setProductionParameter();
 
