@@ -1,12 +1,13 @@
 package com.sicpa.standard.sasscl.device;
 
+import com.sicpa.standard.client.common.ioc.BeanProvider;
+import com.sicpa.standard.plc.value.IPlcVariable;
 import com.sicpa.standard.sasscl.AbstractFunctionnalTest;
 import com.sicpa.standard.sasscl.devices.plc.event.PlcEvent;
-import com.sicpa.standard.sasscl.devices.plc.impl.PlcVariables;
 import com.sicpa.standard.sasscl.messages.MessageEventKey;
 import com.sicpa.standard.sasscl.model.ProductionMode;
 
-public abstract class PlcErrorTest extends AbstractFunctionnalTest {
+public class PlcErrorTest extends AbstractFunctionnalTest {
 
 	@Override
 	protected ProductionMode getProductionMode() {
@@ -29,6 +30,7 @@ public abstract class PlcErrorTest extends AbstractFunctionnalTest {
 	}
 
 	public void triggerPlcError() {
-		plc.firePlcEvent(new PlcEvent(PlcVariables.NTF_WAR_ERR_REGISTER.getVariableName(), 262144));
+		IPlcVariable<Integer> errorVar = BeanProvider.getBean("NTF_CAB_WAR_ERR_REGISTER_var");
+		plc.firePlcEvent(new PlcEvent(errorVar.getVariableName(), 262144));
 	}
 }

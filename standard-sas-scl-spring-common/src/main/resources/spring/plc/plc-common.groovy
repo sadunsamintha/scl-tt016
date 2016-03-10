@@ -51,13 +51,6 @@ beans{
 		lineStateVarName="#{plcVarMap['NTF_LINE_STATE']}"
 	}
 
-	plcRegisterHandler(PlcRegisterHandler) {
-		plcProvider=ref('plcProvider')
-		cabRegisterVarName="#{plcVarMap['NTF_CAB_WAR_ERR_REGISTER']}"
-		lineRegisterVarName="#{plcVarMap['NTF_LINE_WAR_ERR_REGISTER']}"
-	}
-
-
 	plc(PlcAdaptor,ref('plcController')){b->
 		b.scope='prototype'
 		notificationVariables=ref('plcCabinetNtf')
@@ -118,12 +111,6 @@ beans{
 		PLC_ERR_DOOR_SWITCH_EE_OPEN
 	]
 
-	setCabinetWarningAndErrors(InjectByMethodBean){
-		target = ref('plcRegisterHandler')
-		methodName ='setCabinetErrorsList'
-		param = [cab_msg]
-	}
-
 	def line_msg=[
 		PLC_WAR_TRIGGER_SHIFT_FLAG,
 		null,
@@ -157,10 +144,12 @@ beans{
 		PLC_ERR_DOOR_SWITCH_IJ_OPEN
 	]
 
-	setlineWarningAndErrors(InjectByMethodBean){
-		target = ref('plcRegisterHandler')
-		methodName ='setLineErrorsList'
-		param = [line_msg]
+	plcRegisterHandler(PlcRegisterHandler) {
+		plcProvider=ref('plcProvider')
+		cabRegisterVarName="#{plcVarMap['NTF_CAB_WAR_ERR_REGISTER']}"
+		lineRegisterVarName="#{plcVarMap['NTF_LINE_WAR_ERR_REGISTER']}"
+		lineErrorsList=line_msg
+		cabinetErrorsList=cab_msg
 	}
 }
 

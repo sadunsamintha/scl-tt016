@@ -5,14 +5,11 @@
 	<PrinterConfig deviceType="DOMINO" id="pr_scl_1" validatedBy="qc_1" />
 
 
-	<PlcConfig line1File="line1Config.xml" line1Index="3">
-		<property key=".com.stLine[1].bLine_is_active" value="false" />
-		<property key=".com.stLine[2].bLine_is_active" value="false" />
-		<property key=".com.stLine[3].bLine_is_active" value="true" />
-
-		<property key=".com.stLine[3].stParameters.bExportModeEnabled" value="false" />
-		<property key=".com.stLine[3].stParameters.bMaintenanceModeEnabled" value="false" />
-		<property key=".com.stLine[3].stParameters.bRefeedModeEnabled" value="false" />
+	<PlcConfig>
+		<cabinet />
+		<line index="1">
+			<property key="PARAM_LINE_IS_ACTIVE" value="true" />
+		</line>
 	</PlcConfig>
 
 </ProductionConfig>

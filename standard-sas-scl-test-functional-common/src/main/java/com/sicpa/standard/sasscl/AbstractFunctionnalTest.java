@@ -320,7 +320,7 @@ public abstract class AbstractFunctionnalTest extends TestCase {
 		camera = (CameraSimulatorController) cameraDevice.getSimulatorController();
 		cameraModel = camera.getCameraModel();
 		cameraModel.setCodeGetMethod(CodeGetMethod.requested);
-		cameraModel.setReadCodeInterval(-1);
+		cameraModel.setReadCodeInterval(1);
 
 		if (devicesMap.get("pr_scl_1") != null) {
 			printer = (PrinterAdaptorSimulator) devicesMap.get("pr_scl_1");

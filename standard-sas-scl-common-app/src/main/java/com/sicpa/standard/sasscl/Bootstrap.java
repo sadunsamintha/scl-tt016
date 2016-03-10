@@ -33,12 +33,26 @@ import com.sicpa.standard.sasscl.provider.impl.AuthenticatorProvider;
 import com.sicpa.standard.sasscl.provider.impl.SkuListProvider;
 import com.sicpa.standard.sasscl.provider.impl.SubsystemIdProvider;
 import com.sicpa.standard.sasscl.utils.ConfigUtilEx;
-import com.sicpa.standard.sicpadata.spi.manager.SimpleServiceProviderManager;
+import com.sicpa.standard.sicpadata.spi.manager.IServiceProviderManager;
 import com.sicpa.standard.sicpadata.spi.manager.StaticServiceProviderManager;
 
 public class Bootstrap implements IBootstrap {
 
 	private static final Logger logger = LoggerFactory.getLogger(Bootstrap.class);
+
+	private IRemoteServer server;
+	private IGroupDevicesController startupDevicesGroup;
+	private IStorage storage;
+	private ProductionParameters productionParameters;
+	private IPlcValuesLoader plcLoader;
+	private SkuListProvider skuListProvider;
+	private AuthenticatorProvider authenticatorProvider;
+	private RemoteServerScheduledJobs remoteServerSheduledJobs;
+	private SubsystemIdProvider subsystemIdProvider;
+	private Statistics statistics;
+	private IServiceProviderManager cryptoProviderManager;
+	private List<PlcVariableGroup> linePlcVarGroup;
+	private List<PlcVariableGroup> cabPlcVarGroups;
 
 	@Override
 	public void executeSpringInitTasks() {
@@ -49,27 +63,23 @@ public class Bootstrap implements IBootstrap {
 		initAuthenticator(storage);
 		initCrypto();
 		addConnectionListenerOnServer();
-		connectRemoteServer();
+		connectStartupDevices();
 		restorePreviousSelectedProductionParams();
 	}
 
 	private void addConnectionListenerOnServer() {
-		IRemoteServer server = BeanProvider.getBean(BeansName.REMOTE_SERVER);
 		server.addDeviceStatusListener(evt -> {
-			if (evt.getDevice() instanceof IRemoteServer && evt.getStatus() == DeviceStatus.CONNECTED) {
+			if (evt.getStatus() == DeviceStatus.CONNECTED) {
 				initRemoteServerConnected();
 			}
 		});
 	}
 
-	private void connectRemoteServer() {
-		IGroupDevicesController controller = BeanProvider.getBean("startupDevicesGroup");
-		controller.start();
+	private void connectStartupDevices() {
+		startupDevicesGroup.start();
 	}
 
 	private void restorePreviousSelectedProductionParams() {
-		IStorage storage = BeanProvider.getBean(BeansName.STORAGE);
-		ProductionParameters productionParameters = BeanProvider.getBean(BeansName.PRODUCTION_PARAMETERS);
 		ProductionParameters previous = storage.getSelectedProductionParameters();
 
 		if (previous != null) {
@@ -81,30 +91,24 @@ public class Bootstrap implements IBootstrap {
 	}
 
 	private void initPlc() {
-		IPlcValuesLoader loader = BeanProvider.getBean(BeansName.PLC_VALUES_LOADER);
-		generateAllEditableVariableGroup(loader.getValues());
+		generateAllEditableVariableGroup(plcLoader.getValues());
 	}
 
 	private void initProductionParameter(IStorage storage) {
-		SkuListProvider ppc = BeanProvider.getBean(BeansName.SKU_LIST_PROVIDER);
-		ppc.set(storage.getProductionParameters());
+		skuListProvider.set(storage.getProductionParameters());
 	}
 
 	private void initAuthenticator(IStorage storage) {
-		AuthenticatorProvider authProvider = BeanProvider.getBean(BeansName.AUTHENTICATOR_PROVIDER);
-		authProvider.set(storage.getAuthenticator());
+		authenticatorProvider.set(storage.getAuthenticator());
 	}
 
 	private void initRemoteServerConnected() {
 		getLineIdFromRemoteServerAndSaveItLocally();
-
-		RemoteServerScheduledJobs remoteJobs = BeanProvider.getBean(BeansName.SCHEDULING_REMOTE_SERVER_JOB);
-		remoteJobs.executeInitialTasks();
+		remoteServerSheduledJobs.executeInitialTasks();
 	}
 
 	private void getLineIdFromRemoteServerAndSaveItLocally() {
 		long id = getLineIdFromRemoteServer();
-		SubsystemIdProvider subsystemIdProvider = BeanProvider.getBean(BeansName.SUBSYSTEM_ID_PROVIDER);
 		subsystemIdProvider.set(id);
 		saveSubsystemId(id);
 	}
@@ -123,12 +127,10 @@ public class Bootstrap implements IBootstrap {
 	}
 
 	private long getLineIdFromRemoteServer() {
-		IRemoteServer remote = BeanProvider.getBean(BeansName.REMOTE_SERVER);
-		return remote.getSubsystemID();
+		return server.getSubsystemID();
 	}
 
 	private void restoreStatistics(IStorage storage) {
-		Statistics stats = BeanProvider.getBean(BeansName.STATISTICS);
 		StatisticsValues statsValues = storage.getStatistics();
 		boolean restored = false;
 		if (statsValues != null) {
@@ -137,15 +139,14 @@ public class Bootstrap implements IBootstrap {
 		} else {
 			statsValues = new StatisticsValues();
 		}
-		stats.setValues(statsValues);
+		statistics.setValues(statsValues);
 		if (restored) {
 			EventBusService.post(new StatisticsRestoredEvent(statsValues));
 		}
 	}
 
 	private void initCrypto() {
-		SimpleServiceProviderManager provider = BeanProvider.getBean(BeansName.CRYPTO_PROVIDER_MANAGER);
-		StaticServiceProviderManager.register(provider);
+		StaticServiceProviderManager.register(cryptoProviderManager);
 	}
 
 	private void generateAllEditableVariableGroup(Map<Integer, StringMap> values) {
@@ -154,22 +155,18 @@ public class Bootstrap implements IBootstrap {
 	}
 
 	private void generateAllLinesEditableVariable(Map<Integer, StringMap> values) {
-
-		List<PlcVariableGroup> lineVarGroups = BeanProvider.getBean("linePlcVarGroup");
-		IPlcValuesLoader loader = BeanProvider.getBean("plcValuesLoader");
-		for (int i = 1; i < loader.getLineCount() + 1; i++) {
-			generateLineEditableVariables(i, lineVarGroups, values.get(i));
+		for (int i = 1; i < plcLoader.getLineCount() + 1; i++) {
+			generateLineEditableVariables(i, linePlcVarGroup, values.get(i));
 		}
 	}
 
 	private void generateCabinetGroup(StringMap values) {
-		List<PlcVariableGroup> groups = BeanProvider.getBean("cabPlcVarGroups");
-		for (PlcVariableGroup grp : groups) {
+		for (PlcVariableGroup grp : cabPlcVarGroups) {
 			for (PlcVariableDescriptor desc : grp.getPlcVars()) {
 				desc.initValue(values.get(desc.getVarName()));
 			}
 		}
-		EventBusService.post(new PlcVariableGroupEvent(groups, "cabinet"));
+		EventBusService.post(new PlcVariableGroupEvent(cabPlcVarGroups, "cabinet"));
 	}
 
 	private void generateLineEditableVariables(int index, List<PlcVariableGroup> lineVarGroups, StringMap values) {
@@ -180,5 +177,57 @@ public class Bootstrap implements IBootstrap {
 			}
 		}
 		EventBusService.post(new PlcVariableGroupEvent(groups, "" + index));
+	}
+
+	public void setServer(IRemoteServer server) {
+		this.server = server;
+	}
+
+	public void setStartupDevicesGroup(IGroupDevicesController startupDevicesGroup) {
+		this.startupDevicesGroup = startupDevicesGroup;
+	}
+
+	public void setStorage(IStorage storage) {
+		this.storage = storage;
+	}
+
+	public void setProductionParameters(ProductionParameters productionParameters) {
+		this.productionParameters = productionParameters;
+	}
+
+	public void setPlcLoader(IPlcValuesLoader plcLoader) {
+		this.plcLoader = plcLoader;
+	}
+
+	public void setSkuListProvider(SkuListProvider skuListProvider) {
+		this.skuListProvider = skuListProvider;
+	}
+
+	public void setAuthenticatorProvider(AuthenticatorProvider authenticatorProvider) {
+		this.authenticatorProvider = authenticatorProvider;
+	}
+
+	public void setRemoteServerSheduledJobs(RemoteServerScheduledJobs remoteServerSheduledJobs) {
+		this.remoteServerSheduledJobs = remoteServerSheduledJobs;
+	}
+
+	public void setSubsystemIdProvider(SubsystemIdProvider subsystemIdProvider) {
+		this.subsystemIdProvider = subsystemIdProvider;
+	}
+
+	public void setStatistics(Statistics statistics) {
+		this.statistics = statistics;
+	}
+
+	public void setCryptoProviderManager(IServiceProviderManager cryptoProviderManager) {
+		this.cryptoProviderManager = cryptoProviderManager;
+	}
+
+	public void setLinePlcVarGroup(List<PlcVariableGroup> linePlcVarGroup) {
+		this.linePlcVarGroup = linePlcVarGroup;
+	}
+
+	public void setCabPlcVarGroups(List<PlcVariableGroup> cabPlcVarGroups) {
+		this.cabPlcVarGroups = cabPlcVarGroups;
 	}
 }

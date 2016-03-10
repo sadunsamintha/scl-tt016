@@ -2,13 +2,11 @@
 
 	<CameraConfig deviceType="COGNEX" id="qc_1" />
 
-	<plcConfig line1File="line1Config.xml" line1Index="1">
-		<property key=".com.stLine[1].bLine_is_active" value="true" />
-		<property key=".com.stLine[2].bLine_is_active" value="false" />
-		
-		<property key=".com.stLine[1].stParameters.bExportModeEnabled" value="true" />
-		<property key=".com.stLine[1].stParameters.bMaintenanceModeEnabled" value="false" />
-		<property key=".com.stLine[1].stParameters.bRefeedModeEnabled" value="false" />
-	</plcConfig>
+	<PlcConfig>
+		<cabinet />
+		<line index="1">
+			<property key="PARAM_LINE_IS_ACTIVE" value="true" />
+		</line>
+	</PlcConfig>
 
 </ProductionConfig>
