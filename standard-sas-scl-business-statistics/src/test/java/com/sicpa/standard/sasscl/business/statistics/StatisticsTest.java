@@ -34,7 +34,9 @@ public class StatisticsTest {
 		StatisticsValues values = new StatisticsValues();
 
 		StatisticsKey goodKey = new StatisticsKeyGood();
+		goodKey.setLine("");
 		StatisticsKey badKey = new StatisticsKeyBad();
+		badKey.setLine("");
 
 		values.set(badKey, 5);
 		values.set(goodKey, 150);
