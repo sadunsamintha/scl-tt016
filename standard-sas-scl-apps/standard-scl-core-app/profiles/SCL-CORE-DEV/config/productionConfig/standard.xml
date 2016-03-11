@@ -8,8 +8,6 @@
 
 	<!-- <BrsConfig /> -->
 
-
-
 	<PlcConfig>
 		<cabinet>
 			<property key="PARAM_CAB_MULTILINE_REQ_MODE_ENABLED" value="true" />

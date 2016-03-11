@@ -18,6 +18,7 @@ import com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcVariableDesc
 import com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcVariablePulseParamDescriptor;
 
 import static com.sicpa.standard.sasscl.devices.plc.PlcRequest.*
+import static com.sicpa.standard.sasscl.devices.plc.PlcUtils.PLC_TYPE.*
 import static com.sicpa.standard.sasscl.devices.plc.PlcUtils.*
 import groovy.transform.Field;
 
@@ -38,7 +39,6 @@ beans {
 
 	//v=> var name
 	//t=> type (I)nt/(S)hort/(B)ool,(BY)te
-	//pulseConvertParam => if the var is part of the pulse by mm parameters
 	//cabNtf => notif on cabinet var
 	//lineNtf => notif on line
 	//lineGrp => add the var to the edit line var gui, grouped with over var sharing the same group name
@@ -262,7 +262,7 @@ def void injectCustoVar(){
 def void addVarToLists(def var,String logicName,def varInfo){
 	allVars.add(var)
 
-		//JMX REPORT
+	//JMX REPORT
 	if(isLineJmxReport(logicName)) {
 		lineJmxReport.add(var)
 	}
@@ -293,7 +293,7 @@ def List<PlcVariableGroup> createGroupList(Map<String, PlcVariableGroup> map){
 def void insertVarToGroup(PlcVariableDescriptor desc,def varInfo){
 	String lineGrp=varInfo['lineGrp']
 	String cabGrp=varInfo['cabGrp']
-
+	
 	if(lineGrp!=null){
 		insertVarToLineGroups(desc,varInfo)
 	}else if(cabGrp!=null){
@@ -310,7 +310,7 @@ def void insertVarToLineGroups(PlcVariableDescriptor desc,def varInfo){
 def void insertVarToCabGroups(PlcVariableDescriptor desc,def varInfo){
 	def groupPrefix='plc.config.cabinet.group.'
 	def grpName=groupPrefix+varInfo['cabGrp']
-
+	
 	insertVarToGroup(cabGroups, grpName,  desc, varInfo)
 }
 
@@ -346,7 +346,7 @@ def  Map<PlcRequest, IPlcRequestExecutor> createRequests(){
 }
 
 def Map createVarAndDescriptor(String varPhyName,varLogicName,def varInfo){
-	String typeVar=varInfo['t']
+	def typeVar=varInfo['t']
 	def res = new HashMap()
 	PlcVariableDescriptor desc
 	IPlcVariable var
@@ -398,7 +398,6 @@ def  IPlcVariable createVar(String method,String physName){
 }
 
 def  PlcVariableDescriptor createPlcDistanceDesc(IPlcVariable var,String logicVarName){
-
 	String unitVarName=plcMap.get(logicVarName+'_TYPE')['v']
 	if(unitVarName==null){
 		throw new IllegalArgumentException('unit var not found for '+logicVarName)
@@ -406,12 +405,6 @@ def  PlcVariableDescriptor createPlcDistanceDesc(IPlcVariable var,String logicVa
 	PlcPulseVariableDescriptor desc= new PlcPulseVariableDescriptor()
 	desc.setVarName(logicVarName)
 	return desc
-}
-def  boolean isCabinetParam(String varName){
-	return varName.startsWith('PARAM_CAB')
-}
-def  boolean isLineParam(String varName){
-	return varName.startsWith('PARAM_LINE')
 }
 def  boolean isCabinetJmxReport(String varName){
 	return varName.startsWith('NTF_CAB')

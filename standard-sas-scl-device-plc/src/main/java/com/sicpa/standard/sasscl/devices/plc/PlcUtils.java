@@ -12,11 +12,29 @@ import com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcVariablePuls
 public class PlcUtils {
 
 	// tag to create the correct plc var in the plc map , see plc.Vars.groovy
-	public static final String D = "distance";
-	public static final String I = "int";
-	public static final String S = "short";
-	public static final String B = "bool";
-	public static final String BY = "byte";
+	public static enum PLC_TYPE {
+		// short name are used to minimize the plc mapping, see plcVars.groovy
+		/**
+		 * Distance
+		 */
+		D,
+		/**
+		 * Int
+		 */
+		I,
+		/**
+		 * Short
+		 */
+		S,
+		/**
+		 * Boolean
+		 */
+		B,
+		/**
+		 * Byte
+		 */
+		BY;
+	}
 
 	public static final String LINE = ".com.stLine[#x].";
 	public static final String CAB = ".com.stCabinet.";
@@ -25,7 +43,7 @@ public class PlcUtils {
 	public static final String LINE_NTF = LINE + "stNotifications.";
 	public static final String CAB_NTF = CAB + "stNotifications.";
 
-	public static final Map<String, Map<String, String>> custoInfo = new HashMap<>();
+	public static final Map<String, Map<String, ?>> custoInfo = new HashMap<>();
 
 	public static void injectPlcVar(String logicName, Map<String, String> info) {
 		custoInfo.put(logicName, info);

@@ -24,6 +24,11 @@ public class PlcVariableGroup {
 		return plcVars;
 	}
 
+	@Override
+	public String toString() {
+		return "PlcVariableGroup [description=" + description + "]";
+	}
+
 	public void setDescription(String description) {
 		this.description = description;
 	}
