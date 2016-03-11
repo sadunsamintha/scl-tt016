@@ -78,3 +78,8 @@ standard-sas-scl-apps/standard-scl-core-app/profiles/SCL-CORE-DEV/backup-config/
 standard-sas-scl-apps/standard-scl-core-app/screenshot/
 standard-sas-scl-test-functional-common/profiles/test/backup-config/
 doc/
+standard-sas-scl-functional-test/uncaught-error/
+standard-sas-scl-functional-test/profiles/test/monitoring/
+standard-sas-scl-functional-test/profiles/test/dataSimulator/
+standard-sas-scl-functional-test/profiles/test/backup-config/
+standard-sas-scl-functional-test/log/

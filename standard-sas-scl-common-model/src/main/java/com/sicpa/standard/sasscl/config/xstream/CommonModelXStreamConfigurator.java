@@ -119,6 +119,5 @@ public class CommonModelXStreamConfigurator implements IXStreamConfigurator {
 		xstream.alias("SKUNode", SKUNode.class);
 
 		xstream.useAttributeFor(AbstractProductionParametersNode.class, "text");
-		xstream.useAttributeFor(AbstractProductionParametersNode.class, "fileImage");
 	}
 }

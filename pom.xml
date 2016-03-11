@@ -38,28 +38,6 @@
 				<artifactId>maven-clover2-plugin</artifactId>
 				<version>2.5.1</version>
 				<configuration>
-					<excludes>
-
-						<!-- FILTER TO REMOVE WHEN MODULE ARE INTEGRATED -->
-						<exclude>**/**/skucheck/*.java</exclude>
-						<exclude>**/**/skucheck/**/*.java</exclude>
-
-						<!-- -->
-						<exclude>**/**/*Test.java</exclude>
-						<exclude>**/**sasscl/view/**/*.java</exclude>
-						<exclude>**/**sasscl/*.java</exclude>
-						<exclude>**/**ioc/**/*.java</exclude>
-						<exclude>**/**aspect/**/*.java</exclude>
-						<exclude>**/**simulator/**/*.java</exclude>
-						<exclude>**/**/*Renderer.java</exclude>
-						<exclude>**/**/DefaultConfigGenerator.java</exclude>
-						<exclude>**/**remoteControl/**/*.java</exclude>
-						<exclude>**/**/wizard/*.java</exclude>
-						<exclude>**/**/wizard/**/*.java</exclude>
-						<exclude>**/**/mbean/sas/*.java</exclude>
-						<exclude>**/**/mbean/scl/*.java</exclude>
-					</excludes>
-
 					<includesTestSourceRoots>false</includesTestSourceRoots>
 					<targetPercentage>75%</targetPercentage>
 					<generateXml>true</generateXml>
@@ -95,6 +73,9 @@
 					<includes>
 						<include>**/*Test.java</include>
 					</includes>
+					<excludes>
+						<exclude>**/functionaltests/**</exclude>
+					</excludes>
 					<argLine>-Djava.awt.headless=true -Xmx256m</argLine>
 					<reuseForks>false</reuseForks>
 
@@ -257,7 +238,7 @@
 		<module>standard-sas-scl-spring-common</module>
 		<module>standard-sas-scl-view</module>
 		<module>standard-sas-scl-monitoring</module>
-		<module>standard-sas-scl-test-functional-common</module>
+		<module>standard-sas-scl-functional-test</module>
 		<module>standard-sas-scl-device-bis</module>
 		<module>standard-sas-scl-test-utils</module>
 		<module>standard-sas-scl-apps</module>
