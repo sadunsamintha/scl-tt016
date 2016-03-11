@@ -213,14 +213,6 @@ public interface BeansName {
 	String SELECTION_MODEL_FACTORY = "selectionModelFactory";
 
 	/**
-	 * ISaveRemotlyUpdatedBeanTask
-	 */
-	String DEFAULT_SAVE_REMOTELY_CHANGED_BEAN_TASK = "defaultSaveRemotelyChangedBeanTask";
-	/**
-	 * ISaveRemotlyUpdatedBeanTask
-	 */
-	String PLC_VAR_SAVE_REMOTELY_CHANGED_BEAN_TASK = "plcVarSaveRemotelyChangedBeanTask";
-	/**
 	 * IOfflineCounting
 	 */
 	String OFFLINE_COUNTING = "offlineCounting";

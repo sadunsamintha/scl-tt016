@@ -1,5 +1,24 @@
 package com.sicpa.standard.sasscl.devices.remote.simulator;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Random;
+import java.util.ResourceBundle;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.exception.InitializationRuntimeException;
 import com.sicpa.standard.client.common.messages.MessageEvent;
@@ -15,7 +34,13 @@ import com.sicpa.standard.sasscl.devices.remote.stdCrypto.StdCryptoAuthenticator
 import com.sicpa.standard.sasscl.devices.remote.stdCrypto.StdCryptoEncoderWrapperSimulator;
 import com.sicpa.standard.sasscl.devices.simulator.gui.SimulatorControlView;
 import com.sicpa.standard.sasscl.messages.MessageEventKey;
-import com.sicpa.standard.sasscl.model.*;
+import com.sicpa.standard.sasscl.model.CodeType;
+import com.sicpa.standard.sasscl.model.EncoderInfo;
+import com.sicpa.standard.sasscl.model.PackagedProducts;
+import com.sicpa.standard.sasscl.model.Product;
+import com.sicpa.standard.sasscl.model.ProductStatus;
+import com.sicpa.standard.sasscl.model.ProductionParameters;
+import com.sicpa.standard.sasscl.model.SKU;
 import com.sicpa.standard.sasscl.monitoring.MonitoringService;
 import com.sicpa.standard.sasscl.monitoring.system.SystemEventType;
 import com.sicpa.standard.sasscl.monitoring.system.event.BasicSystemEvent;
@@ -24,7 +49,12 @@ import com.sicpa.standard.sasscl.sicpadata.generator.FileSequenceStorageProvider
 import com.sicpa.standard.sasscl.sicpadata.generator.IEncoder;
 import com.sicpa.standard.sasscl.sicpadata.generator.impl.EncoderNoEncryptionSimulator;
 import com.sicpa.standard.sasscl.sicpadata.reader.IAuthenticator;
-import com.sicpa.standard.sicpadata.api.business.*;
+import com.sicpa.standard.sicpadata.api.business.BSicpadataModuleFactory;
+import com.sicpa.standard.sicpadata.api.business.IBSicpadataGenerator;
+import com.sicpa.standard.sicpadata.api.business.IBSicpadataModule;
+import com.sicpa.standard.sicpadata.api.business.IBSicpadataReader;
+import com.sicpa.standard.sicpadata.api.business.IKeyManager;
+import com.sicpa.standard.sicpadata.api.business.KeyManagerFactory;
 import com.sicpa.standard.sicpadata.api.exception.SicpadataException;
 import com.sicpa.standard.sicpadata.api.exception.UnknownModeException;
 import com.sicpa.standard.sicpadata.api.exception.UnknownSystemTypeException;
@@ -39,16 +69,6 @@ import com.sicpa.standard.sicpadata.preset.std.StdVersioningPreset;
 import com.sicpa.standard.sicpadata.spi.manager.IServiceProviderManager;
 import com.sicpa.standard.sicpadata.spi.manager.ServiceProviderException;
 import com.sicpa.standard.sicpadata.spi.password.NoSuchPasswordException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.Map.Entry;
 
 public class RemoteServerSimulator extends AbstractRemoteServer implements ISimulatorGetEncoder {
 
@@ -59,16 +79,17 @@ public class RemoteServerSimulator extends AbstractRemoteServer implements ISimu
 	private String remoteServerSimulatorOutputFolder;
 	private ProductionParameters productionParameters;
 	private IStorage storage;
-
-	private boolean setupBusinessCryptoDone = false;
-	private StdCoreModelPreset cryptoModelPreset = StdCoreModelPreset.CRYPTO_12x26;
-	private FileSequenceStorageProvider fileSequenceStorageProvider;
-	private int cryptoVersion = 0;
-	private String cryptoMode = "MY_MODE";
 	private IServiceProviderManager serviceProviderManager;
+	private FileSequenceStorageProvider fileSequenceStorageProvider;
+
 	// specify the starting year, used in date calculation (value to be set in {@link DescriptorBean#setDate(long)}.
 	private int cryptoStartYear = 2010;
+	private int cryptoVersion = 0;
+	private String cryptoMode;
+	private StdCoreModelPreset cryptoModelPreset;
+
 	private int currentEncoderIndex = 0;
+	private volatile boolean setupBusinessCryptoDone = false;
 	private IBSicpadataModule sicpadataModule;
 
 	public IServiceProviderManager getServiceProviderManager() {

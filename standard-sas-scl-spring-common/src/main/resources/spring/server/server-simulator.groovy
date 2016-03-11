@@ -4,6 +4,7 @@ import com.sicpa.standard.client.common.utils.ConfigUtils
 import com.sicpa.standard.gui.utils.ImageUtils;
 import com.sicpa.standard.sasscl.devices.remote.simulator.RemoteServerSimulator
 import com.sicpa.standard.sasscl.devices.remote.simulator.RemoteServerSimulatorModel;
+import com.sicpa.standard.sasscl.model.CodeType;
 import com.sicpa.standard.sasscl.model.ProductionMode;
 import com.sicpa.standard.sasscl.model.SKU;
 import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.ProductionModeNode;
@@ -31,11 +32,13 @@ beans{
 	for (e in productionModes){
 		def pmn=new ProductionModeNode(e['mode'])
 		root.getChildren().add(pmn)
-		for(ct in e['ct']){
+		for(ctid in e['ct']){
 			for(int i=0;i<SKU_BY_CODE_TYPE;i++){
 				def barcode='000'+skuId
-				def description='ct:'+ct+' - skuid:'+skuId
+				def description='ct:'+ctid+' - skuid:'+skuId
 				def sku=new SKU(skuId,description,[barcode])
+				def ct=new CodeType(ctid)
+				sku.setCodeType(ct)
 				sku.setImage(new ImageIcon(ImageUtils.createRandomStrippedImage(60, 30)));
 				def skuNode=new SKUNode(sku)
 				pmn.getChildren().add(skuNode)
@@ -59,6 +62,8 @@ beans{
 		storage=ref('storage')
 		fileSequenceStorageProvider=ref('fileSequenceStorageProvider')
 		remoteServerSimulatorOutputFolder = profilePath+'/simulProductSend'
+		cryptoMode=props['server.simulator.cryptoMode']
+		cryptoModelPreset=props['server.simulator.cryptoModelPreset']
 	}
 }
 
