@@ -85,8 +85,8 @@ public class RemoteServerSimulator extends AbstractRemoteServer implements ISimu
 	// specify the starting year, used in date calculation (value to be set in {@link DescriptorBean#setDate(long)}.
 	private int cryptoStartYear = 2010;
 	private int cryptoVersion = 0;
-	private String cryptoMode;
-	private StdCoreModelPreset cryptoModelPreset;
+	private String cryptoMode = "MY_MODE";
+	private StdCoreModelPreset cryptoModelPreset = StdCoreModelPreset.CRYPTO_12x26;
 
 	private int currentEncoderIndex = 0;
 	private volatile boolean setupBusinessCryptoDone = false;

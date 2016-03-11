@@ -48,10 +48,6 @@ import com.sicpa.standard.sicpadata.spi.manager.StaticServiceProviderManager;
 import com.sicpa.standard.sicpadata.spi.password.UniquePasswordProvider;
 import com.sicpa.standard.sicpadata.spi.sequencestorage.FileSequenceStorageProvider;
 
-/**
- * Test related to RemoteServerSimulatorModel
- * 
- */
 public class RemoteServerSimulatorModelTest {
 
 	@Before
@@ -155,48 +151,6 @@ public class RemoteServerSimulatorModelTest {
 
 	}
 
-	/**
-	 * 
-	 * Test using encoder and authenticator after it is deserialized
-	 * 
-	 * @throws ServiceProviderException
-	 * 
-	 */
-	// @Test
-	// public void remoteServerSimulatorSerializeEncoderTest() throws RemoteServerException, CryptographyException,
-	// UnknownModeException, UnknownVersionException, UnknownSystemTypeException, SicpadataException,
-	// ServiceProviderException {
-	//
-	// SkuProvider skuProvider = new SkuProvider();
-	// skuProvider.set(new SKU(1));
-	//
-	// RemoteServerSimulatorModel model = new RemoteServerSimulatorModel();
-	// RemoteServerSimulator simulator = new RemoteServerSimulator(model);
-	// simulator.setSkuProvider(skuProvider);
-	// simulator.setConfig(new GlobalBean());
-	// simulator.setServiceProviderManager(StaticServiceProviderManager.getInstance());
-	//
-	// CodeType codeType = new CodeType(1);
-	//
-	// // retrieve encoders
-	// IEncoder encoder = simulator.createOneEncoder(2010, (int) codeType.getId());
-	//
-	// // retrieve authenticator
-	// IAuthenticator authenticator = simulator.getAuthenticator();
-	//
-	// Assert.assertNotNull(encoder);
-	//
-	// String firstEncryptedCode = encoder.getEncryptedCodes(1).get(0);
-	//
-	// Assert.assertNotNull(firstEncryptedCode);
-	//
-	// /*
-	// * try to decode, should not throw any exception
-	// */
-	// authenticator.decode(null, firstEncryptedCode);
-	//
-	// }
-
 	@Test
 	public void remoteServerSimulatorSendProductionDataTest() throws RemoteServerException {
 
@@ -234,16 +188,10 @@ public class RemoteServerSimulatorModelTest {
 		Assert.assertEquals(1, outputDir.listFiles().length);
 	}
 
-	/**
-	 * Run the ProductionParameterRootNode getProductionParameters() method test.
-	 * 
-	 * @generatedBy CodePro at 12/11/10 15:54
-	 */
 	@Test
 	public void testGetProductionParameters() {
 		RemoteServerSimulatorModel fixture = new RemoteServerSimulatorModel();
 		ProductionParameterRootNode productionParameters = new ProductionParameterRootNode();
-		productionParameters.setFileImage("sku1.png");
 		fixture.setProductionParameters(productionParameters);
 
 		ProductionParameterRootNode result = fixture.getProductionParameters();
@@ -257,14 +205,8 @@ public class RemoteServerSimulatorModelTest {
 		assertEquals(null, result.getImage());
 		assertEquals(true, result.isLeaf());
 		assertEquals(0, result.getChildren().size());
-		assertEquals(null, result.getFileImage());
 	}
 
-	/**
-	 * Run the void setProductionParameters(ProductionParameterRootNode) method test.
-	 * 
-	 * @generatedBy CodePro at 12/11/10 15:54
-	 */
 	@Test
 	public void testSetProductionParameters() {
 		RemoteServerSimulatorModel fixture = new RemoteServerSimulatorModel();
