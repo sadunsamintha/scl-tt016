@@ -1,6 +1,7 @@
 package com.sicpa.standard.sasscl.devices.plc.variable.renderer;
 
 import javax.swing.JComboBox;
+import javax.swing.SpinnerNumberModel;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,7 +10,7 @@ import com.sicpa.standard.gui.utils.ThreadUtils;
 import com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcPulseVariableDescriptor;
 import com.sicpa.standard.sasscl.devices.plc.variable.descriptor.unit.PlcUnit;
 
-public class PlcPulseUnitRenderer extends PlcIntegerVariableRenderer {
+public class PlcPulseUnitRenderer extends AbstractPlcNumberVariableRenderer<Float> {
 	private static final Logger logger = LoggerFactory.getLogger(PlcPulseUnitRenderer.class);
 
 	private static final long serialVersionUID = 1L;
@@ -62,17 +63,27 @@ public class PlcPulseUnitRenderer extends PlcIntegerVariableRenderer {
 
 	private void ValueChangedInEDT() {
 		try {
-			int valueInt = extractValueOnly();
-			getSpinner().setValue(valueInt);
+			float valueNumber = extractValueOnly();
+			getSpinner().setValue(valueNumber);
 			getComboUnit().setSelectedItem(getPulseDescriptor().getCurrentUnit());
 		} catch (Exception e) {
 			logger.error("error setting value for:" + desc.getVarName() + " value:" + desc.getValue(), e);
 		}
 	}
 
-	private int extractValueOnly() {
+	private float extractValueOnly() {
 		String valueWithUnit = desc.getValue();
 		String valueOnly = valueWithUnit.replace(getPulseDescriptor().getCurrentUnit().getSuffix(), "");
-		return Integer.parseInt(valueOnly);
+		return Float.parseFloat(valueOnly);
+	}
+
+	@Override
+	protected SpinnerNumberModel createSpinnerNumberModel() {
+		return new SpinnerNumberModel(new Float(0), new Float(0f), new Float(Short.MAX_VALUE), new Float(0.1f));
+	}
+
+	@Override
+	protected Float parseValue(String value) {
+		return Float.parseFloat(value);
 	}
 }
