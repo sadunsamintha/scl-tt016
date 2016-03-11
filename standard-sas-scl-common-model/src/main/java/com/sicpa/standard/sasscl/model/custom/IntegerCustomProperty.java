@@ -7,8 +7,8 @@ package com.sicpa.standard.sasscl.model.custom;
  */
 public class IntegerCustomProperty extends CustomProperty<Integer> {
 
-	public IntegerCustomProperty(String name) {
-		super(name, Integer.class);
+	public IntegerCustomProperty(String name, int defaultValue) {
+		super(name, Integer.class, defaultValue);
 	}
 
 }

@@ -7,8 +7,8 @@ package com.sicpa.standard.sasscl.model.custom;
  */
 public class BooleanCustomProperty extends CustomProperty<Boolean> {
 
-	public BooleanCustomProperty(String name) {
-		super(name, Boolean.class);
+	public BooleanCustomProperty(String name, boolean defaultValue) {
+		super(name, Boolean.class, defaultValue);
 	}
 
 }
