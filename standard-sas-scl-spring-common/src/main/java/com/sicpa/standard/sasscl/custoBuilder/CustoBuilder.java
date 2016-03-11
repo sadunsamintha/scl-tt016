@@ -26,11 +26,14 @@ import com.sicpa.standard.sasscl.devices.remote.mapping.IRemoteServerProductStat
 import com.sicpa.standard.sasscl.ioc.BeansName;
 import com.sicpa.standard.sasscl.model.ProductStatus;
 import com.sicpa.standard.sasscl.model.ProductionMode;
+import com.sicpa.standard.sasscl.model.SKU;
+import com.sicpa.standard.sasscl.model.custom.*;
 import com.sicpa.standard.sasscl.productionParameterSelection.ISelectionModelFactory;
 import com.sicpa.standard.sasscl.productionParameterSelection.ISelectionModelFactory.IConfigFlowModel;
 import com.sicpa.standard.sasscl.productionParameterSelection.SelectionModel;
 import com.sicpa.standard.sasscl.provider.impl.PlcProvider;
 import com.sicpa.standard.sasscl.view.MainFrameGetter;
+import org.springframework.util.SerializationUtils;
 
 public class CustoBuilder {
 
@@ -88,7 +91,7 @@ public class CustoBuilder {
 		}
 
 		public static abstract class Plc {
-			public static void AddToMapping(String logicalName, String nameOnPlc) {
+			public static void addToMapping(String logicalName, String nameOnPlc) {
 				Map<Object, Object> map = BeanProvider.getBean(BeansName.PLC_VAR_MAPPING);
 				map.put(logicalName, nameOnPlc);
 			}
@@ -143,6 +146,26 @@ public class CustoBuilder {
 				addPlcParameterVariable(varUnit);
 				addPlcParameterVariable(varValue);
 			}
+		}
+	}
+
+	public static abstract class Model {
+
+		/**
+		 * This method allows a property to be added to a class. After adding the property, an instance implementing
+		 * the ICustomizable interface, can set the value of the added property. Setting the value of a property
+		 * without previously adding it to the class, will result in an exception.
+		 * @param classToCustomize class to add property to
+		 * @param property custom property to add
+		 * @param <T> the type of custom property to ad
+		 * @see CustoBuilderTest.testModelAddCustomPropertySuccess
+		 *
+		 */
+		public static <T> void addPropertyToClass(Class<? extends ICustomizable> classToCustomize, CustomProperty<T>
+				property) {
+			CustomizablePropertyDefinition definition = new CustomizablePropertyDefinition();
+			definition.addProperty(classToCustomize, property);
+			CustomizablePropertyFactory.setCustomizablePropertyDefinition(definition);
 		}
 	}
 
