@@ -12,11 +12,12 @@ public class PlcLineHelper {
 
 	private static final List<Integer> lineIndexes = new ArrayList<>();
 	public static final String LINE_INDEX_PLACEHOLDER = "#x";
+	private static final int lineIndexPosition = ".com.stLine[1]".length();
 
 	public static List<String> getLinesVariableName(String varName) {
 		List<String> res = new ArrayList<>();
 		for (int i : lineIndexes) {
-			res.add(varName.replace("#x", "" + i));
+			res.add(varName.replace(LINE_INDEX_PLACEHOLDER, "" + i));
 		}
 		return res;
 	}
@@ -30,7 +31,6 @@ public class PlcLineHelper {
 	}
 
 	public static int getLineIndex(String param) {
-		int lineIndexPosition = ".com.stLine[1]".length();
 		return Integer.parseInt(param.substring(0, lineIndexPosition));
 	}
 

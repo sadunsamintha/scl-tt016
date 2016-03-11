@@ -9,12 +9,7 @@ public class OperatorLogger {
 	}
 
 	public static void log(String msg, Object... parameters) {
-		try {
-			loggerBehavior.log(msg, parameters);
-		} catch (Exception e) {
-			e.printStackTrace();
-			System.out.println();
-		}
+		loggerBehavior.log(msg, parameters);
 	}
 
 }

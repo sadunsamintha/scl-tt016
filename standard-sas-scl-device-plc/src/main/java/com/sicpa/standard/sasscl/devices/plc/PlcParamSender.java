@@ -100,7 +100,7 @@ public class PlcParamSender implements IPlcParamSender {
 	}
 
 	private boolean createUnitValue(String value) {
-		// value of the plc value is true for mm
+		// value of the plc is true for mm
 		return value.endsWith(PlcUnit.MM.getSuffix());
 	}
 

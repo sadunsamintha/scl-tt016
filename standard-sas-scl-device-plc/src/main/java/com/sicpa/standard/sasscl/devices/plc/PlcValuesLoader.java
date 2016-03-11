@@ -1,5 +1,7 @@
 package com.sicpa.standard.sasscl.devices.plc;
 
+import static com.sicpa.standard.sasscl.devices.plc.PlcLineHelper.LINE_INDEX_PLACEHOLDER;
+
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -21,8 +23,6 @@ import com.sicpa.standard.sasscl.messages.MessageEventKey;
 public class PlcValuesLoader implements IPlcValuesLoader {
 
 	private static final Logger logger = LoggerFactory.getLogger(PlcValuesLoader.class);
-
-	private static final String LINE_INDEX_PLACEHOLDER = "#x";
 
 	private String cabinetConfigFile = "cabinet.properties";
 	private String lineConfigFile = "line-" + LINE_INDEX_PLACEHOLDER + ".properties";

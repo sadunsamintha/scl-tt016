@@ -77,6 +77,7 @@ beans{
 		plcProvider=ref('plcProvider')
 		plcCabinetVars=ref('plcCabJmxReport')
 		plcLineVars=ref('plcLineJmxReport')
+		lineCount=props['line.count']
 	}
 
 	def cab_msg=[

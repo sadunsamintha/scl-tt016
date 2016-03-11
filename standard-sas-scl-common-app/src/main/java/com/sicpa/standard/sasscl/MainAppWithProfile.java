@@ -30,7 +30,7 @@ import com.sicpa.standard.gui.utils.WindowsUtils;
 import com.sicpa.standard.sasscl.ioc.PropertyPlaceholderResourcesSASSCL;
 
 public class MainAppWithProfile extends MainApp implements IProfileSelectorListener {
-	private static Logger logger = LoggerFactory.getLogger(MainAppWithProfile.class);
+	private static final Logger logger = LoggerFactory.getLogger(MainAppWithProfile.class);
 
 	private static final String PROFILE_NAME_PROPERTIES_KEY_XML = "profile.name";
 	private static final String PROFILE_PATH_PROPERTIES_KEY_XML = "profile.path";
@@ -173,6 +173,7 @@ public class MainAppWithProfile extends MainApp implements IProfileSelectorListe
 		ClasspathHacker.addFile(profile.getPath() + "/config");
 
 		initLogger(profile);
+		logger.info("loading profile:" + profile.getName());
 
 		File springOverrideFile = new File(profile.getPath() + "/spring/" + CUSTO_FILE);
 		if (springOverrideFile.exists()) {
@@ -222,7 +223,7 @@ public class MainAppWithProfile extends MainApp implements IProfileSelectorListe
 		config.add("spring/productionConfig.xml");
 
 		config.add("spring/server/server-import.groovy");
-		
+
 		config.add("spring/brs/brs-import.groovy");
 
 		// SCL
