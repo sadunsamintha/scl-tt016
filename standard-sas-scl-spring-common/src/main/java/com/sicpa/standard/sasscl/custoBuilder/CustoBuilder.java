@@ -3,14 +3,17 @@ package com.sicpa.standard.sasscl.custoBuilder;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.common.eventbus.Subscribe;
+import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.ioc.BeanProvider;
 import com.sicpa.standard.client.common.messages.IMessageCodeMapper;
 import com.sicpa.standard.client.common.messages.IMessagesMapping;
 import com.sicpa.standard.client.common.messages.MessageType;
 import com.sicpa.standard.client.common.security.Permission;
-import com.sicpa.standard.client.common.utils.StringMap;
 import com.sicpa.standard.gui.screen.machine.component.SelectionFlow.flow.AbstractSelectionFlowModel;
 import com.sicpa.standard.sasscl.controller.device.group.impl.SimpleGroupDevicesController;
+import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState;
+import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowStateChangedEvent;
 import com.sicpa.standard.sasscl.devices.IDevice;
 import com.sicpa.standard.sasscl.devices.plc.PlcUtils;
 import com.sicpa.standard.sasscl.devices.remote.mapping.IProductionModeMapping;
@@ -121,6 +124,21 @@ public class CustoBuilder {
 			CustomizablePropertyDefinition definition = new CustomizablePropertyDefinition();
 			definition.addProperty(classToCustomize, property);
 			CustomizablePropertyFactory.setCustomizablePropertyDefinition(definition);
+		}
+	}
+
+	public static abstract class ProcessFlow {
+
+		public static void addActionOnStartingProduction(Runnable task) {
+			Object listener = new Object() {
+				@Subscribe
+				public void handleApplicationStateChanged(ApplicationFlowStateChangedEvent evt) {
+					if (evt.getCurrentState().equals(ApplicationFlowState.STT_STARTING)) {
+						task.run();
+					}
+				}
+			};
+			EventBusService.register(listener);
 		}
 	}
 }
