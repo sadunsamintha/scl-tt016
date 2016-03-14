@@ -2,20 +2,13 @@ package com.sicpa.standard.sasscl.model.statistics;
 
 import java.io.Serializable;
 
-/**
- * 
- * use subclasses to defines any statistics keys
- * 
- * @author DIelsch
- *
- */
 public class StatisticsKey implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	public final static StatisticsKey TOTAL = new StatisticsKey("total");
-	public final static StatisticsKey GOOD = new StatisticsKey("good");
-	public final static StatisticsKey BAD = new StatisticsKey("bad");
+	public final static StatisticsKey TOTAL = new ReadOnlyStatisticsKey("total");
+	public final static StatisticsKey GOOD = new ReadOnlyStatisticsKey("good");
+	public final static StatisticsKey BAD = new ReadOnlyStatisticsKey("bad");
 
 	private String description;
 	private String line;
@@ -70,5 +63,20 @@ public class StatisticsKey implements Serializable {
 		} else if (!line.equals(other.line))
 			return false;
 		return true;
+	}
+
+	private static class ReadOnlyStatisticsKey extends StatisticsKey {
+		private static final long serialVersionUID = 1L;
+
+		public ReadOnlyStatisticsKey(String description) {
+			super(description);
+		}
+
+		@Override
+		public void setLine(String line) {
+			throw new IllegalAccessError(
+					StatisticsKey.class.getName()
+							+ ".GOOD/BAD are template and should not be used directly, create a new key using their description");
+		}
 	}
 }

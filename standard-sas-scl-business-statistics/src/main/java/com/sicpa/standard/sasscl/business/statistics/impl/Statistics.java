@@ -82,12 +82,15 @@ public class Statistics implements IStatistics {
 	}
 
 	private void handleNewProduct(Product product) {
+		System.out.println("--------code----:" + product.getCode().getStringCode());
 		stats.increase(StatisticsKey.TOTAL);
 		Collection<StatisticsKey> keys = statusMapper.getKey(product.getStatus());
 		if (keys != null) {
 			for (StatisticsKey key : keys) {
 				key.setLine(product.getQc());
+				System.out.println("increase " + key.getDescription());
 				stats.increase(key);
+				System.out.println(stats.get(key));
 			}
 		}
 		statsChangedEventConcentrator.eventReceived();

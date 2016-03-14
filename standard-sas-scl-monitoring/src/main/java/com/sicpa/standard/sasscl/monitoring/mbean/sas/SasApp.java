@@ -1,5 +1,8 @@
 package com.sicpa.standard.sasscl.monitoring.mbean.sas;
 
+import static com.sicpa.standard.sasscl.monitoring.mbean.StandardMonitoringMBeanConstants.ERROR_BUSINESS_FOLDER;
+import static com.sicpa.standard.sasscl.monitoring.mbean.StandardMonitoringMBeanConstants.ERROR_LOAD_FOLDER;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
@@ -23,7 +26,6 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
-import com.sicpa.standard.client.common.messages.MessageEvent;
 import com.sicpa.standard.client.common.statemachine.State;
 import com.sicpa.standard.client.common.utils.DateUtils;
 import com.sicpa.standard.client.common.utils.ReflectionUtils;
@@ -33,11 +35,8 @@ import com.sicpa.standard.sasscl.controller.productionconfig.IProductionConfig;
 import com.sicpa.standard.sasscl.controller.productionconfig.config.CameraConfig;
 import com.sicpa.standard.sasscl.devices.DeviceStatus;
 import com.sicpa.standard.sasscl.devices.plc.IPlcJmxInfo;
-import com.sicpa.standard.sasscl.messages.MessageEventKey;
 import com.sicpa.standard.sasscl.model.ProductionParameters;
 import com.sicpa.standard.sasscl.model.statistics.StatisticsKey;
-import com.sicpa.standard.sasscl.model.statistics.StatisticsKeyBad;
-import com.sicpa.standard.sasscl.model.statistics.StatisticsKeyGood;
 import com.sicpa.standard.sasscl.monitoring.mbean.StandardMonitoringMBeanConstants;
 import com.sicpa.standard.sasscl.provider.impl.ProductionConfigProvider;
 import com.sicpa.standard.sasscl.repository.errors.AppMessage;
@@ -46,27 +45,27 @@ import com.sicpa.standard.sasscl.repository.errors.IErrorsRepository;
 public class SasApp extends NotificationBroadcasterSupport implements SasAppMBean {
 
 	private static final Logger logger = LoggerFactory.getLogger(SasApp.class);
+	private static final String NO_CAMERAS = "No Cameras configured";
+	private static String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
 	protected SasAppBeanStatistics stats;
-	protected static String dateFormat = "yyyy-MM-dd HH:mm:ss";
-	protected IErrorsRepository errorsRepository;
-	protected IPlcJmxInfo plcJmxInfo;
+	private IErrorsRepository errorsRepository;
+	private IPlcJmxInfo plcJmxInfo;
 	protected ProductionConfigProvider productionConfigProvider;
 
-    private String NO_CAMERAS = "No Cameras configured";
+	private long sequenceNumber = 0;
+	private Map<String, String[]> propertyMap = new HashMap<>();
+	private ApplicationFlowState currentState;
 
 	public SasApp() {
 		populateMapProperties();
-        EventBusService.register(this);
-    }
+		EventBusService.register(this);
+	}
 
-
-    @Override
+	@Override
 	public boolean isRunning() {
 		return stats.isRunning();
 	}
-
-	protected ApplicationFlowState currentState;
 
 	@Subscribe
 	public void handleApplicationStateChanged(ApplicationFlowStateChangedEvent evt) {
@@ -80,20 +79,14 @@ public class SasApp extends NotificationBroadcasterSupport implements SasAppMBea
 						: StandardMonitoringMBeanConstants.STOPPED;
 	}
 
-	/**
-	 * define production state
-	 * 
-	 * @param state
-	 * @return
-	 */
-	protected boolean isProductionState(final State state) {
+	private boolean isProductionState(State state) {
 		return stats.isRunning();
 	}
 
 	@Override
 	public String getLastProductScannedDate() {
 		if (stats.getLastProductScannedTime() != null) {
-			return DateUtils.format(dateFormat, stats.getLastProductScannedTime());
+			return DateUtils.format(DATE_FORMAT, stats.getLastProductScannedTime());
 		} else {
 			return "";
 		}
@@ -117,7 +110,7 @@ public class SasApp extends NotificationBroadcasterSupport implements SasAppMBea
 	@Override
 	public String getApplicationLastRunnningStartDate() {
 		if (stats.getStartTime() != null) {
-			return DateUtils.format(dateFormat, stats.getStartTime());
+			return DateUtils.format(DATE_FORMAT, stats.getStartTime());
 		} else {
 			return "";
 		}
@@ -126,7 +119,7 @@ public class SasApp extends NotificationBroadcasterSupport implements SasAppMBea
 	@Override
 	public String getApplicationLastRunnningStopDate() {
 		if (stats.getStopTime() != null) {
-			return DateUtils.format(dateFormat, stats.getStopTime());
+			return DateUtils.format(DATE_FORMAT, stats.getStopTime());
 		} else {
 			return "";
 		}
@@ -157,35 +150,28 @@ public class SasApp extends NotificationBroadcasterSupport implements SasAppMBea
 		}
 	}
 
-    @Override
-    public String getDeviceDisconnected()
-    {
-        String returnString = "[";
-        if(getDevicePlcStatus() == 2)
-        {
-            returnString += "PLC";
-        }
-        if((!getDeviceCameraStatus().contains(":1"))
-                && (!getDeviceCameraStatus().equals(NO_CAMERAS)))
-        {
-            if(returnString.length() > 1)
-            {
-                returnString+=" - ";
-            }
-            returnString += "Camera qc_sas";
-        }
-        if(getDeviceMasterStatus() == 2)
-        {
-            if(returnString.length() > 1)
-            {
-                returnString+=" - ";
-            }
-            returnString += "Master";
-        }
+	@Override
+	public String getDeviceDisconnected() {
+		String returnString = "[";
+		if (getDevicePlcStatus() == 2) {
+			returnString += "PLC";
+		}
+		if ((!getDeviceCameraStatus().contains(":1")) && (!getDeviceCameraStatus().equals(NO_CAMERAS))) {
+			if (returnString.length() > 1) {
+				returnString += " - ";
+			}
+			returnString += "Camera qc_sas";
+		}
+		if (getDeviceMasterStatus() == 2) {
+			if (returnString.length() > 1) {
+				returnString += " - ";
+			}
+			returnString += "Master";
+		}
 
-        returnString+="]";
-        return returnString;
-    }
+		returnString += "]";
+		return returnString;
+	}
 
 	@Override
 	public String getStatistics() {
@@ -197,11 +183,19 @@ public class SasApp extends NotificationBroadcasterSupport implements SasAppMBea
 		Map<StatisticsKey, Integer> statisticsMap = stats.getProductsStatistics().getValues();
 		int totalValidProducts = 0;
 		for (Entry<StatisticsKey, Integer> entry : statisticsMap.entrySet()) {
-			if (entry.getKey() instanceof StatisticsKeyGood) {
+			if (isValidStats(entry.getKey())) {
 				totalValidProducts += entry.getValue();
 			}
 		}
 		return totalValidProducts;
+	}
+
+	private boolean isValidStats(StatisticsKey key) {
+		return key.getDescription().equals(StatisticsKey.GOOD.getDescription());
+	}
+
+	private boolean isInvalidStats(StatisticsKey key) {
+		return key.getDescription().equals(StatisticsKey.BAD.getDescription());
 	}
 
 	@Override
@@ -209,20 +203,18 @@ public class SasApp extends NotificationBroadcasterSupport implements SasAppMBea
 		Map<StatisticsKey, Integer> statisticsMap = stats.getProductsStatistics().getValues();
 		int totalInvalidProducts = 0;
 		for (Entry<StatisticsKey, Integer> entry : statisticsMap.entrySet()) {
-			if (entry.getKey() instanceof StatisticsKeyBad) {
+			if (isInvalidStats(entry.getKey())) {
 				totalInvalidProducts += entry.getValue();
 			}
 		}
 		return totalInvalidProducts;
 	}
 
-	protected long sequenceNumber = 0;
-
-	public void setStats(final SasAppBeanStatistics stats) {
+	public void setStats(SasAppBeanStatistics stats) {
 		this.stats = stats;
 		stats.addPropertyChangeListener(new PropertyChangeListener() {
 			@Override
-			public void propertyChange(final PropertyChangeEvent evt) {
+			public void propertyChange(PropertyChangeEvent evt) {
 
 				String[] properties = propertyMap.get(evt.getPropertyName());
 				if (properties != null) {
@@ -237,7 +229,7 @@ public class SasApp extends NotificationBroadcasterSupport implements SasAppMBea
 		});
 	}
 
-	protected Object getFieldValue(final String property) {
+	private Object getFieldValue(String property) {
 		try {
 			return ReflectionUtils.getPropertyValue(property, this);
 		} catch (Exception e) {
@@ -260,9 +252,7 @@ public class SasApp extends NotificationBroadcasterSupport implements SasAppMBea
 		return new MBeanNotificationInfo[] { info };
 	}
 
-	protected Map<String, String[]> propertyMap = new HashMap<String, String[]>();
-
-	protected void populateMapProperties() {
+	private void populateMapProperties() {
 		propertyMap.put("error", new String[] {});
 		propertyMap.put("state", new String[] { "running", "applicationStatus" });
 		// propertyMap.put("encodersUsedId", new String[]{});
@@ -282,7 +272,7 @@ public class SasApp extends NotificationBroadcasterSupport implements SasAppMBea
 	@Override
 	public String getLastSucessfullSynchronisationWithRemoteServerDate() {
 		if (stats.getLastSucessfulToRemoteServerDate() != null) {
-			return DateUtils.format(dateFormat, stats.getLastSucessfulToRemoteServerDate());
+			return DateUtils.format(DATE_FORMAT, stats.getLastSucessfulToRemoteServerDate());
 		} else {
 			return "";
 		}
@@ -296,7 +286,7 @@ public class SasApp extends NotificationBroadcasterSupport implements SasAppMBea
 	@Override
 	public String getLastSynchronisationWithRemoteServerDate() {
 		if (stats.getLastSentToRemoteServerDate() != null) {
-			return DateUtils.format(dateFormat, stats.getLastSentToRemoteServerDate());
+			return DateUtils.format(DATE_FORMAT, stats.getLastSentToRemoteServerDate());
 		} else {
 			return "";
 		}
@@ -320,17 +310,18 @@ public class SasApp extends NotificationBroadcasterSupport implements SasAppMBea
 	public String getWarnings() {
 
 		Collection<AppMessage> appWarnings = errorsRepository.getApplicationWarnings();
-		if (appWarnings == null)
+		if (appWarnings == null) {
 			return "";
+		}
 
 		int warningCount = 1;
 		String MARKUP;
-		final StringBuilder warnings = new StringBuilder();
-		for (final AppMessage mess : appWarnings) {
+		StringBuilder warnings = new StringBuilder();
+		for (AppMessage mess : appWarnings) {
 			MARKUP = StandardMonitoringMBeanConstants.WARNING_MARKUP_OPEN + warningCount
 					+ StandardMonitoringMBeanConstants.MARKUP_CLOSE;
 			warnings.append(MARKUP);
-			warnings.append(DateUtils.format(dateFormat, mess.getTime()));
+			warnings.append(DateUtils.format(DATE_FORMAT, mess.getTime()));
 			warnings.append(" : ");
 			warnings.append(mess.getCode());
 			warnings.append(" - ");
@@ -355,7 +346,7 @@ public class SasApp extends NotificationBroadcasterSupport implements SasAppMBea
 			MARKUP = StandardMonitoringMBeanConstants.ERROR_MARKUP_OPEN + errorCount
 					+ StandardMonitoringMBeanConstants.MARKUP_CLOSE;
 			errors.append(MARKUP);
-			errors.append(DateUtils.format(dateFormat, mess.getTime()));
+			errors.append(DateUtils.format(DATE_FORMAT, mess.getTime()));
 			errors.append(" : ");
 			errors.append(mess.getCode());
 			errors.append(" - ");
@@ -366,12 +357,6 @@ public class SasApp extends NotificationBroadcasterSupport implements SasAppMBea
 		return errors.toString();
 	}
 
-	/**
-	 * convert device status
-	 * 
-	 * @param status
-	 * @return
-	 */
 	protected int convertDeviceStatus(DeviceStatus status) {
 		if (DeviceStatus.CONNECTED.equals(status) || DeviceStatus.CONNECTING.equals(status)
 				|| DeviceStatus.STARTED.equals(status) || DeviceStatus.STOPPED.equals(status)) {
@@ -422,66 +407,54 @@ public class SasApp extends NotificationBroadcasterSupport implements SasAppMBea
 		return convertDeviceStatus(remoteServerStatus);
 	}
 
-	/**
-	 * get the byte size of a passed in folder path
-	 * 
-	 * @param folderPath
-	 * @return
-	 */
-	protected String getSizeOfFolder(String folderPath) {
-		final File errors = new File(folderPath);
+	private String getSizeOfFolderInByte(String folderPath) {
+		File errors = new File(folderPath);
 		if (!errors.exists() || !errors.isDirectory()) {
 			return "";
 		}
-		final File[] files = errors.listFiles();
+		File[] files = errors.listFiles();
 		if (files == null || files.length == 0) {
 			return "";
 		}
 		long total = 0;
-		for (final File file2 : files) {
+		for (File file2 : files) {
 			total += file2.length();
 		}
 		return "" + total;
 	}
 
-	/**
-	 * get the date time in string of the oldest file in passed in folder
-	 * 
-	 * @param folderPath
-	 * @return
-	 */
-	protected String getOldestFileDateOfAFolder(String folderPath) {
-		final File file = new File(folderPath);
+	private String getOldestFileDateOfAFolder(String folderPath) {
+		File file = new File(folderPath);
 
 		if (!file.exists() || !file.isDirectory()) {
 			return "";
 		}
-		final File[] files = file.listFiles();
+		File[] files = file.listFiles();
 		if (files == null || files.length == 0) {
 			return "";
 		}
 		long lastMod = files[0].lastModified();
-		for (final File test : files) {
+		for (File test : files) {
 			if (test.lastModified() < lastMod) {
 				lastMod = test.lastModified();
 			}
 		}
-		return DateUtils.format(dateFormat, new Date(lastMod));
+		return DateUtils.format(DATE_FORMAT, new Date(lastMod));
 	}
 
 	@Override
 	public String getSizeOfPackagedFolder() {
-		return getSizeOfFolder(StandardMonitoringMBeanConstants.PACKAGED_FOLDER);
+		return getSizeOfFolderInByte(StandardMonitoringMBeanConstants.PACKAGED_FOLDER);
 	}
 
 	@Override
 	public String getSizeOfSentFolder() {
-		return getSizeOfFolder(StandardMonitoringMBeanConstants.SENT_FOLDER);
+		return getSizeOfFolderInByte(StandardMonitoringMBeanConstants.SENT_FOLDER);
 	}
 
 	@Override
 	public String getSizeOfBufferFolder() {
-		return getSizeOfFolder(StandardMonitoringMBeanConstants.BUFFER_FOLDER);
+		return getSizeOfFolderInByte(StandardMonitoringMBeanConstants.BUFFER_FOLDER);
 	}
 
 	@Override
@@ -491,10 +464,10 @@ public class SasApp extends NotificationBroadcasterSupport implements SasAppMBea
 
 	@Override
 	public int getNumberOfQuarantineProductionFile() {
-		List<File> folderList = new ArrayList<File>();
-		List<String> totalFileList = new ArrayList<String>();
-		folderList.add(new File(StandardMonitoringMBeanConstants.ERROR_LOAD_FOLDER));
-		folderList.add(new File(StandardMonitoringMBeanConstants.ERROR_BUSINESS_FOLDER));
+		List<File> folderList = new ArrayList<>();
+		List<String> totalFileList = new ArrayList<>();
+		folderList.add(new File(ERROR_LOAD_FOLDER));
+		folderList.add(new File(ERROR_BUSINESS_FOLDER));
 		for (File errors : folderList) {
 			if (!errors.exists() || !errors.isDirectory()) {
 				continue;
@@ -514,17 +487,19 @@ public class SasApp extends NotificationBroadcasterSupport implements SasAppMBea
 	@Override
 	public String getOfflineCountingLastStopDate() {
 		Date date = stats.getOfflineCountingToDate();
-		if (date == null)
+		if (date == null) {
 			return "";
-		return DateUtils.format(dateFormat, date);
+		}
+		return DateUtils.format(DATE_FORMAT, date);
 	}
 
 	@Override
 	public String getOfflineCountingLastProductionDate() {
 		Date date = stats.getOfflineCountingFromDate();
-		if (date == null)
+		if (date == null) {
 			return "";
-		return DateUtils.format(dateFormat, date);
+		}
+		return DateUtils.format(DATE_FORMAT, date);
 	}
 
 	@Override
@@ -544,6 +519,5 @@ public class SasApp extends NotificationBroadcasterSupport implements SasAppMBea
 	public void setProductionConfigProvider(ProductionConfigProvider productionConfigProvider) {
 		this.productionConfigProvider = productionConfigProvider;
 	}
-
 
 }

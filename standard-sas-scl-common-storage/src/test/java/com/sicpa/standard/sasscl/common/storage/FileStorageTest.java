@@ -33,8 +33,7 @@ import com.sicpa.standard.sasscl.model.ProductStatus;
 import com.sicpa.standard.sasscl.model.ProductionMode;
 import com.sicpa.standard.sasscl.model.ProductionParameters;
 import com.sicpa.standard.sasscl.model.SKU;
-import com.sicpa.standard.sasscl.model.statistics.StatisticsKeyBad;
-import com.sicpa.standard.sasscl.model.statistics.StatisticsKeyGood;
+import com.sicpa.standard.sasscl.model.statistics.StatisticsKey;
 import com.sicpa.standard.sasscl.model.statistics.StatisticsValues;
 import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.ProductionModeNode;
 import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.ProductionParameterRootNode;
@@ -227,14 +226,14 @@ public class FileStorageTest {
 	public void testSaveStatistics2() {
 		cleanStorage();
 		StatisticsValues statValue = new StatisticsValues();
-		statValue.set(new StatisticsKeyGood(), 25);
-		statValue.set(new StatisticsKeyBad(), 10);
+		statValue.set(StatisticsKey.GOOD, 25);
+		statValue.set(StatisticsKey.BAD, 10);
 
 		storage.saveStatistics(statValue);
 
 		StatisticsValues restoredValue = storage.getStatistics();
-		Assert.assertEquals(25, restoredValue.get(new StatisticsKeyGood()));
-		Assert.assertEquals(10, restoredValue.get(new StatisticsKeyBad()));
+		Assert.assertEquals(25, restoredValue.get(StatisticsKey.GOOD));
+		Assert.assertEquals(10, restoredValue.get(StatisticsKey.BAD));
 	}
 
 	@Test

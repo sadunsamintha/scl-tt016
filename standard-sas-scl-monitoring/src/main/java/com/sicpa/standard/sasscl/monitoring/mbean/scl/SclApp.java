@@ -8,29 +8,25 @@ import com.sicpa.standard.sasscl.controller.productionconfig.config.PrinterConfi
 import com.sicpa.standard.sasscl.monitoring.mbean.sas.SasApp;
 import com.sicpa.standard.sasscl.monitoring.mbean.sas.SasAppBeanStatistics;
 
-/**
- * 
- *
- */
 public class SclApp extends SasApp implements SclAppMBean {
 
 	@Override
 	public String getEncoderID() {
-		return ((SclAppBeanStatistics) this.stats).getEncoderId();
+		return ((SclAppBeanStatistics) stats).getEncoderId();
 	}
 
-	public void setStats(final SasAppBeanStatistics stats) {
+	public void setStats(SasAppBeanStatistics stats) {
 		this.stats = stats;
 	}
 
 	@Override
 	public String getInkLevel() {
-		return ((SclAppBeanStatistics) this.stats).getPrinterInkLevel();
+		return ((SclAppBeanStatistics) stats).getPrinterInkLevel();
 	}
 
 	@Override
 	public String getMakeupLevel() {
-		return ((SclAppBeanStatistics) this.stats).getPrinterMakeUpLevel();
+		return ((SclAppBeanStatistics) stats).getPrinterMakeUpLevel();
 	}
 
 	@Override
