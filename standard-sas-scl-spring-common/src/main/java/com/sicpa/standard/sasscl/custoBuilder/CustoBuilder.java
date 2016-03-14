@@ -169,8 +169,8 @@ public class CustoBuilder {
 				// ignore
 			}
 
-			IStatisticsKeyToViewDescriptorMapping m = BeanProvider.getBean(STATISTICS_VIEW_MAPPER);
-			m.add(statsKey, colorOnScreen, indexOnScreen, langKey);
+			IStatisticsKeyToViewDescriptorMapping viewMapping = BeanProvider.getBean(STATISTICS_VIEW_MAPPER);
+			viewMapping.add(statsKey, colorOnScreen, indexOnScreen, langKey);
 		}
 	}
 }
