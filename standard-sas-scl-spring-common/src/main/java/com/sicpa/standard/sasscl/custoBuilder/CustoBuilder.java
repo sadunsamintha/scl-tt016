@@ -8,6 +8,8 @@ import java.awt.Color;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
+
 import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.ioc.BeanProvider;
@@ -158,9 +160,14 @@ public class CustoBuilder {
 			IProductStatusToStatisticKeyMapper statsMapping = BeanProvider.getBean(STATISTICS_PRODUCTS_STATUS_MAPPER);
 			statsMapping.add(status, statsKey);
 
-			IRemoteServerProductStatusMapping remoteMapping = BeanProvider
-					.getBean(REMOTE_SERVER_PRODUCT_STATUS_MAPPING);
-			remoteMapping.add(status, idOnRemote);
+			try {
+				// the bean exist only if CORE-5 standard
+				IRemoteServerProductStatusMapping remoteMapping = BeanProvider
+						.getBean(REMOTE_SERVER_PRODUCT_STATUS_MAPPING);
+				remoteMapping.add(status, idOnRemote);
+			} catch (NoSuchBeanDefinitionException e) {
+				// ignore
+			}
 
 			IStatisticsKeyToViewDescriptorMapping m = BeanProvider.getBean(STATISTICS_VIEW_MAPPER);
 			m.add(statsKey, colorOnScreen, indexOnScreen, langKey);
