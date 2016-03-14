@@ -307,4 +307,9 @@ public interface BeansName {
 	 * IMappingExtendedCodeBehavior
 	 */
 	String MAPPING_EXTENDED_CODE_BEHAVIOR = "mappingExtendedCodeBehavior";
+
+	/**
+	 * IStatisticsKeyToViewDescriptorMapping
+	 */
+	String STATISTICS_VIEW_MAPPER = "statisticsKeyToViewDescriptorMapping";
 }

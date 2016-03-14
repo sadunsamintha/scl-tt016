@@ -1,5 +1,10 @@
 package com.sicpa.standard.sasscl.custoBuilder;
 
+import static com.sicpa.standard.sasscl.ioc.BeansName.REMOTE_SERVER_PRODUCT_STATUS_MAPPING;
+import static com.sicpa.standard.sasscl.ioc.BeansName.STATISTICS_PRODUCTS_STATUS_MAPPER;
+import static com.sicpa.standard.sasscl.ioc.BeansName.STATISTICS_VIEW_MAPPER;
+
+import java.awt.Color;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,6 +16,8 @@ import com.sicpa.standard.client.common.messages.IMessagesMapping;
 import com.sicpa.standard.client.common.messages.MessageType;
 import com.sicpa.standard.client.common.security.Permission;
 import com.sicpa.standard.gui.screen.machine.component.SelectionFlow.flow.AbstractSelectionFlowModel;
+import com.sicpa.standard.sasscl.business.statistics.IStatisticsKeyToViewDescriptorMapping;
+import com.sicpa.standard.sasscl.business.statistics.mapper.IProductStatusToStatisticKeyMapper;
 import com.sicpa.standard.sasscl.controller.device.group.impl.SimpleGroupDevicesController;
 import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState;
 import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowStateChangedEvent;
@@ -25,6 +32,7 @@ import com.sicpa.standard.sasscl.model.custom.CustomProperty;
 import com.sicpa.standard.sasscl.model.custom.CustomizablePropertyDefinition;
 import com.sicpa.standard.sasscl.model.custom.CustomizablePropertyFactory;
 import com.sicpa.standard.sasscl.model.custom.ICustomizable;
+import com.sicpa.standard.sasscl.model.statistics.StatisticsKey;
 import com.sicpa.standard.sasscl.productionParameterSelection.ISelectionModelFactory;
 import com.sicpa.standard.sasscl.productionParameterSelection.ISelectionModelFactory.IConfigFlowModel;
 import com.sicpa.standard.sasscl.productionParameterSelection.SelectionModel;
@@ -139,6 +147,23 @@ public class CustoBuilder {
 				}
 			};
 			EventBusService.register(listener);
+		}
+	}
+
+	public static class Statistics {
+
+		public static void addStatistics(ProductStatus status, StatisticsKey statsKey, int idOnRemote,
+				Color colorOnScreen, int indexOnScreen, String langKey) {
+
+			IProductStatusToStatisticKeyMapper statsMapping = BeanProvider.getBean(STATISTICS_PRODUCTS_STATUS_MAPPER);
+			statsMapping.add(status, statsKey);
+
+			IRemoteServerProductStatusMapping remoteMapping = BeanProvider
+					.getBean(REMOTE_SERVER_PRODUCT_STATUS_MAPPING);
+			remoteMapping.add(status, idOnRemote);
+
+			IStatisticsKeyToViewDescriptorMapping m = BeanProvider.getBean(STATISTICS_VIEW_MAPPER);
+			m.add(statsKey, colorOnScreen, indexOnScreen, langKey);
 		}
 	}
 }

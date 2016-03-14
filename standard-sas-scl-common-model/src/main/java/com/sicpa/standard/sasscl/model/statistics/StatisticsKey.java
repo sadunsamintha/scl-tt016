@@ -14,6 +14,8 @@ public class StatisticsKey implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	public final static StatisticsKey TOTAL = new StatisticsKey("total");
+	public final static StatisticsKey GOOD = new StatisticsKey("good");
+	public final static StatisticsKey BAD = new StatisticsKey("bad");
 
 	private String description;
 	private String line;
@@ -33,6 +35,10 @@ public class StatisticsKey implements Serializable {
 
 	public String getLine() {
 		return line;
+	}
+
+	public String getDescription() {
+		return description;
 	}
 
 	@Override

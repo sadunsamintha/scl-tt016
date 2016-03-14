@@ -1,5 +1,15 @@
 package com.sicpa.standard.sasscl.business.statistics.impl;
 
+import static com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState.STT_CONNECTED;
+import static com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState.STT_RECOVERING;
+import static com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState.STT_STARTING;
+import static com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState.STT_STOPPING;
+
+import java.util.Collection;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.utils.listener.CoalescentPeriodicListener;
@@ -8,7 +18,6 @@ import com.sicpa.standard.sasscl.business.statistics.IStatistics;
 import com.sicpa.standard.sasscl.business.statistics.StatisticsResetEvent;
 import com.sicpa.standard.sasscl.business.statistics.mapper.IProductStatusToStatisticKeyMapper;
 import com.sicpa.standard.sasscl.common.storage.IStorage;
-import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState;
 import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowStateChangedEvent;
 import com.sicpa.standard.sasscl.controller.productionconfig.config.CameraConfig;
 import com.sicpa.standard.sasscl.model.Product;
@@ -18,10 +27,6 @@ import com.sicpa.standard.sasscl.model.statistics.StatisticsValues;
 import com.sicpa.standard.sasscl.monitoring.MonitoringService;
 import com.sicpa.standard.sasscl.monitoring.system.event.StatisticsSystemEvent;
 import com.sicpa.standard.sasscl.provider.impl.ProductionConfigProvider;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.Collection;
 
 /**
  * Statistics based on products created
@@ -33,20 +38,17 @@ public class Statistics implements IStatistics {
 
 	private static final Logger logger = LoggerFactory.getLogger(Statistics.class);
 
-	protected StatisticsValues stats;
+	private StatisticsValues stats;
+	private IStorage storage;
+	private IProductStatusToStatisticKeyMapper statusMapper;
+	private final UptimeCounter uptimeCounter = new UptimeCounter();
+	private ProductionConfigProvider productionConfigProvider;
 
-	protected IStorage storage;
-
-	protected IProductStatusToStatisticKeyMapper statusMapper;
-
-	protected UptimeCounter uptimeCounter = new UptimeCounter();
-	protected ProductionConfigProvider productionConfigProvider;
-
-	public Statistics(final IStorage storage) {
+	public Statistics(IStorage storage) {
 		this.storage = storage;
 	}
 
-	public void setStatusMapper(final IProductStatusToStatisticKeyMapper statusMapper) {
+	public void setStatusMapper(IProductStatusToStatisticKeyMapper statusMapper) {
 		this.statusMapper = statusMapper;
 	}
 
@@ -64,11 +66,11 @@ public class Statistics implements IStatistics {
 		}
 	}
 
-	protected boolean isProductStatusHandled(ProductStatus status) {
+	private boolean isProductStatusHandled(ProductStatus status) {
 		return !status.equals(ProductStatus.SENT_TO_PRINTER_WASTED) && !status.equals(ProductStatus.OFFLINE);
 	}
 
-	protected void initStats() {
+	private void initStats() {
 		if (productionConfigProvider.get().getCameraConfigs() != null) {
 			for (CameraConfig cc : productionConfigProvider.get().getCameraConfigs()) {
 				for (StatisticsKey key : statusMapper.getAllKeys()) {
@@ -79,7 +81,7 @@ public class Statistics implements IStatistics {
 		}
 	}
 
-	protected void handleNewProduct(Product product) {
+	private void handleNewProduct(Product product) {
 		stats.increase(StatisticsKey.TOTAL);
 		Collection<StatisticsKey> keys = statusMapper.getKey(product.getStatus());
 		if (keys != null) {
@@ -91,20 +93,13 @@ public class Statistics implements IStatistics {
 		statsChangedEventConcentrator.eventReceived();
 	}
 
-	protected CoalescentPeriodicListener statsChangedEventConcentrator = new CoalescentPeriodicListener(250) {
-		@Override
-		public void doAction() {
-			fireStatisticsChanged();
-		}
-	};
+	private final CoalescentPeriodicListener statsChangedEventConcentrator = new CoalescentPeriodicListener(250,
+			() -> fireStatisticsChanged());
 
-	protected void fireStatisticsChanged() {
+	private void fireStatisticsChanged() {
 		MonitoringService.addSystemEvent(new StatisticsSystemEvent(stats));
 	}
 
-	/**
-	 * delegate this call to <code>IStorage</code>
-	 */
 	public void saveStatistics() {
 		if (stats != null) {
 			// do not change the stats while it is being save
@@ -139,15 +134,26 @@ public class Statistics implements IStatistics {
 
 	@Subscribe
 	public void handleApplicationStatusChanged(ApplicationFlowStateChangedEvent evt) {
-		if (evt.getCurrentState().equals(ApplicationFlowState.STT_STARTING)) {
+		if (shouldStartUptimeCounter(evt)) {
 			uptimeCounter.start();
-		} else if (evt.getCurrentState().equals(ApplicationFlowState.STT_STOPPING)
-				|| evt.getCurrentState().equals(ApplicationFlowState.STT_RECOVERING)) {
-			uptimeCounter.stop();
-		} else if(evt.getCurrentState().equals(ApplicationFlowState.STT_CONNECTED)
-				&& evt.getPreviousState().equals(ApplicationFlowState.STT_STARTING)) {
+		} else if (shouldStopUptimeCounter(evt)) {
 			uptimeCounter.stop();
 		}
+	}
+
+	private boolean shouldStartUptimeCounter(ApplicationFlowStateChangedEvent evt) {
+		return evt.getCurrentState().equals(STT_STARTING);
+	}
+
+	private boolean shouldStopUptimeCounter(ApplicationFlowStateChangedEvent evt) {
+		if (evt.getCurrentState().equals(STT_STOPPING)) {
+			return true;
+		} else if (evt.getCurrentState().equals(STT_RECOVERING)) {
+			return true;
+		} else if (evt.getCurrentState().equals(STT_CONNECTED) && evt.getPreviousState().equals(STT_STARTING)) {
+			return true;
+		}
+		return false;
 	}
 
 	@Override

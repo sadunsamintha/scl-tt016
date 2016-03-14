@@ -19,7 +19,7 @@ public interface IProductStatusToStatisticKeyMapper {
 	 */
 	Collection<StatisticsKey> getKey(ProductStatus status);
 
-	void add(ProductStatus status, Class<? extends StatisticsKey>... keys);
-	
+	void add(ProductStatus status, StatisticsKey key);
+
 	Collection<StatisticsKey> getAllKeys();
 }
