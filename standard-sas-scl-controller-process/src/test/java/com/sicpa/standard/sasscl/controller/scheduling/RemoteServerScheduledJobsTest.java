@@ -9,7 +9,6 @@ import java.util.ResourceBundle;
 
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -63,7 +62,6 @@ public class RemoteServerScheduledJobsTest {
 		this.mapBundles.put(ENGLISH_LANG, resourceBundle);
 
 		Object maxDownTimeListener = new Object() {
-			@SuppressWarnings("unused")
 			@Subscribe
 			public void catchMaxDownTime(MaxDownTimeReachedEvent evt) {
 				maxdowntimeReceived = true;
@@ -78,7 +76,7 @@ public class RemoteServerScheduledJobsTest {
 	}
 
 	void createRemoteServerScheduledJobs(IStorage storage) {
-		this.remoteServerScheduledJobs = new RemoteServerScheduledJobsSCL(storage, remoteServer,
+		remoteServerScheduledJobs = new RemoteServerScheduledJobsSCL(storage, remoteServer,
 				productionParametersProvider, authenticatorProvider);
 		remoteServerScheduledJobs.setRemoteServerMaxDownTime_day(REMOTE_SERVER_MAX_DOWN_TIME);
 		remoteServerScheduledJobs.setRequestNumberEncoders(REQUEST_NUMBER_ENCODERS);
@@ -87,46 +85,8 @@ public class RemoteServerScheduledJobsTest {
 	@Test
 	public void testGetEncodersFromRemoteServerRemoteServerNotConnected() {
 		fixtureServerConnected(false);
-
-		this.remoteServerScheduledJobs.getEncodersFromRemoteServer();
+		remoteServerScheduledJobs.getEncodersFromRemoteServer();
 	}
-
-	// @Test
-	// public void testGetEncodersFromRemoteServerRemoteServerConnectedNoNextYear() throws RemoteServerException {
-	//
-	// this.globalConfig.setDownloadNextYearEncodersDate(getMMDD(1));
-	//
-	// fixtureServerConnected(true);
-	//
-	// int year = Integer.valueOf(getYYYY(0));
-	//
-	// fixtureGetEncodersFromRemoteServer(year);
-	//
-	// this.remoteServerScheduledJobs.getEncodersFromRemoteServer();
-	//
-	// verifySaveEncoders(year);
-	//
-	// }
-
-	// @Test
-	// public void testGetEncodersFromRemoteServerRemoteServerConnectedNextYear() throws RemoteServerException {
-	//
-	// this.globalConfig.setDownloadNextYearEncodersDate(getMMDD(0));
-	//
-	// fixtureServerConnected(true);
-	//
-	// int year = Integer.valueOf(getYYYY(0));
-	// int nextYear = Integer.valueOf(getYYYY(1));
-	//
-	// fixtureGetEncodersFromRemoteServer(year);
-	// fixtureGetEncodersFromRemoteServer(nextYear);
-	//
-	// this.remoteServerScheduledJobs.getEncodersFromRemoteServer();
-	//
-	// verifySaveEncoders(year);
-	// verifySaveEncoders(nextYear);
-	//
-	// }
 
 	@Test
 	public void testGetAuthenticatorFromRemoteServerNoConnection() {
@@ -170,15 +130,6 @@ public class RemoteServerScheduledJobsTest {
 	public void testGetLanguageFileFromRemoteServerNoConnected() {
 		fixtureServerConnected(false);
 
-		this.remoteServerScheduledJobs.getLanguageFileFromRemoteServer();
-	}
-
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	@Ignore("Not able to be tested. Path is hardcode")
-	@Test
-	public void testGetLanguageFileFromRemoteServerConnected() throws Exception {
-		fixtureServerConnected(true);
-		Mockito.when(remoteServer.getLanguageBundles()).thenReturn((Map) mapBundles);
 		this.remoteServerScheduledJobs.getLanguageFileFromRemoteServer();
 	}
 

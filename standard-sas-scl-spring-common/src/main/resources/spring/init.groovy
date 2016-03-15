@@ -16,12 +16,15 @@ import com.sicpa.standard.sasscl.model.custom.CustomizablePropertyFactory
 
 beans{
 
+	registerSingleton('allProperties',props)
 	initCustomizableModel()
 	initEventBus()
 	initXstream()
-	initBackup()
+	initBackup(profilePath,Integer.parseInt(props['backup.max']))
 	initOperatorLog()
 }
+
+
 
 def static initOperatorLog() {
 	OperatorLoggerBehavior log=new OperatorLoggerBehavior();
@@ -50,12 +53,12 @@ def static initXstream() {
 	xstreamConfigurator.configure(ConfigUtils.getXStream())
 }
 
-def static initBackup() {
+def static initBackup(String profilePath,int maxBackup) {
 	def backupService= new BackupService()
 	backupService.setProfilePath(profilePath)
 	backupService.setBackupFolder('backup-config')
 	backupService.setConfigFolder('config')
-	backupService.setBackupMax(Integer.parseInt(props['backup.max']))
+	backupService.setBackupMax(maxBackup)
 	backupService.doBackup();
 }
 

@@ -13,6 +13,7 @@ import static com.sicpa.standard.sasscl.ioc.BeansName.STATISTICS_VIEW_MAPPER;
 import java.awt.Color;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 import java.util.function.Function;
 
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
@@ -33,10 +34,14 @@ import com.sicpa.standard.sasscl.business.statistics.mapper.IProductStatusToStat
 import com.sicpa.standard.sasscl.controller.device.group.impl.SimpleGroupDevicesController;
 import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState;
 import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowStateChangedEvent;
+import com.sicpa.standard.sasscl.controller.hardware.ProductionDevicesCreatedEvent;
 import com.sicpa.standard.sasscl.controller.productionconfig.mapping.IProductionConfigMapping;
 import com.sicpa.standard.sasscl.devices.IDevice;
 import com.sicpa.standard.sasscl.devices.camera.CameraCodeEvent;
 import com.sicpa.standard.sasscl.devices.camera.alert.CameraCountAlertTask;
+import com.sicpa.standard.sasscl.devices.camera.simulator.CameraSimuCodeTransformer;
+import com.sicpa.standard.sasscl.devices.camera.simulator.CameraSimulatorController;
+import com.sicpa.standard.sasscl.devices.camera.simulator.ICameraAdaptorSimulator;
 import com.sicpa.standard.sasscl.devices.plc.PlcUtils;
 import com.sicpa.standard.sasscl.devices.remote.IRemoteServer;
 import com.sicpa.standard.sasscl.devices.remote.mapping.IProductionModeMapping;
@@ -52,8 +57,15 @@ import com.sicpa.standard.sasscl.productionParameterSelection.ISelectionModelFac
 import com.sicpa.standard.sasscl.productionParameterSelection.ISelectionModelFactory.IConfigFlowModel;
 import com.sicpa.standard.sasscl.productionParameterSelection.SelectionModel;
 
+/**
+ * helper class for customization<br>
+ * all the methods have to be called from <code>Bootstrap.executeSpringInitTasks</code> if not specified otherwise
+ */
 public class CustoBuilder {
 
+	/**
+	 * let a production mode be only accessible to user with the given permission
+	 */
 	public static void setProductionModePermission(ProductionMode mode, Permission permission) {
 
 		ISelectionModelFactory modelFactory = BeanProvider.getBean(SELECTION_MODEL_FACTORY);
@@ -72,7 +84,9 @@ public class CustoBuilder {
 
 	/**
 	 * 
-	 * @param productionMode
+	 * Make a new production mode available, the associated market type with id=idOnRemoteServer must be available in
+	 * the tree of production parameter downlaoded from the server to be actually available
+	 * 
 	 * @param configId
 	 *            is the name(without the .xml extension) of the file that will be loaded when the production mode is
 	 *            selected
@@ -83,6 +97,12 @@ public class CustoBuilder {
 		addToRemoteMapping(productionMode, idOnRemoteServer);
 	}
 
+	/**
+	 * add a new product status available in the application<br/>
+	 * the statistics increased for this product status will have the given StatisticsKey<br>
+	 * It will be handled as productDto or as a counter when reporting to the server based on
+	 * <code>isProductActivated</code>
+	 */
 	public static void addNewProductStatus(ProductStatus status, StatisticsKey statsKey, int idOnRemote,
 			Color colorOnScreen, int indexOnScreen, String langKey, boolean isProductActivated) {
 
@@ -95,6 +115,10 @@ public class CustoBuilder {
 		setPackagerType(status, isProductActivated);
 	}
 
+	/**
+	 * add a message to the message mapping. send the message using the following code:<br/>
+	 * <code>EventBusService.post(new MessageEvent(langKey))</code>
+	 */
 	public static void addMessage(String langKey, String msgCode, MessageType type) {
 		IMessagesMapping typeMapping = BeanProvider.getBean(MESSAGES_MAPPING);
 		IMessageCodeMapper codeMapping = (IMessageCodeMapper) typeMapping;
@@ -102,16 +126,26 @@ public class CustoBuilder {
 		codeMapping.add(msgCode, langKey);
 	}
 
+	/**
+	 * change the message type for a given message from the default message mapping
+	 */
 	public static void setMessageType(String langKey, MessageType type) {
 		IMessagesMapping typeMapping = BeanProvider.getBean(MESSAGES_MAPPING);
 		typeMapping.add(langKey, type);
 	}
 
+	/**
+	 * the connect method of the given device will be called during the application startup
+	 */
 	public static void addDeviceToStartUp(IDevice device) {
 		SimpleGroupDevicesController group = BeanProvider.getBean(DEVICES_GROUP_STARTUP);
 		group.addDevice(device);
 	}
 
+	/**
+	 * add or replace in the mapping: ProductionMode, on scl app <---> market type id, on server <br/>
+	 * this mapping is used when converting the tree of production parameter
+	 */
 	public static void addToRemoteMapping(ProductionMode mode, int idOnRemoteServer) {
 		IProductionModeMapping mapping = BeanProvider.getBean(PRODUCTION_MODE_MAPPING);
 		mapping.add(mode, idOnRemoteServer);
@@ -126,6 +160,10 @@ public class CustoBuilder {
 		}
 	}
 
+	/**
+	 * add or replace in the mapping: ProductStatus, on scl app <---> product dto status id, on server <br/>
+	 * this mapping is used when sending production to the server
+	 */
 	public static void addToRemoteMapping(ProductStatus status, int idOnRemote) {
 		IRemoteServerProductStatusMapping mapping = BeanProvider.getBean(REMOTE_SERVER_PRODUCT_STATUS_MAPPING);
 		mapping.add(status, idOnRemote);
@@ -133,9 +171,10 @@ public class CustoBuilder {
 
 	/**
 	 * Call to this method has to be done before spring init<br>
+	 * <br>
 	 * some processes are done by naming convention, so respect the following<br>
 	 * <li>NTF_LINE_XXX -> jmx line report <li>
-	 * NTF_CAB_XXX -> jmx cabinet report<li>line placeholder is PlcLineHelper.LINE_INDEX_PLACEHOLDER<br>
+	 * NTF_CAB_XXX -> jmx cabinet report<li>line placeholder is <code>PlcLineHelper.LINE_INDEX_PLACEHOLDER</code><br>
 	 * see plcVars.groovy for options
 	 */
 	public static void addVariable(String logicalName, String nameOnPlc, PlcUtils.PLC_TYPE type, Map<String, ?> options) {
@@ -165,6 +204,9 @@ public class CustoBuilder {
 		CustomizablePropertyFactory.getCustomizablePropertyDefinition().addProperty(classToCustomize, property);
 	}
 
+	/**
+	 * add a task that will be executed in the STARTING state
+	 */
 	public static void addActionOnStartingProduction(Runnable task) {
 		Object listener = new Object() {
 			@Subscribe
@@ -177,23 +219,36 @@ public class CustoBuilder {
 		EventBusService.register(listener);
 	}
 
+	/**
+	 * add a new statistics by line based on the product status
+	 */
 	public static void handleNewStatistic(ProductStatus status, StatisticsKey statsKey, Color colorOnScreen,
 			int indexOnScreen, String langKey) {
 		addToStatisticsMapper(status, statsKey);
 		addStatisticsOnView(status, statsKey, colorOnScreen, indexOnScreen, langKey);
 	}
 
-	private static void addToStatisticsMapper(ProductStatus status, StatisticsKey statsKey) {
+	/**
+	 * let the application know that it has to increase the statistics with the given StatisticsKey when a product with
+	 * the given status is created
+	 */
+	public static void addToStatisticsMapper(ProductStatus status, StatisticsKey statsKey) {
 		IProductStatusToStatisticKeyMapper statsMapping = BeanProvider.getBean(STATISTICS_PRODUCTS_STATUS_MAPPER);
 		statsMapping.add(status, statsKey);
 	}
 
-	private static void addStatisticsOnView(ProductStatus status, StatisticsKey statsKey, Color colorOnScreen,
+	/**
+	 * display on the screen statistics of the given StatisticsKey
+	 */
+	public static void addStatisticsOnView(ProductStatus status, StatisticsKey statsKey, Color colorOnScreen,
 			int indexOnScreen, String langKey) {
 		IStatisticsKeyToViewDescriptorMapping viewMapping = BeanProvider.getBean(STATISTICS_VIEW_MAPPER);
 		viewMapping.add(statsKey, colorOnScreen, indexOnScreen, langKey);
 	}
 
+	/**
+	 * add an alert task that will be started when the production is starting
+	 */
 	public static void addAlert(IAlertTask alertTask) {
 		IAlert alert = BeanProvider.getBean(BeansName.ALERT);
 		alert.addTask(alertTask);
@@ -213,5 +268,33 @@ public class CustoBuilder {
 	public static void setAlertEnabler(Function<AbstractAlertTask, Boolean> enabler, String alertTaskBeanName) {
 		AbstractAlertTask task = BeanProvider.getBean(alertTaskBeanName);
 		task.setEnabler(enabler);
+	}
+
+	/**
+	 * for the given camera, when in simulation, the decision to generate a valid/invalid and the code itself will be
+	 * delegated to the given <code>CameraSimuCodeTransformer</code>
+	 */
+	public static void setCameraSimulatorCodeTransformer(String cameraId, CameraSimuCodeTransformer custoTransformer) {
+
+		Properties props = BeanProvider.getBean(BeansName.ALL_PROPERTIES);
+		String cameraBehabior = props.getProperty("camera.behavior");
+		if (!cameraBehabior.equalsIgnoreCase("simulator")) {
+			return;
+		}
+
+		Object o = new Object() {
+			@Subscribe
+			public void handleDeviceCreated(ProductionDevicesCreatedEvent evt) {
+				ICameraAdaptorSimulator camera = null;
+				for (IDevice dev : evt.getDevices()) {
+					if (dev.getName().equals(cameraId)) {
+						camera = (ICameraAdaptorSimulator) dev;
+					}
+				}
+				((CameraSimulatorController) camera.getSimulatorController())
+						.setCustoCodesGeneratedTransformer(custoTransformer);
+			}
+		};
+		EventBusService.register(o);
 	}
 }

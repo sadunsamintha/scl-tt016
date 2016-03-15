@@ -317,4 +317,9 @@ public interface BeansName {
 	 * IProductionConfigMapping
 	 */
 	String PRODUCTION_CONFIG_MAPPING = "productionConfigMapping";
+
+	/**
+	 * Properties
+	 */
+	String ALL_PROPERTIES = "allProperties";
 }
