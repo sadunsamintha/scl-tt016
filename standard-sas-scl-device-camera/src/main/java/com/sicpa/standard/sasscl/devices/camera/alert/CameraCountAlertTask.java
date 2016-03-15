@@ -1,10 +1,12 @@
 package com.sicpa.standard.sasscl.devices.camera.alert;
 
+import java.util.function.Function;
+
 import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.messages.MessageEvent;
 import com.sicpa.standard.sasscl.business.alert.task.model.CameraCountAlertTaskModel;
 import com.sicpa.standard.sasscl.business.alert.task.scheduled.AbstractScheduledBadCountAlertTask;
-import com.sicpa.standard.sasscl.devices.camera.CameraBadCodeEvent;
+import com.sicpa.standard.sasscl.devices.camera.CameraCodeEvent;
 import com.sicpa.standard.sasscl.devices.camera.CameraGoodCodeEvent;
 import com.sicpa.standard.sasscl.messages.MessageEventKey;
 import com.sicpa.standard.sasscl.model.ProductionParameters;
@@ -21,6 +23,8 @@ public class CameraCountAlertTask extends AbstractScheduledBadCountAlertTask {
 	protected ProductionParameters productionParameters;
 	protected CameraCountAlertTaskModel model;
 
+	private Function<CameraCodeEvent, Boolean> codeValidator = (evt) -> isValidCodeDefaultImpl(evt);
+
 	public CameraCountAlertTask() {
 		super();
 	}
@@ -31,17 +35,32 @@ public class CameraCountAlertTask extends AbstractScheduledBadCountAlertTask {
 	}
 
 	@Subscribe
-	public void receiveCameraCode(final CameraGoodCodeEvent evt) {
-		increaseGood();
+	public void receiveCameraCode(CameraCodeEvent evt) {
+		dispatchEvent(evt);
 	}
 
-	@Subscribe
-	public void receiveCameraCodeError(final CameraBadCodeEvent evt) {
-		increaseBad();
+	private void dispatchEvent(CameraCodeEvent evt) {
+		if (isValidCode(evt)) {
+			increaseGood();
+		} else {
+			increaseBad();
+		}
+	}
+
+	public void setCodeValidator(Function<CameraCodeEvent, Boolean> isValidCode) {
+		this.codeValidator = isValidCode;
+	}
+
+	private boolean isValidCode(CameraCodeEvent evt) {
+		return codeValidator.apply(evt);
+	}
+
+	private boolean isValidCodeDefaultImpl(CameraCodeEvent evt) {
+		return evt instanceof CameraGoodCodeEvent;
 	}
 
 	@Override
-	protected boolean isEnabled() {
+	protected boolean isEnabledDefaultImpl() {
 		if (!productionParameters.getProductionMode().isWithSicpaData()) {
 			return false;
 		}

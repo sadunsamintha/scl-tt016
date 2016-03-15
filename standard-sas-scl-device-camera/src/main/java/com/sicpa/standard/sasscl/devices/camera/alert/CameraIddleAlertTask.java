@@ -4,8 +4,7 @@ import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.messages.MessageEvent;
 import com.sicpa.standard.sasscl.business.alert.task.model.CameraIddleAlertTaskModel;
 import com.sicpa.standard.sasscl.business.alert.task.scheduled.AbstractScheduledAlertTask;
-import com.sicpa.standard.sasscl.devices.camera.CameraBadCodeEvent;
-import com.sicpa.standard.sasscl.devices.camera.CameraGoodCodeEvent;
+import com.sicpa.standard.sasscl.devices.camera.CameraCodeEvent;
 import com.sicpa.standard.sasscl.messages.MessageEventKey;
 import com.sicpa.standard.sasscl.model.ProductionMode;
 import com.sicpa.standard.sasscl.model.ProductionParameters;
@@ -48,17 +47,12 @@ public class CameraIddleAlertTask extends AbstractScheduledAlertTask {
 	}
 
 	@Subscribe
-	public void receiveCameraCode(CameraGoodCodeEvent arg0) {
-		previousTime = System.currentTimeMillis();
-	}
-
-	@Subscribe
-	public void receiveCameraCodeError(CameraBadCodeEvent arg0) {
+	public void receiveCameraCode(CameraCodeEvent evt) {
 		previousTime = System.currentTimeMillis();
 	}
 
 	@Override
-	protected boolean isEnabled() {
+	protected boolean isEnabledDefaultImpl() {
 		// disable if maintenance mode
 		if (productionParameters.getProductionMode().equals(ProductionMode.MAINTENANCE)) {
 			return false;

@@ -2,29 +2,14 @@ package com.sicpa.standard.sasscl.devices.camera;
 
 import com.sicpa.standard.sasscl.model.Code;
 
-public class CameraGoodCodeEvent {
+public class CameraGoodCodeEvent extends CameraCodeEvent {
 
-
-	protected Code code;
-	protected ICameraAdaptor source;
-
-	public CameraGoodCodeEvent(final Code code, ICameraAdaptor source) {
-		this.code = code;
-		this.source = source;
-	}
-
-	public Code getCode() {
-		return this.code;
-	}
-
-	public ICameraAdaptor getSource() {
-		return source;
+	public CameraGoodCodeEvent(Code code, ICameraAdaptor source) {
+		super(code, source);
 	}
 
 	@Override
 	public String toString() {
-		return "CameraGoodCodeEvent{" +
-				"code=" + code +
-				'}';
+		return "CameraGoodCodeEvent{" + "code=" + getCode() + '}';
 	}
 }

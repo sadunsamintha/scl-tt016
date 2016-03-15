@@ -1,15 +1,10 @@
-/**
- * Date		: Jul 21, 2010
- *
- * Copyright (c) 2010 SICPA Security Solutions, all rights reserved.
- *
- */
 package com.sicpa.standard.sasscl.devices.remote;
 
 import com.sicpa.standard.sasscl.devices.IDevice;
 import com.sicpa.standard.sasscl.model.CodeType;
 import com.sicpa.standard.sasscl.model.EncoderInfo;
 import com.sicpa.standard.sasscl.model.PackagedProducts;
+import com.sicpa.standard.sasscl.model.ProductStatus;
 import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.ProductionParameterRootNode;
 import com.sicpa.standard.sasscl.sicpadata.reader.IAuthenticator;
 
@@ -17,11 +12,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-/**
- * 
- * Interface for remote server. Use this interface for different remote server connection / protocol
- * 
- */
 public interface IRemoteServer extends IDevice {
 
 	/**
@@ -92,10 +82,10 @@ public interface IRemoteServer extends IDevice {
 	long getSubsystemID();
 
 	void sendInfoToGlobalMonitoringTool(GlobalMonitoringToolInfo info);
-	
-	/**
-     * Life Check Tick
-     * 
-     */
-    public void lifeCheckTick();
+
+	void lifeCheckTick();
+
+	void addToActivatedPackager(ProductStatus status);
+
+	void addToCounterPackager(ProductStatus status);
 }

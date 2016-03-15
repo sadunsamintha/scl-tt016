@@ -1,18 +1,9 @@
 package com.sicpa.standard.sasscl.business.alert.task.model;
 
-public class CameraIddleAlertTaskModel {
+public class CameraIddleAlertTaskModel extends AbstractAlertTaskModel {
 
-	protected boolean enabled=true;
-	protected int maxInactiveTimeInSec;
-	protected int delayInSec;
-
-	public boolean isEnabled() {
-		return enabled;
-	}
-
-	public void setEnabled(boolean enabled) {
-		this.enabled = enabled;
-	}
+	private int maxInactiveTimeInSec;
+	private int delayInSec;
 
 	public int getMaxInactiveTimeInSec() {
 		return maxInactiveTimeInSec;

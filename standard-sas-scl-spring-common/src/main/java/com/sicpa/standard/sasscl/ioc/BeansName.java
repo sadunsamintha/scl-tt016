@@ -312,4 +312,9 @@ public interface BeansName {
 	 * IStatisticsKeyToViewDescriptorMapping
 	 */
 	String STATISTICS_VIEW_MAPPER = "statisticsKeyToViewDescriptorMapping";
+
+	/**
+	 * IProductionConfigMapping
+	 */
+	String PRODUCTION_CONFIG_MAPPING = "productionConfigMapping";
 }

@@ -1,8 +1,7 @@
 package com.sicpa.standard.sasscl.business.alert.task.model;
 
-public class PlcActivationCounterCheckModel {
-	protected int maxDelta;
-	protected boolean enabled=true;
+public class PlcActivationCounterCheckModel extends AbstractAlertTaskModel {
+	private int maxDelta;
 
 	public int getMaxDelta() {
 		return maxDelta;
@@ -12,11 +11,4 @@ public class PlcActivationCounterCheckModel {
 		this.maxDelta = maxDelta;
 	}
 
-	public boolean isEnabled() {
-		return enabled;
-	}
-
-	public void setEnabled(boolean enabled) {
-		this.enabled = enabled;
-	}
 }

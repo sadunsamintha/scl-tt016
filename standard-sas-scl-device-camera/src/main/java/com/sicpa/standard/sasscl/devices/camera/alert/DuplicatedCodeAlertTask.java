@@ -19,19 +19,17 @@ import com.sicpa.standard.sasscl.model.ProductionParameters;
  */
 public class DuplicatedCodeAlertTask extends AbstractAlertTask {
 
-	protected ProductionParameters productionParameters;
+	private ProductionParameters productionParameters;
+	private CameraDuplicatedAlertTaskModel model;
 
-	protected final Map<String, String> mapPreviousCode = new HashMap<String, String>();
-	protected final Map<String, Integer> mapPreviousCounter = new HashMap<String, Integer>();
-
-	protected CameraDuplicatedAlertTaskModel model;
-
-	protected final Object lock = new Object();
+	private final Map<String, String> previousCodeByLine = new HashMap<>();
+	private final Map<String, Integer> previousCounterByLine = new HashMap<>();
+	private final Object lock = new Object();
 
 	@Override
 	protected boolean isAlertPresent() {
 		synchronized (lock) {
-			for (Entry<String, Integer> entry : mapPreviousCounter.entrySet()) {
+			for (Entry<String, Integer> entry : previousCounterByLine.entrySet()) {
 				if (entry.getValue() >= getModel().getThreshold()) {
 					return true;
 				}
@@ -46,41 +44,54 @@ public class DuplicatedCodeAlertTask extends AbstractAlertTask {
 	}
 
 	@Override
-	protected boolean isEnabled() {
+	protected boolean isEnabledDefaultImpl() {
 		if (!productionParameters.getProductionMode().isWithSicpaData()) {
 			return false;
 		}
 		return getModel().getThreshold() > 0 && getModel().isEnabled();
 	}
 
-	protected String getPreviousCode(String camera) {
-		return mapPreviousCode.get(camera);
+	private String getPreviousCode(String camera) {
+		return previousCodeByLine.get(camera);
 	}
 
 	@Subscribe
-	public void receiveCameraCode(final CameraGoodCodeEvent cameraEvent) {
+	public void receiveCameraCode(CameraGoodCodeEvent cameraEvent) {
+		String cameraName = cameraEvent.getSource().getName();
+		String currentCode = cameraEvent.getCode().getStringCode();
 		synchronized (lock) {
-			String cameraName = cameraEvent.getSource().getName();
-			String previousCode = getPreviousCode(cameraName);
-			String currentCode = cameraEvent.getCode().getStringCode();
-
-			if (getModel().getThreshold() > 0 && previousCode != null && previousCode.equals(currentCode)) {
-				int counter = mapPreviousCounter.get(cameraName);
-				counter++;
-				mapPreviousCounter.put(cameraName, counter);
+			if (isDuplicate(cameraEvent)) {
+				increaseCounter(cameraName);
 				checkForMessage();
 			} else {
-				mapPreviousCounter.put(cameraName, 1);
+				resetCounter(cameraName);
 			}
-			mapPreviousCode.put(cameraName, currentCode);
+			previousCodeByLine.put(cameraName, currentCode);
 		}
+	}
+
+	private void resetCounter(String cameraName) {
+		previousCounterByLine.put(cameraName, 1);
+	}
+
+	private void increaseCounter(String cameraName) {
+		int counter = previousCounterByLine.get(cameraName);
+		counter++;
+		previousCounterByLine.put(cameraName, counter);
+	}
+
+	private boolean isDuplicate(CameraGoodCodeEvent cameraEvent) {
+		String cameraName = cameraEvent.getSource().getName();
+		String previousCode = getPreviousCode(cameraName);
+		String currentCode = cameraEvent.getCode().getStringCode();
+		return getModel().getThreshold() > 0 && previousCode != null && previousCode.equals(currentCode);
 	}
 
 	@Override
 	public void reset() {
 		synchronized (lock) {
-			mapPreviousCode.clear();
-			mapPreviousCounter.clear();
+			previousCodeByLine.clear();
+			previousCounterByLine.clear();
 		}
 	}
 
