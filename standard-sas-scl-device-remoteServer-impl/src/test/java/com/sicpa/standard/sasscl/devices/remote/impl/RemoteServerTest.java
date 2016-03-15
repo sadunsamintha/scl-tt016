@@ -59,7 +59,6 @@ import com.sicpa.standard.sicpadata.api.business.IBSicpadataReader;
 import com.sicpa.standard.sicpadata.api.exception.UnknownModeException;
 import com.sicpa.standard.sicpadata.api.exception.UnknownVersionException;
 import com.sicpa.std.common.api.activation.business.ActivationServiceHandler;
-import com.sicpa.std.common.api.activation.dto.ActivationResultsDto;
 import com.sicpa.std.common.api.activation.dto.AuthorizedProductsDto;
 import com.sicpa.std.common.api.activation.dto.SicpadataReaderDto;
 import com.sicpa.std.common.api.activation.dto.productionData.ProcessedProductsStatusDto;
