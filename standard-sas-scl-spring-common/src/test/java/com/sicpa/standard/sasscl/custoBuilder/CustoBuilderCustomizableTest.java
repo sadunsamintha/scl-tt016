@@ -24,7 +24,7 @@ public class CustoBuilderCustomizableTest {
 
 	@Test
 	public void testModelAddCustomPropertySuccess() {
-		CustoBuilder.addPropertyToClass(sku.getClass(), isCompliant);
+		CustoBuilder.addPropertyToClass(SKU.class, isCompliant);
 		sku.setProperty(isCompliant, true);
 
 		Assert.assertEquals(true, sku.getProperty(isCompliant).booleanValue());
@@ -37,7 +37,7 @@ public class CustoBuilderCustomizableTest {
 
 	@Test
 	public void testModelAddCustomPropertySerializationXStream() {
-		CustoBuilder.addPropertyToClass(sku.getClass(), isCompliant);
+		CustoBuilder.addPropertyToClass(SKU.class, isCompliant);
 		sku.setProperty(isCompliant, true);
 
 		XStream xStream = new XStream();
@@ -49,14 +49,14 @@ public class CustoBuilderCustomizableTest {
 
 	@Test
 	public void testModelGetDefaultValue() {
-		CustoBuilder.addPropertyToClass(sku.getClass(), isCompliant);
+		CustoBuilder.addPropertyToClass(SKU.class, isCompliant);
 
 		Assert.assertEquals(true, sku.getProperty(isCompliant).booleanValue());
 	}
 
 	@Test
 	public void testModelOverwriteDefaultValue() {
-		CustoBuilder.addPropertyToClass(sku.getClass(), isCompliant);
+		CustoBuilder.addPropertyToClass(SKU.class, isCompliant);
 		sku.setProperty(isCompliant, false);
 
 		Assert.assertEquals(false, sku.getProperty(isCompliant).booleanValue());

@@ -186,21 +186,14 @@ public class CustoBuilder {
 	}
 
 	/**
-	 * This method allows a property to be added to a class. After adding the property, an instance implementing the
-	 * ICustomizable interface, can set the value of the added property. Setting the value of a property without
-	 * previously adding it to the class, will result in an exception.
+	 * add a new available property to a class without extending it.<br/>
+	 * It is working only for class implementing ICustomizable: <li>SKU <li>Code <li>CodeType <li>Product <li>
+	 * ProductionParameter
 	 * 
-	 * @param classToCustomize
-	 *            class to add property to
-	 * @param property
-	 *            custom property to add
-	 * @param <T>
-	 *            the type of custom property to ad
-	 * @see CustoBuilderTest.testModelAddCustomPropertySuccess
+	 * @see CustoBuilderCustomizableTest.testModelAddCustomPropertySuccess
 	 *
 	 */
-	public static <T> void addPropertyToClass(Class<? extends ICustomizable> classToCustomize,
-			CustomProperty<T> property) {
+	public static void addPropertyToClass(Class<? extends ICustomizable> classToCustomize, CustomProperty<?> property) {
 		CustomizablePropertyFactory.getCustomizablePropertyDefinition().addProperty(classToCustomize, property);
 	}
 
