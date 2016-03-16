@@ -263,10 +263,6 @@ public interface BeansName {
 	 * IServiceProviderManager
 	 */
 	String CRYPTO_PROVIDER_MANAGER = "cryptoProviderManager";
-	/**
-	 * IProductionModeMapping
-	 */
-	String PRODUCTION_MODE_MAPPING = "productionModeMapping";
 
 	/**
 	 * BeanHistoryManager
@@ -349,4 +345,14 @@ public interface BeansName {
 	 * IMappingExtendedCodeBehavior
 	 */
 	String MAPPING_EXTENDED_CODE_BEHAVIOR = "mappingExtendedCodeBehavior";
+
+	/**
+	 * IProductionConfigMapping
+	 */
+	String PRODUCTION_CONFIG_MAPPING = "productionConfigMapping";
+
+	/**
+	 * IProductionModeMapping
+	 */
+	String PRODUCTION_MODE_MAPPING = "productionModeMapping";
 }

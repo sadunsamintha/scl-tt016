@@ -1,8 +1,5 @@
 package com.sicpa.standard.sasscl.custoBuilder;
 
-import java.util.List;
-import java.util.Map;
-
 import com.sicpa.standard.client.common.ioc.BeanProvider;
 import com.sicpa.standard.client.common.messages.IMessageCodeMapper;
 import com.sicpa.standard.client.common.messages.IMessagesMapping;
@@ -14,6 +11,7 @@ import com.sicpa.standard.plc.value.IPlcVariable;
 import com.sicpa.standard.plc.value.PlcVariable;
 import com.sicpa.standard.sasscl.controller.device.group.impl.SimpleGroupDevicesController;
 import com.sicpa.standard.sasscl.controller.productionconfig.factory.utils.SpringImplementationProvider;
+import com.sicpa.standard.sasscl.controller.productionconfig.mapping.IProductionConfigMapping;
 import com.sicpa.standard.sasscl.devices.IDevice;
 import com.sicpa.standard.sasscl.devices.plc.variable.EditablePlcVariables;
 import com.sicpa.standard.sasscl.devices.plc.variable.PlcVariableGroup;
@@ -26,14 +24,18 @@ import com.sicpa.standard.sasscl.devices.remote.mapping.IRemoteServerProductStat
 import com.sicpa.standard.sasscl.ioc.BeansName;
 import com.sicpa.standard.sasscl.model.ProductStatus;
 import com.sicpa.standard.sasscl.model.ProductionMode;
-import com.sicpa.standard.sasscl.model.SKU;
-import com.sicpa.standard.sasscl.model.custom.*;
+import com.sicpa.standard.sasscl.model.custom.CustomProperty;
+import com.sicpa.standard.sasscl.model.custom.CustomizablePropertyDefinition;
+import com.sicpa.standard.sasscl.model.custom.CustomizablePropertyFactory;
+import com.sicpa.standard.sasscl.model.custom.ICustomizable;
 import com.sicpa.standard.sasscl.productionParameterSelection.ISelectionModelFactory;
 import com.sicpa.standard.sasscl.productionParameterSelection.ISelectionModelFactory.IConfigFlowModel;
 import com.sicpa.standard.sasscl.productionParameterSelection.SelectionModel;
 import com.sicpa.standard.sasscl.provider.impl.PlcProvider;
 import com.sicpa.standard.sasscl.view.MainFrameGetter;
-import org.springframework.util.SerializationUtils;
+
+import java.util.List;
+import java.util.Map;
 
 public class CustoBuilder {
 
@@ -49,6 +51,30 @@ public class CustoBuilder {
 					}
 				}
 			});
+		}
+
+		/**
+		 *
+		 * Make a new production mode available, the associated market type with id=idOnRemoteServer must be available in
+		 * the tree of production parameters downloaded from the server to be actually available
+		 *
+		 * @param configId
+		 *            is the name(without the .xml extension) of the file that will be loaded when the production mode is
+		 *            selected
+		 */
+		public static void addProductionMode(ProductionMode productionMode, String configId, int idOnRemoteServer) {
+			IProductionConfigMapping mapping = BeanProvider.getBean(BeansName.PRODUCTION_CONFIG_MAPPING);
+			mapping.put(productionMode, configId);
+			addToRemoteMapping(productionMode, idOnRemoteServer);
+		}
+
+		/**
+		 * Add or replace in the mapping: ProductionMode, on scl app <---> market type id, on server <br/>
+		 * this mapping is used when converting the tree of production parameter
+		 */
+		public static void addToRemoteMapping(ProductionMode mode, int idOnRemoteServer) {
+			IProductionModeMapping mapping = BeanProvider.getBean(BeansName.PRODUCTION_MODE_MAPPING);
+			mapping.add(mode, idOnRemoteServer);
 		}
 	}
 
