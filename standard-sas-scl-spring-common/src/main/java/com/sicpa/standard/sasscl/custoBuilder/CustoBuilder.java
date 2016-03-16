@@ -85,7 +85,7 @@ public class CustoBuilder {
 	/**
 	 * 
 	 * Make a new production mode available, the associated market type with id=idOnRemoteServer must be available in
-	 * the tree of production parameter downlaoded from the server to be actually available
+	 * the tree of production parameters downloaded from the server to be actually available
 	 * 
 	 * @param configId
 	 *            is the name(without the .xml extension) of the file that will be loaded when the production mode is
