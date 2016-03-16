@@ -25,7 +25,6 @@ public class CustomizableTest {
 
 	@Test
 	public void testCustomProperty() {
-
 		SKU sku = new SKU();
 		Code code = new Code();
 		CustomProperty<String> customProperty = new StringCustomProperty("customProperty1",
@@ -65,8 +64,8 @@ public class CustomizableTest {
 		Assert.assertEquals(Boolean.TRUE, sku.getProperty(CustomizableTest.SKU_IS_EXPORT));
 
 		sku.clearProperty(CustomizableTest.SKU_IS_EXPORT);
-		Assert.assertNull(sku.getProperty(CustomizableTest.SKU_IS_EXPORT));
-
+		// Despite removing the property, the default value (true) is returned
+		Assert.assertTrue(sku.getProperty(CustomizableTest.SKU_IS_EXPORT));
 	}
 
 	public static class PackType {
