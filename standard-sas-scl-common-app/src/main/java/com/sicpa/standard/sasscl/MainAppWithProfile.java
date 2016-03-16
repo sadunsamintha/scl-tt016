@@ -58,20 +58,11 @@ public class MainAppWithProfile extends MainApp implements IProfileSelectorListe
 
 	@Override
 	public String getApplicationVersion() {
-		InputStream versionFile = null;
-		try {
-			versionFile = ClassLoader.getSystemResourceAsStream("version");
+		try (InputStream versionFile = ClassLoader.getSystemResourceAsStream("version")) {
 			return IOUtils.toString(versionFile);
 		} catch (Exception e) {
 			logger.error("", e);
 			return "N/A";
-		} finally {
-			if (versionFile != null) {
-				try {
-					versionFile.close();
-				} catch (Exception e2) {
-				}
-			}
 		}
 	}
 
