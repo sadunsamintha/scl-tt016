@@ -62,7 +62,7 @@ public class CustoBuilderTest {
 		BDDMockito.given(BeanProvider.getBean(STATISTICS_VIEW_MAPPER)).willReturn(viewMapping);
 		BDDMockito.given(BeanProvider.getBean(REMOTE_SERVER)).willReturn(server);
 
-		CustoBuilder.addNewProductStatus(status, statKey, idOnRemote, colorOnView, indexOnView, langKey, true);
+		CustoBuilder.addProductStatus(status, statKey, idOnRemote, colorOnView, indexOnView, langKey, true);
 
 		verify(statsMapping, Mockito.times(1)).add(status, statKey);
 		verify(remoteMapping, Mockito.times(1)).add(status, idOnRemote);

@@ -103,7 +103,7 @@ public class CustoBuilder {
 	 * It will be handled as productDto or as a counter when reporting to the server based on
 	 * <code>isProductActivated</code>
 	 */
-	public static void addNewProductStatus(ProductStatus status, StatisticsKey statsKey, int idOnRemote,
+	public static void addProductStatus(ProductStatus status, StatisticsKey statsKey, int idOnRemote,
 			Color colorOnScreen, int indexOnScreen, String langKey, boolean isProductActivated) {
 
 		handleNewStatistic(status, statsKey, colorOnScreen, indexOnScreen, langKey);
