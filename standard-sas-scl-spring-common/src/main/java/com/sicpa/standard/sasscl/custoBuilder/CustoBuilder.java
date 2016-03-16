@@ -177,7 +177,7 @@ public class CustoBuilder {
 	 * NTF_CAB_XXX -> jmx cabinet report<li>line placeholder is <code>PlcLineHelper.LINE_INDEX_PLACEHOLDER</code><br>
 	 * see plcVars.groovy for options
 	 */
-	public static void addVariable(String logicalName, String nameOnPlc, PlcUtils.PLC_TYPE type, Map<String, ?> options) {
+	public static void addPlcVariable(String logicalName, String nameOnPlc, PlcUtils.PLC_TYPE type, Map<String, ?> options) {
 		Map<String, Object> map = new HashMap<>();
 		map.put("v", nameOnPlc);
 		map.put("t", type);
