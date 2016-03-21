@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
 import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.messages.MessageEvent;
-import com.sicpa.standard.client.common.messages.MessagesUtils;
 import com.sicpa.standard.sasscl.messages.ActionEvent;
 import com.sicpa.standard.sasscl.messages.ActionMessageType;
 import com.sicpa.standard.sasscl.messages.SASDefaultMessagesMapping;
@@ -23,32 +22,22 @@ import com.sicpa.standard.sasscl.messages.SASDefaultMessagesMapping;
 public class MessagesHandler {
 
 	private static Logger logger = LoggerFactory.getLogger(MessagesHandler.class);
-	
+
 	SASDefaultMessagesMapping messagesMapping;
 
 	public MessagesHandler() {
 
 	}
-	
 
 	/**
 	 * Retrieves the ActionMessageType then constructs and sends the event
 	 */
 	@Subscribe
 	public void notifyMessage(final MessageEvent evt) {
-		
+
 		String key = evt.getKey();
-		
+
 		ActionMessageType type = getType(key);
-		
-		if (type == null || type == ActionMessageType.IGNORE) {
-			logger.info("Ignoring message {}", evt.getKey());
-			return;
-		} 
-		else if (type == ActionMessageType.LOG) {
-			logger.info(MessagesUtils.getMessage(evt.getKey(), evt.getParams()));
-			return;
-		}
 
 		String paramString = "";
 		if (evt.getParams() != null) {
@@ -59,9 +48,9 @@ public class MessagesHandler {
 			paramString = params.toString();
 		}
 
-		logger.debug("message received {}- params {}- fowarding {}", 
+		logger.debug("message received {}- params {}- fowarding {}",
 				new Object[] { evt.getKey(), paramString, evt.getParams(), type.getActionEventClass() });
-		
+
 		ActionEvent actionEvt = createActionEvent(evt, type.getActionEventClass());
 		if (actionEvt != null) {
 			post(actionEvt);
@@ -70,21 +59,23 @@ public class MessagesHandler {
 
 	/**
 	 * Get the action message type based on the specified message key.
-	 * @param key message key
-	 * @return action message type. Action message warning will be returned if no action message matches specified
-	 * key.
+	 * 
+	 * @param key
+	 *            message key
+	 * @return action message type. Action message warning will be returned if no action message matches specified key.
 	 */
 	private ActionMessageType getType(String key) {
 		ActionMessageType type = (ActionMessageType) messagesMapping.getMessageType(key);
 
 		if (type == null) {
+			logger.info("no action type defined for :" + key + " defaulting to warning");
 			return ActionMessageType.WARNING;
 		}
 
 		return type;
 	}
 
-	protected ActionEvent createActionEvent(MessageEvent sourceEvent, Class<? extends ActionEvent> clazz) {
+	private ActionEvent createActionEvent(MessageEvent sourceEvent, Class<? extends ActionEvent> clazz) {
 		if (clazz == null) {
 			return null;
 		}
@@ -105,7 +96,7 @@ public class MessagesHandler {
 		return null;
 	}
 
-	protected void post(ActionEvent evt) {
+	private void post(ActionEvent evt) {
 		EventBusService.post(evt);
 	}
 
