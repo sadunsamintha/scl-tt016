@@ -15,8 +15,6 @@ import com.sicpa.standard.sasscl.devices.DeviceStatusEvent;
 import com.sicpa.standard.sasscl.devices.IDevice;
 import com.sicpa.standard.sasscl.devices.plc.IPlcAdaptor;
 import com.sicpa.standard.sasscl.devices.plc.PlcAdaptorException;
-import com.sicpa.standard.sasscl.devices.plc.PlcVariableMap;
-import com.sicpa.standard.sasscl.devices.plc.impl.PlcVariables;
 import com.sicpa.standard.sasscl.provider.impl.PlcProvider;
 
 public class TestPlcRemoteServerConnectionHandler {
@@ -28,9 +26,10 @@ public class TestPlcRemoteServerConnectionHandler {
 
 	PlcProvider plcProvider = new PlcProvider();
 
+	IPlcVariable<Integer> registerVar = PlcVariable.createInt32Var(".com.aVar");
+
 	@Before
 	public void setup() throws DeviceException {
-		PlcVariableMap.addPlcVariable(PlcVariables.REQUEST_JAVA_WARNINGS_AND_ERRORS_REGISTER.name(), "aVar");
 
 		plc = mock(IPlcAdaptor.class);
 		plcProvider.set(plc);
@@ -40,6 +39,7 @@ public class TestPlcRemoteServerConnectionHandler {
 		handler = new PlcRemoteServerConnectionHandler();
 		handler.setPlcProvider(plcProvider);
 		handler.setRemoteServer(remoteServer);
+		handler.setReqJavaErrorRegisterVar(registerVar);
 	}
 
 	@Test
@@ -51,10 +51,8 @@ public class TestPlcRemoteServerConnectionHandler {
 		// action
 		handler.remoteServerStatusChanged(new DeviceStatusEvent(DeviceStatus.DISCONNECTED, remoteServer));
 
-		IPlcVariable<Integer> var = PlcVariable.createInt32Var(PlcVariables.REQUEST_JAVA_WARNINGS_AND_ERRORS_REGISTER
-				.getVariableName());
-		var.setValue(1);
-		verify(plc).write(var);
+		registerVar.setValue(1);
+		verify(plc).write(registerVar);
 	}
 
 	@Test
@@ -67,10 +65,8 @@ public class TestPlcRemoteServerConnectionHandler {
 		remoteServer.connect();
 		handler.remoteServerStatusChanged(new DeviceStatusEvent(DeviceStatus.CONNECTED, remoteServer));
 
-		IPlcVariable<Integer> var = PlcVariable.createInt32Var(PlcVariables.REQUEST_JAVA_WARNINGS_AND_ERRORS_REGISTER
-				.getVariableName());
-		var.setValue(0);
-		verify(plc).write(var);
+		registerVar.setValue(0);
+		verify(plc).write(registerVar);
 	}
 
 	@Test
@@ -82,10 +78,8 @@ public class TestPlcRemoteServerConnectionHandler {
 		// action
 		handler.plcStatusChanged(new DeviceStatusEvent(DeviceStatus.CONNECTED, plc));
 
-		IPlcVariable<Integer> var = PlcVariable.createInt32Var(PlcVariables.REQUEST_JAVA_WARNINGS_AND_ERRORS_REGISTER
-				.getVariableName());
-		var.setValue(0);
-		verify(plc).write(var);
+		registerVar.setValue(0);
+		verify(plc).write(registerVar);
 	}
 
 	@Test
@@ -96,9 +90,7 @@ public class TestPlcRemoteServerConnectionHandler {
 		// action
 		handler.plcStatusChanged(new DeviceStatusEvent(DeviceStatus.CONNECTED, plc));
 
-		IPlcVariable<Integer> var = PlcVariable.createInt32Var(PlcVariables.REQUEST_JAVA_WARNINGS_AND_ERRORS_REGISTER
-				.getVariableName());
-		var.setValue(1);
-		verify(plc).write(var);
+		registerVar.setValue(1);
+		verify(plc).write(registerVar);
 	}
 }

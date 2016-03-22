@@ -31,16 +31,17 @@ import com.sicpa.standard.gui.utils.PaintUtils;
 @SuppressWarnings("serial")
 public class SnapshotView extends AbstractView<ISnapshotViewListener, SnapshotViewModel> {
 
-	protected JLabel labelIcon;
-	protected int iconW = 30;
-	protected int iconH = 20;
-	protected JXBusyLabel labelBusy;
+	private JLabel labelIcon;
+	private int iconW = 30;
+	private int iconH = 20;
+	private JXBusyLabel labelBusy;
+	private float animProgess;
 
 	public SnapshotView() {
 		initGUI();
 	}
 
-	protected void initGUI() {
+	private void initGUI() {
 		setLayout(new MigLayout("fill,hidemode 3"));
 		add(getLabelIcon(), "center");
 		add(getLabelBusy(), "center");
@@ -67,23 +68,18 @@ public class SnapshotView extends AbstractView<ISnapshotViewListener, SnapshotVi
 		return labelIcon;
 	}
 
-	protected void thisMousePressed() {
-		TaskExecutor.execute(new Runnable() {
-			@Override
-			public void run() {
-				takeApplicationSnapshot();
-			}
-		});
+	private void thisMousePressed() {
+		TaskExecutor.execute(() -> takeApplicationSnapshot());
 		displayAnim();
 	}
 
-	protected void takeApplicationSnapshot() {
+	private void takeApplicationSnapshot() {
 		if (!model.isBusy()) {
 			fireTakeApplicationSnapshot();
 		}
 	}
 
-	protected void fireTakeApplicationSnapshot() {
+	private void fireTakeApplicationSnapshot() {
 		synchronized (listeners) {
 			for (ISnapshotViewListener l : listeners) {
 				l.takeSnapshot();
@@ -99,15 +95,13 @@ public class SnapshotView extends AbstractView<ISnapshotViewListener, SnapshotVi
 		return labelBusy;
 	}
 
-	protected void displayAnim() {
+	private void displayAnim() {
 		Timeline timeline = new Timeline(this);
 		timeline.addPropertyToInterpolate("animProgess", 0f, 1f);
 		timeline.setDuration(50);
 		timeline.setEase(new Spline(0.7f));
 		timeline.playLoop(2, RepeatBehavior.REVERSE);
 	}
-
-	protected float animProgess;
 
 	public void setAnimProgess(float animProgess) {
 		this.animProgess = animProgess;
@@ -128,7 +122,7 @@ public class SnapshotView extends AbstractView<ISnapshotViewListener, SnapshotVi
 		g2.fillOval(0, 0, getWidth(), getHeight());
 	}
 
-	protected static BufferedImage createScreenShotImage(int w, int h) {
+	private static BufferedImage createScreenShotImage(int w, int h) {
 		BufferedImage img = GraphicsUtilities.createCompatibleTranslucentImage(w, h);
 		Graphics2D g = img.createGraphics();
 

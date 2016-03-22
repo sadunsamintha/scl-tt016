@@ -1,0 +1,15 @@
+<ProductionConfig activationBehavior="standardActivationBehavior" authenticatorMode="SCL">
+
+	<CameraConfig deviceType="COGNEX" id="qc_1" />
+
+	<PrinterConfig deviceType="DOMINO" id="pr_scl_1" validatedBy="qc_1" />
+
+
+	<PlcConfig>
+		<cabinet />
+		<line index="1">
+			<property key="PARAM_LINE_IS_ACTIVE" value="true" />
+		</line>
+	</PlcConfig>
+
+</ProductionConfig>

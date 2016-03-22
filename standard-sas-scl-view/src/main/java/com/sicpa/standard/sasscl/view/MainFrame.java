@@ -1,41 +1,23 @@
 package com.sicpa.standard.sasscl.view;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Dimension;
+import static com.sicpa.standard.client.common.security.SecurityService.hasPermission;
+
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 import javax.swing.AbstractAction;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JComponent;
-import javax.swing.JDialog;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
-import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 
 import net.miginfocom.swing.MigLayout;
 
-import org.jdesktop.swingx.graphics.GraphicsUtilities;
-
-import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.security.ILoginListener;
 import com.sicpa.standard.client.common.security.SecurityService;
 import com.sicpa.standard.client.common.view.SecuredComponentGetter;
@@ -45,30 +27,30 @@ import com.sicpa.standard.gui.screen.machine.AbstractMachineFrame;
 import com.sicpa.standard.gui.screen.machine.component.SelectionFlow.flow.DefaultSelectionFlowView;
 import com.sicpa.standard.gui.screen.machine.component.lineId.AbstractLineIdPanel;
 import com.sicpa.standard.gui.utils.Pair;
-import com.sicpa.standard.gui.utils.ThreadUtils;
-import com.sicpa.standard.sasscl.controller.ProductionParametersEvent;
-import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState;
-import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowStateChangedEvent;
 import com.sicpa.standard.sasscl.security.SasSclPermission;
-import com.sicpa.standard.sasscl.view.config.plc.MultiEditablePlcVariablesSet;
+import com.sicpa.standard.sasscl.view.licence.LicencePanel;
 import com.sicpa.standard.sasscl.view.lineid.LineIdWithAuthenticateButton;
 import com.sicpa.standard.sasscl.view.messages.I18nableLockingErrorModel;
 
 @SuppressWarnings("serial")
 public class MainFrame extends AbstractMachineFrame {
 
-	protected JComponent startStopView;
-	protected JComponent changeSelectionView;
-	protected JComponent exitView;
-	protected JComponent optionsView;
-	protected JComponent messagesView;
-	protected JComponent mainPanel;
-	protected JComponent snapshotView;
-	protected JComponent licenceInfoPanel;
+	private final static String PREFIX_NOT_MULTI_LANG = "#";
 
-	public MainFrame(final MainFrameController controller, JComponent startStopView, JComponent changeSelectionView,
+	private JComponent startStopView;
+	private JComponent changeSelectionView;
+	private JComponent exitView;
+	private JComponent optionsView;
+	private JComponent messagesView;
+	private JComponent snapshotView;
+
+	private JPanel[] configs;
+	private String[] configsTitle;
+	private AbstractAction exitAction;
+
+	public MainFrame(MainFrameController controller, JComponent startStopView, JComponent changeSelectionView,
 			JComponent exitView, JComponent optionsView, JComponent messagesView, JComponent mainPanel,
-			JComponent snapshotView, boolean fingerPrintLogin) {
+			JComponent snapshotView) {
 		super(controller);
 		this.snapshotView = snapshotView;
 		this.startStopView = startStopView;
@@ -76,18 +58,25 @@ public class MainFrame extends AbstractMachineFrame {
 		this.exitView = exitView;
 		this.optionsView = optionsView;
 		this.messagesView = messagesView;
-		this.mainPanel = mainPanel;
-
-		((LineIdWithAuthenticateButton) getLineIdPanel()).setFingerPrintLogin(fingerPrintLogin);
 
 		initGUI();
 		I18nableLockingErrorModel lockModel = new I18nableLockingErrorModel();
 		lockModel.setLockedComponent(getInternalCenterPanel());
 		getProdPanel().setModel(lockModel);
 		getController().setLockingErrorModel(getProdPanel().getModel());
-		String lineId = controller.LINE_LABEL_ID + controller.LINE_LABEL_SEPARATOR + controller.getLineId();
-		((LineIdWithAuthenticateButton) getLineIdPanel()).getLabelLineId().setText(lineId);
+		updateLineId();
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		addLoginListener();
+		fireUserChanged();
+
+		// not using the default button
+		getStartButton().setVisible(false);
+		getStopButton().setVisible(false);
+
+		replaceMainPanel(mainPanel);
+	}
+
+	private void addLoginListener() {
 		SecurityService.addLoginListener(new ILoginListener() {
 			@Override
 			public void logoutCompleted() {
@@ -99,28 +88,35 @@ public class MainFrame extends AbstractMachineFrame {
 				fireUserChanged();
 			}
 		});
-		fireUserChanged();
+	}
 
-		// not using the default button
-		getStartButton().setVisible(false);
-		getStopButton().setVisible(false);
+	private MainFrameController getMainFrameController() {
+		return (MainFrameController) controller;
+	}
 
-		replaceMainPanel(mainPanel);
+	private void updateLineId() {
+		String lineId = MainFrameController.LINE_LABEL_ID + MainFrameController.LINE_LABEL_SEPARATOR
+				+ getMainFrameController().getLineId();
+		((LineIdWithAuthenticateButton) getLineIdPanel()).getLabelLineId().setText(lineId);
 	}
 
 	private void fireUserChanged() {
-		SwingUtilities.invokeLater(new Runnable() {
-
-			@Override
-			public void run() {
-				userChanged();
-			}
-		});
+		SwingUtilities.invokeLater(() -> userChanged());
 	}
 
-	protected void userChanged() {
+	private void userChanged() {
 
-		// set the correct panel visible according to the user credentials
+		resetAndRebuildAccessiblePanel();
+
+		// set the button visible according to the user credentials
+		changeSelectionView.setVisible(hasPermission(SasSclPermission.PRODUCTION_CHANGE_PARAMETERS));
+		exitView.setVisible(hasPermission(SasSclPermission.EXIT));
+		snapshotView.setVisible(hasPermission(SasSclPermission.SCREENSHOT));
+		startStopView.setVisible(hasPermission(SasSclPermission.PRODUCTION_START)
+				&& hasPermission(SasSclPermission.PRODUCTION_STOP));
+	}
+
+	private void resetAndRebuildAccessiblePanel() {
 		configs = null;
 
 		JPanel[] comps = new JPanel[getConfigPanels().length + 1];
@@ -136,14 +132,7 @@ public class MainFrame extends AbstractMachineFrame {
 		}
 		titles[0] = " ";
 
-		this.configPanel.setPanels(comps, titles);
-
-		// set the button visible according to the user credentials
-		changeSelectionView.setVisible(SecurityService.hasPermission(SasSclPermission.PRODUCTION_CHANGE_PARAMETERS));
-		exitView.setVisible(SecurityService.hasPermission(SasSclPermission.EXIT));
-		snapshotView.setVisible(SecurityService.hasPermission(SasSclPermission.SCREENSHOT));
-		startStopView.setVisible(SecurityService.hasPermission(SasSclPermission.PRODUCTION_START)
-				&& SecurityService.hasPermission(SasSclPermission.PRODUCTION_STOP));
+		configPanel.setPanels(comps, titles);
 	}
 
 	@Override
@@ -156,10 +145,6 @@ public class MainFrame extends AbstractMachineFrame {
 				getExitButton().setVisible(false);
 			}
 		};
-	}
-
-	public void exitButtonActionPerformed() {
-		super.exitButtonActionPerformed();
 	}
 
 	public JPanel getPanelEast() {
@@ -185,45 +170,60 @@ public class MainFrame extends AbstractMachineFrame {
 
 	}
 
-	protected JPanel[] configs;
-	protected String[] configsTitle;
-
 	@Override
 	protected JPanel[] getConfigPanels() {
 		if (configs == null) {
-
-			List<Pair<JPanel, String>> listConfigPanel = new ArrayList<Pair<JPanel, String>>();
-
-			for (SecuredComponentGetter getter : getController().getSecuredPanels()) {
-				if (SecurityService.hasPermission(getter.getPermission())) {
-					listConfigPanel.add(new Pair<JPanel, String>((JPanel) getter.getComponent(), getter.getTitle()));
-				}
-			}
-
-			// convert to array
-			configs = new JPanel[listConfigPanel.size()];
-			configsTitle = new String[configs.length];
-
-			for (int i = 0; i < listConfigPanel.size(); i++) {
-				configs[i] = listConfigPanel.get(i).getValue1();
-				if (!listConfigPanel.get(i).getValue2().startsWith("#")) {
-					configsTitle[i] = Messages.get(listConfigPanel.get(i).getValue2());
-				} else {
-					configsTitle[i] = listConfigPanel.get(i).getValue2().substring(1);
-				}
-			}
-
+			buildConfigPanelsList();
 			optionsView.setVisible(configs.length > 0);
 		}
 
 		return configs;
 	}
 
+	private void buildConfigPanelsList() {
+		List<Pair<JPanel, String>> listConfigPanel = getAvailableConfigPanels();
+
+		// convert to array
+		configs = new JPanel[listConfigPanel.size()];
+		configsTitle = new String[configs.length];
+
+		for (int i = 0; i < listConfigPanel.size(); i++) {
+			configs[i] = listConfigPanel.get(i).getValue1();
+		}
+		buildPanelConfigTitles(listConfigPanel);
+	}
+
+	private void buildPanelConfigTitles(List<Pair<JPanel, String>> listConfigPanel) {
+		configsTitle = new String[configs.length];
+		for (int i = 0; i < listConfigPanel.size(); i++) {
+			String title = listConfigPanel.get(i).getValue2();
+			if (isTitleNotMultiLang(title)) {
+				configsTitle[i] = title.substring(PREFIX_NOT_MULTI_LANG.length());
+			} else {
+				configsTitle[i] = Messages.get(title);
+			}
+		}
+	}
+
+	private boolean isTitleNotMultiLang(String text) {
+		return text.startsWith(PREFIX_NOT_MULTI_LANG);
+	}
+
+	private List<Pair<JPanel, String>> getAvailableConfigPanels() {
+		List<Pair<JPanel, String>> listConfigPanel = new ArrayList<>();
+
+		for (SecuredComponentGetter getter : getController().getSecuredPanels()) {
+			if (SecurityService.hasPermission(getter.getPermission())) {
+				listConfigPanel.add(new Pair<JPanel, String>((JPanel) getter.getComponent(), getter.getTitle()));
+			}
+		}
+		return listConfigPanel;
+	}
+
 	@Override
 	protected String[] getConfigPanelsTitle() {
 		// make sure the titles are created
 		getConfigPanels();
-
 		return configsTitle;
 	}
 
@@ -267,25 +267,29 @@ public class MainFrame extends AbstractMachineFrame {
 	public void setVisible(final boolean b) {
 		super.setVisible(b);
 		if (b) {
-			// position the progres panel
-			// later coz we need location of the footer (=> after the layout is
-			// done) and when the frame is visible
-			SwingUtilities.invokeLater(new Runnable() {
-				@Override
-				public void run() {
-					Point p;
-					if (getFooter().isShowing()) {
-						p = getFooter().getLocationOnScreen();
-						SwingUtilities.convertPointFromScreen(p, MainFrame.this);
-						p.y -= 100;
-						p.x = 5;
-					} else {
-						p = new Point(5, 800);
-					}
-					getProgresPanel().setLocation(p);
-				}
-			});
+			positionProgressPanel();
 		}
+	}
+
+	private void positionProgressPanel() {
+		// position the progres panel
+		// later coz we need location of the footer (=> after the layout is
+		// done) and when the frame is visible
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				Point p;
+				if (getFooter().isShowing()) {
+					p = getFooter().getLocationOnScreen();
+					SwingUtilities.convertPointFromScreen(p, MainFrame.this);
+					p.y -= 100;
+					p.x = 5;
+				} else {
+					p = new Point(5, 800);
+				}
+				getProgresPanel().setLocation(p);
+			}
+		});
 	}
 
 	@Override
@@ -314,8 +318,6 @@ public class MainFrame extends AbstractMachineFrame {
 		footer.add(optionsView, "h 80!");
 		footer.add(exitView, "grow, gap 0 0 0 0");
 	}
-
-	protected AbstractAction exitAction;
 
 	public void setExitAction(final AbstractAction exitAction) {
 		this.exitAction = exitAction;
@@ -348,7 +350,6 @@ public class MainFrame extends AbstractMachineFrame {
 
 	protected void setupScreenShotTaker() {
 		getLayeredPane().add(snapshotView);
-
 		getHeader().addComponentListener(new ComponentAdapter() {
 			@Override
 			public void componentResized(ComponentEvent e) {
@@ -359,109 +360,16 @@ public class MainFrame extends AbstractMachineFrame {
 
 	@Override
 	public JComponent getHeader() {
-		if (this.header == null) {
-			this.header = new JPanel(new MigLayout("fill,inset 0 0 0 0, hidemode 3,gap 0 0 0 0"));
-			this.header.add(getLineIdPanel(), "growx");
-			this.header.add(getLicenceInfoPanel(), "growx, gapright 20, wrap");
-			this.header.add(getConfigPasswordPanel(), "wrap,growx");
-			this.header.add(getApplicationStatusPanel(), "grow");
+		if (header == null) {
+			header = new JPanel(new MigLayout(",fill,inset 0 0 0 0, hidemode 3,gap 0 0 0 0"));
+			header.add(getLineIdPanel(), "growx");
+			header.add(new LicencePanel(), "growx, gapright 20, wrap");
+			header.add(getConfigPasswordPanel(), "wrap,growx");
+			header.add(getApplicationStatusPanel(), "grow");
 			getConfigPasswordPanel().setVisible(false);
-			this.header.add(getHeaderInfoPanel(), "south");
+			header.add(getHeaderInfoPanel(), "south");
 		}
-		return this.header;
-	}
-
-	public JComponent getLicenceInfoPanel() {
-		if (this.licenceInfoPanel == null) {
-			licenceInfoPanel = new JPanel(new BorderLayout());
-			licenceInfoPanel.setBackground(SicpaColor.BLUE_DARK);
-			licenceInfoPanel.add(getInfoLicenseLabel(), BorderLayout.EAST);
-		}
-		return licenceInfoPanel;
-	}
-
-	private JDialog dialog;
-
-	private JLabel getInfoLicenseLabel() {
-
-		JLabel licenseIcon = new JLabel(getLicenseIcon());
-		licenseIcon.addMouseListener(new MouseAdapter() {
-
-			@Override
-			public void mousePressed(MouseEvent arg0) {
-				mouseClicked(arg0);
-			}
-
-			@Override
-			public void mouseClicked(MouseEvent arg0) {
-				Scanner scanner = null;
-				try {
-					URL url = ClassLoader.getSystemResource("license");
-					scanner = new Scanner(new FileInputStream(new File(url.toURI())), "UTF-8");
-				} catch (FileNotFoundException e) {
-					e.printStackTrace();
-				} catch (URISyntaxException e) {
-					e.printStackTrace();
-				}
-
-				if (dialog == null) {
-					dialog = new JDialog();
-					dialog.setLayout(new MigLayout("fill"));
-					dialog.setMinimumSize(new Dimension(650, 300));
-
-					String firstMessage = null;
-					String custoMessage = null;
-
-					if (scanner != null) {
-						firstMessage = scanner.nextLine();
-						custoMessage = scanner.nextLine();
-					}
-					JLabel headLabel = new JLabel(firstMessage);
-					headLabel.setForeground(SicpaColor.BLUE_DARK);
-
-					int innerBoundsx = 40;
-					int innerBoundsy = 100;
-
-					int jtextWidth = dialog.getWidth() - innerBoundsx;
-					int jtextHeight = dialog.getHeight() - innerBoundsy;
-					Dimension textAreaDim = new Dimension(jtextWidth, jtextHeight);
-
-					JTextArea mainLabel = new JTextArea(custoMessage);
-					mainLabel.setForeground(SicpaColor.BLUE_DARK);
-					mainLabel.setMinimumSize(textAreaDim);
-					mainLabel.setMaximumSize(textAreaDim);
-					mainLabel.setWrapStyleWord(true);
-					mainLabel.setLineWrap(true);
-					mainLabel.setEditable(false);
-					mainLabel.setRequestFocusEnabled(false);
-					mainLabel.setFocusable(false);
-					mainLabel.setOpaque(false);
-					mainLabel.putClientProperty("Synthetica.opaque", false);
-
-					JPanel panel = new JPanel(new MigLayout("fill"));
-					panel.add(headLabel, "wrap");
-					panel.add(mainLabel);
-					dialog.add(panel, "grow");
-
-				}
-				dialog.setVisible(true);
-			}
-		});
-		return licenseIcon;
-	}
-
-	public ImageIcon getLicenseIcon() {
-		String resourceName = "config/images/licenseIcon.png";
-		ImageIcon licenceIcon = null;
-		URL url = ClassLoader.getSystemResource(resourceName);
-		if (url != null) {
-			try {
-				licenceIcon = new ImageIcon((GraphicsUtilities.loadCompatibleImage(url)));
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		return licenceIcon;
+		return header;
 	}
 
 	public void displayOptionsPreviewScreen() {
@@ -471,64 +379,4 @@ public class MainFrame extends AbstractMachineFrame {
 			getConfigPanel().getPreviewButton().doClick();
 		}
 	}
-
-	@Subscribe
-	public void processStateChanged(final ApplicationFlowStateChangedEvent evt) {
-		ThreadUtils.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				if (evt.getCurrentState() == ApplicationFlowState.STT_NO_SELECTION
-						|| evt.getCurrentState() == ApplicationFlowState.STT_STARTING
-						|| evt.getCurrentState() == ApplicationFlowState.STT_STARTED) {
-					LineIdWithAuthenticateButton lineIdWithAuthenticateButton = (LineIdWithAuthenticateButton) getLineIdPanel();
-					lineIdWithAuthenticateButton.getButtonLogout().setVisible(false);
-
-					for (JPanel configPanel : getConfigPanels()) {
-						if (configPanel instanceof MultiEditablePlcVariablesSet) {
-							configPanel.setEnabled(false);
-							setVisibleAll(((MultiEditablePlcVariablesSet) configPanel).getComponents(), false);
-						}
-					}
-				} else if (evt.getCurrentState() == ApplicationFlowState.STT_STOPPING
-						|| evt.getCurrentState() == ApplicationFlowState.STT_DISCONNECTING_ON_PARAM_CHANGED) {
-					LineIdWithAuthenticateButton lineIdWithAuthenticateButton = (LineIdWithAuthenticateButton) getLineIdPanel();
-					lineIdWithAuthenticateButton.getButtonLogout().setVisible(true);
-
-					for (JPanel configPanel : getConfigPanels()) {
-						if (configPanel instanceof MultiEditablePlcVariablesSet) {
-							configPanel.setEnabled(true);
-							setVisibleAll(((MultiEditablePlcVariablesSet) configPanel).getComponents(), true);
-						}
-					}
-				}
-			}
-		});
-	}
-
-	protected void setVisibleAll(Component[] components, boolean visible) {
-		if (components == null || components.length == 0) {
-			return;
-		}
-		for (Component subComponent2 : components) {
-			if (!(subComponent2 instanceof JButton)) {
-				subComponent2.setEnabled(visible);
-				if (subComponent2 instanceof JComponent) {
-					setVisibleAll(((JComponent) subComponent2).getComponents(), visible);
-				}
-			}
-		}
-	}
-
-	@Subscribe
-	public void setProductionParameters(final ProductionParametersEvent evt) {
-		// Must be called in EDT
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				for (SecuredComponentGetter getter : getController().getSecuredPanels()) {
-					getter.getComponent().repaint();
-				}
-			}
-		});
-	}
-
 }

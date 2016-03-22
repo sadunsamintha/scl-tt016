@@ -22,7 +22,8 @@ public class SnapshotViewController implements ISnapshotViewListener {
 
 	private static final Logger logger = LoggerFactory.getLogger(SnapshotViewController.class);
 
-	protected SnapshotViewModel model;
+	private SnapshotViewModel model;
+	private String folder;
 
 	public SnapshotViewController() {
 		model = new SnapshotViewModel();
@@ -45,15 +46,15 @@ public class SnapshotViewController implements ISnapshotViewListener {
 		return model;
 	}
 
-	protected void takeScreenShot() {
+	private void takeScreenShot() {
 		try {
 			Robot robot = new Robot();
 			BufferedImage screenshot = robot.createScreenCapture(getView().getBounds());
 
-			File folder = new File(getFolder());
-			folder.mkdirs();
+			File f = new File(folder);
+			f.mkdirs();
 
-			saveimage(screenshot, folder.getPath() + "/" + createFileName());
+			saveimage(screenshot, f.getPath() + "/" + createFileName());
 			EventBusService.post(new WarningViewEvent("screenshot.taken", true));
 
 		} catch (Exception e) {
@@ -61,19 +62,15 @@ public class SnapshotViewController implements ISnapshotViewListener {
 		}
 	}
 
-	protected String getFolder() {
-		return "screenshot";
-	}
-
-	protected String createFileName() {
+	private String createFileName() {
 		return new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss").format(new Date()) + ".png";
 	}
 
-	protected void saveimage(BufferedImage img, String file) throws IOException {
+	private void saveimage(BufferedImage img, String file) throws IOException {
 		ImageIO.write(img, "PNG", new File(file));
 	}
 
-	protected AbstractMachineFrame getView() {
+	private AbstractMachineFrame getView() {
 		for (Frame f : JFrame.getFrames()) {
 			if (f instanceof AbstractMachineFrame) {
 				return (AbstractMachineFrame) f;
@@ -82,4 +79,7 @@ public class SnapshotViewController implements ISnapshotViewListener {
 		return null;
 	}
 
+	public void setFolder(String folder) {
+		this.folder = folder;
+	}
 }

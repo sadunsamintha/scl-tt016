@@ -195,12 +195,12 @@ public class CameraSimulatorController implements ICognexCameraController<Camera
 		fireCameraImageReceived(getCameraImage(), code);
 	}
 
-	protected String getGoodCode() {
+	public String getGoodCode() {
 		String code;
 		if (!initCodeProviderDone) {
 			initCodeProvider();
 		}
-		if (this.codeProvider != null) {
+		if (codeProvider != null) {
 			code = codeProvider.requestCode();
 			return code;
 		} else {

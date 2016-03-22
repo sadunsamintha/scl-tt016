@@ -127,7 +127,7 @@ public class PostPackageBehavior implements IPostPackageBehavior {
 		synchronized (codes) {
 			if (!codes.isEmpty()) {
 				List<Code> badCode = new ArrayList<Code>(1);
-				logger.debug("handeling the current bad code {}. The code removes is {} " , code, codes.get(0));
+				logger.debug("handling the current bad code {}. The code removes is {} " , code, codes.get(0));
 
 				badCode.add(codes.remove(0));
 				return generateBadProducts(badCode, ProductStatus.SENT_TO_PRINTER_UNREAD);

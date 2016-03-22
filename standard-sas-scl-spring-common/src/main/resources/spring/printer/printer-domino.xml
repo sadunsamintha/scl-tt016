@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:util="http://www.springframework.org/schema/util" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+
+	<bean id="printerDomino" class="com.sicpa.standard.sasscl.devices.printer.impl.PrinterAdaptor" scope="prototype">
+		<constructor-arg ref="printerControllerDomino" />
+		<property name="mappingExtendedCodeBehavior" ref="mappingExtendedCodeBehavior" />
+	</bean>
+
+	<bean id="printerControllerDomino" class="com.sicpa.standard.printer.controller.internal.DominoPrinterController"
+		scope="prototype">
+		<property name="model" ref="printerModelDomino" />
+	</bean>
+
+	<bean id="printerModelDomino" class="com.sicpa.standard.sasscl.utils.ConfigUtilEx" factory-method="load" scope="prototype">
+		<constructor-arg value="${profile.path}/config/printer/printer_####.xml" />
+		<constructor-arg ref="deviceModelNamePostfixProperty" />
+	</bean>
+
+</beans>

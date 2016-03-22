@@ -10,62 +10,37 @@ import org.junit.Test;
 
 public class CustomizableTest {
 
-	public static final CustomProperty<Boolean> SKU_IS_EXPORT = new CustomProperty<>("isExport", Boolean
-			.class, true);
-	public static final CustomProperty<PackType> SKU_PACK_TYPE = new CustomProperty<>("packType",
-			PackType.class, new PackType("defaultPackType"));
+	static final PackType DEFAULT_VAL = new PackType("defaultPackType");
+
+	static final CustomProperty<PackType> SKU_PACK_TYPE = new CustomProperty<>("packType", PackType.class, DEFAULT_VAL);
 
 	@Before
 	public void setup() {
 		CustomizablePropertyDefinition definition = new CustomizablePropertyDefinition();
-		definition.addProperty(SKU.class, CustomizableTest.SKU_IS_EXPORT);
 		definition.addProperty(SKU.class, CustomizableTest.SKU_PACK_TYPE);
 		CustomizablePropertyFactory.setCustomizablePropertyDefinition(definition);
 	}
 
-	@Test
-	public void testCustomProperty() {
-		SKU sku = new SKU();
+	@Test(expected = IllegalArgumentException.class)
+	public void testUnkownProperty() {
 		Code code = new Code();
 		CustomProperty<String> customProperty = new StringCustomProperty("customProperty1",
 				"defaultStringCustomProperty");
+		code.setProperty(customProperty, "test");
+	}
 
-		try {
-			code.setProperty(customProperty, "test");
-			Assert.fail();
-		} catch (RuntimeException e) {
-		}
+	@Test
+	public void testSetCustomProperty() {
 
-		// test to set invalid property (property that is not defined)
-		try {
-			sku.setProperty(customProperty, "test");
-			Assert.fail();
-		} catch (RuntimeException e) {
-		}
+		SKU sku = new SKU();
+		PackType pack = new PackType("packType101");
 
-		// test to get invalid property (property that is not defined)
-		try {
-			sku.getProperty(customProperty);
-			Assert.fail();
-		} catch (RuntimeException e) {
-		}
+		sku.setProperty(CustomizableTest.SKU_PACK_TYPE, pack);
+		Assert.assertEquals(pack, sku.getProperty(SKU_PACK_TYPE));
 
-		sku.setProperty(CustomizableTest.SKU_IS_EXPORT, true);
-		sku.setProperty(CustomizableTest.SKU_PACK_TYPE, new PackType("packType101"));
+		sku.clearProperty(CustomizableTest.SKU_PACK_TYPE);
+		Assert.assertEquals(DEFAULT_VAL, sku.getProperty(SKU_PACK_TYPE));
 
-		SKU clone = sku.copySkuForProductionData();
-
-		Assert.assertEquals(Boolean.TRUE, clone.getProperty(CustomizableTest.SKU_IS_EXPORT));
-
-		PackType packType = clone.getProperty(CustomizableTest.SKU_PACK_TYPE);
-		Assert.assertEquals("packType101", packType.getDescription());
-
-		clone.setProperty(CustomizableTest.SKU_IS_EXPORT, false);
-		Assert.assertEquals(Boolean.TRUE, sku.getProperty(CustomizableTest.SKU_IS_EXPORT));
-
-		sku.clearProperty(CustomizableTest.SKU_IS_EXPORT);
-		// Despite removing the property, the default value (true) is returned
-		Assert.assertTrue(sku.getProperty(CustomizableTest.SKU_IS_EXPORT));
 	}
 
 	public static class PackType {

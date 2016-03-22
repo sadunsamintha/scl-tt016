@@ -7,7 +7,7 @@ import com.sicpa.standard.sasscl.model.ProductionMode;
 
 public class ProductionConfigMapping implements IProductionConfigMapping {
 
-	protected final Map<ProductionMode, String> mapping = new HashMap<ProductionMode, String>();
+	private final Map<ProductionMode, String> mapping = new HashMap<>();
 
 	public ProductionConfigMapping() {
 		put(ProductionMode.COUNTING, "counting");
@@ -17,7 +17,6 @@ public class ProductionConfigMapping implements IProductionConfigMapping {
 		put(ProductionMode.REFEED_CORRECTION, "refeedCorrection");
 		put(ProductionMode.REFEED_NORMAL, "refeedNormal");
 		put(ProductionMode.STANDARD, "standard");
-
 	}
 
 	@Override

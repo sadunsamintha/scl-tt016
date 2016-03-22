@@ -4,11 +4,11 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans
 	       http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
-	<bean id="securityModel" class="${securityModel}">
-		<constructor-arg value="config/security.xml" />
+	<bean id="securityModel" class="com.sicpa.standard.client.common.security.SecurityModel">
+		<constructor-arg value="${profile.path}/config/security.xml" />
 	</bean>
 
-	<bean id="securityController" class="${securityController}">
+	<bean id="securityController" class="com.sicpa.standard.client.common.security.SecurityController">
 		<constructor-arg ref="securityModel" />
 	</bean>
 

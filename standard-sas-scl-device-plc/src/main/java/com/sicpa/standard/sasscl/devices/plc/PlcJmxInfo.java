@@ -1,7 +1,6 @@
 package com.sicpa.standard.sasscl.devices.plc;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -16,11 +15,10 @@ public class PlcJmxInfo implements IPlcJmxInfo {
 
 	private static final Logger logger = LoggerFactory.getLogger(PlcJmxInfo.class);
 
-	protected PlcProvider plcProvider;
-	protected final Collection<IPlcVariable<?>> plcCabinetVars = new ArrayList<IPlcVariable<?>>();
-	protected final Collection<IPlcVariable<?>> plcLineVars = new ArrayList<IPlcVariable<?>>();
-
-	protected final Set<Integer> indexesToCheck = new HashSet<Integer>(Arrays.asList(1, 2, 3));
+	private PlcProvider plcProvider;
+	private final Collection<IPlcVariable<?>> plcCabinetVars = new ArrayList<>();
+	private final Collection<IPlcVariable<?>> plcLineVars = new ArrayList<>();
+	private final Set<Integer> indexesToCheck = new HashSet<>();
 
 	public String getPlcVersion() {
 		return readPlcVersion();
@@ -31,9 +29,9 @@ public class PlcJmxInfo implements IPlcJmxInfo {
 	}
 
 	protected Collection<IPlcVariable<?>> transformToIndex(Collection<IPlcVariable<?>> vars, int index) {
-		Collection<IPlcVariable<?>> res = new ArrayList<IPlcVariable<?>>();
+		Collection<IPlcVariable<?>> res = new ArrayList<>();
 		for (IPlcVariable<?> var : vars) {
-			res.add(PlcUtils.clone(var, index));
+			res.add(PlcLineHelper.clone(var, index));
 		}
 		return res;
 	}
@@ -108,5 +106,11 @@ public class PlcJmxInfo implements IPlcJmxInfo {
 
 	public void setPlcProvider(PlcProvider plcProvider) {
 		this.plcProvider = plcProvider;
+	}
+
+	public void setLineCount(int lineCount) {
+		for (int i = 1; i <= lineCount; i++) {
+			indexesToCheck.add(i);
+		}
 	}
 }

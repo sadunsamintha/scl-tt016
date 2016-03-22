@@ -1,5 +1,11 @@
 package com.sicpa.standard.sasscl.devices.brs;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.sasscl.devices.AbstractStartableDevice;
 import com.sicpa.standard.sasscl.devices.DeviceException;
@@ -11,11 +17,6 @@ import com.sicpa.standard.sasscl.devices.brs.model.BrsType;
 import com.sicpa.standard.sasscl.devices.brs.reader.BrsReaderController;
 import com.sicpa.standard.sasscl.devices.brs.reader.CodeReaderController;
 import com.sicpa.standard.sasscl.devices.brs.reader.CodeReaderListener;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class BrsAdaptor extends AbstractStartableDevice implements CodeReaderListener {
 

@@ -6,13 +6,14 @@ public class ViewStatisticsDescriptor {
 
 	@Override
 	public String toString() {
-		return "VStatsDesc[key=" + key + ", line=" + line + ", index=" + index + "]";
+		return "ViewStatisticsDescriptor [color=" + color + ", key=" + key + ", line=" + line + ", index=" + index
+				+ "]";
 	}
 
-	protected Color color;
-	protected String key;
-	protected String line;
-	protected int index;
+	private Color color;
+	private String key;
+	private String line;
+	private int index;
 
 	public ViewStatisticsDescriptor() {
 	}
@@ -28,6 +29,7 @@ public class ViewStatisticsDescriptor {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((color == null) ? 0 : color.hashCode());
+		result = prime * result + index;
 		result = prime * result + ((key == null) ? 0 : key.hashCode());
 		result = prime * result + ((line == null) ? 0 : line.hashCode());
 		return result;
@@ -46,6 +48,8 @@ public class ViewStatisticsDescriptor {
 			if (other.color != null)
 				return false;
 		} else if (!color.equals(other.color))
+			return false;
+		if (index != other.index)
 			return false;
 		if (key == null) {
 			if (other.key != null)

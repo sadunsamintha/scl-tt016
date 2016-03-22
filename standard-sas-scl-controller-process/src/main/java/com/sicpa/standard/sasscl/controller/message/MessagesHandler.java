@@ -1,5 +1,11 @@
 package com.sicpa.standard.sasscl.controller.message;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.messages.MessageEvent;
@@ -7,12 +13,6 @@ import com.sicpa.standard.client.common.messages.MessagesUtils;
 import com.sicpa.standard.sasscl.messages.ActionEvent;
 import com.sicpa.standard.sasscl.messages.ActionMessageType;
 import com.sicpa.standard.sasscl.messages.SASDefaultMessagesMapping;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * responsible to received <code>MessageEvent</code> convert it to a more specific event and post it in the event bus

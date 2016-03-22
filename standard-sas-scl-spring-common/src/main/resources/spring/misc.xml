@@ -2,16 +2,14 @@
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
-	<bean id="exceptionHandler" class="${exceptionHandler}" />
+	<bean id="exceptionHandler" class="com.sicpa.standard.sasscl.common.exception.ExceptionHandler" />
 
-	<bean id="eventBusAutoRegistering" class="${eventBusAutoRegistering}" />
+	<bean id="eventBusAutoRegistering" class="com.sicpa.standard.client.common.eventbus.service.AutoEventBusRegistering" />
 
-	<bean id="productionParameters" class="${productionParameters}" />
+	<bean id="productionParameters" class="com.sicpa.standard.sasscl.model.ProductionParameters" />
 
-	<bean id="applicationInitializationTasks" class="${applicationInitializationTasks}" />
-	
-	<bean id="implementationProvider" class="${implementationProvider}" />
+	<bean id="implementationProvider" class="com.sicpa.standard.sasscl.controller.productionconfig.factory.utils.SpringImplementationProvider" />
 
-	<bean id="codeTypeFilterFactory" class="${codeTypeFilterFactory}" />
+	<bean id="codeTypeFilterFactory" class="com.sicpa.standard.sasscl.filter.DefaultCodeTypeFilterFactory" />
 
 </beans>

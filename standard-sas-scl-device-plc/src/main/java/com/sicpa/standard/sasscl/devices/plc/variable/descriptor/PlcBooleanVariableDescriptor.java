@@ -2,15 +2,9 @@ package com.sicpa.standard.sasscl.devices.plc.variable.descriptor;
 
 import javax.swing.JComponent;
 
-import com.sicpa.standard.client.common.descriptor.validator.ValidatorException;
 import com.sicpa.standard.sasscl.devices.plc.variable.renderer.PlcBooleanVariableRenderer;
 
-public class PlcBooleanVariableDescriptor extends PlcVariableDescriptor<Boolean> {
-
-	@Override
-	public void validate() throws ValidatorException {
-
-	}
+public class PlcBooleanVariableDescriptor extends PlcVariableDescriptor {
 
 	@Override
 	public JComponent getRenderer() {
@@ -21,11 +15,11 @@ public class PlcBooleanVariableDescriptor extends PlcVariableDescriptor<Boolean>
 	}
 
 	@Override
-	public PlcVariableDescriptor<Boolean> clone() {
-		PlcBooleanVariableDescriptor descriptor=new PlcBooleanVariableDescriptor();
-		descriptor.plcProvider=plcProvider;
-		descriptor.editablePlcVariables=editablePlcVariables;
-		descriptor.variable=variable;
+	public PlcVariableDescriptor clone() {
+		PlcBooleanVariableDescriptor descriptor = new PlcBooleanVariableDescriptor();
+		descriptor.listeners.addAll(listeners);
+		descriptor.value=value;
 		return descriptor;
 	}
+
 }

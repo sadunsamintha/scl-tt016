@@ -4,7 +4,7 @@ import com.sicpa.standard.sasscl.controller.productionconfig.IDeviceModelNamePos
 
 public class DeviceModelNamePostfixProperty implements IDeviceModelNamePostfixProperty {
 
-	protected String postfix;
+	private String postfix;
 
 	@Override
 	public void set(String postfix) {

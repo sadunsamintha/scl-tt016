@@ -5,20 +5,20 @@
 		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 
-	<bean id="activation" class="${activation}">
+	<bean id="activation" class="com.sicpa.standard.sasscl.business.activation.impl.ActivationWithPostPackage">
 		<property name="activationBehaviorProvider" ref="activationBehaviorProvider" />
 		<property name="productionBatchProvider" ref="productionBatchProvider" />
 	</bean>
 
 
-	<bean id="productValidator" class="${productValidator}">
+	<bean id="productValidator" class="com.sicpa.standard.sasscl.business.activation.impl.activationBehavior.standard.validator.NoProductValidator">
 		<property name="productionParameters" ref="productionParameters" />
 	</bean>
 
-	<bean id="activationInvalidCodeHandler" class="${activationInvalidCodeHandler}" />
-	<bean id="productFinalizer" class="${productFinalizer}" />
+	<bean id="activationInvalidCodeHandler" class="com.sicpa.standard.sasscl.business.activation.impl.activationBehavior.standard.invalidCode.DefaultActivationInvalidCodeHandler" />
+	<bean id="productFinalizer" class="com.sicpa.standard.sasscl.business.activation.impl.activationBehavior.standard.finalize.DefaultProductFinalizerBehavior" />
 
-	<bean id="standardActivationBehavior" class="${standardActivationBehavior}">
+	<bean id="standardActivationBehavior" class="com.sicpa.standard.sasscl.business.activation.impl.activationBehavior.standard.StandardActivationBehavior">
 		<property name="productionParameters" ref="productionParameters" />
 		<property name="authenticatorProvider" ref="authenticatorProvider" />
 		<property name="productValidator" ref="productValidator" />
@@ -28,19 +28,19 @@
 		<property name="productionConfigProvider" ref="productionConfigProvider" />
 	</bean>
 
-	<bean id="exportActivationBehavior" class="${exportActivationBehavior}">
+	<bean id="exportActivationBehavior" class="com.sicpa.standard.sasscl.business.activation.impl.activationBehavior.ExportActivationBehavior">
 		<property name="productionParameters" ref="productionParameters" />
 	</bean>
 
-	<bean id="maintenanceActivationBehavior" class="${maintenanceActivationBehavior}">
+	<bean id="maintenanceActivationBehavior" class="com.sicpa.standard.sasscl.business.activation.impl.activationBehavior.MaintenanceActivationBehavior">
 		<property name="productionParameters" ref="productionParameters" />
 	</bean>
 
-	<bean id="countingActivationBehavior" class="${countingActivationBehavior}">
+	<bean id="countingActivationBehavior" class="com.sicpa.standard.sasscl.business.activation.impl.activationBehavior.CountingActivationBehavior">
 		<property name="productionParameters" ref="productionParameters" />
 	</bean>
 
-	<bean id="refeedActivationBehavior" class="${refeedActivationBehavior}">
+	<bean id="refeedActivationBehavior" class="com.sicpa.standard.sasscl.business.activation.impl.activationBehavior.RefeedActivationBehavior">
 		<property name="productionParameters" ref="productionParameters" />
 		<property name="authenticatorProvider" ref="authenticatorProvider" />
 		<property name="productValidator" ref="productValidator" />

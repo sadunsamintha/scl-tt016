@@ -9,9 +9,8 @@ import com.sicpa.standard.sasscl.monitoring.system.event.ProductionParametersSys
 
 public class ProductionParameterChangedListener {
 
-	protected IStorage storage;
-
-	protected IFlowControl flowControl;
+	private IStorage storage;
+	private IFlowControl flowControl;
 
 	@Subscribe
 	public void setProductionParameters(ProductionParametersEvent evt) {

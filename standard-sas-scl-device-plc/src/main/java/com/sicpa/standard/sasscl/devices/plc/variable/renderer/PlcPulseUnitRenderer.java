@@ -1,96 +1,89 @@
 package com.sicpa.standard.sasscl.devices.plc.variable.renderer;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
 import javax.swing.JComboBox;
-import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 
-import com.sicpa.standard.gui.listener.CoalescentChangeListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.sicpa.standard.gui.utils.ThreadUtils;
 import com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcPulseVariableDescriptor;
 import com.sicpa.standard.sasscl.devices.plc.variable.descriptor.unit.PlcUnit;
 
-public class PlcPulseUnitRenderer extends PlcIntegerVariableRenderer {
+public class PlcPulseUnitRenderer extends AbstractPlcNumberVariableRenderer<Float> {
+	private static final Logger logger = LoggerFactory.getLogger(PlcPulseUnitRenderer.class);
 
 	private static final long serialVersionUID = 1L;
-	protected JComboBox comboUnit;
+	private JComboBox<PlcUnit> comboUnit;
 
-	public PlcPulseUnitRenderer(final PlcPulseVariableDescriptor plcVar) {
-		super(plcVar);
-		plcVar.setInit(true);
+	public PlcPulseUnitRenderer(PlcPulseVariableDescriptor desc) {
+		super(desc);
+		desc.setInit(true);
 		initGUI();
-		valueChanged();
 		comboUnitActionPerformed();
-		plcVar.setInit(false);
+		desc.setInit(false);
 	}
 
 	private void initGUI() {
 		add(getComboUnit(), "growx , w 100");
 	}
 
-	@Override
-	public PlcPulseVariableDescriptor getPlcVar() {
-		return (PlcPulseVariableDescriptor) super.getPlcVar();
+	private PlcPulseVariableDescriptor getPulseDescriptor() {
+		return (PlcPulseVariableDescriptor) desc;
 	}
 
-	public JComboBox getComboUnit() {
+	public JComboBox<PlcUnit> getComboUnit() {
 		if (comboUnit == null) {
-			comboUnit = new JComboBox();
+			comboUnit = new JComboBox<>();
 
-			comboUnit.addItem(PlcUnit.PULSE);
+			comboUnit.addItem(PlcUnit.MM);
 			comboUnit.addItem(PlcUnit.MS);
 
-			comboUnit.setSelectedItem(getPlcVar().getCurrentUnit());
-			comboUnit.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(final ActionEvent e) {
-					comboUnitActionPerformed();
-				}
-			});
+			comboUnit.addActionListener(e -> comboUnitActionPerformed());
 		}
-		return this.comboUnit;
+		return comboUnit;
 	}
 
-	protected void comboUnitActionPerformed() {
-		getPlcVar().setCurrentUnit((PlcUnit) getComboUnit().getSelectedItem());
-		Integer value = (Integer) getSpinner().getValue();
-		getSpinner().setModel(createSpinnerModel());
-		getSpinner().setValue(value);
-		getLabelFormatedValue().setText(getPlcVar().getFormattedValue());
+	private void comboUnitActionPerformed() {
+		selectionChanged();
+	}
 
+	protected void spinnerChangeListener() {
+		selectionChanged();
+	}
+
+	private void selectionChanged() {
+		desc.setValue("" + getSpinner().getValue() + getComboUnit().getSelectedItem());
 	}
 
 	@Override
-	public JSpinner getSpinner() {
-		if (spinner == null) {
-			spinner = new JSpinner(createSpinnerModel());
-			spinner.addChangeListener(new CoalescentChangeListener(1000) {
-				@Override
-				public void doAction() {
-					spinnerChangeListener();
-				}
-
-				@Override
-				public void eventReceived() {
-					if (isShowing()) {
-						super.eventReceived();
-					}
-				}
-			});
-		}
-		return spinner;
+	public void valueChanged() {
+		ThreadUtils.invokeLater(() -> ValueChangedInEDT());
 	}
 
-	protected SpinnerNumberModel createSpinnerModel() {
-		SpinnerNumberModel model = null;
-
-		if (getPlcVar().getCurrentUnit() == null || getPlcVar().getCurrentUnit().equals(PlcUnit.MS)) {
-			model = new SpinnerNumberModel(getPlcVar().getMinPulse(), getPlcVar().getMinMs(), getPlcVar().getMaxMs(), 1);
-		} else {
-			model = new SpinnerNumberModel(getPlcVar().getMinPulse(), getPlcVar().getMinPulse(), getPlcVar()
-					.getMaxPulse(), 1);
+	private void ValueChangedInEDT() {
+		try {
+			float valueNumber = extractValueOnly();
+			getSpinner().setValue(valueNumber);
+			getComboUnit().setSelectedItem(getPulseDescriptor().getCurrentUnit());
+		} catch (Exception e) {
+			logger.error("error setting value for:" + desc.getVarName() + " value:" + desc.getValue(), e);
 		}
-		return model;
+	}
+
+	private float extractValueOnly() {
+		String valueWithUnit = desc.getValue();
+		String valueOnly = valueWithUnit.replace(getPulseDescriptor().getCurrentUnit().getSuffix(), "");
+		return Float.parseFloat(valueOnly);
+	}
+
+	@Override
+	protected SpinnerNumberModel createSpinnerNumberModel() {
+		return new SpinnerNumberModel(new Float(0), new Float(0f), new Float(Short.MAX_VALUE), new Float(0.1f));
+	}
+
+	@Override
+	protected Float parseValue(String value) {
+		return Float.parseFloat(value);
 	}
 }

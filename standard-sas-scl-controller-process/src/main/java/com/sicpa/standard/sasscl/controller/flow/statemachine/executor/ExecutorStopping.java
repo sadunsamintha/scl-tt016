@@ -6,9 +6,8 @@ import com.sicpa.standard.sasscl.controller.hardware.IHardwareController;
 
 public class ExecutorStopping implements IStateAction {
 
-	protected IAlert alert;
-
-	protected IHardwareController hardwareController;
+	private IAlert alert;
+	private IHardwareController hardwareController;
 
 	@Override
 	public void enter() {

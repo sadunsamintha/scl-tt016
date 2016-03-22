@@ -32,15 +32,6 @@ public class SystemInfoViewController implements ISystemInfoViewListener {
 			}
 		});
 	}
-	
-	public void setPlcSecure(IPlcAdaptor plcSecure) {
-		plcSecure.addDeviceStatusListener(new IDeviceStatusListener() {
-			@Override
-			public void deviceStatusChanged(DeviceStatusEvent evt) {
-				plcSecureStatusChanged(evt);
-			}
-		});
-	}
 
 	protected void remoteServerStatusChanged(DeviceStatusEvent evt) {
 		if (evt.getStatus().equals(DeviceStatus.CONNECTED)) {
@@ -48,16 +39,6 @@ public class SystemInfoViewController implements ISystemInfoViewListener {
 			model.notifyModelChanged();
 		} else if (evt.getStatus().equals(DeviceStatus.DISCONNECTED)) {
 			model.setRemoteServerConnected(false);
-			model.notifyModelChanged();
-		}
-	}
-	
-	protected void plcSecureStatusChanged(DeviceStatusEvent evt) {
-		if (evt.getStatus().equals(DeviceStatus.CONNECTED)) {
-			model.setPlcSecureConnected(true);
-			model.notifyModelChanged();
-		} else if (evt.getStatus().equals(DeviceStatus.DISCONNECTED)) {
-			model.setPlcSecureConnected(false);
 			model.notifyModelChanged();
 		}
 	}

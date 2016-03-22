@@ -333,7 +333,8 @@ public class PrinterAdaptor extends AbstractPrinterAdaptor implements IPrinterCo
 		try {
 			// FIXME this has to be moved to some Leibinger specific
 			// implementation
-			controller.sendSpecificSettings(LeibingerSpecificSettings.CMD_SET_USER_LEVEL.getValue(), LeibingerUserLevel.get(event.getLevel()));
+			controller.sendSpecificSettings(LeibingerSpecificSettings.CMD_SET_USER_LEVEL.getValue(),
+					LeibingerUserLevel.get(event.getLevel()));
 		} catch (PrinterException e) {
 			logger.error("", e.getMessage());
 		}

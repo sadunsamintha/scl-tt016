@@ -4,8 +4,8 @@ import com.sicpa.standard.client.common.view.mvc.AbstractObservableModel;
 
 public class StartStopModel extends AbstractObservableModel {
 
-	protected boolean startEnabled;
-	protected boolean stopEnabled;
+	private boolean startEnabled;
+	private boolean stopEnabled;
 
 	public boolean isStartEnabled() {
 		return startEnabled;

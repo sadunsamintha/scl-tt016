@@ -12,18 +12,20 @@ import com.sicpa.standard.client.common.messages.MessageEvent;
 import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState;
 import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowStateChangedEvent;
 import com.sicpa.standard.sasscl.devices.plc.event.PlcEvent;
-import com.sicpa.standard.sasscl.devices.plc.impl.PlcVariables;
 import com.sicpa.standard.sasscl.messages.MessageEventKey;
 
 public class PlcStateListenerTest {
 
 	IPlcAdaptor plc;
 	PlcStateListener stateListener;
+	String varName = ".com.aVar";
 
 	@Before
 	public void setUp() throws Exception {
 		plc = mock(IPlcAdaptor.class);
 		stateListener = new PlcStateListener();
+		stateListener.setLineStateVarName(varName);
+		PlcLineHelper.addLineIndex(1);
 	}
 
 	boolean msgCatched = false;
@@ -33,11 +35,8 @@ public class PlcStateListenerTest {
 
 		stateListener.processStateChanged(new ApplicationFlowStateChangedEvent(null, ApplicationFlowState.STT_STARTED,
 				""));
-		PlcVariableMap.addPlcVariable(PlcVariables.NTF_LINE_STATE.name(), "aVar");
-		PlcVariableMap.addLineIndex(1);
 
 		Object msgCatcher = new Object() {
-			@SuppressWarnings("unused")
 			@Subscribe
 			public void catchMsg(MessageEvent evt) {
 				if (evt.getKey().equals(MessageEventKey.PLC.PLC_STATE_NOT_RUNNING)) {
@@ -47,7 +46,7 @@ public class PlcStateListenerTest {
 		};
 		EventBusService.register(msgCatcher);
 
-		stateListener.onPlcEvent(new PlcEvent("aVar", 1));
+		stateListener.onPlcEvent(new PlcEvent(varName, 1));
 
 		Assert.assertTrue(msgCatched);
 

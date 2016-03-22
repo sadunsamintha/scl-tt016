@@ -1,19 +1,19 @@
 package com.sicpa.standard.sasscl.controller.scheduling;
 
+import java.util.Calendar;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.sicpa.standard.sasscl.common.storage.IStorage;
 import com.sicpa.standard.sasscl.devices.remote.IRemoteServer;
 import com.sicpa.standard.sasscl.devices.remote.RemoteServerException;
 import com.sicpa.standard.sasscl.filter.CodeTypeFilterFactory;
-import com.sicpa.standard.sasscl.filter.DefaultCodeTypeFilterFactory;
 import com.sicpa.standard.sasscl.model.CodeType;
 import com.sicpa.standard.sasscl.provider.impl.AuthenticatorProvider;
 import com.sicpa.standard.sasscl.provider.impl.SkuListProvider;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.Calendar;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 public class RemoteServerScheduledJobsSCL extends RemoteServerScheduledJobs {
 
@@ -46,16 +46,16 @@ public class RemoteServerScheduledJobsSCL extends RemoteServerScheduledJobs {
 		}
 	}
 
-	protected void getEncodersFromRemoteServer(final int year) throws RemoteServerException {
+	private void getEncodersFromRemoteServer(final int year) throws RemoteServerException {
 		Set<CodeType> codeTypes = skuListProvider.getAvailableCodeTypes();
 
 		// Filter
-		Set<CodeType> codeTypesFilter = codeTypes.stream()
-				.filter(codeTypeFilterFactory.getFilter()).collect(Collectors.toSet());
+		Set<CodeType> codeTypesFilter = codeTypes.stream().filter(codeTypeFilterFactory.getFilter())
+				.collect(Collectors.toSet());
 
 		for (CodeType codeType : codeTypesFilter) {
 			if (codeType != null) {
-				if (storage.getAvailableNumberOfEncoders(codeType, year) <= minEncodersThreshold) {
+				if (shouldRequestEncoder(codeType, year)) {
 					try {
 						remoteServer.downloadEncoder(requestNumberEncoders, codeType, year);
 					} catch (Exception e) {
@@ -64,6 +64,10 @@ public class RemoteServerScheduledJobsSCL extends RemoteServerScheduledJobs {
 				}
 			}
 		}
+	}
+
+	private boolean shouldRequestEncoder(CodeType codeType, int year) {
+		return storage.getAvailableNumberOfEncoders(codeType, year) <= minEncodersThreshold;
 	}
 
 	@Override

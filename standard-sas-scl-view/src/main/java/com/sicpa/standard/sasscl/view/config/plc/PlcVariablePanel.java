@@ -71,7 +71,7 @@ public class PlcVariablePanel extends JPanel {
 
 			if (panelVar == null) {
 				panelVar = new JPanel(new MigLayout());
-				for (PlcVariableDescriptor<?> var : group.getPlcVars()) {
+				for (PlcVariableDescriptor var : group.getPlcVars()) {
 					JComponent r = var.getRenderer();
 					if (r != null) {
 						panelVar.add(r, "grow,wrap");

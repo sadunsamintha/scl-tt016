@@ -30,40 +30,24 @@ import com.sicpa.standard.sasscl.sicpadata.reader.IAuthenticator;
 
 public class RemoteServerScheduledJobsTest {
 
-	private static final int REMOTE_SERVER_MAX_DOWN_TIME = 100;
+	static final int REMOTE_SERVER_MAX_DOWN_TIME = 100;
+	static final String ENGLISH_LANG = "en";
+	static final int REQUEST_NUMBER_ENCODERS = 44;
+	static final int ID_CODE_TYPE = 22;
+	static final CodeType CODE_TYPE = new CodeType(ID_CODE_TYPE);
+	static final int ID_SKU = 1;
 
-	private static final String ENGLISH_LANG = "en";
-
-	private static final int REQUEST_NUMBER_ENCODERS = 44;
-
-	private static final int ID_CODE_TYPE = 22;
-
-	private static final CodeType CODE_TYPE = new CodeType(ID_CODE_TYPE);
-
-	private static final int ID_SKU = 1;
-
-	private RemoteServerScheduledJobsSCL remoteServerScheduledJobs;
-
-	private IStorage storage;
-
-	private IRemoteServer remoteServer;
-
-	private SkuListProvider productionParametersProvider;
-
-	private AuthenticatorProvider authenticatorProvider;
-
-	private ProductionParameterRootNode productionParameterRootNode;
-
-	private SKUNode skuNode;
-
-	private SKU sku;
-
-	private IAuthenticator auth;
-
-	private Map<String, ? super ResourceBundle> mapBundles;
-
-	private MyResourceBundle resourceBundle;
-
+	RemoteServerScheduledJobsSCL remoteServerScheduledJobs;
+	IStorage storage;
+	IRemoteServer remoteServer;
+	SkuListProvider productionParametersProvider;
+	AuthenticatorProvider authenticatorProvider;
+	ProductionParameterRootNode productionParameterRootNode;
+	SKUNode skuNode;
+	SKU sku;
+	IAuthenticator auth;
+	Map<String, ? super ResourceBundle> mapBundles;
+	MyResourceBundle resourceBundle;
 	boolean maxdowntimeReceived = false;
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -94,7 +78,7 @@ public class RemoteServerScheduledJobsTest {
 		productionParametersProvider.set(productionParameterRootNode);
 	}
 
-	private void createRemoteServerScheduledJobs(IStorage storage) {
+	void createRemoteServerScheduledJobs(IStorage storage) {
 		this.remoteServerScheduledJobs = new RemoteServerScheduledJobsSCL(storage, remoteServer,
 				productionParametersProvider, authenticatorProvider);
 		remoteServerScheduledJobs.setRemoteServerMaxDownTime_day(REMOTE_SERVER_MAX_DOWN_TIME);
@@ -200,18 +184,6 @@ public class RemoteServerScheduledJobsTest {
 	}
 
 	@Test
-	public void testAddMaxDownTimeListenerUnsupportedOperationException() {
-		fixtureServerConnected(false);
-
-		try {
-			remoteServerScheduledJobs.checkRemoteServerMaxDownTime();
-			fail("Not detected UnsupportedOperationException");
-		} catch (UnsupportedOperationException e) {
-
-		}
-	}
-
-	@Test
 	public void testAddMaxDownTimeListener() {
 		storage = Mockito.mock(FileStorage.class);
 
@@ -224,11 +196,11 @@ public class RemoteServerScheduledJobsTest {
 		Assert.assertTrue(maxdowntimeReceived);
 	}
 
-	private void fixtureServerConnected(boolean connected) {
+	void fixtureServerConnected(boolean connected) {
 		Mockito.when(this.remoteServer.isConnected()).thenReturn(connected);
 	}
 
-	private ProductionParameterRootNode createProductionParameterRootNode() {
+	ProductionParameterRootNode createProductionParameterRootNode() {
 		ProductionParameterRootNode productionParameterRootNode = new ProductionParameterRootNode();
 		skuNode = new SKUNode();
 		sku = new SKU(ID_SKU, "COD_TYPE");
@@ -238,7 +210,7 @@ public class RemoteServerScheduledJobsTest {
 		return productionParameterRootNode;
 	}
 
-	private static class MyResourceBundle extends ResourceBundle {
+	static class MyResourceBundle extends ResourceBundle {
 
 		@Override
 		public Enumeration<String> getKeys() {

@@ -3,9 +3,6 @@ package com.sicpa.standard.sasscl.controller.productionconfig.config;
 public class PrinterType {
 
 	public static final PrinterType DOMINO = new PrinterType("DOMINO");
-	public static final PrinterType DOMINO2 = new PrinterType("DOMINO2");
-    public static final PrinterType OI2JET = new PrinterType("OI2JET");
-    public static final PrinterType DOD = new PrinterType("DOD");
 	public static final PrinterType LEIBINGER = new PrinterType("LEIBINGER");
 
 	protected final String description;

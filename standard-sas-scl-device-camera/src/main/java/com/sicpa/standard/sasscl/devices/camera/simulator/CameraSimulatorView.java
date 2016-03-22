@@ -94,6 +94,12 @@ public class CameraSimulatorView extends AbstractSimulatorView {
 		if (spinnerReadCodeInterval == null) {
 			SpinnerNumberModel model = new SpinnerNumberModel(controller.getCameraModel().getReadCodeInterval(), 0,
 					5000, 1);
+			
+			if (controller.getCameraModel().getReadCodeInterval() < 0) {
+				// it happens in functional tests
+				model.setValue(0);
+			}
+
 			spinnerReadCodeInterval = new JSpinner(model);
 			spinnerReadCodeInterval.addChangeListener(new ChangeListener() {
 

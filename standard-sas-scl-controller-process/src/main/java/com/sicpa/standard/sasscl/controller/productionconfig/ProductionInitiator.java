@@ -5,7 +5,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,7 +18,7 @@ import com.sicpa.standard.sasscl.devices.IStartableDevice;
 import com.sicpa.standard.sasscl.devices.camera.ICameraAdaptor;
 import com.sicpa.standard.sasscl.devices.camera.simulator.ICameraAdaptorSimulator;
 import com.sicpa.standard.sasscl.devices.camera.simulator.ICodeProvider;
-import com.sicpa.standard.sasscl.devices.plc.PlcVariableMap;
+import com.sicpa.standard.sasscl.devices.plc.PlcLineHelper;
 import com.sicpa.standard.sasscl.provider.impl.ActivationBehaviorProvider;
 import com.sicpa.standard.sasscl.provider.impl.AuthenticatorModeProvider;
 import com.sicpa.standard.sasscl.provider.impl.PlcProvider;
@@ -28,33 +27,25 @@ public class ProductionInitiator implements IProductionInitiator {
 
 	private static Logger logger = LoggerFactory.getLogger(ProductionInitiator.class);
 
-	protected final Map<String, IStartableDevice> cameras = new HashMap<String, IStartableDevice>();
-	protected final Map<String, IStartableDevice> printers = new HashMap<String, IStartableDevice>();
+	private IDeviceFactory deviceFactory;
+	private IProductionConfig productionConfig;
+	private PlcProvider plcProvider;
+	private IStartableDevice bis;
+	private IStartableDevice brs;
+	private IHardwareController hardwareController;
+	private AuthenticatorModeProvider authenticatorModeProvider;
+	private IImplementationProvider implementationProvider;
+	private ActivationBehaviorProvider activationBehaviorProvider;
 
-	protected IDeviceFactory deviceFactory;
-
-	protected IProductionConfig productionConfig;
-
-	protected PlcProvider plcProvider;
-
-	protected IStartableDevice bis;
-
-    protected IStartableDevice brs;
-
-    protected IHardwareController hardwareController;
-
-	protected AuthenticatorModeProvider authenticatorModeProvider;
-
-	protected IImplementationProvider implementationProvider;
-
-	protected ActivationBehaviorProvider activationBehaviorProvider;
+	private final Map<String, IStartableDevice> cameras = new HashMap<>();
+	private final Map<String, IStartableDevice> printers = new HashMap<>();
 
 	protected void reset() {
 		deviceFactory.reset();
 		cameras.clear();
 		printers.clear();
-        bis = null;
-        brs = null;
+		bis = null;
+		brs = null;
 	}
 
 	@Override
@@ -69,36 +60,28 @@ public class ProductionInitiator implements IProductionInitiator {
 		prepareSimulator();
 	}
 
-	protected void setupActivationBehavior() {
+	private void setupActivationBehavior() {
 		IActivationBehavior activationBehavior = (IActivationBehavior) implementationProvider
 				.getImplementation(productionConfig.getActivationBehavior());
 		activationBehaviorProvider.set(activationBehavior);
 	}
 
-	protected void setAvailableLineIndexes() {
-		int index1 = Integer.parseInt(productionConfig.getPlcConfig().getLine1Index());
-		PlcVariableMap.addLineIndex(index1);
-
-		String sIndex2 = productionConfig.getPlcConfig().getLine2Index();
-		if (StringUtils.isNotEmpty(sIndex2)) {
-			int index2 = Integer.parseInt(sIndex2);
-			PlcVariableMap.addLineIndex(index2);
-		}
+	private void setAvailableLineIndexes() {
+		productionConfig.getPlcConfig().getLinesProperties().keySet().forEach(i -> PlcLineHelper.addLineIndex(i));
 	}
 
-	protected void prepareSimulator() {
+	private void prepareSimulator() {
 		for (IStartableDevice dev : printers.values()) {
 			if (dev instanceof ICodeProvider) {
 				ICameraAdaptor camera = getCameraAssociatedWithPrinter(dev.getName());
 				if (camera instanceof ICameraAdaptorSimulator) {
-					((ICameraAdaptorSimulator) camera).getSimulatorController().setCodeProvider(
-							((ICodeProvider) dev));
+					((ICameraAdaptorSimulator) camera).getSimulatorController().setCodeProvider(((ICodeProvider) dev));
 				}
 			}
 		}
 	}
 
-	protected ICameraAdaptor getCameraAssociatedWithPrinter(String printer) {
+	private ICameraAdaptor getCameraAssociatedWithPrinter(String printer) {
 		if (productionConfig.getPrinterConfigs() != null) {
 			for (PrinterConfig pr : productionConfig.getPrinterConfigs()) {
 				if (pr.getId().equals(printer)) {
@@ -109,15 +92,15 @@ public class ProductionInitiator implements IProductionInitiator {
 		return null;
 	}
 
-	protected void createAll() {
+	private void createAll() {
 		createCamera();
 		createPrinter();
 		createPlc();
 		createBis();
-        createBrs();
+		createBrs();
 	}
 
-	protected void createPlc() {
+	private void createPlc() {
 		logger.debug("creating plc");
 		setAvailableLineIndexes();
 		plcProvider.set(deviceFactory.getPlc(productionConfig.getPlcConfig()));
@@ -134,7 +117,7 @@ public class ProductionInitiator implements IProductionInitiator {
 		}
 	}
 
-	protected void injectDevicesIntoHardwareController() {
+	private void injectDevicesIntoHardwareController() {
 		Set<IStartableDevice> devices = new HashSet<IStartableDevice>();
 		devices.addAll(cameras.values());
 		devices.addAll(printers.values());
@@ -143,9 +126,9 @@ public class ProductionInitiator implements IProductionInitiator {
 			devices.add(bis);
 		}
 
-        if(brs != null) {
-            devices.add(brs);
-        }
+		if (brs != null) {
+			devices.add(brs);
+		}
 
 		String devicesName = "";
 		for (IStartableDevice dev : devices) {
@@ -157,7 +140,7 @@ public class ProductionInitiator implements IProductionInitiator {
 		EventBusService.post(evt);
 	}
 
-	protected void createBis() {
+	private void createBis() {
 		if (productionConfig.getBisConfig() != null) {
 			logger.debug("creating BIS");
 			bis = deviceFactory.getBis(productionConfig.getBisConfig());
@@ -165,15 +148,15 @@ public class ProductionInitiator implements IProductionInitiator {
 		}
 	}
 
-    protected void createBrs() {
-        if (productionConfig.getBrsConfig() != null) {
-            logger.debug("creating BRS");
-            brs = deviceFactory.getBrs(productionConfig.getBrsConfig());
-            logger.debug("BRS created:{}", brs.getName());
-        }
-    }
+	private void createBrs() {
+		if (productionConfig.getBrsConfig() != null) {
+			logger.debug("creating BRS");
+			brs = deviceFactory.getBrs(productionConfig.getBrsConfig());
+			logger.debug("BRS created:{}", brs.getName());
+		}
+	}
 
-	protected void createCamera() {
+	private void createCamera() {
 		logger.debug("creating cameras");
 		for (CameraConfig cameraConfig : productionConfig.getCameraConfigs()) {
 			IStartableDevice camera = deviceFactory.getCamera(cameraConfig);
@@ -182,7 +165,7 @@ public class ProductionInitiator implements IProductionInitiator {
 		}
 	}
 
-	protected void createPrinter() {
+	private void createPrinter() {
 		logger.debug("creating printers");
 		if (productionConfig.getPrinterConfigs() != null) {
 			for (PrinterConfig printerConfig : productionConfig.getPrinterConfigs()) {
@@ -197,10 +180,6 @@ public class ProductionInitiator implements IProductionInitiator {
 		this.deviceFactory = deviceFactory;
 	}
 
-	// @Override
-	// public void prepare() {
-	// hardwareController.close();
-	// }
 	public void setHardwareController(IHardwareController hardwareController) {
 		this.hardwareController = hardwareController;
 	}

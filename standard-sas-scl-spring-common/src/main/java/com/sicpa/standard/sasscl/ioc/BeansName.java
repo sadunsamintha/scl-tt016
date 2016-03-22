@@ -63,10 +63,6 @@ public interface BeansName {
 	String CODING = "coding";
 
 	/**
-	 * IDevicesController
-	 */
-	String OTHER_DEVICES_CONTROLLER = "otherDevicesController";
-	/**
 	 * IGroupDevicesController
 	 */
 	String DEVICES_GROUP_STARTUP = "startupDevicesGroup";
@@ -88,20 +84,10 @@ public interface BeansName {
 	 */
 	String PLC = "plc";
 	/**
-	 * IPlcAdaptor
-	 */
-	String PLC_SECURE = "plcSecureAdaptor";
-	/**
 	 * IProvider
 	 */
 	String PLC_PROVIDER = "plcProvider";
-	String PLC_SEC_PROVIDER = "plcSecureProvider";
-	/**
-	 * EditablePlcVariables
-	 */
-	String PLC_EDITABLE_VARIABLES = "cabinetEditablePlcVariables";
 	String PLC_MODEL = "stdPlcModel";
-	String PLC_VARIABLE_GROUPS = "lineVarGroups";
 	/**
 	 * IPlcController
 	 */
@@ -177,7 +163,6 @@ public interface BeansName {
 	 * IStorage
 	 */
 	String STORAGE = "storage";
-	String VALIDATORS = "modelPropertiesValidators";
 	/**
 	 * MainFrameController
 	 */
@@ -228,14 +213,6 @@ public interface BeansName {
 	String SELECTION_MODEL_FACTORY = "selectionModelFactory";
 
 	/**
-	 * ISaveRemotlyUpdatedBeanTask
-	 */
-	String DEFAULT_SAVE_REMOTELY_CHANGED_BEAN_TASK = "defaultSaveRemotelyChangedBeanTask";
-	/**
-	 * ISaveRemotlyUpdatedBeanTask
-	 */
-	String PLC_VAR_SAVE_REMOTELY_CHANGED_BEAN_TASK = "plcVarSaveRemotelyChangedBeanTask";
-	/**
 	 * IOfflineCounting
 	 */
 	String OFFLINE_COUNTING = "offlineCounting";
@@ -251,9 +228,9 @@ public interface BeansName {
 	String PRODUCTION_MODE_DEVICEGROUP_MAPPING = "productionModeDeviceGroupMapping";
 
 	/**
-	 * ApplicationInitializationTasks
+	 * IBootstrap
 	 */
-	String APPLICATION_INITIALIZATION_TASKS = "applicationInitializationTasks";
+	String BOOTSTRAP = "bootstrap";
 
 	/**
 	 * UniquePasswordProvider
@@ -265,26 +242,9 @@ public interface BeansName {
 	String CRYPTO_PROVIDER_MANAGER = "cryptoProviderManager";
 
 	/**
-	 * BeanHistoryManager
-	 */
-	String BEAN_HISTORY_MANAGER = "beanHistoryManager";
-
-	/**
 	 * Map<String-logicalVarName,String-nameInPlc>
 	 */
 	String PLC_VAR_MAPPING = "plcVarMap";
-	String PLC_SECURE_VAR_MAPPING = "securePlcVarMap";
-
-	/**
-	 * List<IPLCVariable>
-	 */
-	String PLC_PARAMETERS = "plcCabinetParameters";
-
-	String PLC_CABINET_VARIABLES_VALUE = "allPlcVariableValues";
-
-	String PLC_SECURE_PARAMETERS = "plcSecureParameters";
-
-	String PLC_SECURE_VARIABLE_VALUES = "plcSecureVariableValues";
 
 	/**
 	 * IMessagesMapping
@@ -332,8 +292,6 @@ public interface BeansName {
 
 	String BIS = "bis";
 	String IMPLEMENTATION_PROVIDER = "implementationProvider";
-	String OPERATOR_LOGGER = "operatorLoggerBehavior";
-
 	/**
 	 * IdeviceIncidentContext
 	 */

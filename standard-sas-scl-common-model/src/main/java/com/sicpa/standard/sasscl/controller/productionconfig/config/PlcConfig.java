@@ -1,5 +1,10 @@
 package com.sicpa.standard.sasscl.controller.productionconfig.config;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import com.sicpa.standard.client.common.utils.StringMap;
+
 /**
  * plc config related to the production
  * 
@@ -8,59 +13,15 @@ package com.sicpa.standard.sasscl.controller.productionconfig.config;
  */
 public class PlcConfig extends AbstractLayoutConfig {
 
-	protected String line1ConfigFile;
-	protected String line2ConfigFile;
-	protected String line3ConfigFile;
+	private final StringMap cabinetProperties = new StringMap();
+	private final Map<Integer, StringMap> linesProperties = new HashMap<>();
 
-	protected String line1Index;
-	protected String line2Index;
-	protected String line3Index;
-
-	public String getLine1ConfigFile() {
-		return line1ConfigFile;
+	public StringMap getCabinetProperties() {
+		return cabinetProperties;
 	}
 
-	public String getLine2ConfigFile() {
-		return line2ConfigFile;
+	public Map<Integer, StringMap> getLinesProperties() {
+		return linesProperties;
 	}
 
-	public void setLine1ConfigFile(String line1ConfigFile) {
-		this.line1ConfigFile = line1ConfigFile;
-	}
-
-	public void setLine2ConfigFile(String line2ConfigFile) {
-		this.line2ConfigFile = line2ConfigFile;
-	}
-
-	public void setLine1Index(String line1Index) {
-		this.line1Index = line1Index;
-	}
-
-	public void setLine2Index(String line2Index) {
-		this.line2Index = line2Index;
-	}
-
-	public String getLine1Index() {
-		return line1Index;
-	}
-
-	public String getLine2Index() {
-		return line2Index;
-	}
-
-	public String getLine3ConfigFile() {
-		return line3ConfigFile;
-	}
-
-	public String getLine3Index() {
-		return line3Index;
-	}
-
-	public void setLine3ConfigFile(String line3ConfigFile) {
-		this.line3ConfigFile = line3ConfigFile;
-	}
-
-	public void setLine3Index(String line3Index) {
-		this.line3Index = line3Index;
-	}
 }

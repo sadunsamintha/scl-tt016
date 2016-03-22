@@ -6,25 +6,21 @@ import com.sicpa.standard.sasscl.devices.plc.variable.descriptor.event.PulseConv
 public class PlcVariablePulseParamDescriptor extends PlcIntegerVariableDescriptor {
 
 	@Override
-	protected void fireValueChanged() {
-		super.fireValueChanged();
-		if (getVariable().getValue() == null){
-			logger.error("variable {} not defined", getVarName());
-			return;
-		}
-		EventBusService.post(new PulseConversionParamChangedEvent(
-					getVarName(), getVariable().getValue().intValue()));
+	public void initValue(String value) {
+		super.initValue(value);
+		sendPulseConversionChangedEvent();
+	}
+
+	private void sendPulseConversionChangedEvent() {
+		EventBusService
+				.post(new PulseConversionParamChangedEvent(getVarName(), Integer.parseInt(getValue()), lineIndex));
 	}
 
 	@Override
 	public PlcVariablePulseParamDescriptor clone() {
 		PlcVariablePulseParamDescriptor descriptor = new PlcVariablePulseParamDescriptor();
-		descriptor.plcProvider = plcProvider;
-		descriptor.editablePlcVariables = editablePlcVariables;
-		descriptor.variable = variable;
-
-		descriptor.min = min;
-		descriptor.max = max;
+		descriptor.listeners.addAll(listeners);
+		descriptor.value = value;
 		return descriptor;
 	}
 

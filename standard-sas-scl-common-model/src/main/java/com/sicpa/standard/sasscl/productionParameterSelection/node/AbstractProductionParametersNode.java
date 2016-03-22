@@ -14,11 +14,6 @@ public abstract class AbstractProductionParametersNode<T> implements IProduction
 	protected String text;
 	protected T value;
 
-	/**
-	 * only used for remote server simulator to be able to save the image separately
-	 */
-	protected String fileImage;
-
 	public AbstractProductionParametersNode() {
 
 	}
@@ -28,9 +23,10 @@ public abstract class AbstractProductionParametersNode<T> implements IProduction
 	}
 
 	public void addChildren(final Collection<IProductionParametersNode> children) {
-		
-		if (null == children) return;
-		
+
+		if (null == children)
+			return;
+
 		for (IProductionParametersNode comp : children) {
 			this.children.add(comp);
 		}
@@ -69,20 +65,6 @@ public abstract class AbstractProductionParametersNode<T> implements IProduction
 
 	public boolean isLeaf() {
 		return this.children == null || this.children.isEmpty();
-	}
-
-	/**
-	 * only used for remote server simulator to be able to save the image separately
-	 */
-	public String getFileImage() {
-		return this.fileImage;
-	}
-
-	/**
-	 * only used for remote server simulator to be able to save the image separately
-	 */
-	public void setFileImage(final String fileImage) {
-		this.fileImage = fileImage;
 	}
 
 	@Override

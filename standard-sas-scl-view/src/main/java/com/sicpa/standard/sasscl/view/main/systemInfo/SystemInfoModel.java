@@ -6,7 +6,6 @@ public class SystemInfoModel extends AbstractObservableModel {
 
 	protected String appVersion;
 	protected boolean remoteServerConnected;
-	protected boolean plcSecureConnected;
 	protected String plcVersion;
 
 	public String getAppVersion() {
@@ -31,13 +30,5 @@ public class SystemInfoModel extends AbstractObservableModel {
 
 	public void setRemoteServerConnected(boolean remoteServerConnected) {
 		this.remoteServerConnected = remoteServerConnected;
-	}
-
-	public boolean isPlcSecureConnected() {
-		return plcSecureConnected;
-	}
-
-	public void setPlcSecureConnected(boolean plcSecureConnected) {
-		this.plcSecureConnected = plcSecureConnected;
 	}
 }

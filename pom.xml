@@ -37,28 +37,6 @@
 				<artifactId>maven-clover2-plugin</artifactId>
 				<version>2.5.1</version>
 				<configuration>
-					<excludes>
-
-						<!-- FILTER TO REMOVE WHEN MODULE ARE INTEGRATED -->
-						<exclude>**/**/skucheck/*.java</exclude>
-						<exclude>**/**/skucheck/**/*.java</exclude>
-
-						<!-- -->
-						<exclude>**/**/*Test.java</exclude>
-						<exclude>**/**sasscl/view/**/*.java</exclude>
-						<exclude>**/**sasscl/*.java</exclude>
-						<exclude>**/**ioc/**/*.java</exclude>
-						<exclude>**/**aspect/**/*.java</exclude>
-						<exclude>**/**simulator/**/*.java</exclude>
-						<exclude>**/**/*Renderer.java</exclude>
-						<exclude>**/**/DefaultConfigGenerator.java</exclude>
-						<exclude>**/**remoteControl/**/*.java</exclude>
-						<exclude>**/**/wizard/*.java</exclude>
-						<exclude>**/**/wizard/**/*.java</exclude>
-						<exclude>**/**/mbean/sas/*.java</exclude>
-						<exclude>**/**/mbean/scl/*.java</exclude>
-					</excludes>
-
 					<includesTestSourceRoots>false</includesTestSourceRoots>
 					<targetPercentage>75%</targetPercentage>
 					<generateXml>true</generateXml>
@@ -75,7 +53,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
-				<version>2.4</version>
+				<version>3.0.0</version>
 				<executions>
 					<execution>
 						<phase>package</phase>
@@ -94,8 +72,12 @@
 					<includes>
 						<include>**/*Test.java</include>
 					</includes>
+					<excludes>
+						<exclude>**/functionaltests/**</exclude>
+					</excludes>
 					<argLine>-Djava.awt.headless=true -Xmx256m</argLine>
 					<reuseForks>false</reuseForks>
+
 				</configuration>
 			</plugin>
 			<plugin>
@@ -197,11 +179,6 @@
 		</dependency>
 
 		<dependency>
-			<groupId>com.thoughtworks.xstream</groupId>
-			<artifactId>xstream</artifactId>
-		</dependency>
-
-		<dependency>
 			<groupId>commons-lang</groupId>
 			<artifactId>commons-lang</artifactId>
 		</dependency>
@@ -241,8 +218,6 @@
 	</dependencies>
 
 	<modules>
-		<module>standard-sas-app</module>
-		<module>standard-scl-app</module>
 		<module>standard-sas-scl-business-activation</module>
 		<module>standard-sas-scl-business-alert</module>
 		<module>standard-sas-scl-business-coding</module>
@@ -260,14 +235,12 @@
 		<module>standard-sas-scl-device-remoteServer</module>
 		<module>standard-sas-scl-device-remoteServer-impl</module>
 		<module>standard-sas-scl-spring-common</module>
-		<module>standard-sas-scl-spring-scl</module>
 		<module>standard-sas-scl-view</module>
 		<module>standard-sas-scl-monitoring</module>
-		<module>standard-sas-scl-test-functional-common</module>
-		<module>standard-sas-scl-test-functional-sas</module>
-		<module>standard-sas-scl-test-functional-scl</module>
+		<module>standard-sas-scl-functional-test</module>
 		<module>standard-sas-scl-device-bis</module>
 		<module>standard-sas-scl-test-utils</module>
+		<module>standard-sas-scl-apps</module>
 	</modules>
 
 
@@ -371,8 +344,10 @@
 				<artifactId>spring-scl</artifactId>
 				<version>2.4.12-SNAPSHOT</version>
 			</dependency>
+			<!--SPRING -->
 			<dependency>
 				<groupId>com.sicpa.standard.sasscl</groupId>
+
 				<artifactId>device-remoteServer-impl</artifactId>
 				<version>2.4.12-SNAPSHOT</version>
 			</dependency>
@@ -424,7 +399,7 @@
 			<dependency>
 				<groupId>com.sicpa.standard</groupId>
 				<artifactId>common-client</artifactId>
-				<version>2.0.0</version>
+				<version>2.0.1-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>com.sicpa.standard.sicpadata</groupId>
@@ -463,11 +438,6 @@
 			</dependency>
 			<dependency>
 				<groupId>com.sicpa.standard.camera</groupId>
-				<artifactId>standard-camera-drs</artifactId>
-				<version>0.0.4</version>
-			</dependency>
-			<dependency>
-				<groupId>com.sicpa.standard.camera</groupId>
 				<artifactId>standard-camera-cognex</artifactId>
 				<version>1.6.1</version>
 			</dependency>
@@ -497,13 +467,6 @@
 				<artifactId>standard-printer-leibinger</artifactId>
 				<version>1.1.6</version>
 			</dependency>
-			<dependency>
-				<groupId>com.sicpa.standard.printer</groupId>
-				<artifactId>standard-printer-oi2jet</artifactId>
-				<version>0.1.18</version>
-			</dependency>
-
-
 			<dependency>
 				<groupId>com.sicpa.standard.plc</groupId>
 				<artifactId>standard-plc-jbeckplc</artifactId>
@@ -535,13 +498,6 @@
 				<groupId>com.sicpa.standard.tools</groupId>
 				<artifactId>client-installer</artifactId>
 				<version>${installer.version}</version>
-			</dependency>
-
-
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-context</artifactId>
-				<version>3.2.4.RELEASE</version>
 			</dependency>
 			<dependency>
 				<groupId>ch.qos.logback</groupId>
@@ -587,11 +543,6 @@
 				<groupId>jfree</groupId>
 				<artifactId>jcommon</artifactId>
 				<version>1.0.9</version>
-			</dependency>
-			<dependency>
-				<groupId>com.thoughtworks.xstream</groupId>
-				<version>1.4.2</version>
-				<artifactId>xstream</artifactId>
 			</dependency>
 			<dependency>
 				<groupId>commons-lang</groupId>

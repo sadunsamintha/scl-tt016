@@ -12,9 +12,8 @@ public class ProductionConfigFileLoader implements IProductionConfigLoader {
 
 	private static final Logger logger = LoggerFactory.getLogger(ProductionConfigFileLoader.class);
 
-	protected IProductionConfigMapping mapping;
-
-	protected String folder = "config/productionConfig";
+	private IProductionConfigMapping mapping;
+	private String folder;
 
 	/**
 	 * This method gets a production Configuration given a production mode.
@@ -33,5 +32,9 @@ public class ProductionConfigFileLoader implements IProductionConfigLoader {
 
 	public void setMapping(IProductionConfigMapping mapping) {
 		this.mapping = mapping;
+	}
+
+	public void setFolder(String folder) {
+		this.folder = folder;
 	}
 }

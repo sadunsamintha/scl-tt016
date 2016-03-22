@@ -1,0 +1,12 @@
+<ProductionConfig activationBehavior="exportActivationBehavior">
+
+	<CameraConfig deviceType="COGNEX" id="qc_1" />
+
+	<PlcConfig>
+		<cabinet />
+		<line index="1">
+			<property key="PARAM_LINE_IS_ACTIVE" value="true" />
+		</line>
+	</PlcConfig>
+
+</ProductionConfig>

@@ -1,6 +1,7 @@
 package com.sicpa.standard.sasscl.devices.camera;
 
-import com.sicpa.standard.sasscl.config.xstream.IXStreamConfigurator;
+import com.sicpa.standard.camera.controller.model.CameraModel;
+import com.sicpa.standard.client.common.xstream.IXStreamConfigurator;
 import com.sicpa.standard.sasscl.devices.camera.jobconfig.CameraJobConfigNode;
 import com.sicpa.standard.sasscl.devices.camera.jobconfig.CameraJobFileDescriptor;
 import com.sicpa.standard.sasscl.devices.camera.jobconfig.CameraJobFilesConfig;
@@ -26,6 +27,9 @@ public class CameraXStreamConfigurator implements IXStreamConfigurator {
 		xstream.useAttributeFor(ProductCameraJob.class, "productId");
 
 		xstream.alias("CameraSimulatorConfig", CameraSimulatorConfig.class);
+		
+		xstream.alias("CameraModel", CameraModel.class);	
+		
 	}
 
 	// public static void main(final String[] args) throws IOException, URISyntaxException {

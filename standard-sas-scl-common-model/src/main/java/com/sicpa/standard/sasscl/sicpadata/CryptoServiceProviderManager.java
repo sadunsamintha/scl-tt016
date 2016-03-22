@@ -10,10 +10,10 @@ public class CryptoServiceProviderManager extends SimpleServiceProviderManager {
 	protected UniquePasswordProvider passwordProvider;
 
 	public CryptoServiceProviderManager(UniquePasswordProvider passwordProvider,
-			FileSequenceStorageProvider fileSequenceStorageProvider) {
+			FileSequenceStorageProvider fileSequenceStorageProvider, String profilePath) {
 		this.passwordProvider = passwordProvider;
 		this.register(passwordProvider);
-		this.register(new FileKeyStorageProvider("./internal/simulation/storage/keystore"));
+		this.register(new FileKeyStorageProvider(profilePath + "/internal/simulation/storage/keystore"));
 		this.register(new VolatileSicpadataModelStorage());
 		this.register(fileSequenceStorageProvider);
 	}

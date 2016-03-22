@@ -15,11 +15,10 @@ public class StatisticsKey implements Serializable {
 
 	public final static StatisticsKey TOTAL = new StatisticsKey("total");
 
-	protected String description;
+	private String description;
+	private String line;
 
-	protected String line="";
-
-	public StatisticsKey(final String description) {
+	public StatisticsKey(String description) {
 		this.description = description;
 	}
 

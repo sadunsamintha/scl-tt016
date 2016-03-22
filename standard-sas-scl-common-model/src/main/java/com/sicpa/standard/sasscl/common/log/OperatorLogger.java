@@ -8,12 +8,6 @@ public class OperatorLogger {
 		OperatorLogger.loggerBehavior = loggerBehavior;
 	}
 
-	/**
-	 * Add log for operator actions
-	 * 
-	 * @param msg
-	 * @param parameters
-	 */
 	public static void log(String msg, Object... parameters) {
 		loggerBehavior.log(msg, parameters);
 	}

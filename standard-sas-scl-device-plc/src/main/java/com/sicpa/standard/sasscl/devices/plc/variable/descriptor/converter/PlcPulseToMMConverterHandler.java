@@ -4,19 +4,31 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.google.common.eventbus.Subscribe;
-import com.sicpa.standard.client.common.eventbus.service.EventBusService;
-import com.sicpa.standard.sasscl.devices.plc.PlcVariableMap;
-import com.sicpa.standard.sasscl.devices.plc.variable.descriptor.event.PulseConversionChangedEvent;
 import com.sicpa.standard.sasscl.devices.plc.variable.descriptor.event.PulseConversionParamChangedEvent;
 
 public class PlcPulseToMMConverterHandler {
 
-	protected final Map<String, PlcPulseToMMConverter> converters = new HashMap<String, PlcPulseToMMConverter>();
+	private String encoderResolutionVarName;
+	private String shapeDiameterVarName;
+	private String encoderModFolEvalVarName;
+
+	private final Map<Integer, PlcPulseToMMConverter> converters = new HashMap<>();
+
+	public int convertToPulse(float mm, int lineIndex) {
+		return converters.get(lineIndex).convertToPulse(mm);
+	}
+
+	public int convertToMMint(int pulses, int lineIndex) {
+		return converters.get(lineIndex).convertToMMint(pulses);
+	}
+
+	public float convertToMMfloat(int pulses, int lineIndex) {
+		return converters.get(lineIndex).convertToMMfloat(pulses);
+	}
 
 	@Subscribe
 	public void handlePulseConversionParamChanged(PulseConversionParamChangedEvent evt) {
-
-		String line = PlcVariableMap.getLineIndex(evt.getParamName());
+		int line = evt.getLine();
 		PlcPulseToMMConverter converter = converters.get(line);
 		if (converter == null) {
 			converter = createConverter();
@@ -25,15 +37,15 @@ public class PlcPulseToMMConverterHandler {
 		fillConverter(converter, evt);
 
 		if (isConverterReady(converter)) {
-			EventBusService.post(new PulseConversionChangedEvent(line, converter));
+			converter.computeCoef();
 		}
 	}
 
-	protected PlcPulseToMMConverter createConverter() {
+	private PlcPulseToMMConverter createConverter() {
 		return new PlcPulseToMMConverter();
 	}
 
-	protected void fillConverter(PlcPulseToMMConverter converter, PulseConversionParamChangedEvent evt) {
+	private void fillConverter(PlcPulseToMMConverter converter, PulseConversionParamChangedEvent evt) {
 		if (isEncoderResolutionParam(evt.getParamName())) {
 			converter.setEncoderResolution(evt.getValue());
 		} else if (isShapeDiameter(evt.getParamName())) {
@@ -43,24 +55,20 @@ public class PlcPulseToMMConverterHandler {
 		}
 	}
 
-	protected boolean isConverterReady(PlcPulseToMMConverter converter) {
+	private boolean isConverterReady(PlcPulseToMMConverter converter) {
 		return converter.getEncoderResolution() > 0 && converter.getShapeDiameterValue() > 0
 				&& converter.getEncoderModFoldEval() > 0;
 	}
 
-	protected String encoderResolutionVarName;
-	protected String shapeDiameterVarName;
-	protected String encoderModFolEvalVarName;
-
-	protected boolean isEncoderResolutionParam(String param) {
+	private boolean isEncoderResolutionParam(String param) {
 		return param.endsWith(encoderResolutionVarName);
 	}
 
-	protected boolean isShapeDiameter(String param) {
+	private boolean isShapeDiameter(String param) {
 		return param.endsWith(shapeDiameterVarName);
 	}
 
-	protected boolean isEncoderModFolEval(String param) {
+	private boolean isEncoderModFolEval(String param) {
 		return param.endsWith(encoderModFolEvalVarName);
 	}
 

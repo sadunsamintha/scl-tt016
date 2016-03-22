@@ -1,8 +1,25 @@
 package com.sicpa.standard.sasscl.view;
 
+import static com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState.STT_CONNECTED;
+import static com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState.STT_CONNECTING;
+import static com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState.STT_EXIT;
+import static com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState.STT_NO_SELECTION;
+import static com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState.STT_RECOVERING;
+import static com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState.STT_SELECT_NO_PREVIOUS;
+import static com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState.STT_SELECT_WITH_PREVIOUS;
+import static com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState.STT_STARTED;
+import static com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState.STT_STARTING;
+import static com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState.STT_STOPPING;
+
+import java.awt.Color;
+import java.awt.Dialog;
+import java.awt.Window;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.swing.JComponent;
+
 import com.google.common.eventbus.Subscribe;
-import com.sicpa.standard.client.common.descriptor.ModelEditableProperties;
-import com.sicpa.standard.client.common.descriptor.validator.Validators;
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.messages.IMessageCodeMapper;
 import com.sicpa.standard.client.common.view.SecuredComponentGetter;
@@ -25,41 +42,24 @@ import com.sicpa.standard.sasscl.event.UnlockFullScreenEvent;
 import com.sicpa.standard.sasscl.model.ProductionMode;
 import com.sicpa.standard.sasscl.model.ProductionParameters;
 import com.sicpa.standard.sasscl.model.SKU;
-import com.sicpa.standard.sasscl.provider.impl.SkuListProvider;
 import com.sicpa.standard.sasscl.view.config.plc.FrameCameraImage;
 import com.sicpa.standard.sasscl.view.messages.I18nableLockingErrorModel;
 
-import javax.swing.*;
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState.*;
-
 public class MainFrameController extends MachineViewController {
 
-	protected final List<SecuredComponentGetter> securedPanels = new ArrayList<>();
-
-	protected SkuListProvider productionParametersProvider;
-
-	protected Validators beanValidators;
-
-	protected String lineId;
-
-	protected ProductionParameters productionParameters;
-
-	protected IMessageCodeMapper messageCodeMapper;
+	private ApplicationFlowState currentApplicationState = ApplicationFlowState.STT_NO_SELECTION;
+	private final List<SecuredComponentGetter> securedPanels = new ArrayList<>();
+	private String lineId;
+	private ProductionParameters productionParameters;
+	private IMessageCodeMapper messageCodeMapper;
+	private boolean filterProductionChangedEvent = false;
+	private FrameCameraImage frameCameraImage;
 
 	public static String LINE_LABEL_SEPARATOR = " : ";
-
 	public static String LINE_LABEL_ID = Messages.get("lineId");
 
 	public void addSecuredPanel(SecuredComponentGetter securedComponentGetter) {
 		securedPanels.add(securedComponentGetter);
-	}
-
-	public MainFrameController(final SkuListProvider productionParametersProvider) {
-		this.productionParametersProvider = productionParametersProvider;
 	}
 
 	public MainFrameController() {
@@ -67,10 +67,6 @@ public class MainFrameController extends MachineViewController {
 
 	@Subscribe
 	public void handleLanguageSwitch(LanguageSwitchEvent evt) {
-
-		// refresh line id label
-		setLineId(LINE_LABEL_ID + LINE_LABEL_SEPARATOR + lineId);
-
 		// refresh application status label
 		setApplicationStatus(getApplicationStatus());
 	}
@@ -106,13 +102,11 @@ public class MainFrameController extends MachineViewController {
 		productionParameters.setProductionMode(productionMode);
 	}
 
-	protected boolean filterProductionChangedEvent = false;
-
 	public void productionParametersChanged() {
 		productionParametersChanged(true);
 	}
 
-	public void productionParametersChanged(boolean sendEvent) {
+	private void productionParametersChanged(boolean sendEvent) {
 
 		// refresh all errors and warning when production mode has been changed
 		if (lockingErrorModel != null) {
@@ -129,8 +123,6 @@ public class MainFrameController extends MachineViewController {
 	protected void setBarcodeModel(final IdInputmodel barcodeModel) {
 		super.setBarcodeModel(barcodeModel);
 	}
-
-	protected ApplicationFlowState currentApplicationState = ApplicationFlowState.STT_NO_SELECTION;;
 
 	@Subscribe
 	public void processStateChanged(final ApplicationFlowStateChangedEvent evt) {
@@ -165,23 +157,23 @@ public class MainFrameController extends MachineViewController {
 		});
 	}
 
-	protected void onNoSelection() {
+	private void onNoSelection() {
 		if (applicationStatusModel != null) {
 			setApplicationStatus(new STDSASSCLApplicationStatus(SicpaColor.RED, "view.status.stopped"));
 		}
 	}
 
-	protected void onSelecting() {
+	private void onSelecting() {
 		removeAllErrorMainPanel();
 		setApplicationStatus(new STDSASSCLApplicationStatus(SicpaColor.RED, "view.status.stopped"));
 	}
 
-	protected void onStarting() {
+	private void onStarting() {
 		removeAllWarnings();
 		setApplicationStatus(new STDSASSCLApplicationStatus(SicpaColor.GREEN_DARK, "view.status.starting"));
 	}
 
-	protected void onStarted() {
+	private void onStarted() {
 		Color color;
 		String text;
 		if (productionParameters.getProductionMode().equals(ProductionMode.MAINTENANCE)) {
@@ -194,23 +186,19 @@ public class MainFrameController extends MachineViewController {
 		setApplicationStatus(new STDSASSCLApplicationStatus(color, text));
 	}
 
-	protected void onStopping() {
+	private void onStopping() {
 		setApplicationStatus(new STDSASSCLApplicationStatus(SicpaColor.RED, "view.status.stopping"));
 	}
 
-	protected void onStopped() {
-		setApplicationStatus(new STDSASSCLApplicationStatus(SicpaColor.RED, "view.status.stopped"));
-	}
-
-	protected void onExiting() {
+	private void onExiting() {
 		setApplicationStatus(new STDSASSCLApplicationStatus(SicpaColor.RED, "view.status.exiting"));
 	}
 
-	protected void onConnected() {
+	private void onConnected() {
 		setApplicationStatus(new STDSASSCLApplicationStatus(SicpaColor.RED, "view.status.stopped"));
 	}
 
-	protected void onConnecting(final ApplicationFlowStateChangedEvent evt) {
+	private void onConnecting(final ApplicationFlowStateChangedEvent evt) {
 		setApplicationStatus(new STDSASSCLApplicationStatus(SicpaColor.RED, "view.status.recovering"));
 	}
 
@@ -236,16 +224,6 @@ public class MainFrameController extends MachineViewController {
 			}
 		});
 	}
-
-	public void setBeanValidators(final Validators beanValidators) {
-		this.beanValidators = beanValidators;
-	}
-
-	public Validators getBeanValidators() {
-		return this.beanValidators;
-	}
-
-	protected FrameCameraImage frameCameraImage;
 
 	@Subscribe
 	public void receiveCameraImage(final CameraImageEvent event) {
@@ -292,12 +270,6 @@ public class MainFrameController extends MachineViewController {
 	public void replaceMainPanel(JComponent panel) {
 		if (getView() != null) {
 			getView().replaceMainPanel(panel);
-		}
-	}
-
-	public void resetMainPanel() {
-		if (getView() != null) {
-			getView().resetMainPanel();
 		}
 	}
 

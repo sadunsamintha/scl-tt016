@@ -3,6 +3,8 @@ package com.sicpa.standard.sasscl.devices.plc.impl;
 import com.sicpa.standard.plc.controller.actions.IPlcAction;
 import com.sicpa.standard.plc.value.IPlcVariable;
 import com.sicpa.standard.plc.value.PlcVariable;
+import com.sicpa.standard.sasscl.controller.productionconfig.ConfigurationFailedException;
+import com.sicpa.standard.sasscl.controller.productionconfig.config.PlcConfig;
 import com.sicpa.standard.sasscl.devices.DeviceException;
 import com.sicpa.standard.sasscl.devices.DeviceStatusEvent;
 import com.sicpa.standard.sasscl.devices.IDeviceStatusListener;
@@ -11,9 +13,11 @@ import com.sicpa.standard.sasscl.devices.plc.event.PlcEvent;
 import com.sicpa.standard.sasscl.devices.plc.simulator.PlcSimulatorConfig;
 import com.sicpa.standard.sasscl.devices.plc.simulator.PlcSimulatorController;
 import com.sicpa.standard.sasscl.devices.plc.simulator.PlcSimulatorNotificationConfig;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Mockito;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,39 +38,30 @@ import static org.mockito.Mockito.*;
 
 public class PlcTest {
 
-	private PlcAdaptor plc;
+	PlcAdaptor plc;
 
-	// private PlcSimulatorController simulatorController;
+	Map<PlcRequest, IPlcRequestExecutor> plcRequestActionMap;
 
-	private Map<PlcRequest, IPlcRequestExecutor> plcRequestActionMap;
-
-	private static final String NTF_STATE = "ntf.state";
-
-	private static final String NTF_ERR_LIFECHECK = "ntf.error.lifeCheck";
-
-	private static final String REQ_START = "req.start";
-
-	private static final String REQ_RUN = "req.run";
-
-	private static final String REQ_STOP = "req.stop";
-
-	private static final String REQ_RELOAD_CONFIG = ".req.reloadConfig";
-
-	private static final String EMERGENCY_STOP_ERR = ".err.emergencyStop";
-
-	private static final String VAR_1 = "Var1";
-	private static final String VAR_2 = "Var2";
-	private static final String VAR_3 = "Var3";
-	private static final PlcEvent EVENT_VAR_1 = new PlcEvent(VAR_1, VAR_1);
-	private static final PlcEvent EVENT_VAR_2 = new PlcEvent(VAR_2, VAR_2);
-	private static final PlcEvent EVENT_VAR_3 = new PlcEvent(VAR_3, VAR_3);
+	static final String NTF_STATE = "ntf.state";
+	static final String NTF_ERR_LIFECHECK = "ntf.error.lifeCheck";
+	static final String REQ_START = "req.start";
+	static final String REQ_RUN = "req.run";
+	static final String REQ_STOP = "req.stop";
+	static final String REQ_RELOAD_CONFIG = ".req.reloadConfig";
+	static final String EMERGENCY_STOP_ERR = ".err.emergencyStop";
+	static final String VAR_1 = "Var1";
+	static final String VAR_2 = "Var2";
+	static final String VAR_3 = "Var3";
+	static final PlcEvent EVENT_VAR_1 = new PlcEvent(VAR_1, VAR_1);
+	static final PlcEvent EVENT_VAR_2 = new PlcEvent(VAR_2, VAR_2);
+	static final PlcEvent EVENT_VAR_3 = new PlcEvent(VAR_3, VAR_3);
 
 	@SuppressWarnings({ "serial" })
 	@Before
-	public void setup() {
+	public void setup() throws ConfigurationFailedException {
 
-		Map<String, IPlcVariable<?>> plcVariableToSet = new HashMap<String, IPlcVariable<?>>();
-		Map<String, String> plcVariableMap = new HashMap<String, String>();
+		Map<String, IPlcVariable<?>> plcVariableToSet = new HashMap<>();
+		Map<String, String> plcVariableMap = new HashMap<>();
 
 		plcVariableMap.put("NTF_WAR_ERR_REGISTER", "COM.stCabinet.stNotifications.nWar_err_register");
 		plcVariableMap.put("NTF_LINE_SPEED", ".com.stLine[#x].stNotifications.nLineSpeed");
@@ -78,8 +73,6 @@ public class PlcTest {
 		warErrVar.setValue(0);
 
 		plcVariableToSet.put("COM.stCabinet.stNotifications.nWar_err_register", warErrVar);
-
-		PlcVariableMap.addPlcVariables(plcVariableMap);
 
 		// --------------- setup multiconveyor handler (For )----------------------
 
@@ -117,9 +110,13 @@ public class PlcTest {
 				put(RELOAD_PLC_PARAM, createExecutor(request(REQ_RELOAD_CONFIG)));
 			}
 		};
+
+		IPlcValuesLoader loader = Mockito.mock(IPlcValuesLoader.class);
+		plc.setLoader(loader);
+		plc.getConfigurator().execute(new PlcConfig(), plc);
 	}
 
-	private IPlcRequestExecutor createExecutor(IPlcAction... actions) {
+	IPlcRequestExecutor createExecutor(IPlcAction... actions) {
 		return new DefaultPlcRequestExecutor(actions);
 	}
 

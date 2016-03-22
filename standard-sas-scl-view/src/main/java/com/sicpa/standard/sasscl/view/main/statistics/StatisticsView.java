@@ -28,10 +28,10 @@ import com.sicpa.standard.sasscl.view.LanguageSwitchEvent;
 public class StatisticsView extends AbstractView<IStatisticsViewListener, StatisticsViewModel> {
 
 	// map < line index , map < stats descriptor , panel > >
-	protected final Map<String, Map<ViewStatisticsDescriptor, SingleStatsPanel>> mapDescriptors = new HashMap<String, Map<ViewStatisticsDescriptor, SingleStatsPanel>>();
+	protected final Map<String, Map<ViewStatisticsDescriptor, SingleStatsPanel>> mapDescriptors = new HashMap<>();
 
 	// map < line index , panel >
-	protected final Map<String, LineSpeedPanel> mapLineSpeed = new TreeMap<String, LineSpeedPanel>();
+	protected final Map<Integer, LineSpeedPanel> mapLineSpeed = new TreeMap<>();
 
 	protected JLabel labelTitle;
 	protected JLabel labelUptime;
@@ -92,7 +92,7 @@ public class StatisticsView extends AbstractView<IStatisticsViewListener, Statis
 			return;
 		}
 
-		for (Entry<String, String> entry : model.getLineSpeed().entrySet()) {
+		for (Entry<Integer, String> entry : model.getLineSpeed().entrySet()) {
 			LineSpeedPanel panel = mapLineSpeed.get(entry.getKey());
 			if (panel == null) {
 				panel = new LineSpeedPanel(entry.getKey());
@@ -124,7 +124,7 @@ public class StatisticsView extends AbstractView<IStatisticsViewListener, Statis
 	}
 
 	protected List<Entry<ViewStatisticsDescriptor, Integer>> getSortedDescriptorList(String index) {
-		List<Entry<ViewStatisticsDescriptor, Integer>> list = new ArrayList<Map.Entry<ViewStatisticsDescriptor, Integer>>();
+		List<Entry<ViewStatisticsDescriptor, Integer>> list = new ArrayList<>();
 		list.addAll(model.getStatistics(index).entrySet());
 		Collections.sort(list, new Comparator<Entry<ViewStatisticsDescriptor, Integer>>() {
 			@Override
@@ -166,6 +166,7 @@ public class StatisticsView extends AbstractView<IStatisticsViewListener, Statis
 		if (panelTotal == null) {
 			ViewStatisticsDescriptor desc = new ViewStatisticsDescriptor(SicpaColor.BLUE_MEDIUM, "stats.display.total",
 					999);
+			desc.setLine("total");
 			panelTotal = new SingleStatsPanel(desc);
 			panelTotal.labelPercent.setVisible(false);
 		}
@@ -185,9 +186,7 @@ public class StatisticsView extends AbstractView<IStatisticsViewListener, Statis
 			setLayout(new MigLayout("fill, inset 0 0 0 0"));
 
 			String text = "";
-			if (descriptor.getLine() != null) {
-				text = Messages.get("line." + descriptor.getLine()) + " - ";
-			}
+			text = Messages.get("line." + descriptor.getLine()) + " - ";
 			text += Messages.get(descriptor.getKey());
 
 			JLabel label = new JLabel(text);
@@ -217,7 +216,7 @@ public class StatisticsView extends AbstractView<IStatisticsViewListener, Statis
 
 		JLabel labelSpeedValue;
 
-		public LineSpeedPanel(String line) {
+		public LineSpeedPanel(int line) {
 			setLayout(new MigLayout("fill, inset 0 0 0 0"));
 
 			labelSpeedValue = new JLabel();
@@ -225,7 +224,7 @@ public class StatisticsView extends AbstractView<IStatisticsViewListener, Statis
 			String text = Messages.get("line" + line) + " - " + Messages.get("stats.display.speed");
 			add(new JLabel(text), "w 250");
 			add(labelSpeedValue, "spanx, left,pushx");
-//			add(new JLabel(Messages.get("stats.display.speed.unit")), "left");
+			// add(new JLabel(Messages.get("stats.display.speed.unit")), "left");
 		}
 
 		public void setLineSpeed(String speed) {

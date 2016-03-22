@@ -17,18 +17,20 @@ public class ParametersAvailableStartValidator implements IStartProductionValida
 	protected boolean isProductionParameterStillAvailable() {
 
 		SKU skuSelected = productionParameters.getSku();
-		if (skuSelected != null) {
-			Set<SKU> skus = skuListProvider.getAvailableSKUs();
-			if (skus != null && !skus.isEmpty()) {
-				// isSelectedSku still in the list of available skus
-				return skus.contains(skuSelected);
-			} else {
-				return false;
-			}
-		} else {
+		if (skuSelected == null) {
 			// no sku for maintenance mode
 			return true;
 		}
+		return currentListContainsSku(skuSelected);
+
+	}
+
+	private boolean currentListContainsSku(SKU skuSelected) {
+		Set<SKU> skus = skuListProvider.getAvailableSKUs();
+		if (skus == null || skus.isEmpty()) {
+			return false;
+		}
+		return skus.contains(skuSelected);
 	}
 
 	public void setProductionParameters(ProductionParameters productionParameters) {

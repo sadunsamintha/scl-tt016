@@ -26,5 +26,13 @@
 			<groupId>com.sicpa.standard.tools</groupId>
 			<artifactId>client-installer</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>com.sicpa.standard.plc</groupId>
+			<artifactId>standard-plc-jbeckplc</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.sicpa.standard.sasscl</groupId>
+			<artifactId>business-coding</artifactId>
+		</dependency>
 	</dependencies>
 </project>

@@ -1,27 +1,28 @@
 package com.sicpa.standard.sasscl.devices.printer.simulator;
 
+import java.util.LinkedList;
+import java.util.List;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.sicpa.standard.client.common.utils.TaskExecutor;
 import com.sicpa.standard.printer.controller.IPrinterController;
 import com.sicpa.standard.sasscl.devices.DeviceStatus;
 import com.sicpa.standard.sasscl.devices.camera.simulator.ICodeProvider;
 import com.sicpa.standard.sasscl.devices.printer.PrinterAdaptorException;
 import com.sicpa.standard.sasscl.devices.printer.impl.PrinterAdaptor;
 import com.sicpa.standard.sasscl.event.PrinterProfileEvent;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.LinkedList;
-import java.util.List;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 public class PrinterAdaptorSimulator extends PrinterAdaptor implements ICodeProvider {
 
 	private static final Logger logger = LoggerFactory.getLogger(PrinterAdaptorSimulator.class);
 
-	protected final List<String> codeBuffer = new LinkedList<String>();
-
-	protected ScheduledExecutorService exe;
+	private final List<String> codeBuffer = new LinkedList<>();
+	private ScheduledFuture<?> scheduledAskTaskFutur;
+	private long askCodeDelayMs = 1000;
 
 	public PrinterAdaptorSimulator() {
 		super();
@@ -52,21 +53,25 @@ public class PrinterAdaptorSimulator extends PrinterAdaptor implements ICodeProv
 
 	@Override
 	public void onPrinterCodesNeeded(final Object sender, long nbCodes) {
-		// logger.debug("request for {} number of codes", nbCodes);
-		// notifyRequestCodesToPrint(nbCodes);
+		notifyRequestCodesToPrint(nbCodes);
 	}
 
 	@Override
 	public void doStart() throws PrinterAdaptorException {
-		exe = Executors.newScheduledThreadPool(1);
-		exe.scheduleWithFixedDelay(new AskCodesTask(), 100, 1000, TimeUnit.MILLISECONDS);
+
+		if (askCodeDelayMs > 0) {
+			scheduledAskTaskFutur = TaskExecutor.scheduleWithFixedDelay(new AskCodesTask(), 1000,
+					TimeUnit.MILLISECONDS, "AskCodesTask");
+		}
 		fireDeviceStatusChanged(DeviceStatus.STARTED);
 	}
 
 	@Override
 	public void doStop() throws PrinterAdaptorException {
 		fireDeviceStatusChanged(DeviceStatus.STOPPED);
-		exe = null;
+		if (scheduledAskTaskFutur != null) {
+			scheduledAskTaskFutur.cancel(false);
+		}
 	}
 
 	public void resetCodes() throws PrinterAdaptorException {
@@ -104,13 +109,14 @@ public class PrinterAdaptorSimulator extends PrinterAdaptor implements ICodeProv
 	}
 
 	private class AskCodesTask implements Runnable {
-
 		@Override
 		public void run() {
 			if (codeBuffer.size() < 100)
 				notifyRequestCodesToPrint(1000L);
 		}
-
 	}
 
+	public void setAskCodeDelayMs(long askCodeDelayMs) {
+		this.askCodeDelayMs = askCodeDelayMs;
+	}
 }

@@ -3,7 +3,6 @@ package com.sicpa.standard.sasscl.view.config.plc;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -20,7 +19,6 @@ import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.common.util.Messages;
 import com.sicpa.standard.gui.components.scroll.SmallScrollBar;
 import com.sicpa.standard.gui.utils.ThreadUtils;
-import com.sicpa.standard.sasscl.devices.plc.variable.PlcVariableGroup;
 import com.sicpa.standard.sasscl.devices.plc.variable.PlcVariableGroupEvent;
 import com.sicpa.standard.sasscl.view.LanguageSwitchEvent;
 
@@ -33,12 +31,9 @@ public class MultiEditablePlcVariablesSet extends JPanel {
 	protected JScrollPane scroll;
 	protected JPanel mainPanel;
 
-	protected PlcVariablePanel cabinetVarPanel;
-	protected final List<PlcVariableGroup> groupsVarCabinet;
-	protected Map<String, PlcVariablePanel> panelsLines = new HashMap<String, PlcVariablePanel>();
+	protected Map<String, PlcVariablePanel> panelsLines = new HashMap<>();
 
-	public MultiEditablePlcVariablesSet(List<PlcVariableGroup> groupsVarCabinet) {
-		this.groupsVarCabinet = groupsVarCabinet;
+	public MultiEditablePlcVariablesSet() {
 		initGUI();
 	}
 
@@ -82,23 +77,11 @@ public class MultiEditablePlcVariablesSet extends JPanel {
 	public JPanel getMainPanel() {
 		if (mainPanel == null) {
 			mainPanel = new JPanel(new MigLayout("ltr,inset 0 0 0 0 , gap 0 0 0 0, hidemode 3"));
-			JButton button = createTogglePanelButton(getCabinetVarPanel());
-			mainPanel.add(button, "spanx,split 3, h 50, w 75");
-			mainPanel.add(new JLabel(Messages.get("plc.var.cabinet")), "");
-			mainPanel.add(new JSeparator(), "pushx,growx");
-			mainPanel.add(getCabinetVarPanel(), "grow,push,wrap");
 			for (Entry<String, PlcVariablePanel> entry : panelsLines.entrySet()) {
 				addLinePanel(entry.getValue(), entry.getKey());
 			}
 		}
 		return mainPanel;
-	}
-
-	public PlcVariablePanel getCabinetVarPanel() {
-		if (cabinetVarPanel == null) {
-			cabinetVarPanel = new PlcVariablePanel(groupsVarCabinet);
-		}
-		return cabinetVarPanel;
 	}
 
 	protected void addLinePanel(final JPanel p, String lineId) {
@@ -130,7 +113,7 @@ public class MultiEditablePlcVariablesSet extends JPanel {
 			public void run() {
 				PlcVariablePanel p = panelsLines.get(evt.getLineId());
 				if (p == null) {
-					p = new PlcVariablePanel(evt.getGroup().getGroups());
+					p = new PlcVariablePanel(evt.getGroups());
 					panelsLines.put(evt.getLineId(), p);
 					addLinePanel(p, evt.getLineId());
 				}
@@ -142,7 +125,6 @@ public class MultiEditablePlcVariablesSet extends JPanel {
 	public void handleLanguageSwitch(LanguageSwitchEvent evt) {
 		removeAll();
 		mainPanel = null;
-		cabinetVarPanel = null;
 		scroll = null;
 		initGUI();
 		revalidate();

@@ -6,16 +6,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.sicpa.standard.plc.value.IPlcVariable;
 import com.sicpa.standard.sasscl.devices.AbstractStartableDevice;
 import com.sicpa.standard.sasscl.devices.DeviceException;
 import com.sicpa.standard.sasscl.devices.plc.event.PlcEvent;
 
 public abstract class AbstractPlcAdaptor extends AbstractStartableDevice implements IPlcAdaptor {
 
-	protected final Set<IPlcListener> allPlcVariableListeners = new HashSet<IPlcListener>();
-
-	protected final Map<String, Set<IPlcListener>> varListenersMap = new HashMap<String, Set<IPlcListener>>();
+	protected final Set<IPlcListener> allPlcVariableListeners = new HashSet<>();
+	protected final Map<String, Set<IPlcListener>> varListenersMap = new HashMap<>();
 
 	public AbstractPlcAdaptor() {
 		setName("PLC");
@@ -109,7 +107,7 @@ public abstract class AbstractPlcAdaptor extends AbstractStartableDevice impleme
 			if (allPlcVariableListeners.contains(listener)) {
 				for (String varName : plcVariableNames) {
 					if (varListenersMap.get(varName) == null) {
-						varListenersMap.put(varName, new HashSet<IPlcListener>());
+						varListenersMap.put(varName, new HashSet<>());
 					}
 				}
 				return;
@@ -120,7 +118,7 @@ public abstract class AbstractPlcAdaptor extends AbstractStartableDevice impleme
 			for (String varName : plcVariableNames) {
 				Set<IPlcListener> plcListeners = varListenersMap.get(varName);
 				if (plcListeners == null) {
-					plcListeners = new HashSet<IPlcListener>();
+					plcListeners = new HashSet<>();
 					varListenersMap.put(varName, plcListeners);
 				}
 				if (!plcListeners.contains(listener)) {
@@ -184,8 +182,4 @@ public abstract class AbstractPlcAdaptor extends AbstractStartableDevice impleme
 			}
 		}
 	}
-
-	@Override
-	public abstract void write(IPlcVariable<?> var) throws PlcAdaptorException;
-
 }

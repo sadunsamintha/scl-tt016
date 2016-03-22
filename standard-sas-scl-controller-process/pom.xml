@@ -29,12 +29,6 @@
 			<groupId>com.sicpa.standard.sasscl</groupId>
 			<artifactId>business-production</artifactId>
 		</dependency>
-
-		<dependency>
-			<groupId>com.sicpa.standard.sasscl</groupId>
-			<artifactId>business-production</artifactId>
-		</dependency>
-
 		<dependency>
 			<groupId>com.sicpa.standard.sasscl</groupId>
 			<artifactId>service-monitoring</artifactId>
@@ -45,10 +39,7 @@
 			<scope>test</scope>
 		</dependency>
 
-		<dependency>
-			<groupId>com.sicpa.standard.sasscl</groupId>
-			<artifactId>device-brs</artifactId>
-		</dependency>
+
 
 	</dependencies>
 

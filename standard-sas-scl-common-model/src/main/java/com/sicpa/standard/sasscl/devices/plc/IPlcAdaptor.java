@@ -12,7 +12,7 @@ public interface IPlcAdaptor extends IStartableDevice {
 	 */
 	@Override
 	void start() throws PlcAdaptorException;
-	
+
 	void doRun() throws PlcAdaptorException;
 
 	/**
@@ -30,16 +30,6 @@ public interface IPlcAdaptor extends IStartableDevice {
 	 *             thrown if the executor is null
 	 */
 	void executeRequest(PlcRequest request) throws PlcAdaptorException;
-
-	/**
-	 * send the new value set in the instance of IPlcVariable to PLC again
-	 * 
-	 * @param var
-	 *            to be written to PLC if var is not null
-	 * @throws PlcAdaptorException
-	 *             wrapping any exception thrown while writing or reloading
-	 */
-	void reloadPlcParameter(final IPlcVariable<?> var) throws PlcAdaptorException;
 
 	/**
 	 * to add listener that listen to all the PLC variables
@@ -107,4 +97,6 @@ public interface IPlcAdaptor extends IStartableDevice {
 	public void registerNotification(IPlcVariable<?> var);
 
 	String getPlcVersion();
+
+	boolean isLineActive(int lineIndex);
 }

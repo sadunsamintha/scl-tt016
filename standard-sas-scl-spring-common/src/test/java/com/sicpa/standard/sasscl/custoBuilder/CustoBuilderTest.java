@@ -1,13 +1,14 @@
 package com.sicpa.standard.sasscl.custoBuilder;
 
-import com.sicpa.standard.sasscl.model.ProductionMode;
+import junit.framework.Assert;
+
+import org.junit.Before;
+import org.junit.Test;
+
 import com.sicpa.standard.sasscl.model.SKU;
 import com.sicpa.standard.sasscl.model.custom.CustomProperty;
 import com.sicpa.standard.sasscl.model.custom.CustomizablePropertyFactory;
 import com.thoughtworks.xstream.XStream;
-import junit.framework.Assert;
-import org.junit.Before;
-import org.junit.Test;
 
 public class CustoBuilderTest {
 
