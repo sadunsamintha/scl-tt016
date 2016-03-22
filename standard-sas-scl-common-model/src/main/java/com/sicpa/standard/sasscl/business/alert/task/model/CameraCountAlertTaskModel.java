@@ -1,19 +1,10 @@
 package com.sicpa.standard.sasscl.business.alert.task.model;
 
-public class CameraCountAlertTaskModel {
+public class CameraCountAlertTaskModel extends AbstractAlertTaskModel {
 
-	protected boolean enabled = true;
-	protected int maxUnreadCount;
-	protected int sampleSize;
-	protected int delayInSec;
-
-	public boolean isEnabled() {
-		return enabled;
-	}
-
-	public void setEnabled(boolean enabled) {
-		this.enabled = enabled;
-	}
+	private int maxUnreadCount;
+	private int sampleSize;
+	private int delayInSec;
 
 	public int getMaxUnreadCount() {
 		return maxUnreadCount;

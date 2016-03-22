@@ -1,5 +1,16 @@
 package com.sicpa.standard.sasscl.business.statistics.mapper;
 
+import static com.sicpa.standard.sasscl.model.ProductStatus.AUTHENTICATED;
+import static com.sicpa.standard.sasscl.model.ProductStatus.EXPORT;
+import static com.sicpa.standard.sasscl.model.ProductStatus.MAINTENANCE;
+import static com.sicpa.standard.sasscl.model.ProductStatus.NOT_AUTHENTICATED;
+import static com.sicpa.standard.sasscl.model.ProductStatus.REFEED;
+import static com.sicpa.standard.sasscl.model.ProductStatus.SENT_TO_PRINTER_UNREAD;
+import static com.sicpa.standard.sasscl.model.ProductStatus.TYPE_MISMATCH;
+import static com.sicpa.standard.sasscl.model.ProductStatus.UNREAD;
+import static com.sicpa.standard.sasscl.model.statistics.StatisticsKey.BAD;
+import static com.sicpa.standard.sasscl.model.statistics.StatisticsKey.GOOD;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -11,8 +22,6 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import com.sicpa.standard.sasscl.model.ProductStatus;
 import com.sicpa.standard.sasscl.model.statistics.StatisticsKey;
-import com.sicpa.standard.sasscl.model.statistics.StatisticsKeyBad;
-import com.sicpa.standard.sasscl.model.statistics.StatisticsKeyGood;
 
 /**
  * contains only the following <code>StatisticsKey</code>: <li>StatisticsKey.GOOD <li>StatisticsKey.BAD <br>
@@ -25,27 +34,26 @@ public class DefaultProductStatusToStatisticsKeyMapper implements IProductStatus
 
 	private static final Logger logger = LoggerFactory.getLogger(DefaultProductStatusToStatisticsKeyMapper.class);
 
-	protected final Multimap<ProductStatus, Class<? extends StatisticsKey>> mapping = ArrayListMultimap.create();
+	protected final Multimap<ProductStatus, StatisticsKey> mapping = ArrayListMultimap.create();
 
-	@SuppressWarnings("unchecked")
 	public DefaultProductStatusToStatisticsKeyMapper() {
-		add(ProductStatus.UNREAD, StatisticsKeyBad.class);
-		add(ProductStatus.NOT_AUTHENTICATED, StatisticsKeyBad.class);
-		add(ProductStatus.TYPE_MISMATCH, StatisticsKeyBad.class);
-		add(ProductStatus.SENT_TO_PRINTER_UNREAD, StatisticsKeyBad.class);
+		add(UNREAD, BAD);
+		add(NOT_AUTHENTICATED, BAD);
+		add(TYPE_MISMATCH, BAD);
+		add(SENT_TO_PRINTER_UNREAD, BAD);
 
-		add(ProductStatus.AUTHENTICATED, StatisticsKeyGood.class);
-		add(ProductStatus.EXPORT, StatisticsKeyGood.class);
-		add(ProductStatus.REFEED, StatisticsKeyGood.class);
-		add(ProductStatus.MAINTENANCE, StatisticsKeyGood.class);
+		add(AUTHENTICATED, GOOD);
+		add(EXPORT, GOOD);
+		add(REFEED, GOOD);
+		add(MAINTENANCE, GOOD);
 	}
 
 	@Override
 	public Collection<StatisticsKey> getAllKeys() {
-		Collection<StatisticsKey> res = new HashSet<StatisticsKey>();
-		for (Class<? extends StatisticsKey> clazz : mapping.values()) {
+		Collection<StatisticsKey> res = new HashSet<>();
+		for (StatisticsKey key : mapping.values()) {
 			try {
-				res.add(clazz.newInstance());
+				res.add(cloneStatsKey(key));
 			} catch (Exception e) {
 				logger.error("", e);
 			}
@@ -54,34 +62,25 @@ public class DefaultProductStatusToStatisticsKeyMapper implements IProductStatus
 	}
 
 	@Override
-	public Collection<StatisticsKey> getKey(final ProductStatus status) {
-		Collection<Class<? extends StatisticsKey>> tmp = mapping.get(status);
-		if (tmp == null) {
-			tmp = new ArrayList<Class<? extends StatisticsKey>>();
-			tmp.add(StatisticsKeyGood.class);
-		}
-
-		Collection<StatisticsKey> res = new ArrayList<StatisticsKey>();
-		for (Class<? extends StatisticsKey> clazz : tmp) {
-			try {
-				StatisticsKey key = clazz.newInstance();
-				key.setLine("");
-				res.add(key);
-			} catch (Exception e) {
-				logger.error("", e);
-			}
-		}
-		return res;
-	}
-
-	@Override
-	public void add(ProductStatus status, Class<? extends StatisticsKey>... keys) {
+	public Collection<StatisticsKey> getKey(ProductStatus status) {
+		Collection<StatisticsKey> keys = mapping.get(status);
 		if (keys == null) {
-			return;
+			throw new IllegalArgumentException("no statistics key for product status:" + status);
 		}
-		for (Class<? extends StatisticsKey> key : keys) {
-			mapping.put(status, key);
-		}
+
+		Collection<StatisticsKey> res = new ArrayList<>();
+		keys.forEach((statKeyClazz) -> res.add(cloneStatsKey(statKeyClazz)));
+
+		return res;
+	}
+
+	private StatisticsKey cloneStatsKey(StatisticsKey key) {
+		return new StatisticsKey(key.getDescription());
+	}
+
+	@Override
+	public void add(ProductStatus status, StatisticsKey key) {
+		mapping.put(status, key);
 	}
 
 }

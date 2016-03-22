@@ -9,8 +9,7 @@ import com.sicpa.standard.sasscl.controller.ProductionParametersEvent;
 import com.sicpa.standard.sasscl.devices.brs.event.BrsProductEvent;
 import com.sicpa.standard.sasscl.devices.brs.sku.CompliantProduct;
 import com.sicpa.standard.sasscl.devices.brs.utils.ResettableAtomicCounter;
-import com.sicpa.standard.sasscl.devices.camera.CameraBadCodeEvent;
-import com.sicpa.standard.sasscl.devices.camera.CameraGoodCodeEvent;
+import com.sicpa.standard.sasscl.devices.camera.CameraCodeEvent;
 import com.sicpa.standard.sasscl.model.SKU;
 import com.sicpa.standard.sasscl.provider.impl.ProductionConfigProvider;
 
@@ -30,12 +29,7 @@ public abstract class AbstractBrsProductCountAlertTask extends AbstractAlertTask
 	private CompliantProduct compliantProductResolver;
 
 	@Subscribe
-	public void receiveCameraCode(final CameraGoodCodeEvent evt) {
-		increaseProductCount();
-	}
-
-	@Subscribe
-	public void receiveCameraCodeError(final CameraBadCodeEvent evt) {
+	public void receiveCameraCode(CameraCodeEvent evt) {
 		increaseProductCount();
 	}
 
@@ -65,7 +59,7 @@ public abstract class AbstractBrsProductCountAlertTask extends AbstractAlertTask
 	}
 
 	@Override
-	public boolean isEnabled() {
+	protected boolean isEnabledDefaultImpl() {
 		boolean isBrsDeviceEnable = productionConfigProvider.get().getBrsConfig() != null;
 		return isBrsDeviceEnable && isUnreadBarcodesEnable && isSkuSelectedCompliantProduct;
 	}

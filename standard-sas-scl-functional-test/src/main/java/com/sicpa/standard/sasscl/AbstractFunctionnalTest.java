@@ -48,8 +48,7 @@ import com.sicpa.standard.sasscl.model.CodeType;
 import com.sicpa.standard.sasscl.model.ProductionMode;
 import com.sicpa.standard.sasscl.model.ProductionParameters;
 import com.sicpa.standard.sasscl.model.SKU;
-import com.sicpa.standard.sasscl.model.statistics.StatisticsKeyBad;
-import com.sicpa.standard.sasscl.model.statistics.StatisticsKeyGood;
+import com.sicpa.standard.sasscl.model.statistics.StatisticsKey;
 import com.sicpa.standard.sasscl.provider.impl.PlcProvider;
 import com.sicpa.standard.sasscl.repository.errors.AppMessage;
 import com.sicpa.standard.sasscl.repository.errors.IErrorsRepository;
@@ -354,14 +353,14 @@ public abstract class AbstractFunctionnalTest extends TestCase {
 
 	public void checkStatistics(int expectedGood, int exceptedBad) {
 
-		StatisticsKeyGood keyGood = new StatisticsKeyGood();
+		StatisticsKey keyGood = new StatisticsKey(StatisticsKey.GOOD.getDescription());
 		keyGood.setLine("qc_1");
 
-		StatisticsKeyBad keybad = new StatisticsKeyBad();
-		keybad.setLine("qc_1");
+		StatisticsKey keyBad = new StatisticsKey(StatisticsKey.BAD.getDescription());
+		keyBad.setLine("qc_1");
 
-		int good = statistiscs.getValues().get(keyGood);
-		int bad = statistiscs.getValues().get(keybad);
+		int good = statistiscs.get(keyGood);
+		int bad = statistiscs.get(keyBad);
 		Assert.assertEquals(expectedGood, good);
 		Assert.assertEquals(exceptedBad, bad);
 	}

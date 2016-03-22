@@ -84,5 +84,5 @@ standard-sas-scl-functional-test/profiles/test/dataSimulator/
 standard-sas-scl-functional-test/profiles/test/backup-config/
 standard-sas-scl-functional-test/log/
 standard-sas-scl-functional-test/profiles/test/internalSimulator/
-standard-sas-scl-functional-test/profiles/test/simulProductSend/
 standard-sas-scl-functional-test/profiles/test/internal/
+standard-sas-scl-functional-test/profiles/test/simulProductSend/

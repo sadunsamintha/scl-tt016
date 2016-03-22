@@ -1,6 +1,5 @@
 package com.sicpa.standard.sasscl.activation.standard;
 
-import com.sicpa.standard.common.util.ThreadUtils;
 import com.sicpa.standard.sasscl.AbstractFunctionnalTest;
 
 public abstract class ActivationTest extends AbstractFunctionnalTest {

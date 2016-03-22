@@ -1,5 +1,7 @@
 package com.sicpa.standard.sasscl.business.alert.task;
 
+import java.util.function.Function;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,6 +16,8 @@ import com.sicpa.standard.client.common.messages.MessageEvent;
 public abstract class AbstractAlertTask implements IAlertTask {
 
 	private static final Logger logger = LoggerFactory.getLogger(AbstractAlertTask.class);
+
+	private Function<AbstractAlertTask, Boolean> enabler = (task) -> isEnabledDefaultImpl();
 
 	public AbstractAlertTask() {
 	}
@@ -30,7 +34,11 @@ public abstract class AbstractAlertTask implements IAlertTask {
 
 	protected abstract boolean isAlertPresent();
 
-	protected abstract boolean isEnabled();
+	protected abstract boolean isEnabledDefaultImpl();
+
+	private boolean isEnabled() {
+		return enabler.apply(this);
+	}
 
 	public void checkForMessage() {
 		if (isEnabled()) {
@@ -58,5 +66,9 @@ public abstract class AbstractAlertTask implements IAlertTask {
 	@Override
 	public void stop() {
 
+	}
+
+	public void setEnabler(Function<AbstractAlertTask, Boolean> enabler) {
+		this.enabler = enabler;
 	}
 }

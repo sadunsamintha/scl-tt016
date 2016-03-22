@@ -16,8 +16,6 @@ import com.sicpa.standard.sasscl.controller.productionconfig.config.CameraConfig
 import com.sicpa.standard.sasscl.model.Product;
 import com.sicpa.standard.sasscl.model.ProductStatus;
 import com.sicpa.standard.sasscl.model.statistics.StatisticsKey;
-import com.sicpa.standard.sasscl.model.statistics.StatisticsKeyBad;
-import com.sicpa.standard.sasscl.model.statistics.StatisticsKeyGood;
 import com.sicpa.standard.sasscl.model.statistics.StatisticsValues;
 import com.sicpa.standard.sasscl.provider.impl.ProductionConfigProvider;
 
@@ -33,9 +31,9 @@ public class StatisticsTest {
 
 		StatisticsValues values = new StatisticsValues();
 
-		StatisticsKey goodKey = new StatisticsKeyGood();
+		StatisticsKey goodKey = StatisticsKey.GOOD;
 		goodKey.setLine("");
-		StatisticsKey badKey = new StatisticsKeyBad();
+		StatisticsKey badKey = StatisticsKey.BAD;
 		badKey.setLine("");
 
 		values.set(badKey, 5);
@@ -76,8 +74,8 @@ public class StatisticsTest {
 	public void testSaveStats() {
 		IStorage storage = Mockito.mock(IStorage.class);
 		StatisticsValues values = new StatisticsValues();
-		StatisticsKey goodKey = new StatisticsKeyGood();
-		StatisticsKey badKey = new StatisticsKeyBad();
+		StatisticsKey goodKey = StatisticsKey.GOOD;
+		StatisticsKey badKey = StatisticsKey.BAD;
 		values.set(badKey, 5);
 		values.set(goodKey, 150);
 		Mockito.when(storage.getStatistics()).thenReturn(values);
@@ -94,8 +92,8 @@ public class StatisticsTest {
 
 		IStorage storage = Mockito.mock(IStorage.class);
 		StatisticsValues values = new StatisticsValues();
-		StatisticsKey goodKey = new StatisticsKeyGood();
-		StatisticsKey badKey = new StatisticsKeyBad();
+		StatisticsKey goodKey = StatisticsKey.GOOD;
+		StatisticsKey badKey = StatisticsKey.BAD;
 		values.set(badKey, 5);
 		values.set(goodKey, 150);
 		Mockito.when(storage.getStatistics()).thenReturn(values);

@@ -90,7 +90,7 @@ public class AlertCameraTest {
 
 		// bad code
 		for (int i = 0; i < 15; i++) {
-			cca.receiveCameraCodeError(new CameraBadCodeEvent(new Code("E"), cameraAdaptor));
+			cca.receiveCameraCode(new CameraBadCodeEvent(new Code("E"), cameraAdaptor));
 		}
 
 		executeScheduledTask();
@@ -141,7 +141,7 @@ public class AlertCameraTest {
 			}
 
 			@Override
-			protected boolean isEnabled() {
+			protected boolean isEnabledDefaultImpl() {
 				return true;
 			}
 		};
@@ -185,7 +185,7 @@ public class AlertCameraTest {
 
 		// bad code
 		for (int i = 0; i < 15; i++) {
-			cca.receiveCameraCodeError(new CameraBadCodeEvent(new Code("E"), cameraAdaptor));
+			cca.receiveCameraCode(new CameraBadCodeEvent(new Code("E"), cameraAdaptor));
 		}
 
 		for (int i = 0; i < 5; i++)

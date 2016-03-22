@@ -1,11 +1,3 @@
-/**
- * Author	: CWong
- * Date		: Jul 28, 2010
- *
- * Copyright (c) 2010 SICPA Security Solutions, all rights reserved.
- *
- */
-
 package com.sicpa.standard.sasscl.devices.camera.simulator;
 
 import java.awt.Image;
@@ -18,6 +10,8 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Random;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,75 +55,53 @@ public class CameraSimulatorController implements ICognexCameraController<Camera
 
 	private static final Logger logger = LoggerFactory.getLogger(CameraSimulatorController.class);
 
-	protected final List<ICameraControllerListener> listeners = new ArrayList<ICameraControllerListener>();
+	protected final List<ICameraControllerListener> listeners = new ArrayList<>();
 
 	public static int idCount = 0;
 
-	/**
-	 * Configuration to setup the camera simulator
-	 */
-	protected CameraSimulatorConfig config;
+	private CameraSimulatorConfig config;
+	private ProductionParameters productionParameters;
+	private SimulatorControlView simulatorGui;
 
-	/**
-	 * Camera simulator thread (fire good code based on the configuration)
-	 */
-	protected Thread codeThread;
+	private Thread codeThread;
+	private ICodeProvider codeProvider;
+	private volatile boolean running;
+	private volatile boolean connected;
+	private volatile boolean initCodeProviderDone;
+	private String currentActiveJob = "unset - use pre-defined camera job in camera";
+	private String deviceId;
 
-	/**
-	 * Camera code provider
-	 */
-	protected ICodeProvider codeProvider;
+	private final Map<String, String> cellsValue = new HashMap<>();
+	private String aliasROI_StartRow;
+	private String aliasROI_x;
+	private String aliasROI_y;
+	private String aliasROI_w;
+	private String aliasROI_h;
 
-	/**
-	 * Indicate whether the camera simulator is running
-	 */
-	protected boolean running;
-
-	protected boolean connected;
-
-	protected boolean initCodeProviderDone;
-
-	protected ProductionParameters productionParameters;
-
-	protected SimulatorControlView simulatorGui;
-
-	protected String currentActiveJob = "unset - use pre-defined camera job in camera";
-
-	protected String deviceId;
+	private CameraSimuCodeTransformer custoCodesGeneratedTransformer;
+	private CameraSimuCodeTransformer defaultCodesGeneratedTransformer = (code) -> defaultCodeTransformerImpl(code);
 
 	public CameraSimulatorController() {
 		this(new CameraSimulatorConfig());
 	}
 
 	protected void showGui() {
-		ThreadUtils.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				if (simulatorGui != null) {
-					CameraSimulatorController.this.simulatorGui.addSimulator(deviceId, new CameraSimulatorView(
-							CameraSimulatorController.this));
-				}
+		ThreadUtils.invokeLater(() -> {
+			if (simulatorGui != null) {
+				simulatorGui.addSimulator(deviceId, new CameraSimulatorView(CameraSimulatorController.this));
 			}
 		});
 	}
 
 	protected void hideGui() {
-		ThreadUtils.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				if (simulatorGui != null) {
-					CameraSimulatorController.this.simulatorGui.removeSimulator(deviceId);
-				}
+		ThreadUtils.invokeLater(() -> {
+			if (simulatorGui != null) {
+				simulatorGui.removeSimulator(deviceId);
 			}
 		});
 	}
 
-	/**
-	 * 
-	 * @param configFile
-	 *            contains configuration to setup the simulator
-	 */
-	public CameraSimulatorController(final CameraSimulatorConfig config) {
+	public CameraSimulatorController(CameraSimulatorConfig config) {
 		this.config = config;
 		deviceId = "camera" + idCount++;
 	}
@@ -141,27 +113,17 @@ public class CameraSimulatorController implements ICognexCameraController<Camera
 		this.simulatorGui = simulatorGui;
 	}
 
-	/**
-	 * 
-	 * @param codeProvider
-	 */
-	public void setCodeProvider(final ICodeProvider codeProvider) {
+	public void setCodeProvider(ICodeProvider codeProvider) {
 		this.codeProvider = codeProvider;
 	}
 
-	/**
-	 * A thread to periodically provides camera codes based on the configuration.
-	 * 
-	 * @author CWong
-	 * 
-	 */
-	protected class CameraSimulatorThread implements Runnable {
+	// A thread to periodically provides camera codes based on the configuration.
+	private class CameraSimulatorTask implements Runnable {
 		@Override
 		public void run() {
 			if (config.getReadCodeInterval() >= 0) {
 				while (running) {
 					readCode();
-					// frequency of getting code
 					ThreadUtils.sleepQuietly(config.getReadCodeInterval());
 				}
 			}
@@ -171,28 +133,64 @@ public class CameraSimulatorController implements ICognexCameraController<Camera
 	public void readCode() {
 		// do the getGoodCode outside the if, to keep the same rate of querying all the time, meaning we ask the
 		// printer simulator for code even if we want to trigger a bad code to have a closer behavior to
-		// reallity
+		// reality
 		String code = getGoodCode();
 
-		/*
-		 * skip null code to be able to simulate 100% good code when setting percentageBadCode = 0
-		 */
+		// skip null code to be able to simulate 100% good code when setting percentageBadCode = 0
 		if (code == null) {
 			return;
 		}
 
-		if (code.length() != 0 && new Random().nextInt(100) >= config.getPercentageBadCode()) {
-			if (code.equals("")) {
-				fireBadCode(code);
-			} else {
-				fireGoodCode(code);
-			}
+		Pair<Boolean, String> pair = transformCode(code);
+		code = pair.getRight();
+		boolean valid = pair.getLeft();
+		sendCode(valid, code);
+	}
+
+	private void sendCode(boolean validCode, String code) {
+		if (validCode) {
+			fireGoodCode(code);
 		} else {
-			code = "";
 			fireBadCode(code);
 		}
-
 		fireCameraImageReceived(getCameraImage(), code);
+	}
+
+	private Pair<Boolean, String> transformCode(String codeGenerated) {
+		if (custoCodesGeneratedTransformer != null) {
+			return useCustoCodeTransformer(codeGenerated);
+		} else {
+			return useDefaultCodeTransformer(codeGenerated);
+		}
+	}
+
+	private Pair<Boolean, String> defaultCodeTransformerImpl(String codeGenerated) {
+		String code;
+		boolean valid;
+		if (StringUtils.isNotBlank(codeGenerated) && shouldGenerateGoodCode()) {
+			code = codeGenerated;
+			valid = true;
+		} else {
+			code = "";
+			valid = false;
+		}
+		return Pair.of(valid, code);
+	}
+
+	private Pair<Boolean, String> useCustoCodeTransformer(String codeGenerated) {
+		return useCodeTransformer(codeGenerated, custoCodesGeneratedTransformer);
+	}
+
+	private Pair<Boolean, String> useDefaultCodeTransformer(String codeGenerated) {
+		return useCodeTransformer(codeGenerated, defaultCodesGeneratedTransformer);
+	}
+
+	private Pair<Boolean, String> useCodeTransformer(String codeGenerated, CameraSimuCodeTransformer transformer) {
+		return transformer.apply(codeGenerated);
+	}
+
+	private boolean shouldGenerateGoodCode() {
+		return new Random().nextInt(100) >= config.getPercentageBadCode();
 	}
 
 	public String getGoodCode() {
@@ -208,16 +206,16 @@ public class CameraSimulatorController implements ICognexCameraController<Camera
 		}
 	}
 
-	protected boolean isCounting() {
+	private boolean isCounting() {
 		return !productionParameters.getProductionMode().isWithSicpaData();
 	}
 
-	protected boolean isRefeed() {
+	private boolean isRefeed() {
 		return productionParameters.getProductionMode().equals(ProductionMode.REFEED_CORRECTION)
 				|| productionParameters.getProductionMode().equals(ProductionMode.REFEED_NORMAL);
 	}
 
-	protected void initCodeProvider() {
+	private void initCodeProvider() {
 		// do no need to check for requested, requested are set directly by setCodeProvider
 
 		if (config.getCodeGetMethod() != CodeGetMethod.none) {
@@ -250,16 +248,10 @@ public class CameraSimulatorController implements ICognexCameraController<Camera
 		}
 	}
 
-	protected boolean initWithRandomCodeProvider() {
+	private boolean initWithRandomCodeProvider() {
 		return isRefeed();
 	}
 
-	/**
-	 * Notify good code is received
-	 * 
-	 * @param code
-	 *            camera code received
-	 */
 	public void fireGoodCode(final String code) {
 		synchronized (listeners) {
 			for (ICameraControllerListener lis : listeners) {
@@ -268,12 +260,6 @@ public class CameraSimulatorController implements ICognexCameraController<Camera
 		}
 	}
 
-	/**
-	 * Notify error code is received
-	 * 
-	 * @param code
-	 *            error code received
-	 */
 	public void fireBadCode(final String code) {
 		synchronized (listeners) {
 			for (ICameraControllerListener lis : listeners) {
@@ -282,11 +268,7 @@ public class CameraSimulatorController implements ICognexCameraController<Camera
 		}
 	}
 
-	/**
-	 * Retrieve an camera image
-	 * 
-	 * @return Image image from the local disk
-	 */
+	@Override
 	public Image getCameraImage() {
 		return ImageUtils.createCameraImage();
 	}
@@ -296,14 +278,14 @@ public class CameraSimulatorController implements ICognexCameraController<Camera
 	}
 
 	@Override
-	public void addListener(final ICameraControllerListener listener) {
+	public void addListener(ICameraControllerListener listener) {
 		synchronized (listeners) {
 			listeners.add(listener);
 		}
 
 	}
 
-	public void fireStatusChanged(final CameraDriverEventCode status) {
+	public void fireStatusChanged(CameraDriverEventCode status) {
 		synchronized (listeners) {
 			for (ICameraControllerListener lis : listeners) {
 				lis.onCameraDriverEventReceived(this,
@@ -312,7 +294,7 @@ public class CameraSimulatorController implements ICognexCameraController<Camera
 		}
 	}
 
-	public void fireCameraImageReceived(final Image cameraImage, final String code) {
+	public void fireCameraImageReceived(Image cameraImage, String code) {
 		synchronized (listeners) {
 			for (ICameraControllerListener lis : listeners) {
 				lis.onCameraImageReceived(this, new ImageReceivedEventArgs(cameraImage, code));
@@ -324,7 +306,7 @@ public class CameraSimulatorController implements ICognexCameraController<Camera
 	public void create() {
 		EventBusService.post(new MessageEvent(MessageEventKey.Simulator.CAMERA));
 		showGui();
-		this.connected = true;
+		connected = true;
 		fireStatusChanged(CameraDriverEventCode.CONNECTED);
 	}
 
@@ -350,21 +332,21 @@ public class CameraSimulatorController implements ICognexCameraController<Camera
 	}
 
 	@Override
-	public void removeListener(final ICameraControllerListener listener) {
+	public void removeListener(ICameraControllerListener listener) {
 		synchronized (listeners) {
 			listeners.remove(listener);
 		}
 	}
 
 	@Override
-	public void reset() throws com.sicpa.standard.camera.controller.CameraException {
+	public void reset() {
 	}
 
 	@Override
-	public void setActiveJob(final String jobFileName) {
-		logger.debug("Current camera job name : {}", this.currentActiveJob);
+	public void setActiveJob(String jobFileName) {
+		logger.debug("Current camera job name : {}", currentActiveJob);
 		currentActiveJob = jobFileName;
-		logger.debug("New camera job name : {}", this.currentActiveJob);
+		logger.debug("New camera job name : {}", currentActiveJob);
 	}
 
 	@Override
@@ -401,40 +383,37 @@ public class CameraSimulatorController implements ICognexCameraController<Camera
 					"Cannot start readin, camera is not connected");
 		}
 
-		this.running = true;
+		running = true;
 		// check if the thread is started
 		if (codeThread == null || !codeThread.isAlive()) {
-			codeThread = new Thread(createCameraThread(), "Camera Simulator");
+			codeThread = createCameraThread();
 			codeThread.start();
 		}
 	}
 
-	protected Runnable createCameraThread() {
-		return new CameraSimulatorThread();
+	private Thread createCameraThread() {
+		return new Thread(new CameraSimulatorTask(), "Camera Simulator");
 	}
 
 	@Override
 	public void stopReading() {
-		this.running = false;
+		running = false;
 	}
 
 	@Override
-	public void uploadActiveJob(final File jobFile) throws com.sicpa.standard.camera.controller.CameraException {
+	public void uploadActiveJob(final File jobFile) {
 	}
 
 	@Override
-	public void uploadJobs(final File... files) throws com.sicpa.standard.camera.controller.CameraException {
-
+	public void uploadJobs(final File... files) {
 	}
 
 	@Override
 	public void setCameraCodeParser(final Class<? extends ICameraCodeParser> parserClass) {
-
 	}
 
 	@Override
 	public void setCameraCodeParser(final Class<? extends ICameraCodeParser> parserClass, final Properties arg1) {
-
 	}
 
 	public void setSimulatorGui(final SimulatorControlView simulatorGui) {
@@ -442,7 +421,7 @@ public class CameraSimulatorController implements ICognexCameraController<Camera
 	}
 
 	@Override
-	public String getActiveJobName() throws CameraException {
+	public String getActiveJobName() {
 		logger.debug("Returning current camera job name : {}", currentActiveJob);
 		return currentActiveJob;
 	}
@@ -452,14 +431,7 @@ public class CameraSimulatorController implements ICognexCameraController<Camera
 		setActiveJob(jobFileName);
 	}
 
-	protected final Map<String, String> cellsValue = new HashMap<String, String>();
-	protected String aliasROI_StartRow;
-	protected String aliasROI_x;
-	protected String aliasROI_y;
-	protected String aliasROI_w;
-	protected String aliasROI_h;
-
-	protected void initCellsValueMap() {
+	private void initCellsValueMap() {
 		cellsValue.put(aliasROI_x, "40");
 		cellsValue.put(aliasROI_y, "40");
 		cellsValue.put(aliasROI_w, "120");
@@ -530,4 +502,7 @@ public class CameraSimulatorController implements ICognexCameraController<Camera
 		return cellsValue.get(alias);
 	}
 
+	public void setCustoCodesGeneratedTransformer(CameraSimuCodeTransformer custoCodesGeneratedTransformer) {
+		this.custoCodesGeneratedTransformer = custoCodesGeneratedTransformer;
+	}
 }

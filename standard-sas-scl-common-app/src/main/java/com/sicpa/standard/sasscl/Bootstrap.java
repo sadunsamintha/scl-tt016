@@ -41,7 +41,7 @@ public class Bootstrap implements IBootstrap {
 	private IRemoteServer server;
 	private IGroupDevicesController startupDevicesGroup;
 	private IStorage storage;
-	private ProductionParameters productionParameters;
+	protected ProductionParameters productionParameters;
 	private IPlcValuesLoader plcLoader;
 	private SkuListProvider skuListProvider;
 	private AuthenticatorProvider authenticatorProvider;

@@ -240,6 +240,10 @@ public interface BeansName {
 	 * IServiceProviderManager
 	 */
 	String CRYPTO_PROVIDER_MANAGER = "cryptoProviderManager";
+	/**
+	 * IProductionModeMapping
+	 */
+	String PRODUCTION_MODE_MAPPING = "productionModeMapping";
 
 	/**
 	 * Map<String-logicalVarName,String-nameInPlc>
@@ -305,12 +309,17 @@ public interface BeansName {
 	String MAPPING_EXTENDED_CODE_BEHAVIOR = "mappingExtendedCodeBehavior";
 
 	/**
+	 * IStatisticsKeyToViewDescriptorMapping
+	 */
+	String STATISTICS_VIEW_MAPPER = "statisticsKeyToViewDescriptorMapping";
+
+	/**
 	 * IProductionConfigMapping
 	 */
 	String PRODUCTION_CONFIG_MAPPING = "productionConfigMapping";
 
 	/**
-	 * IProductionModeMapping
+	 * Properties
 	 */
-	String PRODUCTION_MODE_MAPPING = "productionModeMapping";
+	String ALL_PROPERTIES = "allProperties";
 }

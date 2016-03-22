@@ -5,8 +5,6 @@ public class CoreBootstrap extends Bootstrap {
 	@Override
 	public void executeSpringInitTasks() {
 		super.executeSpringInitTasks();
-
-		// PlcUtils.custoInfo.put(key, value)
 	}
 
 }

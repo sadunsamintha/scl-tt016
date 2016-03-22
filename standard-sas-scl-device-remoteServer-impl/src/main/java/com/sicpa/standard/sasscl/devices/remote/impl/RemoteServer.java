@@ -1,5 +1,39 @@
 package com.sicpa.standard.sasscl.devices.remote.impl;
 
+import static com.sicpa.standard.sasscl.model.ProductionMode.REFEED_CORRECTION;
+import static com.sicpa.standard.sasscl.model.ProductionMode.REFEED_NORMAL;
+import static com.sicpa.standard.sasscl.monitoring.system.SystemEventType.LAST_SENT_TO_REMOTE_SERVER;
+import static com.sicpa.std.common.api.activation.business.ActivationServiceHandler.LABELED_PRODUCT_TYPE;
+import static com.sicpa.std.common.api.activation.business.ActivationServiceHandler.MARKED_PRODUCT_TYPE;
+import static com.sicpa.std.server.util.locator.ServiceLocator.SERVICE_ACTIVATION_BUSINESS_SERVICE;
+import static com.sicpa.std.server.util.locator.ServiceLocator.SERVICE_COMMON_CODING_BUSINESS_SERVICE;
+import static com.sicpa.std.server.util.locator.ServiceLocator.SERVICE_CONFIG_BUSINESS_SERVICE;
+import static com.sicpa.std.server.util.locator.ServiceLocator.SERVICE_DMS_EVENT_BUSINESS_SERVICE;
+import static com.sicpa.std.server.util.locator.ServiceLocator.SERVICE_LOGIN_BUSINESS_SERVICE;
+import static com.sicpa.std.server.util.locator.ServiceLocator.SERVICE_PROVIDE_TRANSLATION_BUSINESS_SERVICE;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.ResourceBundle;
+
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+
+import org.jboss.ejb.client.EJBClientContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.core.io.ClassPathResource;
+
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.exception.InitializationRuntimeException;
 import com.sicpa.standard.client.common.messages.MessageEvent;
@@ -18,12 +52,22 @@ import com.sicpa.standard.sasscl.devices.remote.impl.sicpadata.ISicpaDataGenerat
 import com.sicpa.standard.sasscl.devices.remote.mapping.IProductionModeMapping;
 import com.sicpa.standard.sasscl.devices.remote.mapping.IRemoteServerProductStatusMapping;
 import com.sicpa.standard.sasscl.devices.remote.stdCrypto.StdCryptoAuthenticatorWrapper;
-import com.sicpa.standard.sasscl.model.*;
+import com.sicpa.standard.sasscl.model.CodeType;
+import com.sicpa.standard.sasscl.model.EncoderInfo;
+import com.sicpa.standard.sasscl.model.PackagedProducts;
+import com.sicpa.standard.sasscl.model.Product;
+import com.sicpa.standard.sasscl.model.ProductStatus;
+import com.sicpa.standard.sasscl.model.ProductionMode;
+import com.sicpa.standard.sasscl.model.SKU;
 import com.sicpa.standard.sasscl.monitoring.MonitoringService;
 import com.sicpa.standard.sasscl.monitoring.system.event.BasicSystemEvent;
 import com.sicpa.standard.sasscl.productionParameterSelection.node.AbstractProductionParametersNode;
 import com.sicpa.standard.sasscl.productionParameterSelection.node.IProductionParametersNode;
-import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.*;
+import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.CodeTypeNode;
+import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.NavigationNode;
+import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.ProductionModeNode;
+import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.ProductionParameterRootNode;
+import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.SKUNode;
 import com.sicpa.standard.sasscl.sicpadata.CryptoServiceProviderManager;
 import com.sicpa.standard.sasscl.sicpadata.reader.IAuthenticator;
 import com.sicpa.standard.sasscl.utils.ConfigUtilEx;
@@ -58,56 +102,27 @@ import com.sicpa.std.common.api.sku.dto.PackagingTypeSkuDto;
 import com.sicpa.std.common.api.staticdata.codetype.dto.CodeTypeDto;
 import com.sicpa.std.common.api.staticdata.sku.dto.SkuProductDto;
 import com.sicpa.std.common.api.util.PropertyNames;
-import org.jboss.ejb.client.EJBClientContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.core.io.ClassPathResource;
-
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import java.io.File;
-import java.io.FileInputStream;
-import java.net.URL;
-import java.text.MessageFormat;
-import java.util.*;
-
-import static com.sicpa.standard.sasscl.model.ProductionMode.REFEED_CORRECTION;
-import static com.sicpa.standard.sasscl.model.ProductionMode.REFEED_NORMAL;
-import static com.sicpa.standard.sasscl.monitoring.system.SystemEventType.LAST_SENT_TO_REMOTE_SERVER;
-import static com.sicpa.std.common.api.activation.business.ActivationServiceHandler.*;
-import static com.sicpa.std.server.util.locator.ServiceLocator.*;
 
 public class RemoteServer extends AbstractRemoteServer {
 
 	private static final Logger logger = LoggerFactory.getLogger(RemoteServer.class);
 
-	protected IRemoteServerProductStatusMapping productStatusMapping;
+	private IRemoteServerProductStatusMapping productStatusMapping;
+	private CryptoServiceProviderManager cryptoServiceProviderManager;
+	private IProductionModeMapping productionModeMapping;
+	private ISicpaDataGeneratorRequestor sdGenReceiver;
+	private IStorage storage;
+	private String serverPropertiesFile;
+	private RemoteServerLifeChecker lifeChecker;
 
-	protected RemoteServerModel model;
-
-	protected CryptoServiceProviderManager cryptoServiceProviderManager;
-
-	protected String sicpadataPassword;
-
-	protected final Map<ProductStatus, IPackageSender> packageSenders = new HashMap<ProductStatus, IPackageSender>();
-
-	protected IProductionModeMapping productionModeMapping;
-
-	protected ISicpaDataGeneratorRequestor sdGenReceiver;
-
-	protected IStorage storage;
-
-	protected String serverPropertiesFile;
-
-	protected Context context;
-
-	protected RemoteServerLifeChecker lifeChecker;
-
+	private RemoteServerModel model;
+	private Context context;
+	private final Map<ProductStatus, IPackageSender> packageSenders = new HashMap<>();
 	private final Properties properties = new Properties();
+	private final IPackageSender senderActivated = (products) -> processActivatedProducts(products);
+	private final IPackageSender senderCounted = (products) -> processCountedProducts(products);
 
-	public RemoteServer(final String configFile) {
-
+	public RemoteServer(String configFile) {
 		try {
 			model = ConfigUtils.load(configFile);
 		} catch (Exception e) {
@@ -115,29 +130,24 @@ public class RemoteServer extends AbstractRemoteServer {
 		}
 	}
 
-	public RemoteServer(final RemoteServerModel remoteServerModel) {
-
+	public RemoteServer(RemoteServerModel remoteServerModel) {
 		model = remoteServerModel;
 	}
 
 	public void init() {
-		TaskExecutor.execute(new Runnable() {
-			@Override
-			public void run() {
-				initPackageSenders();
-
-				if (loadPropertyFile()) {
-					initClientSecurityContext();
-					setupContext();
-				}
+		TaskExecutor.execute(() -> {
+			initPackageSenders();
+			if (loadPropertyFile()) {
+				initClientSecurityContext();
+				setupContext();
 			}
 		});
 	}
 
-	protected void setupContext() {
-
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	private void setupContext() {
 		try {
-			final Hashtable jndiProperties = new Hashtable();
+			Hashtable jndiProperties = new Hashtable();
 			// noinspection unchecked
 			jndiProperties.put(Context.URL_PKG_PREFIXES, "org.jboss.ejb.client.naming");
 			context = new InitialContext(jndiProperties);
@@ -164,34 +174,28 @@ public class RemoteServer extends AbstractRemoteServer {
 		return false;
 	}
 
-	protected void initPackageSenders() {
-		IPackageSender senderActivated = new IPackageSender() {
-			@Override
-			public void sendPackage(PackagedProducts products) throws ActivationException {
-				processActivatedProducts(products);
-			}
-		};
+	private void initPackageSenders() {
+		addToActivatedPackager(ProductStatus.AUTHENTICATED);
+		addToActivatedPackager(ProductStatus.REFEED);
+		addToActivatedPackager(ProductStatus.SENT_TO_PRINTER_UNREAD);
+		addToActivatedPackager(ProductStatus.SENT_TO_PRINTER_WASTED);
+		addToActivatedPackager(ProductStatus.TYPE_MISMATCH);
 
-		IPackageSender senderCounted = new IPackageSender() {
-			@Override
-			public void sendPackage(PackagedProducts products) throws ActivationException {
-				processCountedProducts(products);
-			}
-		};
+		addToCounterPackager(ProductStatus.COUNTING);
+		addToCounterPackager(ProductStatus.EXPORT);
+		addToCounterPackager(ProductStatus.MAINTENANCE);
+		addToCounterPackager(ProductStatus.NOT_AUTHENTICATED);
+		addToCounterPackager(ProductStatus.UNREAD);
+	}
 
-		packageSenders.put(ProductStatus.AUTHENTICATED, senderActivated);
-		packageSenders.put(ProductStatus.REFEED, senderActivated);
-		packageSenders.put(ProductStatus.SENT_TO_PRINTER_UNREAD, senderActivated);
-		packageSenders.put(ProductStatus.SENT_TO_PRINTER_WASTED, senderActivated);
-		packageSenders.put(ProductStatus.TYPE_MISMATCH, senderActivated);
+	@Override
+	public void addToActivatedPackager(ProductStatus status) {
+		packageSenders.put(status, senderActivated);
+	}
 
-		packageSenders.put(ProductStatus.COUNTING, senderCounted);
-		packageSenders.put(ProductStatus.EXPORT, senderCounted);
-		packageSenders.put(ProductStatus.MAINTENANCE, senderCounted);
-
-		packageSenders.put(ProductStatus.NOT_AUTHENTICATED, senderCounted);
-		packageSenders.put(ProductStatus.UNREAD, senderCounted);
-		// packageSenders.put(ProductStatus.OFFLINE, senderCounted);
+	@Override
+	public void addToCounterPackager(ProductStatus status) {
+		packageSenders.put(status, senderCounted);
 	}
 
 	@Override
@@ -219,18 +223,14 @@ public class RemoteServer extends AbstractRemoteServer {
 	}
 
 	public IAuthenticator doGetAuthenticator() throws ActivationException {
-
 		getAndSaveCryptoPassword();
-
 		SicpadataReaderDto auth = getActivationBean().provideSicpadataReader();
-
 		return new StdCryptoAuthenticatorWrapper(auth.getSicpadataReader(), cryptoFieldsConfig);
 	}
 
 	@Override
 	@Timeout
-	public final void downloadEncoder(final int batchesQuantity, final CodeType codeType, final int year)
-			throws RemoteServerException {
+	public final void downloadEncoder(int batchesQuantity, CodeType codeType, int year) throws RemoteServerException {
 		if (!isConnected()) {
 			return;
 		}
@@ -272,11 +272,8 @@ public class RemoteServer extends AbstractRemoteServer {
 	}
 
 	private String fetchCryptoPassword() {
-
 		ConfigurationBusinessHandler configService = getConfigBean();
-
 		Map<String, String> serverConfiguration = configService.getConfiguration(null);
-
 		return serverConfiguration.get(PropertyNames.SICPADATA_ADMIN_PWD);
 	}
 
@@ -722,34 +719,15 @@ public class RemoteServer extends AbstractRemoteServer {
 		return getTranslationBean().getResourceBundles();
 	}
 
-	public void setSicpadataPassword(String sicpadataPassword) {
-		this.sicpadataPassword = sicpadataPassword;
-	}
-
-	/**
-	 *
-	 * Get activation service handler from remote server
-	 *
-	 * @return instance of ActivationServiceHandler get from remote server
-	 */
 	protected ActivationServiceHandler getActivationBean() {
-
 		return getService(SERVICE_ACTIVATION_BUSINESS_SERVICE);
 	}
 
-	/**
-	 *
-	 * Get coding service handler from remote server
-	 *
-	 * @return instance of CodingServerHandler get from remote server
-	 */
 	protected CodingServiceHandler getCodingBean() {
-
 		return getService(SERVICE_COMMON_CODING_BUSINESS_SERVICE);
 	}
 
 	protected ProvideTranslationBusinessHandler getTranslationBean() {
-
 		return getService(SERVICE_PROVIDE_TRANSLATION_BUSINESS_SERVICE);
 	}
 
@@ -835,7 +813,6 @@ public class RemoteServer extends AbstractRemoteServer {
 	}
 
 	protected EventServiceHandler getEventBean() {
-
 		return getService(SERVICE_DMS_EVENT_BUSINESS_SERVICE);
 	}
 

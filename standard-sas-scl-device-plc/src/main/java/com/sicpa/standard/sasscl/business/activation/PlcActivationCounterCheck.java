@@ -112,11 +112,6 @@ public class PlcActivationCounterCheck extends AbstractAlertTask implements IPlc
 		return "plc activation cross button";
 	}
 
-	@Override
-	protected boolean isEnabled() {
-		return model.isEnabled();
-	}
-
 	public void setModel(PlcActivationCounterCheckModel model) {
 		this.model = model;
 	}
@@ -149,5 +144,10 @@ public class PlcActivationCounterCheck extends AbstractAlertTask implements IPlc
 
 	public void setProductFreqVarName(String productFreqVarName) {
 		this.productFreqVarName = productFreqVarName;
+	}
+
+	@Override
+	protected boolean isEnabledDefaultImpl() {
+		return model.isEnabled();
 	}
 }
