@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>scl-tt018-app</artifactId>
+
+	<parent>
+		<artifactId>pom-apps</artifactId>
+		<groupId>com.sicpa.standard.sasscl</groupId>
+		<version>2.5.0-SNAPSHOT</version>
+	</parent>
+
+	<dependencies>
+
+		<dependency>
+			<groupId>com.sicpa.tt018</groupId>
+			<artifactId>tt018-scl-master-interfaces</artifactId>
+			<version>10.4.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.sicpa.tt018</groupId>
+			<artifactId>tt018-common-security</artifactId>
+			<version>10.4.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jboss.jbossas</groupId>
+			<artifactId>jboss-as-client</artifactId>
+			<version>5.1.0.GA</version>
+			<type>pom</type>
+			<exclusions>
+				<exclusion>
+					<artifactId>slf4j-jboss-logging</artifactId>
+					<groupId>org.jboss.slf4j</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>slf4j-api</artifactId>
+					<groupId>org.slf4j</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>com.sicpa.standard.standard-serverside-util</groupId>
+			<artifactId>standard-serverside-util</artifactId>
+			<version>4.0.0-TR</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-api</artifactId>
+				</exclusion>
+				<exclusion>
+					<artifactId>slf4j-log4j12</artifactId>
+					<groupId>org.slf4j</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>log4j</artifactId>
+					<groupId>log4j</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<dependency>
+			<groupId>com.sicpa.standard.standard-serverside-api</groupId>
+			<artifactId>standard-common-server-api</artifactId>
+			<version>4.0.0-TR</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>validation-api</artifactId>
+					<groupId>javax.validation</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>howl-logger</artifactId>
+					<groupId>howl</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>avalon-framework</artifactId>
+					<groupId>avalon-framework</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>jotm</artifactId>
+					<groupId>jotm</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>xbean</artifactId>
+					<groupId>xmlbeans</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>supercsv</artifactId>
+					<groupId>org.supercsv</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>scannotation</artifactId>
+					<groupId>org.scannotation</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>spiffy</artifactId>
+					<groupId>spiffy</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>c3p0</artifactId>
+					<groupId>c3p0</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>dozer</artifactId>
+					<groupId>net.sf.dozer</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>jaxb-impl</artifactId>
+					<groupId>com.sun.xml.bind</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>ojdbc6</artifactId>
+					<groupId>com.oracle</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>logkit</artifactId>
+					<groupId>logkit</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>mail</artifactId>
+					<groupId>javax.mail</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>hibernate-validator</artifactId>
+					<groupId>org.hibernate</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>servlet-api</artifactId>
+					<groupId>javax.servlet</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>hibernate-validator</artifactId>
+					<groupId>org.hibernate</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>jms</artifactId>
+					<groupId>javax.jms</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>jmxtools</artifactId>
+					<groupId>com.sun.jdmk</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>jmxri</artifactId>
+					<groupId>com.sun.jmx</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>dbcp</artifactId>
+					<groupId>org.apache.tomcat</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>stax-api</artifactId>
+					<groupId>javax.xml.stream</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>hibernate-validator</artifactId>
+					<groupId>org.hibernate</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>jaxb-api</artifactId>
+					<groupId>javax.xml.bind</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>commons-dbcp</artifactId>
+					<groupId>commons-dbcp</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>slf4j-log4j12</artifactId>
+					<groupId>org.slf4j</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.6.0</version>
+		</dependency>
+
+
+		<!-- Import the transaction spec API, we use runtime scope because we aren't using any direct reference to the spec API 
+			in our client code -->
+		<dependency>
+			<groupId>org.jboss.spec.javax.transaction</groupId>
+			<artifactId>jboss-transaction-api_1.2_spec</artifactId>
+			<version>1.0.0.Final</version>
+		</dependency>
+
+		<!-- Import the EJB 3.1 API, we use runtime scope because we aren't using any direct reference to EJB spec API in our client 
+			code -->
+		<dependency>
+			<groupId>org.jboss.spec.javax.ejb</groupId>
+			<artifactId>jboss-ejb-api_3.2_spec</artifactId>
+			<version>1.0.0.Final</version>
+		</dependency>
+
+
+		<!-- JBoss EJB client API jar. We use runtime scope because the EJB client API isn't directly used in this example. We 
+			just need it in our runtime classpath -->
+		<dependency>
+			<groupId>org.jboss</groupId>
+			<artifactId>jboss-ejb-client</artifactId>
+			<version>2.0.2.Final</version>
+
+		</dependency>
+
+		<!-- client communications with the server use XNIO -->
+		<dependency>
+			<groupId>org.jboss.xnio</groupId>
+			<artifactId>xnio-api</artifactId>
+			<version>3.2.2.Final</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jboss.xnio</groupId>
+			<artifactId>xnio-nio</artifactId>
+			<version>3.2.2.Final</version>
+		</dependency>
+
+		<!-- The client needs JBoss remoting to access the server -->
+		<dependency>
+			<groupId>org.jboss.remoting</groupId>
+			<artifactId>jboss-remoting</artifactId>
+			<version>4.0.3.Final</version>
+		</dependency>
+
+		<!-- Remote EJB accesses can be secured -->
+		<dependency>
+			<groupId>org.jboss.sasl</groupId>
+			<artifactId>jboss-sasl</artifactId>
+			<version>1.0.4.Final</version>
+		</dependency>
+
+		<!-- data serialization for invoking remote EJBs -->
+		<dependency>
+			<groupId>org.jboss.marshalling</groupId>
+			<artifactId>jboss-marshalling-river</artifactId>
+			<version>1.4.6.Final</version>
+		</dependency>
+	</dependencies>
+
+</project>

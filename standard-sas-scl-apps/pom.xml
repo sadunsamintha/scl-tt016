@@ -13,6 +13,7 @@
 
 	<modules>
 		<module>standard-scl-core-app</module>
+		<module>standard-scl-tt018-app</module>
 	</modules>
 
 	<properties>

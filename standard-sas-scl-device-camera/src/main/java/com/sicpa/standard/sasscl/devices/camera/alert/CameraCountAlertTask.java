@@ -55,7 +55,7 @@ public class CameraCountAlertTask extends AbstractScheduledBadCountAlertTask {
 		return codeValidator.apply(evt);
 	}
 
-	private boolean isValidCodeDefaultImpl(CameraCodeEvent evt) {
+	protected boolean isValidCodeDefaultImpl(CameraCodeEvent evt) {
 		return evt instanceof CameraGoodCodeEvent;
 	}
 

@@ -254,7 +254,7 @@ public class RemoteServerSimulator extends AbstractRemoteServer implements ISimu
 		}
 	}
 
-	private void storeEncoder(IEncoder encoder, int year) {
+	protected void storeEncoder(IEncoder encoder, int year) {
 		storage.saveEncoders(year, encoder);
 		storage.confirmEncoder(encoder.getId());
 

@@ -1,0 +1,14 @@
+<PlcValuesForAllVar>
+   <PlcValueWithUnit varName=".com.stLine[1].stParameters.nCameraDistance" unit="PULSE" unitVariable=".com.stLine[1].stParameters.bCameraDistanceType">
+    <value class="int">13085</value>
+  </PlcValueWithUnit>
+  <PlcValueWithUnit varName=".com.stLine[1].stParameters.nPrinterDistance" unit="PULSE" unitVariable=".com.stLine[1].stParameters.bPrinterDistanceType">
+    <value class="int">1800</value>
+  </PlcValueWithUnit>
+  <PlcValueWithUnit varName=".com.stLine[1].stParameters.nEjectionEmissionDistance" unit="PULSE" unitVariable=".com.stLine[1].stParameters.bEjectionEmissionDistanceType">
+    <value class="int">25000</value>
+  </PlcValueWithUnit>
+  <PlcValueWithUnit varName=".com.stLine[1].stParameters.nPackageType">
+    <value class="short">3</value>
+  </PlcValueWithUnit>
+</PlcValuesForAllVar>
