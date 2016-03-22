@@ -94,16 +94,6 @@
 		<property name="flowControl" ref="flowControl" />
 	</bean>
 
-	<!-- MESSAGES -->
-	<bean id="messagesHandler" class="com.sicpa.standard.sasscl.controller.message.MessagesHandler">
-		<property name="messagesMapping" ref="messagesMapping" />
-	</bean>
-
-	<bean id="warningHandler" class="com.sicpa.standard.sasscl.controller.message.MessageHandlerWarning" />
-	<bean id="errorHandler" class="com.sicpa.standard.sasscl.controller.message.MessageHandlerError">
-		<property name="flowControl" ref="flowControl" />
-	</bean>
-	<bean id="errorDisplayHandler" class="com.sicpa.standard.sasscl.controller.message.MessageHandlerErrorDisplay" />
 
 
 	<!-- production parameters START VALIDATORS -->

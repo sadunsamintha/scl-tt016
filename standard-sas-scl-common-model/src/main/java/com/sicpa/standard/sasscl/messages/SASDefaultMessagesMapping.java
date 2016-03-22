@@ -6,7 +6,14 @@ import static com.sicpa.standard.sasscl.messages.ActionMessageType.ERROR_DISPLAY
 import static com.sicpa.standard.sasscl.messages.ActionMessageType.IGNORE;
 import static com.sicpa.standard.sasscl.messages.ActionMessageType.WARNING;
 
+import java.util.Properties;
+
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.sicpa.standard.client.common.messages.DefaultMessagesMapping;
+import com.sicpa.standard.client.common.utils.PropertiesUtils;
 import com.sicpa.standard.sasscl.messages.MessageEventKey.Activation;
 import com.sicpa.standard.sasscl.messages.MessageEventKey.Alert;
 import com.sicpa.standard.sasscl.messages.MessageEventKey.BIS;
@@ -27,6 +34,15 @@ import com.sicpa.standard.sasscl.messages.MessageEventKey.SkuCheck;
 import com.sicpa.standard.sasscl.messages.MessageEventKey.Storage;
 
 public class SASDefaultMessagesMapping extends DefaultMessagesMapping {
+	private static final Logger logger = LoggerFactory.getLogger(SASDefaultMessagesMapping.class);
+	public static final String PREFIX_OVERRIDING_PROPERTIES = "messages.mapping.custom.";
+
+	private Properties overridingProperties;
+
+	public void init() {
+		PropertiesUtils.extractAndDo(PREFIX_OVERRIDING_PROPERTIES, overridingProperties,
+				(key, val) -> overrideMessageMapping(key, val));
+	}
 
 	protected void populateMap() {
 
@@ -240,4 +256,32 @@ public class SASDefaultMessagesMapping extends DefaultMessagesMapping {
 		addEntry(Coding.INVALID_ENCODER, "[COD_03]", ERROR);
 		addEntry(Coding.FAILED_TO_PROVIDE_CODES, "[COD_04]", ERROR);
 	}
+
+	private void overrideMessageMapping(String key, String type) {
+		try {
+			logger.info("overriding messages mapping " + key + ":" + type);
+			add(key, createMessageType(type));
+		} catch (Exception e) {
+			logger.error("failed to override message mapping for " + key + " type:" + type);
+			throw new IllegalArgumentException(e);
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	protected ActionMessageType createMessageType(String key) throws ClassNotFoundException {
+		if (StringUtils.isBlank(key)) {
+			return null;
+		}
+		String clazz = key;
+		if (!clazz.contains(".")) {
+			clazz = "com.sicpa.standard.sasscl.messages." + clazz;
+		}
+		Class<? extends ActionEvent> eventClass = (Class<? extends ActionEvent>) Class.forName(clazz);
+		return new ActionMessageType(clazz, eventClass);
+	}
+
+	public void setOverridingProperties(Properties overridingProperties) {
+		this.overridingProperties = overridingProperties;
+	}
+
 }
