@@ -42,8 +42,6 @@ import com.sicpa.standard.plc.value.PlcVariable;
 @Ignore
 public class PlcSimulatorViewTest {
 
-	private static final String REQUEST_SENT_TO_PLC = "Request sent to PLC.";
-
 	private static final String WRITE_FAILED_VARIABLE_NOT_FOUND = "Write Failed. Variable not found.";
 
 	private static final String WRITTEN_TO_PLC = "Value is written to PLC.";

@@ -2,7 +2,6 @@ package com.sicpa.tt018.scl.model;
 
 import java.util.List;
 
-import com.sicpa.standard.common.util.Messages;
 import com.sicpa.standard.sasscl.model.SKU;
 import com.sicpa.tt018.interfaces.scl.master.constant.ProductPackagings;
 

@@ -41,7 +41,6 @@ public class DuplicatedCodeTest {
 		this.task.setModel(model);
 
 		EventBusService.register(new Object() {
-			@SuppressWarnings("unused")
 			@Subscribe
 			public void notifyMessage(final MessageEvent evt) {
 				// get message after threshold is reached
