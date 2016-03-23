@@ -1,10 +1,13 @@
 package com.sicpa.tt018.scl.devices.plc.impl;
 
+import static com.sicpa.tt018.interfaces.scl.master.constant.ProductPackagings.BOTTLE;
+import static com.sicpa.tt018.interfaces.scl.master.constant.ProductPackagings.CAN;
+import static com.sicpa.tt018.interfaces.scl.master.constant.ProductPackagings.OTHER;
+
 import java.util.HashMap;
 import java.util.Map;
 
 import com.sicpa.standard.sasscl.model.ProductionParameters;
-import com.sicpa.tt018.interfaces.scl.master.constant.ProductPackagings;
 import com.sicpa.tt018.scl.utils.AlbaniaUtilities;
 
 public class FileByPackageTypeMapping {
@@ -29,11 +32,10 @@ public class FileByPackageTypeMapping {
 
 	private int getProductPackage(ProductionParameters productionParameters) {
 		int currentPackageType = AlbaniaUtilities.getProductPackage(productionParameters);
-		if (currentPackageType == ProductPackagings.BOTTLE.getId()
-				|| currentPackageType == ProductPackagings.CAN.getId()) {
+		if (currentPackageType == BOTTLE.getId() || currentPackageType == CAN.getId()) {
 			return currentPackageType;
 		} else {
-			return ProductPackagings.OTHER.getId();
+			return OTHER.getId();
 		}
 	}
 

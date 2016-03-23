@@ -1,5 +1,7 @@
 package com.sicpa.tt018.scl.utils;
 
+import static com.sicpa.standard.sasscl.model.ProductionMode.STANDARD;
+
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -14,12 +16,11 @@ public class AlbaniaUtilities {
 	private static Logger logger = LoggerFactory.getLogger(AlbaniaUtilities.class);
 
 	public static boolean isCurrentProductionBlobEnable(final ProductionParameters productionParameters) {
-		return AlbaniaUtilities.isDomesticMode(productionParameters) && ((AlbaniaSKU) productionParameters.getSku()).isBlobEnabled();
+		return isDomesticMode(productionParameters) && ((AlbaniaSKU) productionParameters.getSku()).isBlobEnabled();
 	}
 
 	public static int getProductPackage(final ProductionParameters productionParameter) {
-
-		//in export mode there is no SKU
+		// in export mode there is no SKU
 		if (productionParameter != null && productionParameter.getSku() != null) {
 			return ((AlbaniaSKU) productionParameter.getSku()).getProductPackaging().getId();
 		} else {
@@ -36,8 +37,9 @@ public class AlbaniaUtilities {
 	}
 
 	public static boolean isDomesticMode(ProductionParameters productionParameter) {
-		logger.debug("Is domestic mode = {} : Domestic = {}", productionParameter.getProductionMode(), ProductionMode.STANDARD.equals(productionParameter.getProductionMode()));
-
-		return ProductionMode.STANDARD.equals(productionParameter.getProductionMode());
+		ProductionMode mode = productionParameter.getProductionMode();
+		boolean res = STANDARD.equals(mode);
+		logger.debug("Is domestic mode = {} : Domestic = {}", mode, res);
+		return res;
 	}
 }

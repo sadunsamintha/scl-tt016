@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+
+	<bean id="remoteServer" class="com.sicpa.tt018.scl.remoteServer.simu.AlbaniaRemoteServerSimulator" init-method="loadModel">
+		<property name="subSystemId" value="${master.subsystemId}" />
+		<property name="remoteServerAdapter" ref="remoteServerAdaptor" />
+		<property name="lifeChecker" ref="lifeChecker" />
+		<property name="storage" ref="storage" />
+		<property name="pathToRemoteServerFile" value="${profile.path}/config/server/simulator/remoteServerSimulator.xml" />
+		<property name="cryptoPassword" value="${crypto.password}" />
+		<property name="cryptoFieldsConfig" ref="cryptoFieldsConfig" />
+	</bean>
+
+</beans>

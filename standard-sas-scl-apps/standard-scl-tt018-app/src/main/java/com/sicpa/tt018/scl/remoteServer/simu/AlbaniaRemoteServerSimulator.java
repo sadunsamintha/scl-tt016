@@ -3,6 +3,9 @@ package com.sicpa.tt018.scl.remoteServer.simu;
 import java.text.MessageFormat;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.messages.MessageEvent;
 import com.sicpa.standard.client.common.utils.ConfigUtils;
@@ -25,13 +28,13 @@ import com.sicpa.tt018.scl.utils.ValidatorException;
 
 public class AlbaniaRemoteServerSimulator extends AlbaniaRemoteServer {
 
-	private AlbaniaRemoteServerModelSimulator remoteServerSimulatorModel;
+	private static final Logger logger = LoggerFactory.getLogger(AlbaniaRemoteServerSimulator.class);
 
+	private AlbaniaRemoteServerModelSimulator remoteServerSimulatorModel;
 	private String pathToRemoteServerFile;
 
-	public AlbaniaRemoteServerSimulator(RemoteServerModel remoteServerModel) {
-		super(remoteServerModel);
-
+	public AlbaniaRemoteServerSimulator() {
+		super(new RemoteServerModel());
 	}
 
 	public void loadModel() {

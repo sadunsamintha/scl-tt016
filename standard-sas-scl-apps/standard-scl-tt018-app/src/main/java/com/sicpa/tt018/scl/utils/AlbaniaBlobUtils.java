@@ -1,23 +1,27 @@
 package com.sicpa.tt018.scl.utils;
 
+import static com.sicpa.standard.sasscl.model.ProductionMode.EXPORT;
+import static com.sicpa.standard.sasscl.model.ProductionMode.MAINTENANCE;
+import static com.sicpa.tt018.scl.model.productionParameters.AlbaniaProductionMode.SOFT_DRINK;
+import static com.sicpa.tt018.scl.utils.AlbaniaCameraConstants.CAMERA_ERROR_BLOB_DETECTION_CODE;
+
 import com.sicpa.standard.sasscl.model.Code;
 import com.sicpa.standard.sasscl.model.ProductionMode;
 import com.sicpa.standard.sasscl.model.ProductionParameters;
 import com.sicpa.tt018.scl.model.AlbaniaSKU;
-import com.sicpa.tt018.scl.model.productionParameters.AlbaniaProductionMode;
 
 public class AlbaniaBlobUtils {
 
 	private Boolean isBlobAlwaysEnable;
-
 	private ProductionParameters productionParameters;
 
 	public boolean isBlobDetected(final Code code) {
-		return AlbaniaCameraConstants.CAMERA_ERROR_BLOB_DETECTION_CODE.equals(code);
+		return CAMERA_ERROR_BLOB_DETECTION_CODE.equals(code);
 	}
 
 	public boolean isBlobEnable() {
-		if (productionParameters.getProductionMode().equals(ProductionMode.EXPORT) || productionParameters.getProductionMode().equals(ProductionMode.MAINTENANCE) || productionParameters.getProductionMode().equals(AlbaniaProductionMode.SOFT_DRINK)) {
+		ProductionMode mode = productionParameters.getProductionMode();
+		if (mode.equals(EXPORT) || mode.equals(MAINTENANCE) || mode.equals(SOFT_DRINK)) {
 			return false;
 		}
 		AlbaniaSKU currentSKU = (AlbaniaSKU) productionParameters.getSku();

@@ -18,11 +18,11 @@ import com.sicpa.tt018.interfaces.scl.master.dto.SkuProductDTO;
 import com.sicpa.tt018.scl.model.encoder.AlbaniaEncoderWrapper;
 
 public class AlbaniaRemoteServerUtilities {
-	public static List<IEncoder> wrapEncoderList(final List<AlbaniaEncoderDTO> encoders, final int year,
-			final int subsystemID, final ICryptoFieldsConfig cryptoFieldsConfig, final String cryptoPassword,
-			CodeType codeType) {
-		final List<IEncoder> ret = new LinkedList<IEncoder>();
-		for (final AlbaniaEncoderDTO albaniaEncoder : encoders) {
+
+	public static List<IEncoder> wrapEncoderList(final List<AlbaniaEncoderDTO> encoders, int year, int subsystemID,
+			ICryptoFieldsConfig cryptoFieldsConfig, String cryptoPassword, CodeType codeType) {
+		List<IEncoder> ret = new LinkedList<IEncoder>();
+		for (AlbaniaEncoderDTO albaniaEncoder : encoders) {
 
 			ret.add(new AlbaniaEncoderWrapper(albaniaEncoder.getCryptoEncoder().getBatchId(), System
 					.currentTimeMillis(), cryptoPassword, cryptoFieldsConfig, year, subsystemID, new Integer(""
@@ -31,8 +31,8 @@ public class AlbaniaRemoteServerUtilities {
 		return ret;
 	}
 
-	public static IEncoder wrapEncoder(AlbaniaEncoderDTO encoder, final int year, final int subsystemID,
-			final ICryptoFieldsConfig cryptoFieldsConfig, final String cryptoPassword, int codeTypeId) {
+	public static IEncoder wrapEncoder(AlbaniaEncoderDTO encoder, int year, int subsystemID,
+			ICryptoFieldsConfig cryptoFieldsConfig, String cryptoPassword, int codeTypeId) {
 		return new AlbaniaEncoderWrapper(encoder.getCryptoEncoder().getBatchId(), System.currentTimeMillis(),
 				cryptoPassword, cryptoFieldsConfig, year, subsystemID, codeTypeId, encoder.getCryptoEncoder());
 	}

@@ -2,6 +2,9 @@ package com.sicpa.tt018.scl;
 
 import static com.sicpa.standard.sasscl.ioc.BeansName.PRODUCTION_CONFIG_MAPPING;
 import static com.sicpa.standard.sasscl.messages.ActionMessageType.ERROR;
+import static com.sicpa.standard.sasscl.model.ProductionMode.EXPORT;
+import static com.sicpa.standard.sasscl.model.ProductionMode.MAINTENANCE;
+import static com.sicpa.standard.sasscl.model.ProductionMode.STANDARD;
 import static com.sicpa.tt018.scl.business.activation.constants.AlbaniaSCLActivationMessages.EXCEPTION_CODE_IN_SOFT_DRINK;
 import static com.sicpa.tt018.scl.model.productionParameters.AlbaniaProductionMode.SOFT_DRINK;
 
@@ -14,7 +17,9 @@ import com.sicpa.standard.sasscl.controller.productionconfig.mapping.IProduction
 import com.sicpa.standard.sasscl.custoBuilder.CustoBuilder;
 import com.sicpa.standard.sasscl.devices.plc.PlcUtils.PLC_TYPE;
 import com.sicpa.standard.sasscl.model.statistics.StatisticsKey;
+import com.sicpa.standard.sasscl.security.SasSclPermission;
 import com.sicpa.tt018.scl.model.AlbaniaProductStatus;
+import com.sicpa.tt018.scl.model.productionParameters.AlbaniaPermission;
 
 public class TT018Bootstrap extends Bootstrap {
 
@@ -24,6 +29,14 @@ public class TT018Bootstrap extends Bootstrap {
 		messageCusto();
 		addSoftDrinkProductionMode();
 		statisticsCusto();
+		setProductionModePermission();
+	}
+
+	private void setProductionModePermission() {
+		CustoBuilder.setProductionModePermission(STANDARD, SasSclPermission.PRODUCTION_MODE_STANDARD);
+		CustoBuilder.setProductionModePermission(MAINTENANCE, SasSclPermission.PRODUCTION_MODE_MAINTENANCE);
+		CustoBuilder.setProductionModePermission(EXPORT, SasSclPermission.PRODUCTION_MODE_STANDARD);
+		CustoBuilder.setProductionModePermission(SOFT_DRINK, AlbaniaPermission.PRODUCTION_MODE_STANDARD);
 	}
 
 	private void messageCusto() {

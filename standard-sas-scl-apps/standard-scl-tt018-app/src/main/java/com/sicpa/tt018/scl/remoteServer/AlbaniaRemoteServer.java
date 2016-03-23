@@ -45,7 +45,7 @@ public class AlbaniaRemoteServer extends RemoteServer {
 		super(remoteServerModel);
 	}
 
-	protected static Logger logger = LoggerFactory.getLogger(AlbaniaRemoteServer.class);
+	private static Logger logger = LoggerFactory.getLogger(AlbaniaRemoteServer.class);
 
 	// for albania only one ejb for everything
 	// no login bean available
