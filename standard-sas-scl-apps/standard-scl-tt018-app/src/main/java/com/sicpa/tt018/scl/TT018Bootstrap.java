@@ -1,11 +1,18 @@
-package com.sicpa.tt018;
+package com.sicpa.tt018.scl;
 
+import static com.sicpa.standard.sasscl.ioc.BeansName.PRODUCTION_CONFIG_MAPPING;
 import static com.sicpa.standard.sasscl.messages.ActionMessageType.ERROR;
 import static com.sicpa.tt018.scl.business.activation.constants.AlbaniaSCLActivationMessages.EXCEPTION_CODE_IN_SOFT_DRINK;
 import static com.sicpa.tt018.scl.model.productionParameters.AlbaniaProductionMode.SOFT_DRINK;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import com.sicpa.standard.client.common.ioc.BeanProvider;
 import com.sicpa.standard.sasscl.Bootstrap;
+import com.sicpa.standard.sasscl.controller.productionconfig.mapping.IProductionConfigMapping;
 import com.sicpa.standard.sasscl.custoBuilder.CustoBuilder;
+import com.sicpa.standard.sasscl.devices.plc.PlcUtils.PLC_TYPE;
 import com.sicpa.standard.sasscl.model.statistics.StatisticsKey;
 import com.sicpa.tt018.scl.model.AlbaniaProductStatus;
 
@@ -15,7 +22,7 @@ public class TT018Bootstrap extends Bootstrap {
 	public void executeSpringInitTasks() {
 		super.executeSpringInitTasks();
 		messageCusto();
-		productionModeCusto();
+		addSoftDrinkProductionMode();
 		statisticsCusto();
 	}
 
@@ -23,13 +30,23 @@ public class TT018Bootstrap extends Bootstrap {
 		CustoBuilder.addMessage(EXCEPTION_CODE_IN_SOFT_DRINK, "[ACT_05]", ERROR);
 	}
 
-	private void productionModeCusto() {
-		CustoBuilder.addProductionMode(SOFT_DRINK, "softdrink", -1);
-	}
-
 	private void statisticsCusto() {
 		CustoBuilder.addToStatisticsMapper(AlbaniaProductStatus.SENT_TO_PRINTER_BLOB, StatisticsKey.GOOD);
 		CustoBuilder.addToStatisticsMapper(AlbaniaProductStatus.SOFT_DRINK, StatisticsKey.GOOD);
+	}
+
+	public static void addCustoPlcVariable() {
+
+		Map<String, Object> options = new HashMap<>();
+		options.put("lineGrp", "system");
+
+		CustoBuilder.addPlcVariable("PARAM_LINE_SENSOR_TYPE", ".com.stLine[#1].stParameters.nPackageType", PLC_TYPE.S,
+				options);
+	}
+
+	public static void addSoftDrinkProductionMode() {
+		IProductionConfigMapping mapping = BeanProvider.getBean(PRODUCTION_CONFIG_MAPPING);
+		mapping.put(SOFT_DRINK, "softdrink");
 	}
 
 }

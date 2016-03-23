@@ -1,0 +1,17 @@
+<com.sicpa.standard.sasscl.model.ProductionParameters>
+  <customProperties/>
+  <productionMode id="1" description="productionmode.standard" withSicpaData="true"/>
+  <sku class="com.sicpa.tt018.scl.model.AlbaniaSKU" id="12" description="Boxer Blond 25cl">
+    <customProperties/>
+    <codeType id="32">
+      <customProperties/>
+    </codeType>
+    <barcodes/>
+    <brand>Boxer</brand>
+    <variant>Blond</variant>
+    <volume>25cl</volume>
+    <isBlobEnabled>true</isBlobEnabled>
+    <productPackaging>BOTTLE</productPackaging>
+  </sku>
+  <barcode></barcode>
+</com.sicpa.standard.sasscl.model.ProductionParameters>

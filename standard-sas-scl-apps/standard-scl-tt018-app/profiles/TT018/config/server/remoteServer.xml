@@ -1,5 +1,5 @@
-<RemoteServerModel>
+<com.sicpa.standard.sasscl.devices.remote.impl.RemoteServerModel>
     <username>006scl</username>
     <password>006scl</password>
     <lifeCheckSleep>20</lifeCheckSleep>
-</RemoteServerModel>
+</com.sicpa.standard.sasscl.devices.remote.impl.RemoteServerModel>

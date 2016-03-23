@@ -87,3 +87,7 @@ standard-sas-scl-functional-test/profiles/test/internalSimulator/
 standard-sas-scl-functional-test/profiles/test/internal/
 standard-sas-scl-functional-test/profiles/test/simulProductSend/
 standard-sas-scl-apps/standard-scl-tt018-app/log/
+standard-sas-scl-apps/standard-scl-tt018-app/profiles/TT018/simuStorage/
+standard-sas-scl-apps/standard-scl-tt018-app/uncaught-error/
+standard-sas-scl-apps/standard-scl-tt018-app/profiles/TT018/backup-config/
+standard-sas-scl-apps/standard-scl-tt018-app/profiles/TT018/monitoring/

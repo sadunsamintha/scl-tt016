@@ -1,7 +1,5 @@
 package com.sicpa.standard.sasscl.view.config.plc;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -46,12 +44,7 @@ public class MultiEditablePlcVariablesSet extends JPanel {
 	public JButton getButtonShowCameraImage() {
 		if (buttonShowCameraImage == null) {
 			buttonShowCameraImage = new JButton("show camera image");
-			buttonShowCameraImage.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(final ActionEvent e) {
-					buttonShowCameraImageActionPerformed();
-				}
-			});
+			buttonShowCameraImage.addActionListener((evt) -> buttonShowCameraImageActionPerformed());
 		}
 		return this.buttonShowCameraImage;
 	}
@@ -84,7 +77,7 @@ public class MultiEditablePlcVariablesSet extends JPanel {
 		return mainPanel;
 	}
 
-	protected void addLinePanel(final JPanel p, String lineId) {
+	protected void addLinePanel(JPanel p, String lineId) {
 		JButton button = createTogglePanelButton(p);
 		getMainPanel().add(button, "spanx , split 3, h 50 , w 75");
 		getMainPanel().add(new JLabel(Messages.get("line." + lineId + ".name")), "");
@@ -94,29 +87,25 @@ public class MultiEditablePlcVariablesSet extends JPanel {
 	}
 
 	protected JButton createTogglePanelButton(final JPanel p) {
-		final JButton button = new JButton("+");
-		button.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				p.setVisible(!p.isVisible());
-				String text = p.isVisible() ? "-" : "+";
-				button.setText(text);
-			}
-		});
+		JButton button = new JButton("+");
+		button.addActionListener((evt) -> toggleButtonActionPerformed(button, p));
 		p.setVisible(false);
 		return button;
 	}
 
-	public void handleNewPlcGroupEditable(final PlcVariableGroupEvent evt) {
-		ThreadUtils.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				PlcVariablePanel p = panelsLines.get(evt.getLineId());
-				if (p == null) {
-					p = new PlcVariablePanel(evt.getGroups());
-					panelsLines.put(evt.getLineId(), p);
-					addLinePanel(p, evt.getLineId());
-				}
+	private void toggleButtonActionPerformed(JButton button, JPanel panel) {
+		panel.setVisible(!panel.isVisible());
+		String text = panel.isVisible() ? "-" : "+";
+		button.setText(text);
+	}
+
+	public void handleNewPlcGroupEditable(PlcVariableGroupEvent evt) {
+		ThreadUtils.invokeLater(() -> {
+			PlcVariablePanel p = panelsLines.get(evt.getLineId());
+			if (p == null) {
+				p = new PlcVariablePanel(evt.getGroups());
+				panelsLines.put(evt.getLineId(), p);
+				addLinePanel(p, evt.getLineId());
 			}
 		});
 	}
@@ -128,5 +117,9 @@ public class MultiEditablePlcVariablesSet extends JPanel {
 		scroll = null;
 		initGUI();
 		revalidate();
+	}
+
+	public Map<String, PlcVariablePanel> getPanelsLines() {
+		return panelsLines;
 	}
 }

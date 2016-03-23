@@ -26,13 +26,13 @@ public class PlcValuesLoader implements IPlcValuesLoader {
 
 	private String cabinetConfigFile = "cabinet.properties";
 	private String lineConfigFile = "line-" + LINE_INDEX_PLACEHOLDER + ".properties";
-	private final Map<Integer, StringMap> valuesByLines = new HashMap<>();
+	protected final Map<Integer, StringMap> valuesByLines = new HashMap<>();
 
 	private int lineCount = 3;
-	private String configFolder;
+	protected String configFolder;
 	private IPlcParamSender paramSender;
 
-	private void loadProperties() {
+	protected void loadProperties() {
 		try {
 			valuesByLines.put(0, loadCabinetProperties());
 			for (int lineIndex = 1; lineIndex < lineCount + 1; lineIndex++) {
@@ -55,7 +55,7 @@ public class PlcValuesLoader implements IPlcValuesLoader {
 		return res;
 	}
 
-	private StringMap replaceLinePlaceholderInProperties(int lineIndex, StringMap properties) {
+	protected StringMap replaceLinePlaceholderInProperties(int lineIndex, StringMap properties) {
 		StringMap res = new StringMap();
 		for (Entry<String, String> entry : properties.entrySet()) {
 			res.put(entry.getKey().replace(LINE_INDEX_PLACEHOLDER, lineIndex + ""), entry.getValue());
@@ -77,7 +77,7 @@ public class PlcValuesLoader implements IPlcValuesLoader {
 		return valuesByLines;
 	}
 
-	private StringMap loadProperties(String file) throws IOException {
+	protected StringMap loadProperties(String file) throws IOException {
 		Properties prop = new Properties();
 		prop.load(new FileReader(new File(configFolder + "/" + file)));
 
@@ -117,7 +117,7 @@ public class PlcValuesLoader implements IPlcValuesLoader {
 		save(getLinePropertiesFileName(lineIndex), values);
 	}
 
-	private void save(String fileName, StringMap values) {
+	protected void save(String fileName, StringMap values) {
 		try {
 			PropertiesUtils.savePropertiesKeepOrderAndComment(new File(configFolder + "/" + fileName), values);
 		} catch (ConfigurationException e) {
