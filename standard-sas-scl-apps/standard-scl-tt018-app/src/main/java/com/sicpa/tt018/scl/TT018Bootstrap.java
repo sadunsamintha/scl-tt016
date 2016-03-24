@@ -36,7 +36,7 @@ public class TT018Bootstrap extends Bootstrap {
 		CustoBuilder.setProductionModePermission(STANDARD, SasSclPermission.PRODUCTION_MODE_STANDARD);
 		CustoBuilder.setProductionModePermission(MAINTENANCE, SasSclPermission.PRODUCTION_MODE_MAINTENANCE);
 		CustoBuilder.setProductionModePermission(EXPORT, SasSclPermission.PRODUCTION_MODE_STANDARD);
-		CustoBuilder.setProductionModePermission(SOFT_DRINK, AlbaniaPermission.PRODUCTION_MODE_STANDARD);
+		CustoBuilder.setProductionModePermission(SOFT_DRINK, AlbaniaPermission.PRODUCTION_MODE_SOFT_DRINK);
 	}
 
 	private void messageCusto() {
