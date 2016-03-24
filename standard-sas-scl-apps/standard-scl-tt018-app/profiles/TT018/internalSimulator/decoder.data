@@ -1,8 +1,0 @@
-<com.sicpa.tt018.scl.model.authenticator.AlbaniaAuthenticatorWrapper>
-  <albanianAuthenticator class="com.sicpa.tt018.scl.remoteServer.simu.AlbaniaSimuAuthenticator">
-    <internalSequence>0</internalSequence>
-  </albanianAuthenticator>
-  <userPassword>drummond</userPassword>
-  <cryptoFieldsConfig class="com.sicpa.tt018.scl.model.crypto.AlbaniaSCLCryptoFieldsConfig"/>
-  <firstCallToDecode>true</firstCallToDecode>
-</com.sicpa.tt018.scl.model.authenticator.AlbaniaAuthenticatorWrapper>

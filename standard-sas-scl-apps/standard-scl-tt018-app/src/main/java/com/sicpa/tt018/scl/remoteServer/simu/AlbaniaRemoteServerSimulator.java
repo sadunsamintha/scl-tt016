@@ -8,9 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.messages.MessageEvent;
-import com.sicpa.standard.client.common.utils.ConfigUtils;
 import com.sicpa.standard.sasscl.devices.DeviceStatus;
-import com.sicpa.standard.sasscl.devices.remote.impl.RemoteServerModel;
 import com.sicpa.standard.sasscl.model.CodeType;
 import com.sicpa.standard.sasscl.model.PackagedProducts;
 import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.ProductionParameterRootNode;
@@ -30,22 +28,17 @@ public class AlbaniaRemoteServerSimulator extends AlbaniaRemoteServer {
 
 	private static final Logger logger = LoggerFactory.getLogger(AlbaniaRemoteServerSimulator.class);
 
-	private AlbaniaRemoteServerModelSimulator remoteServerSimulatorModel;
-	private String pathToRemoteServerFile;
+	private AlbaniaRemoteServerModelSimulator simulatorModel;
 
 	public AlbaniaRemoteServerSimulator() {
-		super(new RemoteServerModel());
-	}
-
-	public void loadModel() {
-		remoteServerSimulatorModel = loadRemoteServerSimulator();
+		super();
 	}
 
 	@Override
 	public ProductionParameterRootNode doGetTreeProductionParameters() {
 		logger.debug("Retrieveing SKU list from master....");
 
-		MarketTypeDTO marketTypeDTO = remoteServerSimulatorModel.getMarketTypeDTO();
+		MarketTypeDTO marketTypeDTO = simulatorModel.getMarketTypeDTO();
 
 		// MarketTypeDTO received ???
 		if (AlbaniaRemoteServerUtilities.isEmpty(marketTypeDTO)) {
@@ -78,7 +71,7 @@ public class AlbaniaRemoteServerSimulator extends AlbaniaRemoteServer {
 	public IAuthenticator doGetAuthenticator() {
 		logger.debug("Retrieveing authenticator from master....");
 
-		final IAlbaniaAuthenticator albaniaAuthenticator = remoteServerSimulatorModel.loadSimuAuthenticator();
+		final IAlbaniaAuthenticator albaniaAuthenticator = simulatorModel.loadSimuAuthenticator();
 
 		fireDeviceStatusChanged(DeviceStatus.CONNECTED);
 
@@ -96,8 +89,8 @@ public class AlbaniaRemoteServerSimulator extends AlbaniaRemoteServer {
 
 		try {
 			// Get encoders from master
-			final List<AlbaniaEncoderDTO> encoders = remoteServerSimulatorModel.provideEncoders(quantity,
-					(int) codeType.getId(), subSystemId);
+			final List<AlbaniaEncoderDTO> encoders = simulatorModel.provideEncoders(quantity, (int) codeType.getId(),
+					subSystemId);
 
 			// Encoders received ???
 			if (AlbaniaUtilities.isEmpty(encoders)) {
@@ -143,28 +136,7 @@ public class AlbaniaRemoteServerSimulator extends AlbaniaRemoteServer {
 		}
 	}
 
-	private AlbaniaRemoteServerModelSimulator loadRemoteServerSimulator() {
-
-		try {
-
-			AlbaniaRemoteServerXStream.configureXstreamAlbaniaRemoteServerSimuModel();
-			AlbaniaRemoteServerModelSimulator remoteServerSimulatorModel = (AlbaniaRemoteServerModelSimulator) ConfigUtils
-					.load(pathToRemoteServerFile);
-
-			return remoteServerSimulatorModel;
-		} catch (Exception e) {
-			logger.error("Fail to load : " + pathToRemoteServerFile);
-			return null;
-		}
-
+	public void setSimulatorModel(AlbaniaRemoteServerModelSimulator simulatorModel) {
+		this.simulatorModel = simulatorModel;
 	}
-
-	public String getPathToRemoteServerFile() {
-		return pathToRemoteServerFile;
-	}
-
-	public void setPathToRemoteServerFile(String pathToRemoteServerFile) {
-		this.pathToRemoteServerFile = pathToRemoteServerFile;
-	}
-
 }

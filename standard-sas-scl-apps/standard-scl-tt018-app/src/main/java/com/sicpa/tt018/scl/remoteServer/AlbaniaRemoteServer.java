@@ -2,8 +2,6 @@ package com.sicpa.tt018.scl.remoteServer;
 
 import java.text.MessageFormat;
 import java.util.List;
-import java.util.Map;
-import java.util.ResourceBundle;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,15 +9,9 @@ import org.slf4j.LoggerFactory;
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.messages.MessageEvent;
 import com.sicpa.standard.client.common.timeout.Timeout;
-import com.sicpa.standard.client.common.utils.TaskExecutor;
 import com.sicpa.standard.sasscl.devices.DeviceStatus;
-import com.sicpa.standard.sasscl.devices.remote.GlobalMonitoringToolInfo;
 import com.sicpa.standard.sasscl.devices.remote.RemoteServerException;
-import com.sicpa.standard.sasscl.devices.remote.impl.IPackageSender;
-import com.sicpa.standard.sasscl.devices.remote.impl.RemoteServer;
-import com.sicpa.standard.sasscl.devices.remote.impl.RemoteServerModel;
 import com.sicpa.standard.sasscl.model.CodeType;
-import com.sicpa.standard.sasscl.model.EncoderInfo;
 import com.sicpa.standard.sasscl.model.PackagedProducts;
 import com.sicpa.standard.sasscl.model.ProductStatus;
 import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.ProductionParameterRootNode;
@@ -41,8 +33,9 @@ import com.sicpa.tt018.scl.utils.ValidatorException;
 
 public class AlbaniaRemoteServer extends RemoteServer {
 
-	public AlbaniaRemoteServer(RemoteServerModel remoteServerModel) {
-		super(remoteServerModel);
+	public AlbaniaRemoteServer() {
+		super();
+		initPackageSenders();
 	}
 
 	private static Logger logger = LoggerFactory.getLogger(AlbaniaRemoteServer.class);
@@ -51,7 +44,6 @@ public class AlbaniaRemoteServer extends RemoteServer {
 	// no login bean available
 	private ICodingActivationRemote ejbCodingActivationBean;
 	protected IAlblaniaRemoteServerAdapter remoteServerAdapter;
-
 	protected int subSystemId;
 	protected String cryptoPassword;
 
@@ -66,19 +58,8 @@ public class AlbaniaRemoteServer extends RemoteServer {
 
 	protected void initPackageSenders() {
 
-		IPackageSender senderActivated = new IPackageSender() {
-			@Override
-			public void sendPackage(PackagedProducts products) {
-				processActivatedProducts(products);
-			}
-		};
-
-		IPackageSender senderCounted = new IPackageSender() {
-			@Override
-			public void sendPackage(PackagedProducts products) {
-				processCountedProducts(products);
-			}
-		};
+		IPackageSender senderActivated = (products) -> processActivatedProducts(products);
+		IPackageSender senderCounted = (products) -> processCountedProducts(products);
 
 		packageSenders.put(ProductStatus.AUTHENTICATED, senderActivated);
 		packageSenders.put(ProductStatus.REFEED, senderActivated);
@@ -104,15 +85,6 @@ public class AlbaniaRemoteServer extends RemoteServer {
 			throw new RemoteServerException(e);
 		}
 
-	}
-
-	protected void init() {
-		TaskExecutor.execute(new Runnable() {
-			@Override
-			public void run() {
-				initPackageSenders();
-			}
-		});
 	}
 
 	@Override
@@ -246,30 +218,6 @@ public class AlbaniaRemoteServer extends RemoteServer {
 		storage.saveEncoders(year, encoder);
 		storage.confirmEncoder(encoder.getId());
 
-	}
-
-	@Override
-	@Timeout
-	public void sendInfoToGlobalMonitoringTool(GlobalMonitoringToolInfo info) {
-		try {
-			// send info to Albania bean
-			// EventDto evt = createEventDto(info);
-			// getEventBean().register(evt);
-		} catch (Exception e) {
-			logger.error("error sending global monitoring tool info:" + info, e);
-		}
-	}
-
-	@Override
-	@Timeout
-	public void sendEncoderInfos(List<EncoderInfo> infos) throws RemoteServerException {
-
-	}
-
-	@Override
-	@Timeout
-	public Map<String, ? extends ResourceBundle> getLanguageBundles() throws RemoteServerException {
-		return null;
 	}
 
 	public void setEjbCodingActivationBean(final ICodingActivationRemote bean) {

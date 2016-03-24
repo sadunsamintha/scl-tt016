@@ -10,7 +10,7 @@ beans{
 			importBeans('spring/custo/tt018/server/tt018-remoteserver-standard.xml')
 			break
 		case 'SIMULATOR':
-			importBeans('spring/custo/tt018/server/tt018-remoteserver-simulator.xml')
+		importBeans('spring/custo/tt018/server/tt018-remoteserver-simulator.groovy')
 			break
 		case 'NONE':
 			break

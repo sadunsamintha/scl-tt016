@@ -212,11 +212,11 @@
 		</dependency>
 
 		<!-- The client needs JBoss remoting to access the server -->
-		<dependency>
-			<groupId>org.jboss.remoting</groupId>
-			<artifactId>jboss-remoting</artifactId>
-			<version>4.0.3.Final</version>
-		</dependency>
+		<!-- <dependency> -->
+		<!-- <groupId>org.jboss.remoting</groupId> -->
+		<!-- <artifactId>jboss-remoting</artifactId> -->
+		<!-- <version>4.0.3.Final</version> -->
+		<!-- </dependency> -->
 
 		<!-- Remote EJB accesses can be secured -->
 		<dependency>

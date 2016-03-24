@@ -4,7 +4,6 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 
 	<bean id="remoteServer" class="com.sicpa.tt018.scl.remoteServer.AlbaniaRemoteServer">
-		<constructor-arg ref="stdRemoteModel" />
 		<property name="cryptoPassword" value="${crypto.password}" />
 		<property name="cryptoFieldsConfig" ref="cryptoFieldsConfig" />
 		<property name="remoteServerAdapter" ref="remoteServerAdaptor" />
@@ -44,9 +43,4 @@
 			</props>
 		</property>
 	</bean>
-
-	<bean id="stdRemoteModel" class="com.sicpa.standard.client.common.utils.ConfigUtils" factory-method="load">
-		<constructor-arg value="${profile.path}/config/server/remoteServer.xml" />
-	</bean>
-
 </beans>

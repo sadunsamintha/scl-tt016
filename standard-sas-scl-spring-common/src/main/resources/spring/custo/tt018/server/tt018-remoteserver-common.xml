@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 
 
-	<bean id="lifeChecker" class="com.sicpa.standard.sasscl.devices.remote.impl.RemoteServerLifeChecker">
+	<bean id="lifeChecker" class="com.sicpa.tt018.scl.remoteServer.RemoteServerLifeChecker">
 		<property name="lifeCheckSleep" value="30000" />
 		<property name="target" ref="remoteServer" />
 	</bean>

@@ -11,20 +11,16 @@ import com.sicpa.standard.sasscl.monitoring.mbean.scl.SclApp;
  * 
  * @author FAspert
  */
-public class AlbaniaSclApp extends SclApp
-{
+public class AlbaniaSclApp extends SclApp {
 
-    @Override
-    public String getSKU()
-    {
-        final ProductionParameters param = this.stats.getProductionParameters();
-        if (param != null && this.stats.getProductionParameters().getSku() != null)
-        {
-            return this.stats.getProductionParameters().getSku().toString();
-        } else
-        {
-            return "";
-        }
-    }
+	@Override
+	public String getSKU() {
+		final ProductionParameters param = stats.getProductionParameters();
+		if (param != null && stats.getProductionParameters().getSku() != null) {
+			return stats.getProductionParameters().getSku().toString();
+		} else {
+			return "";
+		}
+	}
 
 }

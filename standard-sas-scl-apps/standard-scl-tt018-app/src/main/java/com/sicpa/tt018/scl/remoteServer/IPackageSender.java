@@ -1,4 +1,4 @@
-package com.sicpa.standard.sasscl.devices.remote.impl;
+package com.sicpa.tt018.scl.remoteServer;
 
 import com.sicpa.standard.sasscl.model.PackagedProducts;
 import com.sicpa.std.common.api.activation.exception.ActivationException;
