@@ -14,5 +14,6 @@ beans{
 		cryptoProviderManager=ref('cryptoProviderManager')
 		linePlcVarGroup=ref('linePlcVarGroup')
 		cabPlcVarGroups=ref('cabPlcVarGroups')
+		jmxBean=ref('statsMBean')
 	}
 }
