@@ -25,7 +25,7 @@ import com.sicpa.tt018.interfaces.scl.master.dto.PackagedProductsDTO;
 import com.sicpa.tt018.interfaces.security.IAlbaniaAuthenticator;
 import com.sicpa.tt018.scl.model.AlbaniaProductStatus;
 import com.sicpa.tt018.scl.model.authenticator.AlbaniaAuthenticatorWrapper;
-import com.sicpa.tt018.scl.remoteServer.adapter.IAlblaniaRemoteServerAdapter;
+import com.sicpa.tt018.scl.remoteServer.adapter.IAlbaniaRemoteServerAdapter;
 import com.sicpa.tt018.scl.remoteServer.utilities.AlbaniaRemoteServerUtilities;
 import com.sicpa.tt018.scl.remoteServer.utilities.AlbaniaRemoteServerValidator;
 import com.sicpa.tt018.scl.utils.AlbaniaUtilities;
@@ -43,7 +43,7 @@ public class AlbaniaRemoteServer extends RemoteServer {
 	// for albania only one ejb for everything
 	// no login bean available
 	private ICodingActivationRemote ejbCodingActivationBean;
-	protected IAlblaniaRemoteServerAdapter remoteServerAdapter;
+	protected IAlbaniaRemoteServerAdapter remoteServerAdapter;
 	protected int subSystemId;
 	protected String cryptoPassword;
 
@@ -228,11 +228,11 @@ public class AlbaniaRemoteServer extends RemoteServer {
 		return ejbCodingActivationBean;
 	}
 
-	public void setRemoteServerAdapter(final IAlblaniaRemoteServerAdapter adapter) {
+	public void setRemoteServerAdapter(final IAlbaniaRemoteServerAdapter adapter) {
 		remoteServerAdapter = adapter;
 	}
 
-	protected IAlblaniaRemoteServerAdapter getRemoteServerAdapter() {
+	protected IAlbaniaRemoteServerAdapter getRemoteServerAdapter() {
 		return remoteServerAdapter;
 	}
 

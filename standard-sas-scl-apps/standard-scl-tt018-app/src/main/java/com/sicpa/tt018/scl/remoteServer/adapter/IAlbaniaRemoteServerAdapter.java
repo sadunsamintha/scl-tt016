@@ -7,7 +7,7 @@ import com.sicpa.tt018.interfaces.scl.master.dto.EjectedActivationsDTO;
 import com.sicpa.tt018.interfaces.scl.master.dto.MarketTypeDTO;
 import com.sicpa.tt018.interfaces.scl.master.dto.PackagedProductsDTO;
 
-public interface IAlblaniaRemoteServerAdapter {
+public interface IAlbaniaRemoteServerAdapter {
 
 	ProductionParameterRootNode createSkuSelectionTree(MarketTypeDTO marketTypeDto);
 

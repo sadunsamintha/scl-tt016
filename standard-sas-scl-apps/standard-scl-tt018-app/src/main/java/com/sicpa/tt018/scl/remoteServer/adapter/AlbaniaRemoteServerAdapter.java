@@ -49,7 +49,7 @@ import com.sicpa.tt018.scl.remoteServer.utilities.AlbaniaRemoteServerUtilities;
 import com.sicpa.tt018.scl.remoteServer.utilities.AlbaniaRemoteServerValidator;
 import com.sicpa.tt018.scl.utils.ValidatorException;
 
-public class AlbaniaRemoteServerAdapter implements IAlblaniaRemoteServerAdapter {
+public class AlbaniaRemoteServerAdapter implements IAlbaniaRemoteServerAdapter {
 
 	private static final int ALLOWED_PRODUCT_BOTTLE = 0;
 	private static final int ALLOWED_PRODUCT_CAN = 1;
