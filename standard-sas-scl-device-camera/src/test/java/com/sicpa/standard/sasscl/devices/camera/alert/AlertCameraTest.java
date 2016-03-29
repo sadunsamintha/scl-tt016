@@ -35,7 +35,7 @@ import com.sicpa.standard.sasscl.model.ProductionParameters;
 
 public class AlertCameraTest {
 
-	int count = 0;
+	volatile int count = 0;
 	private Timer timer;
 	private AtomicReference<TimerTask> timerTaskReference;
 
@@ -75,6 +75,7 @@ public class AlertCameraTest {
 		model.setSampleSize(10);
 		model.setMaxUnreadCount(5);
 		model.setDelayInSec(1);
+		model.setEnabled(true);
 		cca.setModel(model);
 
 		ProductionParameters productionParameters = new ProductionParameters();
@@ -94,7 +95,7 @@ public class AlertCameraTest {
 		}
 
 		executeScheduledTask();
-
+		System.out.println(count);
 		Assert.assertTrue(count > 0);
 
 		alert.stop();
@@ -105,7 +106,8 @@ public class AlertCameraTest {
 
 	private void executeScheduledTask() {
 
-		timerTaskReference.get().run();
+		TimerTask t = timerTaskReference.get();
+		t.run();
 	}
 
 	@Test
@@ -174,6 +176,7 @@ public class AlertCameraTest {
 		model.setSampleSize(10);
 		model.setMaxUnreadCount(10);
 		model.setDelayInSec(1);
+		model.setEnabled(true);
 		cca.setModel(model);
 
 		cca.setProductionParameters(productionParameters);
