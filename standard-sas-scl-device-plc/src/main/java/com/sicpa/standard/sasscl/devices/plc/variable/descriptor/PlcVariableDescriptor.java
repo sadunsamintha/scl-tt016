@@ -37,10 +37,14 @@ public abstract class PlcVariableDescriptor {
 		if (!value.equals(value)) {
 			return;
 		}
-		this.value = value;
+		setValueForScreenRefresh(value);
 		OperatorLogger.log("PLC Variables - {} = {}", new Object[] { getVarName(), value });
-		fireValueChanged();
 		saveAndSendValueToPlc();
+	}
+
+	public void setValueForScreenRefresh(String value) {
+		this.value = value;
+		fireValueChanged();
 	}
 
 	public void setVarName(String varName) {

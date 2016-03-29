@@ -36,11 +36,11 @@ import java.util.regex.Pattern;
  */
 public class FileStorage implements IStorage {
 
-	protected final static Logger logger = LoggerFactory.getLogger(IStorage.class);
+	private final static Logger logger = LoggerFactory.getLogger(IStorage.class);
 
-	protected final String dataFolder;
-	protected final String internalFolder;
-	protected final String quarantineFolder;
+	private final String dataFolder;
+	private final String internalFolder;
+	private final String quarantineFolder;
 	public static final String FILE_ENCODER = "encoder-{0}-{1}-{2}-{3}.data";
 	public static final String FILE_FINISHED_ENCODER = "encoder-finished-{0}-{1}-{2}.data";
 	public static final String FILE_FINISHED_ENCODER_REGEX = "encoder-finished-{0}-[0-9]*-[0-9]*-[0-9]*--[0-9]*-[0-9]*-[0-9]*-[0-9]*-[0-9]*.data";
@@ -61,21 +61,18 @@ public class FileStorage implements IStorage {
 	public static final String FOLDER_ENCODER_FINISHED_PENDING = "encoders/finished/pending";
 	public static final String FOLDER_ENCODER_FINISHED_CONFIRMED = "encoders/finished/confirmed";
 
-	protected File productionBatchBeingSend;
-	protected int cleanUpSendDataThreshold_day;
+	private File productionBatchBeingSend;
+	private int cleanUpSendDataThreshold_day;
 
-	protected String timeStampFormat = "yyyy-MM-dd--HH-mm-ss-SSS";
-	protected String dateFormat = "yyyy-MM-dd--HH-mm-ss";
+	private String timeStampFormat = "yyyy-MM-dd--HH-mm-ss-SSS";
 
-	protected IProductsPackager productsPackager;
+	private IProductsPackager productsPackager;
+	private ISimpleFileStorage storageBehavior;
+	private FileSequenceStorageProvider fileSequenceProvider;
 
-	protected ISimpleFileStorage storageBehavior;
-
-	protected FileSequenceStorageProvider fileSequenceProvider;
-
-	// this lock is used to avoif having 2 operations at the same time on the same encoders (from buffer or current
+	// this lock is used to avoid having 2 operations at the same time on the same encoders (from buffer or current
 	// others are not critical)
-	protected Object encoderLock = new Object();
+	private final Object encoderLock = new Object();
 
 	/**
 	 * @param baseFolder
@@ -106,12 +103,12 @@ public class FileStorage implements IStorage {
 		}
 	}
 
-	protected String getCurrentEncoderFile(long l) {
+	private String getCurrentEncoderFile(long l) {
 		return FOLDER_ENCODER_CURRENT + "/" + MessageFormat.format(FILE_CURRENT_ENCODER, "CodeType" + l);
 	}
 
 	@Override
-	public void saveEncoders(final int year, final IEncoder... encoders) {
+	public void saveEncoders(int year, IEncoder... encoders) {
 
 		String stringyear = "xxxx";
 
@@ -134,7 +131,7 @@ public class FileStorage implements IStorage {
 		}
 	}
 
-	protected long getSequenceOfEncoder(IEncoder encoder) {
+	private long getSequenceOfEncoder(IEncoder encoder) {
 		Long res = null;
 		try {
 			res = fileSequenceProvider.loadSequence(Long.valueOf(encoder.getId()));
@@ -148,10 +145,10 @@ public class FileStorage implements IStorage {
 		return res;
 	}
 
-	protected FilenameFilter getFileFilterForEncoder(final CodeType codeType, final int year) {
+	private FilenameFilter getFileFilterForEncoder(CodeType codeType, int year) {
 		return new FilenameFilter() {
 			@Override
-			public boolean accept(final File dir, final String name) {
+			public boolean accept(File dir, String name) {
 				// year to string to avoid number formating
 				String stringyear = "xxxx";
 				String s = MessageFormat.format(FILE_ENCODER_REGEX, "CodeType" + codeType.getId(), stringyear);
@@ -181,31 +178,19 @@ public class FileStorage implements IStorage {
 	 * 
 	 * sort the passed in files to use the oldest file, deserialize the file to encoder and set the encoder as current
 	 * encoder
-	 * 
-	 * @param encoderFiles
-	 * @param codeType
-	 * @return
 	 */
-	protected IEncoder sortEncoderFilesAndSetTheFirstFileAsCurrentEncoder(final File[] encoderFiles,
-			final CodeType codeType) {
+	private IEncoder findAndSetCurrentEncoder(File[] encoderFiles, CodeType codeType) {
 
 		if (encoderFiles == null || encoderFiles.length == 0) {
 			return null;
 		}
 
-		// sort encoder to use the oldest one
-		TreeSet<File> sortedFile = new TreeSet<File>();
-		for (File file : encoderFiles) {
-			sortedFile.add(file);
-		}
-
-		File encoderFile = sortedFile.iterator().next();
-
+		File encoderFile = getOldestEncoderFile(encoderFiles);
 		try {
 
 			// load this encoder and save it as the current one
 			IEncoder encoder = (IEncoder) load(encoderFile);
-			this.saveCurrentEncoder(encoder);
+			saveCurrentEncoder(encoder);
 			// the encoder is now the current encoder, so remove the old
 			// file
 			if (!encoderFile.delete()) {
@@ -219,6 +204,14 @@ public class FileStorage implements IStorage {
 		return null;
 	}
 
+	private File getOldestEncoderFile(File[] encoderFiles) {
+		TreeSet<File> sortedFile = new TreeSet<>();
+		for (File file : encoderFiles) {
+			sortedFile.add(file);
+		}
+		return sortedFile.iterator().next();
+	}
+
 	/**
 	 * 
 	 * useNextEncoder first looks for recycle code encoders. It returns the oldest recycle code encoders if it finds
@@ -229,28 +222,34 @@ public class FileStorage implements IStorage {
 	 * @return instance of encoder that can be used as next encoder. Return null if no encoder is found
 	 */
 	@Override
-	public IEncoder useNextEncoder(final CodeType codeType) {
+	public IEncoder useNextEncoder(CodeType codeType) {
 		synchronized (encoderLock) {
-
 			saveFinishedEncoder(getCurrentEncoder(codeType));
-			new File(internalFolder + "/" + getCurrentEncoderFile(codeType.getId())).delete();
-
-			int year = Calendar.getInstance().get(Calendar.YEAR);
-
-			File[] encoderFiles = new File(internalFolder + "/" + FOLDER_ENCODER_BUFFER).listFiles(this
-					.getFileFilterForEncoder(codeType, year));
-			if (encoderFiles != null && encoderFiles.length > 0) {
-				IEncoder enc = sortEncoderFilesAndSetTheFirstFileAsCurrentEncoder(encoderFiles, codeType);
-				logger.info("using next encoder codeType:{}  id:{}", codeType.getId(), enc.getId());
-				return enc;
-			}
-
-			return null;
+			deleteCurrentEndoder(codeType);
+			return getNextEncoder(codeType);
 		}
 	}
 
+	private IEncoder getNextEncoder(CodeType codeType) {
+		int year = Calendar.getInstance().get(Calendar.YEAR);
+
+		File[] encoderFiles = new File(internalFolder + "/" + FOLDER_ENCODER_BUFFER).listFiles(this
+				.getFileFilterForEncoder(codeType, year));
+		if (encoderFiles != null && encoderFiles.length > 0) {
+			IEncoder enc = findAndSetCurrentEncoder(encoderFiles, codeType);
+			logger.info("using next encoder codeType:{}  id:{}", codeType.getId(), enc.getId());
+			return enc;
+		}
+
+		return null;
+	}
+
+	private void deleteCurrentEndoder(CodeType codeType) {
+		new File(internalFolder + "/" + getCurrentEncoderFile(codeType.getId())).delete();
+	}
+
 	@Override
-	public IEncoder getCurrentEncoder(final CodeType codeType) {
+	public IEncoder getCurrentEncoder(CodeType codeType) {
 		synchronized (encoderLock) {
 			String file = getCurrentEncoderFile(codeType.getId());
 			logger.debug("Loading {} {}", "encoder", file);
@@ -270,7 +269,7 @@ public class FileStorage implements IStorage {
 	}
 
 	@Override
-	public void saveAuthenticator(final IAuthenticator auth) {
+	public void saveAuthenticator(IAuthenticator auth) {
 		logger.debug("Saving {} {}", "decoder", FILE_DECODER);
 		try {
 			saveInternal(auth, FILE_DECODER);
@@ -291,7 +290,7 @@ public class FileStorage implements IStorage {
 	}
 
 	@Override
-	public void saveProductionParameters(final ProductionParameterRootNode node) {
+	public void saveProductionParameters(ProductionParameterRootNode node) {
 		logger.debug("Saving {} {}", "Production parameters", FILE_PRODUCTION_PARAMETERS);
 		try {
 			saveInternal(node, FILE_PRODUCTION_PARAMETERS);
@@ -372,7 +371,7 @@ public class FileStorage implements IStorage {
 	}
 
 	@Override
-	public void saveProduction(final Product[] products) throws StorageException {
+	public void saveProduction(Product[] products) throws StorageException {
 		String sFile = getPathProductionSaved() + "/" + DateUtils.format(timeStampFormat, new Date()) + ".data";
 		File file = new File(sFile);
 		logger.debug("Saving {} {}", "Production", sFile);
@@ -381,7 +380,7 @@ public class FileStorage implements IStorage {
 
 	}
 
-	protected String getPathProductionSaved() {
+	private String getPathProductionSaved() {
 		return this.dataFolder + "/" + FOLDER_PRODUCTION + "/" + FOLDER_PRODUCTION_SAVED;
 	}
 
@@ -392,7 +391,7 @@ public class FileStorage implements IStorage {
 	}
 
 	// move production data files to a new folder
-	protected void moveNotifyFile(final String destination, final String logMessage, final boolean zip) {
+	private void moveNotifyFile(String destination, String logMessage, boolean zip) {
 
 		logger.debug(logMessage, productionBatchBeingSend.getName());
 		String s = productionBatchBeingSend.getAbsolutePath().replace(FOLDER_PRODUCTION_PACKAGED, destination);
@@ -409,7 +408,7 @@ public class FileStorage implements IStorage {
 				logger.warn("Cannot zip file " + moveTo.getAbsolutePath(), e);
 			}
 		}
-		this.productionBatchBeingSend = null;
+		productionBatchBeingSend = null;
 	}
 
 	@Override
@@ -417,32 +416,18 @@ public class FileStorage implements IStorage {
 		moveToQuarantine(productionBatchBeingSend, QuarantineReason.REMOTE_SERVER_BUSINESS_ERROR);
 	}
 
-	protected String getPathSentToRemoteServer() {
+	private String getPathSentToRemoteServer() {
 		return this.dataFolder + "/" + FOLDER_PRODUCTION + File.separator + FOLDER_PRODUCTION_SEND_TO_REMOTE_SERVER;
 	}
 
 	@Override
 	public void cleanUpOldSentProduction() {
 		try {
-			int threshold = cleanUpSendDataThreshold_day;
 			File folder = new File(getPathSentToRemoteServer());
-			int miliSecondByDay = 3600 * 24 * 1000;
 			File[] files = folder.listFiles();
 			if (files != null && files.length > 0) {
 				for (File f : files) {
-					long lastModified = f.lastModified();
-					if (lastModified <= 0) {
-						// error ignore it
-						continue;
-					}
-					long delta = System.currentTimeMillis() - lastModified;
-					if (delta > 0) {
-						delta /= miliSecondByDay;
-						if (delta >= threshold) {
-							logger.debug("Removing old production file {}", f.getName());
-							f.delete();
-						}
-					}
+					com.sicpa.standard.client.common.utils.FileUtils.deleteFileIfOlder(f, cleanUpSendDataThreshold_day);
 				}
 			}
 		} catch (Exception e) {
@@ -451,22 +436,22 @@ public class FileStorage implements IStorage {
 		}
 	}
 
-	public final Object loadInternal(final String file) throws StorageException {
+	public final Object loadInternal(String file) throws StorageException {
 		File f = new File(internalFolder + "/" + file);
 		return load(f);
 	}
 
-	public final Object loadData(final String file) throws StorageException {
+	public final Object loadData(String file) throws StorageException {
 		File f = new File(dataFolder + "/" + file);
 		return load(f);
 	}
 
 	@Override
-	public final Object load(final String file) throws StorageException {
+	public final Object load(String file) throws StorageException {
 		return load(new File(file));
 	}
 
-	protected final Object load(final File file) throws StorageException {
+	private final Object load(File file) throws StorageException {
 		try {
 			return storageBehavior.load(file);
 		} catch (StorageException e) {
@@ -477,22 +462,22 @@ public class FileStorage implements IStorage {
 		}
 	}
 
-	public final void saveInternal(final Serializable o, final String file) throws StorageException {
+	public final void saveInternal(Serializable o, String file) throws StorageException {
 		File f = new File(internalFolder + "/" + file);
 		save(o, f);
 	}
 
-	public final void saveData(final Serializable o, final String file) throws StorageException {
+	public final void saveData(Serializable o, String file) throws StorageException {
 		File f = new File(dataFolder + "/" + file);
 		save(o, f);
 	}
 
 	@Override
-	public final void save(final Serializable o, final String file) throws StorageException {
+	public final void save(Serializable o, String file) throws StorageException {
 		save(o, new File(file));
 	}
 
-	protected final void save(final Serializable o, final File file) throws StorageException {
+	private final void save(Serializable o, File file) throws StorageException {
 		try {
 			storageBehavior.save(o, file);
 		} catch (StorageException e) {
@@ -502,7 +487,7 @@ public class FileStorage implements IStorage {
 	}
 
 	@Override
-	public int getAvailableNumberOfEncoders(final CodeType codeType, final int year) {
+	public int getAvailableNumberOfEncoders(CodeType codeType, int year) {
 		logger.debug("Get available number of encoders: code type = {}, year = {}", codeType, year);
 
 		int res = 0;
@@ -517,8 +502,10 @@ public class FileStorage implements IStorage {
 		return res;
 	}
 
-	protected int getAvailableNumberOfEncodersFromFolder(String folder, final CodeType codeType, final int year) {
-		File[] fEncoders = new File(internalFolder + "/" + folder).listFiles(getFileFilterForEncoder(codeType, year));
+	private int getAvailableNumberOfEncodersFromFolder(String folder, CodeType codeType, int year) {
+		File f = new File(internalFolder + "/" + folder);
+		FilenameFilter filter = getFileFilterForEncoder(codeType, year);
+		File[] fEncoders = f.listFiles(filter);
 		int res = 0;
 		if (fEncoders != null) {
 			res += fEncoders.length;
@@ -527,97 +514,109 @@ public class FileStorage implements IStorage {
 	}
 
 	@Override
-	public void packageProduction(final int batchSize) {
+	public void packageProduction(int batchSize) {
 		try {
-
-			ArrayList<File> packagedFiles = new ArrayList<File>();
-			ArrayList<Product> products = new ArrayList<Product>();
-
 			logger.debug("Package production file, batch size = {}", batchSize);
-
-			File folder = new File(getPathProductionSaved());
-			File[] files = folder.listFiles();
-			if (files != null && files.length > 0) {
-				// sorted set to get the files sorted by the timestamp
-				SortedSet<File> sortedFiles = new TreeSet<File>(new Comparator<File>() {
-					@Override
-					public int compare(final File o1, final File o2) {
-						return Long.valueOf(o1.lastModified()).compareTo(o2.lastModified());
-					}
-				});
-				for (File f : files) {
-					if (f.getName().endsWith(".ok")) {
-						sortedFiles.add(f);
-					}
-				}
-				// load files until we reach the batch size
-				for (File aFile : sortedFiles) {
-					packagedFiles.add(aFile);
-					try {
-						for (Product p : (Product[]) load(aFile)) {
-							if (p != null) {
-								products.add(p);
-							}
-						}
-					} catch (StorageException e) {
-						logger.error("", e);
-						moveToQuarantine(aFile, QuarantineReason.LOAD_ERROR);
-					}
-					if (products.size() >= batchSize) {
-						// serialized a batch and delete production files
-						saveAPackage(products, packagedFiles);
-						products.clear();
-					}
-				}
-				if (!products.isEmpty()) {
-					saveAPackage(products, packagedFiles);
-					products.clear();
-				}
-			}
+			Set<File> files = getProductionFilesSortedByDate();
+			saveAllProductionFileToABatch(files, batchSize);
 		} catch (Exception e) {
 			logger.error("Failed to package a production", e);
 			EventBusService.post(new MessageEvent(this, MessageEventKey.Storage.ERROR_PACKAGE_FAIL, e));
 		}
 	}
 
+	private Set<File> getProductionFilesSortedByDate() {
+		File folder = new File(getPathProductionSaved());
+		File[] files = folder.listFiles();
+		if (files != null && files.length > 0) {
+			// sorted set to get the files sorted by the timestamp
+			Comparator<File> fileComparatorByDate = (File o1, File o2) -> Long.valueOf(o1.lastModified()).compareTo(
+					o2.lastModified());
+			SortedSet<File> sortedFiles = new TreeSet<>(fileComparatorByDate);
+			for (File f : files) {
+				if (f.getName().endsWith(".ok")) {
+					sortedFiles.add(f);
+				}
+			}
+			return sortedFiles;
+		}
+		return Collections.emptySet();
+	}
+
+	private void saveAllProductionFileToABatch(Set<File> sortedFiles, int batchSize) throws StorageException {
+		ArrayList<File> packagedFiles = new ArrayList<>();
+		ArrayList<Product> products = new ArrayList<>();
+		for (File aFile : sortedFiles) {
+			packagedFiles.add(aFile);
+			products.addAll(loadProduct(aFile));
+			if (products.size() >= batchSize) {
+				// serialized a batch and delete production files
+				savePackages(products, packagedFiles);
+				products.clear();
+			}
+		}
+		if (!products.isEmpty()) {
+			savePackages(products, packagedFiles);
+			products.clear();
+		}
+	}
+
+	private Collection<Product> loadProduct(File aFile) {
+		ArrayList<Product> products = new ArrayList<>();
+		try {
+			for (Product p : (Product[]) load(aFile)) {
+				if (p != null) {
+					products.add(p);
+				}
+			}
+		} catch (StorageException e) {
+			logger.error("", e);
+			moveToQuarantine(aFile, QuarantineReason.LOAD_ERROR);
+		}
+		return products;
+	}
+
 	public void setProductsPackager(final IProductsPackager productsPackager) {
 		this.productsPackager = productsPackager;
 	}
 
-	protected String getPathProductionPackaged() {
+	private String getPathProductionPackaged() {
 		return this.dataFolder + "/" + FOLDER_PRODUCTION + "/" + FOLDER_PRODUCTION_PACKAGED;
 	}
 
 	// serialized a batch and delete production files
-	protected void saveAPackage(final List<Product> products, final List<File> packagedFiles) throws StorageException {
-
+	private void savePackages(List<Product> products, List<File> packagedFiles) throws StorageException {
 		List<PackagedProducts> packagedProducts = productsPackager.getPackagedProducts(products);
+		List<File> done = new ArrayList<>();
 
-		List<File> done = new ArrayList<File>();
-
-		for (PackagedProducts aPackaged : packagedProducts) {
-			File packageFile = new File(getPathProductionPackaged() + "/" + aPackaged.getFileName() + ".data");
-
-			for (Product p : aPackaged.getProducts()) {
-				prepareProductForSerialisation(p);
-			}
-			save(aPackaged, packageFile);
-			done.add(packageFile);
+		for (PackagedProducts pack : packagedProducts) {
+			done.add(savePackage(pack));
 		}
+		acknowledgeAllPackageSaved(done);
+		packageFiles(packagedFiles);
+	}
 
-		// all files have been written, so acknowledge it by adding .ok
-		for (File packageFile : done) {
-			packageFile.renameTo(new File(packageFile + ".ok"));
-		}
-
-		// remove all the production files that have been used during this
-		// packaging
+	private void packageFiles(List<File> packagedFiles) {
+		// remove all the production files that have been used during this packaging
 		for (File f : packagedFiles) {
 			f.delete();
 		}
 	}
 
-	protected void prepareProductForSerialisation(Product p) {
+	private void acknowledgeAllPackageSaved(List<File> files) {
+		for (File packageFile : files) {
+			packageFile.renameTo(new File(packageFile + ".ok"));
+		}
+	}
+
+	private File savePackage(PackagedProducts pack) throws StorageException {
+		File packageFile = new File(getPathProductionPackaged() + "/" + pack.getFileName() + ".data");
+		pack.getProducts().forEach(p -> prepareProductForSerialisation(p));
+		save(pack, packageFile);
+		return packageFile;
+	}
+
+	private void prepareProductForSerialisation(Product p) {
 		// the status/batchid/subsystem is already is in packagedProducts
 		// so in the product they can be set to null
 		// for better readability in the serialized file
@@ -687,7 +686,7 @@ public class FileStorage implements IStorage {
 		return res;
 	}
 
-	protected String getFolderInfo(final File folder) {
+	private String getFolderInfo(final File folder) {
 		if (folder.exists()) {
 			long totalSize = FileUtils.sizeOfDirectory(folder);
 			String displaySize = FileUtils.byteCountToDisplaySize(totalSize);
@@ -708,7 +707,7 @@ public class FileStorage implements IStorage {
 		}
 	}
 
-	protected void moveToQuarantine(File source, QuarantineReason reason) {
+	private void moveToQuarantine(File source, QuarantineReason reason) {
 		File destination = new File(getFileForQuarantine(source.getName(), reason));
 		logger.info("move {} to error read folder", source);
 
@@ -718,7 +717,7 @@ public class FileStorage implements IStorage {
 		}
 	}
 
-	protected String getFileForQuarantine(String fileName, QuarantineReason reason) {
+	private String getFileForQuarantine(String fileName, QuarantineReason reason) {
 		return quarantineFolder + "/" + reason.getSubFolder() + "/" + DateUtils.format(timeStampFormat, new Date())
 				+ "--" + reason.getFilePrefix() + "--" + fileName;
 	}
@@ -760,23 +759,23 @@ public class FileStorage implements IStorage {
 		return infos;
 	}
 
-	protected List<EncoderInfo> generateCurrentEncoderInfo() {
+	private List<EncoderInfo> generateCurrentEncoderInfo() {
 		return generateEncoderInfo(FOLDER_ENCODER_CURRENT);
 	}
 
-	protected List<EncoderInfo> generatePendingEncoderInfo() {
+	private List<EncoderInfo> generatePendingEncoderInfo() {
 		return generateEncoderInfo(FOLDER_ENCODER_PENDING);
 	}
 
-	protected List<EncoderInfo> generateBufferEncoderInfo() {
+	private List<EncoderInfo> generateBufferEncoderInfo() {
 		return generateEncoderInfo(FOLDER_ENCODER_BUFFER);
 	}
 
-	protected List<EncoderInfo> generateFinishedEncoderInfo() {
+	private List<EncoderInfo> generateFinishedEncoderInfo() {
 		return generateEncoderInfo(FOLDER_ENCODER_FINISHED_PENDING);
 	}
 
-	protected List<EncoderInfo> generateEncoderInfo(String folder) {
+	private List<EncoderInfo> generateEncoderInfo(String folder) {
 		List<EncoderInfo> infos = new ArrayList<EncoderInfo>();
 		File[] fEncoders = new File(internalFolder + "/" + folder).listFiles();
 		try {
@@ -860,7 +859,7 @@ public class FileStorage implements IStorage {
 		}
 	}
 
-	protected void moveFinishedPendingToConfirmed(EncoderInfo encoderInfo) {
+	private void moveFinishedPendingToConfirmed(EncoderInfo encoderInfo) {
 		logger.error("confirming finished encoder" + encoderInfo.getFile().getName());
 		File destination = new File(internalFolder + "/" + FOLDER_ENCODER_FINISHED_CONFIRMED + "/"
 				+ encoderInfo.getFile().getName());

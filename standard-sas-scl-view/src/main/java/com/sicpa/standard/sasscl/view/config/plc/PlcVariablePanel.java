@@ -33,6 +33,10 @@ public class PlcVariablePanel extends JPanel {
 		}
 	}
 
+	public List<PlcVariableGroup> getGroups() {
+		return groups;
+	}
+
 	public static class PanelGroup extends JPanel {
 		private static final long serialVersionUID = 1L;
 		protected JButton button;

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+
+	<bean id="remoteServer" class="com.sicpa.tt018.scl.remoteServer.AlbaniaRemoteServer">
+		<property name="cryptoPassword" value="${crypto.password}" />
+		<property name="cryptoFieldsConfig" ref="cryptoFieldsConfig" />
+		<property name="remoteServerAdapter" ref="remoteServerAdaptor" />
+		<property name="ejbCodingActivationBean" ref="ejbCodingActivationBean" />
+		<property name="storage" ref="storage" />
+		<property name="lifeChecker" ref="lifeChecker" />
+		<property name="subSystemId" value="${master.subsystemId}" />
+	</bean>
+
+	<bean id="ejbCodingActivationBean" class="org.springframework.ejb.access.SimpleRemoteStatelessSessionProxyFactoryBean">
+		<property name="jndiName" value="CodingActivationBean/remote" />
+		<property name="businessInterface" value="com.sicpa.tt018.interfaces.scl.master.ICodingActivationRemote" />
+		<property name="jndiTemplate">
+			<ref bean="jndiTemplate" />
+		</property>
+		<property name="lookupHomeOnStartup" value="false" />
+		<property name="cacheHome" value="false" />
+		<property name="refreshHomeOnConnectFailure" value="true" />
+	</bean>
+
+	<bean id="jndiTemplate" class="com.sicpa.tt018.scl.remoteServer.AlbaniaJndiTemplate" lazy-init="true">
+		<property name="environment">
+			<props>
+				<prop key="java.naming.factory.initial">org.jboss.security.jndi.JndiLoginInitialContextFactory
+				</prop>
+				<prop key="java.naming.provider.url">${master.url}</prop>
+				<prop key="java.naming.factory.url.pkgs">org.jboss.naming:org.jnp.interfaces</prop>
+				<prop key="jnp.socketFactory">org.jnp.interfaces.TimedSocketFactory</prop>
+				<prop key="jnp.timeout">5000</prop>
+				<prop key="jnp.sotimeout">5000</prop>
+				<prop key="jnp.maxRetries">5</prop>
+				<prop key="jnp.discoveryTimeout">5000</prop>
+				<prop key="jnp.multi-threaded">true</prop>
+				<prop key="com.sicpa.username">${master.login}</prop>
+				<prop key="com.sicpa.subsystemId">${master.subsystemId}</prop>
+				<prop key="com.sicpa.password">${master.password}</prop>
+			</props>
+		</property>
+	</bean>
+</beans>

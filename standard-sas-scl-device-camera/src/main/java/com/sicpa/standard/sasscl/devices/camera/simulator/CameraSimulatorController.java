@@ -60,7 +60,7 @@ public class CameraSimulatorController implements ICognexCameraController<Camera
 	public static int idCount = 0;
 
 	private CameraSimulatorConfig config;
-	private ProductionParameters productionParameters;
+	protected ProductionParameters productionParameters;
 	private SimulatorControlView simulatorGui;
 
 	private Thread codeThread;
