@@ -31,9 +31,9 @@ public class StatisticsTest {
 
 		StatisticsValues values = new StatisticsValues();
 
-		StatisticsKey goodKey = StatisticsKey.GOOD;
+		StatisticsKey goodKey = cloneStatsKey(StatisticsKey.GOOD);
 		goodKey.setLine("");
-		StatisticsKey badKey = StatisticsKey.BAD;
+		StatisticsKey badKey = cloneStatsKey(StatisticsKey.BAD);
 		badKey.setLine("");
 
 		values.set(badKey, 5);
@@ -68,6 +68,10 @@ public class StatisticsTest {
 		Assert.assertEquals(0, stats.get(badKey));
 		Assert.assertEquals(0, stats.get(goodKey));
 
+	}
+
+	private StatisticsKey cloneStatsKey(StatisticsKey key) {
+		return new StatisticsKey(key.getDescription());
 	}
 
 	@Test
