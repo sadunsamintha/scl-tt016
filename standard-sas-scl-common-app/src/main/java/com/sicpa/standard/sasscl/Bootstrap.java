@@ -1,8 +1,12 @@
 package com.sicpa.standard.sasscl;
 
 import java.io.File;
+import java.lang.management.ManagementFactory;
 import java.util.List;
 import java.util.Map;
+
+import javax.management.MBeanServer;
+import javax.management.ObjectName;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +31,7 @@ import com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcVariableDesc
 import com.sicpa.standard.sasscl.devices.remote.IRemoteServer;
 import com.sicpa.standard.sasscl.model.ProductionParameters;
 import com.sicpa.standard.sasscl.model.statistics.StatisticsValues;
+import com.sicpa.standard.sasscl.monitoring.mbean.scl.SclAppMBean;
 import com.sicpa.standard.sasscl.provider.impl.AuthenticatorProvider;
 import com.sicpa.standard.sasscl.provider.impl.SkuListProvider;
 import com.sicpa.standard.sasscl.provider.impl.SubsystemIdProvider;
@@ -37,6 +42,7 @@ import com.sicpa.standard.sicpadata.spi.manager.StaticServiceProviderManager;
 public class Bootstrap implements IBootstrap {
 
 	private static final Logger logger = LoggerFactory.getLogger(Bootstrap.class);
+	private static final String JMX_BEAN_NAME = "com.sicpa.standard.sasscl.monitoring.mbean:type=SclApp";
 
 	private IRemoteServer server;
 	private IGroupDevicesController startupDevicesGroup;
@@ -51,6 +57,7 @@ public class Bootstrap implements IBootstrap {
 	private IServiceProviderManager cryptoProviderManager;
 	private List<PlcVariableGroup> linePlcVarGroup;
 	private List<PlcVariableGroup> cabPlcVarGroups;
+	private SclAppMBean jmxBean;
 
 	@Override
 	public void executeSpringInitTasks() {
@@ -62,6 +69,7 @@ public class Bootstrap implements IBootstrap {
 		addConnectionListenerOnServer();
 		connectStartupDevices();
 		restorePreviousSelectedProductionParams();
+		installJMXBeans();
 	}
 
 	private void addConnectionListenerOnServer() {
@@ -176,6 +184,17 @@ public class Bootstrap implements IBootstrap {
 		EventBusService.post(new PlcVariableGroupEvent(groups, "" + index));
 	}
 
+	private void installJMXBeans() {
+
+		MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
+		try {
+			ObjectName name = new ObjectName(JMX_BEAN_NAME);
+			mbs.registerMBean(jmxBean, name);
+		} catch (Exception e) {
+			logger.error("", e);
+		}
+	}
+
 	public void setServer(IRemoteServer server) {
 		this.server = server;
 	}
@@ -226,5 +245,9 @@ public class Bootstrap implements IBootstrap {
 
 	public void setCabPlcVarGroups(List<PlcVariableGroup> cabPlcVarGroups) {
 		this.cabPlcVarGroups = cabPlcVarGroups;
+	}
+
+	public void setJmxBean(SclAppMBean jmxBean) {
+		this.jmxBean = jmxBean;
 	}
 }
