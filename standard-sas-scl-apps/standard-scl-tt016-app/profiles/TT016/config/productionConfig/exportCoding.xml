@@ -1,0 +1,18 @@
+<ProductionConfig activationBehavior="standardActivationBehavior" authenticatorMode="SCL_EXPORT">
+
+	<CameraConfig deviceType="COGNEX" id="qc_scl_1" />
+	<CameraConfig deviceType="COGNEX" id="qc_scl_2" />
+
+	<PrinterConfig deviceType="LEIBINGER" id="leibinger_1" validatedBy="qc_scl_1" />
+	<PrinterConfig deviceType="LEIBINGER" id="leibinger_2" validatedBy="qc_scl_2" />
+
+	<plcConfig>
+		<line index="1">
+			<property key="PARAM_LINE_IS_ACTIVE" value="true" />
+		</line>
+		<line index="2">
+			<property key="PARAM_LINE_IS_ACTIVE" value="true" />
+		</line>
+	</plcConfig>
+
+</ProductionConfig>
