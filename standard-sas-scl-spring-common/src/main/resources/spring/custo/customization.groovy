@@ -8,6 +8,9 @@ beans{
 		case 'TT018':
 			importBeans('spring/custo/tt018/tt018.groovy')
 			break
+		case 'TT016':
+			importBeans('spring/custo/tt016/tt016.groovy')
+			break
 		case 'NONE':
 			break
 		default:
