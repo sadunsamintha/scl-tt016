@@ -2,10 +2,10 @@ package com.sicpa.standard.sasscl.devices;
 
 public class DeviceStatusEvent {
 
-	protected DeviceStatus status;
-	protected IDevice device;
+	private DeviceStatus status;
+	private IDevice device;
 
-	public DeviceStatusEvent(final DeviceStatus status, final IDevice device) {
+	public DeviceStatusEvent(DeviceStatus status, IDevice device) {
 		super();
 		this.status = status;
 		this.device = device;

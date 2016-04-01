@@ -2,12 +2,25 @@ package com.sicpa.standard.sasscl.controller.scheduling;
 
 import static com.sicpa.standard.sasscl.common.storage.FileStorage.FOLDER_PRODUCTION;
 import static com.sicpa.standard.sasscl.common.storage.FileStorage.FOLDER_PRODUCTION_PACKAGED;
+import static com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState.STT_STARTED;
+import static com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState.STT_STOPPING;
+
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.util.Enumeration;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Properties;
+import java.util.ResourceBundle;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
-import com.sicpa.standard.client.common.ioc.BeanProvider;
+import com.sicpa.standard.client.common.utils.TaskExecutor;
 import com.sicpa.standard.client.common.view.screensflow.IScreensFlow;
-import com.sicpa.standard.gui.utils.ThreadUtils;
 import com.sicpa.standard.sasscl.common.storage.FileStorage;
 import com.sicpa.standard.sasscl.common.storage.IStorage;
 import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState;
@@ -21,39 +34,19 @@ import com.sicpa.standard.sasscl.provider.impl.AuthenticatorProvider;
 import com.sicpa.standard.sasscl.provider.impl.SkuListProvider;
 import com.sicpa.standard.sasscl.sicpadata.reader.IAuthenticator;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.Enumeration;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Properties;
-import java.util.ResourceBundle;
-
 public class RemoteServerScheduledJobs {
 	private static final Logger logger = LoggerFactory.getLogger(RemoteServerScheduledJobs.class);
 
-	private static int MS_BY_DAY = 1000 * 60 * 60 * 24;
+	private final static int MS_BY_DAY = 1000 * 60 * 60 * 24;
 
 	private int remoteServerMaxDownTime_day;
 	protected IStorage storage;
 	protected IRemoteServer remoteServer;
 	protected SkuListProvider skuListProvider;
 	private AuthenticatorProvider authenticatorProvider;
+	private IScreensFlow screensFlow;
 
 	private ApplicationFlowState currentApplicationState = ApplicationFlowState.STT_NO_SELECTION;
-
-	public RemoteServerScheduledJobs(final IStorage storage, final IRemoteServer remoteServer,
-			final SkuListProvider skuList, final AuthenticatorProvider authenticatorProvider) {
-		this.storage = storage;
-		this.remoteServer = remoteServer;
-		this.skuListProvider = skuList;
-		this.authenticatorProvider = authenticatorProvider;
-	}
 
 	public void executeInitialTasks() {
 		getAuthenticatorFromRemoteServer();
@@ -95,7 +88,6 @@ public class RemoteServerScheduledJobs {
 					skuListProvider.set(node);
 
 					// Refresh current screen
-					IScreensFlow screensFlow = BeanProvider.getBean("screensFlow");
 					if (screensFlow.getCurrentScreen() != null) {
 						screensFlow.getCurrentScreen().enter();
 					}
@@ -128,9 +120,11 @@ public class RemoteServerScheduledJobs {
 	}
 
 	private void saveLanguage(String langKey, ResourceBundle bundle) {
-		FileWriter writer = null;
-		try {
-			File file = new File("language/sasscl_" + langKey.toLowerCase() + ".properties");
+
+		File file = new File("language/sasscl_" + langKey.toLowerCase() + ".properties");
+
+		try (FileWriter writer = new FileWriter(file)) {
+
 			// load current properties in order to not remove a property that does not exit in the remote
 			// server
 			Properties currentLanguage = getCurrentLanguageProperties(file);
@@ -145,34 +139,18 @@ public class RemoteServerScheduledJobs {
 			}
 
 			file.getParentFile().mkdirs();
-			writer = new FileWriter(file);
 			prop.store(writer, "");
 		} catch (Exception e) {
 			logger.error("Failed to download and save languages files", e);
-		} finally {
-			if (writer != null) {
-				try {
-					writer.close();
-				} catch (IOException e) {
-				}
-			}
 		}
 
 	}
 
 	private Properties getCurrentLanguageProperties(File f) {
 		Properties p = new Properties();
-		FileReader reader = null;
-		try {
-			reader = new FileReader(f);
+		try (FileReader reader = new FileReader(f)) {
 			p.load(reader);
 		} catch (Exception e) {
-		}
-		try {
-			if (reader != null) {
-				reader.close();
-			}
-		} catch (IOException e) {
 		}
 		return p;
 	}
@@ -225,27 +203,50 @@ public class RemoteServerScheduledJobs {
 
 	// trigger by the scheduler or when the production is started/stopped
 	public void sendGlobalMonitoringToolInfo() {
-		ThreadUtils.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				logger.info("Executing job: Trying to send info to global monitoring tool");
-				GlobalMonitoringToolInfo info = new GlobalMonitoringToolInfo();
-				info.setProductionStarted(currentApplicationState.equals(ApplicationFlowState.STT_STARTED));
-				try {
-					remoteServer.sendInfoToGlobalMonitoringTool(info);
-				} catch (Exception e) {
-					logger.error("Failed to send information to global monitoring tool", e);
-				}
-			}
+		if (!remoteServer.isConnected()) {
+			return;
+		}
+		TaskExecutor.execute(() -> {
+			sendGlobalMonitoringToolInfo(currentApplicationState.equals(STT_STARTED));
 		});
+	}
+
+	private void sendGlobalMonitoringToolInfo(boolean productionStarted) {
+		logger.info("Executing job: Trying to send info to global monitoring tool");
+		GlobalMonitoringToolInfo info = new GlobalMonitoringToolInfo();
+		info.setProductionStarted(productionStarted);
+		try {
+			remoteServer.sendInfoToGlobalMonitoringTool(info);
+		} catch (Exception e) {
+			logger.error("Failed to send information to global monitoring tool", e);
+		}
 	}
 
 	@Subscribe
 	public void handleFlowControlStateChanged(ApplicationFlowStateChangedEvent evt) {
 		currentApplicationState = evt.getCurrentState();
-		if (currentApplicationState.equals(ApplicationFlowState.STT_STARTED)
-				|| currentApplicationState.equals(ApplicationFlowState.STT_STOPPING)) {
+		if (currentApplicationState.equals(STT_STARTED) || currentApplicationState.equals(STT_STOPPING)) {
 			sendGlobalMonitoringToolInfo();
 		}
+	}
+
+	public void setScreensFlow(IScreensFlow screensFlow) {
+		this.screensFlow = screensFlow;
+	}
+
+	public void setSkuListProvider(SkuListProvider skuListProvider) {
+		this.skuListProvider = skuListProvider;
+	}
+
+	public void setStorage(IStorage storage) {
+		this.storage = storage;
+	}
+
+	public void setAuthenticatorProvider(AuthenticatorProvider authenticatorProvider) {
+		this.authenticatorProvider = authenticatorProvider;
+	}
+
+	public void setRemoteServer(IRemoteServer remoteServer) {
+		this.remoteServer = remoteServer;
 	}
 }
