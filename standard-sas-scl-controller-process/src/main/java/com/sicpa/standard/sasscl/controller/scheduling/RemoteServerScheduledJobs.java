@@ -121,7 +121,7 @@ public class RemoteServerScheduledJobs {
 
 	private void saveLanguage(String langKey, ResourceBundle bundle) {
 
-		File file = new File("language/sasscl_" + langKey.toLowerCase() + ".properties");
+		File file = createLanguageFile(langKey);
 
 		try (FileWriter writer = new FileWriter(file)) {
 
@@ -145,6 +145,14 @@ public class RemoteServerScheduledJobs {
 		}
 
 	}
+
+    private File createLanguageFile(String langKey) {
+        File file = new File("language/sasscl_" + langKey.toLowerCase() + ".properties");
+        if (!file.exists()) {
+            file.getParentFile().mkdirs();
+        }
+        return file;
+    }
 
 	private Properties getCurrentLanguageProperties(File f) {
 		Properties p = new Properties();
