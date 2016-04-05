@@ -8,6 +8,7 @@ import static com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState.STT
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Enumeration;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -121,7 +122,8 @@ public class RemoteServerScheduledJobs {
 
 	private void saveLanguage(String langKey, ResourceBundle bundle) {
 
-		File file = createLanguageFile(langKey);
+		File file = getLanguageFile(langKey);
+		file.getParentFile().mkdirs();
 
 		try (FileWriter writer = new FileWriter(file)) {
 
@@ -143,22 +145,18 @@ public class RemoteServerScheduledJobs {
 		} catch (Exception e) {
 			logger.error("Failed to download and save languages files", e);
 		}
-
 	}
 
-    private File createLanguageFile(String langKey) {
-        File file = new File("language/sasscl_" + langKey.toLowerCase() + ".properties");
-        if (!file.exists()) {
-            file.getParentFile().mkdirs();
-        }
-        return file;
-    }
+	private File getLanguageFile(String langKey) {
+		return new File("language/sasscl_" + langKey.toLowerCase() + ".properties");
+	}
 
 	private Properties getCurrentLanguageProperties(File f) {
 		Properties p = new Properties();
 		try (FileReader reader = new FileReader(f)) {
 			p.load(reader);
-		} catch (Exception e) {
+		} catch (IOException e) {
+			logger.error("", e);
 		}
 		return p;
 	}
