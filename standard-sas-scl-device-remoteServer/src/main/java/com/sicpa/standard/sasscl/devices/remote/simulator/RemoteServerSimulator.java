@@ -116,6 +116,7 @@ public class RemoteServerSimulator extends AbstractRemoteServer implements ISimu
 		this.cryptoStartYear = cryptoStartYear;
 	}
 
+	//TODO fixme
 	public synchronized void setupBusinessCrypto() {
 		try {
 			if (setupBusinessCryptoDone) {
