@@ -44,9 +44,6 @@ public abstract class AbstractMasterConnector extends AbstractDevice implements 
 
 	protected abstract void login() throws Exception;
 
-	/**
-	 * Logout and stop the scheduler
-	 */
 	@Override
 	public void doDisconnect() throws DeviceException {
 		if (!started.compareAndSet(true, false)) {

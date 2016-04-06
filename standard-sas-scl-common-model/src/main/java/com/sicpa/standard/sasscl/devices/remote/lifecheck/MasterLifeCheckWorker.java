@@ -9,7 +9,7 @@ import com.sicpa.standard.sasscl.devices.remote.connector.IConnectable;
 public class MasterLifeCheckWorker implements IMasterLifeCheckWorker {
 
 	private ScheduledFuture<?> scheduledTask;
-	private int lifecheckintervalSec;
+	private int lifechecIntervalSec;
 	private IConnectable connector;
 
 	public MasterLifeCheckWorker() {
@@ -19,7 +19,7 @@ public class MasterLifeCheckWorker implements IMasterLifeCheckWorker {
 	@Override
 	public void start() {
 		if (scheduledTask == null) {
-			scheduledTask = TaskExecutor.scheduleWithFixedDelay(() -> connector.isAlive(), lifecheckintervalSec,
+			scheduledTask = TaskExecutor.scheduleWithFixedDelay(() -> connector.isAlive(), lifechecIntervalSec,
 					TimeUnit.SECONDS, "MPCC-LifeChecker");
 		}
 	}
@@ -31,11 +31,11 @@ public class MasterLifeCheckWorker implements IMasterLifeCheckWorker {
 
 	@Override
 	public void scheduleReconnection() {
-		TaskExecutor.schedule(() -> connector.doLogin(), lifecheckintervalSec, TimeUnit.SECONDS, "MPCC-LifeChecker");
+		TaskExecutor.schedule(() -> connector.doLogin(), lifechecIntervalSec, TimeUnit.SECONDS, "MPCC-LifeChecker");
 	}
 
-	public void setLifecheckintervalSec(int lifecheckintervalSec) {
-		this.lifecheckintervalSec = lifecheckintervalSec;
+	public void setLifechecIntervalSec(int lifechecIntervalSec) {
+		this.lifechecIntervalSec = lifechecIntervalSec;
 	}
 
 	public void setConnector(IConnectable connector) {

@@ -1,17 +1,3 @@
-/*
- * Author   		: JBarbieri
- * Date     		: 20-Oct-2010
- *
- * Project  		: tt016-spl
- * Package 			: com.sicpa.tt016.spl.devices.remoteServer.comm.ejb
- * File   			: EjbMasterComm.java
- *
- * Revision 		: $Revision: 7913 $
- * Last modified	: $LastChangedDate: 2011-11-22 15:39:44 +0100 (Tue, 22 Nov 2011) $
- * Last modified by	: $LastChangedBy: cdealmeida $
- *
- * Copyright (c) 2010 SICPA Product Security SA, all rights reserved.
- */
 package com.sicpa.tt016.scl.remote;
 
 import java.util.ArrayList;
@@ -47,9 +33,11 @@ import com.sicpa.tt016.scl.skucheck.SkuCheckAssembly;
 public class TT016RemoteServer extends AbstractRemoteServer {
 
 	private static final Logger logger = LoggerFactory.getLogger(TT016RemoteServer.class);
+	// http://psdwiki.sicpa-net.ads/pages/viewpage.action?spaceKey=morocco&title=Development+and+Integration+Servers
 
 	private IRemoteServices remoteServices;
 	private AbstractMasterConnector connector;
+
 	private final SkuConverter skuAssembler = new SkuConverter();
 	private final EncryptionConverter encryptionConverter = new EncryptionConverter();
 
@@ -115,7 +103,7 @@ public class TT016RemoteServer extends AbstractRemoteServer {
 		try {
 			List<EncoderSclDTO> encoders = remoteServices.getRemoteEncoders(batchesQuantity, (int) codeType.getId());
 			for (EncoderSclDTO e : encoders) {
-				storeEncoder(encryptionConverter.convert(e));
+				storeEncoder(encryptionConverter.convert(e, remoteServices.getSubsystemId()));
 			}
 		} catch (InternalException e) {
 			throw new RemoteServerException(e);
@@ -176,5 +164,13 @@ public class TT016RemoteServer extends AbstractRemoteServer {
 		} catch (DeviceException e) {
 			logger.error("", e);
 		}
+	}
+
+	public void setRemoteServices(IRemoteServices remoteServices) {
+		this.remoteServices = remoteServices;
+	}
+
+	public void setConnector(AbstractMasterConnector connector) {
+		this.connector = connector;
 	}
 }

@@ -1,101 +1,69 @@
-/*
- * Author   		: JBarbieri
- * Date     		: 20-Oct-2010
- *
- * Project  		: tt016-spl
- * Package 			: com.sicpa.tt016.spl.devices.remoteServer.dto
- * File   			: DecoderDTO.java
- *
- * Revision 		: $Revision$
- * Last modified	: $LastChangedDate$
- * Last modified by	: $LastChangedBy$
- * 
- * Copyright (c) 2010 SICPA Product Security SA, all rights reserved.
- */
 package com.sicpa.tt016.scl.remote.dto;
 
-import com.sicpa.standard.common.log.LoggerResource;
-import com.sicpa.standard.common.log.StdLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.sicpa.standard.crypto.codes.NumericCode;
 import com.sicpa.standard.crypto.codes.StringBasedCode;
+import com.sicpa.standard.sasscl.model.CodeType;
+import com.sicpa.standard.sasscl.model.DecodedCameraCode;
+import com.sicpa.standard.sasscl.sicpadata.CryptographyException;
+import com.sicpa.standard.sasscl.sicpadata.reader.IAuthenticator;
+import com.sicpa.standard.sasscl.sicpadata.reader.IDecodedResult;
 import com.sicpa.tt016.common.security.authenticator.IMoroccoAuthenResult;
 import com.sicpa.tt016.common.security.authenticator.IMoroccoAuthenticator;
-import com.sicpa.tt016.scl.remote.IDecoderDTO;
-import com.sicpa.tt016.scl.remote.dao.CodeDAO;
 
-/**
- * Decoder class retreived from the remote server
- * 
- * @author squeva
- * 
- */
-@LoggerResource("language/device")
-public class DecoderDTO implements IDecoderDTO {
+@SuppressWarnings("serial")
+public class DecoderDTO implements IAuthenticator {
 
-	/**
-	 * Serializable.
-	 */
-	private static final long serialVersionUID = 5942388103422883830L;
+	private static final Logger logger = LoggerFactory.getLogger(DecoderDTO.class);
 
-	/**
-	 * Logger of the class.
-	 */
-	private final static StdLogger LOGGER = StdLogger.getLogger(DecoderDTO.class);
+	private IMoroccoAuthenticator codeAuthenticator;
 
-	/**
-	 * Decoder
-	 */
-	IMoroccoAuthenticator mCodeAuthenticator;
-
-	/**
-	 * 
-	 * @param authenticator
-	 */
 	public DecoderDTO(IMoroccoAuthenticator authenticator) {
 		setAuthenticator(authenticator);
 	}
 
-	/**
-	 * 
-	 * @param authenticator
-	 */
 	public void setAuthenticator(IMoroccoAuthenticator authenticator) {
-		mCodeAuthenticator = authenticator;
+		this.codeAuthenticator = authenticator;
 	}
 
-	// ~ Implementation of IDecoderDTO -----------------------------------------
+	public IDecodedResult decode(String mode, String encryptedCode) throws CryptographyException {
+		if (mode.equals("SCL")) {
+			return decodeSCL(encryptedCode);
+		} else if (mode.equals("SAS")) {
+			return decodeSAS(encryptedCode);
+		}
+		throw new IllegalArgumentException("illegal mode:" + mode);
+	};
 
-	/**
-	 * Decode an encrypted code.
-	 * 
-	 * @param code
-	 *            encrypted CodeDAO
-	 * @return decoded CodeDAO.
-	 * @throws Exception
-	 * @see com.sicpa.tt016.spl.business.model.encryption.IDecoderDTO#decode(com.sicpa.tt016.spl.business.model.CodeDAO)
-	 */
-	public CodeDAO decode(CodeDAO code) throws Exception {
-		IMoroccoAuthenResult result = null;
+	private IDecodedResult decodeSCL(String encryptedCode) {
+		DecodedCameraCode res = new DecodedCameraCode();
 		try {
-			StringBasedCode Ccode = new NumericCode(code.getEncryptedCode());
-			result = mCodeAuthenticator.authenticate(IMoroccoAuthenticator.Mode.DM8x18_SCRAMBLED, Ccode);
+			StringBasedCode code = new NumericCode(encryptedCode);
+			IMoroccoAuthenResult decodeResult = codeAuthenticator.authenticate(
+					IMoroccoAuthenticator.Mode.DM8x18_SCRAMBLED, code);
+			res.setBatchId((int) decodeResult.getBatchId());
+			res.setSequence(decodeResult.getSequence());
+			return res;
 		} catch (Exception e) {
-			code.setStatus(CodeDAO.CODE_NOT_AUTHENTICATED);
-			code.setBatchId(0);
-			code.setSequence(0);
-			LOGGER.error("DECODER.ERROR.DECODING " + code.getEncryptedCode());
-			return code;
+			logger.error("DECODER.ERROR.DECODING " + encryptedCode);
+			return null;
 		}
+	}
 
-		code.setBatchId((int) result.getBatchId());
-		code.setSequence(result.getSequence());
-		code.setType(result.getType());
-		if (result.isValid()) {
-			code.setStatus(CodeDAO.CODE_AUTHENTICATED);
-		} else {
-			code.setStatus(CodeDAO.CODE_NOT_AUTHENTICATED);
-			LOGGER.info("DECODER.INFO.CODE_NOT_AUTHENTIC " + code.getEncryptedCode());
+	private IDecodedResult decodeSAS(String encryptedCode) {
+		DecodedCameraCode res = new DecodedCameraCode();
+		try {
+			StringBasedCode code = new NumericCode(encryptedCode);
+			IMoroccoAuthenResult decodeResult = codeAuthenticator.authenticate(IMoroccoAuthenticator.Mode.STD, code);
+			res.setBatchId((int) decodeResult.getBatchId());
+			res.setSequence(decodeResult.getSequence());
+			res.setCodeType(new CodeType(decodeResult.getType()));
+			return res;
+		} catch (Exception e) {
+			logger.error("DECODER.ERROR.DECODING " + encryptedCode);
+			return null;
 		}
-		return code;
 	}
 }

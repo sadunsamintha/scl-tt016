@@ -6,7 +6,6 @@ public class TT016Bootstrap extends Bootstrap {
 
 	@Override
 	public void executeSpringInitTasks() {
-
 		super.executeSpringInitTasks();
 		//TODO here add customization
 	}

@@ -14,7 +14,6 @@ import com.sicpa.tt016.common.dto.OfflineSessionDTO;
 import com.sicpa.tt016.common.dto.SkuDTO;
 import com.sicpa.tt016.common.security.authenticator.IMoroccoAuthenticator;
 import com.sicpa.tt016.master.scl.exceptions.InternalException;
-import com.sicpa.tt016.scl.remote.IDecoderDTO;
 
 /**
  * facade for the EJB call
@@ -48,6 +47,6 @@ public interface IRemoteServices {
 
 	void sendNonCompliantSession(List<NonCompliantSessionDTO> sessionList);
 
-	long getSubsystemId();
+	int getSubsystemId();
 
 }

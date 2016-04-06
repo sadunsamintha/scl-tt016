@@ -19,6 +19,12 @@
 			<artifactId>tt016-master-scl-ejb</artifactId>
 			<version>3.3.5</version>
 			<type>ejb-client</type>
+			<exclusions>
+				<exclusion>
+					<artifactId>tt016-database-manager</artifactId>
+					<groupId>com.sicpa.tt016</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>com.sicpa.tt016</groupId>

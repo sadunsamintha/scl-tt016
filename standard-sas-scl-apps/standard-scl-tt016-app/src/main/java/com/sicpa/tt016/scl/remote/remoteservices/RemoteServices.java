@@ -27,11 +27,6 @@ import com.sicpa.tt016.common.security.authenticator.IMoroccoAuthenticator;
 import com.sicpa.tt016.master.scl.business.interfaces.IBisUserManagerRemote;
 import com.sicpa.tt016.master.scl.business.interfaces.ICodingActivationRemote;
 import com.sicpa.tt016.master.scl.exceptions.InternalException;
-import com.sicpa.tt016.scl.remote.TT016RemoteServer;
-import com.sicpa.tt016.scl.remote.IDecoderDTO;
-import com.sicpa.tt016.scl.remote.IEncoderDTO;
-import com.sicpa.tt016.scl.remote.dao.ProductionModeDAO;
-import com.sicpa.tt016.scl.remote.dto.DecoderDTO;
 
 public class RemoteServices implements IRemoteServices {
 
@@ -45,9 +40,7 @@ public class RemoteServices implements IRemoteServices {
 	private String userMachine;
 	private String passwordMachine;
 	private int subsystemId;
-	// java.naming.provider.url=jnp://master-scl:1099
-	private String ip;
-
+	private String url;
 	private Context context;
 
 	@Override
@@ -63,7 +56,7 @@ public class RemoteServices implements IRemoteServices {
 	}
 
 	@Override
-	public long getSubsystemId() {
+	public int getSubsystemId() {
 		return subsystemId;
 	}
 
@@ -145,8 +138,23 @@ public class RemoteServices implements IRemoteServices {
 		jndiProperties.put("java.naming.security.credentials", passwordMachine);
 		jndiProperties.put("java.naming.factory.initial", "org.jnp.interfaces.NamingContextFactory");
 		jndiProperties.put("java.naming.factory.url.pkgs", "org.jboss.naming:org.jnp.interfaces");
-		jndiProperties.put("java.naming.provider.url", ip);
+		jndiProperties.put("java.naming.provider.url", url);
 		context = new InitialContext(jndiProperties);
 	}
 
+	public void setUrl(String url) {
+		this.url = url;
+	}
+
+	public void setPasswordMachine(String passwordMachine) {
+		this.passwordMachine = passwordMachine;
+	}
+
+	public void setUserMachine(String userMachine) {
+		this.userMachine = userMachine;
+	}
+
+	public void setSubsystemId(int subsystemId) {
+		this.subsystemId = subsystemId;
+	}
 }
