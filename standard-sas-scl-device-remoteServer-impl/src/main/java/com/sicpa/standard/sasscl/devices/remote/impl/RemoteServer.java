@@ -76,6 +76,7 @@ public class RemoteServer extends AbstractRemoteServer implements IConnectable {
 	}
 
 	@Override
+	@TimeoutLifeCheck
 	public void isAlive() {
 		connector.isAlive();
 	}
