@@ -54,7 +54,6 @@ public class StartedStateTest {
 	@Test
 	public void testEnter() {
 		EventBusService.register(new Object() {
-			@SuppressWarnings("unused")
 			@Subscribe
 			public void handleEvent(HardwareControllerStatusEvent evt) {
 				Assert.assertEquals(HardwareControllerStatus.STARTED, evt.getStatus());

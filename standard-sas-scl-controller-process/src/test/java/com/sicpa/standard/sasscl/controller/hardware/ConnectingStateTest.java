@@ -70,7 +70,6 @@ public class ConnectingStateTest {
 		when(plc.getStatus()).thenReturn(DeviceStatus.DISCONNECTED);
 
 		EventBusService.register(new Object() {
-			@SuppressWarnings("unused")
 			@Subscribe
 			public void handleEvent(HardwareControllerStatusEvent evt) {
 				Assert.assertEquals(HardwareControllerStatus.CONNECTING, evt.getStatus());

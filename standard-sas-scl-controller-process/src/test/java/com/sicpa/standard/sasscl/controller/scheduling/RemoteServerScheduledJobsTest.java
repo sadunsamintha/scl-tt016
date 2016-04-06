@@ -76,8 +76,11 @@ public class RemoteServerScheduledJobsTest {
 	}
 
 	void createRemoteServerScheduledJobs(IStorage storage) {
-		remoteServerScheduledJobs = new RemoteServerScheduledJobsSCL(storage, remoteServer,
-				productionParametersProvider, authenticatorProvider);
+		remoteServerScheduledJobs = new RemoteServerScheduledJobsSCL();
+		remoteServerScheduledJobs.setSkuListProvider(productionParametersProvider);
+		remoteServerScheduledJobs.setStorage(storage);
+		remoteServerScheduledJobs.setRemoteServer(remoteServer);
+		remoteServerScheduledJobs.setAuthenticatorProvider(authenticatorProvider);
 		remoteServerScheduledJobs.setRemoteServerMaxDownTime_day(REMOTE_SERVER_MAX_DOWN_TIME);
 		remoteServerScheduledJobs.setRequestNumberEncoders(REQUEST_NUMBER_ENCODERS);
 	}

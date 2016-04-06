@@ -170,14 +170,4 @@ public abstract class RemoteServer extends AbstractRemoteServer {
 	public void sendInfoToGlobalMonitoringTool(GlobalMonitoringToolInfo info) {
 
 	}
-
-	@Override
-	public void addToActivatedPackager(ProductStatus status) {
-
-	}
-
-	@Override
-	public void addToCounterPackager(ProductStatus status) {
-
-	}
 }

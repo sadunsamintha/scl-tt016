@@ -68,7 +68,6 @@ public class StartingStateTest {
 		Mockito.when(plc.isConnected()).thenReturn(true);
 
 		EventBusService.register(new Object() {
-			@SuppressWarnings("unused")
 			@Subscribe
 			public void handleEvent(HardwareControllerStatusEvent evt) {
 				Assert.assertEquals(HardwareControllerStatus.STARTING, evt.getStatus());
