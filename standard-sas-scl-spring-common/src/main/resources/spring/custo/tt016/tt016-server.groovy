@@ -3,6 +3,7 @@ import com.sicpa.tt016.scl.TT016Bootstrap
 import com.sicpa.tt016.scl.remote.remoteservices.*
 import com.sicpa.tt016.scl.remote.*
 import com.sicpa.tt016.scl.remote.*
+import com.sicpa.tt016.scl.remote.assembler.*
 
 
 beans{
@@ -10,8 +11,9 @@ beans{
 	remoteServer(TT016RemoteServer){
 		remoteServices=ref('remoteServices')
 		connector=ref('masterConnector')
+		skuConverter=ref('skuConverter')
 	}
-	remoteServices(RemoteServices){
+	remoteServices(TT016RemoteServices){
 		userMachine=props['server.machine.user']
 		passwordMachine=props['server.machine.password']
 		subsystemId=props['server.machine.subsystemId']
@@ -22,8 +24,12 @@ beans{
 		connector = ref('masterConnector')
 		lifechecIntervalSec =props['server.lifecheck.delay.sec']
 	}
-	masterConnector(MasterConnector){
+	masterConnector(TT016MasterConnector){
 		remoteServices=ref('remoteServices')
 		lifeCheckWorker=ref('masterLifeCheckWorker')
+	}
+	
+	SkuConverter(SkuConverter){
+		codeTypeId=props['codeTypeId']
 	}
 }

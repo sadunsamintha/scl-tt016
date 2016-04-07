@@ -8,8 +8,7 @@ import java.util.ResourceBundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sicpa.standard.client.common.timeout.Timeout;
-import com.sicpa.standard.client.common.timeout.TimeoutLifeCheck;
+import com.sicpa.standard.sasscl.common.storage.IStorage;
 import com.sicpa.standard.sasscl.devices.DeviceException;
 import com.sicpa.standard.sasscl.devices.DeviceStatus;
 import com.sicpa.standard.sasscl.devices.remote.AbstractRemoteServer;
@@ -18,16 +17,23 @@ import com.sicpa.standard.sasscl.devices.remote.RemoteServerException;
 import com.sicpa.standard.sasscl.devices.remote.connector.AbstractMasterConnector;
 import com.sicpa.standard.sasscl.model.EncoderInfo;
 import com.sicpa.standard.sasscl.model.PackagedProducts;
+import com.sicpa.standard.sasscl.model.ProductStatus;
 import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.ProductionParameterRootNode;
 import com.sicpa.standard.sasscl.sicpadata.generator.IEncoder;
 import com.sicpa.standard.sasscl.sicpadata.reader.IAuthenticator;
+import com.sicpa.tt016.common.dto.CodingActivationSessionDTO;
 import com.sicpa.tt016.common.dto.EncoderInfoDTO;
 import com.sicpa.tt016.common.dto.EncoderInfoResultDTO;
+import com.sicpa.tt016.common.dto.EncoderInfoResultDTO.InfoResult;
 import com.sicpa.tt016.common.dto.EncoderSclDTO;
+import com.sicpa.tt016.common.dto.ExportSessionDTO;
+import com.sicpa.tt016.common.dto.IEjectionDTO;
+import com.sicpa.tt016.common.dto.MaintenanceSessionDTO;
 import com.sicpa.tt016.master.scl.exceptions.InternalException;
 import com.sicpa.tt016.scl.remote.assembler.EncryptionConverter;
+import com.sicpa.tt016.scl.remote.assembler.ProductionDataConverter;
 import com.sicpa.tt016.scl.remote.assembler.SkuConverter;
-import com.sicpa.tt016.scl.remote.remoteservices.IRemoteServices;
+import com.sicpa.tt016.scl.remote.remoteservices.ITT016RemoteServices;
 import com.sicpa.tt016.scl.skucheck.SkuCheckAssembly;
 
 public class TT016RemoteServer extends AbstractRemoteServer {
@@ -35,11 +41,13 @@ public class TT016RemoteServer extends AbstractRemoteServer {
 	private static final Logger logger = LoggerFactory.getLogger(TT016RemoteServer.class);
 	// http://psdwiki.sicpa-net.ads/pages/viewpage.action?spaceKey=morocco&title=Development+and+Integration+Servers
 
-	private IRemoteServices remoteServices;
+	private ITT016RemoteServices remoteServices;
 	private AbstractMasterConnector connector;
+	private IStorage storage;
 
-	private final SkuConverter skuAssembler = new SkuConverter();
+	private SkuConverter skuConverter;
 	private final EncryptionConverter encryptionConverter = new EncryptionConverter();
+	private final ProductionDataConverter productionDataConverter = new ProductionDataConverter();
 
 	public TT016RemoteServer() {
 	}
@@ -49,19 +57,17 @@ public class TT016RemoteServer extends AbstractRemoteServer {
 	}
 
 	@Override
-	@Timeout
 	public ProductionParameterRootNode getTreeProductionParameters() throws RemoteServerException {
 		if (!isConnected()) {
 			return null;
 		}
 		try {
-			return skuAssembler.convert(remoteServices.getSkuList());
+			return skuConverter.convert(remoteServices.getSkuList());
 		} catch (InternalException e) {
 			throw new RemoteServerException(e);
 		}
 	}
 
-	@Timeout
 	public boolean isRefeedEnabled() {
 		try {
 			return remoteServices.isRefeedEnabled();
@@ -72,7 +78,6 @@ public class TT016RemoteServer extends AbstractRemoteServer {
 	}
 
 	@Override
-	@Timeout
 	public IAuthenticator getAuthenticator() throws RemoteServerException {
 		if (!isConnected()) {
 			return null;
@@ -81,7 +86,6 @@ public class TT016RemoteServer extends AbstractRemoteServer {
 	}
 
 	@Override
-	@Timeout
 	public void sendEncoderInfos(List<EncoderInfo> infos) throws RemoteServerException {
 
 		List<EncoderInfoDTO> dtos = new ArrayList<>();
@@ -90,40 +94,91 @@ public class TT016RemoteServer extends AbstractRemoteServer {
 		}
 		try {
 			EncoderInfoResultDTO res = remoteServices.sendEncoderInfo(dtos);
-			// TODO
+			handleEncoderInfoResult(res);
 		} catch (InternalException e) {
 			logger.error("", e);
 		}
 	}
 
+	private void handleEncoderInfoResult(EncoderInfoResultDTO res) {
+		for (InfoResult ir : res.getInfoResult()) {
+			if (!ir.isInfoSavedOk()) {
+				storage.quarantineEncoder(ir.getBatchId());
+				logger.error("master failed to save encoder info for id={} , msg={}", ir.getBatchId() + "",
+						ir.getErrorMessage());
+			}
+		}
+	}
+
 	@Override
-	@Timeout
 	public void downloadEncoder(int batchesQuantity, com.sicpa.standard.sasscl.model.CodeType codeType, int year)
 			throws RemoteServerException {
 		try {
-			List<EncoderSclDTO> encoders = remoteServices.getRemoteEncoders(batchesQuantity, (int) codeType.getId());
-			for (EncoderSclDTO e : encoders) {
-				storeEncoder(encryptionConverter.convert(e, remoteServices.getSubsystemId()));
+			List<EncoderSclDTO> dtos = remoteServices.getRemoteEncoders(batchesQuantity, (int) codeType.getId());
+			for (EncoderSclDTO dto : dtos) {
+				IEncoder encoder = encryptionConverter.convert(dto, remoteServices.getSubsystemId());
+				storeEncoder(encoder, year);
 			}
 		} catch (InternalException e) {
 			throw new RemoteServerException(e);
 		}
 	}
 
-	private void storeEncoder(IEncoder encoder) {
-		// TODO
+	private void storeEncoder(IEncoder encoder, int year) {
+		storage.saveEncoders(year, encoder);
+		storage.confirmEncoder(encoder.getId());
 	}
 
-	@Timeout
 	public boolean sendSkuCheckAssembly(SkuCheckAssembly assembly) throws InternalException {
 		// TODO remoteServices.sendNonCompliantSession(sessionList);
 		return true;
 	}
 
 	@Override
-	@Timeout
 	public void sendProductionData(PackagedProducts products) throws RemoteServerException {
-		// TODO
+		try {
+			if (products.getProductStatus() == ProductStatus.EXPORT) {
+				sendExportData(products);
+			} else if (products.getProductStatus() == ProductStatus.MAINTENANCE) {
+				sendMaintenanceData(products);
+			} else if (products.getProductStatus() == ProductStatus.UNREAD) {
+				sendEjectedData(products);
+			} else if (products.getProductStatus() == ProductStatus.AUTHENTICATED) {
+				sendAuthenticatedData(products);
+			} else if (products.getProductStatus() == ProductStatus.REFEED) {
+				sendRefeedData(products);
+			}
+		} catch (Exception e) {
+			throw new RemoteServerException("", e);
+		}
+	}
+
+	private void sendAuthenticatedData(PackagedProducts products) throws InternalException {
+		CodingActivationSessionDTO data = productionDataConverter.convertAuthenticated(products,
+				remoteServices.getSubsystemId());
+		remoteServices.sendDomesticProduction(data);
+	}
+
+	private void sendRefeedData(PackagedProducts products) throws InternalException {
+		CodingActivationSessionDTO data = productionDataConverter.convertAuthenticated(products,
+				remoteServices.getSubsystemId());
+		remoteServices.sendRefeedProduction(data);
+	}
+
+	private void sendEjectedData(PackagedProducts products) throws InternalException {
+		IEjectionDTO data = productionDataConverter.convertEjection(products, remoteServices.getSubsystemId());
+		remoteServices.sendEjectedProduction(data);
+	}
+
+	private void sendMaintenanceData(PackagedProducts products) throws InternalException {
+		MaintenanceSessionDTO data = productionDataConverter.convertMaintenance(products,
+				remoteServices.getSubsystemId());
+		remoteServices.sendMaintenanceProduction(data);
+	}
+
+	private void sendExportData(PackagedProducts products) throws InternalException {
+		ExportSessionDTO data = productionDataConverter.convertExport(products, remoteServices.getSubsystemId());
+		remoteServices.sendExportProduction(data);
 	}
 
 	@Override
@@ -141,7 +196,6 @@ public class TT016RemoteServer extends AbstractRemoteServer {
 	}
 
 	@Override
-	@TimeoutLifeCheck
 	public void lifeCheckTick() {
 		try {
 			remoteServices.isAlive();
@@ -166,11 +220,15 @@ public class TT016RemoteServer extends AbstractRemoteServer {
 		}
 	}
 
-	public void setRemoteServices(IRemoteServices remoteServices) {
+	public void setRemoteServices(ITT016RemoteServices remoteServices) {
 		this.remoteServices = remoteServices;
 	}
 
 	public void setConnector(AbstractMasterConnector connector) {
 		this.connector = connector;
+	}
+
+	public void setSkuConverter(SkuConverter skuConverter) {
+		this.skuConverter = skuConverter;
 	}
 }

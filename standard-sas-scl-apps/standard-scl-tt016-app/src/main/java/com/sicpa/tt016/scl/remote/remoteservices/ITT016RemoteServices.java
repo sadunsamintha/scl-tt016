@@ -18,7 +18,10 @@ import com.sicpa.tt016.master.scl.exceptions.InternalException;
 /**
  * facade for the EJB call
  */
-public interface IRemoteServices {
+public interface ITT016RemoteServices {
+
+	int PRODUCTION_MODE_STANDARD = 0;
+	int PRODUCTION_MODE_REFEED = 7;
 
 	void login() throws Exception;
 
@@ -42,8 +45,11 @@ public interface IRemoteServices {
 
 	void sendMaintenanceProduction(MaintenanceSessionDTO data) throws InternalException;
 
-	void sendActivationData(int productionMode, CodingActivationSessionDTO activSession, List<IEjectionDTO> ejected)
-			throws InternalException;
+	void sendEjectedProduction(IEjectionDTO ejected) throws InternalException;
+
+	void sendDomesticProduction(CodingActivationSessionDTO activSession) throws InternalException;
+
+	void sendRefeedProduction(CodingActivationSessionDTO activSession) throws InternalException;
 
 	void sendNonCompliantSession(List<NonCompliantSessionDTO> sessionList);
 

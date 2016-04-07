@@ -2,6 +2,7 @@ package com.sicpa.standard.sasscl.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.swing.ImageIcon;
@@ -12,20 +13,14 @@ public class SKU extends Customizable implements Serializable, Cloneable {
 
 	private static final long serialVersionUID = 1L;
 
-	protected CodeType codeType;
+	private CodeType codeType;
+	private int id;
+	private String description;
+	private ImageIcon image;
+	private List<String> barcodes = new ArrayList<>();
 
-	protected int id;
-	protected String description;
-	protected ImageIcon image;
-	protected List<String> barcodes;
-
-	/**
-	 * @param codeType
-	 * @param productionMode
-	 * @param id
-	 */
-	public SKU(final int id, final String description, final List<String> barcodes) {
-		this.barcodes = barcodes;
+	public SKU(int id, String description, List<String> barcodes) {
+		this.barcodes.addAll(barcodes);
 		this.id = id;
 		this.description = description;
 	}
@@ -34,11 +29,11 @@ public class SKU extends Customizable implements Serializable, Cloneable {
 		this(-1, "", null);
 	}
 
-	public SKU(final int id) {
+	public SKU(int id) {
 		this(id, "", null);
 	}
 
-	public SKU(final int id, final String description) {
+	public SKU(int id, String description) {
 		this(id, description, null);
 	}
 
@@ -50,11 +45,11 @@ public class SKU extends Customizable implements Serializable, Cloneable {
 		return this.codeType;
 	}
 
-	public void setCodeType(final CodeType codeType) {
+	public void setCodeType(CodeType codeType) {
 		this.codeType = codeType;
 	}
 
-	public void setId(final int id) {
+	public void setId(int id) {
 		this.id = id;
 	}
 
@@ -65,11 +60,15 @@ public class SKU extends Customizable implements Serializable, Cloneable {
 
 	@Override
 	public String toString() {
-		return this.description;
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	@Override
-	public boolean equals(final Object obj) {
+	public boolean equals(Object obj) {
 
 		if (obj == null) {
 			return false;
@@ -77,9 +76,9 @@ public class SKU extends Customizable implements Serializable, Cloneable {
 
 		if (obj instanceof SKU) {
 			if (id == -1 || ((SKU) obj).id == -1) {
-				return (this.description.equals(((SKU) obj).description));
+				return (description.equals(((SKU) obj).description));
 			} else {
-				return (this.id == ((SKU) obj).id);
+				return (id == ((SKU) obj).id);
 			}
 		}
 		return false;
@@ -93,19 +92,23 @@ public class SKU extends Customizable implements Serializable, Cloneable {
 		return this.image;
 	}
 
-	public void setImage(final ImageIcon image) {
+	public void setImage(ImageIcon image) {
 		this.image = image;
 	}
 
-	public boolean containsBarcode(final String barcode) {
-		if (this.barcodes == null) {
+	public boolean containsBarcode(String barcode) {
+		if (barcodes == null) {
 			return false;
 		}
-		return this.barcodes.contains(barcode);
+		return barcodes.contains(barcode);
 	}
 
 	public List<String> getBarCodes() {
-		return new ArrayList<String>(barcodes);
+		return Collections.unmodifiableList(barcodes);
+	}
+
+	public void addBarcode(String barcode) {
+		barcodes.add(barcode);
 	}
 
 	public SKU copySkuForProductionData() {

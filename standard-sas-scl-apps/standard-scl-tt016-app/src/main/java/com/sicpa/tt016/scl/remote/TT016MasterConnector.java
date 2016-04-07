@@ -2,13 +2,13 @@ package com.sicpa.tt016.scl.remote;
 
 import com.sicpa.standard.sasscl.devices.remote.connector.AbstractMasterConnector;
 import com.sicpa.standard.sasscl.devices.remote.connector.IConnectable;
-import com.sicpa.tt016.scl.remote.remoteservices.IRemoteServices;
+import com.sicpa.tt016.scl.remote.remoteservices.ITT016RemoteServices;
 
-public class MasterConnector extends AbstractMasterConnector implements IConnectable {
+public class TT016MasterConnector extends AbstractMasterConnector implements IConnectable {
 
-	private IRemoteServices remoteServices;
+	private ITT016RemoteServices remoteServices;
 
-	public void setRemoteServices(IRemoteServices remoteServices) {
+	public void setRemoteServices(ITT016RemoteServices remoteServices) {
 		this.remoteServices = remoteServices;
 	}
 

@@ -179,13 +179,12 @@ public class RemoteServer extends AbstractRemoteServer implements IConnectable {
 		}
 	}
 
-	private void handleEncoderInfoResult(SicpadataGeneratorInfoResultDto res) throws RemoteServerException {
+	private void handleEncoderInfoResult(SicpadataGeneratorInfoResultDto res) {
 		for (InfoResult ir : res.getInfoResult()) {
 			if (!ir.isInfoSavedOk()) {
 				storage.quarantineEncoder(ir.getId());
-				throw new RemoteServerException(MessageFormat.format(
-						"master failed to save encoder info for id={0} , msg={1}", ir.getId() + "",
-						ir.getErrorMessage()));
+				logger.error("master failed to save encoder info for id={} , msg={}", ir.getId() + "",
+						ir.getErrorMessage());
 			}
 		}
 	}
@@ -223,7 +222,6 @@ public class RemoteServer extends AbstractRemoteServer implements IConnectable {
 	}
 
 	@Override
-
 	public long getSubsystemID() {
 		try {
 			return remoteServices.getSubsystem().getId();

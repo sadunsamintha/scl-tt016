@@ -1,5 +1,9 @@
 package com.sicpa.tt016.scl.remote.remoteservices;
 
+import static java.util.Arrays.asList;
+
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 
@@ -10,6 +14,8 @@ import javax.naming.NamingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.sicpa.standard.client.common.timeout.Timeout;
+import com.sicpa.standard.client.common.timeout.TimeoutLifeCheck;
 import com.sicpa.tt016.common.dto.CodingActivationSessionDTO;
 import com.sicpa.tt016.common.dto.EncoderInfoDTO;
 import com.sicpa.tt016.common.dto.EncoderInfoResultDTO;
@@ -28,9 +34,9 @@ import com.sicpa.tt016.master.scl.business.interfaces.IBisUserManagerRemote;
 import com.sicpa.tt016.master.scl.business.interfaces.ICodingActivationRemote;
 import com.sicpa.tt016.master.scl.exceptions.InternalException;
 
-public class RemoteServices implements IRemoteServices {
+public class TT016RemoteServices implements ITT016RemoteServices {
 
-	private static final Logger logger = LoggerFactory.getLogger(RemoteServices.class);
+	private static final Logger logger = LoggerFactory.getLogger(TT016RemoteServices.class);
 	private static final String BIS_SERVICE_NAME = "BisUserManagerBean";
 	private static final String CODING_SERVICE_NAME = "CodingActivationBean/remote";
 
@@ -44,6 +50,7 @@ public class RemoteServices implements IRemoteServices {
 	private Context context;
 
 	@Override
+	@Timeout
 	public void login() throws Exception {
 		logger.info("connecting to mpcc using:" + userMachine);
 		loadInitialContext();
@@ -51,7 +58,7 @@ public class RemoteServices implements IRemoteServices {
 	}
 
 	private void loadRemoteService() throws NamingException {
-		bisUserManager = (IBisUserManagerRemote) locateService(BIS_SERVICE_NAME);
+		// bisUserManager = (IBisUserManagerRemote) locateService(BIS_SERVICE_NAME);
 		codingActivation = (ICodingActivationRemote) locateService(CODING_SERVICE_NAME);
 	}
 
@@ -61,37 +68,44 @@ public class RemoteServices implements IRemoteServices {
 	}
 
 	@Override
+	@TimeoutLifeCheck
 	public boolean isAlive() {
 		return codingActivation.isAlive(subsystemId);
 	}
 
 	@Override
+	@Timeout
 	public String getBisUserPassword(String user) {
 		return bisUserManager.getPassword(subsystemId, user);
 	}
 
 	@Override
+	@Timeout
 	public List<SkuDTO> getSkuList() throws InternalException {
 		return codingActivation.getSKU(subsystemId);
 	}
 
 	@Override
+	@Timeout
 	public boolean isRefeedEnabled() throws InternalException {
 		return codingActivation.isRefeedMode(subsystemId);
 	}
 
 	@Override
+	@Timeout
 	public IMoroccoAuthenticator getDecoder() {
 		return codingActivation.getAuthenticator(subsystemId);
 	}
 
 	@Override
+	@Timeout
 	public EncoderInfoResultDTO sendEncoderInfo(List<EncoderInfoDTO> info) throws InternalException {
 		EncoderInfoResultDTO res = codingActivation.sendEncodersInfo(subsystemId, info);
 		return res;
 	}
 
 	@Override
+	@Timeout
 	public List<EncoderSclDTO> getRemoteEncoders(int encoderQty, int codeTypeId) throws InternalException {
 		List<EncoderSclDTO> wrappers = null;
 		wrappers = codingActivation.getSclEncoders(encoderQty, new CodeType(codeTypeId), subsystemId);
@@ -99,16 +113,19 @@ public class RemoteServices implements IRemoteServices {
 	}
 
 	@Override
+	@Timeout
 	public void sendOfflineProduction(OfflineSessionDTO data) throws InternalException {
 		sendCountProduction(data);
 	}
 
 	@Override
+	@Timeout
 	public void sendMaintenanceProduction(MaintenanceSessionDTO data) throws InternalException {
 		sendCountProduction(data);
 	}
 
 	@Override
+	@Timeout
 	public void sendExportProduction(ExportSessionDTO data) throws InternalException {
 		sendCountProduction(data);
 	}
@@ -118,12 +135,26 @@ public class RemoteServices implements IRemoteServices {
 	}
 
 	@Override
-	public void sendActivationData(int productionMode, CodingActivationSessionDTO activSession,
-			List<IEjectionDTO> ejected) throws InternalException {
-		codingActivation.sendProductionData(productionMode, activSession, ejected, subsystemId);
+	@Timeout
+	public void sendDomesticProduction(CodingActivationSessionDTO activSession) throws InternalException {
+		codingActivation.sendProductionData(PRODUCTION_MODE_STANDARD, activSession, Collections.emptyList(),
+				subsystemId);
 	}
 
 	@Override
+	@Timeout
+	public void sendRefeedProduction(CodingActivationSessionDTO activSession) throws InternalException {
+		codingActivation.sendProductionData(PRODUCTION_MODE_REFEED, activSession, Collections.emptyList(), subsystemId);
+	}
+
+	@Override
+	@Timeout
+	public void sendEjectedProduction(IEjectionDTO ejected) throws InternalException {
+		codingActivation.sendProductionData(PRODUCTION_MODE_STANDARD, null, asList(ejected), subsystemId);
+	}
+
+	@Override
+	@Timeout
 	public void sendNonCompliantSession(List<NonCompliantSessionDTO> sessionList) {
 		codingActivation.saveNonCompliantData(sessionList);
 	}
