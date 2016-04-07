@@ -1,16 +1,15 @@
 package com.sicpa.standard.sasscl.devices.remote;
 
+import java.util.List;
+import java.util.Map;
+import java.util.ResourceBundle;
+
 import com.sicpa.standard.sasscl.devices.IDevice;
 import com.sicpa.standard.sasscl.model.CodeType;
 import com.sicpa.standard.sasscl.model.EncoderInfo;
 import com.sicpa.standard.sasscl.model.PackagedProducts;
-import com.sicpa.standard.sasscl.model.ProductStatus;
 import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.ProductionParameterRootNode;
 import com.sicpa.standard.sasscl.sicpadata.reader.IAuthenticator;
-
-import java.util.List;
-import java.util.Map;
-import java.util.ResourceBundle;
 
 public interface IRemoteServer extends IDevice {
 

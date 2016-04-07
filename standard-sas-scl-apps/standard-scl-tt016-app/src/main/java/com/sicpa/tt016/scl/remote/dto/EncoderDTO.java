@@ -20,7 +20,7 @@ public class EncoderDTO implements IEncoder {
 
 	private final static Logger logger = LoggerFactory.getLogger(EncoderDTO.class);
 
-	private IMoroccoEncoder mEncoder;
+	private IMoroccoEncoder tt016encoder;
 	private long remainingCodes = 0;
 	private long currentIndex = 0;
 	private int subSystemId;
@@ -29,12 +29,14 @@ public class EncoderDTO implements IEncoder {
 	private Date lastCodeDate;
 	private boolean finishedAndSentToMaster;
 	private Date onClientDate;
+	private int codeTypeId;
 
-	public EncoderDTO(IMoroccoEncoder encoder, int subsystemId) {
-		mEncoder = encoder;
-		remainingCodes = mEncoder.getCapacity();
+	public EncoderDTO(IMoroccoEncoder encoder, int subsystemId, int codeTypeId) {
+		tt016encoder = encoder;
+		remainingCodes = tt016encoder.getCapacity();
 		setEncoderSubsystemId(subsystemId);
 		currentIndex = 0;
+		this.codeTypeId = codeTypeId;
 	}
 
 	public void setEncoderSubsystemId(int subsystemId) {
@@ -42,14 +44,14 @@ public class EncoderDTO implements IEncoder {
 	}
 
 	public long getBatchId() {
-		return mEncoder.getBatchId();
+		return tt016encoder.getBatchId();
 	}
 
 	private String getCode() throws CryptoException, EncoderEmptyException {
 		if (remainingCodes <= 0) {
 			throw new EncoderEmptyException();
 		}
-		StringBasedCode code = (StringBasedCode) mEncoder.getCode(createCodeRequestOrder());
+		StringBasedCode code = (StringBasedCode) tt016encoder.getCode(createCodeRequestOrder());
 		remainingCodes--;
 		currentIndex++;
 		return code.getCode();
@@ -71,7 +73,8 @@ public class EncoderDTO implements IEncoder {
 	@Override
 	public String toString() {
 		return "EncoderDTO [mRemainingCodes=" + remainingCodes + ", mCurrentIndex=" + currentIndex + ", mSubSystemId="
-				+ subSystemId + ", batchId=" + mEncoder.getBatchId() + ", capacity=" + mEncoder.getCapacity() + "]";
+				+ subSystemId + ", batchId=" + tt016encoder.getBatchId() + ", capacity=" + tt016encoder.getCapacity()
+				+ "]";
 	}
 
 	public void setCurrentIndex(long currentIndex) {
@@ -116,8 +119,7 @@ public class EncoderDTO implements IEncoder {
 
 	@Override
 	public long getId() {
-		// TODO Auto-generated method stub
-		return 0;
+		return tt016encoder.getBatchId();
 	}
 
 	@Override
@@ -147,8 +149,7 @@ public class EncoderDTO implements IEncoder {
 
 	@Override
 	public int getCodeTypeId() {
-		// TODO Auto-generated method stub
-		return 0;
+		return codeTypeId;
 	}
 
 	@Override

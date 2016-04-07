@@ -116,7 +116,8 @@ public class TT016RemoteServer extends AbstractRemoteServer {
 		try {
 			List<EncoderSclDTO> dtos = remoteServices.getRemoteEncoders(batchesQuantity, (int) codeType.getId());
 			for (EncoderSclDTO dto : dtos) {
-				IEncoder encoder = encryptionConverter.convert(dto, remoteServices.getSubsystemId());
+				IEncoder encoder = encryptionConverter.convert(dto, remoteServices.getSubsystemId(),
+						(int) codeType.getId());
 				storeEncoder(encoder, year);
 			}
 		} catch (InternalException e) {

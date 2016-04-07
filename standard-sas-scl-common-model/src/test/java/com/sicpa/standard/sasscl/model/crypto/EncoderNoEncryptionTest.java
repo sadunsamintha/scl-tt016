@@ -8,6 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.sicpa.standard.sasscl.sicpadata.CryptographyException;
+import com.sicpa.standard.sasscl.sicpadata.generator.EncoderEmptyException;
 import com.sicpa.standard.sasscl.sicpadata.generator.impl.EncoderNoEncryptionSimulator;
 
 public class EncoderNoEncryptionTest {
@@ -16,7 +17,7 @@ public class EncoderNoEncryptionTest {
 
 	@Before
 	public void setUp() throws Exception {
-		test = new EncoderNoEncryptionSimulator(0,1, 0, 1, 2010, 1);
+		test = new EncoderNoEncryptionSimulator(0, 1, 0, 1, 2010, 1);
 		test.setId(1);
 	}
 
@@ -30,39 +31,18 @@ public class EncoderNoEncryptionTest {
 	}
 
 	@Test
-	public final void testGetEncryptedCode() {
-
-		boolean exception = false;
-
-		try {
-			assertEquals("0", test.getEncryptedCode());
-		} catch (CryptographyException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		try {
-			test.getEncryptedCode();
-			test.getEncryptedCode();
-		} catch (CryptographyException e) {
-
-			exception = true;
-		}
-		assertTrue(exception);
-	}
-
-	@Test
 	public final void testGetNumberOfAvailableEncryptedCode() {
 		assertEquals(1, test.getNumberOfAvailableEncryptedCode());
 	}
 
 	@Test
-	public final void testIsEncoderEmpty() {
+	public final void testIsEncoderEmpty() throws CryptographyException {
 		assertFalse(test.isEncoderEmpty());
 		try {
 			test.getEncryptedCode();
 			test.getEncryptedCode();
 			test.getEncryptedCode();
-		} catch (CryptographyException e) {
+		} catch (EncoderEmptyException e) {
 		}
 
 		assertTrue(test.isEncoderEmpty());
@@ -80,9 +60,9 @@ public class EncoderNoEncryptionTest {
 	@Test
 	public final void testEquals() {
 
-		EncoderNoEncryptionSimulator tmp1 = new EncoderNoEncryptionSimulator(0,1, 0, 1, 2010, 1);
+		EncoderNoEncryptionSimulator tmp1 = new EncoderNoEncryptionSimulator(0, 1, 0, 1, 2010, 1);
 		tmp1.setId(1);
-		EncoderNoEncryptionSimulator tmp2 = new EncoderNoEncryptionSimulator(0,1, 0, 0, 2010, 1);
+		EncoderNoEncryptionSimulator tmp2 = new EncoderNoEncryptionSimulator(0, 1, 0, 0, 2010, 1);
 		tmp2.setId(2);
 		assertFalse(test.equals(null));
 		assertTrue(test.equals(test));

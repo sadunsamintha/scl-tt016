@@ -2,7 +2,6 @@ package com.sicpa.tt016.scl.remote.remoteservices;
 
 import static java.util.Arrays.asList;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
@@ -37,7 +36,7 @@ import com.sicpa.tt016.master.scl.exceptions.InternalException;
 public class TT016RemoteServices implements ITT016RemoteServices {
 
 	private static final Logger logger = LoggerFactory.getLogger(TT016RemoteServices.class);
-	private static final String BIS_SERVICE_NAME = "BisUserManagerBean";
+//	private static final String BIS_SERVICE_NAME = "BisUserManagerBean";
 	private static final String CODING_SERVICE_NAME = "CodingActivationBean/remote";
 
 	private IBisUserManagerRemote bisUserManager;
