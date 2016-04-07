@@ -19,8 +19,6 @@ import org.springframework.core.io.ClassPathResource;
 
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.messages.MessageEvent;
-import com.sicpa.standard.client.common.timeout.Timeout;
-import com.sicpa.standard.client.common.timeout.TimeoutLifeCheck;
 import com.sicpa.standard.sasscl.common.storage.IStorage;
 import com.sicpa.standard.sasscl.devices.DeviceException;
 import com.sicpa.standard.sasscl.devices.DeviceStatus;
@@ -94,7 +92,6 @@ public class RemoteServer extends AbstractRemoteServer implements IConnectable {
 	}
 
 	@Override
-	@Timeout
 	public final IAuthenticator getAuthenticator() throws RemoteServerException {
 		if (!isConnected()) {
 			return null;
@@ -113,7 +110,6 @@ public class RemoteServer extends AbstractRemoteServer implements IConnectable {
 	}
 
 	@Override
-	@Timeout
 	public final void downloadEncoder(int batchesQuantity, CodeType codeType, int year) throws RemoteServerException {
 		if (!isConnected()) {
 			return;
@@ -159,7 +155,6 @@ public class RemoteServer extends AbstractRemoteServer implements IConnectable {
 	}
 
 	@Override
-	@Timeout
 	public final ProductionParameterRootNode getTreeProductionParameters() throws RemoteServerException {
 		if (!isConnected()) {
 			return null;
@@ -173,7 +168,6 @@ public class RemoteServer extends AbstractRemoteServer implements IConnectable {
 	}
 
 	@Override
-	@Timeout
 	public void sendEncoderInfos(List<EncoderInfo> infos) throws RemoteServerException {
 		try {
 			List<SicpadataGeneratorInfoDto> dtos = converter.createEncoderInfo(infos);
@@ -197,7 +191,6 @@ public class RemoteServer extends AbstractRemoteServer implements IConnectable {
 	}
 
 	@Override
-	@Timeout
 	public final void sendProductionData(PackagedProducts products) throws RemoteServerException {
 		if (!isConnected()) {
 			throw new RemoteServerException();
@@ -230,7 +223,7 @@ public class RemoteServer extends AbstractRemoteServer implements IConnectable {
 	}
 
 	@Override
-	@Timeout
+
 	public long getSubsystemID() {
 		try {
 			return remoteServices.getSubsystem().getId();
@@ -241,7 +234,6 @@ public class RemoteServer extends AbstractRemoteServer implements IConnectable {
 	}
 
 	@Override
-	@TimeoutLifeCheck
 	public void lifeCheckTick() {
 		try {
 			logger.debug("remote server life check");
@@ -254,7 +246,6 @@ public class RemoteServer extends AbstractRemoteServer implements IConnectable {
 	}
 
 	@Override
-	@Timeout
 	public Map<String, ? extends ResourceBundle> getLanguageBundles() throws RemoteServerException {
 		if (!isConnected()) {
 			return null;
@@ -292,7 +283,6 @@ public class RemoteServer extends AbstractRemoteServer implements IConnectable {
 	}
 
 	@Override
-	@Timeout
 	public void sendInfoToGlobalMonitoringTool(GlobalMonitoringToolInfo info) {
 		try {
 			EventDto evt = converter.createEventDto(info);

@@ -18,6 +18,8 @@ import org.jboss.ejb.client.EJBClientContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.sicpa.standard.client.common.timeout.Timeout;
+import com.sicpa.standard.client.common.timeout.TimeoutLifeCheck;
 import com.sicpa.standard.sasscl.devices.remote.impl.BasicClientSecurityInterceptor;
 import com.sicpa.std.common.api.activation.business.ActivationServiceHandler;
 import com.sicpa.std.common.api.activation.dto.AuthorizedProductsDto;
@@ -72,41 +74,49 @@ public class RemoteServices implements IRemoteServices {
 	}
 
 	@Override
+	@TimeoutLifeCheck
 	public boolean isAlive() {
 		return loginService.isAlive();
 	}
 
 	@Override
+	@Timeout
 	public LoginDto logUserIn(String login, String password) throws Exception {
 		return loginService.login(login, password);
 	}
 
 	@Override
+	@Timeout
 	public void registerEvent(EventDto evt) throws MonitoringException {
 		eventService.register(evt);
 	}
 
 	@Override
+	@Timeout
 	public SicpadataGeneratorInfoResultDto registerGeneratorsCycle(List<SicpadataGeneratorInfoDto> dtos) {
 		return codingService.registerGeneratorsCycle(dtos);
 	}
 
 	@Override
+	@Timeout
 	public SicpadataReaderDto provideSicpadataReader() throws ActivationException, CommonServerRuntimeException {
 		return activationService.provideSicpadataReader();
 	}
 
 	@Override
+	@Timeout
 	public Collection<AvailableLanguageDto> getAvailableLanguages() throws Exception {
 		return translationService.getAvailableLanguages();
 	}
 
 	@Override
+	@Timeout
 	public CustomResourceBundle getResourceBundle(String lang) throws Exception {
 		return translationService.getResourceBundle(lang);
 	}
 
 	@Override
+	@Timeout
 	public AuthorizedProductsDto provideAuthorizedProducts() {
 		return activationService.provideAuthorizedProducts();
 	}
@@ -133,12 +143,14 @@ public class RemoteServices implements IRemoteServices {
 	}
 
 	@Override
+	@Timeout
 	public String getCryptoPassword() {
 		Map<String, String> serverConfiguration = configService.getConfiguration(null);
 		return serverConfiguration.get(PropertyNames.SICPADATA_ADMIN_PWD);
 	}
 
 	@Override
+	@Timeout
 	public SubsystemDto getSubsystem() throws Exception {
 		logger.info("connecting to mpcc using:" + userMachine);
 		LoginDto dto = loginService.login(userMachine, passwordMachine);
@@ -182,11 +194,13 @@ public class RemoteServices implements IRemoteServices {
 	}
 
 	@Override
+	@Timeout
 	public void registerActivationProducts(AuthenticatedProductsResultDto data) throws ActivationException {
 		activationService.registerAuthenticatedProducts(data);
 	}
 
 	@Override
+	@Timeout
 	public void registerCountedProducts(CountedProductsResultDto data) throws ActivationException {
 		activationService.registerCountedProducts(data);
 	}
