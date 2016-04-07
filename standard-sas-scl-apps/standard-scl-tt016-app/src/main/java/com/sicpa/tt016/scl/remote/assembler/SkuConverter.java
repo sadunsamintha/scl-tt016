@@ -46,7 +46,6 @@ public class SkuConverter {
 		}
 
 		root.addChildren(domesticMode, exportMode, maintenanceMode);
-
 		return root;
 	}
 

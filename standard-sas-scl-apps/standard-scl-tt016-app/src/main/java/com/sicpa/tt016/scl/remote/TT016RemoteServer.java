@@ -10,7 +10,6 @@ import org.slf4j.LoggerFactory;
 
 import com.sicpa.standard.sasscl.common.storage.IStorage;
 import com.sicpa.standard.sasscl.devices.DeviceException;
-import com.sicpa.standard.sasscl.devices.DeviceStatus;
 import com.sicpa.standard.sasscl.devices.remote.AbstractRemoteServer;
 import com.sicpa.standard.sasscl.devices.remote.GlobalMonitoringToolInfo;
 import com.sicpa.standard.sasscl.devices.remote.RemoteServerException;
@@ -194,17 +193,6 @@ public class TT016RemoteServer extends AbstractRemoteServer {
 
 	@Override
 	public void sendInfoToGlobalMonitoringTool(GlobalMonitoringToolInfo info) {
-	}
-
-	@Override
-	public void lifeCheckTick() {
-		try {
-			remoteServices.isAlive();
-			fireDeviceStatusChanged(DeviceStatus.CONNECTED);
-		} catch (Exception e) {
-			logger.error("", e);
-			fireDeviceStatusChanged(DeviceStatus.DISCONNECTED);
-		}
 	}
 
 	@Override

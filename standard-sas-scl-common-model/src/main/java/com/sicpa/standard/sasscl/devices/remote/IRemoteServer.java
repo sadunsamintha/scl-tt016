@@ -82,5 +82,4 @@ public interface IRemoteServer extends IDevice {
 
 	void sendInfoToGlobalMonitoringTool(GlobalMonitoringToolInfo info);
 
-	void lifeCheckTick();
 }

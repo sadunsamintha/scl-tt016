@@ -1,4 +1,4 @@
-package com.sicpa.tt016.scl.remote.dto;
+package com.sicpa.tt016.scl.encryption;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -16,9 +16,9 @@ import com.sicpa.tt016.common.security.bean.SequenceBean;
 import com.sicpa.tt016.common.security.encoder.IMoroccoEncoder;
 
 @SuppressWarnings("serial")
-public class EncoderDTO implements IEncoder {
+public class TT016Encoder implements IEncoder {
 
-	private final static Logger logger = LoggerFactory.getLogger(EncoderDTO.class);
+	private final static Logger logger = LoggerFactory.getLogger(TT016Encoder.class);
 
 	private IMoroccoEncoder tt016encoder;
 	private long remainingCodes = 0;
@@ -31,7 +31,7 @@ public class EncoderDTO implements IEncoder {
 	private Date onClientDate;
 	private int codeTypeId;
 
-	public EncoderDTO(IMoroccoEncoder encoder, int subsystemId, int codeTypeId) {
+	public TT016Encoder(IMoroccoEncoder encoder, int subsystemId, int codeTypeId) {
 		tt016encoder = encoder;
 		remainingCodes = tt016encoder.getCapacity();
 		setEncoderSubsystemId(subsystemId);

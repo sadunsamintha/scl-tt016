@@ -6,13 +6,13 @@ import com.sicpa.standard.sasscl.sicpadata.reader.IAuthenticator;
 import com.sicpa.tt016.common.dto.EncoderInfoDTO;
 import com.sicpa.tt016.common.dto.EncoderSclDTO;
 import com.sicpa.tt016.common.security.authenticator.IMoroccoAuthenticator;
-import com.sicpa.tt016.scl.remote.dto.DecoderDTO;
-import com.sicpa.tt016.scl.remote.dto.EncoderDTO;
+import com.sicpa.tt016.scl.encryption.TT016Decoder;
+import com.sicpa.tt016.scl.encryption.TT016Encoder;
 
 public class EncryptionConverter {
 
 	public IAuthenticator convert(IMoroccoAuthenticator decoder) {
-		return new DecoderDTO(decoder);
+		return new TT016Decoder(decoder);
 	}
 
 	public EncoderInfoDTO convert(EncoderInfo info) {
@@ -28,7 +28,7 @@ public class EncryptionConverter {
 	}
 
 	public IEncoder convert(EncoderSclDTO dto, int subsystemId, int codeTypeId) {
-		return new EncoderDTO(dto.getMoroccoEncoder(), subsystemId, codeTypeId);
+		return new TT016Encoder(dto.getMoroccoEncoder(), subsystemId, codeTypeId);
 	}
 
 }

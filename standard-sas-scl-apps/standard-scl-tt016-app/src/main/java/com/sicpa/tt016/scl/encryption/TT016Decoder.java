@@ -1,4 +1,4 @@
-package com.sicpa.tt016.scl.remote.dto;
+package com.sicpa.tt016.scl.encryption;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,13 +14,16 @@ import com.sicpa.tt016.common.security.authenticator.IMoroccoAuthenResult;
 import com.sicpa.tt016.common.security.authenticator.IMoroccoAuthenticator;
 
 @SuppressWarnings("serial")
-public class DecoderDTO implements IAuthenticator {
+public class TT016Decoder implements IAuthenticator {
 
-	private static final Logger logger = LoggerFactory.getLogger(DecoderDTO.class);
+	public static final String SCL_MODE = "SCL";
+	public static final String SAS_MODE = "SAS";
+
+	private static final Logger logger = LoggerFactory.getLogger(TT016Decoder.class);
 
 	private IMoroccoAuthenticator codeAuthenticator;
 
-	public DecoderDTO(IMoroccoAuthenticator authenticator) {
+	public TT016Decoder(IMoroccoAuthenticator authenticator) {
 		setAuthenticator(authenticator);
 	}
 
@@ -29,9 +32,9 @@ public class DecoderDTO implements IAuthenticator {
 	}
 
 	public IDecodedResult decode(String mode, String encryptedCode) throws CryptographyException {
-		if (mode.equals("SCL")) {
+		if (mode.equals(SCL_MODE)) {
 			return decodeSCL(encryptedCode);
-		} else if (mode.equals("SAS")) {
+		} else if (mode.equals(SAS_MODE)) {
 			return decodeSAS(encryptedCode);
 		}
 		throw new IllegalArgumentException("illegal mode:" + mode);
