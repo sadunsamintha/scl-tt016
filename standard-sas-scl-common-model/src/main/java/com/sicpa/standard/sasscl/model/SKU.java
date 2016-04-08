@@ -1,5 +1,7 @@
 package com.sicpa.standard.sasscl.model;
 
+import static java.util.Collections.emptyList;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -17,7 +19,7 @@ public class SKU extends Customizable implements Serializable, Cloneable {
 	private int id;
 	private String description;
 	private ImageIcon image;
-	private List<String> barcodes = new ArrayList<>();
+	private final List<String> barcodes = new ArrayList<>();
 
 	public SKU(int id, String description, List<String> barcodes) {
 		this.barcodes.addAll(barcodes);
@@ -26,7 +28,7 @@ public class SKU extends Customizable implements Serializable, Cloneable {
 	}
 
 	public SKU() {
-		this(-1, "", null);
+		this(-1, "", emptyList());
 	}
 
 	public SKU(int id) {
@@ -97,9 +99,6 @@ public class SKU extends Customizable implements Serializable, Cloneable {
 	}
 
 	public boolean containsBarcode(String barcode) {
-		if (barcodes == null) {
-			return false;
-		}
 		return barcodes.contains(barcode);
 	}
 
@@ -113,7 +112,6 @@ public class SKU extends Customizable implements Serializable, Cloneable {
 
 	public SKU copySkuForProductionData() {
 		SKU res = new SKU();
-		res.barcodes = null;
 		res.image = null;
 		res.codeType = codeType;
 		res.description = description;
