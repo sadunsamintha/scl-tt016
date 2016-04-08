@@ -1,8 +1,8 @@
 package com.sicpa.tt016.scl.remote.remoteservices;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 
@@ -23,23 +23,19 @@ import com.sicpa.tt016.common.dto.ExportSessionDTO;
 import com.sicpa.tt016.common.dto.IEjectionDTO;
 import com.sicpa.tt016.common.dto.MaintenanceSessionDTO;
 import com.sicpa.tt016.common.dto.NonActivationSessionDTO;
-import com.sicpa.tt016.common.dto.NonCompliantSessionDTO;
 import com.sicpa.tt016.common.dto.OfflineSessionDTO;
 import com.sicpa.tt016.common.dto.SkuDTO;
 import com.sicpa.tt016.common.model.CodeType;
 import com.sicpa.tt016.common.security.CustomPrincipal;
 import com.sicpa.tt016.common.security.authenticator.IMoroccoAuthenticator;
-import com.sicpa.tt016.master.scl.business.interfaces.IBisUserManagerRemote;
 import com.sicpa.tt016.master.scl.business.interfaces.ICodingActivationRemote;
 import com.sicpa.tt016.master.scl.exceptions.InternalException;
 
 public class TT016RemoteServices implements ITT016RemoteServices {
 
 	private static final Logger logger = LoggerFactory.getLogger(TT016RemoteServices.class);
-//	private static final String BIS_SERVICE_NAME = "BisUserManagerBean";
 	private static final String CODING_SERVICE_NAME = "CodingActivationBean/remote";
 
-	private IBisUserManagerRemote bisUserManager;
 	private ICodingActivationRemote codingActivation;
 
 	private String userMachine;
@@ -57,7 +53,6 @@ public class TT016RemoteServices implements ITT016RemoteServices {
 	}
 
 	private void loadRemoteService() throws NamingException {
-		// bisUserManager = (IBisUserManagerRemote) locateService(BIS_SERVICE_NAME);
 		codingActivation = (ICodingActivationRemote) locateService(CODING_SERVICE_NAME);
 	}
 
@@ -70,12 +65,6 @@ public class TT016RemoteServices implements ITT016RemoteServices {
 	@TimeoutLifeCheck
 	public boolean isAlive() {
 		return codingActivation.isAlive(subsystemId);
-	}
-
-	@Override
-	@Timeout
-	public String getBisUserPassword(String user) {
-		return bisUserManager.getPassword(subsystemId, user);
 	}
 
 	@Override
@@ -106,9 +95,7 @@ public class TT016RemoteServices implements ITT016RemoteServices {
 	@Override
 	@Timeout
 	public List<EncoderSclDTO> getRemoteEncoders(int encoderQty, int codeTypeId) throws InternalException {
-		List<EncoderSclDTO> wrappers = null;
-		wrappers = codingActivation.getSclEncoders(encoderQty, new CodeType(codeTypeId), subsystemId);
-		return wrappers;
+		return codingActivation.getSclEncoders(encoderQty, new CodeType(codeTypeId), subsystemId);
 	}
 
 	@Override
@@ -136,14 +123,13 @@ public class TT016RemoteServices implements ITT016RemoteServices {
 	@Override
 	@Timeout
 	public void sendDomesticProduction(CodingActivationSessionDTO activSession) throws InternalException {
-		codingActivation.sendProductionData(PRODUCTION_MODE_STANDARD, activSession, Collections.emptyList(),
-				subsystemId);
+		codingActivation.sendProductionData(PRODUCTION_MODE_STANDARD, activSession, emptyList(), subsystemId);
 	}
 
 	@Override
 	@Timeout
 	public void sendRefeedProduction(CodingActivationSessionDTO activSession) throws InternalException {
-		codingActivation.sendProductionData(PRODUCTION_MODE_REFEED, activSession, Collections.emptyList(), subsystemId);
+		codingActivation.sendProductionData(PRODUCTION_MODE_REFEED, activSession, emptyList(), subsystemId);
 	}
 
 	@Override
@@ -152,24 +138,19 @@ public class TT016RemoteServices implements ITT016RemoteServices {
 		codingActivation.sendProductionData(PRODUCTION_MODE_STANDARD, null, asList(ejected), subsystemId);
 	}
 
-	@Override
-	@Timeout
-	public void sendNonCompliantSession(List<NonCompliantSessionDTO> sessionList) {
-		codingActivation.saveNonCompliantData(sessionList);
-	}
-
 	private Object locateService(String name) throws NamingException {
 		return context.lookup(name);
 	}
 
 	public void loadInitialContext() throws NamingException {
-		Properties jndiProperties = new Properties();
-		jndiProperties.put("java.naming.security.principal", new CustomPrincipal(userMachine, subsystemId));
-		jndiProperties.put("java.naming.security.credentials", passwordMachine);
-		jndiProperties.put("java.naming.factory.initial", "org.jnp.interfaces.NamingContextFactory");
-		jndiProperties.put("java.naming.factory.url.pkgs", "org.jboss.naming:org.jnp.interfaces");
-		jndiProperties.put("java.naming.provider.url", url);
-		context = new InitialContext(jndiProperties);
+		Properties properties = new Properties();
+		properties.put("java.naming.security.principal", new CustomPrincipal(userMachine, subsystemId));
+		properties.put("java.naming.security.credentials", passwordMachine);
+		properties.put("java.naming.factory.initial", "org.jboss.security.jndi.JndiLoginInitialContextFactory");
+		properties.put(" java.naming.factory.url.pkgs", "org.jboss.naming:org.jnp.interfaces");
+		properties.put("jnp.multi-threaded", "true");
+		properties.put("java.naming.provider.url", url);
+		context = new InitialContext(properties);
 	}
 
 	public void setUrl(String url) {

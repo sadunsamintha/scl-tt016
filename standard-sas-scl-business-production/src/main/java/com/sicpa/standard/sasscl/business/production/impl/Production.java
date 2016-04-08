@@ -1,8 +1,8 @@
 package com.sicpa.standard.sasscl.business.production.impl;
 
 import static com.sicpa.standard.gui.utils.ThreadUtils.waitForNextTimeStamp;
-import static com.sicpa.standard.sasscl.monitoring.system.SystemEventType.SENT_TO_REMOTE_SERVER_ERROR;
 import static com.sicpa.standard.sasscl.messages.MessageEventKey.Production.ERROR_MAX_SERIALIZATION_ERRORS;
+import static com.sicpa.standard.sasscl.monitoring.system.SystemEventType.SENT_TO_REMOTE_SERVER_ERROR;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -24,7 +24,6 @@ import com.sicpa.standard.sasscl.common.storage.IStorage;
 import com.sicpa.standard.sasscl.common.storage.productPackager.IProductsPackager;
 import com.sicpa.standard.sasscl.devices.remote.IRemoteServer;
 import com.sicpa.standard.sasscl.devices.remote.RemoteServerException;
-import com.sicpa.standard.sasscl.messages.MessageEventKey;
 import com.sicpa.standard.sasscl.model.EncoderInfo;
 import com.sicpa.standard.sasscl.model.PackagedProducts;
 import com.sicpa.standard.sasscl.model.Product;
@@ -37,7 +36,7 @@ import com.sicpa.standard.sasscl.provider.impl.SubsystemIdProvider;
 
 public class Production implements IProduction {
 
-	private static final int MAX_RETRY_SEND_PRODUCTION = 3;
+	public static final int MAX_RETRY_SEND_PRODUCTION = 3;
 
 	private static final Logger logger = LoggerFactory.getLogger(Production.class);
 
@@ -233,7 +232,7 @@ public class Production implements IProduction {
 		}
 	}
 
-	private void sendABatchOfProducts(PackagedProducts batch, int totalBatchCount, AtomicInteger currentIndex,
+	protected void sendABatchOfProducts(PackagedProducts batch, int totalBatchCount, AtomicInteger currentIndex,
 			AtomicInteger productCount) {
 
 		currentIndex.incrementAndGet();

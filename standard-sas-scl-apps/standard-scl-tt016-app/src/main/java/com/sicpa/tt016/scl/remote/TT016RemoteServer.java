@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import com.sicpa.standard.sasscl.common.storage.IStorage;
 import com.sicpa.standard.sasscl.devices.DeviceException;
+import com.sicpa.standard.sasscl.devices.IDeviceStatusListener;
 import com.sicpa.standard.sasscl.devices.remote.AbstractRemoteServer;
 import com.sicpa.standard.sasscl.devices.remote.GlobalMonitoringToolInfo;
 import com.sicpa.standard.sasscl.devices.remote.RemoteServerException;
@@ -33,7 +34,6 @@ import com.sicpa.tt016.scl.remote.assembler.EncryptionConverter;
 import com.sicpa.tt016.scl.remote.assembler.ProductionDataConverter;
 import com.sicpa.tt016.scl.remote.assembler.SkuConverter;
 import com.sicpa.tt016.scl.remote.remoteservices.ITT016RemoteServices;
-import com.sicpa.tt016.scl.skucheck.SkuCheckAssembly;
 
 public class TT016RemoteServer extends AbstractRemoteServer {
 
@@ -50,9 +50,10 @@ public class TT016RemoteServer extends AbstractRemoteServer {
 
 	public TT016RemoteServer() {
 	}
-
-	public String getBisUserPassword(String user) {
-		return remoteServices.getBisUserPassword(user);
+	
+	@Override
+	public boolean isConnected() {
+		return connector.isConnected();
 	}
 
 	@Override
@@ -127,11 +128,6 @@ public class TT016RemoteServer extends AbstractRemoteServer {
 	private void storeEncoder(IEncoder encoder, int year) {
 		storage.saveEncoders(year, encoder);
 		storage.confirmEncoder(encoder.getId());
-	}
-
-	public boolean sendSkuCheckAssembly(SkuCheckAssembly assembly) throws InternalException {
-		// TODO remoteServices.sendNonCompliantSession(sessionList);
-		return true;
 	}
 
 	@Override
@@ -219,5 +215,11 @@ public class TT016RemoteServer extends AbstractRemoteServer {
 
 	public void setSkuConverter(SkuConverter skuConverter) {
 		this.skuConverter = skuConverter;
+	}
+
+	@Override
+	public void addDeviceStatusListener(IDeviceStatusListener listener) {
+		super.addDeviceStatusListener(listener);
+		connector.addDeviceStatusListener(listener);
 	}
 }

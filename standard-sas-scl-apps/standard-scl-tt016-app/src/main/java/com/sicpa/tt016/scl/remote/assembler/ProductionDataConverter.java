@@ -32,12 +32,12 @@ public class ProductionDataConverter {
 	public CodingActivationSessionDTO convertAuthenticated(PackagedProducts products, int subsystemId) {
 		List<CodingActivationDTO> activated = new ArrayList<>();
 		for (Product p : products.getProducts()) {
-			activated.add(toProduct(p, subsystemId));
+			activated.add(convertProduct(p, subsystemId));
 		}
 		return new CodingActivationSessionDTO(activated);
 	}
 
-	private CodingActivationDTO toProduct(Product product, int subsystemId) {
+	private CodingActivationDTO convertProduct(Product product, int subsystemId) {
 		int remoteStatus = getRemoteProductStatus(product);
 		int codeTypeId = getCodeTypeId(product);
 		long encoderId = product.getCode().getEncoderId();

@@ -9,15 +9,11 @@ import com.sicpa.tt016.common.dto.EncoderSclDTO;
 import com.sicpa.tt016.common.dto.ExportSessionDTO;
 import com.sicpa.tt016.common.dto.IEjectionDTO;
 import com.sicpa.tt016.common.dto.MaintenanceSessionDTO;
-import com.sicpa.tt016.common.dto.NonCompliantSessionDTO;
 import com.sicpa.tt016.common.dto.OfflineSessionDTO;
 import com.sicpa.tt016.common.dto.SkuDTO;
 import com.sicpa.tt016.common.security.authenticator.IMoroccoAuthenticator;
 import com.sicpa.tt016.master.scl.exceptions.InternalException;
 
-/**
- * facade for the EJB call
- */
 public interface ITT016RemoteServices {
 
 	int PRODUCTION_MODE_STANDARD = 0;
@@ -26,8 +22,6 @@ public interface ITT016RemoteServices {
 	void login() throws Exception;
 
 	boolean isAlive();
-
-	String getBisUserPassword(String user);
 
 	List<SkuDTO> getSkuList() throws InternalException;
 
@@ -50,8 +44,6 @@ public interface ITT016RemoteServices {
 	void sendDomesticProduction(CodingActivationSessionDTO activSession) throws InternalException;
 
 	void sendRefeedProduction(CodingActivationSessionDTO activSession) throws InternalException;
-
-	void sendNonCompliantSession(List<NonCompliantSessionDTO> sessionList);
 
 	int getSubsystemId();
 

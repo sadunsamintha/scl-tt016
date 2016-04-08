@@ -29,7 +29,7 @@ beans{
 		lifeCheckWorker=ref('masterLifeCheckWorker')
 	}
 	
-	SkuConverter(SkuConverter){
+	skuConverter(SkuConverter){
 		codeTypeId=props['codeTypeId']
 	}
 }

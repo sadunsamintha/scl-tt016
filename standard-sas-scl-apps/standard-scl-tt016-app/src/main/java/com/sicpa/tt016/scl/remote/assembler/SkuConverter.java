@@ -30,7 +30,7 @@ public class SkuConverter {
 		ProductionModeNode domesticMode = new ProductionModeNode(ProductionMode.STANDARD);
 		ProductionModeNode refeedMode = new ProductionModeNode(ProductionMode.REFEED_NORMAL);
 		ProductionModeNode exportMode = new ProductionModeNode(ProductionMode.EXPORT);
-		ProductionModeNode maintenanceMode = createMaintenanceNode();
+		ProductionModeNode maintenanceMode = new ProductionModeNode(ProductionMode.MAINTENANCE);
 
 		for (SkuDTO dto : dtos) {
 			SKU sku = convert(dto);
@@ -47,15 +47,6 @@ public class SkuConverter {
 
 		root.addChildren(domesticMode, exportMode, maintenanceMode);
 		return root;
-	}
-
-	private ProductionModeNode createMaintenanceNode() {
-		ProductionModeNode maintenanceMode = new ProductionModeNode(ProductionMode.MAINTENANCE);
-		SKU sku = new SKU();
-		sku.setId(-1);
-		sku.setDescription("mode.maintenance");
-		maintenanceMode.addChildren(new SKUNode(sku));
-		return maintenanceMode;
 	}
 
 	private SKU convert(SkuDTO dto) {
