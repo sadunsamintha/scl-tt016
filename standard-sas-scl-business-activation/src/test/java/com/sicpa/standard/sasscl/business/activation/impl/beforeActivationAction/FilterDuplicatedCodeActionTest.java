@@ -1,5 +1,7 @@
 package com.sicpa.standard.sasscl.business.activation.impl.beforeActivationAction;
 
+import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState;
+import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowStateChangedEvent;
 import junit.framework.Assert;
 
 import org.junit.Before;
@@ -17,6 +19,13 @@ public class FilterDuplicatedCodeActionTest {
 	public void setup() {
 		ProductionParameters productionParameters = new ProductionParameters();
 		productionParameters.setProductionMode(ProductionMode.STANDARD);
+		filter = new FilterDuplicatedCodeAction();
+		filter.setProductionParameters(productionParameters);
+	}
+
+	private void setupExport() {
+		ProductionParameters productionParameters = new ProductionParameters();
+		productionParameters.setProductionMode(ProductionMode.EXPORT);
 		filter = new FilterDuplicatedCodeAction();
 		filter.setProductionParameters(productionParameters);
 	}
@@ -62,4 +71,40 @@ public class FilterDuplicatedCodeActionTest {
 		filter.receiveCode(new Code(""), true, "camera-sas");
 		Mockito.verify(action, Mockito.times(1)).receiveCode(new Code(""), true, "camera-sas");
 	}
+
+
+	@Test
+	public void testFilterIsEnable() {
+		setupExport();
+
+		String stringCode = "123";
+
+		BeforeActivationResult res = filter.receiveCode(new Code(stringCode), true, "camera-sas");
+		Assert.assertFalse(res.isFiltered());
+	}
+
+	@Test
+	public void resetCodesOnStart() {
+		String stringCode = "123";
+
+		BeforeActivationResult res = filter.receiveCode(new Code(stringCode), true, "camera-sas");
+
+		Assert.assertTrue(res.isValid());
+		Assert.assertFalse(res.isFiltered());
+		Assert.assertEquals(new Code(stringCode), res.getCode());
+
+		//simulate production start
+		ApplicationFlowStateChangedEvent event = new ApplicationFlowStateChangedEvent(ApplicationFlowState.STT_STARTING);
+		filter.resetCodesOnStart(event);
+
+		// 2nd code should not be filtered
+		res = filter.receiveCode(new Code(stringCode), true, "camera-sas");
+		Assert.assertTrue(res.isValid());
+		Assert.assertFalse(res.isFiltered());
+		Assert.assertEquals(new Code(stringCode), res.getCode());
+	}
+
+
+
+
 }
