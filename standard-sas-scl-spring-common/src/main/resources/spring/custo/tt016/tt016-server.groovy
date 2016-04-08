@@ -23,7 +23,7 @@ beans{
 		
 	masterLifeCheckWorker(MasterLifeCheckWorker){b->
 		connector = ref('masterConnector')
-		lifechecIntervalSec =props['server.lifecheck.delay.sec']
+		lifecheckIntervalSec =props['server.lifecheck.delay.sec']
 	}
 	masterConnector(TT016MasterConnector){
 		remoteServices=ref('remoteServices')
