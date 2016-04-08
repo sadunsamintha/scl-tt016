@@ -3,6 +3,8 @@ package com.sicpa.tt016.scl.remote.remoteservices;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Properties;
 
@@ -63,38 +65,45 @@ public class TT016RemoteServices implements ITT016RemoteServices {
 
 	@Override
 	@TimeoutLifeCheck
-	public boolean isAlive() {
+	public synchronized boolean isAlive() {
+		logger.debug("mscl isalive called");
 		return codingActivation.isAlive(subsystemId);
 	}
 
 	@Override
 	@Timeout
-	public List<SkuDTO> getSkuList() throws InternalException {
-		return codingActivation.getSKU(subsystemId);
+	public synchronized List<SkuDTO> getSkuList() throws InternalException {
+		logger.info("requesting sku list");
+		List<SkuDTO> skus = codingActivation.getSKU(subsystemId);
+		Comparator<SkuDTO> c = (s1, s2) -> s1.getDescription().compareTo(s2.getDescription());
+		Collections.sort(skus, c);
+		return skus;
 	}
 
 	@Override
 	@Timeout
-	public boolean isRefeedEnabled() throws InternalException {
+	public synchronized boolean isRefeedEnabled() throws InternalException {
 		return codingActivation.isRefeedMode(subsystemId);
 	}
 
 	@Override
 	@Timeout
-	public IMoroccoAuthenticator getDecoder() {
+	public synchronized IMoroccoAuthenticator getDecoder() {
 		return codingActivation.getAuthenticator(subsystemId);
 	}
 
 	@Override
 	@Timeout
-	public EncoderInfoResultDTO sendEncoderInfo(List<EncoderInfoDTO> info) throws InternalException {
+	public synchronized EncoderInfoResultDTO sendEncoderInfo(List<EncoderInfoDTO> info) throws InternalException {
+		logger.info("sending encoders info");
 		EncoderInfoResultDTO res = codingActivation.sendEncodersInfo(subsystemId, info);
 		return res;
 	}
 
 	@Override
 	@Timeout
-	public List<EncoderSclDTO> getRemoteEncoders(int encoderQty, int codeTypeId) throws InternalException {
+	public synchronized List<EncoderSclDTO> getRemoteEncoders(int encoderQty, int codeTypeId) throws InternalException {
+		logger.info("requesting encoder");
 		return codingActivation.getSclEncoders(encoderQty, new CodeType(codeTypeId), subsystemId);
 	}
 
@@ -116,25 +125,29 @@ public class TT016RemoteServices implements ITT016RemoteServices {
 		sendCountProduction(data);
 	}
 
-	private void sendCountProduction(NonActivationSessionDTO data) throws InternalException {
+	private synchronized void sendCountProduction(NonActivationSessionDTO data) throws InternalException {
+		logger.info("sending counted production data");
 		codingActivation.sendProductionQty(data, subsystemId);
 	}
 
 	@Override
 	@Timeout
-	public void sendDomesticProduction(CodingActivationSessionDTO activSession) throws InternalException {
+	public synchronized void sendDomesticProduction(CodingActivationSessionDTO activSession) throws InternalException {
+		logger.info("sending domestic production data");
 		codingActivation.sendProductionData(PRODUCTION_MODE_STANDARD, activSession, emptyList(), subsystemId);
 	}
 
 	@Override
 	@Timeout
-	public void sendRefeedProduction(CodingActivationSessionDTO activSession) throws InternalException {
+	public synchronized void sendRefeedProduction(CodingActivationSessionDTO activSession) throws InternalException {
+		logger.info("sending refeed data");
 		codingActivation.sendProductionData(PRODUCTION_MODE_REFEED, activSession, emptyList(), subsystemId);
 	}
 
 	@Override
 	@Timeout
-	public void sendEjectedProduction(IEjectionDTO ejected) throws InternalException {
+	public synchronized void sendEjectedProduction(IEjectionDTO ejected) throws InternalException {
+		logger.info("sending ejection data");
 		codingActivation.sendProductionData(PRODUCTION_MODE_STANDARD, null, asList(ejected), subsystemId);
 	}
 

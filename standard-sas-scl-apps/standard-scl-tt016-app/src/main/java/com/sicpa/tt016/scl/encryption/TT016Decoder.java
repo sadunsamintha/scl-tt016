@@ -48,6 +48,7 @@ public class TT016Decoder implements IAuthenticator {
 					IMoroccoAuthenticator.Mode.DM8x18_SCRAMBLED, code);
 			res.setBatchId((int) decodeResult.getBatchId());
 			res.setSequence(decodeResult.getSequence());
+			res.setAuthenticated(true);
 			return res;
 		} catch (Exception e) {
 			logger.error("DECODER.ERROR.DECODING " + encryptedCode);

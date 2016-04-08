@@ -32,13 +32,13 @@ public class ProductionDataConverter {
 	public CodingActivationSessionDTO convertAuthenticated(PackagedProducts products, int subsystemId) {
 		List<CodingActivationDTO> activated = new ArrayList<>();
 		for (Product p : products.getProducts()) {
-			activated.add(convertProduct(p, subsystemId));
+			activated.add(convertProduct(p, subsystemId, products.getProductStatus()));
 		}
 		return new CodingActivationSessionDTO(activated);
 	}
 
-	private CodingActivationDTO convertProduct(Product product, int subsystemId) {
-		int remoteStatus = getRemoteProductStatus(product);
+	private CodingActivationDTO convertProduct(Product product, int subsystemId, ProductStatus status) {
+		int remoteStatus = getRemoteProductStatus(status);
 		int codeTypeId = getCodeTypeId(product);
 		long encoderId = product.getCode().getEncoderId();
 		long seq = product.getCode().getSequence();
@@ -50,10 +50,9 @@ public class ProductionDataConverter {
 		return remoteProduct;
 	}
 
-	private int getRemoteProductStatus(Product product) {
+	private int getRemoteProductStatus(ProductStatus status) {
 		int remoteStatus = VALID_ACTIV_INT;
 
-		ProductStatus status = product.getStatus();
 		if (status.equals(ProductStatus.UNREAD)) {
 			remoteStatus = UNREADABLE_WITH_CODE_INT;
 		} else if (status.equals(ProductStatus.NOT_AUTHENTICATED)) {

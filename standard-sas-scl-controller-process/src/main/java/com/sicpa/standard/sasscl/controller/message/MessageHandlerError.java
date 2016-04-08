@@ -23,7 +23,7 @@ public class MessageHandlerError {
 
 	@Subscribe
 	public void handleMessage(ActionEventError error) {
-		logger.error(error.getKey() + Arrays.toString(error.getParams()));
+		logger.info("key=" + error.getKey() + "; params:" + Arrays.toString(error.getParams()));
 		EventBusService.post(new ErrorViewEvent(error.getKey(), null, true, error.getParams()));
 		MonitoringService.addSystemEvent(new BasicSystemEvent(SystemEventLevel.ERROR,
 				SystemEventType.APPLICATION_MESSAGE, error.getSource() + ": " + error.getKey()));

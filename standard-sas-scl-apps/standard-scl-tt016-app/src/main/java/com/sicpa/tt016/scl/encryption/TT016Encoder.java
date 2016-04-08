@@ -70,13 +70,6 @@ public class TT016Encoder implements IEncoder {
 		}
 	}
 
-	@Override
-	public String toString() {
-		return "EncoderDTO [mRemainingCodes=" + remainingCodes + ", mCurrentIndex=" + currentIndex + ", mSubSystemId="
-				+ subSystemId + ", batchId=" + tt016encoder.getBatchId() + ", capacity=" + tt016encoder.getCapacity()
-				+ "]";
-	}
-
 	public void setCurrentIndex(long currentIndex) {
 		this.currentIndex = currentIndex;
 	}

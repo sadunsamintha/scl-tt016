@@ -12,6 +12,7 @@ beans{
 		remoteServices=ref('remoteServices')
 		connector=ref('masterConnector')
 		skuConverter=ref('skuConverter')
+		storage=ref('storage')
 	}
 	remoteServices(TT016RemoteServices){
 		userMachine=props['server.machine.user']

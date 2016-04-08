@@ -16,7 +16,7 @@ public class MessageHandlerErrorDisplay {
 
 	@Subscribe
 	public void handleMessage(ActionEventErrorDisplay error) {
-		logger.info(error.getKey() + Arrays.toString(error.getParams()));
+		logger.info("key="+error.getKey() +"; params:"+ Arrays.toString(error.getParams()));
 		EventBusService.post(new ErrorViewEvent(error.getKey(), null, true, error.getParams()));
 	}
 

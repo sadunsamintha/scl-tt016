@@ -50,7 +50,7 @@ public class TT016RemoteServer extends AbstractRemoteServer {
 
 	public TT016RemoteServer() {
 	}
-	
+
 	@Override
 	public boolean isConnected() {
 		return connector.isConnected();
@@ -133,16 +133,18 @@ public class TT016RemoteServer extends AbstractRemoteServer {
 	@Override
 	public void sendProductionData(PackagedProducts products) throws RemoteServerException {
 		try {
-			if (products.getProductStatus() == ProductStatus.EXPORT) {
+			if (products.getProductStatus().equals(ProductStatus.EXPORT)) {
 				sendExportData(products);
-			} else if (products.getProductStatus() == ProductStatus.MAINTENANCE) {
+			} else if (products.getProductStatus().equals(ProductStatus.MAINTENANCE)) {
 				sendMaintenanceData(products);
-			} else if (products.getProductStatus() == ProductStatus.UNREAD) {
+			} else if (products.getProductStatus().equals(ProductStatus.UNREAD)) {
 				sendEjectedData(products);
-			} else if (products.getProductStatus() == ProductStatus.AUTHENTICATED) {
+			} else if (products.getProductStatus().equals(ProductStatus.AUTHENTICATED)) {
 				sendAuthenticatedData(products);
-			} else if (products.getProductStatus() == ProductStatus.REFEED) {
+			} else if (products.getProductStatus().equals(ProductStatus.REFEED)) {
 				sendRefeedData(products);
+			} else {
+				logger.error("package not handled:" + products.getProductStatus());
 			}
 		} catch (Exception e) {
 			throw new RemoteServerException("", e);
@@ -221,5 +223,9 @@ public class TT016RemoteServer extends AbstractRemoteServer {
 	public void addDeviceStatusListener(IDeviceStatusListener listener) {
 		super.addDeviceStatusListener(listener);
 		connector.addDeviceStatusListener(listener);
+	}
+
+	public void setStorage(IStorage storage) {
+		this.storage = storage;
 	}
 }

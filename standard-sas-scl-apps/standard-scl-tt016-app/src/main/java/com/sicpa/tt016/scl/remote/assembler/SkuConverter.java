@@ -56,6 +56,7 @@ public class SkuConverter {
 		BufferedImage image = convertToBufferedImage(dto.getIcon());
 		sku.setImage(new ImageIcon(image));
 		sku.setCodeType(new CodeType(codeTypeId));
+		sku.setDescription(dto.getDescription());
 		return sku;
 	}
 
