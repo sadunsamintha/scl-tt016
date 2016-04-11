@@ -23,23 +23,25 @@ public class FilterDuplicatedCodeAction extends AbstractBeforeActivationAction {
 
     private ProductionParameters productionParameters;
 
+
     @Override
     public BeforeActivationResult internalReceivedCode(final Code code, final boolean good, String cameraName) {
-
-        if (isEnabled()) {
-            logger.debug("Code received at {} = {} , Is good code = {}", new Object[]{cameraName, code.getStringCode(), good});
-
-            if (good) {
-                String previousCode = previousCodeMap.get(cameraName);
-
-                if (previousCode != null && previousCode.equals(code.getStringCode())) {
-                    return new BeforeActivationResult(code, good, true);
-                }
-                previousCodeMap.put(cameraName, code.getStringCode());
-            }
+        if (!isEnabled()) {
+            return new BeforeActivationResult(code, good, false);
         }
-        return new BeforeActivationResult(code, good, false);
 
+        logger.debug("Code received at {} = {} , Is good code = {}", new Object[]{cameraName, code.getStringCode(), good});
+        if (good && isSameAsPreviousCode(code, cameraName)) {
+            return  BeforeActivationResult.createBeforeActivationResultFiltered(code, good);
+        } else {
+            previousCodeMap.put(cameraName, code.getStringCode());
+            return  BeforeActivationResult.createBeforeActivationResultNotFiltered(code, good);
+        }
+    }
+
+    private boolean isSameAsPreviousCode(Code code, String cameraName) {
+        String previousCode = previousCodeMap.get(cameraName);
+        return previousCode != null && previousCode.equals(code.getStringCode());
     }
 
     @Subscribe
