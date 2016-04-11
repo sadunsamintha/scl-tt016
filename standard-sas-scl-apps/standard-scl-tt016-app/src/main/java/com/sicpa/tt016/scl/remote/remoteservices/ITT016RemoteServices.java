@@ -25,8 +25,6 @@ public interface ITT016RemoteServices {
 
 	List<SkuDTO> getSkuList() throws InternalException;
 
-	boolean isRefeedEnabled() throws InternalException;
-
 	IMoroccoAuthenticator getDecoder();
 
 	EncoderInfoResultDTO sendEncoderInfo(List<EncoderInfoDTO> info) throws InternalException;

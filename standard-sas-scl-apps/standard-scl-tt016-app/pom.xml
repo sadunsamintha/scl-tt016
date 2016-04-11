@@ -17,14 +17,23 @@
 		<dependency>
 			<groupId>com.sicpa.tt016</groupId>
 			<artifactId>tt016-master-scl-ejb</artifactId>
-			<version>3.3.5</version>
+			<version>3.2.0</version>
 			<type>ejb-client</type>
 			<exclusions>
 				<exclusion>
 					<artifactId>tt016-database-manager</artifactId>
 					<groupId>com.sicpa.tt016</groupId>
 				</exclusion>
+				<exclusion>
+					<groupId>com.sicpa.tt016</groupId>
+					<artifactId>tt016-common-security</artifactId>
+				</exclusion>
 			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>com.sicpa.tt016</groupId>
+			<artifactId>tt016-common-security</artifactId>
+			<version>0.2.0</version>
 		</dependency>
 		<dependency>
 			<groupId>com.sicpa.tt016</groupId>

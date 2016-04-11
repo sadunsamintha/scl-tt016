@@ -34,7 +34,9 @@ public class ProductionDataConverter {
 		for (Product p : products.getProducts()) {
 			activated.add(convertProduct(p, subsystemId, products.getProductStatus()));
 		}
-		return new CodingActivationSessionDTO(activated);
+		CodingActivationSessionDTO res = new CodingActivationSessionDTO(activated);
+		res.setQty(activated.size());
+		return res;
 	}
 
 	private CodingActivationDTO convertProduct(Product product, int subsystemId, ProductStatus status) {

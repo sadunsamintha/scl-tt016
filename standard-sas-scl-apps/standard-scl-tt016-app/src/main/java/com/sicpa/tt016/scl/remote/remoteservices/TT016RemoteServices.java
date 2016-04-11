@@ -65,14 +65,14 @@ public class TT016RemoteServices implements ITT016RemoteServices {
 
 	@Override
 	@TimeoutLifeCheck
-	public synchronized boolean isAlive() {
+	public boolean isAlive() {
 		logger.debug("mscl isalive called");
 		return codingActivation.isAlive(subsystemId);
 	}
 
 	@Override
 	@Timeout
-	public synchronized List<SkuDTO> getSkuList() throws InternalException {
+	public List<SkuDTO> getSkuList() throws InternalException {
 		logger.info("requesting sku list");
 		List<SkuDTO> skus = codingActivation.getSKU(subsystemId);
 		Comparator<SkuDTO> c = (s1, s2) -> s1.getDescription().compareTo(s2.getDescription());
@@ -82,19 +82,13 @@ public class TT016RemoteServices implements ITT016RemoteServices {
 
 	@Override
 	@Timeout
-	public synchronized boolean isRefeedEnabled() throws InternalException {
-		return codingActivation.isRefeedMode(subsystemId);
-	}
-
-	@Override
-	@Timeout
-	public synchronized IMoroccoAuthenticator getDecoder() {
+	public IMoroccoAuthenticator getDecoder() {
 		return codingActivation.getAuthenticator(subsystemId);
 	}
 
 	@Override
 	@Timeout
-	public synchronized EncoderInfoResultDTO sendEncoderInfo(List<EncoderInfoDTO> info) throws InternalException {
+	public EncoderInfoResultDTO sendEncoderInfo(List<EncoderInfoDTO> info) throws InternalException {
 		logger.info("sending encoders info");
 		EncoderInfoResultDTO res = codingActivation.sendEncodersInfo(subsystemId, info);
 		return res;
@@ -102,7 +96,7 @@ public class TT016RemoteServices implements ITT016RemoteServices {
 
 	@Override
 	@Timeout
-	public synchronized List<EncoderSclDTO> getRemoteEncoders(int encoderQty, int codeTypeId) throws InternalException {
+	public List<EncoderSclDTO> getRemoteEncoders(int encoderQty, int codeTypeId) throws InternalException {
 		logger.info("requesting encoder");
 		return codingActivation.getSclEncoders(encoderQty, new CodeType(codeTypeId), subsystemId);
 	}
@@ -125,30 +119,31 @@ public class TT016RemoteServices implements ITT016RemoteServices {
 		sendCountProduction(data);
 	}
 
-	private synchronized void sendCountProduction(NonActivationSessionDTO data) throws InternalException {
+	private void sendCountProduction(NonActivationSessionDTO data) throws InternalException {
 		logger.info("sending counted production data");
 		codingActivation.sendProductionQty(data, subsystemId);
 	}
 
 	@Override
 	@Timeout
-	public synchronized void sendDomesticProduction(CodingActivationSessionDTO activSession) throws InternalException {
+	public void sendDomesticProduction(CodingActivationSessionDTO activSession) throws InternalException {
 		logger.info("sending domestic production data");
-		codingActivation.sendProductionData(PRODUCTION_MODE_STANDARD, activSession, emptyList(), subsystemId);
+		codingActivation.sendProductionData(activSession, emptyList(), subsystemId);
 	}
 
 	@Override
 	@Timeout
-	public synchronized void sendRefeedProduction(CodingActivationSessionDTO activSession) throws InternalException {
+	public void sendRefeedProduction(CodingActivationSessionDTO activSession) throws InternalException {
 		logger.info("sending refeed data");
-		codingActivation.sendProductionData(PRODUCTION_MODE_REFEED, activSession, emptyList(), subsystemId);
+		codingActivation.sendProductionData(activSession, emptyList(), subsystemId);
 	}
 
 	@Override
 	@Timeout
-	public synchronized void sendEjectedProduction(IEjectionDTO ejected) throws InternalException {
+	public void sendEjectedProduction(IEjectionDTO ejected) throws InternalException {
 		logger.info("sending ejection data");
-		codingActivation.sendProductionData(PRODUCTION_MODE_STANDARD, null, asList(ejected), subsystemId);
+		CodingActivationSessionDTO emptySessionDto = new CodingActivationSessionDTO(emptyList());
+		codingActivation.sendProductionData(emptySessionDto, asList(ejected), subsystemId);
 	}
 
 	private Object locateService(String name) throws NamingException {
@@ -161,7 +156,7 @@ public class TT016RemoteServices implements ITT016RemoteServices {
 		properties.put("java.naming.security.credentials", passwordMachine);
 		properties.put("java.naming.factory.initial", "org.jboss.security.jndi.JndiLoginInitialContextFactory");
 		properties.put(" java.naming.factory.url.pkgs", "org.jboss.naming:org.jnp.interfaces");
-		properties.put("jnp.multi-threaded", "true");
+		properties.put("jnp.multi-threaded", "false");
 		properties.put("java.naming.provider.url", url);
 		context = new InitialContext(properties);
 	}

@@ -68,15 +68,6 @@ public class TT016RemoteServer extends AbstractRemoteServer {
 		}
 	}
 
-	public boolean isRefeedEnabled() {
-		try {
-			return remoteServices.isRefeedEnabled();
-		} catch (InternalException e) {
-			logger.error("Error getting the isRefeed from the DMS." + e.getMessage());
-			return false;
-		}
-	}
-
 	@Override
 	public IAuthenticator getAuthenticator() throws RemoteServerException {
 		if (!isConnected()) {
@@ -133,18 +124,19 @@ public class TT016RemoteServer extends AbstractRemoteServer {
 	@Override
 	public void sendProductionData(PackagedProducts products) throws RemoteServerException {
 		try {
-			if (products.getProductStatus().equals(ProductStatus.EXPORT)) {
+			if (products.getProductStatus().equals(ProductStatus.AUTHENTICATED)) {
+				sendAuthenticatedData(products);
+			} else if (products.getProductStatus().equals(ProductStatus.SENT_TO_PRINTER_UNREAD)
+					|| products.getProductStatus().equals(ProductStatus.UNREAD)) {
+				sendEjectedData(products);
+			} else if (products.getProductStatus().equals(ProductStatus.EXPORT)) {
 				sendExportData(products);
 			} else if (products.getProductStatus().equals(ProductStatus.MAINTENANCE)) {
 				sendMaintenanceData(products);
-			} else if (products.getProductStatus().equals(ProductStatus.UNREAD)) {
-				sendEjectedData(products);
-			} else if (products.getProductStatus().equals(ProductStatus.AUTHENTICATED)) {
-				sendAuthenticatedData(products);
 			} else if (products.getProductStatus().equals(ProductStatus.REFEED)) {
 				sendRefeedData(products);
 			} else {
-				logger.error("package not handled:" + products.getProductStatus());
+				logger.warn("package not handled:" + products.getProductStatus());
 			}
 		} catch (Exception e) {
 			throw new RemoteServerException("", e);
