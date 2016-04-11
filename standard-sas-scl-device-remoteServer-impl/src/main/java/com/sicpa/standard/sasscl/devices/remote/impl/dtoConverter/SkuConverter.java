@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.swing.ImageIcon;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -133,6 +135,7 @@ public class SkuConverter implements ISkuConverter {
 		SkuProductDto skuDto = (SkuProductDto) child.getNodeValue();
 		SKU sku = new SKU(skuDto.getId().intValue(), skuDto.getInternalDescription(), Arrays.asList(skuDto
 				.getSkuBarcode()));
+		sku.setImage(new ImageIcon(skuDto.getIcon()));
 		CodeType codeType = this.getCodeTypeForSku(child);
 
 		// skip if fail to get code type

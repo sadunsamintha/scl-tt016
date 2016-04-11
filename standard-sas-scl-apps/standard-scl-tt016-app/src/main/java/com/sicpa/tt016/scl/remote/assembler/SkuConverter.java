@@ -53,8 +53,11 @@ public class SkuConverter {
 		SKU sku = new SKU();
 		sku.setId(dto.getSkuId());
 		sku.addBarcode(dto.getBarcode());
+		
 		BufferedImage image = convertToBufferedImage(dto.getIcon());
 		sku.setImage(new ImageIcon(image));
+		// FIXME when mscl api is fixed sku.setImage(new ImageIcon(skuDto.getIcon());
+		
 		sku.setCodeType(new CodeType(codeTypeId));
 		sku.setDescription(dto.getDescription());
 		return sku;
