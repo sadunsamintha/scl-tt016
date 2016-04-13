@@ -25,7 +25,4 @@ public final class ActivityTrigger extends Trigger {
 	public final static ActivityTrigger TRG_RECOVERING_CONNECTION = new ActivityTrigger("RECOVERING_CONNECTION");
 	public final static ActivityTrigger TRG_HARDWARE_DISCONNECTED = new ActivityTrigger("HW_DISCONNECTED");
 	public final static ActivityTrigger TRG_HARDWARE_STOPPING = new ActivityTrigger("HW_STOPPING");
-	public final static ActivityTrigger TRG_STOP_REASON_SELECTED = new ActivityTrigger("STOP_REASON_SELECTED");
-
-
 }

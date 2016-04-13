@@ -41,8 +41,6 @@ public class SystemEventType implements Serializable {
 
 	public static final SystemEventType OFFLINE_COUNTING = new SystemEventType("OFFLINE_COUNTING");
 
-	public static final SystemEventType PROD_STOP_REASON = new SystemEventType("PROD_STOP_REASON");
-
 	protected String name;
 
 	public SystemEventType(final String name) {

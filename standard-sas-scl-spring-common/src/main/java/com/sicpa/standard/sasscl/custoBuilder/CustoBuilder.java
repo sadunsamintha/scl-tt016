@@ -315,16 +315,14 @@ public class CustoBuilder {
 	}
 
 	/**
-	 * This method adds a new transition between two screens. The transition is triggered by the specified trigger
-	 * parameter.
+	 * This method adds a new transition(s) between two screens.
 	 *
 	 * @param from the origin screen
-	 * @param to the destination screen
-	 * @param trigger the trigger which fires the transition
+	 * @param screenTransitions the transition which details the trigger and the destination screen
 	 */
-	public static void addScreenTransition(IScreenGetter from, IScreenGetter to, ScreenTransitionTrigger trigger) {
+	public static void addScreenTransitions(IScreenGetter from, ScreenTransition... screenTransitions) {
 		IScreensFlow screensFlow = BeanProvider.getBean(BeansName.SCREENS_FLOW);
-		screensFlow.addTransitions(from, new ScreenTransition(trigger, to));
+		screensFlow.addTransitions(from, screenTransitions);
 	}
 
 	/**
