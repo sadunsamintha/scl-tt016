@@ -22,6 +22,7 @@ import com.sicpa.tt018.scl.utils.AlbaniaBlobUtils;
 public class TT018ExtendedCodeFactory implements IExCodeBehavior {
 	private ModelDataMatrixFormat dmFormat;
 	private ModelDataMatrixEncoding dmEncoding;
+	private Option dmOrientation;
 	private RelativePosition blobPosition;
 	private Option blobType;
 	private static final Logger logger = LoggerFactory.getLogger(TT018ExtendedCodeFactory.class);
@@ -89,6 +90,9 @@ public class TT018ExtendedCodeFactory implements IExCodeBehavior {
 		DatamatrixBlockFactory dmFactory = new DatamatrixBlockFactory();
 		dmFactory.setModelDatamatrixEncoding(dmEncoding);
 		dmFactory.setModelDatamatrixFormat(dmFormat);
+		if(dmOrientation != null){
+			dmFactory.addOption(dmOrientation);
+		}
 		return dmFactory;
 	}
 
@@ -114,5 +118,13 @@ public class TT018ExtendedCodeFactory implements IExCodeBehavior {
 
 	public void setBlobType(Option blobType) {
 		this.blobType = blobType;
+	}
+
+	public Option getDmOrientation() {
+		return dmOrientation;
+	}
+
+	public void setDmOrientation(Option dmOrientation) {
+		this.dmOrientation = dmOrientation;
 	}
 }

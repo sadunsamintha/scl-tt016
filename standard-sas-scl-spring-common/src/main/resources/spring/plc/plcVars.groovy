@@ -190,8 +190,8 @@ beans {
 	plcMap['NTF_CAB_CAB_TRILIGHT_GREEN']=[v:CAB_NTF+'nCabTrilightGreen' ,t:I ]
 	plcMap['NTF_CAB_CAB_TRILIGHT_YELLOW']=[v:CAB_NTF+'nCabTrilightYellow' ,t:I ]
 	plcMap['NTF_CAB_CAB_TRILIGHT_RED']=[v:CAB_NTF+'nCabTrilightRed' ,t:I ]
-	plcMap['NTF_CAB_CX_BOARD_TEMPERATURE']=[v:CAB_NTF+'nCX_Board_temperature' ,t:BY ]
-	plcMap['NTF_CAB_CX_CPU_TEMPERATURE']=[v:CAB_NTF+'nCX_CPU_temperature' ,t:BY ]
+//	plcMap['NTF_CAB_CX_BOARD_TEMPERATURE']=[v:CAB_NTF+'nCX_Board_temperature' ,t:BY ]
+//	plcMap['NTF_CAB_CX_CPU_TEMPERATURE']=[v:CAB_NTF+'nCX_CPU_temperature' ,t:BY ]
 	plcMap['NTF_CAB_TEMPERATURE_EE_CAB']=[v:CAB_NTF+'nTemperature_EE_cabinet' ,t:S ]
 	plcMap['NTF_CAB_TEMPERATURE_AMBIANT']=[v:CAB_NTF+'nTemperature_ambiant' ,t:S ]
 	plcMap['NTF_CAB_TEMPERATURE_BYPASS']=[v:CAB_NTF+'nTemperature_bypass' ,t:S ]
@@ -205,7 +205,7 @@ beans {
 	plcMap['REQUEST_START']=[v:'.com.stMultilineRequests.bStart' ,t:B]
 	plcMap['REQUEST_RUN']=[v:'.com.stMultilineRequests.bRun' ,t:B]
 	plcMap['REQUEST_STOP']=[v:'.com.stMultilineRequests.bStop' ,t:B]
-	plcMap['REQUEST_RELOAD_CONFIG']=[v:'.com.stMultilineRequests.bReloadConfig' ,t:B]
+	plcMap['REQUEST_RELOAD_PLC_PARAM']=[v:'.com.stMultilineRequests.bReloadConfig' ,t:B]
 	plcMap['REQUEST_LIFE_CHECK']=[v:CAB+'stRequests.bLifeCheck' ,t:B]
 	plcMap['REQUEST_JAVA_WARNINGS_AND_ERRORS_REGISTER']=[v:'.com.nJavaWarningsAndErrorsRegister' ,t:I]
 
@@ -271,10 +271,10 @@ def void addVarToLists(def var,String logicName,def varInfo){
 	}
 
 	//NOTIF
-	if(isCabinetNotif(varInfo)){
+	if(isCabinetNotif(logicName)){
 		cabNotif.add(var)
 	}
-	if(isLineNotif(varInfo)){
+	if(isLineNotif(logicName)){
 		lineNotif.add(var)
 	}
 }
@@ -412,11 +412,11 @@ def  boolean isCabinetJmxReport(String varName){
 def  boolean isLineJmxReport(String varName){
 	return varName.startsWith('NTF_LINE')
 }
-def  boolean isCabinetNotif(def map){
-	return Boolean.parseBoolean(map['lineNotif'])
+def  boolean isCabinetNotif(String varName){
+	return varName.startsWith('NTF_CAB')
 }
-def  boolean isLineNotif(def map){
-	return Boolean.parseBoolean(map['lineNotif'])
+def  boolean isLineNotif(String varName){
+	return varName.startsWith('NTF_LINE')
 }
 def  boolean isPulseConverterParam(def map){
 	return Boolean.parseBoolean(map['pulseConvertParam'])

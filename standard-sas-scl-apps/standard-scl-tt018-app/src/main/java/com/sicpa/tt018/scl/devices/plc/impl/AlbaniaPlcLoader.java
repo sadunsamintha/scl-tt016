@@ -97,6 +97,7 @@ public class AlbaniaPlcLoader extends PlcValuesLoader {
 
 	private void saveProductSpecificVar(String var, String value) {
 		if (StringUtils.isNotBlank(currentProductTypeSpecificFileUse)) {
+			valuesByLines.get(LINE_INDEX_USED).put(var, value);
 			StringMap map = createPropertiesToSaveProductSpecific();
 			map.put(var, value);
 			save(currentProductTypeSpecificFileUse, map);

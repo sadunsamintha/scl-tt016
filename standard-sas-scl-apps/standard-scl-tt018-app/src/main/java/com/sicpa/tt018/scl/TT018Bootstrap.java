@@ -27,7 +27,6 @@ public class TT018Bootstrap extends Bootstrap {
 	public void executeSpringInitTasks() {
 		super.executeSpringInitTasks();
 		messageCusto();
-		addSoftDrinkProductionMode();
 		statisticsCusto();
 		setProductionModePermission();
 	}
@@ -53,13 +52,18 @@ public class TT018Bootstrap extends Bootstrap {
 		Map<String, Object> options = new HashMap<>();
 		options.put("lineGrp", "system");
 
-		CustoBuilder.addPlcVariable("PARAM_LINE_SENSOR_TYPE", ".com.stLine[#1].stParameters.nPackageType", PLC_TYPE.S,
+		CustoBuilder.addPlcVariable("PARAM_LINE_SENSOR_TYPE", ".com.stLine[1].stParameters.nPackageType", PLC_TYPE.S,
 				options);
 	}
 
+	@Override
+	protected void preProcessTask() {
+		addSoftDrinkProductionMode();
+	}
+	
 	public static void addSoftDrinkProductionMode() {
 		IProductionConfigMapping mapping = BeanProvider.getBean(PRODUCTION_CONFIG_MAPPING);
-		mapping.put(SOFT_DRINK, "softdrink");
+		mapping.put(SOFT_DRINK, "softDrink");
 	}
 
 }

@@ -31,7 +31,10 @@ public class PlcLineHelper {
 	}
 
 	public static int getLineIndex(String param) {
-		return Integer.parseInt(param.substring(0, lineIndexPosition));
+		param = param.substring(0, lineIndexPosition);
+		param = param.substring(lineIndexPosition - 2, lineIndexPosition - 1);
+
+		return Integer.parseInt(param);
 	}
 
 	public static String replaceLinePlaceholder(String varName, int lineIndex) {
@@ -40,11 +43,11 @@ public class PlcLineHelper {
 	}
 
 	public static IPlcVariable<?> clone(IPlcVariable<?> source, int lineIndex) {
-		return PlcVariable.create(PlcLineHelper.replaceLinePlaceholder(source.getVariableName(), lineIndex),
-				source.getVariableType());
+		return PlcVariable.create(PlcLineHelper.replaceLinePlaceholder(source.getVariableName(), lineIndex), source.getVariableType());
 	}
 
-	// transform a group of template var to actual var (#x replace by the line index)
+	// transform a group of template var to actual var (#x replace by the line
+	// index)
 	public static List<PlcVariableGroup> replaceLinePlaceholder(List<PlcVariableGroup> groups, int index) {
 		List<PlcVariableGroup> res = new ArrayList<>();
 		for (int i = 0; i < groups.size(); i++) {
