@@ -12,6 +12,9 @@ import org.slf4j.LoggerFactory;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.sicpa.standard.sasscl.business.activation.impl.beforeActivationAction.BeforeActivationResult.createBeforeActivationResultFiltered;
+import static com.sicpa.standard.sasscl.business.activation.impl.beforeActivationAction.BeforeActivationResult.createBeforeActivationResultNotFiltered;
+
 public class FilterDuplicatedCodeAction extends AbstractBeforeActivationAction {
 
     private static final Logger logger = LoggerFactory.getLogger(FilterDuplicatedCodeAction.class);
@@ -27,15 +30,15 @@ public class FilterDuplicatedCodeAction extends AbstractBeforeActivationAction {
     @Override
     public BeforeActivationResult internalReceivedCode(final Code code, final boolean good, String cameraName) {
         if (!isEnabled()) {
-            return new BeforeActivationResult(code, good, false);
+            return createBeforeActivationResultNotFiltered(code, good);
         }
 
         logger.debug("Code received at {} = {} , Is good code = {}", new Object[]{cameraName, code.getStringCode(), good});
         if (good && isSameAsPreviousCode(code, cameraName)) {
-            return  BeforeActivationResult.createBeforeActivationResultFiltered(code, good);
+            return  createBeforeActivationResultFiltered(code, good);
         } else {
             previousCodeMap.put(cameraName, code.getStringCode());
-            return  BeforeActivationResult.createBeforeActivationResultNotFiltered(code, good);
+            return  createBeforeActivationResultNotFiltered(code, good);
         }
     }
 
