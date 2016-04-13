@@ -1,5 +1,7 @@
 package com.sicpa.standard.sasscl.ioc;
 
+import com.sicpa.standard.client.common.view.screensflow.IScreenGetter;
+
 public interface BeansName {
 
 	String PLC_VALUES_LOADER = "plcValuesLoader";
@@ -106,6 +108,7 @@ public interface BeansName {
 	 * IFlowcontrol
 	 */
 	String FLOW_CONTROL = "flowControl";
+	String DEFAULT_FLOW_CONTROL_WIRING = "flowControlWiring";
 	String PROCESS_REPORT = "processReport";
 	/**
 	 * IProduction
@@ -192,6 +195,7 @@ public interface BeansName {
 	String MAIN_FRAME = "mainFrame";
 	String BEAN_CALL_PANEL = "beanCallPanelGetter";
 	String BEAN_CALL_LIST = "beanCallList";
+	String SCREENS_FLOW = "screensFlow";
 
 	/**
 	 * IPostPackage

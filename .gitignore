@@ -105,3 +105,6 @@ standard-sas-scl-apps/standard-scl-tt016-app/profiles/TT016/internal
 standard-sas-scl-apps/standard-scl-tt016-app/profiles/TT016/internalSimulator
 standard-sas-scl-apps/standard-scl-tt016-app/profiles/TT016/monitoring
 standard-sas-scl-apps/standard-scl-tt016-app/target
+*.iml
+standard-sas-scl-apps/standard-scl-tt016-app/profiles/TT016/simulProductSend/
+standard-sas-scl-apps/standard-scl-tt016-app/uncaught-error/

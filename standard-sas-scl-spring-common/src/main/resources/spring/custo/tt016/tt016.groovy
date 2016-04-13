@@ -11,5 +11,9 @@ beans{
 	addAlias('bootstrapAlias','bootstrap')
 	bootstrap(TT016Bootstrap){b->
 		b.parent=ref('bootstrapAlias')
+		mainPanelGetter=ref('mainPanelGetter')
+		stopReasonViewController=ref('stopReasonViewController')
 	}
+
+	importBeans('spring/custo/tt016/tt016View.xml')
 }

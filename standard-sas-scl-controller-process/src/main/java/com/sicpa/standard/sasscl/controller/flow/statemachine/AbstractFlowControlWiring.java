@@ -1,17 +1,14 @@
 package com.sicpa.standard.sasscl.controller.flow.statemachine;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.sicpa.standard.client.common.statemachine.IStateAction;
 import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public abstract class AbstractFlowControlWiring implements IFlowControlWiring {
 
 	protected Map<ApplicationFlowState, IStateAction> map = new HashMap<>();
-	protected List<FlowTransition> flowTransitions = new ArrayList<>();
 
 	public AbstractFlowControlWiring() {
 		initFlowTransitions();
@@ -20,6 +17,7 @@ public abstract class AbstractFlowControlWiring implements IFlowControlWiring {
 	public void addNext(ApplicationFlowState current, FlowTransition... flowTransitions) {
 		for (FlowTransition t : flowTransitions) {
 			current.addNext(t.getTrigger(), t.getNextState());
+
 		}
 	}
 

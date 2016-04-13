@@ -21,10 +21,10 @@
   <!--<dataFilePath>src/main/resources/internal/simulator/camera/codes.txt</dataFilePath>-->
 
   <!-- Camera error code percentage -->
-  <percentageBadCode>1</percentageBadCode>
+  <percentageBadCode>0</percentageBadCode>
 
   <!-- Camera simulator code frequency -->
-  <readCodeInterval>5</readCodeInterval>
+  <readCodeInterval>500</readCodeInterval>
 
 </CameraSimulatorConfig>
 
