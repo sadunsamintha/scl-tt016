@@ -2,15 +2,15 @@
 	<mId>2</mId>
 	<mDriverName>CognexCameraDriver</mDriverName>
 	<mPort>3000</mPort>
-	<mIp>192.168.1.21</mIp>
+	<mIp>192.168.1.2</mIp>
 	<mConnectionTimeout>2000</mConnectionTimeout>
 	<mLifeCheckInterval>1000</mLifeCheckInterval>
 	<mTelnetPort>23</mTelnetPort>
 	<mTelnetUser>admin</mTelnetUser>
-	<mTelnetPassword>admin</mTelnetPassword>
+	<mTelnetPassword></mTelnetPassword>
 	<mFTPPort>21</mFTPPort>
 	<mFTPUser>admin</mFTPUser>
-	<mFTPPassword>admin</mFTPPassword>
+	<mFTPPassword></mFTPPassword>
 	<mImageFileName>image.jpg</mImageFileName>
 	<mImageRetrievalType>TIMER_TASK</mImageRetrievalType>
 	<mLoadJob>false</mLoadJob>

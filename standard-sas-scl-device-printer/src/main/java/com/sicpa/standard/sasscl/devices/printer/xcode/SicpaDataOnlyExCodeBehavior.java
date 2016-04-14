@@ -10,11 +10,13 @@ import com.sicpa.standard.printer.xcode.BlockFactory;
 import com.sicpa.standard.printer.xcode.DatamatrixBlockFactory;
 import com.sicpa.standard.printer.xcode.ExtendedCode;
 import com.sicpa.standard.printer.xcode.ExtendedCodeFactory;
+import com.sicpa.standard.printer.xcode.Option;
 
 public class SicpaDataOnlyExCodeBehavior implements IExCodeBehavior {
 
 	protected ModelDataMatrixEncoding dmEncoding;
 	protected ModelDataMatrixFormat dmFormat;
+	protected Option dmOrientation;
 
 	public SicpaDataOnlyExCodeBehavior() {
 		dmEncoding = ModelDataMatrixEncoding.ASCII;
@@ -35,7 +37,8 @@ public class SicpaDataOnlyExCodeBehavior implements IExCodeBehavior {
 		return res;
 	}
 
-	protected List<Object> createCompositeCode(String dm, List<BlockFactory> factories) {
+	protected List<Object> createCompositeCode(String dm,
+			List<BlockFactory> factories) {
 		return Arrays.asList(dm);
 	}
 
@@ -43,6 +46,9 @@ public class SicpaDataOnlyExCodeBehavior implements IExCodeBehavior {
 		DatamatrixBlockFactory dm = new DatamatrixBlockFactory();
 		dm.setModelDatamatrixEncoding(dmEncoding);
 		dm.setModelDatamatrixFormat(dmFormat);
+		if (dmOrientation != null) {
+			dm.addOption(dmOrientation);
+		}
 		return Arrays.asList(dm);
 	}
 
@@ -52,6 +58,14 @@ public class SicpaDataOnlyExCodeBehavior implements IExCodeBehavior {
 
 	public void setDmFormat(ModelDataMatrixFormat dmFormat) {
 		this.dmFormat = dmFormat;
+	}
+
+	public Option getDmOrientation() {
+		return dmOrientation;
+	}
+
+	public void setDmOrientation(Option dmOrientation) {
+		this.dmOrientation = dmOrientation;
 	}
 
 }

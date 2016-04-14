@@ -266,7 +266,7 @@ public class SASDefaultMessagesMapping extends DefaultMessagesMapping {
 			throw new IllegalArgumentException(e);
 		}
 	}
-
+	
 	@SuppressWarnings("unchecked")
 	protected ActionMessageType createMessageType(String key) throws ClassNotFoundException {
 		if (StringUtils.isBlank(key)) {

@@ -16,7 +16,7 @@ beans{
 		lifeCheckRequest=ref('REQUEST_LIFE_CHECK_var')
 	}
 
-	plcController(PlcControllerImpl,ref('plcSimulatorModel')){b->
+	plcController(PlcControllerImpl){b->
 		b.scope='prototype'
 		model=ref('stdPlcModel')
 	}
