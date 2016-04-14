@@ -49,6 +49,7 @@ public class ExecutorExit implements IStateAction {
 
 				screensFlow.moveToNext(ScreensFlowTriggers.EXIT);
 
+				hardwareController.switchOff();
 				hardwareController.disconnect();
 
 				storage.saveStatistics(statistics.getValues());
