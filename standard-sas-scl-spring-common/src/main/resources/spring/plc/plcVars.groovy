@@ -23,9 +23,6 @@ import com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcVariableDesc
 @Field def plcMap=new HashMap()
 @Field def requestMapping=new HashMap()
 
-@Field def lineNotifToAdd= new ArrayList<String>()
-@Field def cabNotifToAdd= new ArrayList<String>()
-
 @Field def lineGroups=new TreeMap<String, PlcVariableGroup>()
 @Field def cabGroups=new TreeMap<String, PlcVariableGroup>()
 
@@ -217,13 +214,6 @@ beans {
 	requestMapping[(STOP)]=[REQUEST_STOP:true]
 	requestMapping[(RELOAD_PLC_PARAM)]=[REQUEST_RELOAD_PLC_PARAM:true]
 
-	cabNotifToAdd.add('NTF_CAB_WAR_ERR_REGISTER');
-	
-	lineNotifToAdd.add('NTF_LINE_SPEED');
-	lineNotifToAdd.add('NTF_LINE_STATE');
-	lineNotifToAdd.add('NTF_LINE_WAR_ERR_REGISTER');
-	lineNotifToAdd.add('NTF_LINE_PRODUCT_DETECTOR_TRIGS');
-	
 	for ( e in plcMap ) {
 		String logic=e.key
 		String phy=e.value['v']
@@ -264,7 +254,6 @@ def void injectCustoVar(){
 def void addVarToLists(def var,String logicName,def varInfo){
 	allVars.add(var)
 
-	//JMX REPORT
 	if(isLineJmxReport(logicName)) {
 		lineJmxReport.add(var)
 	}
@@ -272,11 +261,11 @@ def void addVarToLists(def var,String logicName,def varInfo){
 		cabJmxReport.add(var)
 	}
 
-	if(isCabinetNotif(logicName)){
+	if(isCabinetNotif(varInfo)){
 		cabNotif.add(var)
 	}
 	
-	if(isLineNotif(logicName)){
+	if(isLineNotif(varInfo)){
 		lineNotif.add(var)
 	}
 
@@ -415,11 +404,11 @@ def  boolean isCabinetJmxReport(String varName){
 def  boolean isLineJmxReport(String varName){
 	return varName.startsWith('NTF_LINE')
 }
-def  boolean isCabinetNotif(String varName){
-	return cabNotifToAdd.contains(varName)
+def  boolean isCabinetNotif(def map){
+	return Boolean.parseBoolean(map['cabNtf'])
 }
-def  boolean isLineNotif(String varName){
-	return lineNotifToAdd.contains(varName)
+def  boolean isLineNotif(def map){
+	return Boolean.parseBoolean(map['lineNtf'])
 }
 def  boolean isPulseConverterParam(def map){
 	return Boolean.parseBoolean(map['pulseConvertParam'])
