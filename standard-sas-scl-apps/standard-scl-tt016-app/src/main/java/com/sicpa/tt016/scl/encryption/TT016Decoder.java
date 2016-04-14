@@ -16,8 +16,8 @@ import com.sicpa.tt016.common.security.authenticator.IMoroccoAuthenticator;
 @SuppressWarnings("serial")
 public class TT016Decoder implements IAuthenticator {
 
-	public static final String SCL_MODE = "SCL";
-	public static final String SAS_MODE = "SAS";
+	private static final String SCL_MODE = "SCL";
+	private static final String SAS_MODE = "SAS";
 
 	private static final Logger logger = LoggerFactory.getLogger(TT016Decoder.class);
 
