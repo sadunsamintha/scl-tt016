@@ -147,6 +147,7 @@
 		        <bean p:key="3" p:description="Par3: Error : "				parent="CommandParameter"/>
 		        <bean p:key="4" p:description="Par4: Headcover : "			parent="CommandParameter"/>
 		        <bean p:key="5" p:description="Par5: ActSpeed : "			parent="CommandParameter"/>
+		        <bean p:key="6" p:description="Par6: Flag for job change : "			parent="CommandParameter"/>
 			</util:list>
 		</property>
 	</bean>

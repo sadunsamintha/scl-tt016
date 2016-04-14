@@ -53,7 +53,7 @@ import com.sicpa.standard.sasscl.devices.camera.simulator.CameraSimuCodeTransfor
 import com.sicpa.standard.sasscl.devices.camera.simulator.CameraSimulatorController;
 import com.sicpa.standard.sasscl.devices.camera.simulator.ICameraAdaptorSimulator;
 import com.sicpa.standard.sasscl.devices.plc.PlcUtils;
-import com.sicpa.standard.sasscl.devices.remote.IRemoteServer;
+import com.sicpa.standard.sasscl.devices.remote.datasender.IPackageSenderGlobal;
 import com.sicpa.standard.sasscl.devices.remote.mapping.IProductionModeMapping;
 import com.sicpa.standard.sasscl.devices.remote.mapping.IRemoteServerProductStatusMapping;
 import com.sicpa.standard.sasscl.ioc.BeansName;
@@ -162,11 +162,11 @@ public class CustoBuilder {
 	}
 
 	private static void setPackagerType(ProductStatus status, boolean isProductActivated) {
-		IRemoteServer server = BeanProvider.getBean(BeansName.REMOTE_SERVER);
+		IPackageSenderGlobal sender = BeanProvider.getBean(BeansName.PACKAGE_SENDER);
 		if (isProductActivated) {
-			server.addToActivatedPackager(status);
+			sender.addToActivatedPackager(status);
 		} else {
-			server.addToCounterPackager(status);
+			sender.addToCounterPackager(status);
 		}
 	}
 
@@ -187,7 +187,8 @@ public class CustoBuilder {
 	 * NTF_CAB_XXX -> jmx cabinet report<li>line placeholder is <code>PlcLineHelper.LINE_INDEX_PLACEHOLDER</code><br>
 	 * see plcVars.groovy for options
 	 */
-	public static void addPlcVariable(String logicalName, String nameOnPlc, PlcUtils.PLC_TYPE type, Map<String, ?> options) {
+	public static void addPlcVariable(String logicalName, String nameOnPlc, PlcUtils.PLC_TYPE type,
+			Map<String, ?> options) {
 		Map<String, Object> map = new HashMap<>();
 		map.put("v", nameOnPlc);
 		map.put("t", type);

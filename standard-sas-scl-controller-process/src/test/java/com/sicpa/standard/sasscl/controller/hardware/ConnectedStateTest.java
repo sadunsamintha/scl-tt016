@@ -66,7 +66,6 @@ public class ConnectedStateTest {
 	@Test
 	public void testEnter() {
 		EventBusService.register(new Object() {
-			@SuppressWarnings("unused")
 			@Subscribe
 			public void handleEvent(HardwareControllerStatusEvent evt) {
 				Assert.assertEquals(HardwareControllerStatus.CONNECTED, evt.getStatus());

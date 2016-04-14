@@ -39,8 +39,7 @@ import com.sicpa.standard.sasscl.devices.plc.event.PlcEvent;
 import com.sicpa.standard.sasscl.messages.MessageEventKey;
 
 @SuppressWarnings("rawtypes")
-public class PlcAdaptor extends AbstractPlcAdaptor implements IPlcControllerListener,
-		IConfigurable<PlcConfig, PlcAdaptor> {
+public class PlcAdaptor extends AbstractPlcAdaptor implements IPlcControllerListener, IConfigurable<PlcConfig, PlcAdaptor> {
 
 	private static final Logger logger = LoggerFactory.getLogger(PlcAdaptor.class);
 
@@ -181,8 +180,7 @@ public class PlcAdaptor extends AbstractPlcAdaptor implements IPlcControllerList
 		logger.info("PLC - execute request: {}", request.getDescription());
 		IPlcRequestExecutor executor = getRequestExecutor(request);
 		if (executor == null) {
-			throw new PlcAdaptorException(MessageFormat.format("No request action(s) defined for {0}",
-					request.getDescription()));
+			throw new PlcAdaptorException(MessageFormat.format("No request action(s) defined for {0}", request.getDescription()));
 		}
 		executor.execute(controller);
 	}
@@ -307,7 +305,7 @@ public class PlcAdaptor extends AbstractPlcAdaptor implements IPlcControllerList
 	}
 
 	private void addNotifForActiveLines(PlcConfig config) throws Exception {
-		getActiveLines().forEach(i -> loadLineNotification(i));
+		getActiveLines(config).forEach(i -> loadLineNotification(i));
 	}
 
 	private void loadLineNotification(int index) {
@@ -346,10 +344,14 @@ public class PlcAdaptor extends AbstractPlcAdaptor implements IPlcControllerList
 	public boolean isLineActive(int lineIndex) {
 		return getActiveLines().contains(lineIndex);
 	}
+	
+	private Collection<Integer> getActiveLines(){
+		return getActiveLines(null);
+	}
 
-	private Collection<Integer> getActiveLines() {
-		if (activeLines.isEmpty()) {
-			for (Entry<Integer, StringMap> entry : loader.getValues().entrySet()) {
+	private Collection<Integer> getActiveLines(PlcConfig config) {
+		if (activeLines.isEmpty() && config != null) {
+			for (Entry<Integer, StringMap> entry : config.getLinesProperties().entrySet()) {
 				int lineIndex = entry.getKey();
 				for (Entry<String, String> e : entry.getValue().entrySet()) {
 					if (e.getKey().equals(lineActiveVarName)) {

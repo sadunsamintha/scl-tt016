@@ -27,6 +27,7 @@ import com.sicpa.standard.sasscl.business.statistics.mapper.IProductStatusToStat
 import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState;
 import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowStateChangedEvent;
 import com.sicpa.standard.sasscl.devices.remote.IRemoteServer;
+import com.sicpa.standard.sasscl.devices.remote.datasender.IPackageSenderGlobal;
 import com.sicpa.standard.sasscl.devices.remote.mapping.IRemoteServerProductStatusMapping;
 import com.sicpa.standard.sasscl.model.ProductStatus;
 import com.sicpa.standard.sasscl.model.statistics.StatisticsKey;
@@ -56,6 +57,7 @@ public class CustoBuilderTest {
 		IRemoteServerProductStatusMapping remoteMapping = mock(IRemoteServerProductStatusMapping.class);
 		IStatisticsKeyToViewDescriptorMapping viewMapping = mock(IStatisticsKeyToViewDescriptorMapping.class);
 		IRemoteServer server = mock(IRemoteServer.class);
+		IPackageSenderGlobal sender = mock(IPackageSenderGlobal.class);
 
 		BDDMockito.given(BeanProvider.getBean(STATISTICS_PRODUCTS_STATUS_MAPPER)).willReturn(statsMapping);
 		BDDMockito.given(BeanProvider.getBean(REMOTE_SERVER_PRODUCT_STATUS_MAPPING)).willReturn(remoteMapping);
@@ -67,7 +69,7 @@ public class CustoBuilderTest {
 		verify(statsMapping, Mockito.times(1)).add(status, statKey);
 		verify(remoteMapping, Mockito.times(1)).add(status, idOnRemote);
 		verify(viewMapping, Mockito.times(1)).add(statKey, colorOnView, indexOnView, langKey);
-		verify(server, Mockito.times(1)).addToActivatedPackager(status);
+		verify(sender, Mockito.times(1)).addToActivatedPackager(status);
 
 	}
 }

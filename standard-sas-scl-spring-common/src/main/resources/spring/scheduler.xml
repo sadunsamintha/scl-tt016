@@ -6,17 +6,16 @@
 
 
 	<bean id="remoteServerSheduledJobs" class="com.sicpa.standard.sasscl.controller.scheduling.RemoteServerScheduledJobsSCL">
-		<constructor-arg ref="storage" />
-		<constructor-arg ref="remoteServer" />
-		<constructor-arg ref="skuListProvider" />
-		<constructor-arg ref="authenticatorProvider" />
 		<property name="remoteServerMaxDownTime_day" value="${remoteServerMaxDownTime_day}" />
 		<property name="requestNumberEncoders" value="${requestNumberEncoders}" />
 		<property name="minEncodersThreshold" value="${minEncodersThreshold}" />
 		<property name="codeTypeFilterFactory" ref="codeTypeFilterFactory" />
-
+		<property name="screensFlow" ref="screensFlow" />
+		<property name="storage" ref="storage" />
+		<property name="remoteServer" ref="remoteServer" />
+		<property name="skuListProvider" ref="skuListProvider" />
+		<property name="authenticatorProvider" ref="authenticatorProvider" />
 	</bean>
-
 
 
 	<task:scheduled-tasks scheduler="SchedulerSasScl">

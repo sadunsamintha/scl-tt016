@@ -7,24 +7,15 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sicpa.standard.sasscl.common.storage.IStorage;
-import com.sicpa.standard.sasscl.devices.remote.IRemoteServer;
 import com.sicpa.standard.sasscl.devices.remote.RemoteServerException;
 import com.sicpa.standard.sasscl.filter.CodeTypeFilterFactory;
 import com.sicpa.standard.sasscl.model.CodeType;
-import com.sicpa.standard.sasscl.provider.impl.AuthenticatorProvider;
-import com.sicpa.standard.sasscl.provider.impl.SkuListProvider;
 
 public class RemoteServerScheduledJobsSCL extends RemoteServerScheduledJobs {
 
 	private int requestNumberEncoders;
 	private int minEncodersThreshold;
 	private CodeTypeFilterFactory codeTypeFilterFactory;
-
-	public RemoteServerScheduledJobsSCL(IStorage storage, IRemoteServer remoteServer,
-			SkuListProvider productionParametersProvider, AuthenticatorProvider authenticatorProvider) {
-		super(storage, remoteServer, productionParametersProvider, authenticatorProvider);
-	}
 
 	private static final Logger logger = LoggerFactory.getLogger(RemoteServerScheduledJobsSCL.class);
 
@@ -36,31 +27,39 @@ public class RemoteServerScheduledJobsSCL extends RemoteServerScheduledJobs {
 		logger.info("Executing job: Trying to download encoders");
 		if (remoteServer.isConnected()) {
 			try {
-
-				Calendar calendar = Calendar.getInstance();
-				int year = calendar.get(Calendar.YEAR);
-				getEncodersFromRemoteServer(year);
+				filterAndRequestEncoders();
 			} catch (Exception e) {
 				logger.error("Failed to get new encoders", e);
 			}
 		}
 	}
 
-	private void getEncodersFromRemoteServer(final int year) throws RemoteServerException {
+	private int getCurrentYear() {
+		Calendar calendar = Calendar.getInstance();
+		int year = calendar.get(Calendar.YEAR);
+		return year;
+	}
+
+	private void filterAndRequestEncoders() throws RemoteServerException {
+		Set<CodeType> codeTypesFiltered = getCodeTypesLinkedWithEncoder();
+		requestEncoders(codeTypesFiltered);
+	}
+
+	private Set<CodeType> getCodeTypesLinkedWithEncoder() {
 		Set<CodeType> codeTypes = skuListProvider.getAvailableCodeTypes();
-
-		// Filter
-		Set<CodeType> codeTypesFilter = codeTypes.stream().filter(codeTypeFilterFactory.getFilter())
+		Set<CodeType> codeTypesFiltered = codeTypes.stream().filter(codeTypeFilterFactory.getFilter())
 				.collect(Collectors.toSet());
+		return codeTypesFiltered;
+	}
 
-		for (CodeType codeType : codeTypesFilter) {
-			if (codeType != null) {
-				if (shouldRequestEncoder(codeType, year)) {
-					try {
-						remoteServer.downloadEncoder(requestNumberEncoders, codeType, year);
-					} catch (Exception e) {
-						logger.error("Failed to download encoder for code type {}", codeType, e);
-					}
+	private void requestEncoders(Set<CodeType> codeTypes) {
+		int year = getCurrentYear();
+		for (CodeType codeType : codeTypes) {
+			if (shouldRequestEncoder(codeType, year)) {
+				try {
+					remoteServer.downloadEncoder(requestNumberEncoders, codeType, year);
+				} catch (Exception e) {
+					logger.error("Failed to download encoder for code type {}", codeType, e);
 				}
 			}
 		}

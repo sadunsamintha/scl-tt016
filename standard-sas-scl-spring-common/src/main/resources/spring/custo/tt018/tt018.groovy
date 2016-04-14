@@ -23,7 +23,7 @@ beans{
 	bootstrap(TT018Bootstrap){b->
 		b.parent=ref('bootstrapAlias')
 	}
-
+	
 	addAlias('plcValuesLoaderAlias','plcValuesLoader')
 	plcValuesLoader(AlbaniaPlcLoader){b->
 		b.parent=ref('plcValuesLoaderAlias')

@@ -17,7 +17,6 @@ public class ExceptionHandlerTest {
 	public void testException() throws InterruptedException {
 
 		Object EventCatcher = new Object() {
-			@SuppressWarnings("unused")
 			@Subscribe
 			public void handleEvent(MessageEvent evt) {
 				if (evt.getKey().equals(MessageEventKey.FlowControl.UNCAUGHT_EXCEPTION)) {

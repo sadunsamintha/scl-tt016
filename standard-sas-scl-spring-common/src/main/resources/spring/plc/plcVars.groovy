@@ -1,26 +1,18 @@
+import static com.sicpa.standard.sasscl.devices.plc.PlcRequest.*
+import static com.sicpa.standard.sasscl.devices.plc.PlcUtils.*
+import static com.sicpa.standard.sasscl.devices.plc.PlcUtils.PLC_TYPE.*
+import groovy.transform.Field
+
 import com.sicpa.standard.client.common.device.plc.PLCVariableMap
-import com.sicpa.standard.client.common.eventbus.service.EventBusService;
-import com.sicpa.standard.client.common.groovy.SwingEnabledGroovyApplicationContext;
-import com.sicpa.standard.client.common.ioc.InjectByMethodBean;
 import com.sicpa.standard.plc.controller.actions.*
 import com.sicpa.standard.plc.value.*
-import com.sicpa.standard.sasscl.devices.plc.DefaultPlcRequestExecutor;
-import com.sicpa.standard.sasscl.devices.plc.IPlcRequestExecutor;
-import com.sicpa.standard.sasscl.devices.plc.PlcRequest;
-import com.sicpa.standard.sasscl.devices.plc.PlcUtils;
-import com.sicpa.standard.sasscl.devices.plc.variable.PlcVariableGroup;
-import com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcBooleanVariableDescriptor;
-import com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcByteVariableDescriptor;
-import com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcIntegerVariableDescriptor;
-import com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcPulseVariableDescriptor;
-import com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcShortVariableDescriptor;
-import com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcVariableDescriptor;
-import com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcVariablePulseParamDescriptor;
-
-import static com.sicpa.standard.sasscl.devices.plc.PlcRequest.*
-import static com.sicpa.standard.sasscl.devices.plc.PlcUtils.PLC_TYPE.*
-import static com.sicpa.standard.sasscl.devices.plc.PlcUtils.*
-import groovy.transform.Field;
+import com.sicpa.standard.sasscl.devices.plc.DefaultPlcRequestExecutor
+import com.sicpa.standard.sasscl.devices.plc.IPlcRequestExecutor
+import com.sicpa.standard.sasscl.devices.plc.PlcRequest
+import com.sicpa.standard.sasscl.devices.plc.PlcUtils
+import com.sicpa.standard.sasscl.devices.plc.variable.PlcVariableGroup
+import com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcPulseVariableDescriptor
+import com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcVariableDescriptor
 
 @Field def allVars = new ArrayList<IPlcVariable>()
 @Field def lineJmxReport= new ArrayList<IPlcVariable>()
@@ -205,7 +197,7 @@ beans {
 	plcMap['REQUEST_START']=[v:'.com.stMultilineRequests.bStart' ,t:B]
 	plcMap['REQUEST_RUN']=[v:'.com.stMultilineRequests.bRun' ,t:B]
 	plcMap['REQUEST_STOP']=[v:'.com.stMultilineRequests.bStop' ,t:B]
-	plcMap['REQUEST_RELOAD_CONFIG']=[v:'.com.stMultilineRequests.bReloadConfig' ,t:B]
+	plcMap['REQUEST_RELOAD_PLC_PARAM']=[v:'.com.stMultilineRequests.bReloadConfig' ,t:B]
 	plcMap['REQUEST_LIFE_CHECK']=[v:CAB+'stRequests.bLifeCheck' ,t:B]
 	plcMap['REQUEST_JAVA_WARNINGS_AND_ERRORS_REGISTER']=[v:'.com.nJavaWarningsAndErrorsRegister' ,t:I]
 
@@ -262,7 +254,6 @@ def void injectCustoVar(){
 def void addVarToLists(def var,String logicName,def varInfo){
 	allVars.add(var)
 
-	//JMX REPORT
 	if(isLineJmxReport(logicName)) {
 		lineJmxReport.add(var)
 	}
@@ -270,13 +261,14 @@ def void addVarToLists(def var,String logicName,def varInfo){
 		cabJmxReport.add(var)
 	}
 
-	//NOTIF
 	if(isCabinetNotif(varInfo)){
 		cabNotif.add(var)
 	}
+	
 	if(isLineNotif(varInfo)){
 		lineNotif.add(var)
 	}
+
 }
 def List<PlcVariableGroup> createCabGroupList(){
 	return createGroupList(cabGroups)
@@ -293,7 +285,7 @@ def List<PlcVariableGroup> createGroupList(Map<String, PlcVariableGroup> map){
 def void insertVarToGroup(PlcVariableDescriptor desc,def varInfo){
 	String lineGrp=varInfo['lineGrp']
 	String cabGrp=varInfo['cabGrp']
-	
+
 	if(lineGrp!=null){
 		insertVarToLineGroups(desc,varInfo)
 	}else if(cabGrp!=null){
@@ -310,7 +302,7 @@ def void insertVarToLineGroups(PlcVariableDescriptor desc,def varInfo){
 def void insertVarToCabGroups(PlcVariableDescriptor desc,def varInfo){
 	def groupPrefix='plc.config.cabinet.group.'
 	def grpName=groupPrefix+varInfo['cabGrp']
-	
+
 	insertVarToGroup(cabGroups, grpName,  desc, varInfo)
 }
 
@@ -413,10 +405,10 @@ def  boolean isLineJmxReport(String varName){
 	return varName.startsWith('NTF_LINE')
 }
 def  boolean isCabinetNotif(def map){
-	return Boolean.parseBoolean(map['lineNotif'])
+	return Boolean.parseBoolean(map['cabNtf'])
 }
 def  boolean isLineNotif(def map){
-	return Boolean.parseBoolean(map['lineNotif'])
+	return Boolean.parseBoolean(map['lineNtf'])
 }
 def  boolean isPulseConverterParam(def map){
 	return Boolean.parseBoolean(map['pulseConvertParam'])

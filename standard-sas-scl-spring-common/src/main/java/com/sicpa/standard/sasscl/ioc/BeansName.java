@@ -130,6 +130,12 @@ public interface BeansName {
 	 * IRemoteServer
 	 */
 	String REMOTE_SERVER = "remoteServer";
+	
+	/**
+	 * IPackageSenderGlobal
+	 */
+	String PACKAGE_SENDER = "packageSender";
+	
 	/**
 	 * RemoteServerModel
 	 */

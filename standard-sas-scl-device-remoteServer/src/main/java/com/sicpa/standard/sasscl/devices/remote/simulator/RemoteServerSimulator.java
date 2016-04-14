@@ -495,14 +495,4 @@ public class RemoteServerSimulator extends AbstractRemoteServer implements ISimu
 		return simulatorModel;
 	}
 
-	@Override
-	public void addToActivatedPackager(ProductStatus status) {
-
-	}
-
-	@Override
-	public void addToCounterPackager(ProductStatus status) {
-
-	}
-
 }

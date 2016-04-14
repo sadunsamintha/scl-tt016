@@ -51,7 +51,7 @@
 		<property name="commandMap" ref="commandMapLeibinger" />
 	</bean>
 	
-	<bean id="connector" class="com.sicpa.standard.printer.connector.Connector" scope="prototype" />
+	<bean id="connector" class="com.sicpa.standard.printer.leibinger.driver.leibinger.LeibingerConnector" scope="prototype" />
 	
 	<bean id="ethernetAdaptor" class="com.sicpa.standard.printer.leibinger.connector.impl.EthernetAdaptor" scope="prototype" />
 
