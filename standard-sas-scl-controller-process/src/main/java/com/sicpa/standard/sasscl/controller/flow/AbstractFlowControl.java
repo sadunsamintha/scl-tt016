@@ -41,19 +41,16 @@ public abstract class AbstractFlowControl implements IFlowControl {
 
 	protected final Object lock = new Object();
 
-	protected void moveToNextState(final ActivityTrigger t) {
-		TaskExecutor.execute(new Runnable() {
-			@Override
-			public void run() {
-				synchronized (lock) {
-					try {
-						stateMachine.moveToNextState(t, "");
-					} catch (Exception e) {
-						if (e instanceof RuntimeException) {
-							throw (RuntimeException) e;
-						} else {
-							logger.error("", e);
-						}
+	public void moveToNextState(final ActivityTrigger t) {
+		TaskExecutor.execute(() -> {
+			synchronized (lock) {
+				try {
+					stateMachine.moveToNextState(t, "");
+				} catch (Exception e) {
+					if (e instanceof RuntimeException) {
+						throw (RuntimeException) e;
+					} else {
+						logger.error("", e);
 					}
 				}
 			}

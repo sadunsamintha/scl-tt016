@@ -9,6 +9,8 @@ import static com.sicpa.standard.sasscl.ioc.BeansName.REMOTE_SERVER_PRODUCT_STAT
 import static com.sicpa.standard.sasscl.ioc.BeansName.SELECTION_MODEL_FACTORY;
 import static com.sicpa.standard.sasscl.ioc.BeansName.STATISTICS_PRODUCTS_STATUS_MAPPER;
 import static com.sicpa.standard.sasscl.ioc.BeansName.STATISTICS_VIEW_MAPPER;
+import static com.sicpa.standard.sasscl.view.ScreensFlowTriggers.EXIT;
+import static com.sicpa.standard.sasscl.view.ScreensFlowTriggers.PRODUCTION_PARAMETER_SELECTED;
 
 import java.awt.Color;
 import java.util.HashMap;
@@ -16,6 +18,14 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.function.Function;
 
+import com.sicpa.standard.client.common.view.screensflow.IScreenGetter;
+import com.sicpa.standard.client.common.view.screensflow.IScreensFlow;
+import com.sicpa.standard.client.common.view.screensflow.ScreenTransition;
+import com.sicpa.standard.client.common.view.screensflow.ScreenTransitionTrigger;
+import com.sicpa.standard.sasscl.controller.flow.statemachine.DefaultFlowControlWiring;
+import com.sicpa.standard.sasscl.controller.flow.statemachine.FlowTransition;
+import com.sicpa.standard.sasscl.controller.flow.statemachine.IFlowControlWiring;
+import com.sicpa.standard.sasscl.controller.view.flow.DefaultScreensFlow;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 
 import com.google.common.eventbus.Subscribe;
@@ -271,8 +281,8 @@ public class CustoBuilder {
 	public static void setCameraSimulatorCodeTransformer(String cameraId, CameraSimuCodeTransformer custoTransformer) {
 
 		Properties props = BeanProvider.getBean(BeansName.ALL_PROPERTIES);
-		String cameraBehabior = props.getProperty("camera.behavior");
-		if (!cameraBehabior.equalsIgnoreCase("simulator")) {
+		String cameraBehavior = props.getProperty("camera.behavior");
+		if (!cameraBehavior.equalsIgnoreCase("simulator")) {
 			return;
 		}
 
@@ -290,5 +300,43 @@ public class CustoBuilder {
 			}
 		};
 		EventBusService.register(o);
+	}
+
+	/**
+	 * This method adds a new screen to the screens flow. After the screen is added, it's imperative to add a screen
+	 * transition to navigate to the panel and out of it.
+	 *
+	 * @see CustoBuilder.addScreenTransition
+	 *
+	 * @param screen screen to be added
+	 */
+	public static void addScreen(IScreenGetter screen) {
+		IScreensFlow screensFlow = BeanProvider.getBean(BeansName.SCREENS_FLOW);
+		screensFlow.addTransitions(screen);
+	}
+
+	/**
+	 * This method adds a new transition(s) between two screens.
+	 *
+	 * @param from the origin screen
+	 * @param screenTransitions the transition which details the trigger and the destination screen
+	 */
+	public static void addScreenTransitions(IScreenGetter from, ScreenTransition... screenTransitions) {
+		IScreensFlow screensFlow = BeanProvider.getBean(BeansName.SCREENS_FLOW);
+		screensFlow.addTransitions(from, screenTransitions);
+	}
+
+	/**
+	 * Sets the next possible states for the specified state. All previous possible states will be removed and
+	 * the specified flow transitions will be added as next possible states.
+	 *
+	 * @param current current state for which we want to define new possible states
+	 * @param flowTransitions the transitions which define the new possible states and the associated trigger
+	 */
+	public static void setStateNextPossibleStates(ApplicationFlowState state, FlowTransition... flowTransitions) {
+		state.reset();
+
+		DefaultFlowControlWiring flowControl = BeanProvider.getBean(BeansName.DEFAULT_FLOW_CONTROL_WIRING);
+		flowControl.addNext(state, flowTransitions);
 	}
 }
