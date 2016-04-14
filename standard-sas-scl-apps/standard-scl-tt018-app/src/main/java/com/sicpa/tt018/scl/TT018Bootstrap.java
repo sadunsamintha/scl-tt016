@@ -25,6 +25,7 @@ public class TT018Bootstrap extends Bootstrap {
 
 	@Override
 	public void executeSpringInitTasks() {
+		preProcessTask();
 		super.executeSpringInitTasks();
 		messageCusto();
 		statisticsCusto();
@@ -56,7 +57,6 @@ public class TT018Bootstrap extends Bootstrap {
 				options);
 	}
 
-	@Override
 	protected void preProcessTask() {
 		addSoftDrinkProductionMode();
 	}

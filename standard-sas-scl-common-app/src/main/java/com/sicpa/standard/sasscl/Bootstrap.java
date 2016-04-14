@@ -61,7 +61,6 @@ public class Bootstrap implements IBootstrap {
 
 	@Override
 	public void executeSpringInitTasks() {
-		preProcessTask();
 		restoreStatistics();
 		initPlc();
 		initProductionParameter();
@@ -71,10 +70,6 @@ public class Bootstrap implements IBootstrap {
 		connectStartupDevices();
 		restorePreviousSelectedProductionParams();
 		installJMXBeans();
-	}
-
-	protected void preProcessTask() {
-		//if some customization actions are needed before starting up devices. 
 	}
 
 	private void addConnectionListenerOnServer() {
