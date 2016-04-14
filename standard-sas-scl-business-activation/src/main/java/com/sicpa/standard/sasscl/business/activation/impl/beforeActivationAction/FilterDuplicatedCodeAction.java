@@ -1,58 +1,69 @@
 package com.sicpa.standard.sasscl.business.activation.impl.beforeActivationAction;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import com.google.common.eventbus.Subscribe;
+import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState;
+import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowStateChangedEvent;
 import com.sicpa.standard.sasscl.model.Code;
 import com.sicpa.standard.sasscl.model.ProductionMode;
 import com.sicpa.standard.sasscl.model.ProductionParameters;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import static com.sicpa.standard.sasscl.business.activation.impl.beforeActivationAction.BeforeActivationResult.createBeforeActivationResultFiltered;
+import static com.sicpa.standard.sasscl.business.activation.impl.beforeActivationAction.BeforeActivationResult.createBeforeActivationResultNotFiltered;
 
 public class FilterDuplicatedCodeAction extends AbstractBeforeActivationAction {
 
-	private static final Logger logger = LoggerFactory.getLogger(FilterDuplicatedCodeAction.class);
+    private static final Logger logger = LoggerFactory.getLogger(FilterDuplicatedCodeAction.class);
 
-	/**
-	 * map< cameraName , previousCode >
-	 */
-	protected Map<String, String> previousCodeMap = new HashMap<String, String>();
+    /**
+     * map< cameraName , previousCode >
+     */
+    private Map<String, String> previousCodeMap = new HashMap<String, String>();
 
-	protected ProductionParameters productionParameters;
+    private ProductionParameters productionParameters;
 
-	@Override
-	protected BeforeActivationResult internalReceivedCode(final Code code, final boolean good, String cameraName) {
 
-		if (isEnabled()) {
+    @Override
+    public BeforeActivationResult internalReceivedCode(final Code code, final boolean good, String cameraName) {
+        if (!isEnabled()) {
+            return createBeforeActivationResultNotFiltered(code, good);
+        }
 
-			logger.debug("Code received at {} = {} , Is good code = {}",
-					new Object[] { cameraName, code.getStringCode(), good });
+        logger.debug("Code received at {} = {} , Is good code = {}", new Object[]{cameraName, code.getStringCode(), good});
+        if (good && isSameAsPreviousCode(code, cameraName)) {
+            return  createBeforeActivationResultFiltered(code, good);
+        } else {
+            previousCodeMap.put(cameraName, code.getStringCode());
+            return  createBeforeActivationResultNotFiltered(code, good);
+        }
+    }
 
-			if (good) {
+    private boolean isSameAsPreviousCode(Code code, String cameraName) {
+        String previousCode = previousCodeMap.get(cameraName);
+        return previousCode != null && previousCode.equals(code.getStringCode());
+    }
 
-				String previousCode = previousCodeMap.get(cameraName);
+    @Subscribe
+    public void resetCodesOnStart(ApplicationFlowStateChangedEvent evt) {
+        ApplicationFlowState currentState = evt.getCurrentState();
+        if (currentState.equals(ApplicationFlowState.STT_STARTING)) {
+            previousCodeMap.clear();
+        }
+    }
 
-				if (previousCode != null) {
-					if (previousCode.equals(code.getStringCode())) {
-						return new BeforeActivationResult(code, good, true);
-					}
-				}
-				previousCodeMap.put(cameraName, code.getStringCode());
-			}
-		}
-		return new BeforeActivationResult(code, good, false);
+    private boolean isEnabled() {
+        if (productionParameters.getProductionMode().equals(ProductionMode.MAINTENANCE) ||
+                productionParameters.getProductionMode().equals(ProductionMode.EXPORT)) {
+            return false;
+        }
+        return true;
+    }
 
-	}
-
-	protected boolean isEnabled() {
-		if (productionParameters.getProductionMode().equals(ProductionMode.MAINTENANCE)) {
-			return false;
-		}
-		return true;
-	}
-
-	public void setProductionParameters(ProductionParameters productionParameters) {
-		this.productionParameters = productionParameters;
-	}
+    public void setProductionParameters(ProductionParameters productionParameters) {
+        this.productionParameters = productionParameters;
+    }
 }

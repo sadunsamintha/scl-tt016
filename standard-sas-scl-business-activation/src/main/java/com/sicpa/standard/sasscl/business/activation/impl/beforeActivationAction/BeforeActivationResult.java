@@ -8,17 +8,22 @@ public class BeforeActivationResult {
 	protected boolean valid;
 	protected boolean filtered;
 
-	public BeforeActivationResult() {
-	}
-
-	public BeforeActivationResult(Code code, boolean valid) {
-		this(code, valid, false);
-	}
-
 	public BeforeActivationResult(Code code, boolean valid, boolean filtered) {
 		this.code = code;
 		this.valid = valid;
 		this.filtered = filtered;
+	}
+
+
+	//  static factories
+	public static BeforeActivationResult createBeforeActivationResultFiltered(Code code, boolean valid) {
+		final boolean isFiltered = true;
+		return new BeforeActivationResult(code, valid, isFiltered);
+	}
+
+	public static BeforeActivationResult createBeforeActivationResultNotFiltered(Code code, boolean valid) {
+		final boolean isFiltered = false;
+		return new BeforeActivationResult(code, valid, isFiltered);
 	}
 
 	public Code getCode() {
