@@ -1,5 +1,9 @@
 package com.sicpa.standard.sasscl.business.production.impl;
 
+import static com.sicpa.standard.gui.utils.ThreadUtils.waitForNextTimeStamp;
+import static com.sicpa.standard.sasscl.messages.MessageEventKey.Production.ERROR_MAX_SERIALIZATION_ERRORS;
+import static com.sicpa.standard.sasscl.monitoring.system.SystemEventType.SENT_TO_REMOTE_SERVER_ERROR;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -12,13 +16,15 @@ import org.slf4j.LoggerFactory;
 import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.messages.MessageEvent;
+import com.sicpa.standard.client.common.storage.StorageException;
 import com.sicpa.standard.gui.utils.ThreadUtils;
 import com.sicpa.standard.sasscl.business.activation.NewProductEvent;
 import com.sicpa.standard.sasscl.business.production.IProduction;
 import com.sicpa.standard.sasscl.common.storage.IStorage;
 import com.sicpa.standard.sasscl.common.storage.productPackager.IProductsPackager;
 import com.sicpa.standard.sasscl.devices.remote.IRemoteServer;
-import com.sicpa.standard.sasscl.messages.MessageEventKey;
+import com.sicpa.standard.sasscl.devices.remote.RemoteServerException;
+import com.sicpa.standard.sasscl.model.EncoderInfo;
 import com.sicpa.standard.sasscl.model.PackagedProducts;
 import com.sicpa.standard.sasscl.model.Product;
 import com.sicpa.standard.sasscl.model.ProductionSendingProgress;
@@ -30,30 +36,25 @@ import com.sicpa.standard.sasscl.provider.impl.SubsystemIdProvider;
 
 public class Production implements IProduction {
 
+	public static final int MAX_RETRY_SEND_PRODUCTION = 3;
+
 	private static final Logger logger = LoggerFactory.getLogger(Production.class);
 
-	// list of product that has been processed by the activation module
-	protected final List<Product> products = Collections.synchronizedList(new LinkedList<Product>());;
-
-	protected int productionSendBatchSize;
-	protected int productionDataSerializationErrorThreshold;
-	protected SubsystemIdProvider subsystemIdProvider;
-
-	protected IStorage storage;
-
-	protected IRemoteServer remoteServer;
-
+	private int productionSendBatchSize;
+	private int productionDataSerializationErrorThreshold;
+	private SubsystemIdProvider subsystemIdProvider;
+	private IStorage storage;
+	private IRemoteServer remoteServer;
 	// use in case we cannot save to disk, product will be package on fly and
 	// then send to the remote server
-	protected IProductsPackager productsPackager;
+	private IProductsPackager productsPackager;
 
-	protected volatile boolean cancelSending;
-
-	protected long delayBetweenPackageSent = 1000;
-
-	protected final Object sendProductionLock = new Object();
-	protected final Object packageLock = new Object();
-	protected final Object saveProductionLock = new Object();
+	private final List<Product> products = Collections.synchronizedList(new LinkedList<>());
+	private volatile boolean cancelSending;
+	private long delayBetweenPackageSent = 1000;
+	private final Object sendProductionLock = new Object();
+	private final Object packageLock = new Object();
+	private final Object saveProductionLock = new Object();
 
 	public Production(final IStorage storage, final IRemoteServer remoteServer) {
 		this.storage = storage;
@@ -64,7 +65,7 @@ public class Production implements IProduction {
 	 * store in memory the product created by the activation
 	 */
 	@Subscribe
-	public void notifyNewProduct(final NewProductEvent evt) {
+	public void notifyNewProduct(NewProductEvent evt) {
 		Product product = evt.getProduct();
 		if (product != null) {
 
@@ -79,7 +80,7 @@ public class Production implements IProduction {
 	}
 
 	// only used by serilizeProductionData()
-	protected int errorSaveCounter;
+	private int errorSaveCounter;
 
 	/**
 	 * give to the storage the in memory products and then remove then from the memory
@@ -87,72 +88,89 @@ public class Production implements IProduction {
 	@Override
 	public void saveProductionData() {
 		synchronized (saveProductionLock) {
-
 			if (products.isEmpty()) {
 				return;
 			}
 
-			final List<Product> productsToSave = new ArrayList<Product>();
+			List<Product> productsToSave = new ArrayList<>();
 
 			try {
 				logger.debug("Production serialization {}", products.size());
 				Product product;
 
-				while (products.size() > 0) {
+				while (!products.isEmpty()) {
 					synchronized (products) {
 						product = products.remove(0);
 					}
 					productsToSave.add(product);
-					// do not save a file that contains more than the send batch size
-					if (productsToSave.size() > productionSendBatchSize) {
-						storage.saveProduction(productsToSave.toArray(new Product[productsToSave.size()]));
-						productsToSave.clear();
-						// to have a new file name wait a few ms
-						ThreadUtils.waitForNextTimeStamp();
+					if (enoughtProductInBatchForSerialization(productsToSave)) {
+						saveProductsInStorage(productsToSave);
 					}
 				}
-
-				if (productsToSave.size() > 0) {
-					ThreadUtils.waitForNextTimeStamp();
-					storage.saveProduction(productsToSave.toArray(new Product[productsToSave.size()]));
+				if (!productsToSave.isEmpty()) {
+					saveProductsInStorage(productsToSave);
 				}
-
 				errorSaveCounter = 0;
-
-			} catch (final Exception e) {
+			} catch (Exception e) {
 				logger.error("", e);
-				// if there is an exception when saving the production
-				// increase a counter
-				// if the counter reach a limit
-				// stop the production and try to send to remote server
-				errorSaveCounter++;
-
-				if (errorSaveCounter >= productionDataSerializationErrorThreshold) {
-					EventBusService.post(new MessageEvent(this,
-							MessageEventKey.Production.ERROR_MAX_SERIALIZATION_ERRORS, e.getMessage()));
-					try {
-						for (PackagedProducts pack : productsPackager.getPackagedProducts(productsToSave)) {
-							remoteServer.sendProductionData(pack);
-						}
-
-						productsToSave.clear();
-					} catch (Exception e1) {
-						logger.warn("Error sending production to remote server after serialization error", e1);
-						// restore the product that were not saved
-						for (Product p : productsToSave) {
-							products.add(p);
-						}
-					}
-				} else {
-					// restore the product that were not saved
-					for (Product p : productsToSave) {
-						products.add(p);
-					}
-				}
-				logger.warn("Error serializing production", e);
+				handleProductSerializationException(productsToSave, e);
 			}
 		}
+	}
 
+	private void waitForANewFileName() {
+		waitForNextTimeStamp();
+	}
+
+	private void saveProductsInStorage(List<Product> productsToSave) throws StorageException {
+		waitForANewFileName();
+		storage.saveProduction(productsToSave.toArray(new Product[productsToSave.size()]));
+		productsToSave.clear();
+	}
+
+	private boolean enoughtProductInBatchForSerialization(List<Product> productsToSave) {
+		return productsToSave.size() > productionSendBatchSize;
+	}
+
+	private void handleProductSerializationException(List<Product> productsToSave, Exception e) {
+		// if there is an exception when saving the production
+		// increase a counter
+		// if the counter reach a limit
+		// stop the production and try to send to remote server
+		errorSaveCounter++;
+
+		if (isTooManySerializationError()) {
+			tooManySerializationErrorReached(productsToSave, e);
+		} else {
+			// restore the product that were not saved
+			restoreProdctsNotSavedOnError(productsToSave);
+		}
+		logger.warn("Error serializing production", e);
+	}
+
+	private boolean isTooManySerializationError() {
+		return errorSaveCounter >= productionDataSerializationErrorThreshold;
+	}
+
+	private void tooManySerializationErrorReached(List<Product> productsToSave, Exception e) {
+		EventBusService.post(new MessageEvent(this, ERROR_MAX_SERIALIZATION_ERRORS, e.getMessage()));
+		try {
+			packageAndSendProductionOnError(productsToSave);
+		} catch (Exception e1) {
+			logger.warn("Error sending production to remote server after serialization error", e1);
+			restoreProdctsNotSavedOnError(productsToSave);
+		}
+	}
+
+	private void restoreProdctsNotSavedOnError(List<Product> productsToSave) {
+		products.addAll(productsToSave);
+	}
+
+	private void packageAndSendProductionOnError(List<Product> productsToSave) throws RemoteServerException {
+		for (PackagedProducts pack : productsPackager.getPackagedProducts(productsToSave)) {
+			remoteServer.sendProductionData(pack);
+		}
+		productsToSave.clear();
 	}
 
 	@Override
@@ -174,11 +192,22 @@ public class Production implements IProduction {
 
 		synchronized (sendProductionLock) {
 			logger.debug("Send production");
+			sendAllEncoderInfo();
 			sendAllBatchOfProducts();
 		}
 	}
 
-	protected void sendAllBatchOfProducts() {
+	private void sendAllEncoderInfo() {
+		try {
+			List<EncoderInfo> encoderInfos = storage.getAllEndodersInfo();
+			remoteServer.sendEncoderInfos(encoderInfos);
+			storage.notifyEncodersInfoSent(encoderInfos);
+		} catch (Exception e) {
+			logger.error("error sending encoder infos", e);
+		}
+	}
+
+	private void sendAllBatchOfProducts() {
 
 		int totalBatchCount = storage.getBatchOfProductsCount();
 		AtomicInteger totalProductsCount = new AtomicInteger();
@@ -203,62 +232,51 @@ public class Production implements IProduction {
 		}
 	}
 
-	protected void sendABatchOfProducts(final PackagedProducts batch, int totalBatchCount,
-			final AtomicInteger currentIndex, final AtomicInteger productCount) {
+	protected void sendABatchOfProducts(PackagedProducts batch, int totalBatchCount, AtomicInteger currentIndex,
+			AtomicInteger productCount) {
 
 		currentIndex.incrementAndGet();
-		productCount.addAndGet(batch.getProducts().size());
-
 		logger.info("Sending package {}/{}", currentIndex.get(), totalBatchCount);
-
 		EventBusService.post(new ProductionSendingProgress(totalBatchCount, currentIndex.get()));
 
-		int maxRetries = 3;
-		while (maxRetries != 0) {
+		boolean tryToSend = true;
+		int retriesLeft = MAX_RETRY_SEND_PRODUCTION;
+		while (tryToSend) {
 			try {
 				// highly cpu consuming so wait a bit between each call
 				// asynchronous, executed every 10 min, so it doesn't
 				// matter if it waits a bit
 				// when exiting the delay is set to 0
 				ThreadUtils.sleepQuietly(delayBetweenPackageSent);
-
-				maxRetries--;
-				remoteServer.sendProductionData(batch);
-				storage.notifyDataSentToRemoteServer();
-				break;
+				sendABatchOfProductsOneTry(batch, productCount);
+				tryToSend = false;
 
 			} catch (Exception e) {
-
-				logger.warn("Error sending production to remote server, retries left: {}", maxRetries);
+				retriesLeft--;
+				logger.warn("Error sending production to remote server, retries left: {}", retriesLeft);
 				logger.error("", e);
-
-				// Verify that we are still connected to server
-				if (remoteServer.isConnected()) {
-					remoteServer.lifeCheckTick();
-				}
 
 				if (!remoteServer.isConnected()) {
 					logger.info("Server disconnected, aborting sending production");
 					cancelSending();
-					break;
+					tryToSend = false;
+				} else if (retriesLeft == 0) {
+					tryToSend = false;
+					storage.notifyDataErrorSendingToRemoteServer();
+					MonitoringService.addSystemEvent(new BasicSystemEvent(SENT_TO_REMOTE_SERVER_ERROR, productCount
+							+ ""));
 				}
-
 			}
-		}
-
-		if (maxRetries == 0) {
-			productCount.addAndGet(-batch.getProducts().size());
-			storage.notifyDataErrorSendingToRemoteServer();
-			MonitoringService.addSystemEvent(new BasicSystemEvent(SystemEventType.SENT_TO_REMOTE_SERVER_ERROR,
-					productCount + ""));
-		} else if (cancelSending) {
-			productCount.addAndGet(-batch.getProducts().size());
 		}
 	}
 
-	/**
-	 * delegate this call to storage.packageProduction
-	 */
+	private void sendABatchOfProductsOneTry(PackagedProducts batch, AtomicInteger productCount)
+			throws RemoteServerException {
+		remoteServer.sendProductionData(batch);
+		storage.notifyDataSentToRemoteServer();
+		productCount.addAndGet(batch.getProducts().size());
+	}
+
 	@Override
 	public void packageProduction() {
 		synchronized (packageLock) {

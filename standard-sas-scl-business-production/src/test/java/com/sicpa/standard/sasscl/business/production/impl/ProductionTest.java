@@ -10,6 +10,7 @@ import com.sicpa.standard.sasscl.model.PackagedProducts;
 import com.sicpa.standard.sasscl.model.Product;
 import com.sicpa.standard.sasscl.model.ProductStatus;
 import com.sicpa.standard.sasscl.provider.impl.SubsystemIdProvider;
+
 import org.fest.reflect.core.Reflection;
 import org.junit.Assert;
 import org.junit.Before;
@@ -19,6 +20,7 @@ import org.mockito.ArgumentCaptor;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static com.sicpa.standard.sasscl.business.production.impl.Production.MAX_RETRY_SEND_PRODUCTION;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Mockito.*;
 
@@ -209,9 +211,9 @@ public class ProductionTest {
 		doThrow(new RemoteServerException()).when(remoteServer).sendProductionData((PackagedProducts) anyObject());
 
 		production.sendABatchOfProducts(new PackagedProducts(c, 1l, ProductStatus.AUTHENTICATED, "147", 123l, false),
-				10, new AtomicInteger(0), new AtomicInteger(3));
+				0, new AtomicInteger(), new AtomicInteger());
 
-		verify(remoteServer, times(3)).sendProductionData((PackagedProducts) anyObject());
+		verify(remoteServer, times(MAX_RETRY_SEND_PRODUCTION)).sendProductionData((PackagedProducts) anyObject());
 		verify(storage, never()).notifyDataSentToRemoteServer();
 		verify(storage, times(1)).notifyDataErrorSendingToRemoteServer();
 	}

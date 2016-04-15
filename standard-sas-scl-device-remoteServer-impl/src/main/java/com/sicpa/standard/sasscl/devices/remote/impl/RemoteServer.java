@@ -21,7 +21,6 @@ import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.messages.MessageEvent;
 import com.sicpa.standard.sasscl.common.storage.IStorage;
 import com.sicpa.standard.sasscl.devices.DeviceException;
-import com.sicpa.standard.sasscl.devices.DeviceStatus;
 import com.sicpa.standard.sasscl.devices.IDeviceStatusListener;
 import com.sicpa.standard.sasscl.devices.remote.AbstractRemoteServer;
 import com.sicpa.standard.sasscl.devices.remote.GlobalMonitoringToolInfo;
@@ -179,13 +178,12 @@ public class RemoteServer extends AbstractRemoteServer implements IConnectable {
 		}
 	}
 
-	private void handleEncoderInfoResult(SicpadataGeneratorInfoResultDto res) throws RemoteServerException {
+	private void handleEncoderInfoResult(SicpadataGeneratorInfoResultDto res) {
 		for (InfoResult ir : res.getInfoResult()) {
 			if (!ir.isInfoSavedOk()) {
 				storage.quarantineEncoder(ir.getId());
-				throw new RemoteServerException(MessageFormat.format(
-						"master failed to save encoder info for id={0} , msg={1}", ir.getId() + "",
-						ir.getErrorMessage()));
+				logger.error("master failed to save encoder info for id={} , msg={}", ir.getId() + "",
+						ir.getErrorMessage());
 			}
 		}
 	}
@@ -214,16 +212,7 @@ public class RemoteServer extends AbstractRemoteServer implements IConnectable {
 				.addSystemEvent(new BasicSystemEvent(LAST_SENT_TO_REMOTE_SERVER, String.valueOf(productCount)));
 	}
 
-	private void checkConnection() throws RemoteServerException {
-		try {
-			remoteServices.isAlive();
-		} catch (Exception e) {
-			throw new RemoteServerException(e);
-		}
-	}
-
 	@Override
-
 	public long getSubsystemID() {
 		try {
 			return remoteServices.getSubsystem().getId();
@@ -231,18 +220,6 @@ public class RemoteServer extends AbstractRemoteServer implements IConnectable {
 			logger.error("failed to get subsystem id", e);
 		}
 		return 0;
-	}
-
-	@Override
-	public void lifeCheckTick() {
-		try {
-			logger.debug("remote server life check");
-			checkConnection();
-			fireDeviceStatusChanged(DeviceStatus.CONNECTED);
-		} catch (Exception e) {
-			logger.error("", e);
-			fireDeviceStatusChanged(DeviceStatus.DISCONNECTED);
-		}
 	}
 
 	@Override

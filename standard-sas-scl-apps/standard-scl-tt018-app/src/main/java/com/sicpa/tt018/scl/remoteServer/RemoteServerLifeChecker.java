@@ -1,18 +1,18 @@
 package com.sicpa.tt018.scl.remoteServer;
 
-import com.sicpa.standard.gui.utils.ThreadUtils;
-import com.sicpa.standard.sasscl.devices.remote.IRemoteServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.sicpa.standard.gui.utils.ThreadUtils;
 
 public class RemoteServerLifeChecker {
 	private static final Logger logger = LoggerFactory.getLogger(RemoteServerLifeChecker.class);
 
-	private IRemoteServer target;
+	private RemoteServer target;
 	private int lifeCheckSleep = 20;
 	private Thread lifeCheker;
 
-	public void setTarget(IRemoteServer target) {
+	public void setTarget(RemoteServer target) {
 		this.target = target;
 	}
 

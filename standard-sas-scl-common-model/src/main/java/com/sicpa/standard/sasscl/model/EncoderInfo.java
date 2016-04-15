@@ -11,25 +11,27 @@ public class EncoderInfo implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	// The id of the Encoder
-	protected long encoderId;
+	private long encoderId;
 	// The batchid of the Encoder
-	protected long batchId;;
+	private long batchId;;
 	// The code Type of the encoder
-	protected int codeTypeId;
+	private int codeTypeId;
 	// The last number that the encoder used for a code
-	protected long sequence;
+	private long sequence;
 	// Date that the first code of the encoder was sent to the printer
-	protected Date firstCodeDate;
+	private Date firstCodeDate;
 	// Date that the last code of the encoder was sent to the printer
-	protected Date lastCodeDate;
+	private Date lastCodeDate;
 	// If the encoder is already finish(all the coders were used) or not
-	protected boolean finished;
+	private boolean finished;
+	private Date onClientDate;
 
 	protected transient File file;
 
 	public EncoderInfo(IEncoder encoder, boolean finished) {
 		this(encoder.getBatchId(), encoder.getId(), encoder.getCodeTypeId(), -1, encoder.getFirstCodeDate(), encoder
 				.getLastCodeDate(), finished);
+		setOnClientDate(encoder.getOnClientDate());
 	}
 
 	public EncoderInfo(long batchId, long encoderId, int codeTypeId, long lastUsedSequence, Date firstCodeDate,
@@ -113,4 +115,11 @@ public class EncoderInfo implements Serializable {
 		return batchId;
 	}
 
+	public void setOnClientDate(Date onClientDate) {
+		this.onClientDate = onClientDate;
+	}
+
+	public Date getOnClientDate() {
+		return onClientDate;
+	}
 }

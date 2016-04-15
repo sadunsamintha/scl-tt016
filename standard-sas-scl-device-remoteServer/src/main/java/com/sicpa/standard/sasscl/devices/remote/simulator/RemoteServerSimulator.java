@@ -487,10 +487,6 @@ public class RemoteServerSimulator extends AbstractRemoteServer implements ISimu
 		this.fileSequenceStorageProvider = fileSequenceStorageProvider;
 	}
 
-	@Override
-	public void lifeCheckTick() {
-	}
-
 	public RemoteServerSimulatorModel getSimulatorModel() {
 		return simulatorModel;
 	}

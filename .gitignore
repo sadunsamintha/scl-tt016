@@ -110,3 +110,6 @@ standard-sas-scl-apps/standard-scl-tt016-app/profiles/TT016/simulProductSend/
 standard-sas-scl-apps/standard-scl-tt016-app/uncaught-error/
 standard-sas-scl-apps/standard-scl-core-app/profiles/SCL-CORE-DEV/data/
 standard-sas-scl-apps/standard-scl-core-app/profiles/SCL-CORE-DEV/quarantine/
+standard-sas-scl-apps/standard-scl-tt016-app/profiles/TT016/data/
+standard-sas-scl-apps/standard-scl-tt016-app/uncaught-error/
+standard-sas-scl-apps/standard-scl-tt016-app/profiles/TT016/quarantine/

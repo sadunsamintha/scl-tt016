@@ -5,7 +5,7 @@ beans{
 	def serverBehavior=props['remoteServer.behavior'].toUpperCase()
 
 	if(serverBehavior == "STANDARD") {
-		importBeans('spring/server/server-core5.groovy')
+		importBeans('spring/custo/tt016/tt016-server.groovy')
 	}
 
 	addAlias('bootstrapAlias','bootstrap')
