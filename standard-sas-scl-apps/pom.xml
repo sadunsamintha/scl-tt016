@@ -65,7 +65,7 @@
 			<id>build</id>
 			<activation>
 				<file>
-					<missing>${basedir}/nobuild.txt</missing>
+					<missing>nobuild.txt</missing>
 				</file>
 			</activation>
 			<build>
