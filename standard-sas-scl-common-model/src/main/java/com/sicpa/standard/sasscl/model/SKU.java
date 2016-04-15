@@ -32,11 +32,11 @@ public class SKU extends Customizable implements Serializable, Cloneable {
 	}
 
 	public SKU(int id) {
-		this(id, "", null);
+		this(id, "");
 	}
 
 	public SKU(int id, String description) {
-		this(id, description, null);
+		this(id, description, Collections.emptyList());
 	}
 
 	public int getId() {
