@@ -170,7 +170,6 @@
 			<id>rpmbuild</id>
 			<activation>
 				<file>
-					<exists>/usr/bin/rpmbuild</exists>
 					<missing>nobuild.txt</missing>
 				</file>
 			</activation>
