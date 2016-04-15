@@ -1,9 +1,11 @@
 package com.sicpa.standard.sasscl.custoBuilder;
 
+import static com.sicpa.standard.sasscl.ioc.BeansName.PACKAGE_SENDER;
 import static com.sicpa.standard.sasscl.ioc.BeansName.REMOTE_SERVER;
 import static com.sicpa.standard.sasscl.ioc.BeansName.REMOTE_SERVER_PRODUCT_STATUS_MAPPING;
 import static com.sicpa.standard.sasscl.ioc.BeansName.STATISTICS_PRODUCTS_STATUS_MAPPER;
 import static com.sicpa.standard.sasscl.ioc.BeansName.STATISTICS_VIEW_MAPPER;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
@@ -14,7 +16,6 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.BDDMockito;
 import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -56,13 +57,14 @@ public class CustoBuilderTest {
 		IProductStatusToStatisticKeyMapper statsMapping = mock(IProductStatusToStatisticKeyMapper.class);
 		IRemoteServerProductStatusMapping remoteMapping = mock(IRemoteServerProductStatusMapping.class);
 		IStatisticsKeyToViewDescriptorMapping viewMapping = mock(IStatisticsKeyToViewDescriptorMapping.class);
-		IRemoteServer server = mock(IRemoteServer.class);
 		IPackageSenderGlobal sender = mock(IPackageSenderGlobal.class);
+		IRemoteServer server = mock(IRemoteServer.class);
 
-		BDDMockito.given(BeanProvider.getBean(STATISTICS_PRODUCTS_STATUS_MAPPER)).willReturn(statsMapping);
-		BDDMockito.given(BeanProvider.getBean(REMOTE_SERVER_PRODUCT_STATUS_MAPPING)).willReturn(remoteMapping);
-		BDDMockito.given(BeanProvider.getBean(STATISTICS_VIEW_MAPPER)).willReturn(viewMapping);
-		BDDMockito.given(BeanProvider.getBean(REMOTE_SERVER)).willReturn(server);
+		given(BeanProvider.getBean(STATISTICS_PRODUCTS_STATUS_MAPPER)).willReturn(statsMapping);
+		given(BeanProvider.getBean(REMOTE_SERVER_PRODUCT_STATUS_MAPPING)).willReturn(remoteMapping);
+		given(BeanProvider.getBean(STATISTICS_VIEW_MAPPER)).willReturn(viewMapping);
+		given(BeanProvider.getBean(REMOTE_SERVER)).willReturn(server);
+		given(BeanProvider.getBean(PACKAGE_SENDER)).willReturn(sender);
 
 		CustoBuilder.addProductStatus(status, statKey, idOnRemote, colorOnView, indexOnView, langKey, true);
 
