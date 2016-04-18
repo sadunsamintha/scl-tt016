@@ -1,5 +1,11 @@
 package com.sicpa.standard.sasscl.business.activation.impl.activationBehavior.standard;
 
+import static com.sicpa.standard.sasscl.messages.MessageEventKey.Activation.EXCEPTION_NO_AUTHENTICATOR;
+import static com.sicpa.standard.sasscl.model.ProductStatus.NOT_AUTHENTICATED;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.messages.MessageEvent;
 import com.sicpa.standard.client.common.provider.IProviderGetter;
@@ -8,17 +14,13 @@ import com.sicpa.standard.sasscl.business.activation.impl.activationBehavior.sta
 import com.sicpa.standard.sasscl.business.activation.impl.activationBehavior.standard.invalidCode.IActivationInvalidCodeHandler;
 import com.sicpa.standard.sasscl.business.activation.impl.activationBehavior.standard.validator.IProductValidator;
 import com.sicpa.standard.sasscl.controller.productionconfig.IProductionConfig;
-import com.sicpa.standard.sasscl.messages.MessageEventKey;
 import com.sicpa.standard.sasscl.model.Code;
 import com.sicpa.standard.sasscl.model.DecodedCameraCode;
 import com.sicpa.standard.sasscl.model.Product;
-import com.sicpa.standard.sasscl.model.ProductStatus;
 import com.sicpa.standard.sasscl.provider.impl.AuthenticatorModeProvider;
 import com.sicpa.standard.sasscl.provider.impl.ProductionConfigProvider;
 import com.sicpa.standard.sasscl.sicpadata.CryptographyException;
 import com.sicpa.standard.sasscl.sicpadata.reader.IAuthenticator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Activation behavior used for the standard production mode</br>
@@ -42,7 +44,6 @@ import org.slf4j.LoggerFactory;
  * 
  * <li>call invalidCodeHandler
  * 
- * @author DIelsch
  * 
  */
 public class StandardActivationBehavior extends AbstractActivationBehavior {
@@ -50,32 +51,32 @@ public class StandardActivationBehavior extends AbstractActivationBehavior {
 	private static final Logger logger = LoggerFactory.getLogger(StandardActivationBehavior.class);
 
 	// to authenticate the code
-	protected IProviderGetter<IAuthenticator> authenticatorProvider;
+	private IProviderGetter<IAuthenticator> authenticatorProvider;
 
 	// how to validate a product
-	protected IProductValidator productValidator;
+	private IProductValidator productValidator;
 
 	// what to do with an invalid code
-	protected IActivationInvalidCodeHandler invalidCodeHandler;
+	private IActivationInvalidCodeHandler invalidCodeHandler;
 
 	// last step of the activation process for a valid code
-	protected IProductFinalizerBehavior productFinalizer;
+	private IProductFinalizerBehavior productFinalizer;
 
-	protected AuthenticatorModeProvider authenticatorModeProvider;
+	private AuthenticatorModeProvider authenticatorModeProvider;
 
-	protected ProductionConfigProvider productionConfigProvider;
+	private ProductionConfigProvider productionConfigProvider;
 
 	@Override
-	public Product receiveCode(final Code code, final boolean valid) {
+	public Product receiveCode(Code code, boolean valid) {
 
 		logger.debug("Code received = {} , Is good code = {}", code, valid);
 
-		if (this.authenticatorProvider == null || this.authenticatorProvider.get() == null) {
-			EventBusService.post(new MessageEvent(MessageEventKey.Activation.EXCEPTION_NO_AUTHENTICATOR));
+		if (authenticatorProvider == null || authenticatorProvider.get() == null) {
+			EventBusService.post(new MessageEvent(EXCEPTION_NO_AUTHENTICATOR));
 			return null;
 		}
 
-		Product product = getNewProduct();
+		Product product = createNewProduct();
 		populateProductWithSelectedProductionParameters(product);
 		product.setCode(code);
 
@@ -89,10 +90,10 @@ public class StandardActivationBehavior extends AbstractActivationBehavior {
 		}
 	}
 
-	protected void handleGoodCode(final Product product) {
+	private void handleGoodCode(Product product) {
 		DecodedCameraCode result = getDecodedCameraCode(product.getCode());
 		if (result == null) {
-			product.setStatus(ProductStatus.NOT_AUTHENTICATED);
+			product.setStatus(NOT_AUTHENTICATED);
 		} else {
 			setProductInfoWithCryptoResult(product, result);
 		}
@@ -100,17 +101,12 @@ public class StandardActivationBehavior extends AbstractActivationBehavior {
 		productFinalizer.finalize(product);
 	}
 
-	protected void populateProductWithSelectedProductionParameters(final Product p) {
+	private void populateProductWithSelectedProductionParameters(Product p) {
 		p.setSku(productionParameters.getSku());
-
 		p.setPrinted(isPrinted());
 	}
 
-	/**
-	 * 
-	 * @return true if the production config contains printer
-	 */
-	protected boolean isPrinted() {
+	private boolean isPrinted() {
 		IProductionConfig pc = productionConfigProvider.get();
 		if (pc.getPrinterConfigs() == null || pc.getPrinterConfigs().isEmpty()) {
 			return false;
@@ -119,7 +115,7 @@ public class StandardActivationBehavior extends AbstractActivationBehavior {
 		}
 	}
 
-	protected void setProductInfoWithCryptoResult(final Product product, final DecodedCameraCode code) {
+	private void setProductInfoWithCryptoResult(Product product, DecodedCameraCode code) {
 		product.getCode().setCodeType(code.getCodeType());
 		product.getCode().setEncoderId(code.getBatchId());
 		product.getCode().setSequence(code.getSequence());
@@ -127,7 +123,7 @@ public class StandardActivationBehavior extends AbstractActivationBehavior {
 		product.getCode().setVersion(code.getVersion());
 	}
 
-	protected DecodedCameraCode getDecodedCameraCode(final Code code) {
+	private DecodedCameraCode getDecodedCameraCode(Code code) {
 		try {
 			return (DecodedCameraCode) authenticatorProvider.get().decode(authenticatorModeProvider.get(),
 					code.getStringCode());
@@ -142,28 +138,24 @@ public class StandardActivationBehavior extends AbstractActivationBehavior {
 	 * Set the product status to <code>ProductStatus.NOT_AUTHENTICATED</code> if the result is not authenticated or if
 	 * an exception occurs
 	 */
-	protected void checkProduct(final DecodedCameraCode result, final Product product) {
+	protected void checkProduct(DecodedCameraCode result, Product product) {
 		try {
 			if (result != null && result.isAuthenticated()) {
 				productValidator.validate(product, result);
 			} else {
-				product.setStatus(ProductStatus.NOT_AUTHENTICATED);
+				product.setStatus(NOT_AUTHENTICATED);
 			}
 		} catch (Exception e) {
-			product.setStatus(ProductStatus.NOT_AUTHENTICATED);
+			product.setStatus(NOT_AUTHENTICATED);
 			logger.error("result: " + result, e);
 		}
 	}
 
-	/**
-	 * 
-	 * @return new Product()
-	 */
-	protected Product getNewProduct() {
+	protected Product createNewProduct() {
 		return new Product();
 	}
 
-	public void setAuthenticatorProvider(final IProviderGetter<IAuthenticator> authenticatorProvider) {
+	public void setAuthenticatorProvider(IProviderGetter<IAuthenticator> authenticatorProvider) {
 		this.authenticatorProvider = authenticatorProvider;
 	}
 
@@ -175,11 +167,11 @@ public class StandardActivationBehavior extends AbstractActivationBehavior {
 		this.productValidator = productValidator;
 	}
 
-	public void setInvalidCodeHandler(final IActivationInvalidCodeHandler invalidCodeHandler) {
+	public void setInvalidCodeHandler(IActivationInvalidCodeHandler invalidCodeHandler) {
 		this.invalidCodeHandler = invalidCodeHandler;
 	}
 
-	public void setProductFinalizer(final IProductFinalizerBehavior productFinalizer) {
+	public void setProductFinalizer(IProductFinalizerBehavior productFinalizer) {
 		this.productFinalizer = productFinalizer;
 	}
 

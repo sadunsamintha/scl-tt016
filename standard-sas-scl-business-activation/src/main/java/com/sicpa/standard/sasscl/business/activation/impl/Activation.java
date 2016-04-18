@@ -1,5 +1,8 @@
 package com.sicpa.standard.sasscl.business.activation.impl;
 
+import static com.sicpa.standard.sasscl.model.ProductStatus.SENT_TO_PRINTER_WASTED;
+import static com.sicpa.standard.sasscl.monitoring.system.SystemEventType.PRODUCT_SCANNED;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,9 +18,7 @@ import com.sicpa.standard.sasscl.devices.camera.CameraGoodCodeEvent;
 import com.sicpa.standard.sasscl.devices.camera.ICameraAdaptor;
 import com.sicpa.standard.sasscl.model.Code;
 import com.sicpa.standard.sasscl.model.Product;
-import com.sicpa.standard.sasscl.model.ProductStatus;
 import com.sicpa.standard.sasscl.monitoring.MonitoringService;
-import com.sicpa.standard.sasscl.monitoring.system.SystemEventType;
 import com.sicpa.standard.sasscl.monitoring.system.event.BasicSystemEvent;
 import com.sicpa.standard.sasscl.provider.impl.ActivationBehaviorProvider;
 import com.sicpa.standard.sasscl.provider.impl.ProductionBatchProvider;
@@ -25,19 +26,14 @@ import com.sicpa.standard.sasscl.provider.impl.ProductionBatchProvider;
 /**
  * Activation receives code from the camera and then process then via a IActivationBehavior.<br>
  * registered listeners will be notified of products created during the activation process
- * 
- * @author DIelsch
- * 
  */
 public class Activation implements IActivation {
 
 	private static final Logger logger = LoggerFactory.getLogger(Activation.class);
 
-	protected ActivationBehaviorProvider activationBehaviorProvider;
-
-	protected ProductionBatchProvider productionBatchProvider;
-
-	protected IBeforeActivationAction preActivationAction;
+	private ActivationBehaviorProvider activationBehaviorProvider;
+	private ProductionBatchProvider productionBatchProvider;
+	private IBeforeActivationAction preActivationAction;
 
 	public Activation() {
 
@@ -62,7 +58,7 @@ public class Activation implements IActivation {
 	 *            true if the code is good, false otherwise
 	 */
 	@Override
-	public void receiveCode(final Code code, final boolean good, ICameraAdaptor source) {
+	public void receiveCode(Code code, boolean good, ICameraAdaptor source) {
 
 		String cameraName = source.getName();
 
@@ -92,9 +88,7 @@ public class Activation implements IActivation {
 			product = activationBehaviorProvider.get().receiveCode(codeAfterPreAction, goodAfterPreAction);
 
 			if (product != null) {
-				if (productionBatchProvider != null) {
-					product.setProductionBatchId(productionBatchProvider.get());
-				}
+				product.setProductionBatchId(productionBatchProvider.get());
 				product.setQc(cameraName);
 
 				fireNewProduct(product);
@@ -104,33 +98,25 @@ public class Activation implements IActivation {
 		}
 	}
 
-	/**
-	 * notify the listeners that the specified product has been processed.
-	 * 
-	 * @param product
-	 *            the created product
-	 * @param cameraError
-	 *            true if code read is good, false otherwise
-	 */
-	protected void fireNewProduct(final Product product) {
-        if(!product.getStatus().equals(ProductStatus.SENT_TO_PRINTER_WASTED)) {
-            logger.debug("New product = {}", product);
-        }
-		MonitoringService.addSystemEvent(new BasicSystemEvent(SystemEventType.PRODUCT_SCANNED));
+	protected void fireNewProduct(Product product) {
+		if (!product.getStatus().equals(SENT_TO_PRINTER_WASTED)) {
+			logger.debug("New product = {}", product);
+		}
+		MonitoringService.addSystemEvent(new BasicSystemEvent(PRODUCT_SCANNED));
 		EventBusService.post(new NewProductEvent(product));
 	}
 
 	@Subscribe
-	public synchronized void receiveCameraCode(final CameraGoodCodeEvent evt) {
+	public synchronized void receiveCameraCode(CameraGoodCodeEvent evt) {
 		receiveCode(evt.getCode(), true, evt.getSource());
 	}
 
 	@Subscribe
-	public synchronized void receiveCameraCodeError(final CameraBadCodeEvent evt) {
+	public synchronized void receiveCameraCodeError(CameraBadCodeEvent evt) {
 		receiveCode(evt.getCode(), false, evt.getSource());
 	}
 
-	public void setPreActivationAction(final IBeforeActivationAction preActivationAction) {
+	public void setPreActivationAction(IBeforeActivationAction preActivationAction) {
 		this.preActivationAction = preActivationAction;
 	}
 }

@@ -4,9 +4,6 @@ import com.sicpa.standard.sasscl.model.Product;
 
 /**
  * Defines what to do at the end of the activation process for a valid code
- * 
- * @author DIelsch
- * 
  */
 public interface IProductFinalizerBehavior {
 

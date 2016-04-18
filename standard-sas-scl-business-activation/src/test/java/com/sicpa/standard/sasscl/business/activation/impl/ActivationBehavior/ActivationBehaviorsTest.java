@@ -35,6 +35,7 @@ import com.sicpa.standard.sasscl.model.SKU;
 import com.sicpa.standard.sasscl.provider.impl.ActivationBehaviorProvider;
 import com.sicpa.standard.sasscl.provider.impl.AuthenticatorModeProvider;
 import com.sicpa.standard.sasscl.provider.impl.AuthenticatorProvider;
+import com.sicpa.standard.sasscl.provider.impl.ProductionBatchProvider;
 import com.sicpa.standard.sasscl.provider.impl.ProductionConfigProvider;
 import com.sicpa.standard.sasscl.sicpadata.CryptographyException;
 import com.sicpa.standard.sasscl.sicpadata.reader.IAuthenticator;
@@ -50,8 +51,7 @@ public class ActivationBehaviorsTest {
 	ProductionParameters productionParameters;
 	Code code;
 	ActivationBehaviorProvider activationBehaviorProvider = new ActivationBehaviorProvider();
-
-	// create source, have to setup the conveyor info
+	
 	ICameraAdaptor cameraAdaptor = new CameraAdaptor();
 
 	private static CodeType codeType;
@@ -59,18 +59,18 @@ public class ActivationBehaviorsTest {
 	@Before
 	public void setUp() {
 
-		this.code = new Code("1");
+		code = new Code("1");
 		CodeType codeType = new CodeType(1);
-		this.productionParameters = new ProductionParameters();
+		productionParameters = new ProductionParameters();
 		SKU sku = new SKU(1);
 		sku.setCodeType(codeType);
-		this.productionParameters.setSku(sku);
+		productionParameters.setSku(sku);
 
-		this.exportActiBehav = new ExportActivationBehavior();
-		this.exportActiBehav.setProductionParameters(productionParameters);
+		exportActiBehav = new ExportActivationBehavior();
+		exportActiBehav.setProductionParameters(productionParameters);
 
-		this.maintActiBehav = new MaintenanceActivationBehavior();
-		this.maintActiBehav.setProductionParameters(productionParameters);
+		maintActiBehav = new MaintenanceActivationBehavior();
+		maintActiBehav.setProductionParameters(productionParameters);
 
 	}
 
@@ -79,11 +79,11 @@ public class ActivationBehaviorsTest {
 
 		Activation activation = new Activation();
 		activation.setActivationBehaviorProvider(activationBehaviorProvider);
+		activation.setProductionBatchProvider(new ProductionBatchProvider());
 		activationBehaviorProvider.set(exportActiBehav);
 		EventBusService.register(activation);
 
 		Object statusCatcher = new Object() {
-			@SuppressWarnings("unused")
 			@Subscribe
 			public void catchEvt(NewProductEvent evt) {
 				status = evt.getProduct().getStatus();
@@ -93,7 +93,6 @@ public class ActivationBehaviorsTest {
 
 		final boolean[] msgCatched = { false };
 		Object msgCatcher = new Object() {
-			@SuppressWarnings("unused")
 			@Subscribe
 			public void catchEvt(MessageEvent evt) {
 				msgCatched[0] = evt.getKey().equals(MessageEventKey.Activation.EXCEPTION_CODE_IN_EXPORT);
