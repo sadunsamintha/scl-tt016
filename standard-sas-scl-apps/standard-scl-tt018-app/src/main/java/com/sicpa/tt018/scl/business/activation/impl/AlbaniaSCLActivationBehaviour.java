@@ -8,7 +8,7 @@ import com.sicpa.tt018.scl.model.AlbaniaProduct;
 public class AlbaniaSCLActivationBehaviour extends StandardActivationBehavior {
 
 	@Override
-	protected Product getNewProduct() {
+	protected Product createNewProduct() {
 		return new AlbaniaProduct(ProductionMode.STANDARD);
 	}
 
