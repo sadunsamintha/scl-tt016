@@ -135,9 +135,11 @@ public class SkuConverter implements ISkuConverter {
 		SkuProductDto skuDto = (SkuProductDto) child.getNodeValue();
 		SKU sku = new SKU(skuDto.getId().intValue(), skuDto.getInternalDescription(), Arrays.asList(skuDto
 				.getSkuBarcode()));
-		if (skuDto.getIcon() != null) {
+
+		if (skuDto.getIcon() != null && skuDto.getIcon().length > 0) {
 			sku.setImage(new ImageIcon(skuDto.getIcon()));
 		}
+
 		CodeType codeType = this.getCodeTypeForSku(child);
 
 		// skip if fail to get code type
