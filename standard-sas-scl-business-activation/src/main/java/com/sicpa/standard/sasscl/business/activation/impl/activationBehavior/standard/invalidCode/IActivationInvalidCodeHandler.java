@@ -4,9 +4,6 @@ import com.sicpa.standard.sasscl.model.Product;
 
 /**
  * Defines what to do when the activation received an invalid code
- * 
- * @author DIelsch
- * 
  */
 public interface IActivationInvalidCodeHandler {
 

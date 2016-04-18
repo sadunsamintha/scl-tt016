@@ -82,7 +82,6 @@ public class StandardActivationBehaviorTest {
 		final boolean[] catched = { false };
 
 		Object evtCatcher = new Object() {
-			@SuppressWarnings("unused")
 			@Subscribe
 			public void catchEvent(MessageEvent evt) {
 				catched[0] = true;

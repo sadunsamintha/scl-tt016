@@ -10,16 +10,13 @@ import com.sicpa.standard.sasscl.model.ProductStatus;
 
 /**
  * set the status of the product to ProductStatus.MAINTENANCE
- * 
- * @author DIelsch
- * 
  */
 public class MaintenanceActivationBehavior extends AbstractActivationBehavior {
 
 	private static Logger logger = LoggerFactory.getLogger(MaintenanceActivationBehavior.class);
 
 	@Override
-	public Product receiveCode(final Code code, final boolean valid) {
+	public Product receiveCode(Code code, boolean valid) {
 		logger.debug("Code received = {} , Is good code = {}", code, valid);
 
 		Product p = new Product();

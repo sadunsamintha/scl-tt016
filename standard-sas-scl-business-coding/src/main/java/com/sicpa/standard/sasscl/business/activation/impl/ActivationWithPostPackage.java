@@ -1,5 +1,9 @@
 package com.sicpa.standard.sasscl.business.activation.impl;
 
+import static com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState.STT_CONNECTED;
+import static com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState.STT_EXIT;
+import static com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState.STT_SELECT_WITH_PREVIOUS;
+
 import java.util.List;
 
 import com.google.common.eventbus.Subscribe;
@@ -12,7 +16,7 @@ import com.sicpa.standard.sasscl.model.Product;
 
 public class ActivationWithPostPackage extends Activation {
 
-	protected IPostPackage postPackage;
+	private IPostPackage postPackage;
 
 	public ActivationWithPostPackage() {
 		super();
@@ -47,12 +51,12 @@ public class ActivationWithPostPackage extends Activation {
 	@Subscribe
 	public void processStateChanged(ApplicationFlowStateChangedEvent evt) {
 		ApplicationFlowState currentState = evt.getCurrentState();
-		if (currentState.equals(ApplicationFlowState.STT_EXIT) || currentState.equals(ApplicationFlowState.STT_SELECT_WITH_PREVIOUS)) {
+		if (currentState.equals(STT_EXIT) || currentState.equals(STT_SELECT_WITH_PREVIOUS)) {
 			notifyProductionStoppedOnPostPackage(true);
 		}
 
 		//actually Connected state is matching Stopped state.
-		if (currentState.equals(ApplicationFlowState.STT_CONNECTED)) {
+		if (currentState.equals(STT_CONNECTED)) {
 			notifyProductionStoppedOnPostPackage(false);
 		}
 	}

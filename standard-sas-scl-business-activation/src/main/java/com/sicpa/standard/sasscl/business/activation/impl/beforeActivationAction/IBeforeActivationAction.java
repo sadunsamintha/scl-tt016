@@ -6,7 +6,6 @@ import com.sicpa.standard.sasscl.model.Code;
  * 
  * Do something before code is sent to the activation behavior
  * 
- * @author DIelsch
  * 
  */
 public interface IBeforeActivationAction {

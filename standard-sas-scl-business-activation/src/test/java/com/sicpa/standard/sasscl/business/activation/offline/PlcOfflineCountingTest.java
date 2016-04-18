@@ -51,7 +51,6 @@ public class PlcOfflineCountingTest {
 		final List<Product> products = new ArrayList<Product>();
 
 		Object productionCatcher = new Object() {
-			@SuppressWarnings("unused")
 			@Subscribe
 			public void notifyNewProduct(NewProductEvent evt) {
 				products.add(evt.getProduct());

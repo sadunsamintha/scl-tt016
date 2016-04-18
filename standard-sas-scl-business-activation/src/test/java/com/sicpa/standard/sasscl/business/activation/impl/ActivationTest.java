@@ -62,7 +62,6 @@ public class ActivationTest {
 		productsRepository = new ProductCount();
 
 		Object productionCatcher = new Object() {
-			@SuppressWarnings("unused")
 			@Subscribe
 			public void notifyNewProduct(final NewProductEvent evt) {
 				productsRepository.add(evt.getProduct());

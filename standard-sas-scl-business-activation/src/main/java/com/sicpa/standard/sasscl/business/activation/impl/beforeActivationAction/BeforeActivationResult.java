@@ -4,9 +4,9 @@ import com.sicpa.standard.sasscl.model.Code;
 
 public class BeforeActivationResult {
 
-	protected Code code;
-	protected boolean valid;
-	protected boolean filtered;
+	private Code code;
+	private boolean valid;
+	private boolean filtered;
 
 	public BeforeActivationResult(Code code, boolean valid, boolean filtered) {
 		this.code = code;
@@ -14,8 +14,6 @@ public class BeforeActivationResult {
 		this.filtered = filtered;
 	}
 
-
-	//  static factories
 	public static BeforeActivationResult createBeforeActivationResultFiltered(Code code, boolean valid) {
 		final boolean isFiltered = true;
 		return new BeforeActivationResult(code, valid, isFiltered);
