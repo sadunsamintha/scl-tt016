@@ -10,6 +10,12 @@
 
 	<bean id="implementationProvider" class="com.sicpa.standard.sasscl.controller.productionconfig.factory.utils.SpringImplementationProvider" />
 
-	<bean id="codeTypeFilterFactory" class="com.sicpa.standard.sasscl.filter.DefaultCodeTypeFilterFactory" />
+	<bean id="codeTypeFilterFactory" class="com.sicpa.standard.sasscl.filter.DefaultCodeTypeFilterFactory">
+		<property name="codeTypesToFilter">
+			<bean class="com.sicpa.standard.sasscl.utils.StringUtils" factory-method="commaDelimitedListToList">
+				<constructor-arg type="java.lang.String" value="${codetype.filter}"/>
+			</bean>
+		</property>
+	</bean>
 
 </beans>
