@@ -13,7 +13,7 @@
 	<bean id="codeTypeFilterFactory" class="com.sicpa.standard.sasscl.filter.DefaultCodeTypeFilterFactory">
 		<property name="codeTypesToFilter">
 			<bean class="com.sicpa.standard.sasscl.utils.StringUtils" factory-method="commaDelimitedListToList">
-				<constructor-arg type="java.lang.String" value="${codetype.filter}"/>
+				<constructor-arg type="java.lang.String" value="${encoder.download.codetype.filter}"/>
 			</bean>
 		</property>
 	</bean>
