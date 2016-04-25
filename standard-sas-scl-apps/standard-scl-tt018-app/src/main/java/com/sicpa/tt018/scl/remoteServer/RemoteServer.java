@@ -27,7 +27,7 @@ import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.Producti
 import com.sicpa.standard.sasscl.sicpadata.reader.IAuthenticator;
 import com.sicpa.std.common.api.activation.exception.ActivationException;
 
-public abstract class RemoteServer extends AbstractRemoteServer {
+public abstract class RemoteServer extends AbstractRemoteServer implements ITT018RemoteServer {
 
 	private static final Logger logger = LoggerFactory.getLogger(RemoteServer.class);
 

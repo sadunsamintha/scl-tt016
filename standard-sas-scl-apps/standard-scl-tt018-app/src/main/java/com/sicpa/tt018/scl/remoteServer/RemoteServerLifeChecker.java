@@ -8,11 +8,11 @@ import com.sicpa.standard.gui.utils.ThreadUtils;
 public class RemoteServerLifeChecker {
 	private static final Logger logger = LoggerFactory.getLogger(RemoteServerLifeChecker.class);
 
-	private RemoteServer target;
+	private ITT018RemoteServer target;
 	private int lifeCheckSleep = 20;
 	private Thread lifeCheker;
 
-	public void setTarget(RemoteServer target) {
+	public void setTarget(ITT018RemoteServer target) {
 		this.target = target;
 	}
 
