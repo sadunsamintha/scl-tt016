@@ -230,7 +230,7 @@ public class AlbaniaRemoteServerAdapter implements IAlbaniaRemoteServerAdapter {
 			// CAN Package Type
 			// -------------------------------------
 			final AlbaniaSKU canSKU = new AlbaniaSKU(COUNTING_SKU_ID,
-					Messages.get(AlbaniaRemoteServerMessages.PACKAGE_CAN), "", "", "", null, false,
+					Messages.get(AlbaniaRemoteServerMessages.PACKAGE_CAN), "", "", "", new ArrayList<String>(), false,
 					ProductPackagings.CAN);
 			final SKUNode canNode = new SKUNode(canSKU);
 			canNode.setText(Messages.get(AlbaniaRemoteServerMessages.PACKAGE_CAN));
@@ -240,7 +240,7 @@ public class AlbaniaRemoteServerAdapter implements IAlbaniaRemoteServerAdapter {
 			// BOTTLE Package Type
 			// -------------------------------------
 			final AlbaniaSKU bottleSKU = new AlbaniaSKU(COUNTING_SKU_ID,
-					Messages.get(AlbaniaRemoteServerMessages.PACKAGE_BOTTLE), "", "", "", null, false,
+					Messages.get(AlbaniaRemoteServerMessages.PACKAGE_BOTTLE), "", "", "", new ArrayList<String>(), false,
 					ProductPackagings.BOTTLE);
 			final SKUNode bottleNode = new SKUNode(bottleSKU);
 			bottleNode.setText(Messages.get(AlbaniaRemoteServerMessages.PACKAGE_BOTTLE));
