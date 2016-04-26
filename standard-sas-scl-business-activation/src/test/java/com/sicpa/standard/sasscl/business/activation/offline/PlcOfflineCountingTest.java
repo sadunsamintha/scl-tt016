@@ -41,9 +41,6 @@ public class PlcOfflineCountingTest {
 		Mockito.when(plc.read(lastStopVar)).thenReturn(lastStop);
 		Mockito.when(plc.read(lastProductVar)).thenReturn(lastProduct);
 
-		poc.setLastProductTimeVar(lastProductVar);
-		poc.setLastStopTimeVar(lastStopVar);
-		poc.setQuantityVar(qtyVar);
 		poc.setPlcProvider(plcProvider);
 		poc.setSubsystemIdProvider(new SubsystemIdProvider(0));
 		plcProvider.set(plc);
@@ -58,7 +55,7 @@ public class PlcOfflineCountingTest {
 		};
 		EventBusService.register(productionCatcher);
 
-		poc.processOfflineCounting();
+		poc.processOfflineCounting(qtyVar, lastStopVar, lastProductVar);
 		Assert.assertEquals(productsCount, products.size());
 		int i = 0;
 
@@ -83,6 +80,5 @@ public class PlcOfflineCountingTest {
 
 		Mockito.verify(lastStopVar).setValue(argument.capture());
 		Assert.assertEquals(0, argument.getValue().intValue());
-
 	}
 }

@@ -10,6 +10,7 @@
 	<resetOnStop>true</resetOnStop>
 	<requestBufferStatusPeriod>500</requestBufferStatusPeriod>
 	<requestParamPeriod>2000</requestParamPeriod>
+	<requestStatusPeriod>2000</requestStatusPeriod>
 	<allowedInkTags>79000-*</allowedInkTags>
 	<allowedSolventTags>77001-*</allowedSolventTags>
 	<printerParameters class="com.sicpa.standard.printer.leibinger.model.LeibingerParameter">

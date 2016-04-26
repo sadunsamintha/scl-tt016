@@ -202,9 +202,9 @@ beans {
 	plcMap['REQUEST_JAVA_WARNINGS_AND_ERRORS_REGISTER']=[v:'.com.nJavaWarningsAndErrorsRegister' ,t:I]
 
 	//OFFLINE
-	plcMap['OFFLINE_COUNTING_QTY']=[v:'.offline.counting.qty' ,t:I]
-	plcMap['OFFLINE_COUNTING_LAST_STOP']=[v:'.offline.counting.last.stop' ,t:I]
-	plcMap['OFFLINE_COUNTING_LAST_PRODUCT']=[v:'.offline.counting.last.product' ,t:I]
+	plcMap['OFFLINE_COUNTING_QTY']=[v:OFFLINE + 'nProductsCounterOFF' ,t:I]
+	plcMap['OFFLINE_COUNTING_LAST_STOP']=[v:OFFLINE +'nSecondsWhenStopped' ,t:I]
+	plcMap['OFFLINE_COUNTING_LAST_PRODUCT']=[v:OFFLINE + 'nSecondsLastOFFProduct' ,t:I]
 
 	injectCustoVar();
 

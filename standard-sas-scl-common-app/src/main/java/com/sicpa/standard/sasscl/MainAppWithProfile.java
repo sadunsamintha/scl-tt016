@@ -212,6 +212,7 @@ public class MainAppWithProfile extends MainApp implements IProfileSelectorListe
 		config.add("spring/server/server-import.groovy");
 
 		config.add("spring/brs/brs-import.groovy");
+		config.add("spring/offlineCounting.xml");
 
 		// SCL
 
