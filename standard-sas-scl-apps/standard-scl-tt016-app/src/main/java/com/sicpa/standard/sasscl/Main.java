@@ -1,6 +1,4 @@
-package com.sicpa.tt016.scl;
-
-import com.sicpa.standard.sasscl.MainAppWithProfile;
+package com.sicpa.standard.sasscl;
 
 public class Main {
 
