@@ -27,11 +27,14 @@ public class ProductionDataConverter {
 
 	public CodingActivationSessionDTO convertAuthenticated(PackagedProducts products, int subsystemId) {
 		List<CodingActivationDTO> activated = new ArrayList<>();
+
 		for (Product p : products.getProducts()) {
 			activated.add(convertProduct(p, subsystemId, products.getProductStatus()));
 		}
+
 		CodingActivationSessionDTO res = new CodingActivationSessionDTO(activated);
 		res.setQty(activated.size());
+
 		return res;
 	}
 
@@ -42,10 +45,8 @@ public class ProductionDataConverter {
 		long seq = product.getCode().getSequence();
 		int skuId = product.getSku().getId();
 
-		CodingActivationDTO remoteProduct = new CodingActivationDTO(encoderId, seq, product.getActivationDate(),
+		return new CodingActivationDTO(encoderId, seq, product.getActivationDate(),
 				remoteStatus, codeTypeId, skuId, subsystemId, null);
-
-		return remoteProduct;
 	}
 
 	private int getRemoteProductStatus(ProductStatus status) {
@@ -64,12 +65,14 @@ public class ProductionDataConverter {
 	private int getCodeTypeId(Product product) {
 		int codeTypeId;
 		com.sicpa.standard.sasscl.model.CodeType ctFromCode = product.getCode().getCodeType();
+
 		if (ctFromCode == null) {
 			// SCL - from the selected sku
 			codeTypeId = (int) product.getSku().getCodeType().getId();
 		} else {
 			codeTypeId = (int) ctFromCode.getId();
 		}
+
 		return codeTypeId;
 	}
 
@@ -94,6 +97,7 @@ public class ProductionDataConverter {
 
 		ExportSessionDTO session = new ExportSessionDTO(1L, EXPORT_SESSION, qty, new Date(), skuId, subsystemId);
 		session.setTimestamps(getDates(products));
+
 		return session;
 	}
 
@@ -102,6 +106,7 @@ public class ProductionDataConverter {
 
 		MaintenanceSessionDTO session = new MaintenanceSessionDTO(1L, MAINTENANCE_SESSION, qty, new Date(), subsystemId);
 		session.setTimestamps(getDates(products));
+
 		return session;
 	}
 
@@ -117,9 +122,11 @@ public class ProductionDataConverter {
 
 	private List<Date> getDates(PackagedProducts products) {
 		List<Date> dates = new ArrayList<>();
+
 		for (Product p : products.getProducts()) {
 			dates.add(p.getActivationDate());
 		}
+
 		return dates;
 	}
 

@@ -28,12 +28,12 @@ public class PlcOfflineCounting extends AbstractOfflineCounting {
 				}
 
 				Integer quantity = plc.read(quantityVar);
-				Integer last_stop = plc.read(lastStopTimeVar);
-				Integer last_product = plc.read(lastProductTimeVar);
+				Integer lastStop = plc.read(lastStopTimeVar);
+				Integer lastProduct = plc.read(lastProductTimeVar);
 
-				if (quantity != null && last_product != null && last_stop != null && quantity > 0 && last_stop > 0
-						&& last_product > 0) {
-					process(1000l * last_stop, 1000l * last_product, quantity);
+				if (quantity != null && lastProduct != null && lastStop != null && quantity > 0 && lastStop > 0
+						&& lastProduct > 0) {
+					process(1000L * lastStop, 1000L * lastProduct, quantity);
 				}
 
 				reset(lastProductTimeVar);

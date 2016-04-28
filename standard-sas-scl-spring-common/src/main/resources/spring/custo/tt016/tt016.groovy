@@ -16,5 +16,5 @@ beans{
 	}
 
 	importBeans('spring/custo/tt016/tt016View.xml')
-	importBeans('spring/offlinecounting.xml')
+	importBeans('spring/offlineCounting.xml')
 }
