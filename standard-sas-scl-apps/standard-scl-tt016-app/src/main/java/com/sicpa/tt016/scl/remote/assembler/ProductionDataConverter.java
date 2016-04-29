@@ -2,6 +2,7 @@ package com.sicpa.tt016.scl.remote.assembler;
 
 import static com.sicpa.tt016.common.dto.NonActivationSessionDTO.EXPORT_SESSION;
 import static com.sicpa.tt016.common.dto.NonActivationSessionDTO.MAINTENANCE_SESSION;
+import static com.sicpa.tt016.common.dto.NonActivationSessionDTO.OFFLINE_SESSION;
 import static com.sicpa.tt016.common.model.EjectionReason.UNREADABLE_INT;
 import static com.sicpa.tt016.common.model.EjectionReason.UNREADABLE_WITH_CODE_INT;
 import static com.sicpa.tt016.common.model.ProductStatus.VALID_ACTIV_INT;
@@ -15,12 +16,7 @@ import java.util.List;
 import com.sicpa.standard.sasscl.model.PackagedProducts;
 import com.sicpa.standard.sasscl.model.Product;
 import com.sicpa.standard.sasscl.model.ProductStatus;
-import com.sicpa.tt016.common.dto.ActivationEjectionDTO;
-import com.sicpa.tt016.common.dto.CodingActivationDTO;
-import com.sicpa.tt016.common.dto.CodingActivationSessionDTO;
-import com.sicpa.tt016.common.dto.ExportSessionDTO;
-import com.sicpa.tt016.common.dto.IEjectionDTO;
-import com.sicpa.tt016.common.dto.MaintenanceSessionDTO;
+import com.sicpa.tt016.common.dto.*;
 import com.sicpa.tt016.common.model.ActivationEjection;
 import com.sicpa.tt016.common.model.CodeType;
 import com.sicpa.tt016.common.model.EjectionReason;
@@ -31,11 +27,14 @@ public class ProductionDataConverter {
 
 	public CodingActivationSessionDTO convertAuthenticated(PackagedProducts products, int subsystemId) {
 		List<CodingActivationDTO> activated = new ArrayList<>();
+
 		for (Product p : products.getProducts()) {
 			activated.add(convertProduct(p, subsystemId, products.getProductStatus()));
 		}
+
 		CodingActivationSessionDTO res = new CodingActivationSessionDTO(activated);
 		res.setQty(activated.size());
+
 		return res;
 	}
 
@@ -46,10 +45,8 @@ public class ProductionDataConverter {
 		long seq = product.getCode().getSequence();
 		int skuId = product.getSku().getId();
 
-		CodingActivationDTO remoteProduct = new CodingActivationDTO(encoderId, seq, product.getActivationDate(),
+		return new CodingActivationDTO(encoderId, seq, product.getActivationDate(),
 				remoteStatus, codeTypeId, skuId, subsystemId, null);
-
-		return remoteProduct;
 	}
 
 	private int getRemoteProductStatus(ProductStatus status) {
@@ -68,17 +65,18 @@ public class ProductionDataConverter {
 	private int getCodeTypeId(Product product) {
 		int codeTypeId;
 		com.sicpa.standard.sasscl.model.CodeType ctFromCode = product.getCode().getCodeType();
+
 		if (ctFromCode == null) {
 			// SCL - from the selected sku
 			codeTypeId = (int) product.getSku().getCodeType().getId();
 		} else {
 			codeTypeId = (int) ctFromCode.getId();
 		}
+
 		return codeTypeId;
 	}
 
 	public IEjectionDTO convertEjection(PackagedProducts products, int subsystemId) {
-
 		int qty = products.getProducts().size();
 		CodeType ct = new CodeType(getCodeTypeId(products));
 		SKU sku = new SKU(getSkuId(products));
@@ -91,7 +89,6 @@ public class ProductionDataConverter {
 		ejectionDTO.setTimestamps(getDates(products));
 
 		return ejectionDTO;
-
 	}
 
 	public ExportSessionDTO convertExport(PackagedProducts products, int subsystemId) {
@@ -100,6 +97,7 @@ public class ProductionDataConverter {
 
 		ExportSessionDTO session = new ExportSessionDTO(1L, EXPORT_SESSION, qty, new Date(), skuId, subsystemId);
 		session.setTimestamps(getDates(products));
+
 		return session;
 	}
 
@@ -108,14 +106,27 @@ public class ProductionDataConverter {
 
 		MaintenanceSessionDTO session = new MaintenanceSessionDTO(1L, MAINTENANCE_SESSION, qty, new Date(), subsystemId);
 		session.setTimestamps(getDates(products));
+
+		return session;
+	}
+
+	public OfflineSessionDTO convertOffline(PackagedProducts products, int subsystemId) {
+		int qty = products.getProducts().size();
+		int skuId = getSkuId(products);
+
+		OfflineSessionDTO session = new OfflineSessionDTO(1L, OFFLINE_SESSION, qty, new Date(), skuId, subsystemId);
+		session.setTimestamps(getDates(products));
+
 		return session;
 	}
 
 	private List<Date> getDates(PackagedProducts products) {
 		List<Date> dates = new ArrayList<>();
+
 		for (Product p : products.getProducts()) {
 			dates.add(p.getActivationDate());
 		}
+
 		return dates;
 	}
 

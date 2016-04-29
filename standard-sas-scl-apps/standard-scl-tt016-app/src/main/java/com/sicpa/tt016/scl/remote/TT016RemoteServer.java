@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
+import com.sicpa.tt016.common.dto.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,14 +22,7 @@ import com.sicpa.standard.sasscl.model.ProductStatus;
 import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.ProductionParameterRootNode;
 import com.sicpa.standard.sasscl.sicpadata.generator.IEncoder;
 import com.sicpa.standard.sasscl.sicpadata.reader.IAuthenticator;
-import com.sicpa.tt016.common.dto.CodingActivationSessionDTO;
-import com.sicpa.tt016.common.dto.EncoderInfoDTO;
-import com.sicpa.tt016.common.dto.EncoderInfoResultDTO;
 import com.sicpa.tt016.common.dto.EncoderInfoResultDTO.InfoResult;
-import com.sicpa.tt016.common.dto.EncoderSclDTO;
-import com.sicpa.tt016.common.dto.ExportSessionDTO;
-import com.sicpa.tt016.common.dto.IEjectionDTO;
-import com.sicpa.tt016.common.dto.MaintenanceSessionDTO;
 import com.sicpa.tt016.master.scl.exceptions.InternalException;
 import com.sicpa.tt016.scl.remote.assembler.EncryptionConverter;
 import com.sicpa.tt016.scl.remote.assembler.ProductionDataConverter;
@@ -135,6 +129,8 @@ public class TT016RemoteServer extends AbstractRemoteServer {
 				sendMaintenanceData(products);
 			} else if (products.getProductStatus().equals(ProductStatus.REFEED)) {
 				sendRefeedData(products);
+			} else if (products.getProductStatus().equals(ProductStatus.OFFLINE)) {
+				sendOfflineCountingData(products);
 			} else {
 				logger.warn("package not handled:" + products.getProductStatus());
 			}
@@ -169,6 +165,12 @@ public class TT016RemoteServer extends AbstractRemoteServer {
 	private void sendExportData(PackagedProducts products) throws InternalException {
 		ExportSessionDTO data = productionDataConverter.convertExport(products, remoteServices.getSubsystemId());
 		remoteServices.sendExportProduction(data);
+	}
+
+	private void sendOfflineCountingData(PackagedProducts products) throws InternalException {
+		OfflineSessionDTO data = productionDataConverter.convertOffline(products, remoteServices.getSubsystemId());
+
+		remoteServices.sendOfflineProduction(data);
 	}
 
 	@Override

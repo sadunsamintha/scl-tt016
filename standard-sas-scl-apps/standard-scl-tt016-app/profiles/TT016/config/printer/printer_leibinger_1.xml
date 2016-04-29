@@ -10,6 +10,7 @@
 	<resetOnStop>true</resetOnStop>
 	<requestBufferStatusPeriod>500</requestBufferStatusPeriod>
 	<requestParamPeriod>2000</requestParamPeriod>
+	<requestStatusPeriod>500</requestStatusPeriod>
 	<allowedInkTags>79000-*</allowedInkTags>
 	<allowedSolventTags>77001-*</allowedSolventTags>
 	<printerParameters class="com.sicpa.standard.printer.leibinger.model.LeibingerParameter">
@@ -17,7 +18,7 @@
 		<dataMatrixFormat>DM8x18</dataMatrixFormat>
 		<dataMatrixEncoding>ASCII</dataMatrixEncoding>
 	</printerParameters>
-	<wysiwyg>false</wysiwyg>
+	<wysiwyg>true</wysiwyg>
 	<encoderResolution>22000</encoderResolution>
 	<inverted>0</inverted>
 	<rotation>0</rotation>

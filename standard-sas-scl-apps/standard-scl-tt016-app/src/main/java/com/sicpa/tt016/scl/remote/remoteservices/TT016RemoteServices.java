@@ -49,7 +49,7 @@ public class TT016RemoteServices implements ITT016RemoteServices {
 	@Override
 	@Timeout
 	public void login() throws Exception {
-		logger.info("connecting to mpcc using:" + userMachine);
+		logger.info("Connecting to remote server using:" + userMachine);
 		loadInitialContext();
 		loadRemoteService();
 	}
@@ -66,14 +66,14 @@ public class TT016RemoteServices implements ITT016RemoteServices {
 	@Override
 	@TimeoutLifeCheck
 	public boolean isAlive() {
-		logger.debug("mscl isalive called");
+		logger.debug("remote server isalive called");
 		return codingActivation.isAlive(subsystemId);
 	}
 
 	@Override
 	@Timeout
 	public List<SkuDTO> getSkuList() throws InternalException {
-		logger.info("requesting sku list");
+		logger.info("Requesting sku list");
 		List<SkuDTO> skus = codingActivation.getSKU(subsystemId);
 		Comparator<SkuDTO> c = (s1, s2) -> s1.getDescription().compareTo(s2.getDescription());
 		Collections.sort(skus, c);
@@ -89,7 +89,7 @@ public class TT016RemoteServices implements ITT016RemoteServices {
 	@Override
 	@Timeout
 	public EncoderInfoResultDTO sendEncoderInfo(List<EncoderInfoDTO> info) throws InternalException {
-		logger.info("sending encoders info");
+		logger.info("Sending encoders info");
 		EncoderInfoResultDTO res = codingActivation.sendEncodersInfo(subsystemId, info);
 		return res;
 	}
@@ -97,51 +97,49 @@ public class TT016RemoteServices implements ITT016RemoteServices {
 	@Override
 	@Timeout
 	public List<EncoderSclDTO> getRemoteEncoders(int encoderQty, int codeTypeId) throws InternalException {
-		logger.info("requesting encoder");
+		logger.info("Requesting encoders");
 		return codingActivation.getSclEncoders(encoderQty, new CodeType(codeTypeId), subsystemId);
 	}
 
 	@Override
 	@Timeout
 	public void sendOfflineProduction(OfflineSessionDTO data) throws InternalException {
-		sendCountProduction(data);
+		logger.info("Sending offline data");
+		codingActivation.sendProductionQty(data, subsystemId);
 	}
 
 	@Override
 	@Timeout
 	public void sendMaintenanceProduction(MaintenanceSessionDTO data) throws InternalException {
-		sendCountProduction(data);
+		logger.info("Sending maintenance data");
+		codingActivation.sendProductionQty(data, subsystemId);
 	}
 
 	@Override
 	@Timeout
 	public void sendExportProduction(ExportSessionDTO data) throws InternalException {
-		sendCountProduction(data);
-	}
-
-	private void sendCountProduction(NonActivationSessionDTO data) throws InternalException {
-		logger.info("sending counted production data");
+		logger.info("Sending export data");
 		codingActivation.sendProductionQty(data, subsystemId);
 	}
 
 	@Override
 	@Timeout
 	public void sendDomesticProduction(CodingActivationSessionDTO activSession) throws InternalException {
-		logger.info("sending domestic production data");
+		logger.info("Sending domestic data");
 		codingActivation.sendProductionData(activSession, emptyList(), subsystemId);
 	}
 
 	@Override
 	@Timeout
 	public void sendRefeedProduction(CodingActivationSessionDTO activSession) throws InternalException {
-		logger.info("sending refeed data");
+		logger.info("Sending refeed data");
 		codingActivation.sendProductionData(activSession, emptyList(), subsystemId);
 	}
 
 	@Override
 	@Timeout
 	public void sendEjectedProduction(IEjectionDTO ejected) throws InternalException {
-		logger.info("sending ejection data");
+		logger.info("Sending ejection data");
 		CodingActivationSessionDTO emptySessionDto = new CodingActivationSessionDTO(emptyList());
 		codingActivation.sendProductionData(emptySessionDto, asList(ejected), subsystemId);
 	}
