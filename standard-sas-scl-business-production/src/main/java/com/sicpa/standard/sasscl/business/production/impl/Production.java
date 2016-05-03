@@ -200,8 +200,11 @@ public class Production implements IProduction {
 	private void sendAllEncoderInfo() {
 		try {
 			List<EncoderInfo> encoderInfos = storage.getAllEndodersInfo();
-			remoteServer.sendEncoderInfos(encoderInfos);
-			storage.notifyEncodersInfoSent(encoderInfos);
+
+			if (!encoderInfos.isEmpty()) {
+				remoteServer.sendEncoderInfos(encoderInfos);
+				storage.notifyEncodersInfoSent(encoderInfos);
+			}
 		} catch (Exception e) {
 			logger.error("error sending encoder infos", e);
 		}
@@ -233,7 +236,7 @@ public class Production implements IProduction {
 	}
 
 	protected void sendABatchOfProducts(PackagedProducts batch, int totalBatchCount, AtomicInteger currentIndex,
-			AtomicInteger productCount) {
+	                                    AtomicInteger productCount) {
 
 		currentIndex.incrementAndGet();
 		logger.info("Sending package {}/{}", currentIndex.get(), totalBatchCount);
