@@ -40,13 +40,15 @@ public class PlcMonitoringRawDisplay extends JPanel implements IMonitoringViewCo
 
 	@Override
 	public void update(PlcMonitoringModel model) {
-		for (Entry<String, String> entry : model.getVariableValueMap().entrySet()) {
-			String varName = entry.getKey();
-			String tabIndexKey = getTabKey(varName);
-			JPanel panel = getOrCreateTabPanel(tabIndexKey);
+		synchronized (model.getValueByVar()) {
+			for (Entry<String, String> entry : model.getValueByVar().entrySet()) {
+				String varName = entry.getKey();
+				String tabIndexKey = getTabKey(varName);
+				JPanel panel = getOrCreateTabPanel(tabIndexKey);
 
-			JLabel labelValue = getOrCreateLabelDisplay(varName, panel);
-			labelValue.setText(entry.getValue());
+				JLabel labelValue = getOrCreateLabelDisplay(varName, panel);
+				labelValue.setText(entry.getValue());
+			}
 		}
 	}
 
@@ -84,22 +86,13 @@ public class PlcMonitoringRawDisplay extends JPanel implements IMonitoringViewCo
 
 	private JLabel createLabel(String varName, JPanel container) {
 		JLabel labelValue = new JLabel();
-		JLabel label = new JLabel(trimVarName(varName) + " : ");
+		JLabel label = new JLabel(varName + " : ");
 		label.setFont(new Font(SicpaFont.getFont(12).getName(), Font.BOLD, 12));
 		labelValue.setFont(new Font(SicpaFont.getFont(12).getName(), Font.BOLD, 12));
 		container.add(label, "grow");
 		container.add(labelValue, "grow,wrap");
 
 		return labelValue;
-	}
-
-	private String trimVarName(String varName) {
-		if (isLineVariable(varName)) {
-			int size = ".com.stLine[1].".length();
-			return varName.substring(size, varName.length());
-		} else {
-			return varName;
-		}
 	}
 
 	public JTabbedPane getTabpane() {

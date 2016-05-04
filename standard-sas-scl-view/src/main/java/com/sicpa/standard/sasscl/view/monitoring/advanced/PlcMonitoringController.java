@@ -12,9 +12,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.sicpa.standard.plc.value.IPlcVariable;
-import com.sicpa.standard.sasscl.devices.plc.IPlcAdaptor;
 import com.sicpa.standard.sasscl.devices.plc.PlcAdaptorException;
 import com.sicpa.standard.sasscl.devices.plc.PlcLineHelper;
+import com.sicpa.standard.sasscl.provider.impl.PlcProvider;
 
 public class PlcMonitoringController implements IMonitoringViewListener {
 
@@ -22,8 +22,8 @@ public class PlcMonitoringController implements IMonitoringViewListener {
 
 	private final List<IPlcVariable<?>> plcVars = new ArrayList<>();
 	private PlcMonitoringModel model;
-	private IPlcAdaptor plc;
-	private int inputsReadDelay = 250;
+	private PlcProvider plcProvider;
+	private int inputsReadDelay = 1000;
 	private ScheduledFuture<?> scheduledTask;
 	private int lineCount;
 
@@ -54,8 +54,12 @@ public class PlcMonitoringController implements IMonitoringViewListener {
 	}
 
 	private void readVar(IPlcVariable<?> var) throws PlcAdaptorException {
-		String value = plc.read(var) + "";
-		model.put(var.getVariableName(), value);
+		try {
+			String value = plcProvider.get().read(var) + "";
+			model.put(var.getVariableName(), value);
+		} catch (Exception e) {
+			logger.error("", e);
+		}
 	}
 
 	private void activatePolling(boolean enabled) {
@@ -75,8 +79,8 @@ public class PlcMonitoringController implements IMonitoringViewListener {
 		model.notifyModelChanged();
 	}
 
-	public void setPlc(IPlcAdaptor plc) {
-		this.plc = plc;
+	public void setPlcProvider(PlcProvider plcProvider) {
+		this.plcProvider = plcProvider;
 	}
 
 	public void setPlcVars(List<IPlcVariable<?>> plcVars) {

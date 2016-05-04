@@ -7,20 +7,18 @@ import com.sicpa.standard.client.common.view.mvc.AbstractObservableModel;
 
 public class PlcMonitoringModel extends AbstractObservableModel {
 
-	private final Map<String, String> variableValueMap = new TreeMap<>();
+	private final Map<String, String> valueByVar = new TreeMap<>();
 
 	private boolean monitoringActive;
 
-	public String get(String key) {
-		return variableValueMap.get(key);
-	}
-
 	public void put(String key, String value) {
-		variableValueMap.put(key, value);
+		synchronized (valueByVar) {
+			valueByVar.put(key, value);
+		}
 	}
 
-	public Map<String, String> getVariableValueMap() {
-		return variableValueMap;
+	public Map<String, String> getValueByVar() {
+		return valueByVar;
 	}
 
 	public boolean isMonitoringActive() {

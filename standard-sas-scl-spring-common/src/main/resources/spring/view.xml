@@ -263,7 +263,7 @@
 
 	<bean id="PlcMonitoringController" class="com.sicpa.standard.sasscl.view.monitoring.advanced.PlcMonitoringController">
 		<property name="plcVars" ref="allPlcVars" />
-		<property name="plc" ref="plc" />
+		<property name="plcProvider" ref="plcProvider" />
 		<property name="lineCount" value="${line.count}" />
 	</bean>
 
