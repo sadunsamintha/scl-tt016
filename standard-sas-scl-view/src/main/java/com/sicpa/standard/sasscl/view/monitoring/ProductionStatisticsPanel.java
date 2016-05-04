@@ -16,6 +16,8 @@ import javax.swing.JTable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.sicpa.standard.client.common.security.Permission;
+import com.sicpa.standard.client.common.view.ISecuredComponentGetter;
 import com.sicpa.standard.common.util.Messages;
 import com.sicpa.standard.gui.components.renderers.SicpaTableCellRenderer;
 import com.sicpa.standard.gui.components.table.BeanReaderJTable;
@@ -26,9 +28,10 @@ import com.sicpa.standard.sasscl.model.statistics.StatisticsKey;
 import com.sicpa.standard.sasscl.monitoring.MonitoringService;
 import com.sicpa.standard.sasscl.monitoring.statistics.MonitoredProductStatisticsValues;
 import com.sicpa.standard.sasscl.monitoring.statistics.production.ProductionStatistics;
+import com.sicpa.standard.sasscl.security.SasSclPermission;
 
 @SuppressWarnings("serial")
-public class ProductionStatisticsPanel extends AbstractMonitoringEventPanel {
+public class ProductionStatisticsPanel extends AbstractMonitoringEventPanel implements ISecuredComponentGetter{
 
 	private static final Logger logger = LoggerFactory.getLogger(ProductionStatisticsPanel.class);
 
@@ -163,5 +166,20 @@ public class ProductionStatisticsPanel extends AbstractMonitoringEventPanel {
 			}
 			return label;
 		}
+	}
+
+	@Override
+	public Component getComponent() {
+		return this;
+	}
+
+	@Override
+	public Permission getPermission() {
+		return SasSclPermission.MONITORING_PRODUCTION_STATISTICS;
+	}
+
+	@Override
+	public String getTitle() {
+		return "label.monitoring.production.statistics";
 	}
 }

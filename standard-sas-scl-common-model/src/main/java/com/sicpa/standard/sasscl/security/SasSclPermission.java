@@ -34,4 +34,6 @@ public interface SasSclPermission {
 	Permission DISPLAY_ENCODERS_VIEW = new Permission("DISPLAY_ENCODERS_VIEW");
 	Permission SCREENSHOT = new Permission("SCREENSHOT");
 
+	Permission DEVICE_CONTEXT_CONSOLE = new Permission("DEVICE_CONTEXT_CONSOLE");
+
 }

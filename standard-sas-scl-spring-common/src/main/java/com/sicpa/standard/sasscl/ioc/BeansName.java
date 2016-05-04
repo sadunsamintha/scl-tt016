@@ -1,6 +1,5 @@
 package com.sicpa.standard.sasscl.ioc;
 
-import com.sicpa.standard.client.common.view.screensflow.IScreenGetter;
 
 public interface BeansName {
 

@@ -1,5 +1,6 @@
 package com.sicpa.standard.sasscl.view.config.plc;
 
+import java.awt.Component;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -14,14 +15,17 @@ import javax.swing.SwingUtilities;
 import net.miginfocom.swing.MigLayout;
 
 import com.google.common.eventbus.Subscribe;
+import com.sicpa.standard.client.common.security.Permission;
+import com.sicpa.standard.client.common.view.ISecuredComponentGetter;
 import com.sicpa.standard.common.util.Messages;
 import com.sicpa.standard.gui.components.scroll.SmallScrollBar;
 import com.sicpa.standard.gui.utils.ThreadUtils;
 import com.sicpa.standard.sasscl.devices.plc.variable.PlcVariableGroupEvent;
+import com.sicpa.standard.sasscl.security.SasSclPermission;
 import com.sicpa.standard.sasscl.view.LanguageSwitchEvent;
 
 @SuppressWarnings("serial")
-public class MultiEditablePlcVariablesSet extends JPanel {
+public class MultiEditablePlcVariablesSet extends JPanel implements ISecuredComponentGetter {
 
 	protected JButton buttonShowCameraImage;
 	protected FrameCameraImage frameCamera;
@@ -99,7 +103,7 @@ public class MultiEditablePlcVariablesSet extends JPanel {
 		button.setText(text);
 	}
 
-	public void handleNewPlcGroupEditable(PlcVariableGroupEvent evt) {
+	public void newPlcGroupEditable(PlcVariableGroupEvent evt) {
 		ThreadUtils.invokeLater(() -> {
 			PlcVariablePanel p = panelsLines.get(evt.getLineId());
 			if (p == null) {
@@ -121,5 +125,25 @@ public class MultiEditablePlcVariablesSet extends JPanel {
 
 	public Map<String, PlcVariablePanel> getPanelsLines() {
 		return panelsLines;
+	}
+
+	@Override
+	public Component getComponent() {
+		return this;
+	}
+
+	@Override
+	public Permission getPermission() {
+		return SasSclPermission.EDIT_PLC_VARIABLES;
+	}
+
+	@Override
+	public String getTitle() {
+		return "label.plc.variables";
+	}
+
+	@Subscribe
+	public void handleNewPlcGroupEditable(PlcVariableGroupEvent evt) {
+		ThreadUtils.invokeLater(() -> newPlcGroupEditable(evt));
 	}
 }

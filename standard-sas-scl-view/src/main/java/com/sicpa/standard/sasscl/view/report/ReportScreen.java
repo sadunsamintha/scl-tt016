@@ -1,6 +1,7 @@
 package com.sicpa.standard.sasscl.view.report;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
@@ -24,16 +25,19 @@ import org.jdesktop.swingx.JXDatePicker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.sicpa.standard.client.common.security.Permission;
 import com.sicpa.standard.client.common.utils.TaskExecutor;
+import com.sicpa.standard.client.common.view.ISecuredComponentGetter;
 import com.sicpa.standard.common.util.Messages;
 import com.sicpa.standard.gui.components.buttons.PaddedButton;
 import com.sicpa.standard.gui.components.buttons.toggleButtons.ToggleImageAndTextButton;
 import com.sicpa.standard.sasscl.monitoring.MonitoringService;
 import com.sicpa.standard.sasscl.monitoring.statistics.production.ProductionStatistics;
+import com.sicpa.standard.sasscl.security.SasSclPermission;
 import com.sicpa.standard.sasscl.view.LanguageSwitchEvent;
 import com.sicpa.standard.sasscl.view.monitoring.ProductionStatisticsAggregator;
 
-public class ReportScreen extends JPanel {
+public class ReportScreen extends JPanel implements ISecuredComponentGetter {
 
 	private static Logger logger = LoggerFactory.getLogger(ReportScreen.class);
 
@@ -340,5 +344,20 @@ public class ReportScreen extends JPanel {
 
 		initGUI();
 		revalidate();
+	}
+
+	@Override
+	public Component getComponent() {
+		return this;
+	}
+
+	@Override
+	public Permission getPermission() {
+		return SasSclPermission.PRODUCTION_REPORT;
+	}
+
+	@Override
+	public String getTitle() {
+		return "report.production";
 	}
 }

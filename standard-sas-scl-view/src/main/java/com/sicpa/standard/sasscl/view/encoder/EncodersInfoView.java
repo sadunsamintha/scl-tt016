@@ -26,6 +26,8 @@ import net.miginfocom.swing.MigLayout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.sicpa.standard.client.common.security.Permission;
+import com.sicpa.standard.client.common.view.ISecuredComponentGetter;
 import com.sicpa.standard.common.util.Messages;
 import com.sicpa.standard.gui.components.renderers.SicpaTableCellRenderer;
 import com.sicpa.standard.gui.components.scroll.SmallScrollBar;
@@ -34,40 +36,31 @@ import com.sicpa.standard.gui.plaf.SicpaFont;
 import com.sicpa.standard.sasscl.common.log.OperatorLogger;
 import com.sicpa.standard.sasscl.common.storage.IStorage;
 import com.sicpa.standard.sasscl.model.EncoderInfo;
+import com.sicpa.standard.sasscl.security.SasSclPermission;
 import com.sicpa.standard.sasscl.view.LanguageSwitchEvent;
 
-public class EncodersInfoView extends JPanel {
+@SuppressWarnings("serial")
+public class EncodersInfoView extends JPanel implements ISecuredComponentGetter {
 
 	private static final Logger logger = LoggerFactory.getLogger(EncodersInfoView.class);
+	private static SimpleDateFormat dateFormater = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
-	protected static final long serialVersionUID = 1L;
+	private IStorage storage;
 
-	protected static SimpleDateFormat dateFormater = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-
-	protected JButton buttonRefreshNow;
-	protected JCheckBox autoRefresh;
-	protected JSpinner refreshTime;
-	protected QuarantineEncoderView quarantineEncoderView;
-
-	protected JPanel tablePanel;
-
-	protected BeanReaderJTable<EncoderInfo> table;
-
-	protected IStorage storage;
-
-	protected Timer timer = new Timer(1000, new ActionListener() {
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			timerTick();
-		}
-	});
+	private JButton buttonRefreshNow;
+	private JCheckBox autoRefresh;
+	private JSpinner refreshTime;
+	private QuarantineEncoderView quarantineEncoderView;
+	private JPanel tablePanel;
+	private BeanReaderJTable<EncoderInfo> table;
+	private Timer timer = new Timer(1000, e -> timerTick());
 
 	public EncodersInfoView() {
 		initGUI();
 		setupDateFormatter();
 	}
 
-	protected void setupDateFormatter() {
+	private void setupDateFormatter() {
 		try {
 			dateFormater = new SimpleDateFormat(Messages.get("encoderview.datepattern"));
 		} catch (Exception e) {
@@ -98,9 +91,9 @@ public class EncodersInfoView extends JPanel {
 		return table;
 	}
 
-	protected TableCellRenderer renderer = new SicpaTableCellRenderer() {
+	private TableCellRenderer renderer = new SicpaTableCellRenderer() {
 
-		protected static final long serialVersionUID = 1L;
+		private static final long serialVersionUID = 1L;
 
 		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
 				boolean hasFocus, int row, int column) {
@@ -125,7 +118,7 @@ public class EncodersInfoView extends JPanel {
 		timer.stop();
 	}
 
-	protected void initGUI() {
+	private void initGUI() {
 		setLayout(new MigLayout("fill"));
 		add(getButtonRefreshNow(), "spanx , right, pushx ,split 3");
 		add(getAutoRefresh());
@@ -157,12 +150,12 @@ public class EncodersInfoView extends JPanel {
 		return buttonRefreshNow;
 	}
 
-	protected void updateEncoderView(List<EncoderInfo> encoders, String type) {
+	private void updateEncoderView(List<EncoderInfo> encoders, String type) {
 		getTable().clear();
 		getTable().addRow(encoders.toArray(new EncoderInfo[encoders.size()]));
 	}
 
-	protected void refresh() {
+	private void refresh() {
 		updateEncoderView(storage.getAllEndodersInfo(), "typetodefine");
 		getQuarantineEncoderView().refresh();
 		revalidate();
@@ -171,7 +164,7 @@ public class EncodersInfoView extends JPanel {
 
 	int tickcounter = 0;
 
-	protected void timerTick() {
+	private void timerTick() {
 		tickcounter++;
 		if (tickcounter >= (Integer) refreshTime.getValue()) {
 			if (isShowing()) {
@@ -237,5 +230,20 @@ public class EncodersInfoView extends JPanel {
 		setupDateFormatter();
 		initGUI();
 		revalidate();
+	}
+
+	@Override
+	public Component getComponent() {
+		return this;
+	}
+
+	@Override
+	public Permission getPermission() {
+		return SasSclPermission.DISPLAY_ENCODERS_VIEW;
+	}
+
+	@Override
+	public String getTitle() {
+		return "view.encoder.title";
 	}
 }

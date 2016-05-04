@@ -1,5 +1,6 @@
 package com.sicpa.standard.sasscl.view.deviceIncidentContext;
 
+import java.awt.Component;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -16,6 +17,8 @@ import net.miginfocom.swing.MigLayout;
 import org.jdesktop.swingx.color.ColorUtil;
 
 import com.google.common.eventbus.Subscribe;
+import com.sicpa.standard.client.common.security.Permission;
+import com.sicpa.standard.client.common.view.ISecuredComponentGetter;
 import com.sicpa.standard.gui.components.scroll.SmallScrollBar;
 import com.sicpa.standard.gui.plaf.SicpaColor;
 import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState;
@@ -23,8 +26,9 @@ import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowStateChangedEven
 import com.sicpa.standard.sasscl.devices.DeviceStatus;
 import com.sicpa.standard.sasscl.repository.errors.AppMessage;
 import com.sicpa.standard.sasscl.repository.errors.IErrorsRepository;
+import com.sicpa.standard.sasscl.security.SasSclPermission;
 
-public class DeviceIncidentContextPanel extends JPanel {
+public class DeviceIncidentContextPanel extends JPanel implements ISecuredComponentGetter {
 
 	private static final long serialVersionUID = 1L;
 
@@ -32,10 +36,13 @@ public class DeviceIncidentContextPanel extends JPanel {
 
 	private JTextArea textArea;
 
-	public DeviceIncidentContextPanel(IErrorsRepository context) {
-		this.errorRepository = context;
+	public DeviceIncidentContextPanel() {
 		initGUI();
 		start();
+	}
+
+	public void setErrorRepository(IErrorsRepository errorRepository) {
+		this.errorRepository = errorRepository;
 	}
 
 	private void initGUI() {
@@ -129,6 +136,21 @@ public class DeviceIncidentContextPanel extends JPanel {
 		t.setDaemon(true);
 		t.start();
 
+	}
+
+	@Override
+	public Component getComponent() {
+		return this;
+	}
+
+	@Override
+	public Permission getPermission() {
+		return SasSclPermission.DEVICE_CONTEXT_CONSOLE;
+	}
+
+	@Override
+	public String getTitle() {
+		return "device.context.console";
 	}
 
 }
