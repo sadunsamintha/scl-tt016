@@ -5,7 +5,7 @@
 		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 
-	<bean id="reportScreen" class="com.sicpa.standard.sasscl.view.report.ReportScreenGetter" />
+	<bean id="reportScreen" class="com.sicpa.standard.sasscl.view.report.ReportScreen" />
 
 	<bean id="mainFrameController" class="com.sicpa.standard.sasscl.view.MainFrameController">
 		<property name="productionParameters" ref="productionParameters" />
@@ -13,16 +13,17 @@
 		<property name="messageCodeMapper" ref="messagesMapping" />
 
 		<property name="securedPanels">
-			<util:list>
+			<list>
+				<ref bean="plcMonitoringView" />
 				<ref bean="plcVariablesPanel" />
 				<ref bean="productionStatisticsPanel" />
 				<ref bean="systemEventPanel" />
 				<ref bean="MBeanViewer" />
 				<ref bean="miscPanel" />
-				<ref bean="beanCallPanelGetter" />
-				<ref bean="encodersInfoViewGetter" />
+				<ref bean="beanCallPanel" />
+				<ref bean="encodersInfoView" />
 				<ref bean="reportScreen" />
-			</util:list>
+			</list>
 		</property>
 	</bean>
 
@@ -37,14 +38,14 @@
 		<property name="snapshotView" ref="snapshotView" />
 	</bean>
 
-	<bean id="MBeanViewer" class="com.sicpa.standard.sasscl.view.monitoring.mbean.MBeanViewerGetter">
+	<bean id="MBeanViewer" class="com.sicpa.standard.sasscl.view.monitoring.mbean.BeanViewer">
 		<property name="bean" ref="statsMBean" />
 	</bean>
 
-	<bean id="plcVariablesPanel" class="com.sicpa.standard.sasscl.view.config.plc.PlcVariablesPanelGetter" />
+	<bean id="plcVariablesPanel" class="com.sicpa.standard.sasscl.view.config.plc.MultiEditablePlcVariablesSet" />
 
-	<bean id="productionStatisticsPanel" class="com.sicpa.standard.sasscl.view.monitoring.ProductionStatisticsPanelGetter" />
-	<bean id="systemEventPanel" class="com.sicpa.standard.sasscl.view.monitoring.SystemEventPanelGetter" />
+	<bean id="productionStatisticsPanel" class="com.sicpa.standard.sasscl.view.monitoring.ProductionStatisticsPanel" />
+	<bean id="systemEventPanel" class="com.sicpa.standard.sasscl.view.monitoring.SystemEventPanel" />
 	<bean id="miscPanel" class="com.sicpa.standard.sasscl.view.config.misc.MiscConfigPanelGetter" />
 
 	<bean id="simulatorGui" class="com.sicpa.standard.sasscl.devices.simulator.gui.SimulatorControlView">
@@ -53,11 +54,11 @@
 
 	<bean id="selectionModelFactory" class="com.sicpa.standard.sasscl.productionParameterSelection.DefaultSelectionModelFactory" />
 
-	<bean id="beanCallPanelGetter" class="com.sicpa.standard.sasscl.view.forceCall.BeanCallPanelGetter">
+	<bean id="beanCallPanel" class="com.sicpa.standard.sasscl.view.forceCall.BeanCallPanel" init-method="init">
 		<property name="beancalls" ref="beanCallList" />
 	</bean>
 
-	<bean id="encodersInfoViewGetter" class="com.sicpa.standard.sasscl.view.encoder.EncodersInfoViewGetter">
+	<bean id="encodersInfoView" class="com.sicpa.standard.sasscl.view.encoder.EncodersInfoView">
 		<property name="storage" ref="storage" />
 	</bean>
 
@@ -257,5 +258,23 @@
 		<property name="viewController" ref="mainFrameController" />
 	</bean>
 
+	<!-- advanced monitoring -->
+	<bean id="plcMonitoringRawDisplay" class="com.sicpa.standard.sasscl.view.monitoring.advanced.PlcMonitoringRawDisplay" />
+
+	<bean id="PlcMonitoringController" class="com.sicpa.standard.sasscl.view.monitoring.advanced.PlcMonitoringController">
+		<property name="plcVars" ref="allPlcVars" />
+		<property name="plc" ref="plc" />
+		<property name="lineCount" value="${line.count}" />
+	</bean>
+
+	<bean id="plcMonitoringView" class="com.sicpa.standard.sasscl.view.monitoring.advanced.PlcMonitoringView">
+		<property name="controller" ref="PlcMonitoringController" />
+		<property name="model" value="#{PlcMonitoringController.model}" />
+		<property name="views">
+			<list>
+				<ref bean="plcMonitoringRawDisplay" />
+			</list>
+		</property>
+	</bean>
 
 </beans>
