@@ -13,10 +13,10 @@ import javax.swing.JScrollPane;
 
 import net.miginfocom.swing.MigLayout;
 
-import com.sicpa.standard.client.common.i18n.Messages;
 import com.sicpa.standard.client.common.security.Permission;
 import com.sicpa.standard.client.common.view.ISecuredComponentGetter;
 import com.sicpa.standard.client.common.view.mvc.AbstractView;
+import com.sicpa.standard.common.util.Messages;
 import com.sicpa.standard.sasscl.security.SasSclPermission;
 
 @SuppressWarnings("serial")
@@ -95,7 +95,7 @@ public class PlcMonitoringView extends AbstractView<IMonitoringViewListener, Plc
 
 	@Override
 	public String getTitle() {
-		return "monitoring.advance";
+		return "monitoring.advanced";
 	}
 
 	@Override
