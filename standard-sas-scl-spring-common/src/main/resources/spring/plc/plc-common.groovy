@@ -20,6 +20,7 @@ beans{
 		plcProvider=ref('plcProvider')
 		plcVarMapping=ref('plcVarMap')
 		converterMMtoPulse=ref('plcPulseToMMConverterHandler')
+		typeByPlcVar=ref('typeByPlcVar')
 	}
 
 	plcValuesLoader(PlcValuesLoader){

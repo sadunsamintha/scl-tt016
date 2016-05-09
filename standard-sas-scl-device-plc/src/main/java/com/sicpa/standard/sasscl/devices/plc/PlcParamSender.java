@@ -1,8 +1,12 @@
 package com.sicpa.standard.sasscl.devices.plc;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.sicpa.standard.client.common.device.plc.IPLCVariableMappping;
 import com.sicpa.standard.plc.value.IPlcVariable;
 import com.sicpa.standard.plc.value.PlcVariable;
+import com.sicpa.standard.sasscl.devices.plc.PlcUtils.PLC_TYPE;
 import com.sicpa.standard.sasscl.devices.plc.variable.descriptor.converter.PlcPulseToMMConverterHandler;
 import com.sicpa.standard.sasscl.devices.plc.variable.descriptor.unit.PlcUnit;
 import com.sicpa.standard.sasscl.provider.impl.PlcProvider;
@@ -14,6 +18,7 @@ public class PlcParamSender implements IPlcParamSender {
 	private PlcProvider plcProvider;
 	private IPLCVariableMappping plcVarMapping;
 	private PlcPulseToMMConverterHandler converterMMtoPulse;
+	private final Map<String, PLC_TYPE> typeByPlcVar = new HashMap<>();
 
 	@Override
 	public void sendToPlc(String plcLogicalVarName, String value, int lineIndex) throws PlcAdaptorException {
@@ -29,20 +34,19 @@ public class PlcParamSender implements IPlcParamSender {
 	}
 
 	private IPlcVariable<?> createVar(String logicalName, String value, int lineIndex) {
-		// create a plc variable, guess the type from the value
 		String physicalName = getPhysicalLineVariable(logicalName, lineIndex);
-		try {
+		PLC_TYPE type = typeByPlcVar.get(logicalName);
+		switch (type) {
+		case BY:
 			return createByteVar(physicalName, value);
-		} catch (NumberFormatException e) {
-			try {
-				return createShortVar(physicalName, value);
-			} catch (NumberFormatException e2) {
-				try {
-					return createIntVar(physicalName, value);
-				} catch (NumberFormatException e3) {
-					return createBooleanVar(physicalName, value);
-				}
-			}
+		case S:
+			return createShortVar(physicalName, value);
+		case I:
+			return createIntVar(physicalName, value);
+		case B:
+			return createBooleanVar(physicalName, value);
+		default:
+			throw new IllegalArgumentException("no type found for:" + logicalName);
 		}
 	}
 
@@ -122,5 +126,9 @@ public class PlcParamSender implements IPlcParamSender {
 
 	public void setConverterMMtoPulse(PlcPulseToMMConverterHandler converterMMtoPulse) {
 		this.converterMMtoPulse = converterMMtoPulse;
+	}
+
+	public void setTypeByPlcVar(Map<String, PLC_TYPE> typeByPlcVar) {
+		this.typeByPlcVar.putAll(typeByPlcVar);
 	}
 }
