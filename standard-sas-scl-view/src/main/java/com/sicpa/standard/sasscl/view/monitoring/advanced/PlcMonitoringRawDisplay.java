@@ -34,8 +34,8 @@ public class PlcMonitoringRawDisplay extends JPanel implements IMonitoringViewCo
 	}
 
 	private void initGUI() {
-		setLayout(new MigLayout("fill"));
-		add(getTabpane(), "grow, h 460!");
+		setLayout(new MigLayout("fill, inset 0 0 0 0, gap 0 0 0 0"));
+		add(getTabpane(), "grow, h 430!");
 	}
 
 	@Override

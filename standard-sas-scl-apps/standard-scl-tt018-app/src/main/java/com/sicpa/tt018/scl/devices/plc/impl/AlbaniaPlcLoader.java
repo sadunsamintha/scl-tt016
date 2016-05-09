@@ -16,7 +16,7 @@ import com.sicpa.standard.sasscl.devices.plc.PlcValuesLoader;
 import com.sicpa.standard.sasscl.devices.plc.variable.PlcVariableGroup;
 import com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcVariableDescriptor;
 import com.sicpa.standard.sasscl.model.ProductionParameters;
-import com.sicpa.standard.sasscl.view.config.plc.PlcVariablesPanelGetter;
+import com.sicpa.standard.sasscl.view.config.plc.MultiEditablePlcVariablesSet;
 
 public class AlbaniaPlcLoader extends PlcValuesLoader {
 
@@ -27,7 +27,7 @@ public class AlbaniaPlcLoader extends PlcValuesLoader {
 	private final Collection<String> varnameProductTypeSpecific = new ArrayList<>();
 	private final FileByPackageTypeMapping fileByPackageType = new FileByPackageTypeMapping();
 	private String currentProductTypeSpecificFileUse;
-	private PlcVariablesPanelGetter plcView;
+	private MultiEditablePlcVariablesSet plcView;
 
 	public AlbaniaPlcLoader() {
 	}
@@ -64,7 +64,7 @@ public class AlbaniaPlcLoader extends PlcValuesLoader {
 	}
 
 	private PlcVariableDescriptor findVarDescriptor(String var) {
-		List<PlcVariableGroup> groups = plcView.getComponent().getPanelsLines().get(LINE_INDEX_USED + "").getGroups();
+		List<PlcVariableGroup> groups = plcView.getPanelsLines().get(LINE_INDEX_USED + "").getGroups();
 		for (PlcVariableGroup grp : groups) {
 			for (PlcVariableDescriptor desc : grp.getPlcVars()) {
 				if (desc.getVarName().equals(var)) {
@@ -125,7 +125,7 @@ public class AlbaniaPlcLoader extends PlcValuesLoader {
 		this.productionParameters = productionParameters;
 	}
 
-	public void setPlcView(PlcVariablesPanelGetter plcView) {
+	public void setPlcView(MultiEditablePlcVariablesSet plcView) {
 		this.plcView = plcView;
 	}
 }
