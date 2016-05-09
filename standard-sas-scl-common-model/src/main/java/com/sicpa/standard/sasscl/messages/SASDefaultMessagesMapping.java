@@ -185,7 +185,7 @@ public class SASDefaultMessagesMapping extends DefaultMessagesMapping {
 		addEntry(Printer.INK_VISCOSITY_OUT_OF_RANGE, "[PR_10]", WARNING);
 		addEntry(Printer.MAKE_UP_CARTRIDGE_LOW, "[PR_11]", WARNING);
 		addEntry(Printer.PUMP_EXCEEDING_NORMAL_RANGE, "[PR_12]", ERROR_DEVICE);
-		addEntry(Printer.RESERVOIR_TOO_LOW, "[PR_13]", WARNING);
+		addEntry(Printer.RESERVOIR_TOO_LOW, "[PR_13]", ERROR_DEVICE);
 		addEntry(Printer.SEQUENCE_OFF, "[PR_14]", ERROR_DEVICE);
 		addEntry(Printer.VISCOMETER_FAULT, "[PR_15]", WARNING);
 		addEntry(Printer.WATCHDOG_RESET, "[PR_16]", ERROR_DEVICE);
