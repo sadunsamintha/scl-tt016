@@ -264,16 +264,14 @@ def void addVarToLists(def var,String logicName,def varInfo){
 	if(isCabinetJmxReport(logicName)) {
 		cabJmxReport.add(var)
 	}
-
 	if(isCabinetNotif(varInfo)){
 		cabNotif.add(var)
 	}
-
 	if(isLineNotif(varInfo)){
 		lineNotif.add(var)
 	}
-
 }
+
 def List<PlcVariableGroup> createCabGroupList(){
 	return createGroupList(cabGroups)
 }
