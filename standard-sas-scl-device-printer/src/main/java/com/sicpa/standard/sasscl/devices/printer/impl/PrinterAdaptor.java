@@ -1,7 +1,7 @@
 package com.sicpa.standard.sasscl.devices.printer.impl;
 
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -44,16 +44,14 @@ public class PrinterAdaptor extends AbstractPrinterAdaptor implements IPrinterCo
 	private static final Logger logger = LoggerFactory.getLogger(PrinterAdaptor.class);
 
 	protected IPrinterController controller;
-
-	protected volatile boolean initialized = false;
-
-	protected volatile boolean codeSent = false;
-
-	protected SequenceStatus lastSequence = SequenceStatus.UNKNOWN;
-
 	protected IMappingExtendedCodeBehavior mappingExtendedCodeBehavior;
 
-	public PrinterAdaptor(final IPrinterController controller) {
+	protected volatile boolean initialized = false;
+	protected volatile boolean codeSent = false;
+	protected volatile boolean startedOnce;
+	protected SequenceStatus lastSequence = SequenceStatus.UNKNOWN;
+
+	public PrinterAdaptor(IPrinterController controller) {
 		this();
 		this.controller = controller;
 		this.controller.setListener(this);
@@ -97,10 +95,10 @@ public class PrinterAdaptor extends AbstractPrinterAdaptor implements IPrinterCo
 	}
 
 	@Override
-	public void sendCodesToPrint(final List<String> codes) throws PrinterAdaptorException {
+	public void sendCodesToPrint(List<String> codes) throws PrinterAdaptorException {
 		logger.debug("Printer sending codes to print");
 		try {
-			if (getName().startsWith(PrinterType.DOMINO.toString().toLowerCase())) {
+			if (isDomino()) {
 				controller.sendCodes(codes);
 			} else {
 				controller.sendExtendedCodes(mappingExtendedCodeBehavior.get(getName()).createExCodes(codes));
@@ -111,11 +109,13 @@ public class PrinterAdaptor extends AbstractPrinterAdaptor implements IPrinterCo
 		}
 	}
 
+	private boolean isDomino() {
+		return getName().startsWith(PrinterType.DOMINO.toString().toLowerCase());
+	}
+
 	@Override
-	public void onConnectionStatusChanged(final Object sender, final boolean isConnected) {
-
+	public void onConnectionStatusChanged(Object sender, boolean isConnected) {
 		logger.debug((isConnected) ? "connection successful" : "disconnected");
-
 		if (!isConnected) {
 			lastSequence = SequenceStatus.UNKNOWN;
 			fireDeviceStatusChanged(DeviceStatus.DISCONNECTED);
@@ -123,13 +123,13 @@ public class PrinterAdaptor extends AbstractPrinterAdaptor implements IPrinterCo
 	}
 
 	@Override
-	public void onPrinterCodesNeeded(final Object sender, long nbCodes) {
+	public void onPrinterCodesNeeded(Object sender, long nbCodes) {
 		logger.debug("request for {} number of codes", nbCodes);
 		notifyRequestCodesToPrint(nbCodes);
 	}
 
 	@Override
-	public void onSequenceStatusChanged(final Object sender, final SequenceStatus args) {
+	public void onSequenceStatusChanged(Object sender, SequenceStatus args) {
 		if (lastSequence == args) {
 			return;
 		}
@@ -142,33 +142,7 @@ public class PrinterAdaptor extends AbstractPrinterAdaptor implements IPrinterCo
 		}
 
 		if (args.equals(SequenceStatus.READY)) {
-			fireIssueSolved(PrinterMessageId.NOT_READY_TO_PRINT);
-			fireIssueSolved(PrinterMessageId.CHARGE_FAULT);
-			fireIssueSolved(PrinterMessageId.GUTTER_FAULT);
-			fireIssueSolved(PrinterMessageId.HIGH_VOLTAGE_FAULT);
-			fireIssueSolved(PrinterMessageId.INK_SYSTEM_FAULT);
-			fireIssueSolved(PrinterMessageId.VISCOMETER_FAULT);
-			fireIssueSolved(PrinterMessageId.WATCHDOG_RESET);
-			fireIssueSolved(PrinterMessageId.POWER_IN_OVERLOAD);
-			fireIssueSolved(PrinterMessageId.INK_PRESSURE_FAULT);
-			fireIssueSolved(PrinterMessageId.PRESSURE_FAULT);
-			fireIssueSolved(PrinterMessageId.HYDRAULIC_LEAKAGE);
-			fireIssueSolved(PrinterMessageId.CHARGE_DIRTY);
-			fireIssueSolved(PrinterMessageId.PHASING_ERROR);
-			fireIssueSolved(PrinterMessageId.NOZZLE_OC_ERROR);
-			fireIssueSolved(PrinterMessageId.MOTOR_DIRECTION_ERROR);
-			fireIssueSolved(PrinterMessageId.HV_CURRENT_TOO_HIGH);
-			fireIssueSolved(PrinterMessageId.MAILING_BUFFER_EMPTY);
-			fireIssueSolved(PrinterMessageId.CHARGE_VOLTAGE_OVERLOAD);
-			fireIssueSolved(PrinterMessageId.PIEZO_VOLTAGE_OVERLOAD);
-			fireIssueSolved(PrinterMessageId.HEAD_COVER_OPEN);
-			fireIssueSolved(PrinterMessageId.NOZZLE_MOVES_UNCONTROLLED);
-			fireIssueSolved(PrinterMessageId.CANT_OPEN_NOZZLE);
-			fireIssueSolved(PrinterMessageId.CANT_LOAD_JOB);
-			fireIssueSolved(PrinterMessageId.NO_PHASING);
-			fireIssueSolved(PrinterMessageId.PRINTSTART_NOT_POSSIBLE);
-			fireIssueSolved(PrinterMessageId.INK_JET_LOCKED);
-
+			notifyAllIssuesSolved();
 		} else if (status.isConnected()) {
 			// if connected and the sequence is not ready
 			fireMessage(PrinterMessageId.NOT_READY_TO_PRINT, args.name());
@@ -176,16 +150,40 @@ public class PrinterAdaptor extends AbstractPrinterAdaptor implements IPrinterCo
 		lastSequence = args;
 	}
 
+	private void notifyAllIssuesSolved() {
+		fireIssueSolved(PrinterMessageId.NOT_READY_TO_PRINT);
+		fireIssueSolved(PrinterMessageId.CHARGE_FAULT);
+		fireIssueSolved(PrinterMessageId.GUTTER_FAULT);
+		fireIssueSolved(PrinterMessageId.HIGH_VOLTAGE_FAULT);
+		fireIssueSolved(PrinterMessageId.INK_SYSTEM_FAULT);
+		fireIssueSolved(PrinterMessageId.VISCOMETER_FAULT);
+		fireIssueSolved(PrinterMessageId.WATCHDOG_RESET);
+		fireIssueSolved(PrinterMessageId.POWER_IN_OVERLOAD);
+		fireIssueSolved(PrinterMessageId.INK_PRESSURE_FAULT);
+		fireIssueSolved(PrinterMessageId.PRESSURE_FAULT);
+		fireIssueSolved(PrinterMessageId.HYDRAULIC_LEAKAGE);
+		fireIssueSolved(PrinterMessageId.CHARGE_DIRTY);
+		fireIssueSolved(PrinterMessageId.PHASING_ERROR);
+		fireIssueSolved(PrinterMessageId.NOZZLE_OC_ERROR);
+		fireIssueSolved(PrinterMessageId.MOTOR_DIRECTION_ERROR);
+		fireIssueSolved(PrinterMessageId.HV_CURRENT_TOO_HIGH);
+		fireIssueSolved(PrinterMessageId.MAILING_BUFFER_EMPTY);
+		fireIssueSolved(PrinterMessageId.CHARGE_VOLTAGE_OVERLOAD);
+		fireIssueSolved(PrinterMessageId.PIEZO_VOLTAGE_OVERLOAD);
+		fireIssueSolved(PrinterMessageId.HEAD_COVER_OPEN);
+		fireIssueSolved(PrinterMessageId.NOZZLE_MOVES_UNCONTROLLED);
+		fireIssueSolved(PrinterMessageId.CANT_OPEN_NOZZLE);
+		fireIssueSolved(PrinterMessageId.CANT_LOAD_JOB);
+		fireIssueSolved(PrinterMessageId.NO_PHASING);
+		fireIssueSolved(PrinterMessageId.PRINTSTART_NOT_POSSIBLE);
+		fireIssueSolved(PrinterMessageId.INK_JET_LOCKED);
+	}
+
 	@Override
 	public void onPrinterStop() {
 		EventBusService.post(new PrinterStoppedEvent(this));
 	}
 
-	protected volatile boolean startedOnce;
-
-	/**
-	 * Request printer to start printing
-	 */
 	@Override
 	public void doStart() throws PrinterAdaptorException {
 		try {
@@ -203,7 +201,7 @@ public class PrinterAdaptor extends AbstractPrinterAdaptor implements IPrinterCo
 		}
 	}
 
-	protected void checkForCodeSent(final int counter) {
+	protected void checkForCodeSent(int counter) {
 		if (status != DeviceStatus.CONNECTED) {
 			return;
 		}
@@ -211,25 +209,18 @@ public class PrinterAdaptor extends AbstractPrinterAdaptor implements IPrinterCo
 		if (counter > 5 || codeSent) {
 			fireDeviceStatusChanged(DeviceStatus.STARTED);
 		} else {
-			TaskExecutor.execute(new Runnable() {
-				@Override
-				public void run() {
-					ThreadUtils.sleepQuietly(500);
-					checkForCodeSent(counter + 1);
-				}
+			TaskExecutor.execute(() -> {
+				ThreadUtils.sleepQuietly(500);
+				checkForCodeSent(counter + 1);
 			});
 		}
 	}
 
-	/**
-	 * Request printer to stop printing
-	 * 
-	 */
 	@Override
 	public void doStop() throws PrinterAdaptorException {
 		try {
 			if (status == DeviceStatus.STARTED) {
-				this.controller.stop();
+				controller.stop();
 			}
 		} catch (PrinterException e) {
 			throw new PrinterAdaptorException("error when stop printing", e);
@@ -289,19 +280,12 @@ public class PrinterAdaptor extends AbstractPrinterAdaptor implements IPrinterCo
 	public void onMessageReceived(PrinterMessage... messages) {
 
 		for (PrinterMessage msg : messages) {
-
-			String[] keySplit = StringUtils.split(msg.getKey(), '.');
 			msg.setSource(this);
-
-			// for the moment a specific case for the PrinterMessage
-			if (keySplit.length == 3 && keySplit[0].equals(ActionMessageType.MONITORING.toString())) {
-
-				SystemEventType sEvent = new SystemEventType(msg.getKey());
-				MonitoringService.addSystemEvent(new BasicSystemEvent(sEvent, String.valueOf(msg.getParams()[0])));
-				return;
-			}
-
-			if (msg.isIssueSolved()) {
+			if (isMonitoringMsg(msg)) {
+				monitoringMessageReceived(msg);
+			} else if (isLogMsg(msg)) {
+				logMessageReceived(msg);
+			} else if (msg.isIssueSolved()) {
 				fireIssueSolved(msg.getKey());
 			} else {
 				EventBusService.post(msg);
@@ -309,16 +293,26 @@ public class PrinterAdaptor extends AbstractPrinterAdaptor implements IPrinterCo
 		}
 	}
 
-	@Deprecated
-	public void onMessagesReceived(Map<String, PrinterMessage> messageMap) {
-		if (messageMap.isEmpty())
-			return;
-		PrinterMessage[] array = new PrinterMessage[messageMap.size()];
-		messageMap.values().toArray(array);
-		onMessageReceived(array);
+	private void logMessageReceived(PrinterMessage msg) {
+		logger.info("log info from printer " + msg.getKey() + ":" + Arrays.toString(msg.getParams()));
 	}
 
-	protected void fireMessage(final String key, final Object... params) {
+	private void monitoringMessageReceived(PrinterMessage msg) {
+		SystemEventType sEvent = new SystemEventType(msg.getKey());
+		MonitoringService.addSystemEvent(new BasicSystemEvent(sEvent, String.valueOf(msg.getParams()[0])));
+	}
+
+	private boolean isMonitoringMsg(PrinterMessage msg) {
+		String[] keySplit = StringUtils.split(msg.getKey(), '.');
+		return keySplit.length == 3 && keySplit[0].equals(ActionMessageType.MONITORING.toString());
+	}
+
+	private boolean isLogMsg(PrinterMessage msg) {
+		String[] keySplit = StringUtils.split(msg.getKey(), '.');
+		return keySplit.length == 3 && keySplit[0].equals(ActionMessageType.LOG.toString());
+	}
+
+	protected void fireMessage(String key, Object... params) {
 		logger.debug("Device Message Changed: device - {}, message - {}", this, Messages.get(key));
 		MessageEvent evt = new MessageEvent(this, key, params);
 		EventBusService.post(evt);
