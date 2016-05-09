@@ -1,7 +1,21 @@
 package com.sicpa.tt018.scl.remoteServer.adapter;
 
+import static com.sicpa.tt018.scl.remoteServer.utilities.AlbaniaRemoteServerValidator.validateCodeNotNull;
+import static com.sicpa.tt018.scl.remoteServer.utilities.AlbaniaRemoteServerValidator.validateCodeTypeDTOComplete;
+import static com.sicpa.tt018.scl.remoteServer.utilities.AlbaniaRemoteServerValidator.validateMarketTyptDTOComplete;
+import static com.sicpa.tt018.scl.remoteServer.utilities.AlbaniaRemoteServerValidator.validateMarketTyptDTOSupported;
+import static com.sicpa.tt018.scl.remoteServer.utilities.AlbaniaRemoteServerValidator.validatePackagedProductsNotEmpty;
+import static com.sicpa.tt018.scl.remoteServer.utilities.AlbaniaRemoteServerValidator.validateProductAndSkuCodeTypeMatch;
+import static com.sicpa.tt018.scl.remoteServer.utilities.AlbaniaRemoteServerValidator.validateProductNotNull;
+import static com.sicpa.tt018.scl.remoteServer.utilities.AlbaniaRemoteServerValidator.validateProductSkuAndBatchIDNotNull;
+import static com.sicpa.tt018.scl.remoteServer.utilities.AlbaniaRemoteServerValidator.validateProductStatusIsSupported;
+import static com.sicpa.tt018.scl.remoteServer.utilities.AlbaniaRemoteServerValidator.validateProductionModeIsSupported;
+import static com.sicpa.tt018.scl.remoteServer.utilities.AlbaniaRemoteServerValidator.validateSkuDTOComplete;
+import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
+
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -60,29 +74,29 @@ public class AlbaniaRemoteServerAdapter implements IAlbaniaRemoteServerAdapter {
 	public static final int COUNTING_SKU_ID = -1;
 
 	private int treeDepth;
-	private AlbaniaRemoteServerProductStatusMapping productStatusMapping = new AlbaniaRemoteServerProductStatusMapping();
-	private AlbaniaRemoteServerProductionModeMapping productionModeMapping = new AlbaniaRemoteServerProductionModeMapping();
+	private final AlbaniaRemoteServerProductStatusMapping productStatusMapping = new AlbaniaRemoteServerProductStatusMapping();
+	private final AlbaniaRemoteServerProductionModeMapping productionModeMapping = new AlbaniaRemoteServerProductionModeMapping();
 
 	private IAuthenticator authenticator;
 
 	private int allowedProductPackage;
 
-	protected List<ProductionMode> getCountingProductionMode() {
-		return Arrays.asList(AlbaniaRemoteServerConstants.COUNTING_MODES_SCL);
+	private List<ProductionMode> getCountingProductionMode() {
+		return asList(AlbaniaRemoteServerConstants.COUNTING_MODES_SCL);
 	}
 
 	@Override
-	public ProductionParameterRootNode createSkuSelectionTree(final MarketTypeDTO marketTypeDTO) {
+	public ProductionParameterRootNode createSkuSelectionTree(MarketTypeDTO marketTypeDTO) {
 
 		// Root node to be returned
-		final ProductionParameterRootNode root = new ProductionParameterRootNode();
+		ProductionParameterRootNode root = new ProductionParameterRootNode();
 
 		// filter SKUs
-		final Iterator<SkuProductDTO> it = marketTypeDTO.getSkuList().iterator();
+		Iterator<SkuProductDTO> it = marketTypeDTO.getSkuList().iterator();
 		while (it.hasNext()) {
-			final SkuProductDTO item = it.next();
+			SkuProductDTO item = it.next();
 			try {
-				final AlbaniaSKU currentSku = (AlbaniaSKU) convertFromMaster(item);
+				AlbaniaSKU currentSku = (AlbaniaSKU) convertFromMaster(item);
 				if (currentSku.getProductPackaging().getId() >= ProductPackagings.OTHER.getId()
 						|| allowedProductPackage != ALLOWED_PRODUCT_CAN_BOTTLE
 						&& currentSku.getProductPackaging().getId() != allowedProductPackage + 1) {
@@ -92,7 +106,6 @@ public class AlbaniaRemoteServerAdapter implements IAlbaniaRemoteServerAdapter {
 				logger.error("Error during MarketTypeDTO validation = {}. Exception = {}",
 						ToStringBuilder.reflectionToString(marketTypeDTO, ToStringStyle.MULTI_LINE_STYLE), e);
 			}
-
 		}
 
 		// if we are in CAN or BOTTLE mode, create the tree with SASSCL rules
@@ -121,25 +134,24 @@ public class AlbaniaRemoteServerAdapter implements IAlbaniaRemoteServerAdapter {
 		return root;
 	}
 
-	public void addDomesticModesToSkuTreeSelection(final ProductionParameterRootNode root,
-			final MarketTypeDTO marketTypeDTO) {
+	public void addDomesticModesToSkuTreeSelection(ProductionParameterRootNode root, MarketTypeDTO marketTypeDTO) {
 		try {
 			// Building the part of the tree for the "Domestic" production mode
-			final ProductionModeNode nationalProductionModeNode = new AlbaniaProductionModeNode(
+			ProductionModeNode nationalProductionModeNode = new AlbaniaProductionModeNode(
 					convertFromMarketTypeId(marketTypeDTO.getId()));
 			root.addChildren(nationalProductionModeNode);
 
 			// Maps of package type to create the SKU tree
-			final Map<String, AlbaniaNavigationNode> brands = new HashMap<String, AlbaniaNavigationNode>();
+			Map<String, AlbaniaNavigationNode> brands = new HashMap<>();
 
 			// Iterate all SKUs from sorted SKU list from MarketTypeDTO
-			for (final SkuProductDTO skuProductDTO : AlbaniaRemoteServerUtilities.SkuDtoSorter.sort(marketTypeDTO
+			for (SkuProductDTO skuProductDTO : AlbaniaRemoteServerUtilities.SkuDtoSorter.sort(marketTypeDTO
 					.getSkuList())) {
 
 				// -------------------------------------
 				// Node 0 Package Type
 				// -------------------------------------
-				final String currentPackageName;
+				String currentPackageName;
 
 				switch (skuProductDTO.getProductPackagingsId()) {
 				case 1:
@@ -169,31 +181,30 @@ public class AlbaniaRemoteServerAdapter implements IAlbaniaRemoteServerAdapter {
 				// -------------------------------------
 				// Node 1 Brand + Variant + Description
 				// -------------------------------------
-				final String currentFullName = skuProductDTO.getBrand().trim() + " "
+				String currentFullName = skuProductDTO.getBrand().trim() + " "
 						+ (skuProductDTO.getVariant() != null ? skuProductDTO.getVariant().trim() : "") + " "
 						+ skuProductDTO.getDescription().trim();
 
 				AlbaniaSKU sku;
 
 				sku = convertFromMaster(skuProductDTO);
-				final SKUNode currentFullNode = new SKUNode(sku);
+				SKUNode currentFullNode = new SKUNode(sku);
 				currentFullNode.setText(currentFullName);
 				currentPackageNode.addChildren(currentFullNode);
 
 			}
-		} catch (final ValidatorException e) {
+		} catch (ValidatorException e) {
 			logger.error("Error during MarketTypeDTO validation = {}. Exception = {}",
 					ToStringBuilder.reflectionToString(marketTypeDTO, ToStringStyle.MULTI_LINE_STYLE), e);
 		}
 
 	}
 
-	public void addCommonDomesticModesToSkuTreeSelection(final ProductionParameterRootNode root,
-			final MarketTypeDTO marketTypeDTO) {
+	public void addCommonDomesticModesToSkuTreeSelection(ProductionParameterRootNode root, MarketTypeDTO marketTypeDTO) {
 		logger.debug("Adding Domestic mode. Depth = " + getTreeDepth());
 		try {
 			// Empty Arg check
-			AlbaniaRemoteServerValidator.validateMarketTyptDTOComplete(marketTypeDTO);
+			validateMarketTyptDTOComplete(marketTypeDTO);
 
 			// Depending on the tree depth
 			switch (getTreeDepth()) {
@@ -219,37 +230,36 @@ public class AlbaniaRemoteServerAdapter implements IAlbaniaRemoteServerAdapter {
 		}
 	}
 
-	protected void addCountingModeToSkuTreeSelection(final ProductionParameterRootNode root) {
-		for (final ProductionMode productionMode : getCountingProductionMode()) {
+	private void addCountingModeToSkuTreeSelection(ProductionParameterRootNode root) {
+		for (ProductionMode productionMode : getCountingProductionMode()) {
 			logger.debug("Adding " + productionMode.getDescription() + " counting mode");
 
-			final AlbaniaProductionModeNode productionNode = new AlbaniaProductionModeNode(productionMode);
+			AlbaniaProductionModeNode productionNode = new AlbaniaProductionModeNode(productionMode);
 			root.addChildren(productionNode);
 
 			// -------------------------------------
 			// CAN Package Type
 			// -------------------------------------
-			final AlbaniaSKU canSKU = new AlbaniaSKU(COUNTING_SKU_ID,
-					Messages.get(AlbaniaRemoteServerMessages.PACKAGE_CAN), "", "", "", new ArrayList<String>(), false,
-					ProductPackagings.CAN);
-			final SKUNode canNode = new SKUNode(canSKU);
+			AlbaniaSKU canSKU = new AlbaniaSKU(COUNTING_SKU_ID, Messages.get(AlbaniaRemoteServerMessages.PACKAGE_CAN),
+					"", "", "", emptyList(), false, ProductPackagings.CAN);
+			SKUNode canNode = new SKUNode(canSKU);
 			canNode.setText(Messages.get(AlbaniaRemoteServerMessages.PACKAGE_CAN));
 			productionNode.addChildren(canNode);
 
 			// -------------------------------------
 			// BOTTLE Package Type
 			// -------------------------------------
-			final AlbaniaSKU bottleSKU = new AlbaniaSKU(COUNTING_SKU_ID,
-					Messages.get(AlbaniaRemoteServerMessages.PACKAGE_BOTTLE), "", "", "", new ArrayList<String>(), false,
+			AlbaniaSKU bottleSKU = new AlbaniaSKU(COUNTING_SKU_ID,
+					Messages.get(AlbaniaRemoteServerMessages.PACKAGE_BOTTLE), "", "", "", emptyList(), false,
 					ProductPackagings.BOTTLE);
-			final SKUNode bottleNode = new SKUNode(bottleSKU);
+			SKUNode bottleNode = new SKUNode(bottleSKU);
 			bottleNode.setText(Messages.get(AlbaniaRemoteServerMessages.PACKAGE_BOTTLE));
 			productionNode.addChildren(bottleNode);
 		}
 
 	}
 
-	protected void addCommonCountingModeToSkuTreeSelection(ProductionParameterRootNode root) {
+	private void addCommonCountingModeToSkuTreeSelection(ProductionParameterRootNode root) {
 		for (ProductionMode productionMode : getCountingProductionMode()) {
 			logger.debug("Adding " + productionMode.getDescription() + " counting mode");
 			root.addChildren(new AlbaniaProductionModeNode(productionMode));
@@ -265,32 +275,11 @@ public class AlbaniaRemoteServerAdapter implements IAlbaniaRemoteServerAdapter {
 	}
 
 	@Override
-	public PackagedProductsDTO convertDomesticProduction(final PackagedProducts packagedProducts, final int subsystemId) {
+	public PackagedProductsDTO convertDomesticProduction(PackagedProducts packagedProducts, int subsystemId) {
 		try {
-			AlbaniaRemoteServerValidator.validatePackagedProductsNotEmpty(packagedProducts);
+			validatePackagedProductsNotEmpty(packagedProducts);
 
 			Product initProduct = packagedProducts.getProducts().get(0);
-
-			// int i = 1;
-			// while
-			// (ProductStatus.TYPE_MISMATCH.equals(initProduct.getStatus()) && i
-			// < packagedProducts.getProducts().size()) {
-			// logger.warn("DOMESTIC PRODUCT TYPE MISMATCH :" + initProduct);
-			// initProduct = packagedProducts.getProducts().get(i++);
-			// }
-			//
-			// if (ProductStatus.TYPE_MISMATCH.equals(initProduct.getStatus()))
-			// {
-			// logger.debug("Only Type mismatch products !!!");
-			// final PackagedProductsDTO emptyPackagedProducts = new
-			// PackagedProductsDTO();
-			// emptyPackagedProducts.setSubsystemId(subsystemId);
-			// emptyPackagedProducts.setUid(packagedProducts.getUID());
-			// emptyPackagedProducts.setCustomerSkuId(initProduct.getSku().getId());
-			// emptyPackagedProducts.setProductionBatchId(initProduct.getProductionBatchId());
-			// emptyPackagedProducts.setProductionMode(convertToMaster(getProductionModeFromProduct(initProduct)));
-			// return emptyPackagedProducts;
-			// }
 
 			restoreProductParam(initProduct, packagedProducts, subsystemId);
 
@@ -310,7 +299,7 @@ public class AlbaniaRemoteServerAdapter implements IAlbaniaRemoteServerAdapter {
 
 			return packagedProductsDTO;
 
-		} catch (final CryptographyException e) {
+		} catch (CryptographyException e) {
 			logger.error("Error while converting product to DTO {" + getClass().getName() + "} - {" + packagedProducts
 					+ " } ", e);
 			return null;
@@ -341,35 +330,13 @@ public class AlbaniaRemoteServerAdapter implements IAlbaniaRemoteServerAdapter {
 	}
 
 	@Override
-	public CountedProductsDTO convertCountingProduction(final PackagedProducts packagedProducts, final int subsystemId) {
+	public CountedProductsDTO convertCountingProduction(PackagedProducts packagedProducts, int subsystemId) {
 		// NULL arg check
 		try {
 			AlbaniaRemoteServerValidator.validatePackagedProductsNotEmpty(packagedProducts);
 
 			// Init product
 			Product initProduct = packagedProducts.getProducts().get(0);
-
-			// int i = 1;
-			// while (ProductStatus.UNREAD.equals(initProduct.getStatus()) && i
-			// < packagedProducts.getProducts().size()) {
-			// logger.debug("Counted Product in error :" + initProduct);
-			// initProduct = packagedProducts.getProducts().get(i++);
-			// }
-			//
-			// if (ProductStatus.UNREAD.equals(initProduct.getStatus())) {
-			// logger.debug("Only product in Error!!!");
-			// final CountedProductsDTO countedProducts = new
-			// CountedProductsDTO();
-			// countedProducts.setSubsystemId(subsystemId);
-			// countedProducts.setUid(packagedProducts.getUID());
-			// countedProducts.setProductionMode(convertToMaster(getProductionModeFromProduct(initProduct)));
-			//
-			// // Initialize begin & End Date
-			// countedProducts.setBeginDate(initProduct.getActivationDate());
-			// countedProducts.setEndDate(initProduct.getActivationDate());
-			// countedProducts.setNumberOfProducts(0);
-			// return countedProducts;
-			// }
 
 			restoreProductParam(initProduct, packagedProducts, subsystemId);
 
@@ -390,7 +357,7 @@ public class AlbaniaRemoteServerAdapter implements IAlbaniaRemoteServerAdapter {
 			int prodCount = 0;
 
 			// Iterate all products and check for begin and end date
-			for (final Product product : packagedProducts.getProducts()) {
+			for (Product product : packagedProducts.getProducts()) {
 				// Means product in Error
 				if (ProductStatus.UNREAD.equals(product.getStatus())) {
 					logger.debug("Error product in Counting mode - NOT SEND TO DMS - Product = {}.", product);
@@ -432,36 +399,24 @@ public class AlbaniaRemoteServerAdapter implements IAlbaniaRemoteServerAdapter {
 	// SKU TREE UTILITY METHODS
 	// -----------------------------------------------------------------------
 	// //
-	/**
-	 * Method addDomesticModesToSkuTreeSelection.
-	 * 
-	 * 
-	 * @param ProductionParameterRootNode
-	 *            root
-	 * 
-	 * @param MarketTypeDTO
-	 *            marketTypeDTO
-	 * 
-	 */
 
-	protected void addSkuTreeSelectionDomesticModeDepth1(final ProductionParameterRootNode root,
-			final MarketTypeDTO marketTypeDTO) throws ValidatorException {
+	private void addSkuTreeSelectionDomesticModeDepth1(ProductionParameterRootNode root, MarketTypeDTO marketTypeDTO)
+			throws ValidatorException {
 		// Building the part of the tree for the "Domestic" production mode
-		final ProductionModeNode nationalProductionModeNode = new AlbaniaProductionModeNode(
+		ProductionModeNode nationalProductionModeNode = new AlbaniaProductionModeNode(
 				convertFromMarketTypeId(marketTypeDTO.getId()));
 		root.addChildren(nationalProductionModeNode);
 
 		// Maps of brands and variants to create the SKU tree
-		final Map<String, SKUNode> skus = new HashMap<String, SKUNode>();
+		Map<String, SKUNode> skus = new HashMap<>();
 
 		// Iterate all SKUs from sorted SKU list from MarketTypeDTO
-		for (final SkuProductDTO skuProductDTO : AlbaniaRemoteServerUtilities.SkuDtoSorter.sort(marketTypeDTO
-				.getSkuList())) {
+		for (SkuProductDTO skuProductDTO : AlbaniaRemoteServerUtilities.SkuDtoSorter.sort(marketTypeDTO.getSkuList())) {
 
 			// -------------------------------------
 			// Node 1 Brand + Variant + Description
 			// -------------------------------------
-			final String currentFullName = skuProductDTO.getBrand().trim() + " "
+			String currentFullName = skuProductDTO.getBrand().trim() + " "
 					+ (skuProductDTO.getVariant() != null ? skuProductDTO.getVariant().trim() : "") + " "
 					+ skuProductDTO.getDescription().trim();
 
@@ -487,24 +442,23 @@ public class AlbaniaRemoteServerAdapter implements IAlbaniaRemoteServerAdapter {
 		}
 	}
 
-	protected void addSkuTreeSelectionDomesticModeDepth2(final ProductionParameterRootNode root,
-			final MarketTypeDTO marketTypeDTO) throws ValidatorException {
+	private void addSkuTreeSelectionDomesticModeDepth2(ProductionParameterRootNode root, MarketTypeDTO marketTypeDTO)
+			throws ValidatorException {
 		// Building the part of the tree for the "Domestic" production mode
-		final ProductionModeNode nationalProductionModeNode = new AlbaniaProductionModeNode(
+		ProductionModeNode nationalProductionModeNode = new AlbaniaProductionModeNode(
 				convertFromMarketTypeId(marketTypeDTO.getId()));
 		root.addChildren(nationalProductionModeNode);
 
 		// Maps of brands and variants to create the SKU tree
-		final Map<String, AlbaniaNavigationNode> brands = new HashMap<String, AlbaniaNavigationNode>();
+		Map<String, AlbaniaNavigationNode> brands = new HashMap<>();
 
 		// Iterate all SKUs from sorted SKU list from MarketTypeDTO
-		for (final SkuProductDTO skuProductDTO : AlbaniaRemoteServerUtilities.SkuDtoSorter.sort(marketTypeDTO
-				.getSkuList())) {
+		for (SkuProductDTO skuProductDTO : AlbaniaRemoteServerUtilities.SkuDtoSorter.sort(marketTypeDTO.getSkuList())) {
 
 			// -------------------------------------
 			// Node 1 Brand
 			// -------------------------------------
-			final String currentBrandName = skuProductDTO.getBrand().trim();
+			String currentBrandName = skuProductDTO.getBrand().trim();
 
 			// Checking if the Brand already exist in the tree, if it doesn't
 			// then we add it
@@ -518,8 +472,8 @@ public class AlbaniaRemoteServerAdapter implements IAlbaniaRemoteServerAdapter {
 			// -------------------------------------
 			// Node 2 Variant + Description
 			// -------------------------------------
-			final String currentVariantDescritptionName = (skuProductDTO.getVariant() != null ? skuProductDTO
-					.getVariant().trim() : "") + " " + skuProductDTO.getDescription().trim();
+			String currentVariantDescritptionName = (skuProductDTO.getVariant() != null ? skuProductDTO.getVariant()
+					.trim() : "") + " " + skuProductDTO.getDescription().trim();
 
 			// Checking if the description already exist in the tree, if it
 			// doesn't then we add it
@@ -539,24 +493,23 @@ public class AlbaniaRemoteServerAdapter implements IAlbaniaRemoteServerAdapter {
 		}
 	}
 
-	protected void addSkuTreeSelectionDomesticModeDepth2bis(final ProductionParameterRootNode root,
-			final MarketTypeDTO marketTypeDTO) throws ValidatorException {
+	private void addSkuTreeSelectionDomesticModeDepth2bis(ProductionParameterRootNode root, MarketTypeDTO marketTypeDTO)
+			throws ValidatorException {
 
 		// Building the part of the tree for the "Domestic" production mode
-		final ProductionModeNode nationalProductionModeNode = new AlbaniaProductionModeNode(
+		ProductionModeNode nationalProductionModeNode = new AlbaniaProductionModeNode(
 				convertFromMarketTypeId(marketTypeDTO.getId()));
 		root.addChildren(nationalProductionModeNode);
 
 		// Maps of brands and variants to create the SKU tree
-		final Map<String, AlbaniaNavigationNode> brands = new HashMap<String, AlbaniaNavigationNode>();
+		Map<String, AlbaniaNavigationNode> brands = new HashMap<String, AlbaniaNavigationNode>();
 
 		// Iterate all SKUs from sorted SKU list from MarketTypeDTO
-		for (final SkuProductDTO skuProductDTO : AlbaniaRemoteServerUtilities.SkuDtoSorter.sort(marketTypeDTO
-				.getSkuList())) {
+		for (SkuProductDTO skuProductDTO : AlbaniaRemoteServerUtilities.SkuDtoSorter.sort(marketTypeDTO.getSkuList())) {
 			// -------------------------------------
 			// Node 1 Brand + Variant
 			// -------------------------------------
-			final String currentBrandVariantName = skuProductDTO.getBrand().trim() + " "
+			String currentBrandVariantName = skuProductDTO.getBrand().trim() + " "
 					+ (skuProductDTO.getVariant() != null ? skuProductDTO.getVariant().trim() : "");
 
 			// Checking if the Brand already exist in the tree, if it doesn't
@@ -587,23 +540,22 @@ public class AlbaniaRemoteServerAdapter implements IAlbaniaRemoteServerAdapter {
 		}
 	}
 
-	protected void addSkuTreeSelectionDomesticModeDepth3(final ProductionParameterRootNode root,
-			final MarketTypeDTO marketTypeDTO) throws ValidatorException {
+	private void addSkuTreeSelectionDomesticModeDepth3(ProductionParameterRootNode root, MarketTypeDTO marketTypeDTO)
+			throws ValidatorException {
 		// Building the part of the tree for the "Domestic" production mode
-		final ProductionModeNode nationalProductionModeNode = new AlbaniaProductionModeNode(
+		ProductionModeNode nationalProductionModeNode = new AlbaniaProductionModeNode(
 				convertFromMarketTypeId(marketTypeDTO.getId()));
 		root.addChildren(nationalProductionModeNode);
 
 		// Maps of brands and variants to create the SKU tree
-		final Map<String, AlbaniaNavigationNode> brands = new HashMap<String, AlbaniaNavigationNode>();
+		Map<String, AlbaniaNavigationNode> brands = new HashMap<>();
 
 		// Iterate all SKUs from sorted SKU list from MarketTypeDTO
-		for (final SkuProductDTO skuProductDTO : AlbaniaRemoteServerUtilities.SkuDtoSorter.sort(marketTypeDTO
-				.getSkuList())) {
+		for (SkuProductDTO skuProductDTO : AlbaniaRemoteServerUtilities.SkuDtoSorter.sort(marketTypeDTO.getSkuList())) {
 			// -------------------------------------
 			// Node 1 Brand
 			// -------------------------------------
-			final String currentBrandName = skuProductDTO.getBrand().trim();
+			String currentBrandName = skuProductDTO.getBrand().trim();
 
 			// Checking if the Brand already exist in the tree, if it doesn't
 			// then we add it
@@ -617,8 +569,7 @@ public class AlbaniaRemoteServerAdapter implements IAlbaniaRemoteServerAdapter {
 			// -------------------------------------
 			// Node 2 Variant
 			// -------------------------------------
-			final String currentVariantName = (skuProductDTO.getVariant() != null ? skuProductDTO.getVariant().trim()
-					: "");
+			String currentVariantName = (skuProductDTO.getVariant() != null ? skuProductDTO.getVariant().trim() : "");
 
 			// Checking if the Variant already exist in the tree, if it doesn't
 			// then we add it
@@ -648,19 +599,18 @@ public class AlbaniaRemoteServerAdapter implements IAlbaniaRemoteServerAdapter {
 		}
 	}
 
-	protected void validateDomesticProduct(final Product product) throws ValidatorException {
+	protected void validateDomesticProduct(Product product) throws ValidatorException {
 		// Product not NULL
-		AlbaniaRemoteServerValidator.validateProductNotNull(product);
+		validateProductNotNull(product);
 
 		// Product Code not NULL
-		AlbaniaRemoteServerValidator.validateCodeNotNull(product.getCode());
+		validateCodeNotNull(product.getCode());
 
 		// SKU & Batch ID
-		AlbaniaRemoteServerValidator.validateProductSkuAndBatchIDNotNull(product);
+		validateProductSkuAndBatchIDNotNull(product);
 
 		// Production Mode supported
-		AlbaniaRemoteServerValidator.validateProductionModeIsSupported(getProductionModeFromProduct(product),
-				productionModeMapping);
+		validateProductionModeIsSupported(getProductionModeFromProduct(product), productionModeMapping);
 
 		// Production Mode NOT counting
 		if (getCountingProductionMode().contains(getProductionModeFromProduct(product))) {
@@ -670,13 +620,13 @@ public class AlbaniaRemoteServerAdapter implements IAlbaniaRemoteServerAdapter {
 		}
 
 		// Status supported
-		AlbaniaRemoteServerValidator.validateProductStatusIsSupported(product.getStatus(), productStatusMapping, true);
+		validateProductStatusIsSupported(product.getStatus(), productStatusMapping, true);
 
 		// Product Code Type == SKU Code Type
-		AlbaniaRemoteServerValidator.validateProductAndSkuCodeTypeMatch(product);
+		validateProductAndSkuCodeTypeMatch(product);
 	}
 
-	protected void validateCountingProduct(final Product product) throws ValidatorException {
+	private void validateCountingProduct(Product product) throws ValidatorException {
 		// Production Mode is counting
 		if (!getCountingProductionMode().contains(getProductionModeFromProduct(product))) {
 			logger.error("Sending domestic production in counting mode = {}.", product);
@@ -688,14 +638,14 @@ public class AlbaniaRemoteServerAdapter implements IAlbaniaRemoteServerAdapter {
 		AlbaniaRemoteServerValidator.validateProductStatusIsSupported(product.getStatus(), productStatusMapping, false);
 	}
 
-	protected ProductionMode convertFromMarketTypeId(final int marketTypeId) throws ValidatorException {
-		AlbaniaRemoteServerValidator.validateMarketTyptDTOSupported(marketTypeId);
+	private ProductionMode convertFromMarketTypeId(int marketTypeId) throws ValidatorException {
+		validateMarketTyptDTOSupported(marketTypeId);
 		return ProductionMode.STANDARD;
 	}
 
-	protected AlbaniaSKU convertFromMaster(final SkuProductDTO skuProductDTO) throws ValidatorException {
+	private AlbaniaSKU convertFromMaster(SkuProductDTO skuProductDTO) throws ValidatorException {
 		// DTO validation
-		AlbaniaRemoteServerValidator.validateSkuDTOComplete(skuProductDTO);
+		validateSkuDTOComplete(skuProductDTO);
 
 		if (skuProductDTO.getProductPackagingsId() == null) {
 			skuProductDTO.setProductPackagingsId(ProductPackagings.OTHER.getId());
@@ -703,8 +653,7 @@ public class AlbaniaRemoteServerAdapter implements IAlbaniaRemoteServerAdapter {
 
 		AlbaniaSKU sku = new AlbaniaSKU(skuProductDTO.getCustomerSkuId(), convertDescription(skuProductDTO.getBrand(),
 				skuProductDTO.getVariant(), skuProductDTO.getDescription()), skuProductDTO.getDescription(),
-				skuProductDTO.getBrand(), skuProductDTO.getVariant(), new ArrayList<String>(),
-				skuProductDTO.isBlobMode());
+				skuProductDTO.getBrand(), skuProductDTO.getVariant(), new ArrayList<>(), skuProductDTO.isBlobMode());
 
 		switch (skuProductDTO.getProductPackagingsId()) {
 
@@ -739,25 +688,24 @@ public class AlbaniaRemoteServerAdapter implements IAlbaniaRemoteServerAdapter {
 		return Messages.format(AlbaniaSKU.SKU, brand, variant, description);
 	}
 
-	protected CodeType convertFromMaster(final CodeTypeDTO codeTypeDTO) throws ValidatorException {
+	private CodeType convertFromMaster(CodeTypeDTO codeTypeDTO) throws ValidatorException {
 		// DTO validation
-		AlbaniaRemoteServerValidator.validateCodeTypeDTOComplete(codeTypeDTO);
+		validateCodeTypeDTOComplete(codeTypeDTO);
 
 		CodeType codeType = new CodeType(codeTypeDTO.getId());
 		codeType.setDescription(codeTypeDTO.getDescription());
 		return codeType;
 	}
 
-	protected ProductStatuses convertToMaster(final ProductStatus clientStatus) throws ValidatorException {
+	private ProductStatuses convertToMaster(ProductStatus clientStatus) throws ValidatorException {
 		return productStatusMapping.getValue(clientStatus);
 	}
 
-	protected ProductionModes convertToMaster(final ProductionMode clientMode) {
+	private ProductionModes convertToMaster(ProductionMode clientMode) {
 		return productionModeMapping.getValue(clientMode);
 	}
 
-	protected ProductDTO convertDomesticProductToDTO(final Product product) throws CryptographyException,
-			ValidatorException {
+	private ProductDTO convertDomesticProductToDTO(Product product) throws CryptographyException, ValidatorException {
 		// Validate product
 		validateDomesticProduct(product);
 
@@ -768,7 +716,7 @@ public class AlbaniaRemoteServerAdapter implements IAlbaniaRemoteServerAdapter {
 		}
 
 		// DTO to be return
-		final ProductDTO productDTO = new ProductDTO();
+		ProductDTO productDTO = new ProductDTO();
 		productDTO.setCodeTypeId((int) product.getCode().getCodeType().getId());
 		productDTO.setCodeSequence(product.getCode().getSequence());
 		productDTO.setCodeBatchId(product.getCode().getEncoderId());
@@ -778,12 +726,12 @@ public class AlbaniaRemoteServerAdapter implements IAlbaniaRemoteServerAdapter {
 		return productDTO;
 	}
 
-	protected List<ProductDTO> convertDomesticProductToDTOList(final PackagedProducts packagedProducts, int subSystemId)
+	private List<ProductDTO> convertDomesticProductToDTOList(PackagedProducts packagedProducts, int subSystemId)
 			throws CryptographyException, ValidatorException {
-		final List<ProductDTO> productDTOs = new ArrayList<ProductDTO>();
+		List<ProductDTO> productDTOs = new ArrayList<>();
 
 		// Convert all product from PackagedProducts
-		for (final Product product : packagedProducts.getProducts()) {
+		for (Product product : packagedProducts.getProducts()) {
 			restoreProductParam(product, packagedProducts, subSystemId);
 			if (ProductStatus.TYPE_MISMATCH.equals(product.getStatus())) {
 				logger.debug("Domestic Product type mismatch :" + product);
@@ -795,11 +743,11 @@ public class AlbaniaRemoteServerAdapter implements IAlbaniaRemoteServerAdapter {
 		return productDTOs;
 	}
 
-	public void setTreeDepth(final int depth) {
+	public void setTreeDepth(int depth) {
 		treeDepth = depth;
 	}
 
-	protected int getTreeDepth() {
+	private int getTreeDepth() {
 		return treeDepth;
 	}
 

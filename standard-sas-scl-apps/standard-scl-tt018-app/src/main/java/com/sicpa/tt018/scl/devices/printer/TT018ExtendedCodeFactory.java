@@ -33,7 +33,7 @@ public class TT018ExtendedCodeFactory implements IExCodeBehavior {
 	public List<ExtendedCode> createExCodes(List<String> codes) {
 		Validate.notNull(codes);
 
-		final boolean isBlobEnable = blobUtils.isBlobEnable();
+		boolean isBlobEnable = blobUtils.isBlobEnable();
 		logger.debug("Creating extended codes with isBlobEnable : {}", isBlobEnable);
 		List<ExtendedCode> res = new ArrayList<>();
 		ExtendedCodeFactory ecf = new ExtendedCodeFactory();
@@ -46,16 +46,15 @@ public class TT018ExtendedCodeFactory implements IExCodeBehavior {
 		return res;
 	}
 
-	private List<Object> createCompositeCode(final String code, final boolean isBlobEnable) {
+	private List<Object> createCompositeCode(String code, boolean isBlobEnable) {
 
 		List<Object> compositeCode = new ArrayList<>();
 
 		compositeCode.add(code);
 		if (isBlobEnable) {
 			/*
-			 * The blobFactory give us a default implementation of the blob
-			 * pattern. Nevertheless we need to provide a composite code due to
-			 * xcode api design.
+			 * The blobFactory give us a default implementation of the blob pattern. Nevertheless we need to provide a
+			 * composite code due to xcode api design.
 			 */
 			compositeCode.add(getDummyBlobData());
 		}
@@ -82,7 +81,7 @@ public class TT018ExtendedCodeFactory implements IExCodeBehavior {
 		BlobBlockFactory blobFactory = new BlobBlockFactory();
 		blobFactory.setRelativePosition(blobPosition);
 		blobFactory.addOption(blobType);
-	
+
 		return blobFactory;
 	}
 
@@ -90,7 +89,7 @@ public class TT018ExtendedCodeFactory implements IExCodeBehavior {
 		DatamatrixBlockFactory dmFactory = new DatamatrixBlockFactory();
 		dmFactory.setModelDatamatrixEncoding(dmEncoding);
 		dmFactory.setModelDatamatrixFormat(dmFormat);
-		if(dmOrientation != null){
+		if (dmOrientation != null) {
 			dmFactory.addOption(dmOrientation);
 		}
 		return dmFactory;
