@@ -11,9 +11,8 @@
 	</bean>
 
 
-	<bean id="productValidator"
+	<bean id="noProductValidator"
 		  class="com.sicpa.standard.sasscl.business.activation.impl.activationBehavior.standard.validator.NoProductValidator">
-		<property name="productionParameters" ref="productionParameters" />
 	</bean>
 
 	<bean id="productValidatorCodeTypeCheck"
@@ -28,7 +27,7 @@
 		  class="com.sicpa.standard.sasscl.business.activation.impl.activationBehavior.standard.StandardActivationBehavior">
 		<property name="productionParameters" ref="productionParameters" />
 		<property name="authenticatorProvider" ref="authenticatorProvider" />
-		<property name="productValidator" ref="productValidator" />
+		<property name="productValidator" ref="noProductValidator" />
 		<property name="invalidCodeHandler" ref="activationInvalidCodeHandler" />
 		<property name="productFinalizer" ref="productFinalizer" />
 		<property name="authenticatorModeProvider" ref="authenticatorModeProvider" />
@@ -55,7 +54,7 @@
 		  class="com.sicpa.standard.sasscl.business.activation.impl.activationBehavior.RefeedActivationBehavior">
 		<property name="productionParameters" ref="productionParameters" />
 		<property name="authenticatorProvider" ref="authenticatorProvider" />
-		<property name="productValidator" ref="productValidator" />
+		<property name="productValidator" ref="noProductValidator" />
 		<property name="invalidCodeHandler" ref="activationInvalidCodeHandler" />
 		<property name="productFinalizer" ref="productFinalizer" />
 		<property name="authenticatorModeProvider" ref="authenticatorModeProvider" />
