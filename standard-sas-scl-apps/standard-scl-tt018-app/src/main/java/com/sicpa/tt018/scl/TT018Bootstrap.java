@@ -1,5 +1,6 @@
 package com.sicpa.tt018.scl;
 
+import static com.sicpa.standard.sasscl.custoBuilder.CustoBuilder.addActionOnStartingProduction;
 import static com.sicpa.standard.sasscl.custoBuilder.CustoBuilder.addMessage;
 import static com.sicpa.standard.sasscl.custoBuilder.CustoBuilder.addPlcVariable;
 import static com.sicpa.standard.sasscl.custoBuilder.CustoBuilder.addToStatisticsMapper;
@@ -15,16 +16,29 @@ import static com.sicpa.tt018.scl.model.productionParameters.AlbaniaProductionMo
 import java.util.HashMap;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.sicpa.standard.client.common.ioc.BeanProvider;
 import com.sicpa.standard.sasscl.Bootstrap;
 import com.sicpa.standard.sasscl.controller.productionconfig.mapping.IProductionConfigMapping;
+import com.sicpa.standard.sasscl.devices.plc.IPlcParamSender;
+import com.sicpa.standard.sasscl.devices.plc.PlcAdaptorException;
 import com.sicpa.standard.sasscl.devices.plc.PlcUtils.PLC_TYPE;
 import com.sicpa.standard.sasscl.model.statistics.StatisticsKey;
 import com.sicpa.standard.sasscl.security.SasSclPermission;
 import com.sicpa.tt018.scl.model.AlbaniaProductStatus;
+import com.sicpa.tt018.scl.model.AlbaniaSKU;
 import com.sicpa.tt018.scl.model.productionParameters.AlbaniaPermission;
 
 public class TT018Bootstrap extends Bootstrap {
+	private static final Logger logger = LoggerFactory.getLogger(TT018Bootstrap.class);
+
+	private static final String EJECTION_TYPE_COMPLIANT = "1";
+	private static final String EJECTION_TYPE_NON_COMPLIANT = "2";
+
+	private IPlcParamSender plcParamSender;
+	private String ejectionTypeVar;
 
 	@Override
 	public void executeSpringInitTasks() {
@@ -33,6 +47,7 @@ public class TT018Bootstrap extends Bootstrap {
 		messageCusto();
 		statisticsCusto();
 		productionModePermission();
+		sendEjectionTypeToPlcOnStarting();
 	}
 
 	private void productionModePermission() {
@@ -65,6 +80,31 @@ public class TT018Bootstrap extends Bootstrap {
 	private void addSoftDrinkProductionMode() {
 		IProductionConfigMapping mapping = BeanProvider.getBean(PRODUCTION_CONFIG_MAPPING);
 		mapping.put(SOFT_DRINK, "softDrink");
+	}
+
+	private void sendEjectionTypeToPlcOnStarting() {
+		addActionOnStartingProduction(() -> {
+			try {
+				sendEjectionTypeToPlc();
+			} catch (PlcAdaptorException e) {
+				logger.error("", e);
+			}
+		});
+	}
+
+	private void sendEjectionTypeToPlc() throws PlcAdaptorException {
+		AlbaniaSKU sku = (AlbaniaSKU) productionParameters.getSku();
+		String ejectionType = sku.isBlobEnabled() ? EJECTION_TYPE_NON_COMPLIANT : EJECTION_TYPE_COMPLIANT;
+		int line = 1;
+		plcParamSender.sendToPlc(ejectionTypeVar, ejectionType, line);
+	}
+
+	public void setPlcParamSender(IPlcParamSender plcParamSender) {
+		this.plcParamSender = plcParamSender;
+	}
+
+	public void setEjectionTypeVar(String ejectionTypeVar) {
+		this.ejectionTypeVar = ejectionTypeVar;
 	}
 
 }

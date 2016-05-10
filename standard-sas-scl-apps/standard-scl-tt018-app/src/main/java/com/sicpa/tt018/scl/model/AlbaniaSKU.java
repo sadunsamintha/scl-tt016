@@ -6,9 +6,10 @@ import com.sicpa.standard.sasscl.model.SKU;
 import com.sicpa.tt018.interfaces.scl.master.constant.ProductPackagings;
 
 public class AlbaniaSKU extends SKU {
-	private static final long serialVersionUID = 5314601840673359757L;
 
-	public static final String SKU = "SKU.DESCRIPTION";
+	private static final long serialVersionUID = 1L;
+
+	public static String SKU = "SKU.DESCRIPTION";
 
 	private String brand;
 	private String variant;
@@ -16,7 +17,8 @@ public class AlbaniaSKU extends SKU {
 	private boolean isBlobEnabled;
 	private ProductPackagings productPackaging;
 
-	public AlbaniaSKU(final int id, final String description, final String volume, final String brand, final String variant, final List<String> barcodes, boolean isBlobEnabled, ProductPackagings productPackaging) {
+	public AlbaniaSKU(int id, String description, String volume, String brand, String variant, List<String> barcodes,
+			boolean isBlobEnabled, ProductPackagings productPackaging) {
 		super(id, description, barcodes);
 		this.brand = brand;
 		this.variant = variant;
@@ -25,12 +27,8 @@ public class AlbaniaSKU extends SKU {
 		this.productPackaging = productPackaging;
 	}
 
-	public AlbaniaSKU(final AlbaniaSKU sku) {
-		this(sku.getId(), sku.getDescription(), sku.getVolume(), sku.getBrand(), sku.getVariant(), sku.getBarCodes(), sku.isBlobEnabled(), sku.getProductPackaging());
-		setImage(sku.getImage());
-	}
-
-	public AlbaniaSKU(final int id, final String description, final String volume, final String brand, final String variant, final List<String> barcodes, boolean isBlobEnabled) {
+	public AlbaniaSKU(int id, String description, String volume, String brand, String variant, List<String> barcodes,
+			boolean isBlobEnabled) {
 		super(id, description, barcodes);
 		this.brand = brand;
 		this.variant = variant;
@@ -38,16 +36,8 @@ public class AlbaniaSKU extends SKU {
 		this.isBlobEnabled = isBlobEnabled;
 	}
 
-	protected void setBrand(final String brand) {
-		this.brand = brand;
-	}
-
 	public String getBrand() {
 		return brand;
-	}
-
-	protected void setVariant(final String variant) {
-		this.variant = variant;
 	}
 
 	public String getVariant() {

@@ -22,8 +22,10 @@ beans{
 	addAlias('bootstrapAlias','bootstrap')
 	bootstrap(TT018Bootstrap){b->
 		b.parent=ref('bootstrapAlias')
+		plcParamSender=ref('plcParamSender')
+		ejectionTypeVar='PARAM_LINE_EJECTION_TYPE'
 	}
-	
+
 	addAlias('plcValuesLoaderAlias','plcValuesLoader')
 	plcValuesLoader(AlbaniaPlcLoader){b->
 		b.parent=ref('plcValuesLoaderAlias')
