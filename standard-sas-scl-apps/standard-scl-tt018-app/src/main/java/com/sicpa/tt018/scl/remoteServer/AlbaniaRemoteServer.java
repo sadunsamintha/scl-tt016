@@ -65,6 +65,7 @@ public class AlbaniaRemoteServer extends RemoteServer {
 		packageSenders.put(ProductStatus.REFEED, senderActivated);
 		packageSenders.put(ProductStatus.SENT_TO_PRINTER_UNREAD, senderActivated);
 		packageSenders.put(ProductStatus.SENT_TO_PRINTER_WASTED, senderActivated);
+		packageSenders.put(AlbaniaProductStatus.SENT_TO_PRINTER_BLOB, senderActivated);
 		packageSenders.put(ProductStatus.TYPE_MISMATCH, senderActivated);
 
 		packageSenders.put(ProductStatus.COUNTING, senderCounted);
