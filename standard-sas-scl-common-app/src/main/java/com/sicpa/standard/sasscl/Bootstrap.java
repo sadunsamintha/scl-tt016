@@ -108,30 +108,29 @@ public class Bootstrap implements IBootstrap {
 	}
 
 	private void initRemoteServerConnected() {
-		getLineIdFromRemoteServerAndSaveItLocally();
-		remoteServerSheduledJobs.executeInitialTasks();
-	}
+		long subsystemId = getSubsystemIdFromRemoteServer();
 
-	private void getLineIdFromRemoteServerAndSaveItLocally() {
-		long id = getLineIdFromRemoteServer();
-		subsystemIdProvider.set(id);
-		saveSubsystemId(id);
+		if (subsystemId > 0) {
+			subsystemIdProvider.set(subsystemId);
+			saveSubsystemId(subsystemId);
+		}
+
+		remoteServerSheduledJobs.executeInitialTasks();
 	}
 
 	private void saveSubsystemId(long id) {
 		try {
-
 			File globalPropertiesFile = new ClassPathResource(ConfigUtilEx.GLOBAL_PROPERTIES_PATH).getFile();
 
 			PropertiesUtils.savePropertiesKeepOrderAndComment(globalPropertiesFile, "subsystemId", Long.toString(id));
 			PropertiesUtils.savePropertiesKeepOrderAndComment(globalPropertiesFile, "lineId", Long.toString(id));
 
 		} catch (Exception ex) {
-			logger.error("Failed to Get and Save Line Id", ex);
+			logger.error("Failed to save subsystem Id, line Id", ex);
 		}
 	}
 
-	private long getLineIdFromRemoteServer() {
+	private long getSubsystemIdFromRemoteServer() {
 		return server.getSubsystemID();
 	}
 

@@ -19,8 +19,8 @@ public class MasterLifeCheckWorker implements IMasterLifeCheckWorker {
 	@Override
 	public void start() {
 		if (scheduledTask == null) {
-			scheduledTask = TaskExecutor.scheduleWithFixedDelay(() -> connector.isAlive(), lifecheckIntervalSec,
-					TimeUnit.SECONDS, "MPCC-LifeChecker");
+			scheduledTask = TaskExecutor.scheduleAtFixedRate(() -> connector.isAlive(), 0, lifecheckIntervalSec,
+					TimeUnit.SECONDS, "RS-LifeChecker");
 		}
 	}
 
@@ -31,7 +31,7 @@ public class MasterLifeCheckWorker implements IMasterLifeCheckWorker {
 
 	@Override
 	public void scheduleReconnection() {
-		TaskExecutor.schedule(() -> connector.doLogin(), lifecheckIntervalSec, TimeUnit.SECONDS, "MPCC-LifeChecker");
+		TaskExecutor.schedule(() -> connector.doLogin(), lifecheckIntervalSec, TimeUnit.SECONDS, "RS-LifeChecker");
 	}
 
 	public void setLifecheckIntervalSec(int lifecheckIntervalSec) {

@@ -19,7 +19,7 @@ public abstract class AbstractMasterConnector extends AbstractDevice implements 
 	private IMasterLifeCheckWorker lifeCheckWorker;
 
 	public AbstractMasterConnector() {
-		setName("masterPcc");
+		setName("RemoteServer");
 	}
 
 	@Override
@@ -34,7 +34,6 @@ public abstract class AbstractMasterConnector extends AbstractDevice implements 
 		try {
 			login();
 			lifeCheckWorker.start();
-			fireDeviceStatusChanged(DeviceStatus.CONNECTED);
 		} catch (Exception e) {
 			fireMasterDisconnected();
 			logger.error(e.getMessage(), e);
@@ -62,11 +61,11 @@ public abstract class AbstractMasterConnector extends AbstractDevice implements 
 			if (started.get() && checkIsAlive()) {
 				fireDeviceStatusChanged(DeviceStatus.CONNECTED);
 			} else {
-				logger.info("Master not available");
+				logger.info("Remote Server not available");
 				fireMasterDisconnected();
 			}
 		} catch (Exception e) {
-			logger.error("Remote error", e);
+			logger.error("Remote Server error", e);
 			fireMasterDisconnected();
 		}
 	}
@@ -79,7 +78,7 @@ public abstract class AbstractMasterConnector extends AbstractDevice implements 
 
 	protected void fireDeviceStatusChanged(DeviceStatus status) {
 		if (this.status != status) {
-			logger.info("MPCCConnector status changed: {} ", status.toString());
+			logger.info("Remote Server connector status changed: {} ", status.toString());
 			this.status = status;
 			DeviceStatusEvent evt = new DeviceStatusEvent(status, this);
 			synchronized (statusListeners) {
