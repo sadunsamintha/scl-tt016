@@ -26,6 +26,8 @@ import com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcVariableDesc
 @Field def lineGroups=new TreeMap<String, PlcVariableGroup>()
 @Field def cabGroups=new TreeMap<String, PlcVariableGroup>()
 
+@Field def typeByVar=new HashMap<String, PLC_TYPE>()
+
 
 beans {
 
@@ -234,6 +236,7 @@ beans {
 	registerSingleton('cabPlcVarGroups',createCabGroupList())
 
 	registerSingleton('allPlcVars',allVars)
+	registerSingleton('typeByPlcVar',typeByVar)
 	registerSingleton('plcLineJmxReport',lineJmxReport)
 	registerSingleton('plcCabJmxReport',cabJmxReport)
 	registerSingleton('plcLineNtfTemplate',lineNotif)
@@ -253,6 +256,7 @@ def void injectCustoVar(){
 
 def void addVarToLists(def var,String logicName,def varInfo){
 	allVars.add(var)
+	typeByVar.putAt(logicName, varInfo['t'])
 
 	if(isLineJmxReport(logicName)) {
 		lineJmxReport.add(var)
@@ -260,16 +264,14 @@ def void addVarToLists(def var,String logicName,def varInfo){
 	if(isCabinetJmxReport(logicName)) {
 		cabJmxReport.add(var)
 	}
-
 	if(isCabinetNotif(varInfo)){
 		cabNotif.add(var)
 	}
-	
 	if(isLineNotif(varInfo)){
 		lineNotif.add(var)
 	}
-
 }
+
 def List<PlcVariableGroup> createCabGroupList(){
 	return createGroupList(cabGroups)
 }
