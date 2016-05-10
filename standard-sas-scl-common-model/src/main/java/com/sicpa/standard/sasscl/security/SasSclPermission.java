@@ -28,10 +28,13 @@ public interface SasSclPermission {
 	Permission MONITORING_SYSTEM_EVENT = new Permission("MONITORING_SYSTEM_EVENT");
 	Permission MONITORING_PRODUCTION_STATISTICS = new Permission("MONITORING_PRODUCTION_STATISTICS");
 	Permission MONITORING_MBEAN = new Permission("MONITORING_MBEAN");
+	Permission VIEW_PLC_VAR = new Permission("VIEW_PLC_VAR");
 
 	Permission BEAN_CALL = new Permission("BEAN_CALL");
 
 	Permission DISPLAY_ENCODERS_VIEW = new Permission("DISPLAY_ENCODERS_VIEW");
 	Permission SCREENSHOT = new Permission("SCREENSHOT");
+
+	Permission DEVICE_CONTEXT_CONSOLE = new Permission("DEVICE_CONTEXT_CONSOLE");
 
 }

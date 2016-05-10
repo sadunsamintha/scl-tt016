@@ -20,7 +20,7 @@ import net.miginfocom.swing.MigLayout;
 
 import com.sicpa.standard.client.common.security.ILoginListener;
 import com.sicpa.standard.client.common.security.SecurityService;
-import com.sicpa.standard.client.common.view.SecuredComponentGetter;
+import com.sicpa.standard.client.common.view.ISecuredComponentGetter;
 import com.sicpa.standard.common.util.Messages;
 import com.sicpa.standard.gui.plaf.SicpaColor;
 import com.sicpa.standard.gui.screen.machine.AbstractMachineFrame;
@@ -212,9 +212,9 @@ public class MainFrame extends AbstractMachineFrame {
 	private List<Pair<JPanel, String>> getAvailableConfigPanels() {
 		List<Pair<JPanel, String>> listConfigPanel = new ArrayList<>();
 
-		for (SecuredComponentGetter getter : getController().getSecuredPanels()) {
+		for (ISecuredComponentGetter getter : getController().getSecuredPanels()) {
 			if (SecurityService.hasPermission(getter.getPermission())) {
-				listConfigPanel.add(new Pair<JPanel, String>((JPanel) getter.getComponent(), getter.getTitle()));
+				listConfigPanel.add(new Pair<>((JPanel) getter.getComponent(), getter.getTitle()));
 			}
 		}
 		return listConfigPanel;

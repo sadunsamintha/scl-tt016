@@ -1,14 +1,13 @@
 package com.sicpa.standard.sasscl.view.forceCall;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JComponent;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
@@ -16,40 +15,15 @@ import net.miginfocom.swing.MigLayout;
 
 import org.jdesktop.jxlayer.JXLayer;
 
+import com.sicpa.standard.client.common.security.Permission;
 import com.sicpa.standard.client.common.utils.TaskExecutor;
+import com.sicpa.standard.client.common.view.ISecuredComponentGetter;
 import com.sicpa.standard.gui.components.layeredComponents.lock.ui.LockUI;
-import com.sicpa.standard.gui.plaf.SicpaLookAndFeel;
 import com.sicpa.standard.gui.utils.ThreadUtils;
 import com.sicpa.standard.sasscl.common.log.OperatorLogger;
+import com.sicpa.standard.sasscl.security.SasSclPermission;
 
-public class BeanCallPanel extends JPanel {
-
-	public static void main(String[] args) {
-		SicpaLookAndFeel.install();
-		SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				JFrame f = new JFrame();
-				f.setSize(500, 500);
-				f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-				List<IBeanCall> beancalls = new ArrayList<IBeanCall>();
-				beancalls.add(new BeanCall(new Object() {
-					@Override
-					public String toString() {
-						ThreadUtils.sleepQuietly(1000);
-						return super.toString();
-					}
-				}, "toString", "toString"));
-				beancalls.add(new BeanCall(new Object(), "hashCode", "hashCode"));
-				BeanCallPanel panel = new BeanCallPanel(beancalls);
-
-				f.getContentPane().add(panel);
-
-				f.setVisible(true);
-			}
-		});
-	}
+public class BeanCallPanel extends JPanel implements ISecuredComponentGetter {
 
 	private static final long serialVersionUID = 1L;
 	protected List<IBeanCall> beancalls;
@@ -57,15 +31,18 @@ public class BeanCallPanel extends JPanel {
 	protected JPanel mainPanel;
 	protected LockUI lockui;
 
-	public BeanCallPanel(List<IBeanCall> beancalls) {
-		this.beancalls = beancalls;
-		initGUI();
+	public BeanCallPanel() {
 	}
 
-	private void initGUI() {
-		setLayout(new BorderLayout());
-		add(getLockPanel());
+	public void setBeancalls(List<IBeanCall> beancalls) {
+		this.beancalls = beancalls;
+	}
 
+	public void init() {
+		ThreadUtils.invokeAndWait(() -> {
+			setLayout(new BorderLayout());
+			add(getLockPanel());
+		});
 	}
 
 	public JPanel getMainPanel() {
@@ -116,5 +93,20 @@ public class BeanCallPanel extends JPanel {
 				}
 			});
 		}
+	}
+
+	@Override
+	public Component getComponent() {
+		return this;
+	}
+
+	@Override
+	public Permission getPermission() {
+		return SasSclPermission.BEAN_CALL;
+	}
+
+	@Override
+	public String getTitle() {
+		return "label.beanCall.title";
 	}
 }

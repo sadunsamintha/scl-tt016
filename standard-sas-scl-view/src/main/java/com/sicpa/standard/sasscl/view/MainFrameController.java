@@ -22,7 +22,7 @@ import javax.swing.JComponent;
 import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.messages.IMessageCodeMapper;
-import com.sicpa.standard.client.common.view.SecuredComponentGetter;
+import com.sicpa.standard.client.common.view.ISecuredComponentGetter;
 import com.sicpa.standard.common.util.Messages;
 import com.sicpa.standard.gui.components.layeredComponents.lock.lockingError.LockingErrorModel;
 import com.sicpa.standard.gui.plaf.SicpaColor;
@@ -48,7 +48,7 @@ import com.sicpa.standard.sasscl.view.messages.I18nableLockingErrorModel;
 public class MainFrameController extends MachineViewController {
 
 	private ApplicationFlowState currentApplicationState = ApplicationFlowState.STT_NO_SELECTION;
-	private final List<SecuredComponentGetter> securedPanels = new ArrayList<>();
+	private final List<ISecuredComponentGetter> securedPanels = new ArrayList<>();
 	private String lineId;
 	private ProductionParameters productionParameters;
 	private IMessageCodeMapper messageCodeMapper;
@@ -58,7 +58,7 @@ public class MainFrameController extends MachineViewController {
 	public static String LINE_LABEL_SEPARATOR = " : ";
 	public static String LINE_LABEL_ID = Messages.get("lineId");
 
-	public void addSecuredPanel(SecuredComponentGetter securedComponentGetter) {
+	public void addSecuredPanel(ISecuredComponentGetter securedComponentGetter) {
 		securedPanels.add(securedComponentGetter);
 	}
 
@@ -258,12 +258,12 @@ public class MainFrameController extends MachineViewController {
 		}
 	}
 
-	public void setSecuredPanels(List<SecuredComponentGetter> securedPanels) {
+	public void setSecuredPanels(List<ISecuredComponentGetter> securedPanels) {
 		this.securedPanels.clear();
 		this.securedPanels.addAll(securedPanels);
 	}
 
-	public List<SecuredComponentGetter> getSecuredPanels() {
+	public List<ISecuredComponentGetter> getSecuredPanels() {
 		return securedPanels;
 	}
 

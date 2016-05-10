@@ -1,5 +1,6 @@
 package com.sicpa.standard.sasscl.view.monitoring.mbean;
 
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyDescriptor;
@@ -24,12 +25,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 
+import com.sicpa.standard.client.common.security.Permission;
+import com.sicpa.standard.client.common.view.ISecuredComponentGetter;
 import com.sicpa.standard.gui.components.scroll.SmallScrollBar;
 import com.sicpa.standard.gui.plaf.SicpaColor;
 import com.sicpa.standard.gui.plaf.SicpaLookAndFeel;
 import com.sicpa.standard.gui.utils.ThreadUtils;
+import com.sicpa.standard.sasscl.security.SasSclPermission;
 
-public class BeanViewer extends JPanel {
+public class BeanViewer extends JPanel implements ISecuredComponentGetter {
 
 	private static final long serialVersionUID = 1L;
 
@@ -170,5 +174,20 @@ public class BeanViewer extends JPanel {
 
 	public void addClassToDetailList(final String className) {
 		this.classesToDetail.add(className);
+	}
+
+	@Override
+	public Component getComponent() {
+		return this;
+	}
+
+	@Override
+	public Permission getPermission() {
+		return SasSclPermission.MONITORING_MBEAN;
+	}
+
+	@Override
+	public String getTitle() {
+		return "label.mbean";
 	}
 }

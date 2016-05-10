@@ -14,6 +14,8 @@ import javax.swing.JTable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.sicpa.standard.client.common.security.Permission;
+import com.sicpa.standard.client.common.view.ISecuredComponentGetter;
 import com.sicpa.standard.common.util.Messages;
 import com.sicpa.standard.gui.components.renderers.SicpaTableCellRenderer;
 import com.sicpa.standard.gui.components.table.BeanReaderJTable;
@@ -22,12 +24,13 @@ import com.sicpa.standard.sasscl.common.utils.ComparatorUtils;
 import com.sicpa.standard.sasscl.monitoring.MonitoringService;
 import com.sicpa.standard.sasscl.monitoring.system.SystemEventLevel;
 import com.sicpa.standard.sasscl.monitoring.system.event.BasicSystemEvent;
+import com.sicpa.standard.sasscl.security.SasSclPermission;
 
-public class SystemEventPanel extends AbstractMonitoringEventPanel {
+public class SystemEventPanel extends AbstractMonitoringEventPanel implements ISecuredComponentGetter {
 
 	private static final long serialVersionUID = 1L;
 
-	public static final Logger logger= LoggerFactory.getLogger(SystemEventPanel.class);
+	public static final Logger logger = LoggerFactory.getLogger(SystemEventPanel.class);
 
 	public SystemEventPanel() {
 		initGUI();
@@ -128,5 +131,20 @@ public class SystemEventPanel extends AbstractMonitoringEventPanel {
 			}
 			return label;
 		}
+	}
+
+	@Override
+	public Component getComponent() {
+		return this;
+	}
+
+	@Override
+	public Permission getPermission() {
+		return SasSclPermission.MONITORING_SYSTEM_EVENT;
+	}
+
+	@Override
+	public String getTitle() {
+		return "label.monitoring.system.event";
 	}
 }

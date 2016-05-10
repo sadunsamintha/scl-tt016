@@ -9,8 +9,6 @@ import static com.sicpa.standard.sasscl.ioc.BeansName.REMOTE_SERVER_PRODUCT_STAT
 import static com.sicpa.standard.sasscl.ioc.BeansName.SELECTION_MODEL_FACTORY;
 import static com.sicpa.standard.sasscl.ioc.BeansName.STATISTICS_PRODUCTS_STATUS_MAPPER;
 import static com.sicpa.standard.sasscl.ioc.BeansName.STATISTICS_VIEW_MAPPER;
-import static com.sicpa.standard.sasscl.view.ScreensFlowTriggers.EXIT;
-import static com.sicpa.standard.sasscl.view.ScreensFlowTriggers.PRODUCTION_PARAMETER_SELECTED;
 
 import java.awt.Color;
 import java.util.HashMap;
@@ -18,14 +16,6 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.function.Function;
 
-import com.sicpa.standard.client.common.view.screensflow.IScreenGetter;
-import com.sicpa.standard.client.common.view.screensflow.IScreensFlow;
-import com.sicpa.standard.client.common.view.screensflow.ScreenTransition;
-import com.sicpa.standard.client.common.view.screensflow.ScreenTransitionTrigger;
-import com.sicpa.standard.sasscl.controller.flow.statemachine.DefaultFlowControlWiring;
-import com.sicpa.standard.sasscl.controller.flow.statemachine.FlowTransition;
-import com.sicpa.standard.sasscl.controller.flow.statemachine.IFlowControlWiring;
-import com.sicpa.standard.sasscl.controller.view.flow.DefaultScreensFlow;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 
 import com.google.common.eventbus.Subscribe;
@@ -35,6 +25,9 @@ import com.sicpa.standard.client.common.messages.IMessageCodeMapper;
 import com.sicpa.standard.client.common.messages.IMessagesMapping;
 import com.sicpa.standard.client.common.messages.MessageType;
 import com.sicpa.standard.client.common.security.Permission;
+import com.sicpa.standard.client.common.view.screensflow.IScreenGetter;
+import com.sicpa.standard.client.common.view.screensflow.IScreensFlow;
+import com.sicpa.standard.client.common.view.screensflow.ScreenTransition;
 import com.sicpa.standard.gui.screen.machine.component.SelectionFlow.flow.AbstractSelectionFlowModel;
 import com.sicpa.standard.sasscl.business.alert.IAlert;
 import com.sicpa.standard.sasscl.business.alert.task.AbstractAlertTask;
@@ -44,6 +37,8 @@ import com.sicpa.standard.sasscl.business.statistics.mapper.IProductStatusToStat
 import com.sicpa.standard.sasscl.controller.device.group.impl.SimpleGroupDevicesController;
 import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState;
 import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowStateChangedEvent;
+import com.sicpa.standard.sasscl.controller.flow.statemachine.DefaultFlowControlWiring;
+import com.sicpa.standard.sasscl.controller.flow.statemachine.FlowTransition;
 import com.sicpa.standard.sasscl.controller.hardware.ProductionDevicesCreatedEvent;
 import com.sicpa.standard.sasscl.controller.productionconfig.mapping.IProductionConfigMapping;
 import com.sicpa.standard.sasscl.devices.IDevice;
