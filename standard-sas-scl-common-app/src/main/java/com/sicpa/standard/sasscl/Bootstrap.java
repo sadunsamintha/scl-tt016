@@ -39,6 +39,8 @@ import com.sicpa.standard.sasscl.utils.ConfigUtilEx;
 import com.sicpa.standard.sicpadata.spi.manager.IServiceProviderManager;
 import com.sicpa.standard.sicpadata.spi.manager.StaticServiceProviderManager;
 
+import static com.sicpa.standard.sasscl.devices.remote.IRemoteServer.ERROR_DEFAULT_SUBSYSTEM_ID;
+
 public class Bootstrap implements IBootstrap {
 
 	private static final Logger logger = LoggerFactory.getLogger(Bootstrap.class);
@@ -110,12 +112,16 @@ public class Bootstrap implements IBootstrap {
 	private void initRemoteServerConnected() {
 		long subsystemId = getSubsystemIdFromRemoteServer();
 
-		if (subsystemId > 0) {
-			subsystemIdProvider.set(subsystemId);
-			saveSubsystemId(subsystemId);
+		if (subsystemId > ERROR_DEFAULT_SUBSYSTEM_ID) {
+			setAndSaveSubsystemId(subsystemId);
 		}
 
 		remoteServerSheduledJobs.executeInitialTasks();
+	}
+
+	private void setAndSaveSubsystemId(long subsystemId) {
+		subsystemIdProvider.set(subsystemId);
+		saveSubsystemId(subsystemId);
 	}
 
 	private void saveSubsystemId(long id) {

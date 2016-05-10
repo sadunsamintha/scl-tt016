@@ -219,7 +219,7 @@ public class RemoteServer extends AbstractRemoteServer implements IConnectable {
 		} catch (Exception e) {
 			logger.error("failed to get subsystem id", e);
 		}
-		return 0;
+		return ERROR_DEFAULT_SUBSYSTEM_ID;
 	}
 
 	@Override
