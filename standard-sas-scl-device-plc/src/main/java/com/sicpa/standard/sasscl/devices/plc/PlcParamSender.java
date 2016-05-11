@@ -42,6 +42,7 @@ public class PlcParamSender implements IPlcParamSender {
 		case S:
 			return createShortVar(physicalName, value);
 		case I:
+		case D:
 			return createIntVar(physicalName, value);
 		case B:
 			return createBooleanVar(physicalName, value);
