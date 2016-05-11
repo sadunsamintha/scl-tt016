@@ -39,6 +39,8 @@ import com.sicpa.standard.sasscl.utils.ConfigUtilEx;
 import com.sicpa.standard.sicpadata.spi.manager.IServiceProviderManager;
 import com.sicpa.standard.sicpadata.spi.manager.StaticServiceProviderManager;
 
+import static com.sicpa.standard.sasscl.devices.remote.IRemoteServer.ERROR_DEFAULT_SUBSYSTEM_ID;
+
 public class Bootstrap implements IBootstrap {
 
 	private static final Logger logger = LoggerFactory.getLogger(Bootstrap.class);
@@ -108,30 +110,33 @@ public class Bootstrap implements IBootstrap {
 	}
 
 	private void initRemoteServerConnected() {
-		getLineIdFromRemoteServerAndSaveItLocally();
+		long subsystemId = getSubsystemIdFromRemoteServer();
+
+		if (subsystemId > ERROR_DEFAULT_SUBSYSTEM_ID) {
+			setAndSaveSubsystemId(subsystemId);
+		}
+
 		remoteServerSheduledJobs.executeInitialTasks();
 	}
 
-	private void getLineIdFromRemoteServerAndSaveItLocally() {
-		long id = getLineIdFromRemoteServer();
-		subsystemIdProvider.set(id);
-		saveSubsystemId(id);
+	private void setAndSaveSubsystemId(long subsystemId) {
+		subsystemIdProvider.set(subsystemId);
+		saveSubsystemId(subsystemId);
 	}
 
 	private void saveSubsystemId(long id) {
 		try {
-
 			File globalPropertiesFile = new ClassPathResource(ConfigUtilEx.GLOBAL_PROPERTIES_PATH).getFile();
 
 			PropertiesUtils.savePropertiesKeepOrderAndComment(globalPropertiesFile, "subsystemId", Long.toString(id));
 			PropertiesUtils.savePropertiesKeepOrderAndComment(globalPropertiesFile, "lineId", Long.toString(id));
 
 		} catch (Exception ex) {
-			logger.error("Failed to Get and Save Line Id", ex);
+			logger.error("Failed to save subsystem Id, line Id", ex);
 		}
 	}
 
-	private long getLineIdFromRemoteServer() {
+	private long getSubsystemIdFromRemoteServer() {
 		return server.getSubsystemID();
 	}
 

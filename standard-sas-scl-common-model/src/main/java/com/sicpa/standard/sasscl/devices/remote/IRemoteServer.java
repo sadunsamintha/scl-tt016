@@ -13,6 +13,8 @@ import com.sicpa.standard.sasscl.sicpadata.reader.IAuthenticator;
 
 public interface IRemoteServer extends IDevice {
 
+	int ERROR_DEFAULT_SUBSYSTEM_ID = 0;
+
 	/**
 	 * Get the tree of selectable production parameters from remove server
 	 * 

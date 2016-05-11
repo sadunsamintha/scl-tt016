@@ -62,7 +62,7 @@ public class RemoteServices implements IRemoteServices {
 
 	private void initClientSecurityContext() {
 		EJBClientContext.getCurrent().registerInterceptor(1, new BasicClientSecurityInterceptor());
-		logger.info("connecting to mpcc using:" + userMachine);
+		logger.info("connecting to remote server using:" + userMachine);
 		BasicClientSecurityInterceptor.setPrincipal(userMachine, passwordMachine.toCharArray());
 	}
 
@@ -152,7 +152,7 @@ public class RemoteServices implements IRemoteServices {
 	@Override
 	@Timeout
 	public SubsystemDto getSubsystem() throws Exception {
-		logger.info("connecting to mpcc using:" + userMachine);
+		logger.info("connecting to remote server using:" + userMachine);
 		LoginDto dto = loginService.login(userMachine, passwordMachine);
 		return dto.getUserDto().getSubsystem();
 	}
