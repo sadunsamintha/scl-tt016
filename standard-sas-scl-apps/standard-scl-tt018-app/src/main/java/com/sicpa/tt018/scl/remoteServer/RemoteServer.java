@@ -120,7 +120,7 @@ public abstract class RemoteServer extends AbstractRemoteServer implements ITT01
 	public void doSendProductionData(final PackagedProducts products) throws ActivationException {
 
 		if (null == packageSenders.get(products.getProductStatus())) {
-			logger.error("No sender found for the package type in file: " + products.getFileName());
+			logger.error("No sender found for the package type : " + products.getProductStatus());
 			return;
 		}
 		packageSenders.get(products.getProductStatus()).sendPackage(products);

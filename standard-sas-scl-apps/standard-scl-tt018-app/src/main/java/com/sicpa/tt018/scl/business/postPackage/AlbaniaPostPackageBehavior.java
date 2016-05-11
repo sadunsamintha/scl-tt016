@@ -1,6 +1,9 @@
 package com.sicpa.tt018.scl.business.postPackage;
 
-import java.util.Arrays;
+import static com.sicpa.standard.sasscl.model.ProductStatus.SENT_TO_PRINTER_UNREAD;
+import static com.sicpa.tt018.scl.model.AlbaniaProductStatus.SENT_TO_PRINTER_BLOB;
+import static java.util.Arrays.asList;
+
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -13,7 +16,6 @@ import com.sicpa.standard.sasscl.model.Code;
 import com.sicpa.standard.sasscl.model.Product;
 import com.sicpa.standard.sasscl.model.ProductStatus;
 import com.sicpa.tt018.scl.model.AlbaniaProduct;
-import com.sicpa.tt018.scl.model.AlbaniaProductStatus;
 import com.sicpa.tt018.scl.utils.AlbaniaBlobUtils;
 
 public class AlbaniaPostPackageBehavior extends PostPackageBehavior {
@@ -31,10 +33,18 @@ public class AlbaniaPostPackageBehavior extends PostPackageBehavior {
 
 			Code removedCode = codes.remove(0);
 
-			ProductStatus productStatus = blobUtils.isBlobEnable() && blobUtils.isBlobDetected(code) ? AlbaniaProductStatus.SENT_TO_PRINTER_BLOB : ProductStatus.SENT_TO_PRINTER_UNREAD;
+			ProductStatus productStatus = getProductStatusForBadCode(code);
 			logger.debug("Handling bad code {} with product status  {}", code, productStatus);
-			return generateBadProducts(Arrays.asList(removedCode), productStatus);
+			return generateBadProducts(asList(removedCode), productStatus);
 		}
+	}
+
+	private ProductStatus getProductStatusForBadCode(Code code) {
+		return isBlob(code) ? SENT_TO_PRINTER_BLOB : SENT_TO_PRINTER_UNREAD;
+	}
+
+	private boolean isBlob(Code code) {
+		return blobUtils.isBlobEnable() && blobUtils.isBlobDetected(code);
 	}
 
 	public void setBlobUtils(AlbaniaBlobUtils blobUtils) {
