@@ -40,8 +40,6 @@ public class AlbaniaRemoteServer extends RemoteServer {
 
 	private static Logger logger = LoggerFactory.getLogger(AlbaniaRemoteServer.class);
 
-	// for albania only one ejb for everything
-	// no login bean available
 	private ICodingActivationRemote ejbCodingActivationBean;
 	protected IAlbaniaRemoteServerAdapter remoteServerAdapter;
 	protected int subSystemId;
@@ -85,7 +83,6 @@ public class AlbaniaRemoteServer extends RemoteServer {
 		} catch (Exception e) {
 			throw new RemoteServerException(e);
 		}
-
 	}
 
 	@Override
@@ -94,20 +91,14 @@ public class AlbaniaRemoteServer extends RemoteServer {
 
 		MarketTypeDTO marketTypeDTO = ejbCodingActivationBean.provideAuthorizedProducts(subSystemId);
 
-		// MarketTypeDTO received ???
 		if (AlbaniaRemoteServerUtilities.isEmpty(marketTypeDTO)) {
 			logger.debug("MarketType recieved from master is NULL.");
 		} else {
 			logger.debug("MarketType recieved [id= {} ,desc= {}]", marketTypeDTO.getId(),
 					marketTypeDTO.getDescription());
 		}
-
-		// No error... Master connected
 		fireDeviceStatusChanged(DeviceStatus.CONNECTED);
-
-		// Convert the result
 		return remoteServerAdapter.createSkuSelectionTree(marketTypeDTO);
-
 	}
 
 	@Override
@@ -168,7 +159,7 @@ public class AlbaniaRemoteServer extends RemoteServer {
 
 		try {
 			// Get encoders from master
-			final List<AlbaniaEncoderDTO> encoders = ejbCodingActivationBean.provideEncoders(quantity,
+			List<AlbaniaEncoderDTO> encoders = ejbCodingActivationBean.provideEncoders(quantity,
 					(int) codeType.getId(), subSystemId);
 
 			// Encoders received ???
@@ -221,20 +212,12 @@ public class AlbaniaRemoteServer extends RemoteServer {
 
 	}
 
-	public void setEjbCodingActivationBean(final ICodingActivationRemote bean) {
+	public void setEjbCodingActivationBean(ICodingActivationRemote bean) {
 		ejbCodingActivationBean = bean;
 	}
 
-	protected ICodingActivationRemote getCodingActivationBean() {
-		return ejbCodingActivationBean;
-	}
-
-	public void setRemoteServerAdapter(final IAlbaniaRemoteServerAdapter adapter) {
+	public void setRemoteServerAdapter(IAlbaniaRemoteServerAdapter adapter) {
 		remoteServerAdapter = adapter;
-	}
-
-	protected IAlbaniaRemoteServerAdapter getRemoteServerAdapter() {
-		return remoteServerAdapter;
 	}
 
 	public void setSubSystemId(int subSystemId) {

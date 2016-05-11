@@ -60,12 +60,11 @@ public abstract class RemoteServer extends AbstractRemoteServer implements ITT01
 		}
 	}
 
-	protected abstract IAuthenticator doGetAuthenticator() throws ActivationException;// {
+	protected abstract IAuthenticator doGetAuthenticator() throws ActivationException;
 
 	@Override
 	@Timeout
-	public final void downloadEncoder(final int batchesQuantity, final CodeType codeType, final int year)
-			throws RemoteServerException {
+	public final void downloadEncoder(int batchesQuantity, CodeType codeType, int year) throws RemoteServerException {
 		if (!isConnected()) {
 			return;
 		}
@@ -76,7 +75,7 @@ public abstract class RemoteServer extends AbstractRemoteServer implements ITT01
 		}
 	}
 
-	protected abstract void doDownloadEncoder(final int quantity, final CodeType codeType, final int year);
+	protected abstract void doDownloadEncoder(int quantity, CodeType codeType, int year);
 
 	@Override
 	@Timeout
@@ -117,7 +116,7 @@ public abstract class RemoteServer extends AbstractRemoteServer implements ITT01
 		}
 	}
 
-	public void doSendProductionData(final PackagedProducts products) throws ActivationException {
+	public void doSendProductionData(PackagedProducts products) throws ActivationException {
 
 		if (null == packageSenders.get(products.getProductStatus())) {
 			logger.error("No sender found for the package type : " + products.getProductStatus());
@@ -126,9 +125,9 @@ public abstract class RemoteServer extends AbstractRemoteServer implements ITT01
 		packageSenders.get(products.getProductStatus()).sendPackage(products);
 	}
 
-	protected abstract void processActivatedProducts(final PackagedProducts products) throws ActivationException;
+	protected abstract void processActivatedProducts(PackagedProducts products) throws ActivationException;
 
-	protected abstract void processCountedProducts(final PackagedProducts products) throws ActivationException;
+	protected abstract void processCountedProducts(PackagedProducts products) throws ActivationException;
 
 	protected abstract void checkConnection() throws RemoteServerException;
 

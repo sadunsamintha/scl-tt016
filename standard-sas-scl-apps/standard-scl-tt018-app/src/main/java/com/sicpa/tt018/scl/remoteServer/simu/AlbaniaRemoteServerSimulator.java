@@ -1,13 +1,13 @@
 package com.sicpa.tt018.scl.remoteServer.simu;
 
-import java.text.MessageFormat;
+import static com.sicpa.tt018.scl.remoteServer.utilities.AlbaniaRemoteServerUtilities.wrapEncoderList;
+import static com.sicpa.tt018.scl.remoteServer.utilities.AlbaniaRemoteServerValidator.validateEncoders;
+
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sicpa.standard.client.common.eventbus.service.EventBusService;
-import com.sicpa.standard.client.common.messages.MessageEvent;
 import com.sicpa.standard.sasscl.devices.DeviceStatus;
 import com.sicpa.standard.sasscl.model.CodeType;
 import com.sicpa.standard.sasscl.model.PackagedProducts;
@@ -19,10 +19,6 @@ import com.sicpa.tt018.interfaces.scl.master.dto.MarketTypeDTO;
 import com.sicpa.tt018.interfaces.security.IAlbaniaAuthenticator;
 import com.sicpa.tt018.scl.model.authenticator.AlbaniaAuthenticatorWrapper;
 import com.sicpa.tt018.scl.remoteServer.AlbaniaRemoteServer;
-import com.sicpa.tt018.scl.remoteServer.utilities.AlbaniaRemoteServerUtilities;
-import com.sicpa.tt018.scl.remoteServer.utilities.AlbaniaRemoteServerValidator;
-import com.sicpa.tt018.scl.utils.AlbaniaUtilities;
-import com.sicpa.tt018.scl.utils.ValidatorException;
 
 public class AlbaniaRemoteServerSimulator extends AlbaniaRemoteServer {
 
@@ -36,29 +32,13 @@ public class AlbaniaRemoteServerSimulator extends AlbaniaRemoteServer {
 
 	@Override
 	public ProductionParameterRootNode doGetTreeProductionParameters() {
-		logger.debug("Retrieveing SKU list from master....");
-
 		MarketTypeDTO marketTypeDTO = simulatorModel.getMarketTypeDTO();
-
-		// MarketTypeDTO received ???
-		if (AlbaniaRemoteServerUtilities.isEmpty(marketTypeDTO)) {
-			logger.debug("MarketType recieved from master is NULL.");
-
-		} else {
-			logger.debug("MarketType recieved [id= {} ,desc= {}]", marketTypeDTO.getId(),
-					marketTypeDTO.getDescription());
-		}
-
-		// No error... Master connected
 		fireDeviceStatusChanged(DeviceStatus.CONNECTED);
-
-		// Convert the result
 		return remoteServerAdapter.createSkuSelectionTree(marketTypeDTO);
 	}
 
 	@Override
 	protected void processActivatedProducts(PackagedProducts products) {
-
 		remoteServerAdapter.convertDomesticProduction(products, subSystemId);
 	}
 
@@ -70,69 +50,27 @@ public class AlbaniaRemoteServerSimulator extends AlbaniaRemoteServer {
 	@Override
 	public IAuthenticator doGetAuthenticator() {
 		logger.debug("Retrieveing authenticator from master....");
-
-		final IAlbaniaAuthenticator albaniaAuthenticator = simulatorModel.loadSimuAuthenticator();
-
+		IAlbaniaAuthenticator albaniaAuthenticator = simulatorModel.loadSimuAuthenticator();
 		fireDeviceStatusChanged(DeviceStatus.CONNECTED);
-
-		// Wrap the result
 		return new AlbaniaAuthenticatorWrapper(albaniaAuthenticator, cryptoPassword, cryptoFieldsConfig);
 
 	}
 
-	public void doDownloadEncoder(final int quantity, final CodeType codeType, final int year) {
-		if (quantity <= 0) {
-			return;
-		}
-		logger.info("requesting encoder qty={} codeType={} ,  year={}",
-				new Object[] { quantity, codeType.getId(), year });
-
+	public void doDownloadEncoder(int quantity, CodeType codeType, int year) {
 		try {
-			// Get encoders from master
-			final List<AlbaniaEncoderDTO> encoders = simulatorModel.provideEncoders(quantity, (int) codeType.getId(),
+			List<AlbaniaEncoderDTO> encoders = simulatorModel.provideEncoders(quantity, (int) codeType.getId(),
 					subSystemId);
-
-			// Encoders received ???
-			if (AlbaniaUtilities.isEmpty(encoders)) {
-				logger.error("Encoder recieved from master is NULL.");
-				EventBusService.post(new MessageEvent("encoder.received.null"));
-
-			}
-			logger.debug("Encoders recieved. Number of encoders = {}.", encoders.size());
-
-			// No error... Master connected
 			fireDeviceStatusChanged(DeviceStatus.CONNECTED);
-
-			// Encoder list validation
-			AlbaniaRemoteServerValidator.validateEncoders(encoders, quantity, subSystemId);
-
-			// Return wrapped list
-			List<IEncoder> listEncoders = AlbaniaRemoteServerUtilities.wrapEncoderList(encoders, year, subSystemId,
-					getCryptoFieldsConfig(), getCryptoPassword(), codeType);
+			validateEncoders(encoders, quantity, subSystemId);
+			List<IEncoder> listEncoders = wrapEncoderList(encoders, year, subSystemId, getCryptoFieldsConfig(),
+					getCryptoPassword(), codeType);
 
 			for (IEncoder encoder : listEncoders) {
 				storeEncoder(encoder, year);
 			}
 
-		} catch (final ValidatorException e)
-		// Validation Exception
-		{
-			logger.error(MessageFormat.format("request SicpadataGenerator, quantity:{} codeType:{}  year:{}, failed",
-					quantity, codeType.getId(), year), e);
-			EventBusService.post(new MessageEvent("remoteserver.getEncoder.fail"));
-			logger.error("Error during encoder validation = {0}.");
-			EventBusService.post(new MessageEvent("encoder.validation.exception"));
-
-		} catch (final Exception e)
-		// Master communication Exception
-		{
-			logger.error(MessageFormat.format("request SicpadataGenerator, quantity:{} codeType:{}  year:{}, failed",
-					quantity, codeType.getId(), year), e);
-			EventBusService.post(new MessageEvent("remoteserver.getEncoder.fail"));
-			logger.error("Error while retrieving encoder from master = {0}.");
-			// Error... Master connection problem...
-			fireDeviceStatusChanged(DeviceStatus.DISCONNECTED);
-			EventBusService.post(new MessageEvent("encoder.retrieving.exception"));
+		} catch (Exception e) {
+			logger.error("", e);
 		}
 	}
 
