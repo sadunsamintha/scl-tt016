@@ -19,6 +19,12 @@
 			<property key="PARAM_LINE_MAINTENANCE_MODE_ENABLED" value="false" />
 			<property key="PARAM_LINE_REFEED_MODE_ENABLED" value="false" />
 		</line>
+		<line index="2">
+			<property key="PARAM_LINE_IS_ACTIVE" value="false" />
+		</line>
+		<line index="3">
+			<property key="PARAM_LINE_IS_ACTIVE" value="false" />
+		</line>
 	</PlcConfig>
 
 </ProductionConfig>
