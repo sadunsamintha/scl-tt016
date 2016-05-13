@@ -58,7 +58,7 @@ public class PrinterAdaptorSimulator extends PrinterAdaptor implements ICodeProv
 
 	@Override
 	public void doStart() throws PrinterAdaptorException {
-
+		resetCodes();
 		if (askCodeDelayMs > 0) {
 			scheduledAskTaskFutur = TaskExecutor.scheduleWithFixedDelay(new AskCodesTask(), 1000,
 					TimeUnit.MILLISECONDS, "AskCodesTask");
@@ -68,6 +68,7 @@ public class PrinterAdaptorSimulator extends PrinterAdaptor implements ICodeProv
 
 	@Override
 	public void doStop() throws PrinterAdaptorException {
+		resetCodes();
 		fireDeviceStatusChanged(DeviceStatus.STOPPED);
 		if (scheduledAskTaskFutur != null) {
 			scheduledAskTaskFutur.cancel(false);
@@ -75,7 +76,7 @@ public class PrinterAdaptorSimulator extends PrinterAdaptor implements ICodeProv
 	}
 
 	public void resetCodes() throws PrinterAdaptorException {
-
+		codeBuffer.clear();
 	}
 
 	@Override
@@ -107,6 +108,7 @@ public class PrinterAdaptorSimulator extends PrinterAdaptor implements ICodeProv
 			return code;
 		}
 	}
+
 
 	private class AskCodesTask implements Runnable {
 		@Override
