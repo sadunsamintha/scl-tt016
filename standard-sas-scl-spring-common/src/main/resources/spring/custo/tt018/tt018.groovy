@@ -24,6 +24,7 @@ beans{
 		b.parent=ref('bootstrapAlias')
 		plcParamSender=ref('plcParamSender')
 		ejectionTypeVar='PARAM_LINE_EJECTION_TYPE'
+		plcProvider=ref('plcProvider')
 	}
 
 	addAlias('plcValuesLoaderAlias','plcValuesLoader')

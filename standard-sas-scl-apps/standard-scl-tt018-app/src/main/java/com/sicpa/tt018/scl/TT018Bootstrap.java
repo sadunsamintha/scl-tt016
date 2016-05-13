@@ -24,8 +24,10 @@ import com.sicpa.standard.sasscl.Bootstrap;
 import com.sicpa.standard.sasscl.controller.productionconfig.mapping.IProductionConfigMapping;
 import com.sicpa.standard.sasscl.devices.plc.IPlcParamSender;
 import com.sicpa.standard.sasscl.devices.plc.PlcAdaptorException;
+import com.sicpa.standard.sasscl.devices.plc.PlcRequest;
 import com.sicpa.standard.sasscl.devices.plc.PlcUtils.PLC_TYPE;
 import com.sicpa.standard.sasscl.model.statistics.StatisticsKey;
+import com.sicpa.standard.sasscl.provider.impl.PlcProvider;
 import com.sicpa.standard.sasscl.security.SasSclPermission;
 import com.sicpa.tt018.scl.model.AlbaniaProductStatus;
 import com.sicpa.tt018.scl.model.AlbaniaSKU;
@@ -39,6 +41,7 @@ public class TT018Bootstrap extends Bootstrap {
 
 	private IPlcParamSender plcParamSender;
 	private String ejectionTypeVar;
+	private PlcProvider plcProvider;
 
 	@Override
 	public void executeSpringInitTasks() {
@@ -97,6 +100,7 @@ public class TT018Bootstrap extends Bootstrap {
 		String ejectionType = sku.isBlobEnabled() ? EJECTION_TYPE_NON_COMPLIANT : EJECTION_TYPE_COMPLIANT;
 		int line = 1;
 		plcParamSender.sendToPlc(ejectionTypeVar, ejectionType, line);
+		plcProvider.get().executeRequest(PlcRequest.RELOAD_PLC_PARAM);
 	}
 
 	public void setPlcParamSender(IPlcParamSender plcParamSender) {
@@ -105,6 +109,10 @@ public class TT018Bootstrap extends Bootstrap {
 
 	public void setEjectionTypeVar(String ejectionTypeVar) {
 		this.ejectionTypeVar = ejectionTypeVar;
+	}
+
+	public void setPlcProvider(PlcProvider plcProvider) {
+		this.plcProvider = plcProvider;
 	}
 
 }
