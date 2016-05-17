@@ -23,6 +23,7 @@ import com.sicpa.standard.sasscl.devices.plc.IPlcAdaptor;
 import com.sicpa.standard.sasscl.devices.printer.IPrinterAdaptor;
 import com.sicpa.standard.sasscl.devices.printer.PrinterAdaptorException;
 import com.sicpa.standard.sasscl.messages.ActionEventDeviceError;
+import com.sicpa.standard.sasscl.messages.DeviceReadyEvent;
 import com.sicpa.standard.sasscl.messages.IssueSolvedMessage;
 import com.sicpa.standard.sasscl.monitoring.MonitoringService;
 import com.sicpa.standard.sasscl.monitoring.system.SystemEventLevel;
@@ -31,7 +32,7 @@ import com.sicpa.standard.sasscl.monitoring.system.event.BasicSystemEvent;
 import com.sicpa.standard.sasscl.provider.impl.PlcProvider;
 
 public class HardwareController implements IHardwareController, IHardwareControllerStateSetter, IDeviceStatusListener {
-	
+
 	private static Logger logger = LoggerFactory.getLogger(HardwareController.class);
 
 	protected IHardwareControllerState currentState;
@@ -72,7 +73,7 @@ public class HardwareController implements IHardwareController, IHardwareControl
 			currentState.stop();
 		}
 	}
-	
+
 	@Override
 	public void switchOff() {
 		synchronized (lock) {
@@ -150,7 +151,7 @@ public class HardwareController implements IHardwareController, IHardwareControl
 
 	@Subscribe
 	public void handleIssueSolved(IssueSolvedMessage event) {
-		
+
 		String sourceKey;
 		if (event.getSource() instanceof IDevice) {
 			sourceKey = ((IDevice) event.getSource()).getName();
@@ -158,6 +159,13 @@ public class HardwareController implements IHardwareController, IHardwareControl
 			sourceKey = event.getSource() + "";
 		}
 		devicesErrorsRepository.removeError(sourceKey, event.getKey());
+		currentState.errorMessageRemoved();
+	}
+
+	@Subscribe
+	public void handleIssueSolved(DeviceReadyEvent event) {
+		String sourceKey = event.getSource().getName();
+		devicesErrorsRepository.removeAllErrors(sourceKey);
 		currentState.errorMessageRemoved();
 	}
 

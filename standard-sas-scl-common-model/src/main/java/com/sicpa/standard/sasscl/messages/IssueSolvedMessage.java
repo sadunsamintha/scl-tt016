@@ -3,13 +3,11 @@ package com.sicpa.standard.sasscl.messages;
 /**
  * messages sent on the event bus to notify that a device error has been solved
  * 
- * @author DIelsch
- * 
  */
 public class IssueSolvedMessage {
 
-	protected String key;
-	protected Object source;
+	private String key;
+	private Object source;
 
 	public IssueSolvedMessage() {
 	}
