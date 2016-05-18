@@ -131,20 +131,21 @@ public class PrinterAdaptor extends AbstractPrinterAdaptor implements IPrinterCo
 
 	@Override
 	public void onSequenceStatusChanged(Object sender, SequenceStatus args) {
-		if (lastSequence == args) {
-			return;
-		}
-		logger.debug("sequence status received: {}", args.name());
 
+		if (args.equals(SequenceStatus.READY)) {
+			notifyAllIssuesSolved();
+		}
 		if (!isConnected()) {
 			// workaround because apparently "sometime" we don t get the
 			// connected notification
 			fireDeviceStatusChanged(DeviceStatus.CONNECTED);
 		}
+		if (lastSequence == args) {
+			return;
+		}
+		logger.debug("sequence status received: {}", args.name());
 
-		if (args.equals(SequenceStatus.READY)) {
-			notifyAllIssuesSolved();
-		} else if (status.isConnected()) {
+		if (!args.equals(SequenceStatus.READY) && status.isConnected()) {
 			// if connected and the sequence is not ready
 			fireMessage(PrinterMessageId.NOT_READY_TO_PRINT, args.name());
 		}
