@@ -200,6 +200,22 @@ public class SASDefaultMessagesMapping extends DefaultMessagesMapping {
 		addEntry(Printer.MESSAGE_NUMBER_NOT_IN_SEQUENCE, "[PR_25]", WARNING);
 		addEntry(Printer.MESSAGE_CHECKSUM_INCORRECT, "[PR_26]", WARNING);
 		addEntry(Printer.READY_TO_PRINT, "[PR_27]", WARNING);
+
+		addEntry(Printer.GUTTER_DRY, "[PR_A01]", ERROR_DEVICE);
+		addEntry(Printer.INK_LOW, "[PR_A02]", WARNING);
+		addEntry(Printer.SUMP_EMPTY, "[PR_A03]", ERROR_DEVICE);
+		addEntry(Printer.MC_MODN_FALL_BACK, "[PR_A04]", WARNING);
+		addEntry(Printer.MAKEUP_LOW, "[PR_A05]", WARNING);
+		addEntry(Printer.INK_HIGH, "[PR_A06]", WARNING);
+		addEntry(Printer.MAKEUP_HIGH, "[PR_A07]", WARNING);
+		addEntry(Printer.MAKEUP_EMPTY, "[PR_A08]", WARNING);
+		addEntry(Printer.WAKEUP_ON, "[PR_A09]", WARNING);
+		addEntry(Printer.BLEEDING_DAMPER, "[PR_A10]", WARNING);
+		addEntry(Printer.PSB_BATTERY_LOW, "[PR_A11]", WARNING);
+		addEntry(Printer.MAINTENANCE_DUE, "[PR_A12]", WARNING);
+		addEntry(Printer.MAINTENANCE_2HOURS, "[PR_A13]", WARNING);
+		addEntry(Printer.MAINTENANCE_NOW, "[PR_A14]", ERROR_DEVICE);
+
 		// Leibinger messages
 		addEntry(Printer.NO_FAULT, "[PR_28]", WARNING);
 		addEntry(Printer.MAILING_BUFFER_FULL, "[PR_29]", WARNING);
@@ -266,7 +282,7 @@ public class SASDefaultMessagesMapping extends DefaultMessagesMapping {
 			throw new IllegalArgumentException(e);
 		}
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	protected ActionMessageType createMessageType(String key) throws ClassNotFoundException {
 		if (StringUtils.isBlank(key)) {

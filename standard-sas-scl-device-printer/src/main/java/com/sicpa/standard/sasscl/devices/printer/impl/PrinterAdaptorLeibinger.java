@@ -11,11 +11,14 @@ import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.printer.controller.PrinterException;
 import com.sicpa.standard.printer.leibinger.driver.leibinger.LeibingerUserLevel;
 import com.sicpa.standard.sasscl.devices.printer.PrinterAdaptorException;
+import com.sicpa.standard.sasscl.devices.printer.xcode.mapping.IMappingExtendedCodeBehavior;
 import com.sicpa.standard.sasscl.event.PrinterProfileEvent;
 
 public class PrinterAdaptorLeibinger extends PrinterAdaptor {
 
 	private static final Logger logger = LoggerFactory.getLogger(PrinterAdaptorLeibinger.class);
+
+	private IMappingExtendedCodeBehavior mappingExtendedCodeBehavior;
 
 	@Subscribe
 	public void setUserLevel(PrinterProfileEvent event) {
@@ -35,6 +38,10 @@ public class PrinterAdaptorLeibinger extends PrinterAdaptor {
 		} catch (PrinterException e) {
 			throw new PrinterAdaptorException("sending codes to printer failed", e);
 		}
+	}
+
+	public void setMappingExtendedCodeBehavior(IMappingExtendedCodeBehavior mappingExtendedCodeBehavior) {
+		this.mappingExtendedCodeBehavior = mappingExtendedCodeBehavior;
 	}
 
 }

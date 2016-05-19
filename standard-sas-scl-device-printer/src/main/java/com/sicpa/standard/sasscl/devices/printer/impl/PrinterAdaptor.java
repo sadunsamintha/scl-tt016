@@ -25,7 +25,6 @@ import com.sicpa.standard.sasscl.devices.DeviceStatus;
 import com.sicpa.standard.sasscl.devices.printer.AbstractPrinterAdaptor;
 import com.sicpa.standard.sasscl.devices.printer.PrinterAdaptorException;
 import com.sicpa.standard.sasscl.devices.printer.event.PrinterStoppedEvent;
-import com.sicpa.standard.sasscl.devices.printer.xcode.mapping.IMappingExtendedCodeBehavior;
 import com.sicpa.standard.sasscl.messages.ActionMessageType;
 import com.sicpa.standard.sasscl.messages.DeviceReadyEvent;
 import com.sicpa.standard.sasscl.monitoring.MonitoringService;
@@ -37,12 +36,11 @@ public abstract class PrinterAdaptor extends AbstractPrinterAdaptor implements I
 	private static final Logger logger = LoggerFactory.getLogger(PrinterAdaptor.class);
 
 	protected IPrinterController controller;
-	protected IMappingExtendedCodeBehavior mappingExtendedCodeBehavior;
 
 	protected volatile boolean initialized = false;
 	protected volatile boolean codeSent = false;
-	protected volatile boolean startedOnce;
-	protected SequenceStatus lastSequence = SequenceStatus.UNKNOWN;
+	private volatile boolean startedOnce;
+	private SequenceStatus lastSequence = SequenceStatus.UNKNOWN;
 
 	public PrinterAdaptor(IPrinterController controller) {
 		this();
@@ -56,10 +54,6 @@ public abstract class PrinterAdaptor extends AbstractPrinterAdaptor implements I
 
 	public void setController(IPrinterController controller) {
 		this.controller = controller;
-	}
-
-	protected IPrinterController getController() {
-		return controller;
 	}
 
 	@Override
@@ -151,7 +145,7 @@ public abstract class PrinterAdaptor extends AbstractPrinterAdaptor implements I
 		}
 	}
 
-	protected void checkForCodeSent(int counter) {
+	private void checkForCodeSent(int counter) {
 		if (status != DeviceStatus.CONNECTED) {
 			return;
 		}
@@ -223,23 +217,23 @@ public abstract class PrinterAdaptor extends AbstractPrinterAdaptor implements I
 		return true;
 	}
 
-	/**
-	 * By convention the key of a PrinterMessage respects the format IMPACT.ID
-	 */
 	@Override
 	public void onMessageReceived(PrinterMessage... messages) {
-
 		for (PrinterMessage msg : messages) {
 			msg.setSource(this);
-			if (isMonitoringMsg(msg)) {
-				monitoringMessageReceived(msg);
-			} else if (isLogMsg(msg)) {
-				logMessageReceived(msg);
-			} else if (msg.isIssueSolved()) {
-				fireIssueSolved(msg.getKey());
-			} else {
-				EventBusService.post(msg);
-			}
+			onMessageReceived(msg);
+		}
+	}
+
+	protected void onMessageReceived(PrinterMessage msg) {
+		if (isMonitoringMsg(msg)) {
+			monitoringMessageReceived(msg);
+		} else if (isLogMsg(msg)) {
+			logMessageReceived(msg);
+		} else if (msg.isIssueSolved()) {
+			fireIssueSolved(msg.getKey());
+		} else {
+			EventBusService.post(msg);
 		}
 	}
 
@@ -272,7 +266,4 @@ public abstract class PrinterAdaptor extends AbstractPrinterAdaptor implements I
 	public void updateParameters(Command cmd) {
 	}
 
-	public void setMappingExtendedCodeBehavior(IMappingExtendedCodeBehavior mappingExtendedCodeBehavior) {
-		this.mappingExtendedCodeBehavior = mappingExtendedCodeBehavior;
-	}
 }

@@ -6,7 +6,6 @@ beans{
 
 	printerSimulatorAdaptor(PrinterAdaptorSimulator,ref('printerSimulatorController')){b->
 		b.scope='prototype'
-		mappingExtendedCodeBehavior= ref('mappingExtendedCodeBehavior')
 	}
 	addAlias('printerLeibinger','printerSimulatorAdaptor')
 	addAlias('printerDomino','printerSimulatorAdaptor')
