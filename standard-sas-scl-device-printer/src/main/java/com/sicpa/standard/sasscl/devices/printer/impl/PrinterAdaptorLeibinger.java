@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.eventbus.Subscribe;
+import com.sicpa.standard.printer.controller.IPrinterController;
 import com.sicpa.standard.printer.controller.PrinterException;
 import com.sicpa.standard.printer.leibinger.driver.leibinger.LeibingerUserLevel;
 import com.sicpa.standard.sasscl.devices.printer.PrinterAdaptorException;
@@ -19,6 +20,14 @@ public class PrinterAdaptorLeibinger extends PrinterAdaptor {
 	private static final Logger logger = LoggerFactory.getLogger(PrinterAdaptorLeibinger.class);
 
 	private IMappingExtendedCodeBehavior mappingExtendedCodeBehavior;
+
+	public PrinterAdaptorLeibinger() {
+		super();
+	}
+
+	public PrinterAdaptorLeibinger(IPrinterController controller) {
+		super(controller);
+	}
 
 	@Subscribe
 	public void setUserLevel(PrinterProfileEvent event) {
