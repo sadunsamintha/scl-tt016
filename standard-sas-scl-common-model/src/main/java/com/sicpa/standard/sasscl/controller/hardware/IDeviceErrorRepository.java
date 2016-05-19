@@ -14,6 +14,8 @@ public interface IDeviceErrorRepository {
 	 boolean addError(String deviceId, String errorCode,String errorToDisplay);
 
 	 void removeError(String deviceId, String errorCode);
+	 
+	 void removeAllErrors(String deviceId);
 	
 	 Collection<String> getErrors();
 	 
