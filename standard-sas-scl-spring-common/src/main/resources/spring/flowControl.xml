@@ -37,6 +37,7 @@
 		<property name="storage" ref="storage" />
 		<property name="statistics" ref="statistics" />
 		<property name="screensFlow" ref="screensFlow" />
+		<property name="switchOffPrinterOnExit" value="${exit.printer.switchoff}" />
 	</bean>
 
 	<bean id="executorStarted" class="com.sicpa.standard.sasscl.controller.flow.statemachine.executor.ExecutorStarted" />
