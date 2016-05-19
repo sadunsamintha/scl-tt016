@@ -23,19 +23,15 @@ public class ExecutorExit implements IStateAction {
 
 	private static final Logger logger = LoggerFactory.getLogger(ExecutorExit.class);
 
-	protected IHardwareController hardwareController;
-	protected IProduction production;
-	protected IStorage storage;
-	protected IStatistics statistics;
-	protected ScreensFlow screensFlow;
+	private IHardwareController hardwareController;
+	private IProduction production;
+	private IStorage storage;
+	private IStatistics statistics;
+	private ScreensFlow screensFlow;
+	private boolean switchOffPrinterOnExit;
 
 	public ExecutorExit() {
-		Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
-			@Override
-			public void run() {
-				executeShutdownHook();
-			}
-		}));
+		Runtime.getRuntime().addShutdownHook(new Thread(() -> executeShutdownHook()));
 	}
 
 	@Override
@@ -49,8 +45,7 @@ public class ExecutorExit implements IStateAction {
 
 				screensFlow.moveToNext(ScreensFlowTriggers.EXIT);
 
-				hardwareController.switchOff();
-				hardwareController.disconnect();
+				switchOffAndDisconnect();
 
 				storage.saveStatistics(statistics.getValues());
 				production.saveProductionData();
@@ -69,14 +64,19 @@ public class ExecutorExit implements IStateAction {
 
 	protected void executeShutdownHook() {
 		logger.info("executing shutdownhook");
+		switchOffAndDisconnect();
+		production.saveProductionData();
+		storage.saveStatistics(statistics.getValues());
+	}
+
+	private void switchOffAndDisconnect() {
 		try {
-			hardwareController.switchOff();
+			if (switchOffPrinterOnExit) {
+				hardwareController.switchOff();
+			}
 			hardwareController.disconnect();
 		} catch (Exception e) {
 		}
-		production.saveProductionData();
-
-		storage.saveStatistics(statistics.getValues());
 	}
 
 	protected void exitJVM() {
@@ -106,5 +106,9 @@ public class ExecutorExit implements IStateAction {
 	@Override
 	public void leave() {
 
+	}
+
+	public void setSwitchOffPrinterOnExit(boolean switchOffPrinterOnExit) {
+		this.switchOffPrinterOnExit = switchOffPrinterOnExit;
 	}
 }
