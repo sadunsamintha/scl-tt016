@@ -1,5 +1,7 @@
 import com.sicpa.standard.sasscl.*
+import com.sicpa.standard.sasscl.sicpadata.generator.validator.EncoderSequenceValidator;
 beans{
+
 	bootstrap(Bootstrap){
 		server=ref('remoteServer')
 		startupDevicesGroup=ref('startupDevicesGroup')
@@ -15,5 +17,11 @@ beans{
 		linePlcVarGroup=ref('linePlcVarGroup')
 		cabPlcVarGroups=ref('cabPlcVarGroups')
 		jmxBean=ref('statsMBean')
+		encoderSequenceValidator=ref('encoderSequenceValidator')
+	}
+
+	encoderSequenceValidator(EncoderSequenceValidator){
+		currentEncoderFolder=profilePath+'/internal/encoders/current'
+		enabled=props['encoder.sequence.validator.enabled']
 	}
 }

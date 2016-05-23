@@ -13,21 +13,17 @@ import java.util.List;
  */
 public class CodeListEncoder extends AbstractEncoder {
 
-	private static final long serialVersionUID = 435948152922637022L;
+	private static final long serialVersionUID = 1L;
 
-	protected final List<String> encryptedCodes = new ArrayList<String>();
+	private final List<String> encryptedCodes = new ArrayList<>();
 
-	public CodeListEncoder(final long batchid,final int id, final int year, final long subsystemId, int codeTypeId) {
-		super(batchid,id, year, subsystemId, codeTypeId);
+	public CodeListEncoder(long batchid, int id, int year, long subsystemId, int codeTypeId) {
+		super(batchid, id, year, subsystemId, codeTypeId);
 	}
 
-	public CodeListEncoder(final long batchid,final int id, final int year, final long subsystemId, final List<String> codes, int codeTypeId) {
-		this(batchid,id, year, subsystemId, codeTypeId);
+	public CodeListEncoder(long batchid, int id, int year, long subsystemId, List<String> codes, int codeTypeId) {
+		this(batchid, id, year, subsystemId, codeTypeId);
 		this.addEncryptedCodes(codes);
-	}
-
-	protected List<String> getEncryptedCodes() {
-		return this.encryptedCodes;
 	}
 
 	public void addEncryptedCodes(final List<String> encryptedCodes) {

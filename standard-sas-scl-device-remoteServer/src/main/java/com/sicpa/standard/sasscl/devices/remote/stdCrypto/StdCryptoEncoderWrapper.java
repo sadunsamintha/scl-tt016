@@ -14,70 +14,69 @@ import java.util.List;
 
 public class StdCryptoEncoderWrapper extends AbstractEncoder {
 
-    private static final Logger logger = LoggerFactory.getLogger(StdCryptoEncoderWrapper.class);
+	private static final Logger logger = LoggerFactory.getLogger(StdCryptoEncoderWrapper.class);
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    protected IBSicpadataGenerator encoder;
+	protected IBSicpadataGenerator encoder;
 
-    protected ICryptoFieldsConfig cryptoFieldsConfig;
+	protected ICryptoFieldsConfig cryptoFieldsConfig;
 
+	public StdCryptoEncoderWrapper(final long batchid, final int id, final IBSicpadataGenerator encoder,
+			final int year, final long subsystemId, final ICryptoFieldsConfig cryptoFieldsConfig, int codeTypeId) {
 
-    public StdCryptoEncoderWrapper(final long batchid, final int id, final IBSicpadataGenerator encoder,
-                                   final int year, final long subsystemId, final ICryptoFieldsConfig cryptoFieldsConfig, int codeTypeId) {
+		super(batchid, id, year, subsystemId, codeTypeId);
+		this.encoder = encoder;
+		encoder.setId(Long.valueOf(id));
+		this.cryptoFieldsConfig = cryptoFieldsConfig;
 
+	}
 
-        super(batchid, id, year, subsystemId, codeTypeId);
-        this.encoder = encoder;
-        encoder.setId(Long.valueOf(id));
-        this.cryptoFieldsConfig = cryptoFieldsConfig;
+	@Override
+	@Deprecated
+	public final String getEncryptedCode() throws CryptographyException {
+		throw new CryptographyException("Deprecated");
+	}
 
-    }
+	@Override
+	public synchronized List<String> getEncryptedCodes(long numberCodes) throws CryptographyException {
+		try {
 
+			updateDateOfUse();
 
-    @Override
-    @Deprecated
-    public final String getEncryptedCode() throws CryptographyException {
-        throw new CryptographyException("Deprecated");
-    }
+			long numberCodesToGenerate = Math.min(getRemainingCodes(), numberCodes);
+			if (numberCodesToGenerate == 0) {
+				throw new EncoderEmptyException();
+			}
 
-    @Override
-    public synchronized List<String> getEncryptedCodes(long numberCodes) throws CryptographyException {
-        try {
+			List<String> codes = encoder.generate((int) numberCodesToGenerate,
+					new Object[] { new HashMap<String, Long>() });
+			setSequence(getSequence() + codes.size());
+			return codes;
 
-            updateDateOfUse();
+		} catch (SicpadataException e) {
+			logger.error("Failed to generate code.", e);
+			throw new CryptographyException(e, "Failed to generate encrypted code");
+		}
+	}
 
-            long numberCodesToGenerate = Math.min(getRemainingCodes(), numberCodes);
-            if (numberCodesToGenerate == 0) {
-                throw new EncoderEmptyException();
-            }
+	@Override
+	public synchronized boolean isEncoderEmpty() {
+		return getRemainingCodes() <= 0;
+	}
 
-            List<String> code = encoder.generate((int) numberCodesToGenerate, new Object[]{new HashMap<String, Long>()});
-            return code;
+	public synchronized long getRemainingCodes() {
+		try {
+			return encoder.getRemainingCapacity();
+		} catch (SicpadataException e) {
+			logger.error("", e);
+			return -1;
+		}
+	}
 
-        } catch (SicpadataException e) {
-            logger.error("Failed to generate code.", e);
-            throw new CryptographyException(e, "Failed to generate encrypted code");
-        }
-    }
-
-    @Override
-    public synchronized boolean isEncoderEmpty() {
-        return getRemainingCodes() <= 0;
-    }
-
-    public synchronized long getRemainingCodes() {
-        try {
-            return encoder.getRemainingCapacity();
-        } catch (SicpadataException e) {
-            logger.error("", e);
-            return -1;
-        }
-    }
-
-    @Override
-    public void setId(int id) {
-        super.setId(id);
-        encoder.setId(Long.valueOf(id));
-    }
+	@Override
+	public void setId(int id) {
+		super.setId(id);
+		encoder.setId(Long.valueOf(id));
+	}
 }
