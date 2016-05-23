@@ -33,7 +33,7 @@ public class PrinterAdaptorTest {
 		PrinterSimulatorConfig config = new PrinterSimulatorConfig();
 		config.setPort(6523);
 		PrinterSimulator controller = new PrinterSimulator(config);
-		printerAdaptor = new PrinterAdaptor();
+		printerAdaptor = new PrinterAdaptorDomino();
 		printerAdaptor.setController(controller);
 		printerAdaptor.addDeviceStatusListener(deviceStatusListener);
 	}
@@ -57,95 +57,95 @@ public class PrinterAdaptorTest {
 		}
 	}
 
-//	@Test
-//	public void testFaultStatus() {
-//		DummyDeviceMessageListener listener = new DummyDeviceMessageListener();
-//		EventBusService.register(listener);
-//
-//		FaultStatus status = new FaultStatus(2); // status.isChargeFault()
-//		// invoke fault status
-//		printerAdaptor.onFaultStatusChanged(null, status);
-//		Assert.assertEquals(1, listener.getCounter());
-//
-//		status = new FaultStatus(4); // status.isGutterFault()
-//		// invoke fault status
-//		printerAdaptor.onFaultStatusChanged(null, status);
-//		Assert.assertEquals(2, listener.getCounter());
-//
-//		status = new FaultStatus(1); // status.isHighVoltageFault()
-//		// invoke fault status
-//		printerAdaptor.onFaultStatusChanged(null, status);
-//		Assert.assertEquals(3, listener.getCounter());
-//
-//		status = new FaultStatus(32); // status.isMakeUpCartridgeLow()
-//		// invoke fault status
-//		printerAdaptor.onFaultStatusChanged(null, status);
-//		Assert.assertEquals(4, listener.getCounter());
-//
-//		status = new FaultStatus(64); // status.isInkCartridgeLow()
-//		// invoke fault status
-//		printerAdaptor.onFaultStatusChanged(null, status);
-//		Assert.assertEquals(5, listener.getCounter());
-//
-//		// reset counter
-//		listener.setCounter(0);
-//
-//		status = new FaultStatus(128); // status.isReservoirLevelTooLow()
-//		// invoke fault status
-//		printerAdaptor.onFaultStatusChanged(null, status);
-//		Assert.assertEquals(1, listener.getCounter());
-//
-//	}
+	// @Test
+	// public void testFaultStatus() {
+	// DummyDeviceMessageListener listener = new DummyDeviceMessageListener();
+	// EventBusService.register(listener);
+	//
+	// FaultStatus status = new FaultStatus(2); // status.isChargeFault()
+	// // invoke fault status
+	// printerAdaptor.onFaultStatusChanged(null, status);
+	// Assert.assertEquals(1, listener.getCounter());
+	//
+	// status = new FaultStatus(4); // status.isGutterFault()
+	// // invoke fault status
+	// printerAdaptor.onFaultStatusChanged(null, status);
+	// Assert.assertEquals(2, listener.getCounter());
+	//
+	// status = new FaultStatus(1); // status.isHighVoltageFault()
+	// // invoke fault status
+	// printerAdaptor.onFaultStatusChanged(null, status);
+	// Assert.assertEquals(3, listener.getCounter());
+	//
+	// status = new FaultStatus(32); // status.isMakeUpCartridgeLow()
+	// // invoke fault status
+	// printerAdaptor.onFaultStatusChanged(null, status);
+	// Assert.assertEquals(4, listener.getCounter());
+	//
+	// status = new FaultStatus(64); // status.isInkCartridgeLow()
+	// // invoke fault status
+	// printerAdaptor.onFaultStatusChanged(null, status);
+	// Assert.assertEquals(5, listener.getCounter());
+	//
+	// // reset counter
+	// listener.setCounter(0);
+	//
+	// status = new FaultStatus(128); // status.isReservoirLevelTooLow()
+	// // invoke fault status
+	// printerAdaptor.onFaultStatusChanged(null, status);
+	// Assert.assertEquals(1, listener.getCounter());
+	//
+	// }
 
-//	@Test
-//	public void testInkStatus() {
-//		DummyDeviceMessageListener listener = new DummyDeviceMessageListener();
-//		EventBusService.register(listener);
-//
-//		InkStatus status = new InkStatus(4); // status.isInkSystemFault()
-//		// invoke fault status
-//		printerAdaptor.onInkStatusChanged(null, status);
-//		Assert.assertEquals(1, listener.getCounter());
-//
-//		status = new InkStatus(16); // status.isViscometerError()
-//		// invoke fault status
-//		printerAdaptor.onInkStatusChanged(null, status);
-//		Assert.assertEquals(2, listener.getCounter());
-//
-//		status = new InkStatus(8); // status.isInkReservoirTimedOut()
-//		// invoke fault status
-//		printerAdaptor.onInkStatusChanged(null, status);
-//		Assert.assertEquals(3, listener.getCounter());
-//
-//		status = new InkStatus(128); // status.isInkReservoirLessThan2Hours()
-//		// invoke fault status
-//		printerAdaptor.onInkStatusChanged(null, status);
-//		Assert.assertEquals(4, listener.getCounter());
-//
-//		status = new InkStatus(32); // status.isInkReservoirLessThan24Hours()
-//		// invoke fault status
-//		printerAdaptor.onInkStatusChanged(null, status);
-//		Assert.assertEquals(5, listener.getCounter());
-//
-//		// reset counter
-//		listener.setCounter(0);
-//
-//		status = new InkStatus(2); // status.isViscosityOutOfRange()
-//		printerAdaptor.onInkStatusChanged(null, status);
-//		Assert.assertEquals(1, listener.getCounter());
-//
-//		status = new InkStatus(512); // status.isPumpOutOfRange()
-//		printerAdaptor.onInkStatusChanged(null, status);
-//		Assert.assertEquals(2, listener.getCounter());
-//
-//		status = new InkStatus(16777472); // status.isWatchdogReset()
-//		printerAdaptor.onInkStatusChanged(null, status);
-//		Assert.assertEquals(3, listener.getCounter());
-//
-//		status = new InkStatus(64);
-//		printerAdaptor.onInkStatusChanged(null, status);
-//		Assert.assertEquals(4, listener.getCounter());
-//	}
+	// @Test
+	// public void testInkStatus() {
+	// DummyDeviceMessageListener listener = new DummyDeviceMessageListener();
+	// EventBusService.register(listener);
+	//
+	// InkStatus status = new InkStatus(4); // status.isInkSystemFault()
+	// // invoke fault status
+	// printerAdaptor.onInkStatusChanged(null, status);
+	// Assert.assertEquals(1, listener.getCounter());
+	//
+	// status = new InkStatus(16); // status.isViscometerError()
+	// // invoke fault status
+	// printerAdaptor.onInkStatusChanged(null, status);
+	// Assert.assertEquals(2, listener.getCounter());
+	//
+	// status = new InkStatus(8); // status.isInkReservoirTimedOut()
+	// // invoke fault status
+	// printerAdaptor.onInkStatusChanged(null, status);
+	// Assert.assertEquals(3, listener.getCounter());
+	//
+	// status = new InkStatus(128); // status.isInkReservoirLessThan2Hours()
+	// // invoke fault status
+	// printerAdaptor.onInkStatusChanged(null, status);
+	// Assert.assertEquals(4, listener.getCounter());
+	//
+	// status = new InkStatus(32); // status.isInkReservoirLessThan24Hours()
+	// // invoke fault status
+	// printerAdaptor.onInkStatusChanged(null, status);
+	// Assert.assertEquals(5, listener.getCounter());
+	//
+	// // reset counter
+	// listener.setCounter(0);
+	//
+	// status = new InkStatus(2); // status.isViscosityOutOfRange()
+	// printerAdaptor.onInkStatusChanged(null, status);
+	// Assert.assertEquals(1, listener.getCounter());
+	//
+	// status = new InkStatus(512); // status.isPumpOutOfRange()
+	// printerAdaptor.onInkStatusChanged(null, status);
+	// Assert.assertEquals(2, listener.getCounter());
+	//
+	// status = new InkStatus(16777472); // status.isWatchdogReset()
+	// printerAdaptor.onInkStatusChanged(null, status);
+	// Assert.assertEquals(3, listener.getCounter());
+	//
+	// status = new InkStatus(64);
+	// printerAdaptor.onInkStatusChanged(null, status);
+	// Assert.assertEquals(4, listener.getCounter());
+	// }
 
 	// for some reason this test fails from time to time...
 	@Ignore

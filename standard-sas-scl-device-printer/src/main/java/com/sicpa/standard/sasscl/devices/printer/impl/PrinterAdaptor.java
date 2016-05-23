@@ -7,7 +7,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.messages.MessageEvent;
 import com.sicpa.standard.client.common.utils.TaskExecutor;
@@ -21,36 +20,27 @@ import com.sicpa.standard.printer.controller.model.command.Command;
 import com.sicpa.standard.printer.controller.model.command.PrinterMessage;
 import com.sicpa.standard.printer.controller.model.command.PrinterMessageId;
 import com.sicpa.standard.printer.driver.event.PrinterUnsentCodesEventArgs;
-import com.sicpa.standard.printer.leibinger.driver.leibinger.LeibingerSpecificSettings;
-import com.sicpa.standard.printer.leibinger.driver.leibinger.LeibingerUserLevel;
 import com.sicpa.standard.sasscl.business.coding.CodeReceivedFailedException;
-import com.sicpa.standard.sasscl.controller.productionconfig.config.PrinterType;
 import com.sicpa.standard.sasscl.devices.DeviceStatus;
 import com.sicpa.standard.sasscl.devices.printer.AbstractPrinterAdaptor;
 import com.sicpa.standard.sasscl.devices.printer.PrinterAdaptorException;
 import com.sicpa.standard.sasscl.devices.printer.event.PrinterStoppedEvent;
-import com.sicpa.standard.sasscl.devices.printer.xcode.mapping.IMappingExtendedCodeBehavior;
-import com.sicpa.standard.sasscl.event.PrinterProfileEvent;
 import com.sicpa.standard.sasscl.messages.ActionMessageType;
 import com.sicpa.standard.sasscl.messages.DeviceReadyEvent;
 import com.sicpa.standard.sasscl.monitoring.MonitoringService;
 import com.sicpa.standard.sasscl.monitoring.system.SystemEventType;
 import com.sicpa.standard.sasscl.monitoring.system.event.BasicSystemEvent;
 
-/**
- * Handles the communication with the <code>Standard Printer</code> component.
- */
-public class PrinterAdaptor extends AbstractPrinterAdaptor implements IPrinterControllerListener {
+public abstract class PrinterAdaptor extends AbstractPrinterAdaptor implements IPrinterControllerListener {
 
 	private static final Logger logger = LoggerFactory.getLogger(PrinterAdaptor.class);
 
 	protected IPrinterController controller;
-	protected IMappingExtendedCodeBehavior mappingExtendedCodeBehavior;
 
 	protected volatile boolean initialized = false;
 	protected volatile boolean codeSent = false;
-	protected volatile boolean startedOnce;
-	protected SequenceStatus lastSequence = SequenceStatus.UNKNOWN;
+	private volatile boolean startedOnce;
+	private SequenceStatus lastSequence = SequenceStatus.UNKNOWN;
 
 	public PrinterAdaptor(IPrinterController controller) {
 		this();
@@ -64,10 +54,6 @@ public class PrinterAdaptor extends AbstractPrinterAdaptor implements IPrinterCo
 
 	public void setController(IPrinterController controller) {
 		this.controller = controller;
-	}
-
-	protected IPrinterController getController() {
-		return controller;
 	}
 
 	@Override
@@ -93,25 +79,6 @@ public class PrinterAdaptor extends AbstractPrinterAdaptor implements IPrinterCo
 		}
 		lastSequence = SequenceStatus.UNKNOWN;
 		fireDeviceStatusChanged(DeviceStatus.DISCONNECTED);
-	}
-
-	@Override
-	public void sendCodesToPrint(List<String> codes) throws PrinterAdaptorException {
-		logger.debug("Printer sending codes to print");
-		try {
-			if (isDomino()) {
-				controller.sendCodes(codes);
-			} else {
-				controller.sendExtendedCodes(mappingExtendedCodeBehavior.get(getName()).createExCodes(codes));
-			}
-			codeSent = true;
-		} catch (PrinterException e) {
-			throw new PrinterAdaptorException("sending codes to printer failed", e);
-		}
-	}
-
-	private boolean isDomino() {
-		return getName().startsWith(PrinterType.DOMINO.toString().toLowerCase());
 	}
 
 	@Override
@@ -178,7 +145,7 @@ public class PrinterAdaptor extends AbstractPrinterAdaptor implements IPrinterCo
 		}
 	}
 
-	protected void checkForCodeSent(int counter) {
+	private void checkForCodeSent(int counter) {
 		if (status != DeviceStatus.CONNECTED) {
 			return;
 		}
@@ -250,23 +217,23 @@ public class PrinterAdaptor extends AbstractPrinterAdaptor implements IPrinterCo
 		return true;
 	}
 
-	/**
-	 * By convention the key of a PrinterMessage respects the format IMPACT.ID
-	 */
 	@Override
 	public void onMessageReceived(PrinterMessage... messages) {
-
 		for (PrinterMessage msg : messages) {
 			msg.setSource(this);
-			if (isMonitoringMsg(msg)) {
-				monitoringMessageReceived(msg);
-			} else if (isLogMsg(msg)) {
-				logMessageReceived(msg);
-			} else if (msg.isIssueSolved()) {
-				fireIssueSolved(msg.getKey());
-			} else {
-				EventBusService.post(msg);
-			}
+			onMessageReceived(msg);
+		}
+	}
+
+	protected void onMessageReceived(PrinterMessage msg) {
+		if (isMonitoringMsg(msg)) {
+			monitoringMessageReceived(msg);
+		} else if (isLogMsg(msg)) {
+			logMessageReceived(msg);
+		} else if (msg.isIssueSolved()) {
+			fireIssueSolved(msg.getKey());
+		} else {
+			EventBusService.post(msg);
 		}
 	}
 
@@ -299,19 +266,4 @@ public class PrinterAdaptor extends AbstractPrinterAdaptor implements IPrinterCo
 	public void updateParameters(Command cmd) {
 	}
 
-	@Subscribe
-	public void setUserLevel(PrinterProfileEvent event) {
-		try {
-			// FIXME this has to be moved to some Leibinger specific
-			// implementation
-			controller.sendSpecificSettings(LeibingerSpecificSettings.CMD_SET_USER_LEVEL.getValue(),
-					LeibingerUserLevel.get(event.getLevel()));
-		} catch (PrinterException e) {
-			logger.error("", e.getMessage());
-		}
-	}
-
-	public void setMappingExtendedCodeBehavior(IMappingExtendedCodeBehavior mappingExtendedCodeBehavior) {
-		this.mappingExtendedCodeBehavior = mappingExtendedCodeBehavior;
-	}
 }

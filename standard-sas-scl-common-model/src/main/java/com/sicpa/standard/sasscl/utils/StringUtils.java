@@ -1,12 +1,10 @@
 package com.sicpa.standard.sasscl.utils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import static java.util.Arrays.asList;
+import static java.util.stream.Collectors.toList;
+
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
-
-import static java.util.Arrays.*;
 
 public class StringUtils {
 
@@ -15,6 +13,6 @@ public class StringUtils {
 			return Collections.emptyList();
 		}
 
-		return asList(values.split(",")).stream().mapToLong(Long::parseLong).boxed().collect(Collectors.toList());
+		return asList(values.split(",")).stream().mapToLong(Long::parseLong).boxed().collect(toList());
 	}
 }

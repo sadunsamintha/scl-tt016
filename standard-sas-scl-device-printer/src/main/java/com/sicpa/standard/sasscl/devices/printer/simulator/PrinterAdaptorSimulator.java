@@ -14,7 +14,6 @@ import com.sicpa.standard.sasscl.devices.DeviceStatus;
 import com.sicpa.standard.sasscl.devices.camera.simulator.ICodeProvider;
 import com.sicpa.standard.sasscl.devices.printer.PrinterAdaptorException;
 import com.sicpa.standard.sasscl.devices.printer.impl.PrinterAdaptor;
-import com.sicpa.standard.sasscl.event.PrinterProfileEvent;
 
 public class PrinterAdaptorSimulator extends PrinterAdaptor implements ICodeProvider {
 
@@ -47,7 +46,6 @@ public class PrinterAdaptorSimulator extends PrinterAdaptor implements ICodeProv
 	@Override
 	public void sendCodesToPrint(final List<String> codes) throws PrinterAdaptorException {
 		logger.debug("Printer sending codes to print");
-		mappingExtendedCodeBehavior.get(getName()).createExCodes(codes);
 		codeBuffer.addAll(codes);
 	}
 
@@ -90,11 +88,6 @@ public class PrinterAdaptorSimulator extends PrinterAdaptor implements ICodeProv
 	}
 
 	@Override
-	public void setUserLevel(PrinterProfileEvent event) {
-
-	}
-
-	@Override
 	public String requestCode() {
 		synchronized (codeBuffer) {
 
@@ -108,7 +101,6 @@ public class PrinterAdaptorSimulator extends PrinterAdaptor implements ICodeProv
 			return code;
 		}
 	}
-
 
 	private class AskCodesTask implements Runnable {
 		@Override
