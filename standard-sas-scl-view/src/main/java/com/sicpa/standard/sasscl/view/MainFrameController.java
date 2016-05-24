@@ -235,7 +235,7 @@ public class MainFrameController extends MachineViewController {
 			}
 		}
 		if (frameCameraImage != null) {
-			frameCameraImage.setimage(event);
+			frameCameraImage.setImage(event);
 		}
 	}
 

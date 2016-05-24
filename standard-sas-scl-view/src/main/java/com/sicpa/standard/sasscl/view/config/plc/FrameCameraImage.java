@@ -9,19 +9,26 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import com.sicpa.standard.gui.plaf.SicpaColor;
 import net.miginfocom.swing.MigLayout;
 
 import com.sicpa.standard.gui.components.dialog.dropShadow.DialogWithDropShadow;
+import com.sicpa.standard.gui.plaf.SicpaColor;
+import com.sicpa.standard.gui.utils.ImageUtils;
 import com.sicpa.standard.gui.utils.ThreadUtils;
 import com.sicpa.standard.sasscl.devices.camera.CameraImageEvent;
 
 @SuppressWarnings("serial")
 public class FrameCameraImage extends DialogWithDropShadow {
 
-	protected final Map<String, CameraImagePanel> labels = new HashMap<String, CameraImagePanel>();
+	private static final int W_EXTRA_SIZE = 50;
+	private static final int H_EXTRA_SIZE = 100;
 
-	public FrameCameraImage(final Window frame) {
+	private static final int MAX_IMAGE_H = 450;
+	private static final int MAX_IMAGE_W = 450;
+
+	private final Map<String, CameraImagePanel> imageByLine = new HashMap<>();
+
+	public FrameCameraImage(Window frame) {
 		super(frame, true, true);
 		initGUI();
 	}
@@ -29,75 +36,80 @@ public class FrameCameraImage extends DialogWithDropShadow {
 	private void initGUI() {
 		setAlwaysOnTop(true);
 		getContentPane().setLayout(new MigLayout("fill"));
-        getContentPane().setBackground(SicpaColor.BLUE_DARK);
+		getContentPane().setBackground(SicpaColor.BLUE_ULTRA_LIGHT);
 		setSize(300, 300);
 	}
 
-	public void setimage(final CameraImageEvent evt) {
-		ThreadUtils.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-
-				String source = evt.getSource().getName();
-				CameraImagePanel panel = labels.get(source);
-				if (panel == null) {
-					panel = new CameraImagePanel(source);
-					labels.put(source, panel);
-					add(panel, "grow,push");
-				}
-				panel.setImage(evt.getCameraImage());
-
-                if(labels.size() > 1) {
-                    // Resize images
-                    int targetWidth = (int) (evt.getCameraImage().getWidth(null)/2.5);
-                    int targetHeight = (int) (evt.getCameraImage().getHeight(null)/2.5);
-                    for (CameraImagePanel imgPanel : labels.values()) {
-                        Image img = imgPanel.getImage().getImage();
-                        Image scaledImg = img.getScaledInstance(targetWidth,
-                                targetHeight,
-                                Image.SCALE_SMOOTH);
-                        imgPanel.setImage(scaledImg);
-                    }
-                }
-
-				updateSize();
-			}
+	public void setImage(CameraImageEvent evt) {
+		ThreadUtils.invokeLater(() -> {
+			String source = evt.getSource().getName();
+			CameraImagePanel panel = getImagePanelFromSource(source);
+			panel.setImage(evt.getCameraImage());
+			resizeImagesIfTooLarge();
+			updateWindowSize();
 		});
 	}
 
-	protected void updateSize() {
-		int w = 0, h = 0;
-		for (CameraImagePanel panel : labels.values()) {
-			h = Math.max(h, panel.image.getIconHeight());
-			w += panel.image.getIconWidth();
+	private CameraImagePanel getImagePanelFromSource(String source) {
+		CameraImagePanel panel = imageByLine.get(source);
+		if (panel == null) {
+			panel = createAndAddCameraImagePanel(source);
 		}
-		w += 50;
-		h += 100;
+		return panel;
+	}
+
+	private CameraImagePanel createAndAddCameraImagePanel(String source) {
+		CameraImagePanel panel = new CameraImagePanel(source);
+		imageByLine.put(source, panel);
+		add(panel, "grow,push");
+		return panel;
+	}
+
+	private void resizeImagesIfTooLarge() {
+		for (CameraImagePanel imgPanel : imageByLine.values()) {
+			Image img = imgPanel.getImage();
+			int w = img.getWidth(null);
+			int h = img.getHeight(null);
+			if (w > MAX_IMAGE_W || h > MAX_IMAGE_H) {
+				Image scaledImg = ImageUtils.changeSizeKeepRatio(img, MAX_IMAGE_W, MAX_IMAGE_H);
+				imgPanel.setImage(scaledImg);
+			}
+		}
+	}
+
+	private void updateWindowSize() {
+		int w = 0, h = 0;
+		for (CameraImagePanel panel : imageByLine.values()) {
+			h = Math.max(h, panel.imageIcon.getIconHeight());
+			w += panel.imageIcon.getIconWidth();
+		}
+		w += W_EXTRA_SIZE;
+		h += H_EXTRA_SIZE;
 
 		if (getWidth() < w || getHeight() < h) {
 			setSize(w, h);
 		}
 	}
 
-	public static class CameraImagePanel extends JPanel {
+	private static class CameraImagePanel extends JPanel {
 		JLabel labelImage;
-		ImageIcon image;
+		ImageIcon imageIcon;
 
-		public CameraImagePanel(String name) {
+		CameraImagePanel(String name) {
 			setLayout(new MigLayout("fill"));
-            setBackground(SicpaColor.BLUE_DARK);
+			setBackground(SicpaColor.BLUE_ULTRA_LIGHT);
 			add(new JLabel(name), "wrap");
 			labelImage = new JLabel();
 			add(labelImage, "grow , push");
 		}
 
 		void setImage(Image image) {
-			this.image = new ImageIcon(image);
-			labelImage.setIcon(this.image);
+			imageIcon = new ImageIcon(image);
+			labelImage.setIcon(imageIcon);
 		}
 
-        public ImageIcon getImage() {
-            return image;
-        }
-    }
+		Image getImage() {
+			return imageIcon.getImage();
+		}
+	}
 }
