@@ -4,6 +4,7 @@ import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.messages.MessageEvent;
 import com.sicpa.standard.sasscl.messages.MessageEventKey;
 import com.sicpa.standard.sasscl.sicpadata.CryptographyException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,19 +21,20 @@ public abstract class AbstractEncoder implements IEncoder {
 
 	private static final long serialVersionUID = 1L;
 
-	protected long id;
-	protected long batchId;
-	protected long subsystemId;
-	protected int year;
-	protected int codeTypeId;
-	protected Date firstCodeDate;
-	protected Date lastCodeDate;
-	protected Date onClientDate;
+	private long id;
+	private long batchId;
+	private long subsystemId;
+	private int year;
+	private int codeTypeId;
+	private Date firstCodeDate;
+	private Date lastCodeDate;
+	private Date onClientDate;
+	private volatile long sequence;
 
 	public AbstractEncoder() {
 	}
 
-	public AbstractEncoder(final long batchid, final long id, int year, long subsystemId, int codeTypeId) {
+	public AbstractEncoder(long batchid, long id, int year, long subsystemId, int codeTypeId) {
 		this.batchId = batchid;
 		this.id = id;
 		this.year = year;
@@ -50,13 +52,13 @@ public abstract class AbstractEncoder implements IEncoder {
 	}
 
 	@Override
-	public synchronized List<String> getEncryptedCodes(final long numberCodes) throws CryptographyException {
-		List<String> codes = new ArrayList<String>();
+	public synchronized List<String> getEncryptedCodes(long numberCodes) throws CryptographyException {
+		List<String> codes = new ArrayList<>();
 		String code = null;
 		for (int i = 0; i < numberCodes; i++) {
 
 			try {
-				code = this.getEncryptedCode();
+				code = getEncryptedCode();
 			} catch (EncoderEmptyException e) {
 				if (codes.isEmpty()) {
 					throw e;
@@ -73,6 +75,7 @@ public abstract class AbstractEncoder implements IEncoder {
 			}
 			codes.add(code);
 		}
+		sequence += codes.size();
 		return codes;
 	}
 
@@ -81,7 +84,7 @@ public abstract class AbstractEncoder implements IEncoder {
 		return this.id;
 	}
 
-	public void setId(final int id) {
+	public void setId(int id) {
 		this.id = id;
 	}
 
@@ -142,6 +145,7 @@ public abstract class AbstractEncoder implements IEncoder {
 		result = prime * result + (int) (id ^ (id >>> 32));
 		result = prime * result + ((lastCodeDate == null) ? 0 : lastCodeDate.hashCode());
 		result = prime * result + ((onClientDate == null) ? 0 : onClientDate.hashCode());
+		result = prime * result + (int) (sequence ^ (sequence >>> 32));
 		result = prime * result + (int) (subsystemId ^ (subsystemId >>> 32));
 		result = prime * result + year;
 		return result;
@@ -177,6 +181,8 @@ public abstract class AbstractEncoder implements IEncoder {
 				return false;
 		} else if (!onClientDate.equals(other.onClientDate))
 			return false;
+		if (sequence != other.sequence)
+			return false;
 		if (subsystemId != other.subsystemId)
 			return false;
 		if (year != other.year)
@@ -188,6 +194,14 @@ public abstract class AbstractEncoder implements IEncoder {
 	public String toString() {
 		return "AbstractEncoder [id=" + id + ", batchId=" + batchId + ", subsystemId=" + subsystemId + ", year=" + year
 				+ ", codeTypeId=" + codeTypeId + ", firstCodeDate=" + firstCodeDate + ", lastCodeDate=" + lastCodeDate
-				+ ", onClientDate=" + onClientDate + "]";
+				+ ", onClientDate=" + onClientDate + ", sequence=" + sequence + "]";
+	}
+
+	public void setSequence(long sequence) {
+		this.sequence = sequence;
+	}
+
+	public long getSequence() {
+		return sequence;
 	}
 }

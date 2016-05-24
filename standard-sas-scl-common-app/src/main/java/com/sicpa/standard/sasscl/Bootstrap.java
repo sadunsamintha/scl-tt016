@@ -1,5 +1,7 @@
 package com.sicpa.standard.sasscl;
 
+import static com.sicpa.standard.sasscl.devices.remote.IRemoteServer.ERROR_DEFAULT_SUBSYSTEM_ID;
+
 import java.io.File;
 import java.lang.management.ManagementFactory;
 import java.util.List;
@@ -35,11 +37,10 @@ import com.sicpa.standard.sasscl.monitoring.mbean.scl.SclAppMBean;
 import com.sicpa.standard.sasscl.provider.impl.AuthenticatorProvider;
 import com.sicpa.standard.sasscl.provider.impl.SkuListProvider;
 import com.sicpa.standard.sasscl.provider.impl.SubsystemIdProvider;
+import com.sicpa.standard.sasscl.sicpadata.generator.validator.IEncoderSequenceValidator;
 import com.sicpa.standard.sasscl.utils.ConfigUtilEx;
 import com.sicpa.standard.sicpadata.spi.manager.IServiceProviderManager;
 import com.sicpa.standard.sicpadata.spi.manager.StaticServiceProviderManager;
-
-import static com.sicpa.standard.sasscl.devices.remote.IRemoteServer.ERROR_DEFAULT_SUBSYSTEM_ID;
 
 public class Bootstrap implements IBootstrap {
 
@@ -60,6 +61,7 @@ public class Bootstrap implements IBootstrap {
 	private List<PlcVariableGroup> linePlcVarGroup;
 	private List<PlcVariableGroup> cabPlcVarGroups;
 	private SclAppMBean jmxBean;
+	private IEncoderSequenceValidator encoderSequenceValidator;
 
 	@Override
 	public void executeSpringInitTasks() {
@@ -68,6 +70,7 @@ public class Bootstrap implements IBootstrap {
 		initProductionParameter();
 		initAuthenticator();
 		initCrypto();
+		validateEncoderSequence();
 		addConnectionListenerOnServer();
 		connectStartupDevices();
 		restorePreviousSelectedProductionParams();
@@ -157,6 +160,10 @@ public class Bootstrap implements IBootstrap {
 
 	private void initCrypto() {
 		StaticServiceProviderManager.register(cryptoProviderManager);
+	}
+
+	private void validateEncoderSequence() {
+		encoderSequenceValidator.validateAndFixSequence();
 	}
 
 	private void generateAllEditableVariableGroup(Map<Integer, StringMap> values) {
@@ -254,5 +261,9 @@ public class Bootstrap implements IBootstrap {
 
 	public void setJmxBean(SclAppMBean jmxBean) {
 		this.jmxBean = jmxBean;
+	}
+
+	public void setEncoderSequenceValidator(IEncoderSequenceValidator encoderSequenceValidator) {
+		this.encoderSequenceValidator = encoderSequenceValidator;
 	}
 }
