@@ -15,6 +15,9 @@ public class PlcPulseVariableDescriptor extends PlcIntegerVariableDescriptor {
 
 	@Override
 	public void setValue(String value) {
+		if (init) {
+			return;
+		}
 		if (this.value.equals(value)) {
 			return;
 		}

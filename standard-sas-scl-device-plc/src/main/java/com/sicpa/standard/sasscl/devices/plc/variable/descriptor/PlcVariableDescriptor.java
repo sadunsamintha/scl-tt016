@@ -5,17 +5,12 @@ import java.util.List;
 
 import javax.swing.JComponent;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.sasscl.common.log.OperatorLogger;
 import com.sicpa.standard.sasscl.devices.plc.event.PlcVarValueChangeEvent;
 import com.sicpa.standard.sasscl.devices.plc.variable.renderer.IPlcVariableDescriptorListener;
 
 public abstract class PlcVariableDescriptor {
-
-	protected static final Logger logger = LoggerFactory.getLogger(PlcVariableDescriptor.class);
 
 	protected String varName;
 	protected String value;
@@ -34,6 +29,9 @@ public abstract class PlcVariableDescriptor {
 	}
 
 	public void setValue(String value) {
+		if (init) {
+			return;
+		}
 		if (!value.equals(value)) {
 			return;
 		}
@@ -55,10 +53,7 @@ public abstract class PlcVariableDescriptor {
 		return varName;
 	}
 
-	public void saveAndSendValueToPlc() {
-		if (init) {
-			return;
-		}
+	protected void saveAndSendValueToPlc() {
 		EventBusService.post(new PlcVarValueChangeEvent(varName, value, lineIndex));
 	}
 
