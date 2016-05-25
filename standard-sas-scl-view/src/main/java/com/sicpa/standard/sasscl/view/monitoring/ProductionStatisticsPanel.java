@@ -1,21 +1,5 @@
 package com.sicpa.standard.sasscl.view.monitoring;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Point;
-import java.text.SimpleDateFormat;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Map.Entry;
-
-import javax.swing.DefaultRowSorter;
-import javax.swing.JLabel;
-import javax.swing.JTable;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.sicpa.standard.client.common.security.Permission;
 import com.sicpa.standard.client.common.view.ISecuredComponentGetter;
 import com.sicpa.standard.common.util.Messages;
@@ -27,8 +11,18 @@ import com.sicpa.standard.sasscl.model.ProductionParameters;
 import com.sicpa.standard.sasscl.model.statistics.StatisticsKey;
 import com.sicpa.standard.sasscl.monitoring.MonitoringService;
 import com.sicpa.standard.sasscl.monitoring.statistics.MonitoredProductStatisticsValues;
-import com.sicpa.standard.sasscl.monitoring.statistics.production.ProductionStatistics;
+import com.sicpa.standard.sasscl.monitoring.statistics.incremental.IncrementalStatistics;
 import com.sicpa.standard.sasscl.security.SasSclPermission;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.swing.*;
+import java.awt.*;
+import java.text.SimpleDateFormat;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import java.util.Map.Entry;
 
 @SuppressWarnings("serial")
 public class ProductionStatisticsPanel extends AbstractMonitoringEventPanel implements ISecuredComponentGetter{
@@ -39,16 +33,16 @@ public class ProductionStatisticsPanel extends AbstractMonitoringEventPanel impl
 		initGUI();
 	}
 
-	private List<ProductionStatistics> getProductionStatistics(final Date start, final Date stop) {
-		return MonitoringService.getProductionStatistics(start, stop);
+	private List<IncrementalStatistics> getProductionStatistics(final Date start, final Date stop) {
+		 		return MonitoringService.getIncrementalStatistics(start, stop);
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public BeanReaderJTable<ProductionStatistics> getTable() {
+	public BeanReaderJTable<IncrementalStatistics> getTable() {
 		if (table == null) {
 
-			table = new BeanReaderJTable<ProductionStatistics>(new String[] { "startTime", "stopTime",
+			table = new BeanReaderJTable<IncrementalStatistics>(new String[] { "startTime", "stopTime",
 					"productsStatistics", "errors", "productionParameters" }, new String[] {
 					Messages.get("label.start"), Messages.get("label.stop"), Messages.get("label.statistics"),
 					Messages.get("label.errors"), Messages.get("label.parameters") }) {
@@ -91,7 +85,7 @@ public class ProductionStatisticsPanel extends AbstractMonitoringEventPanel impl
 
 	@Override
 	protected void requestAndHandleEvents(Date from, Date to) {
-		final Collection<ProductionStatistics> list = getProductionStatistics(from, to);
+		final Collection<IncrementalStatistics> list = getProductionStatistics(from, to);
 		if (list != null) {
 			ThreadUtils.invokeLater(() -> getTable().addRow(list));
 		}
@@ -117,7 +111,7 @@ public class ProductionStatisticsPanel extends AbstractMonitoringEventPanel impl
 		public Component getTableCellRendererComponent(final JTable table, final Object value,
 				final boolean isSelected, final boolean hasFocus, final int row, final int column) {
 
-			BeanReaderJTable<ProductionStatistics> t = (BeanReaderJTable<ProductionStatistics>) table;
+			BeanReaderJTable<IncrementalStatistics> t = (BeanReaderJTable<IncrementalStatistics>) table;
 
 			JLabel label = (JLabel) super
 					.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
@@ -157,7 +151,7 @@ public class ProductionStatisticsPanel extends AbstractMonitoringEventPanel impl
 			}
 
 			if (row < t.getRowCount()) {
-				ProductionStatistics data = t.getObjectAtRow(row);
+				IncrementalStatistics data = t.getObjectAtRow(row);
 				if (data != null && data.getErrors() != null) {
 					if (data.getErrors().size() > 0) {
 						label.setForeground(Color.RED);

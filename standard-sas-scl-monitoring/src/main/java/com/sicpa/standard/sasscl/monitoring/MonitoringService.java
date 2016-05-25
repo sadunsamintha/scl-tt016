@@ -1,12 +1,11 @@
 package com.sicpa.standard.sasscl.monitoring;
 
-import java.util.Date;
-import java.util.List;
-
 import com.sicpa.standard.sasscl.monitoring.statistics.incremental.IncrementalStatistics;
-import com.sicpa.standard.sasscl.monitoring.statistics.production.ProductionStatistics;
 import com.sicpa.standard.sasscl.monitoring.system.AbstractSystemEvent;
 import com.sicpa.standard.sasscl.monitoring.system.event.BasicSystemEvent;
+
+import java.util.Date;
+import java.util.List;
 
 public class MonitoringService {
 
@@ -26,14 +25,6 @@ public class MonitoringService {
 		List<BasicSystemEvent> res = null;
 		if (monitoring != null) {
 			res = monitoring.getSystemEvent(from, to);
-		}
-		return res;
-	}
-
-	public static List<ProductionStatistics> getProductionStatistics(final Date from, final Date to) {
-		List<ProductionStatistics> res = null;
-		if (monitoring != null) {
-			res = monitoring.getProductionStatistics(from, to);
 		}
 		return res;
 	}

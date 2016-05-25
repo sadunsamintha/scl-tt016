@@ -1,21 +1,16 @@
 package com.sicpa.standard.sasscl.view.monitoring;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.sicpa.standard.client.common.utils.DateUtils;
 import com.sicpa.standard.sasscl.model.statistics.StatisticsKey;
-import com.sicpa.standard.sasscl.monitoring.statistics.production.ProductionStatistics;
+import com.sicpa.standard.sasscl.monitoring.statistics.incremental.IncrementalStatistics;
 import com.sicpa.standard.sasscl.view.report.ReportData;
 import com.sicpa.standard.sasscl.view.report.ReportKey;
 import com.sicpa.standard.sasscl.view.report.ReportPeriod;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.*;
+import java.util.Map.Entry;
 
 public class ProductionStatisticsAggregator {
 
@@ -30,19 +25,19 @@ public class ProductionStatisticsAggregator {
 		this.mapData = new HashMap<ReportKey, ReportData>();
 	}
 
-	public void aggregate(final List<ProductionStatistics> list, final ReportPeriod period,
+	public void aggregate(final List<IncrementalStatistics> list, final ReportPeriod period,
 			final boolean groupByProduct, final boolean dailyDetail, Date minimumDate, Date maxDate) {
 		this.period = period;
 		this.groupByProduct = groupByProduct;
 		this.dailyDetailed = dailyDetail;
 
-		for (ProductionStatistics aStats : list) {
+		for (IncrementalStatistics aStats : list) {
 			process(aStats, minimumDate, maxDate);
 		}
 
 	}
 
-	protected void process(final ProductionStatistics aStats, Date minimumDate, Date maxDate) {
+	protected void process(final IncrementalStatistics aStats, Date minimumDate, Date maxDate) {
 
 		try {
 

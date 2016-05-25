@@ -1,30 +1,5 @@
 package com.sicpa.standard.sasscl.view.report;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-
-import javax.swing.ButtonGroup;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JToggleButton;
-import javax.swing.SwingUtilities;
-
-import net.miginfocom.swing.MigLayout;
-
-import org.apache.commons.lang.time.DateUtils;
-import org.divxdede.swing.busy.JBusyComponent;
-import org.jdesktop.swingx.JXDatePicker;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.sicpa.standard.client.common.security.Permission;
 import com.sicpa.standard.client.common.utils.TaskExecutor;
 import com.sicpa.standard.client.common.view.ISecuredComponentGetter;
@@ -32,10 +7,25 @@ import com.sicpa.standard.common.util.Messages;
 import com.sicpa.standard.gui.components.buttons.PaddedButton;
 import com.sicpa.standard.gui.components.buttons.toggleButtons.ToggleImageAndTextButton;
 import com.sicpa.standard.sasscl.monitoring.MonitoringService;
-import com.sicpa.standard.sasscl.monitoring.statistics.production.ProductionStatistics;
+import com.sicpa.standard.sasscl.monitoring.statistics.incremental.IncrementalStatistics;
 import com.sicpa.standard.sasscl.security.SasSclPermission;
 import com.sicpa.standard.sasscl.view.LanguageSwitchEvent;
 import com.sicpa.standard.sasscl.view.monitoring.ProductionStatisticsAggregator;
+import net.miginfocom.swing.MigLayout;
+import org.apache.commons.lang.time.DateUtils;
+import org.divxdede.swing.busy.JBusyComponent;
+import org.jdesktop.swingx.JXDatePicker;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 public class ReportScreen extends JPanel implements ISecuredComponentGetter {
 
@@ -187,8 +177,8 @@ public class ReportScreen extends JPanel implements ISecuredComponentGetter {
 				getButtonDailyDetailed().isSelected());
 	}
 
-	protected List<ProductionStatistics> getProductionStatistics(final Date from, final Date to) {
-		return MonitoringService.getProductionStatistics(from, to);
+	protected List<IncrementalStatistics> getProductionStatistics(final Date from, final Date to) {
+		return MonitoringService.getIncrementalStatistics(from, to);
 	}
 
 	protected ReportPeriod getSelectedPeriod() {

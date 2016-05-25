@@ -1,19 +1,5 @@
 package com.sicpa.standard.sasscl.monitoring.impl;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
-
-import org.apache.commons.lang3.time.DateUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.exception.MonitoringException;
 import com.sicpa.standard.model.MonitorType;
@@ -29,7 +15,6 @@ import com.sicpa.standard.sasscl.monitoring.IMonitoring;
 import com.sicpa.standard.sasscl.monitoring.statistics.MonitoredProductStatisticsValues;
 import com.sicpa.standard.sasscl.monitoring.statistics.MonitoringStatistics;
 import com.sicpa.standard.sasscl.monitoring.statistics.incremental.IncrementalStatistics;
-import com.sicpa.standard.sasscl.monitoring.statistics.production.ProductionStatistics;
 import com.sicpa.standard.sasscl.monitoring.system.AbstractSystemEvent;
 import com.sicpa.standard.sasscl.monitoring.system.SystemEventLevel;
 import com.sicpa.standard.sasscl.monitoring.system.SystemEventType;
@@ -37,13 +22,19 @@ import com.sicpa.standard.sasscl.monitoring.system.event.BasicSystemEvent;
 import com.sicpa.standard.sasscl.provider.impl.SubsystemIdProvider;
 import com.sicpa.standard.util.FieldToString;
 import com.sicpa.standard.util.IConverter;
+import org.apache.commons.lang3.time.DateUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class Monitoring implements IMonitoring {
 
 	private static Logger logger = LoggerFactory.getLogger(Monitoring.class);
 
 	protected IncrementalStatistics incrementalStatistics;
-	protected ProductionStatistics productionStatistics;
 
 	protected MonitoringStatistics mbeanStatistics;
 
@@ -236,11 +227,7 @@ public class Monitoring implements IMonitoring {
 				incrementalStatistics.handleSystemEvent(event);
 			}
 		}
-		if (productionStatistics != null) {
-			synchronized (lockProduction) {
-				productionStatistics.handleSystemEvent(event);
-			}
-		}
+
 		if (mbeanStatistics != null) {
 			mbeanStatistics.handleSystemEvent(event);
 		}
@@ -250,7 +237,6 @@ public class Monitoring implements IMonitoring {
 			if (event.getMessage().equals(ApplicationFlowState.STT_CONNECTED.getName())
 					|| event.getMessage().equals(ApplicationFlowState.STT_CONNECTING.getName())) {
 				saveIncrementalStatistics();
-				saveProductionStatistics();
 				saveIncrTimer.cancel();
 			}
 
@@ -266,7 +252,6 @@ public class Monitoring implements IMonitoring {
 				firstSavingDate = DateUtils.addDays(firstSavingDate, 1);
 				firstSavingDate = DateUtils.addSeconds(firstSavingDate, -1);
 				saveIncrTimer.schedule(createSaveIncrTask(), firstSavingDate, DateUtils.MILLIS_PER_DAY);
-				saveIncrTimer.schedule(createSaveStatTask(), firstSavingDate, DateUtils.MILLIS_PER_DAY);
 			}
 		} else if (event.getType().equals(SystemEventType.SELECT_PROD_PARAMETERS)) {
 			if (restoreStats) {
@@ -274,20 +259,10 @@ public class Monitoring implements IMonitoring {
 			} else {
 				//saveIncrTimer.cancel();
 				incrementalStatistics = null;
-				productionStatistics = null;
 			}
 		}
 	}
 
-	public void saveProductionStatistics() {
-		synchronized (lockProduction) {
-			if (productionStatistics != null && !productionStatistics.getProductsStatistics().getValues().isEmpty()) {
-				productionStatistics.setStopTime(new Date());
-				MonitorService.addEvent(MonitorType.PRODUCTION_STATISTICS, productionStatistics);
-			}
-			createNewProductionStatistics();
-		}
-	}
 
 	public void saveIncrementalStatistics() {
 		synchronized (lockIncremental) {
@@ -299,23 +274,6 @@ public class Monitoring implements IMonitoring {
 		}
 	}
 
-	protected void createNewProductionStatistics() {
-		ProductionStatistics previous = productionStatistics;
-		productionStatistics = new ProductionStatistics();
-		productionStatistics.setSubsystemId(subsystemIdProvider.get());
-		productionStatistics.setProductionParameters(productionParameters);
-		productionStatistics.setStartTime(new Date());
-
-		if (previous != null) {
-			Map<StatisticsKey, Integer> mapValues;
-			if (previous.getProductsStatistics().getValues().size() == 0) {
-				mapValues = previous.getProductsStatistics().getMapOffset();
-			} else {
-				mapValues = previous.getProductsStatistics().getValues();
-			}
-			productionStatistics.getProductsStatistics().setMapOffset(mapValues);
-		}
-	}
 
 	protected void createNewIncrementalStatistics() {
 		IncrementalStatistics previous = incrementalStatistics;
@@ -344,15 +302,6 @@ public class Monitoring implements IMonitoring {
 		};
 	}
 
-	protected TimerTask createSaveStatTask() {
-		return new TimerTask() {
-			@Override
-			public void run() {
-				saveProductionStatistics();
-			}
-		};
-	}
-
 	protected void addSystemEventInternal(final BasicSystemEvent event) {
 		MonitorService.addEvent(MonitorType.SYSTEM_EVENT, event);
 	}
@@ -369,10 +318,6 @@ public class Monitoring implements IMonitoring {
 		return read(MonitorType.SYSTEM_EVENT, from, to);
 	}
 
-	@Override
-	public List<ProductionStatistics> getProductionStatistics(final Date from, final Date to) {
-		return read(MonitorType.PRODUCTION_STATISTICS, from, to);
-	}
 
 	@Override
 	public List<IncrementalStatistics> getIncrementalStatistics(final Date from, final Date to) {
@@ -410,14 +355,10 @@ public class Monitoring implements IMonitoring {
 
 		initStats();
 
-		productionStatistics.setProductsStatisticsOffset(evt.getStatsValues().getMapValues());
 		incrementalStatistics.setProductsStatisticsOffset(evt.getStatsValues().getMapValues());
 	}
 
 	private void initStats(){
-		synchronized(lockProduction){
-			createNewProductionStatistics();
-		}
 		synchronized(lockIncremental){
 			createNewIncrementalStatistics();
 		}
