@@ -1,8 +1,9 @@
 package com.sicpa.standard.sasscl.view.main.statistics;
 
+import static java.util.Collections.sort;
+
 import java.text.NumberFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -28,20 +29,22 @@ import com.sicpa.standard.sasscl.view.LanguageSwitchEvent;
 public class StatisticsView extends AbstractView<IStatisticsViewListener, StatisticsViewModel> {
 
 	// map < line index , map < stats descriptor , panel > >
-	protected final Map<String, Map<ViewStatisticsDescriptor, SingleStatsPanel>> mapDescriptors = new HashMap<>();
+	private final Map<String, Map<ViewStatisticsDescriptor, SingleStatsPanel>> statsPanelByDescriptorByLine = new HashMap<>();
 
-	// map < line index , panel >
-	protected final Map<Integer, LineSpeedPanel> mapLineSpeed = new TreeMap<>();
+	private final Map<Integer, LineSpeedPanel> panelSpeedByLineIndex = new TreeMap<>();
 
-	protected JLabel labelTitle;
-	protected JLabel labelUptime;
+	private JLabel labelTitle;
+	private JLabel labelUptime;
 
-	protected JPanel panelLineStats;
-	protected JPanel panelLineSpeed;
+	private JPanel panelLineStats;
+	private JPanel panelLineSpeed;
 
-	protected NumberFormat percentFormater;
+	private NumberFormat percentFormater;
 
-	protected UptimeFormater uptimeFormater = new UptimeFormater("HH'h'mm'm'ss's'");
+	private final UptimeFormater uptimeFormater = new UptimeFormater("HH'h'mm'm'ss's'");
+
+	private int statDescriptorCounter = 0;
+	private SingleStatsPanel panelTotal;
 
 	public StatisticsView() {
 		percentFormater = NumberFormat.getNumberInstance();
@@ -51,7 +54,7 @@ public class StatisticsView extends AbstractView<IStatisticsViewListener, Statis
 		handleLanguageSwitch(null);
 	}
 
-	protected void initGUI() {
+	private void initGUI() {
 		setLayout(new MigLayout(""));
 		add(getLabelTitle(), "pushx,spanx , split 2");
 		add(new JSeparator(), "growx");
@@ -74,18 +77,35 @@ public class StatisticsView extends AbstractView<IStatisticsViewListener, Statis
 			return;
 		}
 
-		if (statDescriptorCounter != 0 && isRebuildNeeded()) {
-			statDescriptorCounter = 0;
-			refreshAll();
-			return;
+		if (isRebuildNeeded()) {
+			removeAllStatsFromScreen();
 		}
 
 		buildStatsPanel();
 		buildSpeedPanel();
+		setUptime();
+
+		updateElementVisibility();
+	}
+
+	private void updateElementVisibility() {
+		getPanelLineSpeed().setVisible(model.isLineSpeedVisible());
+		getPanelTotal().setVisible(model.isTotalVisible());
+
+		for (Entry<String, Map<ViewStatisticsDescriptor, SingleStatsPanel>> e : statsPanelByDescriptorByLine.entrySet()) {
+			for (Entry<ViewStatisticsDescriptor, SingleStatsPanel> e2 : e.getValue().entrySet()) {
+				SingleStatsPanel panel = e2.getValue();
+				String statsKey = e2.getKey().getKey();
+				panel.setVisible(model.isStatisticVisible(statsKey));
+			}
+		}
+	}
+
+	private void setUptime() {
 		getLabelUptime().setText(uptimeFormater.format(model.getUptime()));
 	}
 
-	protected void buildSpeedPanel() {
+	private void buildSpeedPanel() {
 		if (model.getLineSpeed().size() != model.getLineIndexes().size()) {
 			// do not build the panel until all speed are available to make sure they are sorted by alpha because of the
 			// treemap used in the model
@@ -93,65 +113,77 @@ public class StatisticsView extends AbstractView<IStatisticsViewListener, Statis
 		}
 
 		for (Entry<Integer, String> entry : model.getLineSpeed().entrySet()) {
-			LineSpeedPanel panel = mapLineSpeed.get(entry.getKey());
-			if (panel == null) {
-				panel = new LineSpeedPanel(entry.getKey());
-				mapLineSpeed.put(entry.getKey(), panel);
-				getPanelLineSpeed().add(panel, "wrap,pushx,growx");
-			}
+			LineSpeedPanel panel = getOrCreateSpeedPanelByLineIndex(entry.getKey());
 			panel.setLineSpeed(entry.getValue());
 		}
 	}
 
-	protected void buildStatsPanel() {
-		for (String index : model.getLineIndexes()) {
-			Map<ViewStatisticsDescriptor, SingleStatsPanel> panels = mapDescriptors.get(index);
-			int total = 0;
-			if (panels == null) {
-				panels = new HashMap<ViewStatisticsDescriptor, SingleStatsPanel>();
-				mapDescriptors.put(index, panels);
-			}
+	private LineSpeedPanel getOrCreateSpeedPanelByLineIndex(int lineId) {
+		LineSpeedPanel panel = panelSpeedByLineIndex.get(lineId);
+		if (panel == null) {
+			panel = new LineSpeedPanel(lineId);
+			panelSpeedByLineIndex.put(lineId, panel);
+			getPanelLineSpeed().add(panel, "wrap,pushx,growx");
+		}
+		return panel;
+	}
 
-			for (Entry<ViewStatisticsDescriptor, Integer> entry : getSortedDescriptorList(index)) {
-				total += entry.getValue();
-			}
-
-			for (Entry<ViewStatisticsDescriptor, Integer> entry : getSortedDescriptorList(index)) {
-				updateStats(entry.getKey(), entry.getValue(), panels, total);
-			}
+	private void buildStatsPanel() {
+		for (String lineIndex : model.getLineIndexes()) {
+			buildLineStatsPanel(lineIndex);
 		}
 		updateTotal();
 	}
 
-	protected List<Entry<ViewStatisticsDescriptor, Integer>> getSortedDescriptorList(String index) {
+	private void buildLineStatsPanel(String lineIndex) {
+		int total = getTotalCountForLine(lineIndex);
+
+		for (Entry<ViewStatisticsDescriptor, Integer> entry : getSortedStatsDescriptorList(lineIndex)) {
+			int qty = entry.getValue();
+			updateSingleStatsForALine(entry.getKey(), lineIndex, qty, total);
+		}
+	}
+
+	private Map<ViewStatisticsDescriptor, SingleStatsPanel> getOrCreatePanelsByStatKeyForALine(String lineIndex) {
+		Map<ViewStatisticsDescriptor, SingleStatsPanel> panelsByStatKey = statsPanelByDescriptorByLine.get(lineIndex);
+
+		if (panelsByStatKey == null) {
+			panelsByStatKey = new HashMap<>();
+			statsPanelByDescriptorByLine.put(lineIndex, panelsByStatKey);
+		}
+		return panelsByStatKey;
+	}
+
+	private int getTotalCountForLine(String lineIndex) {
+		int total = 0;
+		for (Entry<ViewStatisticsDescriptor, Integer> entry : getSortedStatsDescriptorList(lineIndex)) {
+			total += entry.getValue();
+		}
+		return total;
+	}
+
+	private List<Entry<ViewStatisticsDescriptor, Integer>> getSortedStatsDescriptorList(String index) {
 		List<Entry<ViewStatisticsDescriptor, Integer>> list = new ArrayList<>();
 		list.addAll(model.getStatistics(index).entrySet());
-		Collections.sort(list, new Comparator<Entry<ViewStatisticsDescriptor, Integer>>() {
-			@Override
-			public int compare(Entry<ViewStatisticsDescriptor, Integer> e1, Entry<ViewStatisticsDescriptor, Integer> e2) {
-				return e1.getKey().getIndex() < e2.getKey().getIndex() ? -1 : 1;
-			}
-		});
+		sort(list, createComparatorByStatsViewIndex());
 		return list;
 	}
 
-	protected boolean isRebuildNeeded() {
-		return model.getStatisticsDescriptorCount() != statDescriptorCounter;
+	private Comparator<Entry<ViewStatisticsDescriptor, Integer>> createComparatorByStatsViewIndex() {
+		return (e1, e2) -> e1.getKey().getIndex() < e2.getKey().getIndex() ? -1 : 1;
 	}
 
-	protected int statDescriptorCounter = 0;
+	private boolean isRebuildNeeded() {
+		return statDescriptorCounter != 0 && model.getStatisticsDescriptorCount() != statDescriptorCounter;
+	}
 
-	protected void updateStats(ViewStatisticsDescriptor desc, int qty,
-			Map<ViewStatisticsDescriptor, SingleStatsPanel> panelsForLineIndex, int total) {
-		SingleStatsPanel panel = panelsForLineIndex.get(desc);
-		if (panel == null) {
-			panel = new SingleStatsPanel(desc);
-			statDescriptorCounter++;
-			panelsForLineIndex.put(desc, panel);
-			getPanelLineStats().add(panel, "wrap,pushx,growx");
-		}
-		panel.setCount("" + qty);
+	private void updateSingleStatsForALine(ViewStatisticsDescriptor desc, String lineIndex, int qty, int total) {
+		SingleStatsPanel panel = getOrCreateSingleStatsPanel(lineIndex, desc);
+		panel.setCount(qty);
+		updateTotalPercentage(panel, qty, total);
+	}
 
+	private void updateTotalPercentage(SingleStatsPanel panel, int qty, int total) {
 		if (total > 0) {
 			float percent = 100f * qty / total;
 			panel.setPercent(percentFormater.format(percent) + "%");
@@ -160,7 +192,18 @@ public class StatisticsView extends AbstractView<IStatisticsViewListener, Statis
 		}
 	}
 
-	protected SingleStatsPanel panelTotal;
+	private SingleStatsPanel getOrCreateSingleStatsPanel(String lineIndex, ViewStatisticsDescriptor desc) {
+		Map<ViewStatisticsDescriptor, SingleStatsPanel> panelsForLineIndex = getOrCreatePanelsByStatKeyForALine(lineIndex);
+
+		SingleStatsPanel panel = panelsForLineIndex.get(desc);
+		if (panel == null) {
+			panel = new SingleStatsPanel(desc);
+			statDescriptorCounter++;
+			panelsForLineIndex.put(desc, panel);
+			getPanelLineStats().add(panel, "wrap,pushx,growx");
+		}
+		return panel;
+	}
 
 	public SingleStatsPanel getPanelTotal() {
 		if (panelTotal == null) {
@@ -168,68 +211,13 @@ public class StatisticsView extends AbstractView<IStatisticsViewListener, Statis
 					999);
 			desc.setLine("total");
 			panelTotal = new SingleStatsPanel(desc);
-			panelTotal.labelPercent.setVisible(false);
+			panelTotal.getLabelPercent().setVisible(false);
 		}
 		return panelTotal;
 	}
 
-	protected void updateTotal() {
-		getPanelTotal().setCount("" + model.getTotal());
-	}
-
-	public static class SingleStatsPanel extends JPanel {
-
-		protected JLabel labelCount;
-		protected JLabel labelPercent;
-
-		public SingleStatsPanel(ViewStatisticsDescriptor descriptor) {
-			setLayout(new MigLayout("fill, inset 0 0 0 0"));
-
-			String text = "";
-			text = Messages.get("line." + descriptor.getLine()) + " - ";
-			text += Messages.get(descriptor.getKey());
-
-			JLabel label = new JLabel(text);
-			label.setForeground(descriptor.getColor());
-			add(label, " w 250!");
-
-			labelPercent = new JLabel("-");
-			labelCount = new JLabel("0");
-
-			labelPercent.setForeground(descriptor.getColor());
-			labelCount.setForeground(descriptor.getColor());
-
-			add(labelCount, "w 75!,left");
-			add(labelPercent, "w 75!, left,pushx");
-		}
-
-		void setCount(String count) {
-			labelCount.setText(count);
-		}
-
-		void setPercent(String percent) {
-			labelPercent.setText(percent);
-		}
-	}
-
-	public static class LineSpeedPanel extends JPanel {
-
-		JLabel labelSpeedValue;
-
-		public LineSpeedPanel(int line) {
-			setLayout(new MigLayout("fill, inset 0 0 0 0"));
-
-			labelSpeedValue = new JLabel();
-
-			String text = Messages.get("line" + line) + " - " + Messages.get("stats.display.speed");
-			add(new JLabel(text), "w 250");
-			add(labelSpeedValue, "spanx, left,pushx");
-			// add(new JLabel(Messages.get("stats.display.speed.unit")), "left");
-		}
-
-		public void setLineSpeed(String speed) {
-			labelSpeedValue.setText("" + speed);
-		}
+	private void updateTotal() {
+		getPanelTotal().setCount(model.getTotal());
 	}
 
 	public JLabel getLabelTitle() {
@@ -255,19 +243,15 @@ public class StatisticsView extends AbstractView<IStatisticsViewListener, Statis
 
 	@Subscribe
 	public void handleLanguageSwitch(LanguageSwitchEvent evt) {
-		refreshAll();
+		ThreadUtils.invokeLater(() -> removeAllStatsFromScreen());
 	}
 
-	protected void refreshAll() {
-		ThreadUtils.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				getLabelTitle().setText(Messages.get("statistics.title"));
-				mapDescriptors.clear();
-				mapLineSpeed.clear();
-				getPanelLineStats().removeAll();
-				getPanelLineSpeed().removeAll();
-			}
-		});
+	private void removeAllStatsFromScreen() {
+		getLabelTitle().setText(Messages.get("statistics.title"));
+		statDescriptorCounter = 0;
+		statsPanelByDescriptorByLine.clear();
+		panelSpeedByLineIndex.clear();
+		getPanelLineStats().removeAll();
+		getPanelLineSpeed().removeAll();
 	}
 }
