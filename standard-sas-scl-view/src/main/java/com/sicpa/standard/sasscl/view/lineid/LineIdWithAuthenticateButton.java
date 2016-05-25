@@ -36,8 +36,9 @@ public class LineIdWithAuthenticateButton extends DefaultLineIdPanel {
 	private JLabel labelUserInfo;
 	private JLabel labelLogAs;
 	private JPanel panelButton;
-	protected LoginService loginService;
-	protected JXLoginPane xloginPanel;
+	private LoginService loginService;
+	private JXLoginPane xloginPanel;
+	private LoginDialog loginDialog;
 
 	public LineIdWithAuthenticateButton() {
 		EventBusService.register(this);
@@ -56,22 +57,19 @@ public class LineIdWithAuthenticateButton extends DefaultLineIdPanel {
 		});
 	}
 
-	protected void logout() {
+	private void logout() {
 		showUserInfo(SecurityService.getCurrentUser());
-		getView().getConfigPanel().setPanelButtonsVisible(false);
 		getButtonLogout().setVisible(false);
 		getButtonLogin().setVisible(true);
 	}
 
-	protected void login() {
+	private void login() {
 		showUserInfo(SecurityService.getCurrentUser());
-		getView().getConfigPanel().setPanelButtonsVisible(true);
 		getButtonLogin().setVisible(false);
 		getButtonLogout().setVisible(true);
 	}
 
 	private void initGUI() {
-
 		showUserInfo(SecurityService.getCurrentUser());
 		add(getPanelButton(), "north");
 	}
@@ -97,12 +95,12 @@ public class LineIdWithAuthenticateButton extends DefaultLineIdPanel {
 		return buttonLogout;
 	}
 
-	protected void buttonLogoutActionPerformed() {
+	private void buttonLogoutActionPerformed() {
 		OperatorLogger.log("User Logout");
 		((MainFrame) getView()).logoutActionPerformed();
 	}
 
-	protected void buttonLoginActionPerformed() {
+	private void buttonLoginActionPerformed() {
 		getXloginPanel().setUserName("");
 		getXloginPanel().setPassword(new char[] {});
 
@@ -130,8 +128,6 @@ public class LineIdWithAuthenticateButton extends DefaultLineIdPanel {
 		return loginService;
 	}
 
-	LoginDialog loginDialog;
-
 	public LoginDialog getLoginDialog() {
 		if (loginDialog == null) {
 			getLoginService().addLoginListener(new LoginAdapter() {
@@ -149,8 +145,8 @@ public class LineIdWithAuthenticateButton extends DefaultLineIdPanel {
 
 	@Subscribe
 	public void handleLanguageSwitchEvent(LanguageSwitchEvent evt) {
-		this.loginDialog = null;
-		this.xloginPanel = null;
+		loginDialog = null;
+		xloginPanel = null;
 	}
 
 	public JXLoginPane getXloginPanel() {
@@ -163,7 +159,7 @@ public class LineIdWithAuthenticateButton extends DefaultLineIdPanel {
 		return xloginPanel;
 	}
 
-	protected AbstractMachineFrame getView() {
+	private AbstractMachineFrame getView() {
 		for (Frame f : JFrame.getFrames()) {
 			if (f instanceof AbstractMachineFrame) {
 				return (AbstractMachineFrame) f;
@@ -180,7 +176,7 @@ public class LineIdWithAuthenticateButton extends DefaultLineIdPanel {
 		return labelUserInfo;
 	}
 
-	protected void showUserInfo(final User user) {
+	private void showUserInfo(final User user) {
 		if (user != null) {
 			getLabelUserInfo().setText(user.getLogin());
 		} else {
