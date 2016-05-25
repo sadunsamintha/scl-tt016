@@ -9,9 +9,9 @@ public class BeanCall implements IBeanCall {
 
 	private static Logger logger= LoggerFactory.getLogger(BeanCall.class);
 
-	protected Object bean;
-	protected String methodName;
-	protected String description;
+	private Object bean;
+	private String methodName;
+	private String description;
 
 	public BeanCall(Object bean, String methodName, String description) {
 		this.bean = bean;

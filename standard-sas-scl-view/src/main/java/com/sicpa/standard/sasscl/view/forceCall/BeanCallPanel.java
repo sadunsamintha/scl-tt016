@@ -2,8 +2,6 @@ package com.sicpa.standard.sasscl.view.forceCall;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -23,13 +21,13 @@ import com.sicpa.standard.gui.utils.ThreadUtils;
 import com.sicpa.standard.sasscl.common.log.OperatorLogger;
 import com.sicpa.standard.sasscl.security.SasSclPermission;
 
+@SuppressWarnings("serial")
 public class BeanCallPanel extends JPanel implements ISecuredComponentGetter {
 
-	private static final long serialVersionUID = 1L;
-	protected List<IBeanCall> beancalls;
-	protected JXLayer<JComponent> lockPanel;
-	protected JPanel mainPanel;
-	protected LockUI lockui;
+	private List<IBeanCall> beancalls;
+	private JXLayer<JComponent> lockPanel;
+	private JPanel mainPanel;
+	private LockUI lockui;
 
 	public BeanCallPanel() {
 	}
@@ -66,31 +64,19 @@ public class BeanCallPanel extends JPanel implements ISecuredComponentGetter {
 
 	private class ButtonCall extends JButton {
 
-		private static final long serialVersionUID = 1L;
 		IBeanCall call;
 
 		public ButtonCall(IBeanCall _call) {
 			super(_call.getDescription());
 			this.call = _call;
 
-			addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					OperatorLogger.log("Force Call Action - {}", call.getDescription());
-					lockui.lock();
-					TaskExecutor.execute(new Runnable() {
-						@Override
-						public void run() {
-							call.run();
-							SwingUtilities.invokeLater(new Runnable() {
-								@Override
-								public void run() {
-									lockui.unLock();
-								}
-							});
-						}
-					});
-				}
+			addActionListener(e -> {
+				OperatorLogger.log("Force Call Action - {}", call.getDescription());
+				lockui.lock();
+				TaskExecutor.execute(() -> {
+					call.run();
+					SwingUtilities.invokeLater(() -> lockui.unLock());
+				});
 			});
 		}
 	}

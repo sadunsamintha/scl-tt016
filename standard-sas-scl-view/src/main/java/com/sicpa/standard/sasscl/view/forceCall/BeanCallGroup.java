@@ -4,8 +4,8 @@ import java.util.List;
 
 public class BeanCallGroup implements IBeanCall {
 
-	protected String description;
-	protected List<Runnable> calls;
+	private String description;
+	private List<Runnable> calls;
 
 	@Override
 	public void run() {
@@ -22,7 +22,7 @@ public class BeanCallGroup implements IBeanCall {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	
+
 	public void setCalls(List<Runnable> calls) {
 		this.calls = calls;
 	}
