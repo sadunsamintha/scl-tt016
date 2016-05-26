@@ -12,24 +12,27 @@ import com.sicpa.standard.sasscl.model.statistics.ViewStatisticsDescriptor;
 
 public class StatisticsViewModel extends AbstractObservableModel {
 
-	private final Map<ViewStatisticsDescriptor, Integer> mapStats = new HashMap<>();
-	private final Map<Integer, String> mapSpeed = new TreeMap<>();
-
+	private final Map<ViewStatisticsDescriptor, Integer> qtyByStatsKey = new HashMap<>();
+	private final Map<Integer, String> speedByLineIndex = new TreeMap<>();
 	private int total = 0;
 	private int uptimeInSec;
 
+	private boolean totalVisible;
+	private boolean lineSpeedVisible;
+	private final Map<String, Boolean> visibilityByStatisticsKey = new HashMap<>();
+
 	public void setSpeed(int line, String speed) {
-		mapSpeed.put(line, speed);
+		speedByLineIndex.put(line, speed);
 	}
 
 	public Map<Integer, String> getLineSpeed() {
-		return mapSpeed;
+		return speedByLineIndex;
 	}
 
 	public Map<ViewStatisticsDescriptor, Integer> getStatistics(String line) {
-		synchronized (mapStats) {
+		synchronized (qtyByStatsKey) {
 			Map<ViewStatisticsDescriptor, Integer> res = new HashMap<>();
-			for (Entry<ViewStatisticsDescriptor, Integer> entry : mapStats.entrySet()) {
+			for (Entry<ViewStatisticsDescriptor, Integer> entry : qtyByStatsKey.entrySet()) {
 				if (entry.getKey().getLine().equals(line)) {
 					res.put(entry.getKey(), entry.getValue());
 				}
@@ -40,15 +43,15 @@ public class StatisticsViewModel extends AbstractObservableModel {
 
 	public Collection<String> getLineIndexes() {
 		Collection<String> res = new HashSet<>();
-		for (Entry<ViewStatisticsDescriptor, Integer> entry : mapStats.entrySet()) {
+		for (Entry<ViewStatisticsDescriptor, Integer> entry : qtyByStatsKey.entrySet()) {
 			res.add(entry.getKey().getLine());
 		}
 		return res;
 	}
 
 	public void setStatistics(ViewStatisticsDescriptor statsKey, int qty) {
-		synchronized (mapStats) {
-			mapStats.put(statsKey, qty);
+		synchronized (qtyByStatsKey) {
+			qtyByStatsKey.put(statsKey, qty);
 		}
 	}
 
@@ -69,13 +72,37 @@ public class StatisticsViewModel extends AbstractObservableModel {
 	}
 
 	public int getStatisticsDescriptorCount() {
-		return mapStats.size();
+		return qtyByStatsKey.size();
 	}
 
 	public void reset() {
-		mapSpeed.clear();
-		mapStats.clear();
+		speedByLineIndex.clear();
+		qtyByStatsKey.clear();
 		total = 0;
 		uptimeInSec = 0;
+	}
+
+	public void setTotalVisible(boolean totalVisible) {
+		this.totalVisible = totalVisible;
+	}
+
+	public boolean isTotalVisible() {
+		return totalVisible;
+	}
+
+	public void setLineSpeedVisible(boolean lineSpeedVisible) {
+		this.lineSpeedVisible = lineSpeedVisible;
+	}
+
+	public boolean isLineSpeedVisible() {
+		return lineSpeedVisible;
+	}
+
+	public void setStatisticsVisible(String statsKey, boolean visible) {
+		visibilityByStatisticsKey.put(statsKey, visible);
+	}
+
+	public boolean isStatisticVisible(String statsKey) {
+		return visibilityByStatisticsKey.getOrDefault(statsKey, true);
 	}
 }

@@ -7,9 +7,9 @@ import com.sicpa.standard.common.util.Messages;
 
 public class UptimeFormater {
 
-	protected final Calendar calendar;
-	final protected SimpleDateFormat formater;
-	protected String prefix;
+	private final Calendar calendar;
+	private final SimpleDateFormat formater;
+	private String prefix;
 
 	public UptimeFormater(String dateFormat) {
 		formater = new SimpleDateFormat(dateFormat);
@@ -17,7 +17,7 @@ public class UptimeFormater {
 		prefix = Messages.get("statistics.uptime");
 	}
 
-	protected void initCalendar() {
+	private void initCalendar() {
 		calendar.set(Calendar.HOUR_OF_DAY, 0);
 		calendar.set(Calendar.MINUTE, 0);
 		calendar.set(Calendar.SECOND, 0);

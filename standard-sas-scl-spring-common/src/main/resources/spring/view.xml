@@ -199,6 +199,9 @@
 	<bean id="statisticsViewController" class="com.sicpa.standard.sasscl.view.main.statistics.StatisticsViewController">
 		<property name="statistics" ref="statistics" />
 		<property name="descriptorMapping" ref="statisticsKeyToViewDescriptorMapping" />
+		<property name="allProperties" ref="allProperties" />
+		<property name="lineSpeedVisible" value="${statistics.view.visible.speed}" />
+		<property name="totalVisible" value="${statistics.view.visible.total}" />
 	</bean>
 
 	<!-- SELECTION DISPLAY -->
