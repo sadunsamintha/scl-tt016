@@ -21,7 +21,7 @@ import net.miginfocom.swing.MigLayout;
 import com.sicpa.standard.client.common.security.ILoginListener;
 import com.sicpa.standard.client.common.security.SecurityService;
 import com.sicpa.standard.client.common.view.ISecuredComponentGetter;
-import com.sicpa.standard.common.util.Messages;
+import com.sicpa.standard.client.common.i18n.Messages;
 import com.sicpa.standard.gui.plaf.SicpaColor;
 import com.sicpa.standard.gui.screen.machine.AbstractMachineFrame;
 import com.sicpa.standard.gui.screen.machine.component.SelectionFlow.flow.DefaultSelectionFlowView;

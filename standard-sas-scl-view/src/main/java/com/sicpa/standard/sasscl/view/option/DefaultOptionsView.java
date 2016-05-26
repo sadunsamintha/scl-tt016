@@ -7,7 +7,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 
 import com.google.common.eventbus.Subscribe;
-import com.sicpa.standard.common.util.Messages;
+import com.sicpa.standard.client.common.i18n.Messages;
 import com.sicpa.standard.gui.components.buttons.PaddedButton;
 import com.sicpa.standard.sasscl.view.LanguageSwitchEvent;
 

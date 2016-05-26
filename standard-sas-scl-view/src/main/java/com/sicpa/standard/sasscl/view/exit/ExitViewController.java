@@ -20,7 +20,7 @@ import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.view.question.Answer;
 import com.sicpa.standard.client.common.view.question.QuestionEvent;
-import com.sicpa.standard.common.util.Messages;
+import com.sicpa.standard.client.common.i18n.Messages;
 import com.sicpa.standard.gui.plaf.SicpaColor;
 import com.sicpa.standard.sasscl.common.log.OperatorLogger;
 import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState;

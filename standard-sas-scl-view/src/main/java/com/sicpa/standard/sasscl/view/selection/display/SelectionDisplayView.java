@@ -2,7 +2,7 @@ package com.sicpa.standard.sasscl.view.selection.display;
 
 import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.view.mvc.AbstractView;
-import com.sicpa.standard.common.util.Messages;
+import com.sicpa.standard.client.common.i18n.Messages;
 import com.sicpa.standard.gui.components.text.MultiLineLabel;
 import com.sicpa.standard.gui.utils.ImageUtils;
 import com.sicpa.standard.sasscl.model.CodeType;

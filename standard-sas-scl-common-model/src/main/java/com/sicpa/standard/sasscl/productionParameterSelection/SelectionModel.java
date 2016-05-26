@@ -6,7 +6,7 @@ import java.util.Map;
 
 import com.sicpa.standard.client.common.security.Permission;
 import com.sicpa.standard.client.common.security.SecurityService;
-import com.sicpa.standard.common.util.Messages;
+import com.sicpa.standard.client.common.i18n.Messages;
 import com.sicpa.standard.gui.screen.machine.component.SelectionFlow.SelectableItem;
 import com.sicpa.standard.gui.screen.machine.component.SelectionFlow.flow.AbstractSelectionFlowModel;
 import com.sicpa.standard.sasscl.model.ProductionMode;

@@ -2,7 +2,7 @@ package com.sicpa.standard.sasscl.view;
 
 import java.awt.Color;
 
-import com.sicpa.standard.common.util.Messages;
+import com.sicpa.standard.client.common.i18n.Messages;
 import com.sicpa.standard.gui.screen.machine.component.applicationStatus.ApplicationStatus;
 
 public class STDSASSCLApplicationStatus extends ApplicationStatus {

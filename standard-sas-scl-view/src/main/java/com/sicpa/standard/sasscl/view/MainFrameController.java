@@ -23,7 +23,7 @@ import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.messages.IMessageCodeMapper;
 import com.sicpa.standard.client.common.view.ISecuredComponentGetter;
-import com.sicpa.standard.common.util.Messages;
+import com.sicpa.standard.client.common.i18n.Messages;
 import com.sicpa.standard.gui.components.layeredComponents.lock.lockingError.LockingErrorModel;
 import com.sicpa.standard.gui.plaf.SicpaColor;
 import com.sicpa.standard.gui.screen.machine.MachineViewController;

@@ -1,7 +1,7 @@
 package com.sicpa.tt016.view.selection.stop;
 
 import com.sicpa.standard.client.common.view.mvc.AbstractView;
-import com.sicpa.standard.common.util.Messages;
+import com.sicpa.standard.client.common.i18n.Messages;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;

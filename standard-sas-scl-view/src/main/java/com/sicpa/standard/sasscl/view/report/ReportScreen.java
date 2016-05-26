@@ -3,7 +3,7 @@ package com.sicpa.standard.sasscl.view.report;
 import com.sicpa.standard.client.common.security.Permission;
 import com.sicpa.standard.client.common.utils.TaskExecutor;
 import com.sicpa.standard.client.common.view.ISecuredComponentGetter;
-import com.sicpa.standard.common.util.Messages;
+import com.sicpa.standard.client.common.i18n.Messages;
 import com.sicpa.standard.gui.components.buttons.PaddedButton;
 import com.sicpa.standard.gui.components.buttons.toggleButtons.ToggleImageAndTextButton;
 import com.sicpa.standard.sasscl.monitoring.MonitoringService;

@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.messages.MessageEvent;
 import com.sicpa.standard.client.common.utils.TaskExecutor;
-import com.sicpa.standard.common.util.Messages;
+import com.sicpa.standard.client.common.i18n.Messages;
 import com.sicpa.standard.gui.utils.ThreadUtils;
 import com.sicpa.standard.printer.controller.IPrinterController;
 import com.sicpa.standard.printer.controller.IPrinterControllerListener;

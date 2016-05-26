@@ -3,7 +3,7 @@ package com.sicpa.standard.sasscl.skucheck.view;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.sicpa.standard.common.util.Messages;
+import com.sicpa.standard.client.common.i18n.Messages;
 import com.sicpa.standard.sasscl.skucheck.acquisition.GroupAcquisitionType;
 import com.sicpa.standard.sasscl.skucheck.acquisition.SingleAcquisitionType;
 

@@ -19,7 +19,7 @@ import net.miginfocom.swing.MigLayout;
 
 import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.view.mvc.AbstractView;
-import com.sicpa.standard.common.util.Messages;
+import com.sicpa.standard.client.common.i18n.Messages;
 import com.sicpa.standard.gui.plaf.SicpaColor;
 import com.sicpa.standard.gui.utils.ThreadUtils;
 import com.sicpa.standard.sasscl.model.statistics.ViewStatisticsDescriptor;

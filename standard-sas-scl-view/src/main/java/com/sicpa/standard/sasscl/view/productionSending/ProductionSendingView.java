@@ -12,7 +12,7 @@ import javax.swing.SwingUtilities;
 import net.miginfocom.swing.MigLayout;
 
 import com.sicpa.standard.client.common.view.mvc.AbstractView;
-import com.sicpa.standard.common.util.Messages;
+import com.sicpa.standard.client.common.i18n.Messages;
 import com.sicpa.standard.gui.components.buttons.PaddedButton;
 import com.sicpa.standard.gui.plaf.SicpaLookAndFeel;
 

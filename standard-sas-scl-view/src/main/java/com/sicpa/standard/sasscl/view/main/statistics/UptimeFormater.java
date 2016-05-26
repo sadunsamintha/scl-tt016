@@ -3,7 +3,7 @@ package com.sicpa.standard.sasscl.view.main.statistics;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-import com.sicpa.standard.common.util.Messages;
+import com.sicpa.standard.client.common.i18n.Messages;
 
 public class UptimeFormater {
 

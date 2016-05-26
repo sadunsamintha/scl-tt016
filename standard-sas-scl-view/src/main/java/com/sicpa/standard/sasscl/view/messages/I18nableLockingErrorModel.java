@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.sicpa.standard.common.util.Messages;
+import com.sicpa.standard.client.common.i18n.Messages;
 import com.sicpa.standard.gui.components.layeredComponents.lock.lockingError.LockingErrorModel;
 
 public class I18nableLockingErrorModel extends LockingErrorModel {

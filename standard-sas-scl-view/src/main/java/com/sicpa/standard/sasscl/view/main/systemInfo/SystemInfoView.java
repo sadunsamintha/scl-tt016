@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.view.mvc.AbstractView;
-import com.sicpa.standard.common.util.Messages;
+import com.sicpa.standard.client.common.i18n.Messages;
 import com.sicpa.standard.gui.components.label.DateTimeLabel;
 import com.sicpa.standard.gui.plaf.SicpaColor;
 import com.sicpa.standard.sasscl.view.LanguageSwitchEvent;

@@ -13,7 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.sicpa.standard.client.common.utils.AppUtils;
-import com.sicpa.standard.common.util.Messages;
+import com.sicpa.standard.client.common.i18n.Messages;
 import com.sicpa.standard.gui.I18n.GUIi18nManager;
 import com.sicpa.standard.gui.plaf.SicpaLookAndFeel;
 

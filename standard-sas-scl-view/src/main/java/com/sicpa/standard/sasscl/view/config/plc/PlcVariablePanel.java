@@ -12,7 +12,7 @@ import javax.swing.JSeparator;
 
 import net.miginfocom.swing.MigLayout;
 
-import com.sicpa.standard.common.util.Messages;
+import com.sicpa.standard.client.common.i18n.Messages;
 import com.sicpa.standard.sasscl.devices.plc.variable.PlcVariableGroup;
 import com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcVariableDescriptor;
 

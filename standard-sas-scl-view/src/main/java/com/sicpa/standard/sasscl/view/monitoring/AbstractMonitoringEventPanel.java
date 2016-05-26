@@ -20,7 +20,7 @@ import org.jdesktop.swingx.JXDatePicker;
 
 import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.utils.TaskExecutor;
-import com.sicpa.standard.common.util.Messages;
+import com.sicpa.standard.client.common.i18n.Messages;
 import com.sicpa.standard.gui.components.scroll.SmallScrollBar;
 import com.sicpa.standard.gui.components.table.BeanReaderJTable;
 import com.sicpa.standard.sasscl.view.LanguageSwitchEvent;

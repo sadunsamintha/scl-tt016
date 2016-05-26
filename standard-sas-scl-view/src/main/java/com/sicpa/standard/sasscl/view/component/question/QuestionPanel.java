@@ -30,7 +30,7 @@ import org.jdesktop.swingx.color.ColorUtil;
 import org.pushingpixels.trident.Timeline;
 
 import com.sicpa.standard.client.common.view.question.Answer;
-import com.sicpa.standard.common.util.Messages;
+import com.sicpa.standard.client.common.i18n.Messages;
 import com.sicpa.standard.gui.components.buttons.PaddedButton;
 import com.sicpa.standard.gui.components.buttons.shape.DirectionButton;
 import com.sicpa.standard.gui.components.buttons.shape.DirectionButton.Direction;

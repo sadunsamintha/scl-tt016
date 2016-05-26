@@ -17,7 +17,7 @@ import net.miginfocom.swing.MigLayout;
 import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.security.Permission;
 import com.sicpa.standard.client.common.view.ISecuredComponentGetter;
-import com.sicpa.standard.common.util.Messages;
+import com.sicpa.standard.client.common.i18n.Messages;
 import com.sicpa.standard.gui.components.scroll.SmallScrollBar;
 import com.sicpa.standard.gui.utils.ThreadUtils;
 import com.sicpa.standard.sasscl.devices.plc.variable.PlcVariableGroupEvent;

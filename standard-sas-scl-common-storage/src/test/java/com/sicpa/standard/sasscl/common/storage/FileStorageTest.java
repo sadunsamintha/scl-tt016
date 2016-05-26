@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory;
 
 import com.sicpa.standard.client.common.storage.impl.XStreamFileStorage;
 import com.sicpa.standard.client.common.utils.LogUtils;
-import com.sicpa.standard.common.util.Messages;
+import com.sicpa.standard.client.common.i18n.Messages;
 import com.sicpa.standard.gui.utils.ThreadUtils;
 import com.sicpa.standard.sasscl.common.storage.productPackager.DefaultProductsPackager;
 import com.sicpa.standard.sasscl.common.storage.productPackager.IProductsPackager;

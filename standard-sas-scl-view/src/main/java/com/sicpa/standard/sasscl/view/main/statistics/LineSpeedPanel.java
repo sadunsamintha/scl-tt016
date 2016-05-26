@@ -3,9 +3,10 @@ package com.sicpa.standard.sasscl.view.main.statistics;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import com.sicpa.standard.client.common.i18n.Messages;
+
 import net.miginfocom.swing.MigLayout;
 
-import com.sicpa.standard.client.common.i18n.Messages;
 
 @SuppressWarnings("serial")
 public class LineSpeedPanel extends JPanel {

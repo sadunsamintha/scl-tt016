@@ -1,6 +1,6 @@
 package com.sicpa.standard.sasscl.productionParameterSelection.node.impl;
 
-import com.sicpa.standard.common.util.Messages;
+import com.sicpa.standard.client.common.i18n.Messages;
 import com.sicpa.standard.sasscl.model.ProductionMode;
 import com.sicpa.standard.sasscl.productionParameterSelection.node.AbstractProductionParametersNode;
 

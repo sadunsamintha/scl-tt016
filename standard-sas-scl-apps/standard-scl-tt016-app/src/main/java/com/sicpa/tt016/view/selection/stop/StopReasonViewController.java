@@ -1,7 +1,7 @@
 package com.sicpa.tt016.view.selection.stop;
 
 import com.google.common.eventbus.Subscribe;
-import com.sicpa.standard.common.util.Messages;
+import com.sicpa.standard.client.common.i18n.Messages;
 import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState;
 import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowStateChangedEvent;
 import com.sicpa.standard.sasscl.controller.flow.FlowControl;

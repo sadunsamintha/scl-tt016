@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
 
 import com.sicpa.standard.client.common.security.Permission;
 import com.sicpa.standard.client.common.view.ISecuredComponentGetter;
-import com.sicpa.standard.common.util.Messages;
+import com.sicpa.standard.client.common.i18n.Messages;
 import com.sicpa.standard.gui.components.renderers.SicpaTableCellRenderer;
 import com.sicpa.standard.gui.components.table.BeanReaderJTable;
 import com.sicpa.standard.gui.utils.ThreadUtils;
