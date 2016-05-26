@@ -1,28 +1,21 @@
 package com.sicpa.standard.sasscl.monitoring.mbean.sas;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.io.FileUtils;
-import org.slf4j.LoggerFactory;
-
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
-
 import com.sicpa.standard.client.common.ioc.BeanProvider;
 import com.sicpa.standard.client.common.utils.ThreadDumpBean;
 import com.sicpa.standard.sasscl.monitoring.MonitoringService;
 import com.sicpa.standard.sasscl.monitoring.statistics.incremental.IncrementalStatistics;
-import com.sicpa.standard.sasscl.monitoring.statistics.production.ProductionStatistics;
 import com.sicpa.standard.sasscl.monitoring.system.event.BasicSystemEvent;
 import com.sicpa.standard.sasscl.monitoring.utils.FileInfo;
 import com.thoughtworks.xstream.XStream;
+import org.apache.commons.io.FileUtils;
+import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
 
 public class RemoteControlSas implements RemoteControlSasMBean {
 
@@ -122,11 +115,6 @@ public class RemoteControlSas implements RemoteControlSasMBean {
 	@Override
 	public List<IncrementalStatistics> getIncrementalStatistics(final Date from, final Date to) {
 		return MonitoringService.getIncrementalStatistics(from, to);
-	}
-
-	@Override
-	public List<ProductionStatistics> getProductionStatistics(final Date from, final Date to) {
-		return MonitoringService.getProductionStatistics(from, to);
 	}
 
 	@Override
