@@ -1,5 +1,8 @@
 package com.sicpa.standard.sasscl.devices.camera.simulator;
 
+import static com.sicpa.standard.gui.utils.ImageUtils.changeSizeKeepRatio;
+import static com.sicpa.standard.gui.utils.ImageUtils.createCameraImage;
+
 import java.awt.Image;
 import java.io.File;
 import java.io.OutputStream;
@@ -30,7 +33,6 @@ import com.sicpa.standard.camera.parser.event.CodeEventArgs;
 import com.sicpa.standard.camera.parser.event.ErrorCodeEventArgs;
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.messages.MessageEvent;
-import com.sicpa.standard.gui.utils.ImageUtils;
 import com.sicpa.standard.gui.utils.ThreadUtils;
 import com.sicpa.standard.sasscl.devices.simulator.gui.SimulatorControlView;
 import com.sicpa.standard.sasscl.messages.MessageEventKey;
@@ -52,6 +54,8 @@ import com.sicpa.standard.sasscl.model.ProductionParameters;
  */
 public class CameraSimulatorController implements ICognexCameraController<CameraSimulatorConfig>,
 		ICameraControllerSimulator {
+
+	private static final int CAMERA_IMAGE_SIZE_PX = 600;
 
 	private static final Logger logger = LoggerFactory.getLogger(CameraSimulatorController.class);
 
@@ -270,7 +274,7 @@ public class CameraSimulatorController implements ICognexCameraController<Camera
 
 	@Override
 	public Image getCameraImage() {
-		return ImageUtils.createCameraImage();
+		return changeSizeKeepRatio(createCameraImage(), CAMERA_IMAGE_SIZE_PX, CAMERA_IMAGE_SIZE_PX);
 	}
 
 	public void setProductionParameters(ProductionParameters productionParameters) {
