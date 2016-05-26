@@ -90,7 +90,7 @@ public class PlcMonitoringView extends AbstractView<IMonitoringViewListener, Plc
 
 	@Override
 	public Permission getPermission() {
-		return SasSclPermission.MONITORING_MBEAN;
+		return SasSclPermission.ADVANCED_MONITORING;
 	}
 
 	@Override
