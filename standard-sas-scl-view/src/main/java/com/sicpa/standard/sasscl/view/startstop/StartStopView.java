@@ -1,8 +1,5 @@
 package com.sicpa.standard.sasscl.view.startstop;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
 import javax.swing.AbstractButton;
 
 import net.miginfocom.swing.MigLayout;
@@ -25,7 +22,7 @@ public class StartStopView extends AbstractStartStopView {
 		initGUI();
 	}
 
-	protected void initGUI() {
+	private void initGUI() {
 		setLayout(new MigLayout("fill, inset 0 0 0 0"));
 		add(getButtonStart(), "sg 1, w 110!,h 110!");
 		add(getButtonStop(), "sg 1");
@@ -36,12 +33,7 @@ public class StartStopView extends AbstractStartStopView {
 			buttonStart = new StartStopButton(eStartStop.START);
 			buttonStart.setText(GUIi18nManager.get(AbstractMachineFrame.I18N_START));
 			buttonStart.setEnabled(false);
-			buttonStart.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					buttonStartActionPerformed();
-				}
-			});
+			buttonStart.addActionListener(e -> buttonStartActionPerformed());
 		}
 		return buttonStart;
 	}
@@ -56,12 +48,7 @@ public class StartStopView extends AbstractStartStopView {
 			buttonStop = new StartStopButton(eStartStop.STOP);
 			buttonStop.setEnabled(false);
 			buttonStop.setText(GUIi18nManager.get(AbstractMachineFrame.I18N_STOP));
-			buttonStop.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					buttonStopActionPerformed();
-				}
-			});
+			buttonStop.addActionListener(e -> buttonStopActionPerformed());
 		}
 		return buttonStop;
 	}

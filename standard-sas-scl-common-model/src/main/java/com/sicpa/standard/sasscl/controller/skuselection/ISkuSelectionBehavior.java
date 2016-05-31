@@ -1,5 +1,7 @@
 package com.sicpa.standard.sasscl.controller.skuselection;
 
+import com.sicpa.standard.sasscl.controller.ProductionParametersEvent;
+
 public interface ISkuSelectionBehavior {
 
 	boolean isLoadPreviousSelection();
@@ -8,12 +10,6 @@ public interface ISkuSelectionBehavior {
 
 	void stopProduction();
 
-	void onError();
-
-	void onDisconnection();
-
-	void onProductionParameterChanged();
-
-	void onProductReadButNoSelection();
+	void onProductionParameterChanged(ProductionParametersEvent evt);
 
 }

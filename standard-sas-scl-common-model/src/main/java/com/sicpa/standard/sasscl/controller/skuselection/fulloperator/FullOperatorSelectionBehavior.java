@@ -1,14 +1,10 @@
 package com.sicpa.standard.sasscl.controller.skuselection.fulloperator;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import com.sicpa.standard.sasscl.controller.ProductionParametersEvent;
 import com.sicpa.standard.sasscl.controller.flow.IFlowControl;
 import com.sicpa.standard.sasscl.controller.skuselection.ISkuSelectionBehavior;
 
 public class FullOperatorSelectionBehavior implements ISkuSelectionBehavior {
-
-	private static final Logger logger = LoggerFactory.getLogger(FullOperatorSelectionBehavior.class);
 
 	private IFlowControl flowControl;
 
@@ -28,24 +24,7 @@ public class FullOperatorSelectionBehavior implements ISkuSelectionBehavior {
 	}
 
 	@Override
-	public void onError() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void onDisconnection() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void onProductionParameterChanged() {
-		throw new IllegalStateException();
-	}
-
-	@Override
-	public void onProductReadButNoSelection() {
+	public void onProductionParameterChanged(ProductionParametersEvent evt) {
 		throw new IllegalStateException();
 	}
 
