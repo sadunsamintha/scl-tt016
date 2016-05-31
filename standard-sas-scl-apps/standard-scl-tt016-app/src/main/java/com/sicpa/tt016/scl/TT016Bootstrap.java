@@ -5,6 +5,7 @@ import static com.sicpa.standard.sasscl.controller.flow.ActivityTrigger.TRG_RECO
 import static com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState.STT_CONNECTED;
 import static com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState.STT_EXIT;
 import static com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState.STT_RECOVERING;
+import static com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState.STT_SELECT_WITH_PREVIOUS;
 import static com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState.STT_STOPPING;
 import static com.sicpa.standard.sasscl.custoBuilder.CustoBuilder.addScreen;
 import static com.sicpa.standard.sasscl.custoBuilder.CustoBuilder.addScreenTransitions;
@@ -26,6 +27,7 @@ public class TT016Bootstrap extends Bootstrap {
 
 	private MainPanelGetter mainPanelGetter;
 	private StopReasonViewController stopReasonViewController;
+	private boolean withOperatorFullSelection;
 
 	@Override
 	public void executeSpringInitTasks() {
@@ -33,20 +35,35 @@ public class TT016Bootstrap extends Bootstrap {
 		noStopIfDmxDetectedInExport();
 		selectStopReasonWhenProductionStop();
 	}
-	
+
 	private void noStopIfDmxDetectedInExport() {
 		setMessageType(MessageEventKey.Activation.EXCEPTION_CODE_IN_EXPORT, ActionMessageType.WARNING);
 	}
-	
-	private void selectStopReasonWhenProductionStop(){
+
+	private void selectStopReasonWhenProductionStop() {
 		addScreen(stopReasonViewController);
 		addScreenTransitions(mainPanelGetter,
 				new ScreenTransition(STOP_PRODUCTION, stopReasonViewController));
 		addScreenTransitions(stopReasonViewController,
 				new ScreenTransition(STOP_PRODUCTION_REASON_SELECTED, mainPanelGetter));
 
+		if (withOperatorFullSelection) {
+			setFlowStoppingThenToConnected();
+		} else {
+			setFlowStoppingThenToSelection();
+		}
+	}
+
+	private void setFlowStoppingThenToConnected() {
 		setStateNextPossibleStates(STT_STOPPING,
 				new FlowTransition(TRG_STOP_REASON_SELECTED, STT_CONNECTED),
+				new FlowTransition(TRG_RECOVERING_CONNECTION, STT_RECOVERING),
+				new FlowTransition(TRG_EXIT_APPLICATION, STT_EXIT));
+	}
+
+	private void setFlowStoppingThenToSelection() {
+		setStateNextPossibleStates(STT_STOPPING,
+				new FlowTransition(TRG_STOP_REASON_SELECTED, STT_SELECT_WITH_PREVIOUS),
 				new FlowTransition(TRG_RECOVERING_CONNECTION, STT_RECOVERING),
 				new FlowTransition(TRG_EXIT_APPLICATION, STT_EXIT));
 	}
@@ -57,5 +74,9 @@ public class TT016Bootstrap extends Bootstrap {
 
 	public void setStopReasonViewController(StopReasonViewController stopReasonViewController) {
 		this.stopReasonViewController = stopReasonViewController;
+	}
+
+	public void setWithOperatorFullSelection(boolean withOperatorFullSelection) {
+		this.withOperatorFullSelection = withOperatorFullSelection;
 	}
 }

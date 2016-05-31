@@ -112,6 +112,7 @@ public class DefaultFlowControlWiring extends AbstractFlowControlWiring {
 				new FlowTransition(TRG_EXIT_APPLICATION, STT_EXIT));
 
 		addNext(STT_STOPPING,
+				new FlowTransition(TRG_ENTERSELECTION, STT_SELECT_WITH_PREVIOUS),
 				new FlowTransition(TRG_HARDWARE_CONNECTED, STT_CONNECTED),
 				new FlowTransition(TRG_RECOVERING_CONNECTION, STT_RECOVERING),
 				new FlowTransition(TRG_EXIT_APPLICATION, STT_EXIT));

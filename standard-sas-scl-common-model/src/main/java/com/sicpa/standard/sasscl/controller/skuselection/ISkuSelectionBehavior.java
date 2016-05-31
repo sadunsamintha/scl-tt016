@@ -10,6 +10,6 @@ public interface ISkuSelectionBehavior {
 
 	void stopProduction();
 
-	void onProductionParameterChanged(ProductionParametersEvent evt);
+	void duringProductionOnProductionParameterChanged(ProductionParametersEvent evt);
 
 }
