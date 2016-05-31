@@ -11,7 +11,7 @@ public class ExecutorConnected implements IStateAction {
 
 	@Override
 	public void enter() {
-		if (skuSelectionBehavior.isAutomaticStartProductionAfterSelection()) {
+		if (skuSelectionBehavior.isStartAutomaticWhenReady()) {
 			flowControl.notifyStartProduction();
 		}
 	}

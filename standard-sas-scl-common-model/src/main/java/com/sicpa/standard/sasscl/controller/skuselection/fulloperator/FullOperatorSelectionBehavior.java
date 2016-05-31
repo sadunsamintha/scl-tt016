@@ -14,7 +14,7 @@ public class FullOperatorSelectionBehavior implements ISkuSelectionBehavior {
 	}
 
 	@Override
-	public boolean isAutomaticStartProductionAfterSelection() {
+	public boolean isStartAutomaticWhenReady() {
 		return false;
 	}
 

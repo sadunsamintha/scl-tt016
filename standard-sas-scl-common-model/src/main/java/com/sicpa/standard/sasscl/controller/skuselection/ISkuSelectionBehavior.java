@@ -6,7 +6,7 @@ public interface ISkuSelectionBehavior {
 
 	boolean isLoadPreviousSelection();
 
-	boolean isAutomaticStartProductionAfterSelection();
+	boolean isStartAutomaticWhenReady();
 
 	void stopProduction();
 
