@@ -138,6 +138,7 @@
 	</bean>
 	<bean id="startStopViewController" class="com.sicpa.standard.sasscl.view.startstop.StartStopViewController">
 		<property name="flowControl" ref="flowControl" />
+		<property name="skuSelectionBehavior" ref="skuSelectionBehavior" />
 	</bean>
 
 	<!-- SELECTION CHANGE -->
