@@ -11,6 +11,7 @@ import com.sicpa.standard.sasscl.common.log.OperatorLogger;
 import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState;
 import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowStateChangedEvent;
 import com.sicpa.standard.sasscl.controller.flow.IFlowControl;
+import com.sicpa.standard.sasscl.controller.skuselection.ISkuSelectionBehavior;
 
 public class StartStopViewController implements IStartStopViewListener {
 
@@ -19,6 +20,7 @@ public class StartStopViewController implements IStartStopViewListener {
 
 	private StartStopModel model;
 	private IFlowControl flowControl;
+	private ISkuSelectionBehavior skuSelectionBehavior;
 
 	public StartStopViewController(StartStopModel model) {
 		this.model = model;
@@ -44,7 +46,7 @@ public class StartStopViewController implements IStartStopViewListener {
 	@Override
 	public void stop() {
 		OperatorLogger.log("Stop Production");
-		flowControl.notifyStopProduction();
+		skuSelectionBehavior.stopProduction();
 	}
 
 	public StartStopModel getModel() {
@@ -53,5 +55,9 @@ public class StartStopViewController implements IStartStopViewListener {
 
 	public void setFlowControl(IFlowControl flowControl) {
 		this.flowControl = flowControl;
+	}
+
+	public void setSkuSelectionBehavior(ISkuSelectionBehavior skuSelectionBehavior) {
+		this.skuSelectionBehavior = skuSelectionBehavior;
 	}
 }

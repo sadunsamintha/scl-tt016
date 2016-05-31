@@ -1,5 +1,8 @@
 package com.sicpa.standard.sasscl.controller.hardware;
 
+import static com.sicpa.standard.sasscl.monitoring.MonitoringService.addSystemEvent;
+import static com.sicpa.standard.sasscl.monitoring.system.SystemEventType.APPLICATION_MESSAGE;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.text.MessageFormat;
@@ -171,24 +174,31 @@ public class HardwareController implements IHardwareController, IHardwareControl
 
 	@Subscribe
 	public void handleDeviceError(ActionEventDeviceError event) {
-		String sourceKey;
-		if (event.getSource() instanceof IDevice) {
-			sourceKey = ((IDevice) event.getSource()).getName();
-		} else {
-			sourceKey = event.getSource() + "";
-		}
+		String sourceKey = getEventSourceToString(event);
 
 		if (devicesErrorsRepository.addError(sourceKey, event.getKey(),
 				Messages.format(event.getKey(), event.getParams()))) {
-			// if the error is a new one
-			String key = event.getKey();
-			Object[] params = event.getParams();
+			onNewError(event);
+		}
+	}
 
-			MonitoringService.addSystemEvent(new BasicSystemEvent(SystemEventLevel.ERROR,
-					SystemEventType.APPLICATION_MESSAGE, MessageFormat.format(key, params)));
-			EventBusService.post(new ErrorViewEvent(key, null, true, params));
+	private void onNewError(ActionEventDeviceError event) {
+		// if the error is a new one
+		String key = event.getKey();
+		Object[] params = event.getParams();
 
-			currentState.errorMessageAdded();
+		String errorLog = MessageFormat.format(key, params);
+		addSystemEvent(new BasicSystemEvent(SystemEventLevel.ERROR, APPLICATION_MESSAGE, errorLog));
+		EventBusService.post(new ErrorViewEvent(key, null, true, params));
+
+		currentState.errorMessageAdded();
+	}
+
+	private String getEventSourceToString(ActionEventDeviceError event) {
+		if (event.getSource() instanceof IDevice) {
+			return ((IDevice) event.getSource()).getName();
+		} else {
+			return event.getSource() + "";
 		}
 	}
 

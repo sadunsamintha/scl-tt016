@@ -18,6 +18,7 @@ beans{
 		cabPlcVarGroups=ref('cabPlcVarGroups')
 		jmxBean=ref('statsMBean')
 		encoderSequenceValidator=ref('encoderSequenceValidator')
+		skuSelectionBehavior=ref('skuSelectionBehavior')
 	}
 
 	encoderSequenceValidator(EncoderSequenceValidator){

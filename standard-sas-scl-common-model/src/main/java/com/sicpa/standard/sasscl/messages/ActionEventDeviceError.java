@@ -9,4 +9,10 @@ public class ActionEventDeviceError extends ActionEvent {
 
 	public ActionEventDeviceError() {
 	}
+	
+	@Override
+	public String getKey() {
+		// TODO Auto-generated method stub
+		return super.getKey();
+	}
 }
