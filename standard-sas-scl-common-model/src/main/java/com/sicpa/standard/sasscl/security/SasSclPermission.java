@@ -36,5 +36,8 @@ public interface SasSclPermission {
 	Permission SCREENSHOT = new Permission("SCREENSHOT");
 
 	Permission DEVICE_CONTEXT_CONSOLE = new Permission("DEVICE_CONTEXT_CONSOLE");
+	
+	Permission ADVANCED_CONTROL = new Permission("ADVANCED_CONTROL");
+	Permission ADVANCED_MONITORING = new Permission("ADVANCED_MONITORING");
 
 }
