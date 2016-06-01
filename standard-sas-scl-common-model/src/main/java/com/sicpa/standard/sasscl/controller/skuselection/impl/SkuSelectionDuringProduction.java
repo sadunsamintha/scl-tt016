@@ -1,4 +1,4 @@
-package com.sicpa.standard.sasscl.controller.skuselection.partial;
+package com.sicpa.standard.sasscl.controller.skuselection.impl;
 
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.sasscl.controller.ProductionParametersEvent;
@@ -6,7 +6,7 @@ import com.sicpa.standard.sasscl.controller.skuselection.ISkuSelectionBehavior;
 import com.sicpa.standard.sasscl.model.ProductionParameters;
 
 public class SkuSelectionDuringProduction implements ISkuSelectionBehavior {
-	
+
 	private ProductionParameters productionParameters;
 
 	@Override

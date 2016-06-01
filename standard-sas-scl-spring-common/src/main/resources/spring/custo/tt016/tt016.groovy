@@ -13,7 +13,6 @@ beans{
 		b.parent=ref('bootstrapAlias')
 		mainPanelGetter=ref('mainPanelGetter')
 		stopReasonViewController=ref('stopReasonViewController')
-		withOperatorFullSelection=props['skuSelection.behavior']=='operator_full'
 	}
 
 	importBeans('spring/custo/tt016/tt016View.xml')
