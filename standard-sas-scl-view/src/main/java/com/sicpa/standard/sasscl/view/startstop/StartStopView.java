@@ -5,6 +5,8 @@ import java.awt.event.ActionListener;
 
 import javax.swing.AbstractButton;
 
+import com.sicpa.standard.common.util.ThreadUtils;
+import com.sicpa.standard.sasscl.view.productionStatus.ProductionStatusView;
 import net.miginfocom.swing.MigLayout;
 
 import com.google.common.eventbus.Subscribe;
@@ -20,15 +22,21 @@ public class StartStopView extends AbstractStartStopView {
 	private AbstractButton buttonStart;
 	private AbstractButton buttonStop;
 
+
+	private ProductionStatusView productionStatusView;
+
+
 	public StartStopView() {
 		setOpaque(false);
-		initGUI();
 	}
 
-	protected void initGUI() {
-		setLayout(new MigLayout("fill, inset 0 0 0 0"));
-		add(getButtonStart(), "sg 1, w 110!,h 110!");
-		add(getButtonStop(), "sg 1");
+	public void initGUI() {
+		com.sicpa.standard.gui.utils.ThreadUtils.invokeLater(() -> {
+			setLayout(new MigLayout("fill, inset 0 0 0 0"));
+			add(getButtonStart(), "sg 1, w 110!,h 110!");
+			add(getButtonStop(), "sg 1");
+			add(productionStatusView, "w 50,h 50");
+		});
 	}
 
 	public AbstractButton getButtonStart() {
@@ -82,5 +90,10 @@ public class StartStopView extends AbstractStartStopView {
 		getButtonStart().setText(GUIi18nManager.get(AbstractMachineFrame.I18N_START));
 		getButtonStop().setText(GUIi18nManager.get(AbstractMachineFrame.I18N_STOP));
 	}
+
+	public void setProductionStatusView(ProductionStatusView productionStatusView) {
+		this.productionStatusView = productionStatusView;
+	}
+
 
 }
