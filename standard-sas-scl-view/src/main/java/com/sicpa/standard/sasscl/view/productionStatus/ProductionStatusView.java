@@ -3,8 +3,10 @@ package com.sicpa.standard.sasscl.view.productionStatus;
 
 import com.sicpa.standard.client.common.view.mvc.AbstractView;
 import com.sicpa.standard.gui.plaf.SicpaColor;
+
 import net.miginfocom.swing.MigLayout;
 
+@SuppressWarnings("serial")
 public class ProductionStatusView extends AbstractView<IProductionStatusViewListener, ProductionStatusViewModel> {
 
     private ProductStatusBar bar;

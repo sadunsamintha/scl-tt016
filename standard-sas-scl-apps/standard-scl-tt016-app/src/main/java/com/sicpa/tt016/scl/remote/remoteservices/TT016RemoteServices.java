@@ -24,7 +24,6 @@ import com.sicpa.tt016.common.dto.EncoderSclDTO;
 import com.sicpa.tt016.common.dto.ExportSessionDTO;
 import com.sicpa.tt016.common.dto.IEjectionDTO;
 import com.sicpa.tt016.common.dto.MaintenanceSessionDTO;
-import com.sicpa.tt016.common.dto.NonActivationSessionDTO;
 import com.sicpa.tt016.common.dto.OfflineSessionDTO;
 import com.sicpa.tt016.common.dto.SkuDTO;
 import com.sicpa.tt016.common.model.CodeType;
