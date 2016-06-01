@@ -15,6 +15,7 @@
 		<property name="securedPanels">
 			<list>
 				<ref bean="plcMonitoringView" />
+				<ref bean="advancedControlView" />
 				<ref bean="plcVariablesPanel" />
 				<ref bean="productionStatisticsPanel" />
 				<ref bean="systemEventPanel" />
@@ -132,9 +133,11 @@
 
 	<!-- START STOP VIEW -->
 
-	<bean id="startStopView" class="com.sicpa.standard.sasscl.view.startstop.StartStopView">
+	<bean id="startStopView" class="com.sicpa.standard.sasscl.view.startstop.StartStopView" init-method="initGUI">
 		<property name="controller" ref="startStopViewController" />
 		<property name="model" value="#{startStopViewController.model}" />
+		<property name="productionStatusView" ref="productionStatusView"/>
+
 	</bean>
 	<bean id="startStopViewController" class="com.sicpa.standard.sasscl.view.startstop.StartStopViewController">
 		<property name="flowControl" ref="flowControl" />
@@ -262,6 +265,20 @@
 		<property name="viewController" ref="mainFrameController" />
 	</bean>
 
+
+	<!--ProductionStatusView-->
+	<bean id="productionStatusView" class="com.sicpa.standard.sasscl.view.productionStatus.ProductionStatusView">
+		<property name="controller" ref="productionStatusViewController" />
+		<property name="model" value="#{productionStatusViewController.model}" />
+	</bean>
+
+	<bean id="productionStatusViewController" class="com.sicpa.standard.sasscl.view.productionStatus.ProductionStatusViewController">
+		<property name="view" ref="productionStatusView" />
+		<property name="enable" value="${displayProductionStatusBar}" />
+	</bean>
+
+
+
 	<!-- advanced monitoring -->
 	<bean id="plcMonitoringRawDisplay" class="com.sicpa.standard.sasscl.view.monitoring.advanced.PlcMonitoringRawDisplay" />
 
@@ -280,5 +297,24 @@
 			</list>
 		</property>
 	</bean>
+
+	<!-- advanced control -->
+
+	<bean id="advancedControlView" class="com.sicpa.standard.sasscl.view.advancedControl.AdvancedControlView">
+		<property name="views">
+			<list>
+				<ref bean="printerControlView" />
+			</list>
+		</property>
+	</bean>
+
+	<bean id="printerControlView" class="com.sicpa.standard.sasscl.view.advancedControl.component.printer.PrinterControlView">
+		<property name="controller" ref="printerControlViewController" />
+		<property name="model" value="#{printerControlViewController.model}" />
+	</bean>
+	<bean id="printerControlViewController" class="com.sicpa.standard.sasscl.view.advancedControl.component.printer.PrinterControlViewController">
+		<property name="hardwareController" ref="hardwareController" />
+	</bean>
+
 
 </beans>

@@ -9,7 +9,9 @@
 	<transitionMaxExpiredRequests>10</transitionMaxExpiredRequests>
 	<resetOnStop>true</resetOnStop>
 	<requestBufferStatusPeriod>500</requestBufferStatusPeriod>
-	<requestParamPeriod>2000</requestParamPeriod>
+	<requestMonitoringLowFrequency>86400000</requestMonitoringLowFrequency>
+	<requestMonitoringMediumFrequency>3600000</requestMonitoringMediumFrequency>
+	<requestMonitoringHighFrequency>300000</requestMonitoringHighFrequency>
 	<requestStatusPeriod>500</requestStatusPeriod>
 	<allowedInkTags>79000-*</allowedInkTags>
 	<allowedSolventTags>77001-*</allowedSolventTags>
