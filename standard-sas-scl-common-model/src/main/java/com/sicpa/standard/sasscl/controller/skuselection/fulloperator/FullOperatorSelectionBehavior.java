@@ -16,7 +16,7 @@ public class FullOperatorSelectionBehavior implements ISkuSelectionBehavior {
 	}
 
 	@Override
-	public void onProductionParameterChanged(ProductionParametersEvent evt) {
+	public void duringProductionOnProductionParameterChanged(ProductionParametersEvent evt) {
 		throw new IllegalStateException();
 	}
 
