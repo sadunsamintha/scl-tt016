@@ -6,9 +6,7 @@ beans{
 
 	switch(skuBehavior) {
 		case 'OPERATOR_FULL':
-			skuSelectionBehavior(FullOperatorSelectionBehavior){
-				flowControl = ref('flowControl')
-			}
+			skuSelectionBehavior(FullOperatorSelectionBehavior)
 			break
 		default:
 			throw new RuntimeException('skuSelection.behavior:'+skuBehavior)
