@@ -33,6 +33,7 @@ public class BisAdapter extends AbstractStartableDevice implements IBisAdaptor, 
 	private final DateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	private IBisController controller;
 	private SkuListProvider skuListProvider;
+	private boolean blockProduction;
 
 	public BisAdapter() {
 		setName("BIS");
@@ -174,6 +175,10 @@ public class BisAdapter extends AbstractStartableDevice implements IBisAdaptor, 
 
 	@Override
 	public boolean isBlockProductionStart() {
-		return false;
+		return blockProduction;
+	}
+
+	public void setBlockProduction(boolean blockProduction) {
+		this.blockProduction = blockProduction;
 	}
 }

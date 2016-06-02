@@ -112,7 +112,6 @@ public class BisRemoteServer implements IBisController, IBisMessageHandlerListen
 			logger.error(e.getMessage(), e);
 			throw new BisAdaptorException("Fail to connect to remote server!", e);
 		}
-
 	}
 
 	@Override
@@ -207,9 +206,9 @@ public class BisRemoteServer implements IBisController, IBisMessageHandlerListen
 			@Override
 			public void run() {
 				try {
-					if (isConnected())
+					if (isConnected()) {
 						return;
-					// notify all interested parties like UI, logs, etc...
+					}
 					for (IBisControllerListener controllerListener : bisControllerListeners) {
 						controllerListener.onLifeCheckFailed();
 					}
@@ -252,7 +251,6 @@ public class BisRemoteServer implements IBisController, IBisMessageHandlerListen
 	@Override
 	public void lifeCheckReceived(LifeCheck lifeCheckResponse) {
 		this.receiveLifeCheckResponce(lifeCheckResponse);
-		// forward to listener
 		for (IBisControllerListener controllerListener : bisControllerListeners) {
 			controllerListener.lifeCheckReceived(lifeCheckResponse);
 		}
