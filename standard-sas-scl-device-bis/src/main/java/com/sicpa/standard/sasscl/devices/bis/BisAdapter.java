@@ -14,10 +14,6 @@ import org.springframework.util.CollectionUtils;
 
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.messages.MessageEvent;
-import com.sicpa.standard.sasscl.controller.productionconfig.ConfigurationFailedException;
-import com.sicpa.standard.sasscl.controller.productionconfig.IConfigurable;
-import com.sicpa.standard.sasscl.controller.productionconfig.IConfigurator;
-import com.sicpa.standard.sasscl.controller.productionconfig.config.BisConfig;
 import com.sicpa.standard.sasscl.devices.AbstractStartableDevice;
 import com.sicpa.standard.sasscl.devices.DeviceException;
 import com.sicpa.standard.sasscl.devices.DeviceStatus;
@@ -30,12 +26,11 @@ import com.sicpa.std.bis2.core.messages.RemoteMessages.LifeCheck;
 import com.sicpa.std.bis2.core.messages.RemoteMessages.RecognitionResultMessage;
 import com.sicpa.std.bis2.core.messages.RemoteMessages.SkuMessage;
 
-public class BisAdapter extends AbstractStartableDevice implements IBisAdaptor, IBisControllerListener,
-		IConfigurable<BisConfig, IBisAdaptor> {
+public class BisAdapter extends AbstractStartableDevice implements IBisAdaptor, IBisControllerListener {
 
 	private static final Logger logger = LoggerFactory.getLogger(BisAdapter.class);
 
-	private DateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	private final DateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	private IBisController controller;
 	private SkuListProvider skuListProvider;
 
@@ -120,7 +115,7 @@ public class BisAdapter extends AbstractStartableDevice implements IBisAdaptor, 
 		}
 	}
 
-	public void fireAlertEvent(Alert alert) {
+	private void fireAlertEvent(Alert alert) {
 		Calendar alertDatetime = Calendar.getInstance();
 		alertDatetime.setTimeInMillis(alert.getWhen());
 
@@ -156,17 +151,15 @@ public class BisAdapter extends AbstractStartableDevice implements IBisAdaptor, 
 		fireRecognitionResultEvent(result);
 	}
 
-	protected void updateControllerSkuList(List<SKU> skuList) {
+	private void updateControllerSkuList(List<SKU> skuList) {
 		if (!CollectionUtils.isEmpty(skuList)) {
 			List<SkuMessage> controllerSkus = new ArrayList<SkuMessage>();
 			for (SKU sku : skuList) {
 				controllerSkus.add(RemoteMessages.SkuMessage.newBuilder().setId(sku.getId())
 						.setDescription(sku.getDescription()).build());
 			}
-
 			controller.sendSkuList(RemoteMessages.SkusMessage.newBuilder().addAllSku(controllerSkus).build());
 		}
-
 	}
 
 	@Override
@@ -182,19 +175,5 @@ public class BisAdapter extends AbstractStartableDevice implements IBisAdaptor, 
 	@Override
 	public boolean isBlockProductionStart() {
 		return false;
-	}
-
-	@Override
-	public IConfigurator<BisConfig, IBisAdaptor> getConfigurator() {
-		return new IConfigurator<BisConfig, IBisAdaptor>() {
-			@Override
-			public void execute(BisConfig config, IBisAdaptor configurable) throws ConfigurationFailedException {
-				configure(config);
-			}
-		};
-	}
-
-	protected void configure(BisConfig config) throws ConfigurationFailedException {
-
 	}
 }

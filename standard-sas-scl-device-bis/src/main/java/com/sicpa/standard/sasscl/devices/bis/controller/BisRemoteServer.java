@@ -34,99 +34,100 @@ import com.sicpa.std.bis2.remote.netty.ProtobufPipelineFactory;
 
 public class BisRemoteServer implements IBisController, IBisMessageHandlerListener {
 
-	protected static final Logger LOGGER = LoggerFactory.getLogger(BisRemoteServer.class);
+	private static final Logger logger = LoggerFactory.getLogger(BisRemoteServer.class);
 
-	protected IBisModel model;
-	protected Channel channel;
-	protected ChannelFuture connectFuture;
-	protected ClientBootstrap bootstrap;
-	protected LifeCheck lifeCheck;
-	protected IScheduleWorker connectionLifeCheckWorker;
-	protected IScheduleWorker recognitionResultRequestWorker;
-	protected Stack<Integer> lifeCheckTags = new Stack<Integer>();
+	private IBisModel model;
+	private Channel channel;
+	private ChannelFuture connectFuture;
+	private ClientBootstrap bootstrap;
+	private LifeCheck lifeCheck;
+	private IScheduleWorker connectionLifeCheckWorker;
+	private IScheduleWorker recognitionResultRequestWorker;
+	private Stack<Integer> lifeCheckTags = new Stack<>();
 
-	protected AtomicBoolean isSchedulerWorkerInit = new AtomicBoolean(false);
+	private AtomicBoolean isSchedulerWorkerInit = new AtomicBoolean(false);
 
-	protected BisMessagesHandler bisMessagesHandler;
+	private BisMessagesHandler bisMessagesHandler;
 
-	protected List<IBisControllerListener> bisControllerListeners = new ArrayList<IBisControllerListener>();
+	private final List<IBisControllerListener> bisControllerListeners = new ArrayList<>();
 
-	private ExecutorService singleThreadedExecutorService = Executors.newSingleThreadExecutor();
-	
+	private final ExecutorService singleThreadedExecutorService = Executors.newSingleThreadExecutor();
+
 	public BisRemoteServer(IBisModel model) {
+		setModel(model);
+		init();
+	}
 
-		this.model = model;
+	private void init() {
+		connectionLifeCheckWorker = new ConnectionLifeCheckWorker(model.getConnectionLifeCheckInterval());
+		connectionLifeCheckWorker.addController(this);
 
-		this.connectionLifeCheckWorker = new ConnectionLifeCheckWorker(this.model.getConnectionLifeCheckInterval());
-		this.connectionLifeCheckWorker.addController(this);
-
-		this.recognitionResultRequestWorker = new RecognitionResultRequestWorker(
-				this.model.getRecognitionResultRequestInterval());
-		this.recognitionResultRequestWorker.addController(this);
+		recognitionResultRequestWorker = new RecognitionResultRequestWorker(model.getRecognitionResultRequestInterval());
+		recognitionResultRequestWorker.addController(this);
 
 		// setting up bootstrap
-		this.bootstrap = new ClientBootstrap(new NioClientSocketChannelFactory(Executors.newCachedThreadPool(),
+		bootstrap = new ClientBootstrap(new NioClientSocketChannelFactory(Executors.newCachedThreadPool(),
 				Executors.newCachedThreadPool()));
 
 		// Configure the pipeline factory.
-		this.bisMessagesHandler = new BisMessagesHandler();
-		this.bisMessagesHandler.addListener(this);
-		this.bootstrap.setPipelineFactory(new ProtobufPipelineFactory(this.bisMessagesHandler));
-		this.bootstrap.setOption("remoteAddress", new InetSocketAddress(this.model.getAddress(), this.model.getPort()));
-		LOGGER.debug("Scheduler tasks started.");
+		bisMessagesHandler = new BisMessagesHandler();
+		bisMessagesHandler.addListener(this);
+		bootstrap.setPipelineFactory(new ProtobufPipelineFactory(bisMessagesHandler));
+		bootstrap.setOption("remoteAddress", new InetSocketAddress(model.getAddress(), model.getPort()));
+		logger.debug("Scheduler tasks started.");
 	}
- 
+
 	@Override
 	public void connect() throws BisAdaptorException {
-		
+
 		try {
 			if (channel != null) {
-				if (this.channel.isConnected()) {
-					this.channel.disconnect().awaitUninterruptibly();
+				if (channel.isConnected()) {
+					channel.disconnect().awaitUninterruptibly();
 				}
 
-				if (this.channel.isOpen()) {
-					this.channel.close();
+				if (channel.isOpen()) {
+					channel.close();
 				}
 			}
 
-			if (this.isSchedulerWorkerInit.compareAndSet(false, true)) {
-				this.connectionLifeCheckWorker.create();
-				this.recognitionResultRequestWorker.create();
+			if (isSchedulerWorkerInit.compareAndSet(false, true)) {
+				connectionLifeCheckWorker.create();
+				recognitionResultRequestWorker.create();
 			}
 
 			// Make a new connection.
-			this.connectFuture = bootstrap.connect();
-			
+			connectFuture = bootstrap.connect();
+
 			// Wait until the connection is made successfully.
-			this.channel = connectFuture.awaitUninterruptibly().getChannel();
+			channel = connectFuture.awaitUninterruptibly().getChannel();
 
 			// reset the lifeCheckTags to 0 Tag
-			this.lifeCheckTags.clear();
-			
+			lifeCheckTags.clear();
+
 			// start performing connect
-			this.connectionLifeCheckWorker.start();
+			connectionLifeCheckWorker.start();
 
 		} catch (Exception e) {
-			LOGGER.error(e.getMessage(), e);
+			logger.error(e.getMessage(), e);
 			throw new BisAdaptorException("Fail to connect to remote server!", e);
 		}
 
 	}
-	
+
 	@Override
 	public void disconnect() {
-		this.channel.disconnect().awaitUninterruptibly();
-		this.channel.close();
-		this.bootstrap.releaseExternalResources();
-		this.connectionLifeCheckWorker.dispose();
-		this.recognitionResultRequestWorker.dispose();
-		this.isSchedulerWorkerInit.set(false);
+		channel.disconnect().awaitUninterruptibly();
+		channel.close();
+		bootstrap.releaseExternalResources();
+		connectionLifeCheckWorker.dispose();
+		recognitionResultRequestWorker.dispose();
+		isSchedulerWorkerInit.set(false);
 	}
 
 	@Override
 	public void start() throws BisAdaptorException {
-		//recognitionResultRequestWorker.start();
+		// recognitionResultRequestWorker.start();
 	}
 
 	@Override
@@ -162,9 +163,9 @@ public class BisRemoteServer implements IBisController, IBisMessageHandlerListen
 		sendMessage(Command.newBuilder().setCommand(CommandType.RECOGNITION_REQUEST).build());
 
 	}
-	
+
 	@Override
-	public void sendAutoSave(){
+	public void sendAutoSave() {
 		sendMessage(Command.newBuilder().setCommand(CommandType.AUTO_SAVE).build());
 	}
 
@@ -200,52 +201,50 @@ public class BisRemoteServer implements IBisController, IBisMessageHandlerListen
 	@Override
 	public void onLifeCheckFailed() {
 
-
-
 		// do connect again
 		singleThreadedExecutorService.execute(new Runnable() {
-			
+
 			@Override
 			public void run() {
 				try {
-					if (BisRemoteServer.this.isConnected())
+					if (isConnected())
 						return;
 					// notify all interested parties like UI, logs, etc...
-					for (IBisControllerListener controllerListener : BisRemoteServer.this.bisControllerListeners) {
+					for (IBisControllerListener controllerListener : bisControllerListeners) {
 						controllerListener.onLifeCheckFailed();
 					}
-					
-					BisRemoteServer.this.connect();
+
+					connect();
 				} catch (BisAdaptorException e) {
-					LOGGER.error(e.getMessage(), e);
-				}		
+					logger.error(e.getMessage(), e);
+				}
 			}
 		});
-		
+
 	}
 
 	@Override
 	public void onLifeCheckSucceed() {
-		for (IBisControllerListener controllerListener : this.bisControllerListeners) {
+		for (IBisControllerListener controllerListener : bisControllerListeners) {
 			controllerListener.onConnection();
 		}
 	}
 
 	@Override
 	public IBisModel getModel() {
-		return this.model;
+		return model;
 	}
 
 	@Override
 	public void onConnected() {
-		for (IBisControllerListener controllerListener : this.bisControllerListeners) {
+		for (IBisControllerListener controllerListener : bisControllerListeners) {
 			controllerListener.onConnection();
 		}
 	}
 
 	@Override
 	public void onDisconnected() {
-		for (IBisControllerListener controllerListener : this.bisControllerListeners) {
+		for (IBisControllerListener controllerListener : bisControllerListeners) {
 			controllerListener.onDisconnection();
 		}
 	}
@@ -254,28 +253,28 @@ public class BisRemoteServer implements IBisController, IBisMessageHandlerListen
 	public void lifeCheckReceived(LifeCheck lifeCheckResponse) {
 		this.receiveLifeCheckResponce(lifeCheckResponse);
 		// forward to listener
-		for (IBisControllerListener controllerListener : this.bisControllerListeners) {
+		for (IBisControllerListener controllerListener : bisControllerListeners) {
 			controllerListener.lifeCheckReceived(lifeCheckResponse);
 		}
 	}
 
 	@Override
 	public void alertReceived(Alert command) {
-		for (IBisControllerListener controllerListener : this.bisControllerListeners) {
+		for (IBisControllerListener controllerListener : bisControllerListeners) {
 			controllerListener.alertReceived(command);
 		}
 	}
 
 	@Override
 	public void recognitionResultReceived(RecognitionResultMessage result) {
-		for (IBisControllerListener controllerListener : this.bisControllerListeners) {
+		for (IBisControllerListener controllerListener : bisControllerListeners) {
 			controllerListener.recognitionResultReceived(result);
 		}
 	}
 
 	@Override
 	public void onOtherMessageReceived(Object otherMessage) {
-		for (IBisControllerListener controllerListener : this.bisControllerListeners) {
+		for (IBisControllerListener controllerListener : bisControllerListeners) {
 			controllerListener.otherMessageReceived(otherMessage);
 		}
 	}
