@@ -51,8 +51,6 @@ public class BisAdapter extends AbstractStartableDevice implements IBisAdaptor, 
 		} catch (Exception e) {
 			EventBusService.post(new MessageEvent(MessageEventKey.BIS.BIS_DISCONNECTED));
 			throw new BisAdaptorException("BIS error on connect");
-		} finally {
-			fireDeviceStatusChanged(DeviceStatus.CONNECTED);
 		}
 	}
 
@@ -61,20 +59,18 @@ public class BisAdapter extends AbstractStartableDevice implements IBisAdaptor, 
 		try {
 			controller.disconnect();
 		} catch (Exception e) {
-			throw new BisAdaptorException("BIS error on disconnect");
-		} finally {
-			fireDeviceStatusChanged(DeviceStatus.DISCONNECTED);
+			logger.error("", e);
 		}
+		fireDeviceStatusChanged(DeviceStatus.DISCONNECTED);
 	}
 
 	@Override
 	protected void doStart() throws DeviceException {
 		try {
 			controller.start();
+			fireDeviceStatusChanged(DeviceStatus.STARTED);
 		} catch (Exception e) {
 			throw new BisAdaptorException("BIS error on start");
-		} finally {
-			fireDeviceStatusChanged(DeviceStatus.STARTED);
 		}
 	}
 
@@ -103,7 +99,7 @@ public class BisAdapter extends AbstractStartableDevice implements IBisAdaptor, 
 
 	@Override
 	public void onDisconnection() {
-		logger.debug("BisAdapter | onDisconnection() ...");
+		logger.debug("BisAdapter | onDisconnection()");
 		EventBusService.post(new MessageEvent(MessageEventKey.BIS.BIS_DISCONNECTED));
 	}
 

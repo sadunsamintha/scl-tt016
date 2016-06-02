@@ -49,7 +49,7 @@ public class SkuListProvider extends AbstractProvider<ProductionParameterRootNod
 			return false;
 		}
 		if (mode == null) {
-			return false;
+			return true;
 		}
 
 		if (node instanceof ProductionModeNode) {
