@@ -4,7 +4,7 @@ import com.sicpa.tt018.scl.business.activation.impl.AlbaniaMaintenanceActivation
 import com.sicpa.tt018.scl.business.activation.impl.AlbaniaExportActivationBehavior
 import com.sicpa.tt018.scl.business.activation.impl.AlbaniaSCLActivationBehaviour
 import com.sicpa.tt018.scl.camera.simulator.AlbaniaCameraSimulatorController
-import com.sicpa.tt018.scl.devices.plc.impl.AlbaniaPlcLoader
+import com.sicpa.tt018.scl.devices.plc.impl.*
 beans{
 
 	importBeans('spring/custo/tt018/tt018-application-context.xml')
@@ -38,6 +38,11 @@ beans{
 			'PARAM_LINE_SENSOR_TYPE'
 		]
 		plcView=ref('plcVariablesPanel')
+		fileByPackageType=ref('fileByPackageType')
+	}
+	
+	fileByPackageType(FileByPackageTypeMapping){
+		allowedProductPackage= Integer.parseInt(props['remoteServerAdapter.allowedProductType'])
 	}
 
 	addAlias('selectProductionParametersHandPickingViewAlias','selectProductionParametersHandPickingView')
