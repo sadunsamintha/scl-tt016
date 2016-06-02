@@ -3,11 +3,7 @@ package com.sicpa.standard.sasscl.devices.bis.worker;
 public class ConnectionLifeCheckWorker extends AbstractScheduleWorker {
 	protected boolean connected = false;
 
-	/**
-	 * constructor
-	 * 
-	 * @param scheduleInterval
-	 */
+
 	public ConnectionLifeCheckWorker(long scheduleInterval) {
 		super("BIS Connection Life Check Worker", scheduleInterval);
 	}

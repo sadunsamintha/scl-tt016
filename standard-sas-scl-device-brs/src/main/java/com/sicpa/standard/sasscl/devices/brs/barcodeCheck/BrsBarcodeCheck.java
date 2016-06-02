@@ -1,19 +1,18 @@
 package com.sicpa.standard.sasscl.devices.brs.barcodeCheck;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
-import com.sicpa.standard.client.common.messages.MessageEvent;
 import com.sicpa.standard.sasscl.controller.ProductionParametersEvent;
 import com.sicpa.standard.sasscl.devices.brs.event.BrsProductEvent;
 import com.sicpa.standard.sasscl.devices.brs.event.BrsWrongBarcodeEvent;
 import com.sicpa.standard.sasscl.devices.brs.sku.CompliantProduct;
-import com.sicpa.standard.sasscl.messages.MessageEventKey;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
 
 
 

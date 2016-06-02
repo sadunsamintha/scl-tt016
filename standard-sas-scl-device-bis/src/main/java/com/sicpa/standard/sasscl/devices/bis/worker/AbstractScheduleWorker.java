@@ -10,19 +10,10 @@ import com.sicpa.standard.sasscl.devices.bis.IScheduleWorker;
 
 public abstract class AbstractScheduleWorker implements IScheduleWorker {
 
-	/**
-	 * 
-	 */
 	protected boolean mWorking = true;
 
-	/**
-	 * 
-	 */
 	protected Thread mWorker;
 
-	/**
-	 * 
-	 */
 	protected long mScheduleInterval;
 
 	/**
@@ -102,10 +93,6 @@ public abstract class AbstractScheduleWorker implements IScheduleWorker {
 		this.join();
 	}
 
-	/**
-	 * 
-	 * 
-	 */
 	protected class Worker implements Runnable {
 
 		// ~ Implementation of Runnable

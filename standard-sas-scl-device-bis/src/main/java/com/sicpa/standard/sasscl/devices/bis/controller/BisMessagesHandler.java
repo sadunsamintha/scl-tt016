@@ -16,24 +16,18 @@ import com.sicpa.std.bis2.core.messages.RemoteMessages.LifeCheck;
 import com.sicpa.std.bis2.core.messages.RemoteMessages.LifeCheck.LifeCheckType;
 import com.sicpa.std.bis2.core.messages.RemoteMessages.RecognitionResultMessage;
 
-/**
- * Autor: MCarteaux Date: 11.10.12
- * <p/>
- * Copyright (c) 2011 SICPA Security Solutions, all rights reserved.
- */
 public class BisMessagesHandler extends SimpleChannelUpstreamHandler {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(BisMessagesHandler.class);
+	private static final Logger logger = LoggerFactory.getLogger(BisMessagesHandler.class);
 
-	// private IBisRemoteListener listener;
-	protected final List<IBisMessageHandlerListener> listeners = new ArrayList<IBisMessageHandlerListener>();
+	private final List<IBisMessageHandlerListener> listeners = new ArrayList<>();
 
 	public BisMessagesHandler() {
 	}
 
 	@Override
 	public void channelConnected(ChannelHandlerContext ctx, ChannelStateEvent e) throws Exception {
-		LOGGER.info("New client connected closed");
+		logger.info("New client connected closed");
 		if (listeners != null) {
 			for (IBisMessageHandlerListener listener : listeners) {
 				listener.onConnected();
@@ -44,7 +38,7 @@ public class BisMessagesHandler extends SimpleChannelUpstreamHandler {
 	@Override
 	public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
 		Object message = e.getMessage();
-		LOGGER.debug("Message received - " + message.getClass().getSimpleName());
+		logger.debug("Message received - " + message.getClass().getSimpleName());
 
 		if (message instanceof LifeCheck) {
 			LifeCheck response = (LifeCheck) message;
@@ -74,13 +68,13 @@ public class BisMessagesHandler extends SimpleChannelUpstreamHandler {
 			listener.onOtherMessageReceived(message);
 		}
 
-		LOGGER.debug(String.format("Unrecognised object class %s from %s", message.getClass().getSimpleName(), e
+		logger.debug(String.format("Unrecognised object class %s from %s", message.getClass().getSimpleName(), e
 				.getChannel().toString()));
 	}
 
 	@Override
 	public void channelClosed(ChannelHandlerContext ctx, ChannelStateEvent e) {
-		LOGGER.info("Channel closed, {}", e.getState().toString());
+		logger.info("Channel closed, {}", e.getState().toString());
 		if (listeners != null) {
 			for (IBisMessageHandlerListener listener : listeners) {
 				listener.onDisconnected();
@@ -94,7 +88,7 @@ public class BisMessagesHandler extends SimpleChannelUpstreamHandler {
 		try {
 			event.getChannel().close();
 		} catch (Exception e) {
-			LOGGER.error("Unexpected exception from downstream.", e.getCause());
+			logger.error("Unexpected exception from downstream.", e.getCause());
 		}
 	}
 
