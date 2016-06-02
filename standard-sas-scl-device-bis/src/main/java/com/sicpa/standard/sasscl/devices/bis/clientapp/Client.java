@@ -61,7 +61,6 @@ public class Client extends JFrame implements IBisControllerListener {
 		bisModel.setPort(8020);
 		bisModel.setConnectionLifeCheckInterval(1000);
 		bisModel.setRecognitionResultRequestInterval(1000);
-		bisModel.setUnknownSkuThreshold(5);
 		bisController = new BisRemoteServer(bisModel);
 		bisController.addListener(this);
 	}

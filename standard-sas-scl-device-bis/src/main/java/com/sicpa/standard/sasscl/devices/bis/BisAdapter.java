@@ -1,12 +1,13 @@
 package com.sicpa.standard.sasscl.devices.bis;
 
+import static java.util.Collections.unmodifiableList;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
@@ -20,10 +21,9 @@ import com.sicpa.standard.sasscl.controller.productionconfig.config.BisConfig;
 import com.sicpa.standard.sasscl.devices.AbstractStartableDevice;
 import com.sicpa.standard.sasscl.devices.DeviceException;
 import com.sicpa.standard.sasscl.devices.DeviceStatus;
-import com.sicpa.standard.sasscl.devices.bis.skucheck.IUnreadSkuHandler;
 import com.sicpa.standard.sasscl.messages.MessageEventKey;
 import com.sicpa.standard.sasscl.model.SKU;
-import com.sicpa.standard.sasscl.model.SkuCode;
+import com.sicpa.standard.sasscl.provider.impl.SkuListProvider;
 import com.sicpa.std.bis2.core.messages.RemoteMessages;
 import com.sicpa.std.bis2.core.messages.RemoteMessages.Alert;
 import com.sicpa.std.bis2.core.messages.RemoteMessages.LifeCheck;
@@ -35,12 +35,9 @@ public class BisAdapter extends AbstractStartableDevice implements IBisAdaptor, 
 
 	private static final Logger logger = LoggerFactory.getLogger(BisAdapter.class);
 
-	private SkuCheckFacadeProvider skuCheckFacadeProvider;
-	private int unknownSkuCount = 0;
 	private DateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	private IBisController controller;
-	private boolean autoSaveTriggered = false;
-	private IUnreadSkuHandler unreadSkuHandler;
+	private SkuListProvider skuListProvider;
 
 	public BisAdapter() {
 		setName("BIS");
@@ -77,7 +74,6 @@ public class BisAdapter extends AbstractStartableDevice implements IBisAdaptor, 
 	@Override
 	protected void doStart() throws DeviceException {
 		try {
-			unknownSkuCount = 0;
 			controller.start();
 		} catch (Exception e) {
 			throw new BisAdaptorException("BIS error on start");
@@ -100,9 +96,13 @@ public class BisAdapter extends AbstractStartableDevice implements IBisAdaptor, 
 	@Override
 	public void onConnection() {
 		logger.debug("BisAdapter | onConnection() ... ");
-		updateControllerSkuList(skuCheckFacadeProvider.get().getKnownSkus());
+		updateControllerSkuList(getAvailableSkus());
 
 		EventBusService.post(new MessageEvent(MessageEventKey.BIS.BIS_CONNECTED));
+	}
+
+	private List<SKU> getAvailableSkus() {
+		return unmodifiableList(new ArrayList<>(skuListProvider.getAvailableSKUs()));
 	}
 
 	@Override
@@ -113,23 +113,10 @@ public class BisAdapter extends AbstractStartableDevice implements IBisAdaptor, 
 
 	public void fireRecognitionResultEvent(RecognitionResultMessage result) {
 		if ((result.getConfidence() == null)
-				|| (result.getConfidence().getId() == controller.getModel().getUnknownSkuId())
-				|| (!StringUtils.isEmpty(result.getConfidence().getDescription()) && (result.getConfidence()
-						.getDescription().equalsIgnoreCase(controller.getModel().getUnknownSkuDescription())))) {
-			skuCheckFacadeProvider.get().addUnread();
-			unreadSkuHandler.addUnread();
-			unknownSkuCount++;
+				|| (result.getConfidence().getId() == controller.getModel().getUnknownSkuId())) {
+			// TODO not recognized
 		} else {
-			skuCheckFacadeProvider.get().addSku(new SkuCode(String.valueOf(result.getConfidence().getId())));
-			unreadSkuHandler.addRead();
-			unknownSkuCount = 0;
-			autoSaveTriggered = false;
-		}
-
-		skuCheckFacadeProvider.get().querySkus();
-
-		if (unreadSkuHandler.isThresholdReached()) {
-			EventBusService.post(new MessageEvent(this, MessageEventKey.BIS.BIS_UNKNOWN_SKU_EXCEED_THRESHOLD));
+			// TODO send recognition result
 		}
 	}
 
@@ -154,14 +141,6 @@ public class BisAdapter extends AbstractStartableDevice implements IBisAdaptor, 
 		}
 	}
 
-	public void setSkuCheckFacadeProvider(SkuCheckFacadeProvider skuCheckFacadeProvider) {
-		this.skuCheckFacadeProvider = skuCheckFacadeProvider;
-	}
-
-	public void setUnreadSkuHandler(IUnreadSkuHandler unreadSkuHandler) {
-		this.unreadSkuHandler = unreadSkuHandler;
-	}
-
 	@Override
 	public void lifeCheckReceived(LifeCheck lifeCheckResponse) {
 		// do nothing
@@ -175,16 +154,6 @@ public class BisAdapter extends AbstractStartableDevice implements IBisAdaptor, 
 	@Override
 	public void recognitionResultReceived(RecognitionResultMessage result) {
 		fireRecognitionResultEvent(result);
-
-		if ((this.controller.getModel().getUnknownSkuThreshold() != 0)
-				&& (unknownSkuCount >= controller.getModel().getUnknownSkuThreshold())) {
-			EventBusService.post(new MessageEvent(MessageEventKey.BIS.BIS_UNKNOWN_SKU));
-
-			if (!autoSaveTriggered) {
-				controller.sendAutoSave();
-				autoSaveTriggered = true;
-			}
-		}
 	}
 
 	protected void updateControllerSkuList(List<SKU> skuList) {

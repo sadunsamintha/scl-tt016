@@ -18,10 +18,6 @@ public interface IBisModel {
 
 	void setConnectionLifeCheckInterval(int connectionLifeCheckInterval);
 
-	int getUnknownSkuThreshold();
-
-	void setUnknownSkuThreshold(int unknownSkuThreshold);
-
 	int getUnknownSkuId();
 
 	void setUnknownSkuId(int unknownSkuId);
@@ -33,14 +29,5 @@ public interface IBisModel {
 	boolean isDisplayAlertMessage();
 
 	void setDisplayAlertMessage(boolean displayAlertMessage);
-	
-	int getUnreadWindowThreshold();
-
-	void setUnreadWindowThreshold(int unreadWindowThreshold);
-
-	int getUnreadWindowSize();
-
-	void setUnreadWindowSize(int unreadWindowSize);
-
 
 }

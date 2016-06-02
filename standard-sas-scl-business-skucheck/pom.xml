@@ -2,12 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-
 	<artifactId>business-skucheck</artifactId>
-	<packaging>jar</packaging>
-
-	<name>skucheck</name>
-	<url>http://maven.apache.org</url>
 
 	<parent>
 		<artifactId>parent</artifactId>
@@ -15,27 +10,7 @@
 		<version>2.5.4-SNAPSHOT</version>
 	</parent>
 
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	</properties>
-	<build>
-		<resources>
-			<resource>
-				<directory>${project.build.sourceDirectory}/../resources/spring
-                </directory>
-				<targetPath>spring
-                </targetPath>
-				<includes>
-					<include>*</include>
-				</includes>
-			</resource>
-		</resources>
-	</build>
 	<dependencies>
-		<dependency>
-			<groupId>com.sicpa.standard</groupId>
-			<artifactId>skuCheck</artifactId>
-		</dependency>
 		<dependency>
 			<groupId>com.sicpa.standard.sasscl</groupId>
 			<artifactId>model</artifactId>

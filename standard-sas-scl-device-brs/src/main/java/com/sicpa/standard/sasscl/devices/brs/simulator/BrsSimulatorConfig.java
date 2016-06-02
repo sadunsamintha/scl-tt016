@@ -1,7 +1,6 @@
 package com.sicpa.standard.sasscl.devices.brs.simulator;
 
 
-import java.io.Serializable;
 
 public class BrsSimulatorConfig {
 

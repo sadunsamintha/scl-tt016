@@ -4,18 +4,13 @@ import com.sicpa.standard.sasscl.devices.bis.IBisModel;
 
 public class BisModel implements IBisModel {
 
-	protected String address;
-	protected int port;
-	protected int recognitionResultRequestInterval;
-	protected int connectionLifeCheckInterval;
-	// threshold use to check percentage of unread sku by window size
-	protected int unreadWindowThreshold;
-	protected int unreadWindowSize;
-	// threshold use to check consecutive unknown sku
-	protected int unknownSkuThreshold;
-	protected int unknownSkuId = 9999;
-	protected String unknownSkuDescription = "UNKNOWN";
-	protected boolean displayAlertMessage;
+	private String address;
+	private int port;
+	private int recognitionResultRequestInterval;
+	private int connectionLifeCheckInterval;
+	private int unknownSkuId = 9999;
+	private String unknownSkuDescription = "UNKNOWN";
+	private boolean displayAlertMessage;
 
 	@Override
 	public String getAddress() {
@@ -58,16 +53,6 @@ public class BisModel implements IBisModel {
 	}
 
 	@Override
-	public int getUnknownSkuThreshold() {
-		return unknownSkuThreshold;
-	}
-
-	@Override
-	public void setUnknownSkuThreshold(int unknownSkuThreshold) {
-		this.unknownSkuThreshold = unknownSkuThreshold;
-	}
-
-	@Override
 	public int getUnknownSkuId() {
 		return unknownSkuId;
 	}
@@ -94,21 +79,4 @@ public class BisModel implements IBisModel {
 	public void setDisplayAlertMessage(boolean displayAlertMessage) {
 		this.displayAlertMessage = displayAlertMessage;
 	}
-
-	public int getUnreadWindowThreshold() {
-		return unreadWindowThreshold;
-	}
-
-	public void setUnreadWindowThreshold(int unreadWindowThreshold) {
-		this.unreadWindowThreshold = unreadWindowThreshold;
-	}
-
-	public int getUnreadWindowSize() {
-		return unreadWindowSize;
-	}
-
-	public void setUnreadWindowSize(int unreadWindowSize) {
-		this.unreadWindowSize = unreadWindowSize;
-	}
-
 }
