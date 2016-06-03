@@ -12,16 +12,18 @@ import com.sicpa.standard.client.common.view.mvc.IView;
 
 public class MainFrameGetter implements IGUIComponentGetter {
 
-	private MainFrame frame;
-	private MainFrameController viewController;
+	protected MainFrame frame;
+	protected MainFrameController viewController;
 
-	private IView<?> startStopView;
-	private IView<?> exitView;
-	private IView<?> optionsView;
-	private IView<?> selectionChangeView;
-	private JPanel messagesView;
-	private IGUIComponentGetter mainPanelGetter;
-	private IView<?> snapshotView;
+	protected IView<?> startStopView;
+	protected IView<?> exitView;
+
+
+	protected IView<?> optionsView;
+	protected IView<?> selectionChangeView;
+	protected JPanel messagesView;
+	protected IGUIComponentGetter mainPanelGetter;
+	protected IView<?> snapshotView;
 
 	@Override
 	public Component getComponent() {
