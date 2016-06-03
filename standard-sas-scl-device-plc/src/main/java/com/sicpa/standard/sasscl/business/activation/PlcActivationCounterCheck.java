@@ -1,5 +1,9 @@
 package com.sicpa.standard.sasscl.business.activation;
 
+import static com.sicpa.standard.sasscl.model.ProductStatus.OFFLINE;
+import static com.sicpa.standard.sasscl.model.ProductStatus.SENT_TO_PRINTER_WASTED;
+import static java.util.Arrays.asList;
+
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -17,6 +21,7 @@ import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowStateChangedEven
 import com.sicpa.standard.sasscl.devices.plc.PlcAdaptorException;
 import com.sicpa.standard.sasscl.devices.plc.PlcLineHelper;
 import com.sicpa.standard.sasscl.messages.MessageEventKey;
+import com.sicpa.standard.sasscl.model.Product;
 import com.sicpa.standard.sasscl.provider.impl.PlcProvider;
 
 public class PlcActivationCounterCheck extends AbstractAlertTask {
@@ -47,9 +52,15 @@ public class PlcActivationCounterCheck extends AbstractAlertTask {
 	@Subscribe
 	public void notifyNewProduct(NewProductEvent evt) {
 		if (model.isEnabled()) {
-			counterFromActivation.incrementAndGet();
-			newProductListener.eventReceived();
+			if (acceptProduct(evt.getProduct())) {
+				counterFromActivation.incrementAndGet();
+				newProductListener.eventReceived();
+			}
 		}
+	}
+
+	private boolean acceptProduct(Product p) {
+		return !asList(SENT_TO_PRINTER_WASTED, OFFLINE).contains(p.getStatus());
 	}
 
 	@Override
