@@ -14,7 +14,7 @@
 		</property>
 		<property name="plcProvider" ref="plcProvider" />
 		<property name="productFreqVarName" value="#{plcVarMap['NTF_LINE_COUNTER_TRIGS']}" />
-		<property name="executionDelay" value="${alert.plcActivationCrossCheck.delay.ms}" />
+		<property name="executionDelay" value="${alert.plcActivationCrossCheck.delay.sec}" />
 	</bean>
 
 	<bean id="alertAddTaskAplcActivationCrossCheckTask" class="com.sicpa.standard.client.common.ioc.InjectByMethodBean">

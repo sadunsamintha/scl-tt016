@@ -67,6 +67,7 @@ public class PlcActivationCounterCheck extends AbstractScheduledAlertTask {
 
 	@Override
 	protected boolean isAlertPresent() {
+
 		try {
 			int totalFromPlc = getProductCountFromPlc();
 			if (Math.abs(totalFromPlc - counterFromActivation.get()) > getModel().getMaxDelta()) {
