@@ -17,8 +17,6 @@ public class FileByPackageTypeMapping {
 
 	private int allowedProductPackage;
 
-	private int blabla;
-
 	private final Map<Integer, String> fileByPackageType = new HashMap<>();
 
 	public FileByPackageTypeMapping() {
