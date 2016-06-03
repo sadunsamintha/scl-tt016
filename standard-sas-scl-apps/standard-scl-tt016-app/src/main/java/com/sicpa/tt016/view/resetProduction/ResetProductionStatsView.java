@@ -16,7 +16,7 @@ import java.awt.event.ActionListener;
 public class ResetProductionStatsView extends AbstractView<IResetProductionStatsViewListener, ResetProductionStatsViewModel> {
 
 
-    protected JButton resetButton;
+    private JButton resetButton;
 
     private Permission RESET_STATS = new Permission("RESET_STATS");
 
