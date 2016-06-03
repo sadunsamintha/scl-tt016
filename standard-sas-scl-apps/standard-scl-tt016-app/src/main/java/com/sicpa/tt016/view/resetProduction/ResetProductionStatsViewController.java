@@ -31,7 +31,12 @@ public class ResetProductionStatsViewController extends AbstractViewFlowControll
     @Override
     public void reset() {
         EventBusService.post(new LockFullScreenEvent());
+        String questionText = Messages.get("question.reset.text");
+        QuestionEvent evt = new QuestionEvent(questionText, createCancelAnswer(), createResetAnswer());
+        EventBusService.post(evt);
+    }
 
+    private Answer createResetAnswer() {
         Answer reset = new Answer(Messages.get("question.reset.button.yes"), new Runnable() {
             @Override
             public void run() {
@@ -41,19 +46,19 @@ public class ResetProductionStatsViewController extends AbstractViewFlowControll
             }
         });
         reset.setBackgroundColor(SicpaColor.RED);
+        return reset;
 
+    }
+
+    private Answer createCancelAnswer() {
         Answer cancel = new Answer(Messages.get("question.reset.button.no"), new Runnable() {
             @Override
             public void run() {
                 EventBusService.post(new UnlockFullScreenEvent());
             }
         });
-
-        String questionText = Messages.get("question.reset.text");
-        QuestionEvent evt = new QuestionEvent(questionText, cancel, reset);
-        EventBusService.post(evt);
+        return cancel;
     }
-
 
     public ResetProductionStatsViewModel getModel() {
         return model;
