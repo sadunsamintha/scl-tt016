@@ -9,11 +9,12 @@
 		<property name="model">
 			<bean id="alertPlcActivationCrossCheckTaskModel" class="com.sicpa.standard.sasscl.business.alert.task.model.PlcActivationCounterCheckModel">
 				<property name="maxDelta" value="${alert.plcActivationCrossCheck.maxDelta}" />
-				<property name="enabled" value="${alert.plcActivationCrossCheck.enabled}" />
+				<property name="enabled" value="#{ ${alert.plcActivationCrossCheck.enabled} and '${plc.behavior}'!='simulator' }" />
 			</bean>
 		</property>
 		<property name="plcProvider" ref="plcProvider" />
 		<property name="productFreqVarName" value="#{plcVarMap['NTF_LINE_PRODUCTS_FREQ']}" />
+		<property name="executionDelay" value="${alert.plcActivationCrossCheck.delay.ms}" />
 	</bean>
 
 	<bean id="alertAddTaskAplcActivationCrossCheckTask" class="com.sicpa.standard.client.common.ioc.InjectByMethodBean">
