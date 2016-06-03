@@ -12,19 +12,16 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.messages.MessageEvent;
-import com.sicpa.standard.client.common.utils.listener.CoalescentPeriodicListener;
 import com.sicpa.standard.plc.value.PlcVariable;
-import com.sicpa.standard.sasscl.business.alert.task.AbstractAlertTask;
 import com.sicpa.standard.sasscl.business.alert.task.model.PlcActivationCounterCheckModel;
-import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState;
-import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowStateChangedEvent;
+import com.sicpa.standard.sasscl.business.alert.task.scheduled.AbstractScheduledAlertTask;
 import com.sicpa.standard.sasscl.devices.plc.PlcAdaptorException;
 import com.sicpa.standard.sasscl.devices.plc.PlcLineHelper;
 import com.sicpa.standard.sasscl.messages.MessageEventKey;
 import com.sicpa.standard.sasscl.model.Product;
 import com.sicpa.standard.sasscl.provider.impl.PlcProvider;
 
-public class PlcActivationCounterCheck extends AbstractAlertTask {
+public class PlcActivationCounterCheck extends AbstractScheduledAlertTask {
 
 	private static Logger logger = LoggerFactory.getLogger(PlcActivationCounterCheck.class);
 
@@ -34,17 +31,13 @@ public class PlcActivationCounterCheck extends AbstractAlertTask {
 	private PlcActivationCounterCheckModel model;
 
 	private final AtomicInteger counterFromActivation = new AtomicInteger();
-	private CoalescentPeriodicListener newProductListener;
-
-	public PlcActivationCounterCheck() {
-
-	}
 
 	private int getProductCountFromPlc() throws PlcAdaptorException {
 		List<String> productCounterVariables = PlcLineHelper.getLinesVariableName(productFreqVarName);
 		int res = 0;
 		for (String var : productCounterVariables) {
-			res += plcProvider.get().read(PlcVariable.createInt32Var(var));
+			int val = plcProvider.get().read(PlcVariable.createInt32Var(var));
+			res += val;
 		}
 		return res;
 	}
@@ -54,7 +47,6 @@ public class PlcActivationCounterCheck extends AbstractAlertTask {
 		if (model.isEnabled()) {
 			if (acceptProduct(evt.getProduct())) {
 				counterFromActivation.incrementAndGet();
-				newProductListener.eventReceived();
 			}
 		}
 	}
@@ -65,7 +57,7 @@ public class PlcActivationCounterCheck extends AbstractAlertTask {
 
 	@Override
 	public void reset() {
-
+		counterFromActivation.set(0);
 	}
 
 	@Override
@@ -105,20 +97,6 @@ public class PlcActivationCounterCheck extends AbstractAlertTask {
 		this.plcProvider = plcProvider;
 	}
 
-	@Subscribe
-	public void handleApplicationStateChange(ApplicationFlowStateChangedEvent evt) {
-		if (evt.getCurrentState().equals(ApplicationFlowState.STT_STARTING)) {
-			init();
-		}
-	}
-
-	private void init() {
-		if (model.isEnabled()) {
-			counterFromActivation.set(0);
-			newProductListener = new CoalescentPeriodicListener(executionDelay, () -> checkForMessage());
-		}
-	}
-
 	public void setProductFreqVarName(String productFreqVarName) {
 		this.productFreqVarName = productFreqVarName;
 	}
@@ -130,5 +108,10 @@ public class PlcActivationCounterCheck extends AbstractAlertTask {
 
 	public void setExecutionDelay(int executionDelay) {
 		this.executionDelay = executionDelay;
+	}
+
+	@Override
+	public long getDelay() {
+		return executionDelay;
 	}
 }
