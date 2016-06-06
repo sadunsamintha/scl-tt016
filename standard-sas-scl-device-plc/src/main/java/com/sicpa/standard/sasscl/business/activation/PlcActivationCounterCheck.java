@@ -36,9 +36,14 @@ public class PlcActivationCounterCheck extends AbstractScheduledAlertTask {
 		List<String> productCounterVariables = PlcLineHelper.getLinesVariableName(productFreqVarName);
 		int res = 0;
 		for (String var : productCounterVariables) {
-			int val = plcProvider.get().read(PlcVariable.createInt32Var(var));
+			int val = readVar(var);
 			res += val;
 		}
+		return res;
+	}
+
+	private int readVar(String var) throws PlcAdaptorException {
+		int res = plcProvider.get().read(PlcVariable.createInt32Var(var));
 		return res;
 	}
 

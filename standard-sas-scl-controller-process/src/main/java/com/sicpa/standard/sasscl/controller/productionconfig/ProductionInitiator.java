@@ -67,6 +67,7 @@ public class ProductionInitiator implements IProductionInitiator {
 	}
 
 	private void setAvailableLineIndexes() {
+		PlcLineHelper.resetLineIndex();
 		productionConfig.getPlcConfig().getLinesProperties().keySet().forEach(i -> PlcLineHelper.addLineIndex(i));
 	}
 
