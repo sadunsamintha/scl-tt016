@@ -17,11 +17,8 @@ import javax.swing.JTextArea;
 import org.springframework.util.CollectionUtils;
 
 import com.sicpa.standard.sasscl.devices.bis.BisAdaptorException;
-import com.sicpa.standard.sasscl.devices.bis.IBisController;
 import com.sicpa.standard.sasscl.devices.bis.IBisControllerListener;
-import com.sicpa.standard.sasscl.devices.bis.IBisModel;
 import com.sicpa.standard.sasscl.devices.bis.controller.BisRemoteServer;
-import com.sicpa.standard.sasscl.devices.bis.model.BisModel;
 import com.sicpa.standard.sasscl.model.SKU;
 import com.sicpa.std.bis2.core.messages.RemoteMessages;
 import com.sicpa.std.bis2.core.messages.RemoteMessages.Alert;
@@ -33,8 +30,7 @@ public class Client extends JFrame implements IBisControllerListener {
 
 	private static final long serialVersionUID = -5002326855091536463L;
 
-	private IBisController bisController;
-	private IBisModel bisModel;
+	private BisRemoteServer bisController;
 
 	// GUI
 	private JPanel mainPanel;
@@ -55,13 +51,17 @@ public class Client extends JFrame implements IBisControllerListener {
 
 	private StringBuffer strBuffer = new StringBuffer();
 
+	private String ip = "localhost";
+	private int port = 8020;
+	private int connectionLifeCheckInterval = 1000;
+	private int recognitionResultRequestInterval = 1000;
+
 	public void setup() {
-		bisModel = new BisModel();
-		bisModel.setAddress("localhost");
-		bisModel.setPort(8020);
-		bisModel.setConnectionLifeCheckInterval(1000);
-		bisModel.setRecognitionResultRequestInterval(1000);
-		bisController = new BisRemoteServer(bisModel);
+		bisController = new BisRemoteServer();
+		bisController.setIp(ip);
+		bisController.setConnectionLifeCheckIntervalMs(connectionLifeCheckInterval);
+		bisController.setRecognitionResultRequestIntervalMs(recognitionResultRequestInterval);
+		bisController.setPort(port);
 		bisController.addListener(this);
 	}
 

@@ -34,6 +34,8 @@ public class BisAdapter extends AbstractStartableDevice implements IBisAdaptor, 
 	private IBisController controller;
 	private SkuListProvider skuListProvider;
 	private boolean blockProduction;
+	private int unknownSkuId;
+	private boolean displayAlertMessage;
 
 	public BisAdapter() {
 		setName("BIS");
@@ -104,8 +106,7 @@ public class BisAdapter extends AbstractStartableDevice implements IBisAdaptor, 
 	}
 
 	public void fireRecognitionResultEvent(RecognitionResultMessage result) {
-		if ((result.getConfidence() == null)
-				|| (result.getConfidence().getId() == controller.getModel().getUnknownSkuId())) {
+		if ((result.getConfidence() == null) || (result.getConfidence().getId() == unknownSkuId)) {
 			// TODO not recognized
 		} else {
 			// TODO send recognition result
@@ -128,7 +129,7 @@ public class BisAdapter extends AbstractStartableDevice implements IBisAdaptor, 
 
 		logger.warn(warningMsg.toString());
 
-		if (this.controller.getModel().isDisplayAlertMessage()) {
+		if (displayAlertMessage) {
 			EventBusService.post(new MessageEvent(this, MessageEventKey.BIS.BIS_ALERT, warningMsg.toString()));
 		}
 	}
@@ -176,5 +177,13 @@ public class BisAdapter extends AbstractStartableDevice implements IBisAdaptor, 
 
 	public void setBlockProduction(boolean blockProduction) {
 		this.blockProduction = blockProduction;
+	}
+
+	public void setUnknownSkuId(int unknownSkuId) {
+		this.unknownSkuId = unknownSkuId;
+	}
+
+	public void setDisplayAlertMessage(boolean displayAlertMessage) {
+		this.displayAlertMessage = displayAlertMessage;
 	}
 }

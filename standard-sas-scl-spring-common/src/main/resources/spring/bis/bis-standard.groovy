@@ -11,11 +11,13 @@ beans{
 		blockProduction = props['bis.disconnected.production.block']
 	}
 
-	bisRemoteServer(BisRemoteServer,ref('bisModel')){b->
+	bisRemoteServer(BisRemoteServer){b->
 		b.scope='prototype'
+		ip=props['bis.ip']
+		port=props['bis.port']
+		recognitionResultRequestIntervalMs=props['bis.recognitionResultRequestIntervalMs']
+		unknownSkuId=props['bis.unknownSkuId']
+		displayAlertMessage=props['bis.displayAlertMessage']
 	}
 
-	bisModel(ConfigUtils,profilePath+'/config/bis/bisConfig.xml'){ b->
-		b.factoryMethod='load'
-	}
 }
