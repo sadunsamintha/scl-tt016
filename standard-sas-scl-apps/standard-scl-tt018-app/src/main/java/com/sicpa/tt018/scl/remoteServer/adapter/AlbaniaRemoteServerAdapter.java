@@ -64,9 +64,9 @@ import com.sicpa.tt018.scl.utils.ValidatorException;
 
 public class AlbaniaRemoteServerAdapter implements IAlbaniaRemoteServerAdapter {
 
-	private static final int ALLOWED_PRODUCT_BOTTLE = 0;
-	private static final int ALLOWED_PRODUCT_CAN = 1;
-	private static final int ALLOWED_PRODUCT_CAN_BOTTLE = 2;
+	public static final int ALLOWED_PRODUCT_BOTTLE = 0;
+	public static final int ALLOWED_PRODUCT_CAN = 1;
+	public static final int ALLOWED_PRODUCT_CAN_BOTTLE = 2;
 
 	private static Logger logger = LoggerFactory.getLogger(AlbaniaRemoteServerAdapter.class);
 

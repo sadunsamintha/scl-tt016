@@ -71,7 +71,8 @@ public class PlcParamSender implements IPlcParamSender {
 	}
 
 	private IPlcVariable<Integer> createIntVar(String name, String value) {
-		int ival = Integer.parseInt(value);
+		//parse float as it can be a float in the config file, because of switch between MM and MS
+		int ival = (int) Float.parseFloat(value);
 		IPlcVariable<Integer> var = PlcVariable.createInt32Var(name);
 		var.setValue(ival);
 		return var;

@@ -25,7 +25,7 @@ public class AlbaniaPlcLoader extends PlcValuesLoader {
 
 	private ProductionParameters productionParameters;
 	private final Collection<String> varnameProductTypeSpecific = new ArrayList<>();
-	private final FileByPackageTypeMapping fileByPackageType = new FileByPackageTypeMapping();
+	private FileByPackageTypeMapping fileByPackageType;
 	private String currentProductTypeSpecificFileUse;
 	private MultiEditablePlcVariablesSet plcView;
 
@@ -127,5 +127,9 @@ public class AlbaniaPlcLoader extends PlcValuesLoader {
 
 	public void setPlcView(MultiEditablePlcVariablesSet plcView) {
 		this.plcView = plcView;
+	}
+
+	public void setFileByPackageType(FileByPackageTypeMapping fileByPackageType) {
+		this.fileByPackageType = fileByPackageType;
 	}
 }

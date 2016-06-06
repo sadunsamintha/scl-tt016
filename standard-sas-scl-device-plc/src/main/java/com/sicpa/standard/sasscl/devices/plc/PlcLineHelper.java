@@ -28,11 +28,21 @@ public class PlcLineHelper {
 	}
 
 	public static void addLineIndex(int index) {
-		lineIndexes.add(index);
+		synchronized (lineIndexes) {
+			lineIndexes.add(index);
+		}
 	}
 
 	public static List<Integer> getLineIndexes() {
-		return lineIndexes;
+		synchronized (lineIndexes) {
+			return new ArrayList<Integer>(lineIndexes);
+		}
+	}
+
+	public static void resetLineIndex() {
+		synchronized (lineIndexes) {
+			lineIndexes.clear();
+		}
 	}
 
 	public static int getLineIndex(String plcVarName) {
