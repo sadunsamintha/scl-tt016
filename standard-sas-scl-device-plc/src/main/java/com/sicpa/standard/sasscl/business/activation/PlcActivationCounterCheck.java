@@ -1,11 +1,10 @@
 package com.sicpa.standard.sasscl.business.activation;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.util.HashMap;
+import static com.sicpa.standard.sasscl.model.ProductStatus.OFFLINE;
+import static com.sicpa.standard.sasscl.model.ProductStatus.SENT_TO_PRINTER_WASTED;
+import static java.util.Arrays.asList;
+
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.slf4j.Logger;
@@ -13,84 +12,57 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.messages.MessageEvent;
-import com.sicpa.standard.sasscl.business.alert.task.AbstractAlertTask;
+import com.sicpa.standard.plc.value.PlcVariable;
 import com.sicpa.standard.sasscl.business.alert.task.model.PlcActivationCounterCheckModel;
-import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState;
-import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowStateChangedEvent;
-import com.sicpa.standard.sasscl.devices.plc.IPlcListener;
+import com.sicpa.standard.sasscl.business.alert.task.scheduled.AbstractScheduledAlertTask;
+import com.sicpa.standard.sasscl.devices.plc.PlcAdaptorException;
 import com.sicpa.standard.sasscl.devices.plc.PlcLineHelper;
-import com.sicpa.standard.sasscl.devices.plc.event.PlcEvent;
 import com.sicpa.standard.sasscl.messages.MessageEventKey;
+import com.sicpa.standard.sasscl.model.Product;
 import com.sicpa.standard.sasscl.provider.impl.PlcProvider;
 
-public class PlcActivationCounterCheck extends AbstractAlertTask implements IPlcListener {
+public class PlcActivationCounterCheck extends AbstractScheduledAlertTask {
 
 	private static Logger logger = LoggerFactory.getLogger(PlcActivationCounterCheck.class);
 
+	private PlcProvider plcProvider;
 	private String productFreqVarName;
-	protected PlcActivationCounterCheckModel model;
+	private int executionDelay;
+	private PlcActivationCounterCheckModel model;
 
-	protected final Map<String, Integer> plcCounterMap = new HashMap<String, Integer>();
-	protected Integer totalCount = 0;
-	protected boolean plcCounterReset = false;
-	protected final AtomicInteger counterFromActivation = new AtomicInteger();
+	private final AtomicInteger counterFromActivation = new AtomicInteger();
 
-	public PlcActivationCounterCheck() {
-	}
-
-	public void onPlcEvent(PlcEvent event) {
-
-		// THIS IS A BAD IDEA TO DO THAT FOR EACH NOTIFICATION
-		// TOO MANY NOTIFICATION BETWEEN PLC AND JAVA FOR A HIGH SPEED LINE
-		// THIS MODULE IS NOT ACTIVE BY DEFAULT
-
+	private int getProductCountFromPlc() throws PlcAdaptorException {
 		List<String> productCounterVariables = PlcLineHelper.getLinesVariableName(productFreqVarName);
-
-		if (productCounterVariables == null || productCounterVariables.size() == 0)
-			return;
-
-		if (!productCounterVariables.contains(event.getVarName()))
-			return;
-
-		plcCounterMap.put(event.getVarName(), (Integer) event.getValue());
-
-		try {
-
-			calculateTotalPlcCount();
-
-			if (totalCount == 0 || totalCount == 1) {
-				plcCounterReset = true;
-			}
-			if (plcCounterReset) {
-				// only button if the counter has been reset once (only handle notification when the plc has been
-				// started)
-				checkForMessage();
-			}
-		} catch (Exception e) {
-			logger.error("", e);
+		int res = 0;
+		for (String var : productCounterVariables) {
+			int val = readVar(var);
+			res += val;
 		}
+		return res;
 	}
 
-	/**
-	 * this is the handle multiconveyor
-	 * 
-	 * @return
-	 */
-	public void calculateTotalPlcCount() {
-		totalCount = 0;
-		for (Entry<String, Integer> entry : plcCounterMap.entrySet()) {
-			totalCount = totalCount + entry.getValue();
-		}
+	private int readVar(String var) throws PlcAdaptorException {
+		int res = plcProvider.get().read(PlcVariable.createInt32Var(var));
+		return res;
 	}
 
 	@Subscribe
 	public void notifyNewProduct(NewProductEvent evt) {
-		counterFromActivation.incrementAndGet();
+		if (model.isEnabled()) {
+			if (acceptProduct(evt.getProduct())) {
+				counterFromActivation.incrementAndGet();
+			}
+		}
+	}
+
+	private boolean acceptProduct(Product p) {
+		return !asList(SENT_TO_PRINTER_WASTED, OFFLINE).contains(p.getStatus());
 	}
 
 	@Override
 	public void reset() {
-
+		counterFromActivation.set(0);
 	}
 
 	@Override
@@ -100,9 +72,16 @@ public class PlcActivationCounterCheck extends AbstractAlertTask implements IPlc
 
 	@Override
 	protected boolean isAlertPresent() {
-		if (Math.abs(totalCount - counterFromActivation.get()) > getModel().getMaxDelta()) {
-			logger.error("counter from plc={}, counter from the activation={}", totalCount, counterFromActivation.get());
-			return true;
+
+		try {
+			int totalFromPlc = getProductCountFromPlc();
+			if (Math.abs(totalFromPlc - counterFromActivation.get()) > getModel().getMaxDelta()) {
+				logger.error("counter from plc={}, counter from the activation={}", totalFromPlc,
+						counterFromActivation.get());
+				return true;
+			}
+		} catch (PlcAdaptorException e) {
+			logger.error("", e);
 		}
 		return false;
 	}
@@ -120,26 +99,8 @@ public class PlcActivationCounterCheck extends AbstractAlertTask implements IPlc
 		return model;
 	}
 
-	@Override
-	public List<String> getListeningVariables() {
-		return null;
-	}
-
-	public void setPlcProvider(final PlcProvider plcProvider) {
-		plcProvider.addChangeListener(new PropertyChangeListener() {
-			@Override
-			public void propertyChange(PropertyChangeEvent arg0) {
-				plcProvider.get().addPlcListener(PlcActivationCounterCheck.this);
-			}
-		});
-	}
-
-	// Products trigs counter is reset in PLC at each start also
-	@Subscribe
-	public void handleApplicationStateChange(ApplicationFlowStateChangedEvent evt) {
-		if (evt.getCurrentState().equals(ApplicationFlowState.STT_STARTING)) {
-			counterFromActivation.set(0);
-		}
+	public void setPlcProvider(PlcProvider plcProvider) {
+		this.plcProvider = plcProvider;
 	}
 
 	public void setProductFreqVarName(String productFreqVarName) {
@@ -149,5 +110,14 @@ public class PlcActivationCounterCheck extends AbstractAlertTask implements IPlc
 	@Override
 	protected boolean isEnabledDefaultImpl() {
 		return model.isEnabled();
+	}
+
+	public void setExecutionDelay(int executionDelay) {
+		this.executionDelay = executionDelay;
+	}
+
+	@Override
+	public long getDelay() {
+		return executionDelay;
 	}
 }
