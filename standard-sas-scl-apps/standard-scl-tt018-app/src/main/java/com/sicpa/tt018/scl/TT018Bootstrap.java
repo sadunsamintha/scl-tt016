@@ -97,6 +97,10 @@ public class TT018Bootstrap extends Bootstrap {
 
 	private void sendEjectionTypeToPlc() throws PlcAdaptorException {
 		AlbaniaSKU sku = (AlbaniaSKU) productionParameters.getSku();
+		if (sku == null) {
+			return;
+		}
+
 		String ejectionType = sku.isBlobEnabled() ? EJECTION_TYPE_NON_COMPLIANT : EJECTION_TYPE_COMPLIANT;
 		int line = 1;
 		plcParamSender.sendToPlc(ejectionTypeVar, ejectionType, line);

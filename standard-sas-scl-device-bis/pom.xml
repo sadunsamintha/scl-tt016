@@ -4,15 +4,6 @@
 
 	<artifactId>device-bis</artifactId>
 
-	<packaging>jar</packaging>
-
-	<name>device-bis</name>
-	<url>http://maven.apache.org</url>
-
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	</properties>
-
 	<parent>
 		<artifactId>parent</artifactId>
 		<groupId>com.sicpa.standard.sasscl</groupId>
@@ -21,9 +12,11 @@
 
 	<dependencies>
 		<dependency>
+			<artifactId>model</artifactId>
 			<groupId>com.sicpa.standard.sasscl</groupId>
-			<artifactId>business-skucheck</artifactId>
 		</dependency>
+
+
 		<dependency>
 			<groupId>com.sicpa.standard.bis2</groupId>
 			<artifactId>remote</artifactId>

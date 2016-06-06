@@ -19,25 +19,46 @@ public class SkuListProvider extends AbstractProvider<ProductionParameterRootNod
 	}
 
 	public Set<SKU> getAvailableSKUs() {
+		return getAvailableSKUsForProductionMode(null);
+	}
+
+	public Set<SKU> getAvailableSKUsForProductionMode(ProductionMode mode) {
 		Set<SKU> res = new HashSet<SKU>();
 		if (get() != null) {
-			populateSkusList(res, get());
+			populateSkusList(res, get(), mode);
 		}
 		return res;
 	}
 
-	protected void populateSkusList(Set<SKU> skus, IProductionParametersNode node) {
+	private void populateSkusList(Set<SKU> skus, IProductionParametersNode node, ProductionMode mode) {
 		if (node.getChildren() != null) {
 			for (IProductionParametersNode child : node.getChildren()) {
 				if (child instanceof SKUNode) {
 					skus.add((SKU) child.getValue());
 				} else {
-					if (child != null) {
-						populateSkusList(skus, child);
+					if (acceptNode(child, mode)) {
+						populateSkusList(skus, child, mode);
 					}
 				}
 			}
 		}
+	}
+
+	private boolean acceptNode(IProductionParametersNode node, ProductionMode mode) {
+		if (node == null) {
+			return false;
+		}
+		if (mode == null) {
+			return true;
+		}
+
+		if (node instanceof ProductionModeNode) {
+			ProductionMode m = (ProductionMode) node.getValue();
+			if (!m.equals(mode)) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	public Set<CodeType> getAvailableCodeTypes() {
