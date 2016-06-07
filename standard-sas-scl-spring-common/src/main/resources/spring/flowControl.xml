@@ -69,7 +69,10 @@
 	<bean id="executorSelectWithPrevious" class="com.sicpa.standard.sasscl.controller.flow.statemachine.executor.ExecutorSelectWithPrevious">
 		<property name="screensFlow" ref="screensFlow" />
 	</bean>
-	<bean id="executorConnected" class="com.sicpa.standard.sasscl.controller.flow.statemachine.executor.ExecutorConnected" />
+	<bean id="executorConnected" class="com.sicpa.standard.sasscl.controller.flow.statemachine.executor.ExecutorConnected">
+		<property name="flowControl" ref="flowControl" />
+		<property name="skuSelectionBehavior" ref="skuSelectionBehavior" />
+	</bean>
 	<bean id="executorSelectNoPrevious" class="com.sicpa.standard.sasscl.controller.flow.statemachine.executor.ExecutorSelectNoPrevious">
 		<property name="screensFlow" ref="screensFlow" />
 	</bean>

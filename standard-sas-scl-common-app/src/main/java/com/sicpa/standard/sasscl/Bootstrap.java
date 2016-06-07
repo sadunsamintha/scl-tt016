@@ -24,6 +24,7 @@ import com.sicpa.standard.sasscl.controller.ProductionParametersEvent;
 import com.sicpa.standard.sasscl.controller.device.group.IGroupDevicesController;
 import com.sicpa.standard.sasscl.controller.flow.IBootstrap;
 import com.sicpa.standard.sasscl.controller.scheduling.RemoteServerScheduledJobs;
+import com.sicpa.standard.sasscl.controller.skuselection.ISkuSelectionBehavior;
 import com.sicpa.standard.sasscl.devices.DeviceStatus;
 import com.sicpa.standard.sasscl.devices.plc.IPlcValuesLoader;
 import com.sicpa.standard.sasscl.devices.plc.PlcLineHelper;
@@ -62,10 +63,10 @@ public class Bootstrap implements IBootstrap {
 	private List<PlcVariableGroup> cabPlcVarGroups;
 	private SclAppMBean jmxBean;
 	private IEncoderSequenceValidator encoderSequenceValidator;
+	private ISkuSelectionBehavior skuSelectionBehavior;
 
 	@Override
 	public void executeSpringInitTasks() {
-		restoreStatistics();
 		initPlc();
 		initProductionParameter();
 		initAuthenticator();
@@ -73,7 +74,12 @@ public class Bootstrap implements IBootstrap {
 		validateEncoderSequence();
 		addConnectionListenerOnServer();
 		connectStartupDevices();
-		restorePreviousSelectedProductionParams();
+
+		if (skuSelectionBehavior.isLoadPreviousSelection()) {
+			restoreStatistics();
+			restorePreviousSelectedProductionParams();
+		}
+
 		installJMXBeans();
 	}
 
@@ -265,5 +271,9 @@ public class Bootstrap implements IBootstrap {
 
 	public void setEncoderSequenceValidator(IEncoderSequenceValidator encoderSequenceValidator) {
 		this.encoderSequenceValidator = encoderSequenceValidator;
+	}
+
+	public void setSkuSelectionBehavior(ISkuSelectionBehavior skuSelectionBehavior) {
+		this.skuSelectionBehavior = skuSelectionBehavior;
 	}
 }
