@@ -13,4 +13,29 @@
         <property name="flowControl" ref="flowControl"/>
     </bean>
 
+
+    <!--RESET STATISTICS-->
+
+    <bean id="resetStatsView" class="com.sicpa.tt016.view.resetProduction.ResetProductionStatsView">
+        <property name="controller" ref="resetProductionStatsViewController" />
+        <property name="model" value="#{resetProductionStatsViewController.model}" />
+    </bean>
+
+    <bean id="resetProductionStatsViewController" class="com.sicpa.tt016.view.resetProduction.ResetProductionStatsViewController">
+        <property name="statistics" ref="statistics" />
+    </bean>
+
+    <bean id="mainFrame" class="com.sicpa.tt016.view.TT016MainFrameGetter">
+        <property name="viewController" ref="mainFrameController" />
+        <property name="startStopView" ref="startStopView" />
+        <property name="exitView" ref="exitView" />
+        <property name="optionsView" ref="optionsView" />
+        <property name="selectionChangeView" ref="selectionChangeView" />
+        <property name="resetView" ref="resetStatsView" />
+        <property name="messagesView" ref="messagesView" />
+        <property name="mainPanelGetter" ref="mainPanelGetter" />
+        <property name="snapshotView" ref="snapshotView" />
+    </bean>
+
+
 </beans>
