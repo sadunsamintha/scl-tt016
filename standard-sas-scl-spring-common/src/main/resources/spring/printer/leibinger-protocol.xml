@@ -27,7 +27,15 @@
 			    <ref bean="SN"/>
 			</util:list>
 		</property>
-		
+
+		<property name="MonitorCommandsMap" >
+			<util:map value-type="java.util.List">
+				<entry key="HIGH" value-ref="highFrequencyCommands"  />
+				<entry key="MEDIUM" value-ref="mediumFrequencyCommands"  />
+				<entry key="LOW" value-ref="lowFrequencyCommands"  />
+			</util:map>
+		</property>
+
 		<property name="notifyParamList">
 			<util:list>
 				<ref bean="HS"/>
@@ -42,6 +50,9 @@
 			    <ref bean="SU"/>
 			    <ref bean="SV"/>
 			    <ref bean="SN"/>
+				<ref bean="EX"/>
+				<ref bean="SH"/>
+				<ref bean="CC"/>
 			</util:list>
 		</property>
 		
@@ -58,6 +69,26 @@
 			</util:list>
 		</property>
 	</bean>
+
+	<util:list id="highFrequencyCommands" value-type="com.sicpa.standard.printer.controller.model.command.Command" >
+		<ref bean="HS"/>
+		<ref bean="SL"/>
+		<ref bean="SI"/>
+		<ref bean="SU"/>
+		<ref bean="EX"/>
+		<ref bean="CC"/>
+	</util:list>
+
+	<util:list id="mediumFrequencyCommands" value-type="com.sicpa.standard.printer.controller.model.command.Command" >
+		<ref bean="MC"/>
+		<ref bean="SN"/>
+	</util:list>
+
+	<util:list id="lowFrequencyCommands" value-type="com.sicpa.standard.printer.controller.model.command.Command" >
+		<ref bean="VS"/>
+		<ref bean="SH"/>
+		<ref bean="SC"/>
+	</util:list>
 	
 	<bean id="Command" class="com.sicpa.standard.printer.controller.model.command.Command" abstract="true" scope="prototype"/>
 	
@@ -198,6 +229,42 @@
 			<util:list>
 		        <bean p:key="1" p:description="Par1: Allowed numbers (ink): "		parent="CommandParameter"/>
 		        <bean p:key="2" p:description="Par2: Allowed numbers (solvent): "	parent="CommandParameter"/>
+			</util:list>
+		</property>
+	</bean>
+
+
+	<bean id="EX" p:key="EX" p:description="Extern States" parent="Command">
+		<property name="params">
+			<util:list>
+				<bean p:key="1" p:description="Par1: Actual Speed: "		parent="CommandParameter"/>
+				<bean p:key="2" p:description="Par2: Inputs : "	            parent="CommandParameter"/>
+				<bean p:key="3" p:description="Par3: MaxSpeed: "	        parent="CommandParameter"/>
+				<bean p:key="4" p:description="Par4: Direction: "	        parent="CommandParameter"/>
+				<bean p:key="5" p:description="Par5: PrintGo: "	            parent="CommandParameter"/>
+				<bean p:key="6" p:description="Par6: Reserved: "	        parent="CommandParameter"/>
+				<bean p:key="7" p:description="Par7: Reserved: "	        parent="CommandParameter"/>
+				<bean p:key="8" p:description="Par8: Reserved: "	        parent="CommandParameter"/>
+			</util:list>
+		</property>
+	</bean>
+
+	<bean id="SH" p:key="SH" p:description="Service History" parent="Command">
+		<property name="params">
+			<util:list>
+				<bean p:key="1" p:description="Par1: Operating Hours: "		 parent="CommandParameter"/>
+				<bean p:key="2" p:description="Par2: Last Service Hours : " parent="CommandParameter"/>
+				<bean p:key="3" p:description="Par3: Last Service Date: "	 parent="CommandParameter"/>
+			</util:list>
+		</property>
+	</bean>
+
+	<bean id="CC" p:key="CC" p:description="Current Counter" parent="Command">
+		<property name="params">
+			<util:list>
+				<bean p:key="1" p:description="Par1: Product Counter: "		    parent="CommandParameter"/>
+				<bean p:key="2" p:description="Par2: Stop after X Products : "  parent="CommandParameter"/>
+				<bean p:key="3" p:description="Par3: Total print counter: "	    parent="CommandParameter"/>
 			</util:list>
 		</property>
 	</bean>

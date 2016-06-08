@@ -10,9 +10,11 @@
 	<resetOnStop>true</resetOnStop>
 	<requestStatusPeriod>500</requestStatusPeriod>
 	<requestBufferStatusPeriod>500</requestBufferStatusPeriod>
+
 	<requestMonitoringLowFrequency>86400000</requestMonitoringLowFrequency>
 	<requestMonitoringMediumFrequency>3600000</requestMonitoringMediumFrequency>
 	<requestMonitoringHighFrequency>300000</requestMonitoringHighFrequency>
+
 	<allowedInkTags>79000-*</allowedInkTags>
 	<allowedSolventTags>77001-*</allowedSolventTags>
 	<printerParameters class="com.sicpa.standard.printer.leibinger.model.LeibingerParameter">
@@ -21,15 +23,15 @@
 		<dataMatrixEncoding>ASCII</dataMatrixEncoding>
 	</printerParameters>
 	<wysiwyg>true</wysiwyg>
-	<encoderResolution>22000</encoderResolution>
-	<inverted>0</inverted>
-	<rotation>0</rotation>
+	<encoderResolution>10000</encoderResolution>
+	<inverted>1</inverted>
+	<rotation>180</rotation>
 	<encoderSignal>3</encoderSignal>
 	<printGoSignal>1</printGoSignal>
 	<printHeight>95</printHeight>
 	<flightTimeCompensationMicrometers>0</flightTimeCompensationMicrometers>
 	<printMode>1</printMode>
-	<strokeDistanceMicrometers>500</strokeDistanceMicrometers>
+	<strokeDistanceMicrometers>530</strokeDistanceMicrometers>
 	<printGoDelayMicrometers>0</printGoDelayMicrometers>
 	<printGoDistance>0</printGoDistance>
 	<printGoRepetition>0</printGoRepetition>

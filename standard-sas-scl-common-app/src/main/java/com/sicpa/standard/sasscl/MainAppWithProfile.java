@@ -190,6 +190,7 @@ public class MainAppWithProfile extends MainApp implements IProfileSelectorListe
 		config.add("spring/alert/alertCameraCountTask.xml");
 		config.add("spring/alert/alertDuplicatedCodeTask.xml");
 		config.add("spring/alert/alertCameraIddleTask.xml");
+		config.add("spring/alert/alertPlcActivationCrossCheckTask.xml");
 		config.add("spring/storage/storage-import.groovy");
 		config.add("spring/misc.xml");
 		config.add("spring/view.xml");
@@ -213,6 +214,8 @@ public class MainAppWithProfile extends MainApp implements IProfileSelectorListe
 
 		config.add("spring/brs/brs-import.groovy");
 		config.add("spring/bis/bis-import.groovy");
+		
+		config.add("spring/skuSelectionBehavior.groovy");
 
 		// SCL
 

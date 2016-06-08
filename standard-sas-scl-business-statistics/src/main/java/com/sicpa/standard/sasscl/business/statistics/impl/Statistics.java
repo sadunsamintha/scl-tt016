@@ -4,6 +4,8 @@ import static com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState.STT
 import static com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState.STT_RECOVERING;
 import static com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState.STT_STARTING;
 import static com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState.STT_STOPPING;
+import static com.sicpa.standard.sasscl.model.ProductStatus.OFFLINE;
+import static com.sicpa.standard.sasscl.model.ProductStatus.SENT_TO_PRINTER_WASTED;
 
 import java.util.Collection;
 
@@ -30,15 +32,12 @@ import com.sicpa.standard.sasscl.provider.impl.ProductionConfigProvider;
 
 /**
  * Statistics based on products created
- * 
- * @author DIelsch
- * 
  */
 public class Statistics implements IStatistics {
 
 	private static final Logger logger = LoggerFactory.getLogger(Statistics.class);
 
-	private StatisticsValues stats;
+	private StatisticsValues stats = new StatisticsValues();
 	private IStorage storage;
 	private IProductStatusToStatisticKeyMapper statusMapper;
 	private final UptimeCounter uptimeCounter = new UptimeCounter();
@@ -57,7 +56,7 @@ public class Statistics implements IStatistics {
 	 * and notified the listeners that the statistics values have changed
 	 */
 	@Subscribe
-	public synchronized void notifyNewProduct(final NewProductEvent evt) {
+	public synchronized void notifyNewProduct(NewProductEvent evt) {
 		Product product = evt.getProduct();
 		if (product != null) {
 			if (isProductStatusHandled(product.getStatus())) {
@@ -67,7 +66,7 @@ public class Statistics implements IStatistics {
 	}
 
 	private boolean isProductStatusHandled(ProductStatus status) {
-		return !status.equals(ProductStatus.SENT_TO_PRINTER_WASTED) && !status.equals(ProductStatus.OFFLINE);
+		return !status.equals(SENT_TO_PRINTER_WASTED) && !status.equals(OFFLINE);
 	}
 
 	private void initStats() {
