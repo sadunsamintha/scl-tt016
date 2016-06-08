@@ -5,7 +5,7 @@ import static java.util.Collections.unmodifiableList;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -111,10 +111,7 @@ public class BisAdapter extends AbstractStartableDevice implements IBisAdaptor, 
 	}
 
 	private void fireAlertEvent(Alert alert) {
-		Calendar alertDatetime = Calendar.getInstance();
-		alertDatetime.setTimeInMillis(alert.getWhen());
-
-		StringBuffer warningMsg = new StringBuffer();
+		StringBuilder warningMsg = new StringBuilder();
 		warningMsg.append("[BIS ");
 		warningMsg.append(alert.getSeverity().getValueDescriptor().getName());
 		warningMsg.append("] ");
@@ -122,7 +119,7 @@ public class BisAdapter extends AbstractStartableDevice implements IBisAdaptor, 
 		warningMsg.append(" ");
 		warningMsg.append(alert.getWhat());
 		warningMsg.append(" on ");
-		warningMsg.append(dateformat.format(alertDatetime.getTime()));
+		warningMsg.append(dateformat.format(new Date(alert.getWhen())));
 
 		logger.warn(warningMsg.toString());
 
