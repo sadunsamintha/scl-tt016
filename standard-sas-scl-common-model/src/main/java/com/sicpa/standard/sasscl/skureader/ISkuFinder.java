@@ -8,6 +8,6 @@ public interface ISkuFinder {
 	
 	Optional<SKU> getSkuFromBarcode(String barcode);
 	
-	Optional<SKU> getSkuFromId(String id);
+	Optional<SKU> getSkuFromId(int id);
 
 }

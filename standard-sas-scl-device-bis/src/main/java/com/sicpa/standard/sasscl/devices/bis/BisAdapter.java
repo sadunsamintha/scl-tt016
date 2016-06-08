@@ -7,6 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +21,9 @@ import com.sicpa.standard.sasscl.devices.DeviceStatus;
 import com.sicpa.standard.sasscl.messages.MessageEventKey;
 import com.sicpa.standard.sasscl.model.SKU;
 import com.sicpa.standard.sasscl.provider.impl.SkuListProvider;
+import com.sicpa.standard.sasscl.skureader.ISkuFinder;
+import com.sicpa.standard.sasscl.skureader.SkuIdentifiedEvent;
+import com.sicpa.standard.sasscl.skureader.SkuNotdentifiedEvent;
 import com.sicpa.std.bis2.core.messages.RemoteMessages;
 import com.sicpa.std.bis2.core.messages.RemoteMessages.Alert;
 import com.sicpa.std.bis2.core.messages.RemoteMessages.LifeCheck;
@@ -36,6 +40,7 @@ public class BisAdapter extends AbstractStartableDevice implements IBisAdaptor, 
 	private boolean blockProduction;
 	private int unknownSkuId;
 	private boolean displayAlertMessage;
+	private ISkuFinder skuFinder;
 
 	public BisAdapter() {
 		setName("BIS");
@@ -105,14 +110,6 @@ public class BisAdapter extends AbstractStartableDevice implements IBisAdaptor, 
 		EventBusService.post(new MessageEvent(MessageEventKey.BIS.BIS_DISCONNECTED));
 	}
 
-	public void fireRecognitionResultEvent(RecognitionResultMessage result) {
-		if ((result.getConfidence() == null) || (result.getConfidence().getId() == unknownSkuId)) {
-			// TODO not recognized
-		} else {
-			// TODO send recognition result
-		}
-	}
-
 	private void fireAlertEvent(Alert alert) {
 		Calendar alertDatetime = Calendar.getInstance();
 		alertDatetime.setTimeInMillis(alert.getWhen());
@@ -146,7 +143,29 @@ public class BisAdapter extends AbstractStartableDevice implements IBisAdaptor, 
 
 	@Override
 	public void recognitionResultReceived(RecognitionResultMessage result) {
-		fireRecognitionResultEvent(result);
+		if (isResultUnknownSKU(result)) {
+			fireSkuNotIdentified();
+		} else {
+			SKU sku = getSkuFromResult(result).get();
+			if (sku == null) {
+				logger.error("no sku for id:" + result.getConfidence().getId());
+				fireSkuNotIdentified();
+			} else {
+				EventBusService.post(new SkuIdentifiedEvent(sku));
+			}
+		}
+	}
+
+	private void fireSkuNotIdentified() {
+		EventBusService.post(new SkuNotdentifiedEvent());
+	}
+
+	private Optional<SKU> getSkuFromResult(RecognitionResultMessage result) {
+		return skuFinder.getSkuFromId(result.getConfidence().getId());
+	}
+
+	private boolean isResultUnknownSKU(RecognitionResultMessage result) {
+		return (result.getConfidence() == null) || (result.getConfidence().getId() == unknownSkuId);
 	}
 
 	private void updateControllerSkuList(List<SKU> skuList) {
@@ -167,7 +186,7 @@ public class BisAdapter extends AbstractStartableDevice implements IBisAdaptor, 
 
 	@Override
 	public void otherMessageReceived(Object result) {
-		// ignore other messages
+		logger.info(result + "");
 	}
 
 	@Override
@@ -185,5 +204,9 @@ public class BisAdapter extends AbstractStartableDevice implements IBisAdaptor, 
 
 	public void setDisplayAlertMessage(boolean displayAlertMessage) {
 		this.displayAlertMessage = displayAlertMessage;
+	}
+
+	public void setSkuFinder(ISkuFinder skuFinder) {
+		this.skuFinder = skuFinder;
 	}
 }

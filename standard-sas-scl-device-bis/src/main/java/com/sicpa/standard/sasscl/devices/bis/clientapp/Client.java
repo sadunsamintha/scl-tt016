@@ -63,6 +63,7 @@ public class Client extends JFrame implements IBisControllerListener {
 		bisController.setRecognitionResultRequestIntervalMs(recognitionResultRequestInterval);
 		bisController.setPort(port);
 		bisController.addListener(this);
+		bisController.init();
 	}
 
 	public void initView() {

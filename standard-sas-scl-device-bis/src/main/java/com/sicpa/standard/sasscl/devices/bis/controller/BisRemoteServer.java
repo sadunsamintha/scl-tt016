@@ -58,10 +58,10 @@ public class BisRemoteServer implements IBisController, IBisMessageHandlerListen
 	private final ExecutorService singleThreadedExecutorService = Executors.newSingleThreadExecutor();
 
 	public BisRemoteServer() {
-		init();
+
 	}
 
-	private void init() {
+	public void init() {
 		connectionLifeCheckWorker = new ConnectionLifeCheckWorker(connectionLifeCheckIntervalMs);
 		connectionLifeCheckWorker.addController(this);
 
