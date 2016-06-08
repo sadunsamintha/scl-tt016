@@ -1,7 +1,0 @@
-<com.sicpa.standard.sasscl.devices.bis.model.BisModel>
-	<address>127.0.0.1</address>
-	<port>1234</port>
-	<unknownSkuDescription>UNK</unknownSkuDescription>
-	<connectionLifeCheckInterval>5000</connectionLifeCheckInterval>
-	<recognitionResultRequestInterval>5000</recognitionResultRequestInterval>
-</com.sicpa.standard.sasscl.devices.bis.model.BisModel>
