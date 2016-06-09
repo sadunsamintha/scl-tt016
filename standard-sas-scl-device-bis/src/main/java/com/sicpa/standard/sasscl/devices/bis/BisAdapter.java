@@ -13,8 +13,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
 
+import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.messages.MessageEvent;
+import com.sicpa.standard.sasscl.business.sku.selector.UnexpectedSkuChangedEvent;
 import com.sicpa.standard.sasscl.devices.AbstractStartableDevice;
 import com.sicpa.standard.sasscl.devices.DeviceException;
 import com.sicpa.standard.sasscl.devices.DeviceStatus;
@@ -22,8 +24,8 @@ import com.sicpa.standard.sasscl.messages.MessageEventKey;
 import com.sicpa.standard.sasscl.model.SKU;
 import com.sicpa.standard.sasscl.provider.impl.SkuListProvider;
 import com.sicpa.standard.sasscl.skureader.ISkuFinder;
-import com.sicpa.standard.sasscl.skureader.SkuIdentifiedEvent;
-import com.sicpa.standard.sasscl.skureader.SkuNotdentifiedEvent;
+import com.sicpa.standard.sasscl.skureader.SkuNotRecognizedEvent;
+import com.sicpa.standard.sasscl.skureader.SkuRecognizedEvent;
 import com.sicpa.std.bis2.core.messages.RemoteMessages;
 import com.sicpa.std.bis2.core.messages.RemoteMessages.Alert;
 import com.sicpa.std.bis2.core.messages.RemoteMessages.LifeCheck;
@@ -65,6 +67,7 @@ public class BisAdapter extends AbstractStartableDevice implements IBisAdaptor, 
 	protected void doDisconnect() throws BisAdaptorException {
 		try {
 			controller.disconnect();
+			EventBusService.unregister(this);
 		} catch (Exception e) {
 			logger.error("", e);
 		}
@@ -148,13 +151,13 @@ public class BisAdapter extends AbstractStartableDevice implements IBisAdaptor, 
 				logger.error("no sku for id:" + result.getConfidence().getId());
 				fireSkuNotIdentified();
 			} else {
-				EventBusService.post(new SkuIdentifiedEvent(sku));
+				EventBusService.post(new SkuRecognizedEvent(sku));
 			}
 		}
 	}
 
 	private void fireSkuNotIdentified() {
-		EventBusService.post(new SkuNotdentifiedEvent());
+		EventBusService.post(new SkuNotRecognizedEvent());
 	}
 
 	private Optional<SKU> getSkuFromResult(RecognitionResultMessage result) {
@@ -184,6 +187,18 @@ public class BisAdapter extends AbstractStartableDevice implements IBisAdaptor, 
 	@Override
 	public void otherMessageReceived(Object result) {
 		logger.info(result + "");
+	}
+
+	@Subscribe
+	public void handleUnexpectedSkuChangedEvent(UnexpectedSkuChangedEvent evt) {
+		controller.sendAutoSave();
+	}
+
+	@Subscribe
+	public void handleMessageEvent(MessageEvent evt) {
+		if (evt.getKey().equals(MessageEventKey.Alert.SKU_IDENTIFICATION_TOO_MANY_UNKNOWN)) {
+			controller.sendUnknownSave();
+		}
 	}
 
 	@Override

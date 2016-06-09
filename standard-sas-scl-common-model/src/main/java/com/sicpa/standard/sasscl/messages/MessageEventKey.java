@@ -98,6 +98,7 @@ public interface MessageEventKey {
 		String CAMERA_TRIGGER_TOO_FAST = "CAMERA.ERR.TRIGGER.TOO_FAST";
 		String TOO_MUCH_CAMERA_IDLE_TIME = "CAMERA.ERR.TOO_MUCH_IDLE_TIME";
 		String PLC_ACTIVATION_CROSS_CHECK_FAILED = "plc.activation.crosscheck.failed";
+		String SKU_IDENTIFICATION_TOO_MANY_UNKNOWN = "SKU.IDENTIFICATION.TOO.MANY.UNKNOWN";
 	}
 
 	public static interface Camera {

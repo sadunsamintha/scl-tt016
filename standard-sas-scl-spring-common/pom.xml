@@ -57,6 +57,10 @@
 		</dependency>
 		<dependency>
 			<groupId>com.sicpa.standard.sasscl</groupId>
+			<artifactId>business-sku-recognition</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.sicpa.standard.sasscl</groupId>
 			<artifactId>business-statistics</artifactId>
 		</dependency>
 		<dependency>

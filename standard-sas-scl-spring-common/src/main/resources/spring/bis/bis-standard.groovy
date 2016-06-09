@@ -20,7 +20,6 @@ beans{
 		b.initMethod='init'
 		ip=props['bis.ip']
 		port=props['bis.port']
-		recognitionResultRequestIntervalMs=props['bis.recognitionResultRequestIntervalMs']
 	}
 
 	skuFinder(SkuFinder){
