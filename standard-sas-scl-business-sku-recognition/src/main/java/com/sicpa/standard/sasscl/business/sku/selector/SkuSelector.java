@@ -1,6 +1,7 @@
 package com.sicpa.standard.sasscl.business.sku.selector;
 
 import static com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState.STT_SELECT_WITH_PREVIOUS;
+import static com.sicpa.standard.sasscl.model.SKU.UNKNOWN_SKU_ID;
 
 import java.time.Instant;
 
@@ -38,7 +39,7 @@ public class SkuSelector {
 	}
 
 	private SKU getUnknownSku() {
-		return new SKU(-1, "unknown SKU");
+		return new SKU(UNKNOWN_SKU_ID, "unknown SKU");
 	}
 
 	private void skuEventReceived(SKU sku) {
