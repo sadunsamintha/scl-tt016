@@ -28,9 +28,7 @@ import com.sicpa.standard.sasscl.devices.printer.PrinterAdaptorException;
 import com.sicpa.standard.sasscl.messages.ActionEventDeviceError;
 import com.sicpa.standard.sasscl.messages.DeviceReadyEvent;
 import com.sicpa.standard.sasscl.messages.IssueSolvedMessage;
-import com.sicpa.standard.sasscl.monitoring.MonitoringService;
 import com.sicpa.standard.sasscl.monitoring.system.SystemEventLevel;
-import com.sicpa.standard.sasscl.monitoring.system.SystemEventType;
 import com.sicpa.standard.sasscl.monitoring.system.event.BasicSystemEvent;
 import com.sicpa.standard.sasscl.provider.impl.PlcProvider;
 

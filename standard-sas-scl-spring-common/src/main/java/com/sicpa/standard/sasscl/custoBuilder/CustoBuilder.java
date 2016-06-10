@@ -60,7 +60,7 @@ import com.sicpa.standard.sasscl.model.custom.ICustomizable;
 import com.sicpa.standard.sasscl.model.statistics.StatisticsKey;
 import com.sicpa.standard.sasscl.productionParameterSelection.ISelectionModelFactory;
 import com.sicpa.standard.sasscl.productionParameterSelection.ISelectionModelFactory.IConfigFlowModel;
-import com.sicpa.standard.sasscl.productionParameterSelection.SelectionModel;
+import com.sicpa.standard.sasscl.productionParameterSelection.selectionmodel.DefaultSelectionModel;
 
 /**
  * helper class for customization<br>
@@ -77,11 +77,11 @@ public class CustoBuilder {
 		modelFactory.addConfigFlowModelTask(new IConfigFlowModel() {
 			@Override
 			public void config(AbstractSelectionFlowModel flowmodel) {
-				if (flowmodel instanceof SelectionModel) {
-					((SelectionModel) flowmodel).getPermissions().put(mode, permission);
+				if (flowmodel instanceof DefaultSelectionModel) {
+					((DefaultSelectionModel) flowmodel).getPermissions().put(mode, permission);
 				} else {
 					throw new IllegalArgumentException("cannot customize " + flowmodel.getClass()
-							+ " - expected class:" + SelectionModel.class);
+							+ " - expected class:" + DefaultSelectionModel.class);
 				}
 			}
 		});
