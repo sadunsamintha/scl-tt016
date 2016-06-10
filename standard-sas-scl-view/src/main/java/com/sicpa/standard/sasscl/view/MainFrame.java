@@ -104,7 +104,7 @@ public class MainFrame extends AbstractMachineFrame {
 		SwingUtilities.invokeLater(() -> userChanged());
 	}
 
-	private void userChanged() {
+	protected void userChanged() {
 
 		resetAndRebuildAccessiblePanel();
 
