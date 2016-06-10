@@ -1,12 +1,15 @@
 package com.sicpa.standard.sasscl.view.productionStatus;
 
 import com.sicpa.standard.gui.plaf.SicpaColor;
+
 import org.pushingpixels.trident.Timeline;
 import org.pushingpixels.trident.callback.TimelineCallbackAdapter;
 
 import javax.swing.*;
+
 import java.awt.*;
 
+@SuppressWarnings("serial")
 public class ProductStatusBar extends JPanel {
 
     private float progress = 0;

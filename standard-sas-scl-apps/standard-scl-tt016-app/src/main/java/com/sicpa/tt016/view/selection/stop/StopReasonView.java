@@ -2,12 +2,14 @@ package com.sicpa.tt016.view.selection.stop;
 
 import com.sicpa.standard.client.common.view.mvc.AbstractView;
 import com.sicpa.standard.client.common.i18n.Messages;
+
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
 
 import static com.sicpa.tt016.view.selection.stop.StopReason.*;
 
+@SuppressWarnings("serial")
 public class StopReasonView extends AbstractView<IStopReasonListener, StopReasonModel> {
 
 	protected StopReasonPanel stopReasonPanel;

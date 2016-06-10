@@ -20,17 +20,15 @@ import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.Producti
 @SuppressWarnings("serial")
 public class SelectProductionParametersHandPickingView extends JPanel implements ISelectProductionParametersView {
 
-	protected ISelectProductionParametersViewListener callback;
-
-	protected DefaultSelectionFlowView delegate;
-
-	protected ISelectionModelFactory selectionModelFactory;
+	private ISelectProductionParametersViewListener callback;
+	private DefaultSelectionFlowView delegate;
+	private ISelectionModelFactory selectionModelFactory;
 
 	public SelectProductionParametersHandPickingView() {
 		initGUI();
 	}
 
-	protected void initGUI() {
+	private void initGUI() {
 		setLayout(new MigLayout("fill, inset 0 0 0 0"));
 		add(getDelegate(), "grow,push,spanx");
 	}
@@ -47,41 +45,60 @@ public class SelectProductionParametersHandPickingView extends JPanel implements
 			return;
 		}
 		getDelegate().setModel(model);
+		addSelectionCompleteCallback(model);
 
-		model.addSelectionFlowListener(new SelectionFlowAdapter() {
-			@Override
-			public void selectionComplete(final SelectionFlowEvent evt) {
-				if (getDelegate().isShowing()) {
-					SelectProductionParametersHandPickingView.this.selectionComplete(evt);
-				}
-			}
-
-			@Override
-			public void cancelSelection() {
-			}
-		});
 		getDelegate().setBackButtonVisibleForFirstScreen(false);
 		getDelegate().init();
 	}
 
-	protected void selectionComplete(final SelectionFlowEvent evt) {
-		ProductionMode mode = null;
-		SKU sku = null;
+	private void addSelectionCompleteCallback(AbstractSelectionFlowModel model) {
+		model.addSelectionFlowListener(new SelectionFlowAdapter() {
+			@Override
+			public void selectionComplete(SelectionFlowEvent evt) {
+				if (getDelegate().isShowing()) {
+					selectionCompleteCallBack(evt);
+				}
+			}
+		});
+	}
 
+	private void selectionCompleteCallBack(SelectionFlowEvent evt) {
+		ProductionMode mode = getProductionMode(evt);
+		SKU sku = getSkuMode(evt);
+
+		if (mode != null) {
+			OperatorLogger.log("Product Mode: {}", mode.getDescription());
+		}
+		if (sku != null) {
+			OperatorLogger.log("Product Param: {}", sku.getDescription());
+		}
+
+		ProductionParameters pp = new ProductionParameters(mode, sku, "");
+		callback.productionParametersSelected(pp);
+	}
+
+	private SKU getSkuMode(SelectionFlowEvent evt) {
+		for (SelectableItem item : evt.getItems()) {
+			if (item instanceof IProductionParametersNode) {
+				IProductionParametersNode sc = (IProductionParametersNode) item;
+				if (sc.getValue() instanceof SKU) {
+					return (SKU) sc.getValue();
+				}
+			}
+		}
+		return null;
+	}
+
+	private ProductionMode getProductionMode(SelectionFlowEvent evt) {
 		for (SelectableItem item : evt.getItems()) {
 			if (item instanceof IProductionParametersNode) {
 				IProductionParametersNode sc = (IProductionParametersNode) item;
 				if (sc.getValue() instanceof ProductionMode) {
-					mode = (ProductionMode) sc.getValue();
-					OperatorLogger.log("Product Mode: {}", mode.getDescription());
-				} else if (sc.getValue() instanceof SKU) {
-					sku = (SKU) sc.getValue();
-					OperatorLogger.log("Product Param: {}", sku.getDescription());
+					return (ProductionMode) sc.getValue();
 				}
 			}
 		}
-		ProductionParameters pp = new ProductionParameters(mode, sku, "");
-		callback.productionParametersSelected(pp);
+		return null;
 	}
 
 	public DefaultSelectionFlowView getDelegate() {

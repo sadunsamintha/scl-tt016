@@ -1,4 +1,6 @@
-import com.sicpa.standard.sasscl.controller.skuselection.fulloperator.FullOperatorSelectionBehavior
+import com.sicpa.standard.sasscl.controller.skuselection.impl.FullOperatorSelectionBehavior
+import com.sicpa.standard.sasscl.controller.skuselection.impl.SkuSelectionDuringProduction
+
 
 beans{
 
@@ -7,6 +9,11 @@ beans{
 	switch(skuBehavior) {
 		case 'OPERATOR_FULL':
 			skuSelectionBehavior(FullOperatorSelectionBehavior)
+			break
+		case 'OPERATOR_PARTIAL':
+			skuSelectionBehavior(SkuSelectionDuringProduction){
+				productionParameters=ref('productionParameters')
+			}
 			break
 		default:
 			throw new RuntimeException('skuSelection.behavior:'+skuBehavior)

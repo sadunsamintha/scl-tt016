@@ -22,6 +22,7 @@ public class PlcOfflineCountingTrigger implements IDeviceStatusListener {
 		this.offlineCounting = offlineCounting;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void deviceStatusChanged(DeviceStatusEvent evt) {
 		if (evt.getStatus().equals(DeviceStatus.CONNECTED)) {
