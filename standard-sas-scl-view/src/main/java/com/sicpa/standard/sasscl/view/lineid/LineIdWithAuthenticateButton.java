@@ -103,6 +103,7 @@ public class LineIdWithAuthenticateButton extends DefaultLineIdPanel {
 	private void buttonLoginActionPerformed() {
 		getXloginPanel().setUserName("");
 		getXloginPanel().setPassword(new char[] {});
+		getLoginDialog().setErrorMessageVisible(false);
 
 		getLoginDialog().setVisible(true);
 	}
