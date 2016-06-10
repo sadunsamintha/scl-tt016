@@ -1,10 +1,14 @@
 package com.sicpa.standard.sasscl.business.sku.alert;
 
+import java.time.Instant;
+
 import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.messages.MessageEvent;
 import com.sicpa.standard.sasscl.business.alert.task.scheduled.AbstractScheduledOverTimeAlertTask;
+import com.sicpa.standard.sasscl.business.sku.IProductionChangeDetector;
 import com.sicpa.standard.sasscl.messages.MessageEventKey;
 import com.sicpa.standard.sasscl.skureader.SkuNotRecognizedEvent;
+import com.sicpa.standard.sasscl.skureader.SkuRecognizedEvent;
 
 public class UnkownSkuIdentifiedScheduledAlert extends AbstractScheduledOverTimeAlertTask {
 
@@ -12,10 +16,30 @@ public class UnkownSkuIdentifiedScheduledAlert extends AbstractScheduledOverTime
 	private int delaySec;
 	private int maxUnreadCount;
 	private int sampleSize;
+	private IProductionChangeDetector productionChangeDetector;
+	private Instant previousSkuEventTime;
 
 	@Subscribe
 	public void handleSkuNotdentifiedEvent(SkuNotRecognizedEvent evt) {
+		handleMaxDurationBetweenEvent();
+		previousSkuEventTime = Instant.now();
 		addCounterToGrid();
+	}
+
+	@Subscribe
+	public void handleSkuRecognizedEvent(SkuRecognizedEvent evt) {
+		handleMaxDurationBetweenEvent();
+		previousSkuEventTime = Instant.now();
+	}
+
+	private void handleMaxDurationBetweenEvent() {
+		if (isTimeExceededSinceLastRecognizedSku()) {
+			reset();
+		}
+	}
+
+	private boolean isTimeExceededSinceLastRecognizedSku() {
+		return productionChangeDetector.isPossibleProductionChange(previousSkuEventTime, Instant.now());
 	}
 
 	@Override

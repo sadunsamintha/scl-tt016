@@ -8,6 +8,7 @@ beans{
 		maxUnreadCount=props['alert.sku.recognition.maxUnreadCount']
 		sampleSize=props['alert.sku.recognition.sampleSize']
 		delaySec=props['alert.sku.recognition.delayInSec']
+		productionChangeDetector=ref('productionChangeDetector')
 	}
 
 	alertUnkownSkuScheduledAlertAddTask(InjectByMethodBean){

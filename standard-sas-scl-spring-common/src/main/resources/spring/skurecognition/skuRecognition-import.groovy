@@ -2,7 +2,7 @@ beans{
 
 	def skuRecognitionBehavior=props['sku.recognition.behavior'].toUpperCase()
 	if(skuRecognitionBehavior != "NONE") {
-
+		importBeans('spring/skurecognition/skuRecognition-common.groovy')
 		if(skuRecognitionBehavior == "CHECK") {
 			importBeans('spring/skurecognition/skuCheck.groovy')
 		}else if(skuRecognitionBehavior == "SELECTOR"){

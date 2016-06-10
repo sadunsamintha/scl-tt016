@@ -26,7 +26,7 @@ public class SkuSelector {
 	private IProductionChangeDetector productionChangeDetector;
 
 	private SKU previousRecognizedSku;
-	private Instant lastSkuRecognizedTime;
+	private Instant previousSkuEventTime;
 
 	@Subscribe
 	public void handleSkuRecognizedEvent(SkuRecognizedEvent evt) {
@@ -44,7 +44,8 @@ public class SkuSelector {
 
 	private void skuEventReceived(SKU sku) {
 		handleMaxDurationBetweenEvent();
-
+		previousSkuEventTime = Instant.now();
+		
 		skuBuffer.add(sku);
 
 		if (skuBuffer.isReady()) {
@@ -91,7 +92,7 @@ public class SkuSelector {
 	}
 
 	private boolean isTimeExceededSinceLastRecognizedSku() {
-		return productionChangeDetector.isPossibleProductionChange(lastSkuRecognizedTime, Instant.now());
+		return productionChangeDetector.isPossibleProductionChange(previousSkuEventTime, Instant.now());
 	}
 
 	private void unexptedSkuChange(SKU newSku) {
