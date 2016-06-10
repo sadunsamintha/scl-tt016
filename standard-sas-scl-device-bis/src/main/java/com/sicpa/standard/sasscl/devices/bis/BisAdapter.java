@@ -5,8 +5,9 @@ import static java.util.Collections.unmodifiableList;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +21,9 @@ import com.sicpa.standard.sasscl.devices.DeviceStatus;
 import com.sicpa.standard.sasscl.messages.MessageEventKey;
 import com.sicpa.standard.sasscl.model.SKU;
 import com.sicpa.standard.sasscl.provider.impl.SkuListProvider;
+import com.sicpa.standard.sasscl.skureader.ISkuFinder;
+import com.sicpa.standard.sasscl.skureader.SkuIdentifiedEvent;
+import com.sicpa.standard.sasscl.skureader.SkuNotdentifiedEvent;
 import com.sicpa.std.bis2.core.messages.RemoteMessages;
 import com.sicpa.std.bis2.core.messages.RemoteMessages.Alert;
 import com.sicpa.std.bis2.core.messages.RemoteMessages.LifeCheck;
@@ -33,6 +37,10 @@ public class BisAdapter extends AbstractStartableDevice implements IBisAdaptor, 
 	private final DateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	private IBisController controller;
 	private SkuListProvider skuListProvider;
+	private boolean blockProduction;
+	private int unknownSkuId;
+	private boolean displayAlertMessage;
+	private ISkuFinder skuFinder;
 
 	public BisAdapter() {
 		setName("BIS");
@@ -50,8 +58,6 @@ public class BisAdapter extends AbstractStartableDevice implements IBisAdaptor, 
 		} catch (Exception e) {
 			EventBusService.post(new MessageEvent(MessageEventKey.BIS.BIS_DISCONNECTED));
 			throw new BisAdaptorException("BIS error on connect");
-		} finally {
-			fireDeviceStatusChanged(DeviceStatus.CONNECTED);
 		}
 	}
 
@@ -60,20 +66,18 @@ public class BisAdapter extends AbstractStartableDevice implements IBisAdaptor, 
 		try {
 			controller.disconnect();
 		} catch (Exception e) {
-			throw new BisAdaptorException("BIS error on disconnect");
-		} finally {
-			fireDeviceStatusChanged(DeviceStatus.DISCONNECTED);
+			logger.error("", e);
 		}
+		fireDeviceStatusChanged(DeviceStatus.DISCONNECTED);
 	}
 
 	@Override
 	protected void doStart() throws DeviceException {
 		try {
 			controller.start();
+			fireDeviceStatusChanged(DeviceStatus.STARTED);
 		} catch (Exception e) {
 			throw new BisAdaptorException("BIS error on start");
-		} finally {
-			fireDeviceStatusChanged(DeviceStatus.STARTED);
 		}
 	}
 
@@ -102,24 +106,12 @@ public class BisAdapter extends AbstractStartableDevice implements IBisAdaptor, 
 
 	@Override
 	public void onDisconnection() {
-		logger.debug("BisAdapter | onDisconnection() ...");
+		logger.debug("BisAdapter | onDisconnection()");
 		EventBusService.post(new MessageEvent(MessageEventKey.BIS.BIS_DISCONNECTED));
 	}
 
-	public void fireRecognitionResultEvent(RecognitionResultMessage result) {
-		if ((result.getConfidence() == null)
-				|| (result.getConfidence().getId() == controller.getModel().getUnknownSkuId())) {
-			// TODO not recognized
-		} else {
-			// TODO send recognition result
-		}
-	}
-
 	private void fireAlertEvent(Alert alert) {
-		Calendar alertDatetime = Calendar.getInstance();
-		alertDatetime.setTimeInMillis(alert.getWhen());
-
-		StringBuffer warningMsg = new StringBuffer();
+		StringBuilder warningMsg = new StringBuilder();
 		warningMsg.append("[BIS ");
 		warningMsg.append(alert.getSeverity().getValueDescriptor().getName());
 		warningMsg.append("] ");
@@ -127,11 +119,11 @@ public class BisAdapter extends AbstractStartableDevice implements IBisAdaptor, 
 		warningMsg.append(" ");
 		warningMsg.append(alert.getWhat());
 		warningMsg.append(" on ");
-		warningMsg.append(dateformat.format(alertDatetime.getTime()));
+		warningMsg.append(dateformat.format(new Date(alert.getWhen())));
 
 		logger.warn(warningMsg.toString());
 
-		if (this.controller.getModel().isDisplayAlertMessage()) {
+		if (displayAlertMessage) {
 			EventBusService.post(new MessageEvent(this, MessageEventKey.BIS.BIS_ALERT, warningMsg.toString()));
 		}
 	}
@@ -148,7 +140,29 @@ public class BisAdapter extends AbstractStartableDevice implements IBisAdaptor, 
 
 	@Override
 	public void recognitionResultReceived(RecognitionResultMessage result) {
-		fireRecognitionResultEvent(result);
+		if (isResultUnknownSKU(result)) {
+			fireSkuNotIdentified();
+		} else {
+			SKU sku = getSkuFromResult(result).get();
+			if (sku == null) {
+				logger.error("no sku for id:" + result.getConfidence().getId());
+				fireSkuNotIdentified();
+			} else {
+				EventBusService.post(new SkuIdentifiedEvent(sku));
+			}
+		}
+	}
+
+	private void fireSkuNotIdentified() {
+		EventBusService.post(new SkuNotdentifiedEvent());
+	}
+
+	private Optional<SKU> getSkuFromResult(RecognitionResultMessage result) {
+		return skuFinder.getSkuFromId(result.getConfidence().getId());
+	}
+
+	private boolean isResultUnknownSKU(RecognitionResultMessage result) {
+		return (result.getConfidence() == null) || (result.getConfidence().getId() == unknownSkuId);
 	}
 
 	private void updateControllerSkuList(List<SKU> skuList) {
@@ -169,11 +183,27 @@ public class BisAdapter extends AbstractStartableDevice implements IBisAdaptor, 
 
 	@Override
 	public void otherMessageReceived(Object result) {
-		// ignore other messages
+		logger.info(result + "");
 	}
 
 	@Override
 	public boolean isBlockProductionStart() {
-		return false;
+		return blockProduction;
+	}
+
+	public void setBlockProduction(boolean blockProduction) {
+		this.blockProduction = blockProduction;
+	}
+
+	public void setUnknownSkuId(int unknownSkuId) {
+		this.unknownSkuId = unknownSkuId;
+	}
+
+	public void setDisplayAlertMessage(boolean displayAlertMessage) {
+		this.displayAlertMessage = displayAlertMessage;
+	}
+
+	public void setSkuFinder(ISkuFinder skuFinder) {
+		this.skuFinder = skuFinder;
 	}
 }

@@ -18,7 +18,7 @@ public interface IBisController {
 	void sendLifeCheck();
 
 	void sendRecognitionResultRequest();
-	
+
 	void sendAutoSave();
 
 	void receiveLifeCheckResponce(LifeCheck lifeCheckResponce);
@@ -28,10 +28,6 @@ public interface IBisController {
 	void onLifeCheckFailed();
 
 	void onLifeCheckSucceed();
-
-	void setModel(IBisModel model);
-
-	IBisModel getModel();
 
 	void addListener(IBisControllerListener listener);
 

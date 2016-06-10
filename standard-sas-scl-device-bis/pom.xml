@@ -15,17 +15,5 @@
 			<artifactId>model</artifactId>
 			<groupId>com.sicpa.standard.sasscl</groupId>
 		</dependency>
-
-
-		<dependency>
-			<groupId>com.sicpa.standard.bis2</groupId>
-			<artifactId>remote</artifactId>
-			<exclusions>
-				<exclusion>
-					<artifactId>spring-context</artifactId>
-					<groupId>org.springframework</groupId>
-				</exclusion>
-			</exclusions>
-		</dependency>
 	</dependencies>
 </project>

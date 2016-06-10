@@ -19,8 +19,8 @@ public class SkuFinder implements ISkuFinder {
 	}
 
 	@Override
-	public Optional<SKU> getSkuFromId(String id) {
-		return getSku(sku -> ("" + sku.getId()).equals(id));
+	public Optional<SKU> getSkuFromId(int id) {
+		return getSku(sku -> sku.getId() == id);
 	}
 
 	private Optional<SKU> getSku(Predicate<SKU> filter) {
