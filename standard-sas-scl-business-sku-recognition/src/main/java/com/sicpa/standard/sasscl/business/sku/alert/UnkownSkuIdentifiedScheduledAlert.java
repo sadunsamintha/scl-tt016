@@ -20,7 +20,7 @@ public class UnkownSkuIdentifiedScheduledAlert extends AbstractScheduledOverTime
 	private Instant previousSkuEventTime;
 
 	@Subscribe
-	public void handleSkuNotdentifiedEvent(SkuNotRecognizedEvent evt) {
+	public void handleSkuNotRecognizedEvent(SkuNotRecognizedEvent evt) {
 		handleMaxDurationBetweenEvent();
 		previousSkuEventTime = Instant.now();
 		addCounterToGrid();
