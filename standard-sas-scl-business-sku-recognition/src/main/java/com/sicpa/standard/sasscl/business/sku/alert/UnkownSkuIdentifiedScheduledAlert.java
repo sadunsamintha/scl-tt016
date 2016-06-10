@@ -87,4 +87,8 @@ public class UnkownSkuIdentifiedScheduledAlert extends AbstractScheduledOverTime
 	public void setSampleSize(int sampleSize) {
 		this.sampleSize = sampleSize;
 	}
+
+	public void setProductionChangeDetector(IProductionChangeDetector productionChangeDetector) {
+		this.productionChangeDetector = productionChangeDetector;
+	}
 }
