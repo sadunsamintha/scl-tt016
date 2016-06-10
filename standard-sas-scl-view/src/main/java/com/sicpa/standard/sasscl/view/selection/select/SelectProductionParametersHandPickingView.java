@@ -21,7 +21,7 @@ import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.Producti
 public class SelectProductionParametersHandPickingView extends JPanel implements ISelectProductionParametersView {
 
 	private ISelectProductionParametersViewListener callback;
-	private DefaultSelectionFlowView delegate;
+	protected DefaultSelectionFlowView delegate;
 	private ISelectionModelFactory selectionModelFactory;
 
 	public SelectProductionParametersHandPickingView() {

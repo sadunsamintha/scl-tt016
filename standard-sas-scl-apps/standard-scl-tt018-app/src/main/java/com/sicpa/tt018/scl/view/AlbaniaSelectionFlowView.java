@@ -5,11 +5,10 @@ import com.sicpa.standard.gui.screen.machine.component.SelectionFlow.flow.Defaul
 import com.sicpa.standard.gui.screen.machine.component.SelectionFlow.oneSelection.AbstractSelectionView;
 import com.sicpa.standard.gui.screen.machine.component.SelectionFlow.oneSelection.DefaultSmallSelectionView;
 
+@SuppressWarnings("serial")
 public class AlbaniaSelectionFlowView extends DefaultSelectionFlowView {
 
-	private static final long serialVersionUID = 8262181280143342684L;
-
-	protected AbstractSelectionView createView(final SelectableItem[] items) {
+	protected AbstractSelectionView createView(SelectableItem[] items) {
 		return new DefaultSmallSelectionView(items);
 	}
 
