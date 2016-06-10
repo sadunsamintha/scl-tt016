@@ -33,12 +33,12 @@ public class TT016Bootstrap extends Bootstrap {
 		noStopIfDmxDetectedInExport();
 		selectStopReasonWhenProductionStop();
 	}
-	
+
 	private void noStopIfDmxDetectedInExport() {
 		setMessageType(MessageEventKey.Activation.EXCEPTION_CODE_IN_EXPORT, ActionMessageType.WARNING);
 	}
-	
-	private void selectStopReasonWhenProductionStop(){
+
+	private void selectStopReasonWhenProductionStop() {
 		addScreen(stopReasonViewController);
 		addScreenTransitions(mainPanelGetter,
 				new ScreenTransition(STOP_PRODUCTION, stopReasonViewController));
@@ -58,4 +58,5 @@ public class TT016Bootstrap extends Bootstrap {
 	public void setStopReasonViewController(StopReasonViewController stopReasonViewController) {
 		this.stopReasonViewController = stopReasonViewController;
 	}
+
 }

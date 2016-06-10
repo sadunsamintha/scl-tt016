@@ -53,7 +53,9 @@
 		<property name="visible" value="${displaySimulatorGui}" />
 	</bean>
 
-	<bean id="selectionModelFactory" class="com.sicpa.standard.sasscl.productionParameterSelection.DefaultSelectionModelFactory" />
+	<bean id="selectionModelFactory" class="com.sicpa.standard.sasscl.productionParameterSelection.DefaultSelectionModelFactory">
+		<property name="productionModeOnlySelection" value="#{ '${skuSelection.behavior}'.toUpperCase() == 'OPERATOR_PARTIAL' }" />
+	</bean>
 
 	<bean id="beanCallPanel" class="com.sicpa.standard.sasscl.view.forceCall.BeanCallPanel" init-method="init">
 		<property name="beancalls" ref="beanCallList" />
@@ -136,7 +138,7 @@
 	<bean id="startStopView" class="com.sicpa.standard.sasscl.view.startstop.StartStopView" init-method="initGUI">
 		<property name="controller" ref="startStopViewController" />
 		<property name="model" value="#{startStopViewController.model}" />
-		<property name="productionStatusView" ref="productionStatusView"/>
+		<property name="productionStatusView" ref="productionStatusView" />
 
 	</bean>
 	<bean id="startStopViewController" class="com.sicpa.standard.sasscl.view.startstop.StartStopViewController">
@@ -265,7 +267,7 @@
 	</bean>
 
 
-	<!--ProductionStatusView-->
+	<!--ProductionStatusView -->
 	<bean id="productionStatusView" class="com.sicpa.standard.sasscl.view.productionStatus.ProductionStatusView">
 		<property name="controller" ref="productionStatusViewController" />
 		<property name="model" value="#{productionStatusViewController.model}" />

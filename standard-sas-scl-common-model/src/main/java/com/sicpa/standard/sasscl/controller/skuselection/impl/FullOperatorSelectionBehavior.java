@@ -1,4 +1,4 @@
-package com.sicpa.standard.sasscl.controller.skuselection.fulloperator;
+package com.sicpa.standard.sasscl.controller.skuselection.impl;
 
 import com.sicpa.standard.sasscl.controller.ProductionParametersEvent;
 import com.sicpa.standard.sasscl.controller.skuselection.ISkuSelectionBehavior;

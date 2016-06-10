@@ -70,13 +70,6 @@ public class SkuListProvider extends AbstractProvider<ProductionParameterRootNod
 	}
 
 	public void populateCodeTypesList(Set<CodeType> codeTypes, final IProductionParametersNode node) {
-		if (node instanceof ProductionModeNode) {
-			if (!((ProductionMode) node.getValue()).isWithSicpaData()) {
-				// do not ask encoder for production mode that does not required printing
-				return;
-			}
-		}
-
 		if (node instanceof SKUNode) {
 			codeTypes.add(((SKU) node.getValue()).getCodeType());
 		} else {
