@@ -3,7 +3,7 @@ beans{
 	def bisBehavior=props['bis.behavior'].toUpperCase()
 	if(bisBehavior != "NONE") {
 
-		importBeans('spring/alert/alertUnknownSkuTask.groovy')
+		importBeans('spring/bis/bis-common.groovy')
 
 		if(bisBehavior == "SIMULATOR") {
 			importBeans('spring/bis/bis-simulator.groovy')

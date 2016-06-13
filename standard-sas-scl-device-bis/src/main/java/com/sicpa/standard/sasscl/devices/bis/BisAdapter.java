@@ -202,6 +202,12 @@ public class BisAdapter extends AbstractStartableDevice implements IBisAdaptor, 
 	}
 
 	@Override
+	public void sendCredential(String user, String password) {
+		logger.info("sending credential to bis - user:" + user);
+		controller.sendCredential(user, password);
+	}
+
+	@Override
 	public boolean isBlockProductionStart() {
 		return blockProduction;
 	}
@@ -221,4 +227,5 @@ public class BisAdapter extends AbstractStartableDevice implements IBisAdaptor, 
 	public void setSkuFinder(ISkuFinder skuFinder) {
 		this.skuFinder = skuFinder;
 	}
+
 }

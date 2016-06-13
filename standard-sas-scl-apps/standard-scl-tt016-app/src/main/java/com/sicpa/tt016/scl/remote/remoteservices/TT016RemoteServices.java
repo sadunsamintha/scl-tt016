@@ -29,6 +29,7 @@ import com.sicpa.tt016.common.dto.SkuDTO;
 import com.sicpa.tt016.common.model.CodeType;
 import com.sicpa.tt016.common.security.CustomPrincipal;
 import com.sicpa.tt016.common.security.authenticator.IMoroccoAuthenticator;
+import com.sicpa.tt016.master.scl.business.interfaces.IBisUserManagerRemote;
 import com.sicpa.tt016.master.scl.business.interfaces.ICodingActivationRemote;
 import com.sicpa.tt016.master.scl.exceptions.InternalException;
 
@@ -36,14 +37,19 @@ public class TT016RemoteServices implements ITT016RemoteServices {
 
 	private static final Logger logger = LoggerFactory.getLogger(TT016RemoteServices.class);
 	private static final String CODING_SERVICE_NAME = "CodingActivationBean/remote";
+	private static final String BIS_SERVICE_NAME = "BisUserManagerBean/remote";
+	private static final int PRODUCTION_MODE_STANDARD_ID = 0;
+	private static final int PRODUCTION_MODE_EXPORT_ID = 1;
 
 	private ICodingActivationRemote codingActivation;
+	private IBisUserManagerRemote bisUserManagerRemote;
 
 	private String userMachine;
 	private String passwordMachine;
 	private int subsystemId;
 	private String url;
 	private Context context;
+	private boolean withBis;
 
 	@Override
 	@Timeout
@@ -55,6 +61,9 @@ public class TT016RemoteServices implements ITT016RemoteServices {
 
 	private void loadRemoteService() throws NamingException {
 		codingActivation = (ICodingActivationRemote) locateService(CODING_SERVICE_NAME);
+		if (withBis) {
+			bisUserManagerRemote = (IBisUserManagerRemote) locateService(BIS_SERVICE_NAME);
+		}
 	}
 
 	@Override
@@ -125,14 +134,14 @@ public class TT016RemoteServices implements ITT016RemoteServices {
 	@Timeout
 	public void sendDomesticProduction(CodingActivationSessionDTO activSession) throws InternalException {
 		logger.info("Sending domestic data");
-		codingActivation.sendProductionData(activSession, emptyList(), subsystemId);
+		codingActivation.sendProductionData(PRODUCTION_MODE_STANDARD_ID, activSession, emptyList(), subsystemId);
 	}
 
 	@Override
 	@Timeout
 	public void sendRefeedProduction(CodingActivationSessionDTO activSession) throws InternalException {
 		logger.info("Sending refeed data");
-		codingActivation.sendProductionData(activSession, emptyList(), subsystemId);
+		codingActivation.sendProductionData(PRODUCTION_MODE_EXPORT_ID, activSession, emptyList(), subsystemId);
 	}
 
 	@Override
@@ -140,7 +149,13 @@ public class TT016RemoteServices implements ITT016RemoteServices {
 	public void sendEjectedProduction(IEjectionDTO ejected) throws InternalException {
 		logger.info("Sending ejection data");
 		CodingActivationSessionDTO emptySessionDto = new CodingActivationSessionDTO(emptyList());
-		codingActivation.sendProductionData(emptySessionDto, asList(ejected), subsystemId);
+		codingActivation.sendProductionData(PRODUCTION_MODE_STANDARD_ID, emptySessionDto, asList(ejected), subsystemId);
+	}
+
+	@Override
+	@Timeout
+	public String getBisTrainerPassword(String user) {
+		return bisUserManagerRemote.getPassword(subsystemId, user);
 	}
 
 	private Object locateService(String name) throws NamingException {
