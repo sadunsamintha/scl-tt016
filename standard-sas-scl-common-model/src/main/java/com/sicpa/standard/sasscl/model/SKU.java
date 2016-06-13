@@ -9,9 +9,10 @@ import java.util.List;
 
 import javax.swing.ImageIcon;
 
+import com.sicpa.standard.sasscl.blobDetection.BlobDetection;
 import com.sicpa.standard.sasscl.model.custom.Customizable;
 
-public class SKU extends Customizable implements Serializable, Cloneable {
+public class SKU extends Customizable implements Serializable, Cloneable, BlobDetection {
 
 	private static final long serialVersionUID = 1L;
 
