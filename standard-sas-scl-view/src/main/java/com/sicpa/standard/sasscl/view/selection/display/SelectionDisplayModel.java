@@ -5,7 +5,7 @@ import com.sicpa.standard.sasscl.model.ProductionParameters;
 
 public class SelectionDisplayModel extends AbstractObservableModel {
 
-	protected ProductionParameters productionParameters;
+	private ProductionParameters productionParameters;
 
 	public void setProductionParameters(ProductionParameters productionParameters) {
 		this.productionParameters = productionParameters;
