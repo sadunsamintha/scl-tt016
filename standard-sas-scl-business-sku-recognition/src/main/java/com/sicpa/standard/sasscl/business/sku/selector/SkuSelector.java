@@ -11,7 +11,9 @@ import org.slf4j.LoggerFactory;
 import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.sasscl.business.sku.IProductionChangeDetector;
+import com.sicpa.standard.sasscl.controller.ProductionParametersEvent;
 import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowStateChangedEvent;
+import com.sicpa.standard.sasscl.controller.skuselection.ISkuSelectionBehavior;
 import com.sicpa.standard.sasscl.model.ProductionParameters;
 import com.sicpa.standard.sasscl.model.SKU;
 import com.sicpa.standard.sasscl.skureader.SkuNotRecognizedEvent;
@@ -23,6 +25,7 @@ public class SkuSelector {
 
 	private ISkuRecognizedBuffer skuBuffer;
 	private ProductionParameters productionParameters;
+	private ISkuSelectionBehavior skuSelectionBehavior;
 	private IProductionChangeDetector productionChangeDetector;
 
 	private SKU previousRecognizedSku;
@@ -45,7 +48,7 @@ public class SkuSelector {
 	private void skuEventReceived(SKU sku) {
 		handleMaxDurationBetweenEvent();
 		previousSkuEventTime = Instant.now();
-		
+
 		skuBuffer.add(sku);
 
 		if (skuBuffer.isReady()) {
@@ -84,6 +87,8 @@ public class SkuSelector {
 	private void setSku(SKU sku) {
 		logger.info("setting sku:" + sku);
 		productionParameters.setSku(sku);
+		skuSelectionBehavior.duringProductionOnProductionParameterChanged(new ProductionParametersEvent(
+				productionParameters));
 	}
 
 	private void reset() {
@@ -115,5 +120,9 @@ public class SkuSelector {
 
 	public void setProductionChangeDetector(IProductionChangeDetector productionChangeDetector) {
 		this.productionChangeDetector = productionChangeDetector;
+	}
+
+	public void setSkuSelectionBehavior(ISkuSelectionBehavior skuSelectionBehavior) {
+		this.skuSelectionBehavior = skuSelectionBehavior;
 	}
 }
