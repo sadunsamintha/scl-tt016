@@ -10,7 +10,7 @@ import com.sicpa.standard.sasscl.messages.MessageEventKey;
 import com.sicpa.standard.sasscl.skureader.SkuNotRecognizedEvent;
 import com.sicpa.standard.sasscl.skureader.SkuRecognizedEvent;
 
-public class UnkownSkuIdentifiedScheduledAlert extends AbstractScheduledOverTimeAlertTask {
+public class UnkownSkuRecognizedScheduledAlert extends AbstractScheduledOverTimeAlertTask {
 
 	private boolean enabled;
 	private int delaySec;
@@ -49,7 +49,7 @@ public class UnkownSkuIdentifiedScheduledAlert extends AbstractScheduledOverTime
 
 	@Override
 	protected MessageEvent getAlertMessage() {
-		return new MessageEvent(MessageEventKey.Alert.SKU_IDENTIFICATION_TOO_MANY_UNKNOWN);
+		return new MessageEvent(MessageEventKey.Alert.SKU_RECOGNITIONTOO_MANY_UNKNOWN);
 	}
 
 	@Override

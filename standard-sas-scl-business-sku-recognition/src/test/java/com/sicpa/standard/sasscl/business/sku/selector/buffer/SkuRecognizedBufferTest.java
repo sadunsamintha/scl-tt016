@@ -6,7 +6,7 @@ import org.junit.Test;
 
 import com.sicpa.standard.sasscl.model.SKU;
 
-public class SkuIdentifiedBufferTest {
+public class SkuRecognizedBufferTest {
 
 	private final SkuRecognizedBuffer buffer = new SkuRecognizedBuffer();
 

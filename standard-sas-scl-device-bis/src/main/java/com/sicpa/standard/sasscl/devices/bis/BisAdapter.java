@@ -196,7 +196,7 @@ public class BisAdapter extends AbstractStartableDevice implements IBisAdaptor, 
 
 	@Subscribe
 	public void handleMessageEvent(MessageEvent evt) {
-		if (evt.getKey().equals(MessageEventKey.Alert.SKU_IDENTIFICATION_TOO_MANY_UNKNOWN)) {
+		if (evt.getKey().equals(MessageEventKey.Alert.SKU_RECOGNITIONTOO_MANY_UNKNOWN)) {
 			controller.sendUnknownSave();
 		}
 	}
