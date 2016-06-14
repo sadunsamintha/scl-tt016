@@ -13,6 +13,7 @@ beans{
 		skuFinder=ref('skuFinder')
 		unknownSkuId=props['bis.unknownSkuId']
 		displayAlertMessage=props['bis.displayAlertMessage']
+		skuBisProvider=ref('skuBisProvider')
 	}
 
 	bisRemoteServer(BisRemoteServer){b->

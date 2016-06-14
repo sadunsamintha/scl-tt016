@@ -20,6 +20,12 @@ public class SkuFinder implements ISkuFinder {
 
 	@Override
 	public Optional<SKU> getSkuFromId(int id) {
+		//TODO
+		//find the physical id of the sku
+		//find all sku matching this id
+		//find the sku for the current production mode
+		
+		
 		return getSku(sku -> sku.getId() == id);
 	}
 

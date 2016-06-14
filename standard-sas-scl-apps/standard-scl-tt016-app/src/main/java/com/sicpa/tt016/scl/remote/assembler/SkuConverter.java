@@ -1,6 +1,7 @@
 package com.sicpa.tt016.scl.remote.assembler;
 
 import static com.sicpa.standard.gui.utils.ImageUtils.convertToBufferedImage;
+import static com.sicpa.tt016.scl.model.TT016Sku.SKU_PHYSICAL_PROPERTY;
 
 import java.awt.image.BufferedImage;
 import java.util.List;
@@ -51,16 +52,27 @@ public class SkuConverter {
 
 	private SKU convert(SkuDTO dto) {
 		SKU sku = new SKU();
+		sku.setProperty(SKU_PHYSICAL_PROPERTY, createPhysicalId(dto));
 		sku.setId(dto.getSkuId());
 		sku.addBarcode(dto.getBarcode());
-		
+
 		BufferedImage image = convertToBufferedImage(dto.getIcon());
 		sku.setImage(new ImageIcon(image));
-		// FIXME when mscl api is fixed sku.setImage(new ImageIcon(skuDto.getIcon());
-		
+
 		sku.setCodeType(new CodeType(codeTypeId));
 		sku.setDescription(dto.getDescription());
 		return sku;
+	}
+
+	private String createPhysicalId(SkuDTO sku) {
+		return extractSkuDescription(sku) + "-" + +sku.getCategoryId() + "-" + "-" + sku.getPackageVolumeId();
+	}
+
+	private String extractSkuDescription(SkuDTO sku) {
+		// brand-variant-packagingType-marketType
+		String desc = sku.getDescription();
+		int index = desc.lastIndexOf('-');
+		return desc.substring(0, index);
 	}
 
 	public void setCodeTypeId(long codeTypeId) {

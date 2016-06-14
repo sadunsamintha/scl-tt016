@@ -54,8 +54,8 @@ import com.sicpa.standard.sasscl.devices.remote.mapping.IRemoteServerProductStat
 import com.sicpa.standard.sasscl.ioc.BeansName;
 import com.sicpa.standard.sasscl.model.ProductStatus;
 import com.sicpa.standard.sasscl.model.ProductionMode;
-import com.sicpa.standard.sasscl.model.custom.CustomProperty;
 import com.sicpa.standard.sasscl.model.custom.CustomizablePropertyFactory;
+import com.sicpa.standard.sasscl.model.custom.ICustomProperty;
 import com.sicpa.standard.sasscl.model.custom.ICustomizable;
 import com.sicpa.standard.sasscl.model.statistics.StatisticsKey;
 import com.sicpa.standard.sasscl.productionParameterSelection.ISelectionModelFactory;
@@ -199,7 +199,7 @@ public class CustoBuilder {
 	 * @see CustoBuilderCustomizableTest.testModelAddCustomPropertySuccess
 	 *
 	 */
-	public static void addPropertyToClass(Class<? extends ICustomizable> classToCustomize, CustomProperty<?> property) {
+	public static void addPropertyToClass(Class<? extends ICustomizable> classToCustomize, ICustomProperty<?> property) {
 		CustomizablePropertyFactory.getCustomizablePropertyDefinition().addProperty(classToCustomize, property);
 	}
 
