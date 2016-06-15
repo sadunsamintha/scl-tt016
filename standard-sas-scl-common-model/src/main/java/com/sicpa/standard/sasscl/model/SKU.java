@@ -22,6 +22,7 @@ public class SKU extends Customizable implements Serializable, Cloneable {
 	private String description;
 	private ImageIcon image;
 	private final List<String> barcodes = new ArrayList<>();
+	private String appearanceCode;
 
 	public SKU(int id, String description, List<String> barcodes) {
 		this.barcodes.addAll(barcodes);
@@ -118,9 +119,18 @@ public class SKU extends Customizable implements Serializable, Cloneable {
 		res.codeType = codeType;
 		res.description = description;
 		res.id = id;
+		res.appearanceCode = appearanceCode;
 		res.setProperties(copyProperties());
 
 		return res;
+	}
+
+	public void setAppearanceCode(String appearanceCode) {
+		this.appearanceCode = appearanceCode;
+	}
+
+	public String getAppearanceCode() {
+		return appearanceCode;
 	}
 
 }

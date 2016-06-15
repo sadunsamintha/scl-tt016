@@ -1,7 +1,6 @@
 package com.sicpa.tt016.scl.remote.assembler;
 
 import static com.sicpa.standard.gui.utils.ImageUtils.convertToBufferedImage;
-import static com.sicpa.tt016.scl.model.TT016Sku.SKU_PHYSICAL_PROPERTY;
 
 import java.awt.image.BufferedImage;
 import java.util.List;
@@ -52,7 +51,7 @@ public class SkuConverter {
 
 	private SKU convert(SkuDTO dto) {
 		SKU sku = new SKU();
-		sku.setProperty(SKU_PHYSICAL_PROPERTY, createPhysicalId(dto));
+		sku.setAppearanceCode(createPhysicalId(dto));
 		sku.setId(dto.getSkuId());
 		sku.addBarcode(dto.getBarcode());
 

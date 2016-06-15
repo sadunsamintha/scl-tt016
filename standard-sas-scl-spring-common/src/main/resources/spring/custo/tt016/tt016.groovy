@@ -20,6 +20,4 @@ beans{
 
 	addAlias('bisCredentialProvider','remoteServer')
 
-
-	skuBisProvider(TT016SkuBisProvider){ skuListProvider=ref('skuListProvider') }
 }

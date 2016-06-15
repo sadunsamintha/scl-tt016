@@ -1,6 +1,4 @@
-package com.sicpa.tt016.scl.bis;
-
-import static com.sicpa.tt016.scl.model.TT016Sku.SKU_PHYSICAL_PROPERTY;
+package com.sicpa.standard.sasscl.devices.bis;
 
 import java.util.Collection;
 import java.util.Map;
@@ -10,7 +8,7 @@ import com.sicpa.standard.sasscl.devices.bis.ISkuBisProvider;
 import com.sicpa.standard.sasscl.model.SKU;
 import com.sicpa.standard.sasscl.provider.impl.SkuListProvider;
 
-public class TT016SkuBisProvider implements ISkuBisProvider {
+public class SkuBisProvider implements ISkuBisProvider {
 
 	private SkuListProvider skuListProvider;
 
@@ -22,11 +20,7 @@ public class TT016SkuBisProvider implements ISkuBisProvider {
 
 	private Collection<SKU> getFilteredSkus(Collection<SKU> skus) {
 		Map<String, SKU> map = new TreeMap<>();
-
-		for (SKU sku : skus) {
-			String id = sku.getProperty(SKU_PHYSICAL_PROPERTY);
-			map.put(id, sku);
-		}
+		skus.forEach(sku -> map.put(sku.getAppearanceCode(), sku));
 		return map.values();
 	}
 
