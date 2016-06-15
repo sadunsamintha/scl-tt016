@@ -24,6 +24,11 @@ public class DefaultRemoteServerProductStatusMapping extends RemoteServerProduct
 		add(ProductStatus.UNREAD, ProcessedProductsStatusDto.COUNTED_EJECTED_UNREAD);//0 =>12
 		add(ProductStatus.NOT_AUTHENTICATED, ProcessedProductsStatusDto.COUNTED_EJECTED_AUTHENTICATIONFAIL);//1=>14
 
+		//blob
+		add(ProductStatus.BLOB_ACTIVATED, ProcessedProductsStatusDto.AUTHENTICATED_ACTIVATED); //100=>1
+		//TODO
+
+
 	}
 
 }

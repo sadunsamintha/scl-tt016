@@ -11,9 +11,9 @@ import com.sicpa.standard.sasscl.model.ProductionParameters;
 
 public class CameraIddleAlertTask extends AbstractScheduledAlertTask {
 
-	protected long previousTime;
-	protected ProductionParameters productionParameters;
-	protected CameraIddleAlertTaskModel model;
+	private long previousTime;
+	private ProductionParameters productionParameters;
+	private CameraIddleAlertTaskModel model;
 
 	public CameraIddleAlertTask() {
 		super();
