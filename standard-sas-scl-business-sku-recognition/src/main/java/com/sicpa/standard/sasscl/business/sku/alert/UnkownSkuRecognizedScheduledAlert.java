@@ -52,7 +52,7 @@ public class UnkownSkuRecognizedScheduledAlert extends AbstractScheduledOverTime
 
 	@Override
 	protected MessageEvent getAlertMessage() {
-		return new MessageEvent(MessageEventKey.Alert.SKU_RECOGNITIONTOO_MANY_UNKNOWN);
+		return new MessageEvent(MessageEventKey.Alert.SKU_RECOGNITION_TOO_MANY_UNKNOWN);
 	}
 
 	@Override
