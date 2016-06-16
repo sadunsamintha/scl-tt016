@@ -1,5 +1,7 @@
 package com.sicpa.standard.sasscl.devices.bis.controller;
 
+import static java.util.concurrent.Executors.newCachedThreadPool;
+
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.List;
@@ -60,8 +62,7 @@ public class BisRemoteServer implements IBisController, IBisMessageHandlerListen
 		connectionLifeCheckWorker = new BisLifeCheckWorker(connectionLifeCheckIntervalMs, this);
 
 		// setting up bootstrap
-		bootstrap = new ClientBootstrap(new NioClientSocketChannelFactory(Executors.newCachedThreadPool(),
-				Executors.newCachedThreadPool()));
+		bootstrap = new ClientBootstrap(new NioClientSocketChannelFactory(newCachedThreadPool(), newCachedThreadPool()));
 
 		// Configure the pipeline factory.
 		bisMessagesHandler = new BisMessagesHandler();
@@ -179,33 +180,21 @@ public class BisRemoteServer implements IBisController, IBisMessageHandlerListen
 
 	@Override
 	public void onLifeCheckFailed() {
-
-		TaskExecutor.execute(new Runnable() {
-
-			@Override
-			public void run() {
-				try {
-					if (isConnected()) {
-						return;
-					}
-					for (IBisControllerListener controllerListener : bisControllerListeners) {
-						controllerListener.onLifeCheckFailed();
-					}
-
-					connect();
-				} catch (BisAdaptorException e) {
-					logger.error(e.getMessage(), e);
-				}
+		logger.debug("on lifecheck failed");
+		TaskExecutor.execute(() -> {
+			try {
+				connect();
+			} catch (BisAdaptorException e) {
+				logger.error(e.getMessage(), e);
 			}
+
 		}, "bis lifecheck");
 
 	}
 
 	@Override
 	public void onLifeCheckSucceed() {
-		for (IBisControllerListener controllerListener : bisControllerListeners) {
-			controllerListener.onConnection();
-		}
+		onConnected();
 	}
 
 	@Override
@@ -224,7 +213,7 @@ public class BisRemoteServer implements IBisController, IBisMessageHandlerListen
 
 	@Override
 	public void lifeCheckReceived(LifeCheck lifeCheckResponse) {
-		this.receiveLifeCheckResponce(lifeCheckResponse);
+		receiveLifeCheckResponce(lifeCheckResponse);
 		for (IBisControllerListener controllerListener : bisControllerListeners) {
 			controllerListener.lifeCheckReceived(lifeCheckResponse);
 		}
