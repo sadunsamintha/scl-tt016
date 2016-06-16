@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.messages.MessageEvent;
+import com.sicpa.standard.client.common.utils.TaskExecutor;
 import com.sicpa.standard.sasscl.business.sku.selector.UnexpectedSkuChangedEvent;
 import com.sicpa.standard.sasscl.devices.AbstractStartableDevice;
 import com.sicpa.standard.sasscl.devices.DeviceException;
@@ -74,36 +75,25 @@ public class BisAdapter extends AbstractStartableDevice implements IBisAdaptor, 
 
 	@Override
 	protected void doStart() throws DeviceException {
-		try {
-			controller.start();
-			fireDeviceStatusChanged(DeviceStatus.STARTED);
-		} catch (Exception e) {
-			throw new BisAdaptorException("BIS error on start");
-		}
+		fireDeviceStatusChanged(DeviceStatus.STARTED);
 	}
 
 	@Override
 	protected void doStop() throws DeviceException {
-		try {
-			controller.stop();
-		} catch (Exception e) {
-			throw new BisAdaptorException("BIS error on stop");
-		} finally {
-			fireDeviceStatusChanged(DeviceStatus.STOPPED);
-		}
+		fireDeviceStatusChanged(DeviceStatus.STOPPED);
 	}
 
 	@Override
 	public void onConnection() {
-		logger.debug("BisAdapter | onConnection() ... ");
-		updateControllerSkuList();
-		EventBusService.post(new MessageEvent(MessageEventKey.BIS.BIS_CONNECTED));
+		logger.debug("bis connected");
+		fireDeviceStatusChanged(DeviceStatus.CONNECTED);
+		TaskExecutor.execute(() -> sendSkusToBis());
 	}
 
 	@Override
 	public void onDisconnection() {
-		logger.debug("BisAdapter | onDisconnection()");
-		EventBusService.post(new MessageEvent(MessageEventKey.BIS.BIS_DISCONNECTED));
+		logger.debug("bis disconntected");
+		fireDeviceStatusChanged(DeviceStatus.DISCONNECTED);
 	}
 
 	private void fireAlertEvent(Alert alert) {
@@ -136,17 +126,27 @@ public class BisAdapter extends AbstractStartableDevice implements IBisAdaptor, 
 
 	@Override
 	public void recognitionResultReceived(RecognitionResultMessage result) {
-		if (isResultUnknownSKU(result)) {
-			fireSkuNotIdentified();
-		} else {
-			SKU sku = getSkuFromResult(result).get();
-			if (sku == null) {
-				logger.error("no sku for id:" + result.getConfidence().getId());
-				fireSkuNotIdentified();
-			} else {
-				EventBusService.post(new SkuRecognizedEvent(sku));
+		TaskExecutor.execute(new Runnable() {
+
+			@Override
+			public void run() {
+				if (!status.equals(DeviceStatus.STARTED)) {
+					logger.info("result received not in started:" + result);
+					return;
+				}
+				if (isResultUnknownSKU(result)) {
+					fireSkuNotIdentified();
+				} else {
+					Optional<SKU> sku = getSkuFromResult(result);
+					if (sku.isPresent()) {
+						EventBusService.post(new SkuRecognizedEvent(sku.get()));
+					} else {
+						logger.error("no sku for id:" + result.getConfidence().getId());
+						fireSkuNotIdentified();
+					}
+				}
 			}
-		}
+		});
 	}
 
 	private void fireSkuNotIdentified() {
@@ -161,7 +161,7 @@ public class BisAdapter extends AbstractStartableDevice implements IBisAdaptor, 
 		return (result.getConfidence() == null) || (result.getConfidence().getId() == unknownSkuId);
 	}
 
-	private void updateControllerSkuList() {
+	private void sendSkusToBis() {
 		Collection<SKU> skus = skuBisProvider.getSkusToSendToBIS();
 		if (skus.isEmpty()) {
 			return;
@@ -183,7 +183,6 @@ public class BisAdapter extends AbstractStartableDevice implements IBisAdaptor, 
 
 	@Override
 	public void onLifeCheckFailed() {
-		EventBusService.post(new MessageEvent(MessageEventKey.BIS.BIS_DISCONNECTED));
 	}
 
 	@Override

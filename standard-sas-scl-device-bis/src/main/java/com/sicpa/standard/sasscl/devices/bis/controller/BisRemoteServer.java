@@ -4,7 +4,6 @@ import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -16,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.protobuf.GeneratedMessage;
+import com.sicpa.standard.client.common.utils.TaskExecutor;
 import com.sicpa.standard.sasscl.devices.bis.BisAdaptorException;
 import com.sicpa.standard.sasscl.devices.bis.IBisController;
 import com.sicpa.standard.sasscl.devices.bis.IBisControllerListener;
@@ -38,7 +38,7 @@ public class BisRemoteServer implements IBisController, IBisMessageHandlerListen
 	private String ip;
 	private int port;
 
-	private int connectionLifeCheckIntervalMs;
+	private int connectionLifeCheckIntervalMs = 2000;
 
 	private Channel channel;
 	private ChannelFuture connectFuture;
@@ -52,8 +52,6 @@ public class BisRemoteServer implements IBisController, IBisMessageHandlerListen
 	private BisMessagesHandler bisMessagesHandler;
 
 	private final List<IBisControllerListener> bisControllerListeners = new ArrayList<>();
-
-	private final ExecutorService singleThreadedExecutorService = Executors.newSingleThreadExecutor();
 
 	public BisRemoteServer() {
 
@@ -118,15 +116,6 @@ public class BisRemoteServer implements IBisController, IBisMessageHandlerListen
 		bootstrap.releaseExternalResources();
 		connectionLifeCheckWorker.dispose();
 		isSchedulerWorkerInit.set(false);
-	}
-
-	@Override
-	public void start() throws BisAdaptorException {
-		// recognitionResultRequestWorker.start();
-	}
-
-	@Override
-	public void stop() {
 	}
 
 	@Override
@@ -195,8 +184,7 @@ public class BisRemoteServer implements IBisController, IBisMessageHandlerListen
 	@Override
 	public void onLifeCheckFailed() {
 
-		// do connect again
-		singleThreadedExecutorService.execute(new Runnable() {
+		TaskExecutor.execute(new Runnable() {
 
 			@Override
 			public void run() {
@@ -213,7 +201,7 @@ public class BisRemoteServer implements IBisController, IBisMessageHandlerListen
 					logger.error(e.getMessage(), e);
 				}
 			}
-		});
+		}, "bis lifecheck");
 
 	}
 

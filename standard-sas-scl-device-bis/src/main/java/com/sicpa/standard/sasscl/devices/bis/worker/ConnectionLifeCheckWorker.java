@@ -1,8 +1,8 @@
 package com.sicpa.standard.sasscl.devices.bis.worker;
 
 public class ConnectionLifeCheckWorker extends AbstractScheduleWorker {
-	protected boolean connected = false;
 
+	private boolean connected = false;
 
 	public ConnectionLifeCheckWorker(long scheduleInterval) {
 		super("BIS Connection Life Check Worker", scheduleInterval);
@@ -19,7 +19,6 @@ public class ConnectionLifeCheckWorker extends AbstractScheduleWorker {
 			}
 			connected = true;
 		}
-
 		controller.sendLifeCheck();
 	}
 
