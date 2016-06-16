@@ -1,5 +1,6 @@
 package com.sicpa.standard.sasscl.devices.bis;
 
+import java.awt.FlowLayout;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -8,6 +9,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import javax.swing.JButton;
+import javax.swing.JFrame;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,6 +19,7 @@ import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.messages.MessageEvent;
 import com.sicpa.standard.client.common.utils.TaskExecutor;
+import com.sicpa.standard.gui.utils.ThreadUtils;
 import com.sicpa.standard.sasscl.business.sku.selector.UnexpectedSkuChangedEvent;
 import com.sicpa.standard.sasscl.devices.AbstractStartableDevice;
 import com.sicpa.standard.sasscl.devices.DeviceException;
@@ -53,11 +58,30 @@ public class BisAdapter extends AbstractStartableDevice implements IBisAdaptor, 
 
 	@Override
 	protected void doConnect() throws BisAdaptorException {
-		try {
-			controller.connect();
-		} catch (Exception e) {
-			throw new BisAdaptorException("BIS error on connect");
-		}
+		// try {
+		// controller.connect();
+		// } catch (Exception e) {
+		// throw new BisAdaptorException("BIS error on connect");
+		// }
+
+		fireDeviceStatusChanged(DeviceStatus.CONNECTED);
+
+		ThreadUtils.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				JFrame f = new JFrame();
+				f.setSize(200, 200);
+				f.setVisible(true);
+				f.getContentPane().setLayout(new FlowLayout());
+				JButton b = new JButton("   1   ");
+				f.getContentPane().add(b);
+				b.addActionListener(e -> skuRecognized(100));
+
+				JButton b2 = new JButton("   2   ");
+				f.getContentPane().add(b2);
+				b2.addActionListener(e -> skuRecognized(2));
+			}
+		});
 	}
 
 	@Override
@@ -119,7 +143,6 @@ public class BisAdapter extends AbstractStartableDevice implements IBisAdaptor, 
 
 	@Override
 	public void recognitionResultReceived(RecognitionResultMessage result) {
-
 		if (!status.equals(DeviceStatus.STARTED)) {
 			logger.info("result received not in started:" + result);
 			return;
@@ -131,13 +154,17 @@ public class BisAdapter extends AbstractStartableDevice implements IBisAdaptor, 
 		if (isResultUnknownSKU(result)) {
 			fireSkuNotIdentified();
 		} else {
-			Optional<SKU> sku = getSkuFromResult(result);
-			if (sku.isPresent()) {
-				EventBusService.post(new SkuRecognizedEvent(sku.get()));
-			} else {
-				logger.error("no sku for id:" + result.getConfidence().getId());
-				fireSkuNotIdentified();
-			}
+			skuRecognized(result.getConfidence().getId());
+		}
+	}
+
+	private void skuRecognized(int skuid) {
+		Optional<SKU> sku = getSkuFromResult(skuid);
+		if (sku.isPresent()) {
+			EventBusService.post(new SkuRecognizedEvent(sku.get()));
+		} else {
+			logger.error("no sku for id:" + skuid);
+			fireSkuNotIdentified();
 		}
 	}
 
@@ -145,8 +172,8 @@ public class BisAdapter extends AbstractStartableDevice implements IBisAdaptor, 
 		EventBusService.post(new SkuNotRecognizedEvent());
 	}
 
-	private Optional<SKU> getSkuFromResult(RecognitionResultMessage result) {
-		return skuFinder.getSkuFromId(result.getConfidence().getId());
+	private Optional<SKU> getSkuFromResult(int skuid) {
+		return skuFinder.getSkuFromId(skuid);
 	}
 
 	private boolean isResultUnknownSKU(RecognitionResultMessage result) {

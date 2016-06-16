@@ -70,7 +70,7 @@ public class SkuSelector {
 	}
 
 	private boolean isUnexptedSkuChange(SKU newSku) {
-		return previousRecognizedSku.equals(newSku);
+		return !previousRecognizedSku.equals(newSku);
 	}
 
 	@Subscribe
