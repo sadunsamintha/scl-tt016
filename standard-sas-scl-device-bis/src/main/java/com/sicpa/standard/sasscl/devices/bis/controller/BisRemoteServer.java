@@ -46,13 +46,13 @@ public class BisRemoteServer implements IBisController, IBisMessageHandlerListen
 
 	private String ip;
 	private int port;
-	private int connectionLifeCheckIntervalMs = 2000;
+	private int connectionLifeCheckIntervalSec = 5;
 
 	public BisRemoteServer() {
 	}
 
 	public void init() {
-		connectionLifeCheckWorker = new BisLifeCheckWorker(connectionLifeCheckIntervalMs, this);
+		connectionLifeCheckWorker = new BisLifeCheckWorker(connectionLifeCheckIntervalSec, this);
 
 		// setting up bootstrap
 		bootstrap = new ClientBootstrap(new NioClientSocketChannelFactory(newCachedThreadPool(), newCachedThreadPool()));
@@ -247,7 +247,7 @@ public class BisRemoteServer implements IBisController, IBisMessageHandlerListen
 		this.ip = ip;
 	}
 
-	public void setConnectionLifeCheckIntervalMs(int connectionLifeCheckIntervalMs) {
-		this.connectionLifeCheckIntervalMs = connectionLifeCheckIntervalMs;
+	public void setConnectionLifeCheckIntervalSec(int connectionLifeCheckIntervalSec) {
+		this.connectionLifeCheckIntervalSec = connectionLifeCheckIntervalSec;
 	}
 }
