@@ -204,8 +204,6 @@ public interface MessageEventKey {
 	}
 
 	public static interface BIS {
-		String BIS_CONNECTED = "bis.isConnected";
-		String BIS_DISCONNECTED = "bis.notConnected";
 		String BIS_UNKNOWN_SKU = "bis.unknownSku.exceedThreshold";
 		String BIS_ALERT = "bis.alert";
 		String BIS_UNKNOWN_SKU_EXCEED_THRESHOLD = "bis.unknownSku.exceedWindowThreshold";
