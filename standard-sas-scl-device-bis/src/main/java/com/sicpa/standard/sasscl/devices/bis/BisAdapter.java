@@ -161,6 +161,8 @@ public class BisAdapter extends AbstractStartableDevice implements IBisAdaptor, 
 	}
 
 	private void sendSkusToBis() {
+		controller.sendDomesticMode();
+
 		Collection<SKU> skus = skuBisProvider.getSkusToSendToBIS();
 		if (skus.isEmpty()) {
 			return;
@@ -196,7 +198,7 @@ public class BisAdapter extends AbstractStartableDevice implements IBisAdaptor, 
 
 	@Subscribe
 	public void handleMessageEvent(MessageEvent evt) {
-		if (evt.getKey().equals(MessageEventKey.Alert.SKU_RECOGNITIONTOO_MANY_UNKNOWN)) {
+		if (evt.getKey().equals(MessageEventKey.Alert.SKU_RECOGNITION_TOO_MANY_UNKNOWN)) {
 			controller.sendUnknownSave();
 		}
 	}

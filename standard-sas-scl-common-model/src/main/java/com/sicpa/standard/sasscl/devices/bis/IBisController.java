@@ -13,8 +13,6 @@ public interface IBisController {
 
 	void sendLifeCheck();
 
-	void sendRecognitionResultRequest();
-
 	void sendAutoSave();
 
 	void receiveLifeCheckResponce(LifeCheck lifeCheckResponce);
@@ -32,5 +30,7 @@ public interface IBisController {
 	void sendUnknownSave();
 
 	void sendCredential(String user, String password);
+
+	void sendDomesticMode();
 
 }
