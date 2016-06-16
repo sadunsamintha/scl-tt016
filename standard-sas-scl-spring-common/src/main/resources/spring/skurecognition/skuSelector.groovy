@@ -6,8 +6,9 @@ beans{
 	skuRecognizedBuffer(SkuRecognizedBuffer){ bufferSize=props['sku.recognition.input.buffer'] }
 
 	skuSelector(SkuSelector){
-		productionParameters=ref('productionParameters')
 		productionChangeDetector=ref('productionChangeDetector')
+		skuSelectionBehavior=ref('skuSelectionBehavior')
 		skuBuffer=ref('skuRecognizedBuffer')
+		unknownSkuProvider=ref('unknownSkuProvider')
 	}
 }

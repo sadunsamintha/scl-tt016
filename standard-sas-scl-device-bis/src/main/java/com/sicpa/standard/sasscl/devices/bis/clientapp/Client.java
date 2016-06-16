@@ -39,10 +39,6 @@ public class Client extends JFrame implements IBisControllerListener {
 
 	private JButton sendSKUButton;
 
-	private JButton startButton;
-
-	private JButton stopButton;
-
 	private JButton disconnectButton;
 
 	private JButton clearButton;
@@ -51,7 +47,7 @@ public class Client extends JFrame implements IBisControllerListener {
 
 	private StringBuffer strBuffer = new StringBuffer();
 
-	private String ip = "localhost";
+	private String ip = "192.168.1.41";
 	private int port = 8020;
 	private int connectionLifeCheckInterval = 1000;
 
@@ -97,26 +93,6 @@ public class Client extends JFrame implements IBisControllerListener {
 			}
 		});
 
-		this.startButton = new JButton("Start");
-		this.startButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				try {
-					bisController.start();
-				} catch (BisAdaptorException e1) {
-					e1.printStackTrace();
-				}
-			}
-		});
-
-		this.stopButton = new JButton("Stop");
-		this.stopButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				bisController.stop();
-			}
-		});
-
 		this.disconnectButton = new JButton("Disconnect");
 		this.disconnectButton.addActionListener(new ActionListener() {
 			@Override
@@ -136,8 +112,6 @@ public class Client extends JFrame implements IBisControllerListener {
 
 		buttonPanel.add(this.connectButton);
 		buttonPanel.add(this.sendSKUButton);
-		buttonPanel.add(this.startButton);
-		buttonPanel.add(this.stopButton);
 		buttonPanel.add(this.disconnectButton);
 		buttonPanel.add(this.clearButton);
 		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);

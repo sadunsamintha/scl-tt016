@@ -18,5 +18,5 @@ public interface ISkuSelectionBehavior {
 	 * called when a production mode/sku changed is detected during production
 	 */
 	void duringProductionOnProductionParameterChanged(ProductionParametersEvent evt);
-
+	
 }

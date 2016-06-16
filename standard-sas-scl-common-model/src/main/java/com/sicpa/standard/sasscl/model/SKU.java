@@ -15,7 +15,7 @@ public class SKU extends Customizable implements Serializable, Cloneable {
 
 	private static final long serialVersionUID = 1L;
 
-	public static final int UNKNOWN_SKU_ID = -1;
+
 
 	private CodeType codeType;
 	private int id;

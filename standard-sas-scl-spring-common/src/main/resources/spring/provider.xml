@@ -23,6 +23,8 @@
 	</bean>
 
 	<bean id="bisProvider" class="com.sicpa.standard.sasscl.provider.impl.BisProvider" />
+	
+	<bean id="unknownSkuProvider" class="com.sicpa.standard.sasscl.provider.impl.UnknownSkuProvider" />
 
 </beans>
 

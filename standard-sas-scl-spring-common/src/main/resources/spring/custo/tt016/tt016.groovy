@@ -13,11 +13,12 @@ beans{
 		b.parent=ref('bootstrapAlias')
 		mainPanelGetter=ref('mainPanelGetter')
 		stopReasonViewController=ref('stopReasonViewController')
+		codeTypeId=props['codeTypeId']
+		unknownSkuProvider=ref('unknownSkuProvider')
 	}
 
 	importBeans('spring/custo/tt016/tt016View.xml')
 	importBeans('spring/offlineCounting.xml')
 
 	addAlias('bisCredentialProvider','remoteServer')
-
 }

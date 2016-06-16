@@ -105,6 +105,7 @@
 	<bean id="parametersAvailableStartValidator" class="com.sicpa.standard.sasscl.controller.flow.validator.ParametersAvailableStartValidator">
 		<property name="productionParameters" ref="productionParameters" />
 		<property name="skuListProvider" ref="skuListProvider" />
+		<property name="skuSelectionBehavior" ref="skuSelectionBehavior" />
 	</bean>
 
 	<!-- max downtine listener -->
