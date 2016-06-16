@@ -57,7 +57,6 @@ public class BisAdapter extends AbstractStartableDevice implements IBisAdaptor, 
 		try {
 			controller.connect();
 		} catch (Exception e) {
-			EventBusService.post(new MessageEvent(MessageEventKey.BIS.BIS_DISCONNECTED));
 			throw new BisAdaptorException("BIS error on connect");
 		}
 	}

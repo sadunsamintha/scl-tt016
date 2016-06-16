@@ -19,8 +19,7 @@ import com.sicpa.standard.client.common.utils.TaskExecutor;
 import com.sicpa.standard.sasscl.devices.bis.BisAdaptorException;
 import com.sicpa.standard.sasscl.devices.bis.IBisController;
 import com.sicpa.standard.sasscl.devices.bis.IBisControllerListener;
-import com.sicpa.standard.sasscl.devices.bis.IScheduleWorker;
-import com.sicpa.standard.sasscl.devices.bis.worker.ConnectionLifeCheckWorker;
+import com.sicpa.standard.sasscl.devices.bis.worker.BisLifeCheckWorker;
 import com.sicpa.std.bis2.core.messages.RemoteMessages;
 import com.sicpa.std.bis2.core.messages.RemoteMessages.Alert;
 import com.sicpa.std.bis2.core.messages.RemoteMessages.Command;
@@ -44,7 +43,7 @@ public class BisRemoteServer implements IBisController, IBisMessageHandlerListen
 	private ChannelFuture connectFuture;
 	private ClientBootstrap bootstrap;
 	private LifeCheck lifeCheck;
-	private IScheduleWorker connectionLifeCheckWorker;
+	private BisLifeCheckWorker connectionLifeCheckWorker;
 	private Stack<Integer> lifeCheckTags = new Stack<>();
 
 	private AtomicBoolean isSchedulerWorkerInit = new AtomicBoolean(false);
@@ -58,8 +57,7 @@ public class BisRemoteServer implements IBisController, IBisMessageHandlerListen
 	}
 
 	public void init() {
-		connectionLifeCheckWorker = new ConnectionLifeCheckWorker(connectionLifeCheckIntervalMs);
-		connectionLifeCheckWorker.addController(this);
+		connectionLifeCheckWorker = new BisLifeCheckWorker(connectionLifeCheckIntervalMs, this);
 
 		// setting up bootstrap
 		bootstrap = new ClientBootstrap(new NioClientSocketChannelFactory(Executors.newCachedThreadPool(),
@@ -87,9 +85,7 @@ public class BisRemoteServer implements IBisController, IBisMessageHandlerListen
 				}
 			}
 
-			if (isSchedulerWorkerInit.compareAndSet(false, true)) {
-				connectionLifeCheckWorker.create();
-			}
+			connectionLifeCheckWorker.start();
 
 			// Make a new connection.
 			connectFuture = bootstrap.connect();
@@ -114,7 +110,7 @@ public class BisRemoteServer implements IBisController, IBisMessageHandlerListen
 		channel.disconnect().awaitUninterruptibly();
 		channel.close();
 		bootstrap.releaseExternalResources();
-		connectionLifeCheckWorker.dispose();
+		connectionLifeCheckWorker.stop();
 		isSchedulerWorkerInit.set(false);
 	}
 
