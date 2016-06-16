@@ -26,7 +26,6 @@ import com.sicpa.standard.sasscl.skureader.SkuNotRecognizedEvent;
 import com.sicpa.standard.sasscl.skureader.SkuRecognizedEvent;
 import com.sicpa.std.bis2.core.messages.RemoteMessages;
 import com.sicpa.std.bis2.core.messages.RemoteMessages.Alert;
-import com.sicpa.std.bis2.core.messages.RemoteMessages.LifeCheck;
 import com.sicpa.std.bis2.core.messages.RemoteMessages.RecognitionResultMessage;
 import com.sicpa.std.bis2.core.messages.RemoteMessages.SkuMessage;
 import com.sicpa.std.bis2.core.messages.RemoteMessages.SkusMessage;
@@ -114,38 +113,32 @@ public class BisAdapter extends AbstractStartableDevice implements IBisAdaptor, 
 	}
 
 	@Override
-	public void lifeCheckReceived(LifeCheck lifeCheckResponse) {
-		// do nothing
-	}
-
-	@Override
 	public void alertReceived(Alert alert) {
 		fireAlertEvent(alert);
 	}
 
 	@Override
 	public void recognitionResultReceived(RecognitionResultMessage result) {
-		TaskExecutor.execute(new Runnable() {
 
-			@Override
-			public void run() {
-				if (!status.equals(DeviceStatus.STARTED)) {
-					logger.info("result received not in started:" + result);
-					return;
-				}
-				if (isResultUnknownSKU(result)) {
-					fireSkuNotIdentified();
-				} else {
-					Optional<SKU> sku = getSkuFromResult(result);
-					if (sku.isPresent()) {
-						EventBusService.post(new SkuRecognizedEvent(sku.get()));
-					} else {
-						logger.error("no sku for id:" + result.getConfidence().getId());
-						fireSkuNotIdentified();
-					}
-				}
+		if (!status.equals(DeviceStatus.STARTED)) {
+			logger.info("result received not in started:" + result);
+			return;
+		}
+		TaskExecutor.execute(() -> recognitionResultReceivedInternal(result));
+	}
+
+	private void recognitionResultReceivedInternal(RecognitionResultMessage result) {
+		if (isResultUnknownSKU(result)) {
+			fireSkuNotIdentified();
+		} else {
+			Optional<SKU> sku = getSkuFromResult(result);
+			if (sku.isPresent()) {
+				EventBusService.post(new SkuRecognizedEvent(sku.get()));
+			} else {
+				logger.error("no sku for id:" + result.getConfidence().getId());
+				fireSkuNotIdentified();
 			}
-		});
+		}
 	}
 
 	private void fireSkuNotIdentified() {
@@ -180,15 +173,6 @@ public class BisAdapter extends AbstractStartableDevice implements IBisAdaptor, 
 
 	private SkuMessage toSkuMessage(SKU sku) {
 		return RemoteMessages.SkuMessage.newBuilder().setId(sku.getId()).setDescription(sku.getDescription()).build();
-	}
-
-	@Override
-	public void onLifeCheckFailed() {
-	}
-
-	@Override
-	public void otherMessageReceived(Object result) {
-		logger.info(result + "");
 	}
 
 	@Subscribe

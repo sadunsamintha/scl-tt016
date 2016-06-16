@@ -196,9 +196,6 @@ public class BisRemoteServer implements IBisController, IBisMessageHandlerListen
 	@Override
 	public void lifeCheckReceived(LifeCheck lifeCheckResponse) {
 		receiveLifeCheckResponce(lifeCheckResponse);
-		for (IBisControllerListener controllerListener : bisControllerListeners) {
-			controllerListener.lifeCheckReceived(lifeCheckResponse);
-		}
 	}
 
 	@Override
@@ -217,9 +214,7 @@ public class BisRemoteServer implements IBisController, IBisMessageHandlerListen
 
 	@Override
 	public void onOtherMessageReceived(Object otherMessage) {
-		for (IBisControllerListener controllerListener : bisControllerListeners) {
-			controllerListener.otherMessageReceived(otherMessage);
-		}
+		logger.info("" + otherMessage);
 	}
 
 	@Override
