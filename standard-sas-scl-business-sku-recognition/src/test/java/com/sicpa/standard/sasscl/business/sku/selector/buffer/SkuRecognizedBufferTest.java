@@ -8,14 +8,11 @@ import com.sicpa.standard.sasscl.model.SKU;
 
 public class SkuRecognizedBufferTest {
 
-	private final SkuRecognizedBuffer buffer = new SkuRecognizedBuffer();
+	final int bufferSize = 10;
+	final SkuRecognizedBuffer buffer = new SkuRecognizedBuffer(bufferSize);
 
 	@Test
 	public void testMostOccuringSku() throws Exception {
-
-		int bufferSize = 10;
-
-		buffer.setBufferSize(bufferSize);
 
 		int skuIdMostOccuring = 1;
 		int skuIdMostOccuringCount = 7;
@@ -38,8 +35,6 @@ public class SkuRecognizedBufferTest {
 
 	@Test
 	public void testIsReady() throws Exception {
-		int bufferSize = 10;
-		buffer.setBufferSize(bufferSize);
 
 		int skuId = 1;
 		addSku(skuId, bufferSize - 1);
