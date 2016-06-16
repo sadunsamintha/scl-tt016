@@ -39,6 +39,9 @@ public class UnkownSkuRecognizedScheduledAlert extends AbstractScheduledOverTime
 	}
 
 	private boolean isTimeExceededSinceLastRecognizedSku() {
+		if (previousSkuEventTime == null) {
+			return false;
+		}
 		return productionChangeDetector.isPossibleProductionChange(previousSkuEventTime, Instant.now());
 	}
 
