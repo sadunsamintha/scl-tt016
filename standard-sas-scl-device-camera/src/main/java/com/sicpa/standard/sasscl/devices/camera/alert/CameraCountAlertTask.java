@@ -57,7 +57,7 @@ public class CameraCountAlertTask extends AbstractScheduledBadCountAlertTask {
         return codeValidator.apply(evt);
     }
 
-    private boolean isValidCodeDefaultImpl(CameraCodeEvent evt) {
+    protected boolean isValidCodeDefaultImpl(CameraCodeEvent evt) {
          /* if the  CameraBadCodeEvent is mark as blob detected then
           * we can consider as valid */
         return evt instanceof CameraGoodCodeEvent || blobDetectionUtils.isBlobDetected(evt.getCode());

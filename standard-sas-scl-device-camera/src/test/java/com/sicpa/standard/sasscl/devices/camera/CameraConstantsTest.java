@@ -4,6 +4,7 @@ import com.sicpa.standard.sasscl.model.Code;
 import junit.framework.Assert;
 import org.junit.Test;
 
+
 public class CameraConstantsTest {
 
     @Test
@@ -23,6 +24,7 @@ public class CameraConstantsTest {
         CameraConstants.setCameraBlobErrorCode("300");
         Code cameraBlobError = CameraConstants.getCameraBlobErrorCode();
         Assert.assertEquals("300", cameraBlobError.getStringCode());
+        CameraConstants.setCameraBlobErrorCode("100");
     }
 
     @Test
@@ -30,6 +32,7 @@ public class CameraConstantsTest {
         CameraConstants.setCameraErrorCode("-1");
         Code cameraError = CameraConstants.getCameraErrorCode();
         Assert.assertEquals("-1", cameraError.getStringCode());
+        CameraConstants.setCameraErrorCode("0");
     }
 
 }

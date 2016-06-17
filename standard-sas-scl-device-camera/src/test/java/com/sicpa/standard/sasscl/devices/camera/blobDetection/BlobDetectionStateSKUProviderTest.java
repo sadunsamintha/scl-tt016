@@ -34,7 +34,6 @@ public class BlobDetectionStateSKUProviderTest {
         Assert.assertTrue(isBlobDetectionEnable);
     }
 
-
     @Test
     public void isBlobDetectionEnableStandard() {
         BlobDetectionProvider blobDetectionProvider = new BlobDetectionSKUProvider(createProductionParameters(new SKU()), BlobDetectionMode.STANDARD);
@@ -50,7 +49,7 @@ public class BlobDetectionStateSKUProviderTest {
     @Test
     public void isBlobDetectionEnableNone() {
         BlobDetectionProvider blobDetectionProvider = new BlobDetectionSKUProvider(createProductionParameters(new SKU()), BlobDetectionMode.NONE);
-        Assert.assertTrue(blobDetectionProvider.isBlobDetectionEnable());
+        Assert.assertFalse(blobDetectionProvider.isBlobDetectionEnable());
     }
 
     private ProductionParameters createProductionParameters(SKU sku) {
@@ -67,6 +66,4 @@ public class BlobDetectionStateSKUProviderTest {
 
     }
 
-
 }
-

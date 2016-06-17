@@ -9,7 +9,7 @@ public enum BlobDetectionMode {
     NONE,
 
     /**
-     * Blob detection mechanism is enable and is active based on the production selection given by the  {@link BlobDetectionProvider}.
+     * Blob detection mechanism is enable and is active based on the production selection given by the  BlobDetectionProvider.
      */
     STANDARD,
 
