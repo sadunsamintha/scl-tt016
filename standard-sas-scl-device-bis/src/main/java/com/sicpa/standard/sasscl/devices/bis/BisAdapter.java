@@ -1,6 +1,5 @@
 package com.sicpa.standard.sasscl.devices.bis;
 
-import java.awt.FlowLayout;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -9,9 +8,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-import javax.swing.JButton;
-import javax.swing.JFrame;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,7 +15,6 @@ import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.messages.MessageEvent;
 import com.sicpa.standard.client.common.utils.TaskExecutor;
-import com.sicpa.standard.gui.utils.ThreadUtils;
 import com.sicpa.standard.sasscl.business.sku.selector.UnexpectedSkuChangedEvent;
 import com.sicpa.standard.sasscl.devices.AbstractStartableDevice;
 import com.sicpa.standard.sasscl.devices.DeviceException;
@@ -58,30 +53,11 @@ public class BisAdapter extends AbstractStartableDevice implements IBisAdaptor, 
 
 	@Override
 	protected void doConnect() throws BisAdaptorException {
-		// try {
-		// controller.connect();
-		// } catch (Exception e) {
-		// throw new BisAdaptorException("BIS error on connect");
-		// }
-
-		fireDeviceStatusChanged(DeviceStatus.CONNECTED);
-
-		ThreadUtils.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				JFrame f = new JFrame();
-				f.setSize(200, 200);
-				f.setVisible(true);
-				f.getContentPane().setLayout(new FlowLayout());
-				JButton b = new JButton("   1   ");
-				f.getContentPane().add(b);
-				b.addActionListener(e -> skuRecognized(100));
-
-				JButton b2 = new JButton("   2   ");
-				f.getContentPane().add(b2);
-				b2.addActionListener(e -> skuRecognized(2));
-			}
-		});
+		try {
+			controller.connect();
+		} catch (Exception e) {
+			throw new BisAdaptorException("BIS error on connect");
+		}
 	}
 
 	@Override
