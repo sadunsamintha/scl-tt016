@@ -3,7 +3,7 @@ import com.sicpa.standard.sasscl.business.sku.selector.buffer.SkuRecognizedBuffe
 
 beans{
 
-	skuRecognizedBuffer(SkuRecognizedBuffer){ bufferSize=props['sku.recognition.input.buffer'] }
+	skuRecognizedBuffer(SkuRecognizedBuffer,props['sku.recognition.input.buffer'])
 
 	skuSelector(SkuSelector){
 		productionChangeDetector=ref('productionChangeDetector')
