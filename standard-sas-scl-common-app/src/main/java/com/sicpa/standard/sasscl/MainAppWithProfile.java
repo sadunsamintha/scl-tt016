@@ -214,7 +214,8 @@ public class MainAppWithProfile extends MainApp implements IProfileSelectorListe
 
 		config.add("spring/brs/brs-import.groovy");
 		config.add("spring/bis/bis-import.groovy");
-		
+		config.add("spring/skurecognition/skuRecognition-import.groovy");
+
 		config.add("spring/skuSelectionBehavior.groovy");
 
 		// SCL

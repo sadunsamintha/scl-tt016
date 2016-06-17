@@ -2,11 +2,11 @@ package com.sicpa.standard.sasscl.skureader;
 
 import com.sicpa.standard.sasscl.model.SKU;
 
-public class SkuIdentifiedEvent {
+public class SkuRecognizedEvent {
 
 	private SKU sku;
 
-	public SkuIdentifiedEvent(SKU sku) {
+	public SkuRecognizedEvent(SKU sku) {
 		super();
 		this.sku = sku;
 	}
@@ -17,7 +17,7 @@ public class SkuIdentifiedEvent {
 
 	@Override
 	public String toString() {
-		return "SkuIdentifiedEvent [sku=" + sku + "]";
+		return "SkuRecognizedEvent [sku=" + sku + "]";
 	}
 
 }

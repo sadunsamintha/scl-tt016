@@ -21,7 +21,6 @@ import com.sicpa.standard.sasscl.devices.bis.IBisController;
 import com.sicpa.standard.sasscl.devices.bis.IBisControllerListener;
 import com.sicpa.standard.sasscl.devices.bis.IScheduleWorker;
 import com.sicpa.standard.sasscl.devices.bis.worker.ConnectionLifeCheckWorker;
-import com.sicpa.standard.sasscl.devices.bis.worker.RecognitionResultRequestWorker;
 import com.sicpa.std.bis2.core.messages.RemoteMessages.Alert;
 import com.sicpa.std.bis2.core.messages.RemoteMessages.Command;
 import com.sicpa.std.bis2.core.messages.RemoteMessages.Command.CommandType;
@@ -38,7 +37,6 @@ public class BisRemoteServer implements IBisController, IBisMessageHandlerListen
 	private String ip;
 	private int port;
 
-	private int recognitionResultRequestIntervalMs;
 	private int connectionLifeCheckIntervalMs;
 
 	private Channel channel;
@@ -46,7 +44,6 @@ public class BisRemoteServer implements IBisController, IBisMessageHandlerListen
 	private ClientBootstrap bootstrap;
 	private LifeCheck lifeCheck;
 	private IScheduleWorker connectionLifeCheckWorker;
-	private IScheduleWorker recognitionResultRequestWorker;
 	private Stack<Integer> lifeCheckTags = new Stack<>();
 
 	private AtomicBoolean isSchedulerWorkerInit = new AtomicBoolean(false);
@@ -64,9 +61,6 @@ public class BisRemoteServer implements IBisController, IBisMessageHandlerListen
 	public void init() {
 		connectionLifeCheckWorker = new ConnectionLifeCheckWorker(connectionLifeCheckIntervalMs);
 		connectionLifeCheckWorker.addController(this);
-
-		recognitionResultRequestWorker = new RecognitionResultRequestWorker(recognitionResultRequestIntervalMs);
-		recognitionResultRequestWorker.addController(this);
 
 		// setting up bootstrap
 		bootstrap = new ClientBootstrap(new NioClientSocketChannelFactory(Executors.newCachedThreadPool(),
@@ -96,7 +90,6 @@ public class BisRemoteServer implements IBisController, IBisMessageHandlerListen
 
 			if (isSchedulerWorkerInit.compareAndSet(false, true)) {
 				connectionLifeCheckWorker.create();
-				recognitionResultRequestWorker.create();
 			}
 
 			// Make a new connection.
@@ -123,7 +116,6 @@ public class BisRemoteServer implements IBisController, IBisMessageHandlerListen
 		channel.close();
 		bootstrap.releaseExternalResources();
 		connectionLifeCheckWorker.dispose();
-		recognitionResultRequestWorker.dispose();
 		isSchedulerWorkerInit.set(false);
 	}
 
@@ -134,7 +126,6 @@ public class BisRemoteServer implements IBisController, IBisMessageHandlerListen
 
 	@Override
 	public void stop() {
-		recognitionResultRequestWorker.stop();
 	}
 
 	@Override
@@ -169,6 +160,11 @@ public class BisRemoteServer implements IBisController, IBisMessageHandlerListen
 	@Override
 	public void sendAutoSave() {
 		sendMessage(Command.newBuilder().setCommand(CommandType.AUTO_SAVE).build());
+	}
+
+	@Override
+	public void sendUnknownSave() {
+		sendMessage(Command.newBuilder().setCommand(CommandType.UNKNOWN_SAVE).build());
 	}
 
 	@Override
@@ -286,10 +282,6 @@ public class BisRemoteServer implements IBisController, IBisMessageHandlerListen
 
 	public void setIp(String ip) {
 		this.ip = ip;
-	}
-
-	public void setRecognitionResultRequestIntervalMs(int recognitionResultRequestIntervalMs) {
-		this.recognitionResultRequestIntervalMs = recognitionResultRequestIntervalMs;
 	}
 
 	public void setConnectionLifeCheckIntervalMs(int connectionLifeCheckIntervalMs) {

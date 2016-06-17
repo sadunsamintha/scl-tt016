@@ -18,8 +18,8 @@ import java.awt.*;
 @SuppressWarnings("serial")
 public class SelectionDisplayView extends AbstractView<ISelectionDisplayViewListener, SelectionDisplayModel> {
 
-	protected JPanel mainPanel;
-	protected JLabel labelTitle;
+	private JPanel mainPanel;
+	private JLabel labelTitle;
 
 	public SelectionDisplayView() {
 		initGUI();

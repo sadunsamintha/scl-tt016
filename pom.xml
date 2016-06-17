@@ -224,7 +224,7 @@
 		<module>standard-sas-scl-business-coding</module>
 		<module>standard-sas-scl-business-production</module>
 		<module>standard-sas-scl-business-statistics</module>
-		<module>standard-sas-scl-business-skucheck</module>
+		<module>standard-sas-scl-business-sku-recognition</module>
 		<module>standard-sas-scl-common-storage</module>
 		<module>standard-sas-scl-common-app</module>
 		<module>standard-sas-scl-common-model</module>
@@ -361,7 +361,7 @@
 
 			<dependency>
 				<groupId>com.sicpa.standard.sasscl</groupId>
-				<artifactId>business-skucheck</artifactId>
+				<artifactId>business-sku-recognition</artifactId>
 				<version>2.5.4-SNAPSHOT</version>
 			</dependency>
 			<dependency>
@@ -468,12 +468,6 @@
 				<artifactId>monitoring</artifactId>
 				<version>1.0.3</version>
 			</dependency>
-			<dependency>
-				<groupId>com.sicpa.standard</groupId>
-				<artifactId>skuCheck</artifactId>
-				<version>0.0.3</version>
-			</dependency>
-
 			<dependency>
 				<groupId>com.sicpa.standard.gui</groupId>
 				<artifactId>standard-gui-screen</artifactId>

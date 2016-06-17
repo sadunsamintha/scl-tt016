@@ -54,13 +54,11 @@ public class Client extends JFrame implements IBisControllerListener {
 	private String ip = "localhost";
 	private int port = 8020;
 	private int connectionLifeCheckInterval = 1000;
-	private int recognitionResultRequestInterval = 1000;
 
 	public void setup() {
 		bisController = new BisRemoteServer();
 		bisController.setIp(ip);
 		bisController.setConnectionLifeCheckIntervalMs(connectionLifeCheckInterval);
-		bisController.setRecognitionResultRequestIntervalMs(recognitionResultRequestInterval);
 		bisController.setPort(port);
 		bisController.addListener(this);
 		bisController.init();
