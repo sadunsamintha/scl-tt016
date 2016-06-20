@@ -1,5 +1,6 @@
 import com.sicpa.standard.sasscl.devices.bis.BisUserSender
 import com.sicpa.standard.sasscl.devices.bis.SkuBisProvider
+import com.sicpa.standard.sasscl.skureader.SkuFinder;
 
 
 beans{
@@ -14,4 +15,9 @@ beans{
 	}
 
 	skuBisProvider(SkuBisProvider){ skuListProvider=ref('skuListProvider') }
+
+	skuFinder(SkuFinder){
+		skuListProvider=ref('skuListProvider')
+		productionParameters=ref('productionParameters')
+	}
 }

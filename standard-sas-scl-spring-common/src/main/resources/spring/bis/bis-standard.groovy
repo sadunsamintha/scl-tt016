@@ -1,7 +1,5 @@
-import com.sicpa.standard.client.common.utils.ConfigUtils
 import com.sicpa.standard.sasscl.devices.bis.BisAdapter
 import com.sicpa.standard.sasscl.devices.bis.controller.BisRemoteServer
-import com.sicpa.standard.sasscl.skureader.SkuFinder;
 
 
 beans{
@@ -22,10 +20,5 @@ beans{
 		ip=props['bis.ip']
 		port=props['bis.port']
 		connectionLifeCheckIntervalSec=props['bis.connectionLifeCheckInterval.sec']
-	}
-
-	skuFinder(SkuFinder){
-		skuListProvider=ref('skuListProvider')
-		productionParameters=ref('productionParameters')
 	}
 }
