@@ -8,6 +8,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ScheduledFuture;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.sasscl.business.activation.NewProductEvent;
 import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState;
@@ -17,6 +20,8 @@ import com.sicpa.standard.sasscl.model.SKU;
 import com.sicpa.standard.sasscl.provider.impl.UnknownSkuProvider;
 
 public class ProductionWithUnknownSkuHandling extends Production {
+
+	private static final Logger logger = LoggerFactory.getLogger(ProductionWithUnknownSkuHandling.class);
 
 	private UnknownSkuProvider unknownSkuProvider;
 
@@ -40,6 +45,7 @@ public class ProductionWithUnknownSkuHandling extends Production {
 	}
 
 	private void handleUnknownProduct(Product product) {
+		logger.info("adding to unk buffer:" + product);
 		unknownsBuffer.add(product);
 		if (isTooManyUnknown()) {
 			movePreviousUnknownToProductionBuffer();
@@ -60,6 +66,7 @@ public class ProductionWithUnknownSkuHandling extends Production {
 	private void handleKnownProduct(Product product) {
 		resetStillUnknownTask();
 		if (!unknownsBuffer.isEmpty()) {
+			logger.info("known product received when unk buffer not empty");
 			setSkuToPreviousUnknown(product.getSku());
 			movePreviousUnknownToProductionBuffer();
 		}
@@ -95,11 +102,14 @@ public class ProductionWithUnknownSkuHandling extends Production {
 	}
 
 	private void setSkuToPreviousUnknown(SKU sku) {
+		logger.info("setting sku on unk buffer:" + sku);
 		unknownsBuffer.forEach(p -> p.setSku(sku));
 	}
 
 	private void movePreviousUnknownToProductionBuffer() {
+		logger.info("moving unk buffer to production buffer");
 		unknownsBuffer.forEach(p -> moveToProductionBuffer(p));
+		unknownsBuffer.clear();
 	}
 
 	public void setUnknownSkuProvider(UnknownSkuProvider unknownSkuProvider) {
