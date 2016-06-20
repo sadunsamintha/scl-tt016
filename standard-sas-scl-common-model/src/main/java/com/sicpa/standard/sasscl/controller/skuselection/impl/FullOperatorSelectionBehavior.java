@@ -17,7 +17,8 @@ public class FullOperatorSelectionBehavior implements ISkuSelectionBehavior {
 
 	@Override
 	public void duringProductionOnProductionParameterChanged(ProductionParametersEvent evt) {
-		throw new IllegalStateException();
+		throw new IllegalStateException(
+				"selection changed is not possible, everything as been already selected by the operator");
 	}
 
 }
