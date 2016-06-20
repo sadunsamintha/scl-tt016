@@ -1,6 +1,7 @@
 package com.sicpa.standard.sasscl.devices.bis.simulator;
 
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JTextField;
 
 import com.sicpa.standard.sasscl.devices.simulator.gui.AbstractSimulatorView;
@@ -8,11 +9,11 @@ import com.sicpa.standard.sasscl.devices.simulator.gui.AbstractSimulatorView;
 @SuppressWarnings("serial")
 public class BisSimulatorView extends AbstractSimulatorView {
 
-	private BisSimulatorAdaptor bis;
+	private BisControllerSimulator bis;
 	private JTextField textSkuIdRecognized;
 	private JButton buttonSendSkuRecognized;
 
-	public BisSimulatorView(BisSimulatorAdaptor bis) {
+	public BisSimulatorView(BisControllerSimulator bis) {
 		this.bis = bis;
 		initGUI();
 	}
@@ -20,18 +21,19 @@ public class BisSimulatorView extends AbstractSimulatorView {
 	@Override
 	protected void initGUI() {
 		super.initGUI();
-		add(getTextSkuIdRecognized(), "newline, growx , w 100");
+		add(new JLabel("SKU ID:"), "newline");
+		add(getTextSkuIdRecognized(), "growx , w 100");
 		add(getButtonSendSkuRecognized());
 	}
 
 	@Override
 	protected void buttonConnectActionPerformed() {
-		bis.onConnection();
+		bis.onConnected();
 	}
 
 	@Override
 	protected void buttonDisconnectActionPerformed() {
-		bis.onDisconnection();
+		bis.onDisconnected();
 	}
 
 	public JButton getButtonSendSkuRecognized() {

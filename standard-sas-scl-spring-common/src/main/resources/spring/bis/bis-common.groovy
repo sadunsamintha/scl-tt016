@@ -5,6 +5,15 @@ import com.sicpa.standard.sasscl.skureader.SkuFinder;
 
 beans{
 
+	bisParent(){ b->
+		b.abstract=true
+		blockProduction = props['bis.disconnected.production.block']
+		skuFinder=ref('skuFinder')
+		unknownSkuId=props['bis.unknownSkuId']
+		displayAlertMessage=props['bis.displayAlertMessage']
+		skuBisProvider=ref('skuBisProvider')
+	}
+
 	importBeans('spring/alert/alertUnknownSkuTask.groovy')
 
 	bisUserSender(BisUserSender){b->
