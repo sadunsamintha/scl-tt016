@@ -1,6 +1,7 @@
 package com.sicpa.standard.sasscl.business.sku.selector;
 
 import static com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState.STT_SELECT_WITH_PREVIOUS;
+import static com.sicpa.standard.sasscl.messages.MessageEventKey.SkuRecognition.UNEXPECTED_SKU_CHANGED;
 
 import java.time.Instant;
 
@@ -9,6 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
+import com.sicpa.standard.client.common.messages.MessageEvent;
 import com.sicpa.standard.sasscl.business.sku.IProductionChangeDetector;
 import com.sicpa.standard.sasscl.controller.ProductionParametersEvent;
 import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowStateChangedEvent;
@@ -102,7 +104,7 @@ public class SkuSelector {
 	private void unexptedSkuChange(SKU newSku) {
 		logger.info("unexptedSkuChange previous={} , new={}", previousRecognizedSku, newSku);
 		setSku(newSku);
-		EventBusService.post(new UnexpectedSkuChangedEvent());
+		EventBusService.post(new MessageEvent(this, UNEXPECTED_SKU_CHANGED, previousRecognizedSku, newSku));
 	}
 
 	private void firstSelection(SKU newSku) {
