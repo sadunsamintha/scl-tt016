@@ -21,6 +21,7 @@ import com.sicpa.standard.sasscl.devices.bis.IBisController;
 import com.sicpa.standard.sasscl.devices.bis.IBisControllerListener;
 import com.sicpa.standard.sasscl.devices.bis.IScheduleWorker;
 import com.sicpa.standard.sasscl.devices.bis.worker.ConnectionLifeCheckWorker;
+import com.sicpa.std.bis2.core.messages.RemoteMessages;
 import com.sicpa.std.bis2.core.messages.RemoteMessages.Alert;
 import com.sicpa.std.bis2.core.messages.RemoteMessages.Command;
 import com.sicpa.std.bis2.core.messages.RemoteMessages.Command.CommandType;
@@ -264,6 +265,13 @@ public class BisRemoteServer implements IBisController, IBisMessageHandlerListen
 		for (IBisControllerListener controllerListener : bisControllerListeners) {
 			controllerListener.otherMessageReceived(otherMessage);
 		}
+	}
+
+	@Override
+	public void sendCredential(String user, String password) {
+		RemoteMessages.SetUserPassword message = RemoteMessages.SetUserPassword.newBuilder().setUsername(user)
+				.setPassword(password).build();
+		sendMessage(message);
 	}
 
 	@Override

@@ -35,4 +35,6 @@ public interface IBisController {
 
 	void sendUnknownSave();
 
+	void sendCredential(String user, String password);
+
 }

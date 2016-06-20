@@ -26,6 +26,7 @@ import com.sicpa.standard.client.common.utils.ConfigUtils;
 import com.sicpa.standard.gui.utils.ThreadUtils;
 import com.sicpa.standard.sasscl.common.storage.IStorage;
 import com.sicpa.standard.sasscl.devices.DeviceStatus;
+import com.sicpa.standard.sasscl.devices.bis.IBisCredentialProvider;
 import com.sicpa.standard.sasscl.devices.remote.AbstractRemoteServer;
 import com.sicpa.standard.sasscl.devices.remote.GlobalMonitoringToolInfo;
 import com.sicpa.standard.sasscl.devices.remote.RemoteServerException;
@@ -70,9 +71,11 @@ import com.sicpa.standard.sicpadata.spi.manager.IServiceProviderManager;
 import com.sicpa.standard.sicpadata.spi.manager.ServiceProviderException;
 import com.sicpa.standard.sicpadata.spi.password.NoSuchPasswordException;
 
-public class RemoteServerSimulator extends AbstractRemoteServer implements ISimulatorGetEncoder {
+public class RemoteServerSimulator extends AbstractRemoteServer implements ISimulatorGetEncoder, IBisCredentialProvider {
 
 	private final static Logger logger = LoggerFactory.getLogger(RemoteServerSimulator.class);
+	private static final String BIS_USERNAME = "trainer";
+	private static final String BIS_PASSWORD = "pwd";
 
 	protected final RemoteServerSimulatorModel simulatorModel;
 	private SimulatorControlView simulatorGui;
@@ -116,7 +119,7 @@ public class RemoteServerSimulator extends AbstractRemoteServer implements ISimu
 		this.cryptoStartYear = cryptoStartYear;
 	}
 
-	//TODO fixme
+	// TODO fixme
 	public synchronized void setupBusinessCrypto() {
 		try {
 			if (setupBusinessCryptoDone) {
@@ -489,6 +492,16 @@ public class RemoteServerSimulator extends AbstractRemoteServer implements ISimu
 
 	public RemoteServerSimulatorModel getSimulatorModel() {
 		return simulatorModel;
+	}
+
+	@Override
+	public String getUserName() {
+		return BIS_USERNAME;
+	}
+
+	@Override
+	public String getPassword() {
+		return BIS_PASSWORD;
 	}
 
 }

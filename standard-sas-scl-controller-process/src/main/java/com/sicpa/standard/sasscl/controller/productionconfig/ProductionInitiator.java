@@ -15,12 +15,14 @@ import com.sicpa.standard.sasscl.controller.hardware.ProductionDevicesCreatedEve
 import com.sicpa.standard.sasscl.controller.productionconfig.config.CameraConfig;
 import com.sicpa.standard.sasscl.controller.productionconfig.config.PrinterConfig;
 import com.sicpa.standard.sasscl.devices.IStartableDevice;
+import com.sicpa.standard.sasscl.devices.bis.IBisAdaptor;
 import com.sicpa.standard.sasscl.devices.camera.ICameraAdaptor;
 import com.sicpa.standard.sasscl.devices.camera.simulator.ICameraAdaptorSimulator;
 import com.sicpa.standard.sasscl.devices.camera.simulator.ICodeProvider;
 import com.sicpa.standard.sasscl.devices.plc.PlcLineHelper;
 import com.sicpa.standard.sasscl.provider.impl.ActivationBehaviorProvider;
 import com.sicpa.standard.sasscl.provider.impl.AuthenticatorModeProvider;
+import com.sicpa.standard.sasscl.provider.impl.BisProvider;
 import com.sicpa.standard.sasscl.provider.impl.PlcProvider;
 
 public class ProductionInitiator implements IProductionInitiator {
@@ -30,7 +32,7 @@ public class ProductionInitiator implements IProductionInitiator {
 	private IDeviceFactory deviceFactory;
 	private IProductionConfig productionConfig;
 	private PlcProvider plcProvider;
-	private IStartableDevice bis;
+	private BisProvider bisProvider;
 	private IStartableDevice brs;
 	private IHardwareController hardwareController;
 	private AuthenticatorModeProvider authenticatorModeProvider;
@@ -44,7 +46,7 @@ public class ProductionInitiator implements IProductionInitiator {
 		deviceFactory.reset();
 		cameras.clear();
 		printers.clear();
-		bis = null;
+		bisProvider.set(null);
 		brs = null;
 	}
 
@@ -123,8 +125,8 @@ public class ProductionInitiator implements IProductionInitiator {
 		devices.addAll(cameras.values());
 		devices.addAll(printers.values());
 
-		if (bis != null) {
-			devices.add(bis);
+		if (bisProvider.get() != null) {
+			devices.add(bisProvider.get());
 		}
 
 		if (brs != null) {
@@ -144,8 +146,8 @@ public class ProductionInitiator implements IProductionInitiator {
 	private void createBis() {
 		if (productionConfig.getBisConfig() != null) {
 			logger.debug("creating BIS");
-			bis = deviceFactory.getBis(productionConfig.getBisConfig());
-			logger.debug("camera created:{}", bis.getName());
+			bisProvider.set((IBisAdaptor) deviceFactory.getBis(productionConfig.getBisConfig()));
+			logger.debug("camera created:{}", bisProvider.get().getName());
 		}
 	}
 
@@ -199,5 +201,9 @@ public class ProductionInitiator implements IProductionInitiator {
 
 	public void setActivationBehaviorProvider(ActivationBehaviorProvider activationBehaviorProvider) {
 		this.activationBehaviorProvider = activationBehaviorProvider;
+	}
+
+	public void setBisProvider(BisProvider bisProvider) {
+		this.bisProvider = bisProvider;
 	}
 }

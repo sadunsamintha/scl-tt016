@@ -40,15 +40,13 @@ public class TT016Bootstrap extends Bootstrap {
 
 	private void selectStopReasonWhenProductionStop() {
 		addScreen(stopReasonViewController);
-		addScreenTransitions(mainPanelGetter,
-				new ScreenTransition(STOP_PRODUCTION, stopReasonViewController));
-		addScreenTransitions(stopReasonViewController,
-				new ScreenTransition(STOP_PRODUCTION_REASON_SELECTED, mainPanelGetter));
+		addScreenTransitions(mainPanelGetter, new ScreenTransition(STOP_PRODUCTION, stopReasonViewController));
+		addScreenTransitions(stopReasonViewController, new ScreenTransition(STOP_PRODUCTION_REASON_SELECTED,
+				mainPanelGetter));
 
-		setStateNextPossibleStates(STT_STOPPING,
-				new FlowTransition(TRG_STOP_REASON_SELECTED, STT_CONNECTED),
-				new FlowTransition(TRG_RECOVERING_CONNECTION, STT_RECOVERING),
-				new FlowTransition(TRG_EXIT_APPLICATION, STT_EXIT));
+		setStateNextPossibleStates(STT_STOPPING, new FlowTransition(TRG_STOP_REASON_SELECTED, STT_CONNECTED),
+				new FlowTransition(TRG_RECOVERING_CONNECTION, STT_RECOVERING), new FlowTransition(TRG_EXIT_APPLICATION,
+						STT_EXIT));
 	}
 
 	public void setMainPanelGetter(MainPanelGetter mainPanelGetter) {

@@ -17,4 +17,7 @@ beans{
 
 	importBeans('spring/custo/tt016/tt016View.xml')
 	importBeans('spring/offlineCounting.xml')
+
+	addAlias('bisCredentialProvider','remoteServer')
+
 }

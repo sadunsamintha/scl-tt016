@@ -42,6 +42,8 @@ public interface ITT016RemoteServices {
 	void sendDomesticProduction(CodingActivationSessionDTO activSession) throws InternalException;
 
 	void sendRefeedProduction(CodingActivationSessionDTO activSession) throws InternalException;
+	
+	String getBisTrainerPassword(String user);
 
 	int getSubsystemId();
 

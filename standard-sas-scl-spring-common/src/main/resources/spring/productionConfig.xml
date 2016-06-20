@@ -32,6 +32,7 @@
 		<property name="authenticatorModeProvider" ref="authenticatorModeProvider" />
 		<property name="implementationProvider" ref="implementationProvider" />
 		<property name="activationBehaviorProvider" ref="activationBehaviorProvider" />
+		<property name="bisProvider" ref="bisProvider" />
 	</bean>
 
 

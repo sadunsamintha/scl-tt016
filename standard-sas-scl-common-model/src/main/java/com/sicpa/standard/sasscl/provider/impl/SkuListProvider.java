@@ -23,7 +23,7 @@ public class SkuListProvider extends AbstractProvider<ProductionParameterRootNod
 	}
 
 	public Set<SKU> getAvailableSKUsForProductionMode(ProductionMode mode) {
-		Set<SKU> res = new HashSet<SKU>();
+		Set<SKU> res = new HashSet<>();
 		if (get() != null) {
 			populateSkusList(res, get(), mode);
 		}

@@ -22,6 +22,8 @@
 		<constructor-arg value="${subsystemId}" />
 	</bean>
 
+	<bean id="bisProvider" class="com.sicpa.standard.sasscl.provider.impl.BisProvider" />
+
 </beans>
 
 
