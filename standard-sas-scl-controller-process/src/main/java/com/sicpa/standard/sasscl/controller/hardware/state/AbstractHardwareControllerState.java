@@ -126,7 +126,7 @@ public abstract class AbstractHardwareControllerState implements IHardwareContro
 	@Override
 	public void enter() {
 		active.set(true);
-		logger.debug("entering hw state {}", getName());
+		logger.info("entering hw state {}", getName());
 	}
 
 	@Override
@@ -134,7 +134,7 @@ public abstract class AbstractHardwareControllerState implements IHardwareContro
 		startableDevices.clear();
 		plc = null;
 		active.set(false);
-		logger.debug("leaving hw state state {}", getName());
+		logger.info("leaving hw state state {}", getName());
 	}
 
 	@Override
@@ -163,7 +163,7 @@ public abstract class AbstractHardwareControllerState implements IHardwareContro
 	}
 
 	protected void connectDevice(final IStartableDevice device) {
-		logger.debug("Connect device: {}", device.getName());
+		logger.info("Connect device: {}", device.getName());
 		TaskExecutor.execute(new Runnable() {
 			@Override
 			public void run() {
@@ -184,7 +184,7 @@ public abstract class AbstractHardwareControllerState implements IHardwareContro
 	 * @param startableDevice
 	 */
 	protected void startDevice(final IStartableDevice device) {
-		logger.debug("Starting device: {}", device.getName());
+		logger.info("Starting device: {}", device.getName());
 		TaskExecutor.execute(new Runnable() {
 			@Override
 			public void run() {
@@ -199,7 +199,7 @@ public abstract class AbstractHardwareControllerState implements IHardwareContro
 	}
 
 	protected void stoppingDevice(final IStartableDevice device) {
-		logger.debug("Stopping device: {}", device.getName());
+		logger.info("Stopping device: {}", device.getName());
 		TaskExecutor.execute(new Runnable() {
 			@Override
 			public void run() {
@@ -218,7 +218,7 @@ public abstract class AbstractHardwareControllerState implements IHardwareContro
 	 * @param device
 	 */
 	protected void disconnectDevice(final IStartableDevice device) {
-		logger.debug("disconnect device: {}", device.getName());
+		logger.info("disconnect device: {}", device.getName());
 		TaskExecutor.execute(new Runnable() {
 			@Override
 			public void run() {
