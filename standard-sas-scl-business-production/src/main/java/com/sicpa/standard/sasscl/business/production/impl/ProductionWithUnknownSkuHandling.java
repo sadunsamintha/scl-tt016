@@ -45,7 +45,7 @@ public class ProductionWithUnknownSkuHandling extends Production {
 	}
 
 	private void handleUnknownProduct(Product product) {
-		logger.info("adding to unk buffer:" + product);
+		logger.debug("adding to unknown buffer:{}", product);
 		unknownsBuffer.add(product);
 		if (isTooManyUnknown()) {
 			movePreviousUnknownToProductionBuffer();
@@ -66,7 +66,7 @@ public class ProductionWithUnknownSkuHandling extends Production {
 	private void handleKnownProduct(Product product) {
 		resetStillUnknownTask();
 		if (!unknownsBuffer.isEmpty()) {
-			logger.info("known product received when unk buffer not empty");
+			logger.info("known product received when unknown buffer not empty");
 			setSkuToPreviousUnknown(product.getSku());
 			movePreviousUnknownToProductionBuffer();
 		}
@@ -102,12 +102,12 @@ public class ProductionWithUnknownSkuHandling extends Production {
 	}
 
 	private void setSkuToPreviousUnknown(SKU sku) {
-		logger.info("setting sku on unk buffer:" + sku);
+		logger.info("setting sku on unknown buffer:" + sku);
 		unknownsBuffer.forEach(p -> p.setSku(sku));
 	}
 
 	private void movePreviousUnknownToProductionBuffer() {
-		logger.info("moving unk buffer to production buffer");
+		logger.info("moving unknown buffer to production buffer");
 		unknownsBuffer.forEach(p -> moveToProductionBuffer(p));
 		unknownsBuffer.clear();
 	}
