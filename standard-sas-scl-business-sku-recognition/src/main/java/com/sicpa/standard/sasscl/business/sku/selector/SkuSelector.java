@@ -56,7 +56,9 @@ public class SkuSelector {
 			} else if (isUnexptedSkuChange(newSku)) {
 				unexptedSkuChange(newSku);
 			}
-			previousRecognizedSku = newSku;
+			if (isNotUnknown(newSku)) {
+				previousRecognizedSku = newSku;
+			}
 		}
 	}
 
@@ -67,11 +69,23 @@ public class SkuSelector {
 		}
 	}
 
+	private boolean isUnknown(SKU sku) {
+		return unknownSkuProvider.get().equals(sku);
+	}
+
+	private boolean isNotUnknown(SKU sku) {
+		return !isUnknown(sku);
+	}
+
 	private boolean isFirstTimeSkuIdentification() {
 		return previousRecognizedSku == null;
 	}
 
 	private boolean isUnexptedSkuChange(SKU newSku) {
+		if (isUnknown(newSku)) {
+			return false;
+		}
+
 		return !previousRecognizedSku.equals(newSku);
 	}
 
