@@ -1,5 +1,8 @@
 package com.sicpa.standard.sasscl.devices.bis;
 
+import static com.sicpa.standard.sasscl.messages.MessageEventKey.Alert.SKU_RECOGNITION_TOO_MANY_UNKNOWN;
+import static com.sicpa.standard.sasscl.messages.MessageEventKey.SkuRecognition.UNEXPECTED_SKU_CHANGED;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -15,7 +18,6 @@ import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.messages.MessageEvent;
 import com.sicpa.standard.client.common.utils.TaskExecutor;
-import com.sicpa.standard.sasscl.business.sku.selector.UnexpectedSkuChangedEvent;
 import com.sicpa.standard.sasscl.devices.AbstractStartableDevice;
 import com.sicpa.standard.sasscl.devices.DeviceException;
 import com.sicpa.standard.sasscl.devices.DeviceStatus;
@@ -35,7 +37,7 @@ public class BisAdapter extends AbstractStartableDevice implements IBisAdaptor, 
 	private static final Logger logger = LoggerFactory.getLogger(BisAdapter.class);
 
 	private final DateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-	private IBisController controller;
+	protected IBisController controller;
 	private ISkuBisProvider skuBisProvider;
 	private boolean blockProduction;
 	private int unknownSkuId;
@@ -179,14 +181,11 @@ public class BisAdapter extends AbstractStartableDevice implements IBisAdaptor, 
 	}
 
 	@Subscribe
-	public void handleUnexpectedSkuChangedEvent(UnexpectedSkuChangedEvent evt) {
-		controller.sendAutoSave();
-	}
-
-	@Subscribe
 	public void handleMessageEvent(MessageEvent evt) {
-		if (evt.getKey().equals(MessageEventKey.Alert.SKU_RECOGNITION_TOO_MANY_UNKNOWN)) {
+		if (evt.getKey().equals(SKU_RECOGNITION_TOO_MANY_UNKNOWN)) {
 			controller.sendUnknownSave();
+		} else if (evt.getKey().equals(UNEXPECTED_SKU_CHANGED)) {
+			controller.sendAutoSave();
 		}
 	}
 
