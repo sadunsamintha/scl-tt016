@@ -153,6 +153,8 @@ beans {
 	plcMap['NTF_LINE_JAVA_CPT_UNREADABLES']=[v:LINE_NTF+'nJavaCpt_Unreadables' ,t:I ]
 	plcMap['NTF_LINE_JAVA_CPT_NO_INK_DETECTED']=[v:LINE_NTF+'nJavaCpt_NoInkDetected' ,t:I ]
 	plcMap['NTF_LINE_JAVA_CPT_ACQ_ERRORS']=[v:LINE_NTF+'nJavaCpt_AcquisitionErrors' ,t:I ]
+	plcMap['NTF_LINE_JAVA_PRODUCT_STATUS']=[v:LINE_NTF+'nDRSValueForJava' ,t:STR, l:8, lineNtf:'true']
+
 
 	//CABINET PARAM
 	plcMap['PARAM_CAB_TIMEOUT_LIFECHECK']=[v:CAB_PRM+'nTimeoutLifeCheck' ,t:I ,cabGrp:'system']
@@ -226,7 +228,9 @@ beans {
 		PlcVariableDescriptor desc =vd['desc']
 
 		registerSingleton("${logic}_var",var)
-		registerSingleton("${logic}_desc",desc)
+		if (desc != null) {
+			registerSingleton("${logic}_desc",desc)
+		}
 
 		addVarToLists(var, logic, e.value)
 		insertVarToGroup(desc,e.value)
@@ -342,6 +346,7 @@ def  Map<PlcRequest, IPlcRequestExecutor> createRequests(){
 def Map createVarAndDescriptor(String varPhyName,varLogicName,def varInfo){
 	def typeVar=varInfo['t']
 	def res = new HashMap()
+
 	PlcVariableDescriptor desc
 	IPlcVariable var
 	switch(typeVar){
@@ -369,6 +374,10 @@ def Map createVarAndDescriptor(String varPhyName,varLogicName,def varInfo){
 			var = createByteVar(varPhyName)
 			desc = createPlcByteDesc(varLogicName)
 			break
+		case STR:
+			var = createStrVar(varPhyName, varInfo['l'])
+			desc = null
+			break
 	}
 	res['var']=var
 	res['desc']=desc
@@ -386,6 +395,9 @@ def  IPlcVariable createShortVar(String physName){
 }
 def  IPlcVariable createIntVar(String physName){
 	return createVar('createInt32Var', physName)
+}
+def  IPlcVariable createStrVar(String physName, int length){
+	return PlcVariable.createStringVar(physName, length);
 }
 def  IPlcVariable createVar(String method,String physName){
 	return PlcVariable."$method"(physName)

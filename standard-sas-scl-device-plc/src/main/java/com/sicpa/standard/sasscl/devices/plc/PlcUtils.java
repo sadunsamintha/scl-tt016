@@ -33,7 +33,11 @@ public class PlcUtils {
 		/**
 		 * Byte
 		 */
-		BY;
+		BY,
+		/**
+		 * String
+		 */
+		STR
 	}
 
 	public static final String LINE = ".com.stLine[#x].";
