@@ -1,5 +1,13 @@
 package com.sicpa.standard.sasscl.devices.camera;
 
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.sicpa.standard.camera.controller.CameraException;
 import com.sicpa.standard.camera.controller.ICameraController;
 import com.sicpa.standard.camera.controller.ICameraControllerListener;
@@ -28,40 +36,24 @@ import com.sicpa.standard.sasscl.devices.DeviceStatus;
 import com.sicpa.standard.sasscl.devices.camera.jobconfig.CameraJobFileDescriptor;
 import com.sicpa.standard.sasscl.devices.camera.jobconfig.CameraJobFilesConfig;
 import com.sicpa.standard.sasscl.devices.camera.jobconfig.ICameraJobFilesConfig;
+import com.sicpa.standard.sasscl.devices.camera.jobconfig.parameters.provider.ICameraJobParametersProvider;
 import com.sicpa.standard.sasscl.devices.camera.transformer.ICameraImageTransformer;
 import com.sicpa.standard.sasscl.devices.camera.transformer.IRoiCameraImageTransformer;
 import com.sicpa.standard.sasscl.messages.MessageEventKey;
 import com.sicpa.standard.sasscl.model.ProductionParameters;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import java.util.List;
 
 public class CameraAdaptor extends AbstractCameraAdaptor implements ICameraControllerListener,
 		IConfigurable<CameraConfig, CameraAdaptor> {
 
 	public static final Logger logger = LoggerFactory.getLogger(AbstractDevice.class);
 
-	protected ICognexCameraController<? extends ICameraModel> controller;
+	private ICognexCameraController<? extends ICameraModel> controller;
+	private ProductionParameters productionParameters;
+	private ICameraJobFilesConfig cameraJobFilesConfig;
+	private ICameraJobParametersProvider cameraJobParametersProvider;
 
-	/**
-	 * switch camera job based on production parameters
-	 */
-	protected ProductionParameters productionParameters;
+	private final List<ICameraImageTransformer> cameraImageTransformers = new ArrayList<>();
 
-	/**
-	 * camera job file configuration, to load camera job based on selected production parameter
-	 */
-	protected ICameraJobFilesConfig cameraJobFilesConfig;
-
-	protected final List<ICameraImageTransformer> cameraImageTransformers = new ArrayList<ICameraImageTransformer>();
-
-	/**
-	 * needed for spring do not remove
-	 */
 	public CameraAdaptor() {
 	}
 
@@ -73,11 +65,6 @@ public class CameraAdaptor extends AbstractCameraAdaptor implements ICameraContr
 		roiCameraImageTransformer.setCamera(this);
 	}
 
-	/**
-	 * Request camera to start reading camera result
-	 * 
-	 * @throws CameraAdaptorException
-	 */
 	@Override
 	protected void doStart() throws DeviceException {
 		try {
@@ -90,70 +77,60 @@ public class CameraAdaptor extends AbstractCameraAdaptor implements ICameraContr
 		}
 	}
 
-    /**
-     * Request camera to stop reading result
-     *
-     * fix for mismatch between BRS and LS counters
-     * - camera codes received after camera required to stop
-     * - Added sleepQuietly
-     * @throws CameraAdaptorException
-     */
-    @Override
-    public void doStop() throws CameraAdaptorException {
-        try {
-            ThreadUtils.sleepQuietly(100);
-            if (status == DeviceStatus.STARTED) {
-                controller.stopReading();
-            }
-        } catch (com.sicpa.standard.camera.controller.CameraException e) {
-            throw new CameraAdaptorException("Camera error when stop reading", e);
-        } finally {
-            fireDeviceStatusChanged(DeviceStatus.STOPPED);
-        }
-    }
-
 	@Override
-	public void onCameraCodeReceived(final ICameraController<?> sender, final CodeReceivedEventArgs codeReceivedEvent) {
+	public void doStop() throws CameraAdaptorException {
+		try {
+			// fix for mismatch between BRS and LS counters - camera codes received after camera required to stop -
+			// Added sleepQuietly
+			ThreadUtils.sleepQuietly(100);
+			if (status == DeviceStatus.STARTED) {
+				controller.stopReading();
+			}
+		} catch (com.sicpa.standard.camera.controller.CameraException e) {
+			throw new CameraAdaptorException("Camera error when stop reading", e);
+		} finally {
+			fireDeviceStatusChanged(DeviceStatus.STOPPED);
+		}
 	}
 
 	@Override
-	public void onCameraImageReceived(final ICameraController<?> sender, final ImageReceivedEventArgs imageReceivedEvent) {
+	public void onCameraCodeReceived(ICameraController<?> sender, CodeReceivedEventArgs codeReceivedEvent) {
+	}
+
+	@Override
+	public void onCameraImageReceived(ICameraController<?> sender, ImageReceivedEventArgs imageReceivedEvent) {
 		fireCameraImage(imageReceivedEvent.getCode(), transformImage(imageReceivedEvent.getImage()));
 	}
 
 	@Override
-	public void onMetricsReceived(final ICameraController<?> sender, final MetricsEventArgs metricsEvent) {
+	public void onMetricsReceived(ICameraController<?> sender, MetricsEventArgs metricsEvent) {
 	}
 
 	@Override
-	public void onErrorCameraCodeReceived(final ICameraController<?> sender, final ErrorCodeEventArgs errorCodeEvent) {
+	public void onErrorCameraCodeReceived(ICameraController<?> sender, ErrorCodeEventArgs errorCodeEvent) {
 		logger.debug("Camera read bad code: {}", errorCodeEvent.getCode());
 		fireBadCode(errorCodeEvent.getCode());
 	}
 
 	@Override
-	public void onUnknownCameraCodeReceived(final ICameraController<?> sender,
-			final UnknownCodeEventArgs unknownCodeEvent) {
+	public void onUnknownCameraCodeReceived(ICameraController<?> sender, UnknownCodeEventArgs unknownCodeEvent) {
 
 	}
 
 	@Override
-	public void onValidCameraCodeReceived(final ICameraController<?> sender, final CodeEventArgs codeEvent) {
+	public void onValidCameraCodeReceived(ICameraController<?> sender, CodeEventArgs codeEvent) {
 		logger.debug("Camera read good code: {}", codeEvent.getCode());
 		fireGoodCode(codeEvent.getCode());
 	}
 
 	@Override
-	public void onCameraDriverEventReceived(final ICameraController<?> sender, final CameraDriverEventArgs driverEvent) {
+	public void onCameraDriverEventReceived(ICameraController<?> sender, CameraDriverEventArgs driverEvent) {
 
 		CameraDriverEventCode eventCode = CameraDriverEventCode.valueOf(driverEvent.getEventCode());
 		switch (eventCode) {
 
 		case CONNECTED:
-			if (needCameraJobToBeSet()) {
-				setCameraJob();
-			}
-			fireDeviceStatusChanged(DeviceStatus.CONNECTED);
+			onConnected();
 			break;
 
 		case CAMERA_SET_OFFLINE_MANUALLY:
@@ -172,6 +149,22 @@ public class CameraAdaptor extends AbstractCameraAdaptor implements ICameraContr
 		default:
 			break;
 		}
+	}
+
+	private void onConnected() {
+		try {
+			if (needCameraJobToBeSet()) {
+				setCameraJob();
+			}
+			sendJobParameters();
+			fireDeviceStatusChanged(DeviceStatus.CONNECTED);
+		} catch (Exception e) {
+			logger.error("", e);
+		}
+	}
+
+	private void sendJobParameters() {
+		cameraJobParametersProvider.getParameterList().forEach(p -> p.writeValue(this));
 	}
 
 	private boolean needCameraJobToBeSet() {
@@ -198,17 +191,12 @@ public class CameraAdaptor extends AbstractCameraAdaptor implements ICameraContr
 		}
 	}
 
-	/**
-	 * set camera job for the current production parameters
-	 */
-	protected void setCameraJob() {
+	private void setCameraJob() {
 
-		final CameraJobFileDescriptor jobFileDescriptor = findCameraJobFileDescriptor();
-
-		// if camera job file is not defined for the current production mode, skip the set job action
+		CameraJobFileDescriptor jobFileDescriptor = findCameraJobFileDescriptor();
 		if (jobFileDescriptor != null) {
 			try {
-				this.controller.setActiveJob(jobFileDescriptor.getCameraJobFileName());
+				controller.setActiveJob(jobFileDescriptor.getCameraJobFileName());
 			} catch (com.sicpa.standard.camera.controller.CameraException e) {
 				logger.error("", e);
 				logger.error("Failed to set camera job", e);
@@ -217,7 +205,7 @@ public class CameraAdaptor extends AbstractCameraAdaptor implements ICameraContr
 		}
 	}
 
-	protected CameraJobFileDescriptor findCameraJobFileDescriptor() {
+	private CameraJobFileDescriptor findCameraJobFileDescriptor() {
 		if (cameraJobFilesConfig.isUseDefaultCameraJobFile()) {
 			return cameraJobFilesConfig.getDefaultCameraJobFile();
 		} else {
@@ -240,23 +228,14 @@ public class CameraAdaptor extends AbstractCameraAdaptor implements ICameraContr
 	public void doDisconnect() throws CameraAdaptorException {
 		try {
 			controller.shutdown();
-			// shutdown method above is a synchronous method. It waits all the thread die before exit. If the method is
-			// executed successfully, the connection is destroyed.
 		} finally {
 			fireDeviceStatusChanged(DeviceStatus.DISCONNECTED);
 		}
 	}
 
-	/**
-	 * for subclass to access the internal structure - standard camera controller
-	 * 
-	 * @return
-	 */
 	protected ICameraController<? extends ICameraModel> getController() {
 		return controller;
 	}
-
-	// getter and setter
 
 	public void setProductionParameters(ProductionParameters productionParameters) {
 		this.productionParameters = productionParameters;
@@ -289,7 +268,7 @@ public class CameraAdaptor extends AbstractCameraAdaptor implements ICameraContr
 		}
 	}
 
-	protected BufferedImage transformImage(Image img) {
+	private BufferedImage transformImage(Image img) {
 		BufferedImage res = ImageUtils.convertToBufferedImage(img);
 		for (ICameraImageTransformer transformer : cameraImageTransformers) {
 			res = transformer.transform(res);
@@ -297,7 +276,7 @@ public class CameraAdaptor extends AbstractCameraAdaptor implements ICameraContr
 		return res;
 	}
 
-	protected void initImageTransformer(StringMap stringMap) {
+	private void initImageTransformer(StringMap stringMap) {
 		for (ICameraImageTransformer transformer : cameraImageTransformers) {
 			transformer.init(stringMap);
 		}
@@ -313,11 +292,42 @@ public class CameraAdaptor extends AbstractCameraAdaptor implements ICameraContr
 		};
 	}
 
-	protected void configure(CameraConfig config) {
+	private void configure(CameraConfig config) {
 		initImageTransformer(config.getProperties());
 	}
 
 	public void setCameraImageTransformers(List<ICameraImageTransformer> cameraImageTransformers) {
 		this.cameraImageTransformers.addAll(cameraImageTransformers);
+	}
+
+	@Override
+	public void writeIntValue(String name, Integer value) {
+		try {
+			controller.writeAliasValueInt(name, value);
+		} catch (CameraException e) {
+			logger.error("", e);
+		}
+	}
+
+	@Override
+	public void writeStringValue(String name, String value) {
+		try {
+			controller.writeAliasValueString(name, value);
+		} catch (CameraException e) {
+			logger.error("", e);
+		}
+	}
+
+	@Override
+	public void writeAliasValue(String name, String value) {
+		try {
+			controller.writeAliasValue(name, value);
+		} catch (CameraException e) {
+			logger.error("", e);
+		}
+	}
+
+	public void setCameraJobParametersProvider(ICameraJobParametersProvider cameraJobParametersProvider) {
+		this.cameraJobParametersProvider = cameraJobParametersProvider;
 	}
 }
