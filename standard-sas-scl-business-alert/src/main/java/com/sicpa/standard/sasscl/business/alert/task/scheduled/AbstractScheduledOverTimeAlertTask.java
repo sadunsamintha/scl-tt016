@@ -13,9 +13,9 @@ import java.util.Queue;
  */
 public abstract class AbstractScheduledOverTimeAlertTask extends AbstractScheduledAlertTask {
 
-	protected Grid grid;
-	protected int eventCount;
-	protected int currentTickIndex;
+	protected volatile Grid grid;
+	protected volatile int eventCount;
+	protected volatile int currentTickIndex;
 
 	/**
 	 * 
@@ -28,34 +28,35 @@ public abstract class AbstractScheduledOverTimeAlertTask extends AbstractSchedul
 	 */
 	public AbstractScheduledOverTimeAlertTask() {
 		super();
-		this.currentTickIndex = 0;
+		currentTickIndex = 0;
 	}
 
 	@Override
 	public void reset() {
+		grid = new Grid(getSampleSize());
+		eventCount = 0;
+		currentTickIndex = 0;
 	}
 
 	@Override
 	public void start() {
-		this.grid = new Grid(getSampleSize());
-		this.eventCount = 0;
-		this.currentTickIndex = 0;
+		reset();
 		super.start();
 	}
 
 	@Override
 	protected boolean isAlertPresent() {
 		addCounterToGrid();
-		this.currentTickIndex++;
-		if (this.currentTickIndex >= getSampleSize()) {
-			this.currentTickIndex = 0;
+		currentTickIndex++;
+		if (currentTickIndex >= getSampleSize()) {
+			currentTickIndex = 0;
 		}
 		return isThresholdReached();
 
 	}
 
 	protected boolean isThresholdReached() {
-		return this.grid.get() > getThreshold();
+		return grid.get() > getThreshold();
 	}
 
 	protected abstract int getThreshold();
@@ -65,7 +66,7 @@ public abstract class AbstractScheduledOverTimeAlertTask extends AbstractSchedul
 	/**
 	 * add the counter for the last interval and reset the counter
 	 */
-	protected void addCounterToGrid() {
+	private void addCounterToGrid() {
 		grid.add(currentTickIndex, eventCount);
 		eventCount = 0;
 	}
@@ -98,7 +99,7 @@ public abstract class AbstractScheduledOverTimeAlertTask extends AbstractSchedul
 		 * 
 		 * @return the number of events for the last interval and remove values for this interval
 		 */
-		protected int get() {
+		public int get() {
 			int res = 0;
 			Integer value;
 			for (Queue<Integer> line : array) {

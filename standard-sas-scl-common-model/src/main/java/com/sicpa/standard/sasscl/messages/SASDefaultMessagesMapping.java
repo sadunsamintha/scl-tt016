@@ -167,8 +167,6 @@ public class SASDefaultMessagesMapping extends DefaultMessagesMapping {
 
 		addEntry(MAINTENACE.TOO_MANY_PRODUCTS_COUNTED_ERROR, "[MAINTENACE_01]", ERROR);
 
-		addEntry(BIS.BIS_CONNECTED, "[BIS_01]", WARNING);
-		addEntry(BIS.BIS_DISCONNECTED, "[BIS_02]", WARNING);
 		addEntry(BIS.BIS_UNKNOWN_SKU, "[BIS_03]", WARNING);
 		addEntry(BIS.BIS_ALERT, "[BIS_04]", WARNING);
 		addEntry(BIS.BIS_UNKNOWN_SKU_EXCEED_THRESHOLD, "[BIS_05]", WARNING);

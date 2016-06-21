@@ -36,7 +36,9 @@ public class ProductionTest {
 		storage = mock(IStorage.class);
 		remoteServer = mock(IRemoteServer.class);
 		when(remoteServer.isConnected()).thenReturn(true);
-		production = new Production(storage, remoteServer);
+		production = new Production();
+		production.setStorage(storage);
+		production.setRemoteServer(remoteServer);
 		production.setProductionDataSerializationErrorThreshold(2);
 		production.setProductionSendBatchSize(5000);
 		production.setSubsystemIdProvider(new SubsystemIdProvider(0));

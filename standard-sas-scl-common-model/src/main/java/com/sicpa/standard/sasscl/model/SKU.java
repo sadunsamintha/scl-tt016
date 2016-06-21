@@ -15,7 +15,7 @@ public class SKU extends Customizable implements Serializable, Cloneable {
 
 	private static final long serialVersionUID = 1L;
 
-	public static final int UNKNOWN_SKU_ID = -1;
+
 
 	private CodeType codeType;
 	private int id;
@@ -60,7 +60,10 @@ public class SKU extends Customizable implements Serializable, Cloneable {
 
 	@Override
 	public int hashCode() {
-		return this.id;
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + id;
+		return result;
 	}
 
 	@Override
@@ -74,19 +77,16 @@ public class SKU extends Customizable implements Serializable, Cloneable {
 
 	@Override
 	public boolean equals(Object obj) {
-
-		if (obj == null) {
+		if (this == obj)
+			return true;
+		if (obj == null)
 			return false;
-		}
-
-		if (obj instanceof SKU) {
-			if (id == -1 || ((SKU) obj).id == -1) {
-				return (description.equals(((SKU) obj).description));
-			} else {
-				return (id == ((SKU) obj).id);
-			}
-		}
-		return false;
+		if (getClass() != obj.getClass())
+			return false;
+		SKU other = (SKU) obj;
+		if (id != other.id)
+			return false;
+		return true;
 	}
 
 	public String getDescription() {

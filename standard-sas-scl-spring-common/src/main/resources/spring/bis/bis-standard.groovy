@@ -21,6 +21,7 @@ beans{
 		b.initMethod='init'
 		ip=props['bis.ip']
 		port=props['bis.port']
+		connectionLifeCheckIntervalSec=props['bis.connectionLifeCheckInterval.sec']
 	}
 
 	skuFinder(SkuFinder){

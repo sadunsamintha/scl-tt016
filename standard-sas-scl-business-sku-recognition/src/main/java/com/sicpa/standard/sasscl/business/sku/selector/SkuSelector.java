@@ -1,7 +1,6 @@
 package com.sicpa.standard.sasscl.business.sku.selector;
 
 import static com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState.STT_SELECT_WITH_PREVIOUS;
-import static com.sicpa.standard.sasscl.model.SKU.UNKNOWN_SKU_ID;
 
 import java.time.Instant;
 
@@ -16,6 +15,7 @@ import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowStateChangedEven
 import com.sicpa.standard.sasscl.controller.skuselection.ISkuSelectionBehavior;
 import com.sicpa.standard.sasscl.model.ProductionParameters;
 import com.sicpa.standard.sasscl.model.SKU;
+import com.sicpa.standard.sasscl.provider.impl.UnknownSkuProvider;
 import com.sicpa.standard.sasscl.skureader.SkuNotRecognizedEvent;
 import com.sicpa.standard.sasscl.skureader.SkuRecognizedEvent;
 
@@ -24,9 +24,9 @@ public class SkuSelector {
 	private static final Logger logger = LoggerFactory.getLogger(SkuSelector.class);
 
 	private ISkuRecognizedBuffer skuBuffer;
-	private ProductionParameters productionParameters;
 	private ISkuSelectionBehavior skuSelectionBehavior;
 	private IProductionChangeDetector productionChangeDetector;
+	private UnknownSkuProvider unknownSkuProvider;
 
 	private SKU previousRecognizedSku;
 	private Instant previousSkuEventTime;
@@ -38,11 +38,7 @@ public class SkuSelector {
 
 	@Subscribe
 	public void handleSkuNotRecognizedEvent(SkuNotRecognizedEvent evt) {
-		skuEventReceived(getUnknownSku());
-	}
-
-	private SKU getUnknownSku() {
-		return new SKU(UNKNOWN_SKU_ID, "unknown SKU");
+		skuEventReceived(unknownSkuProvider.get());
 	}
 
 	private void skuEventReceived(SKU sku) {
@@ -74,7 +70,7 @@ public class SkuSelector {
 	}
 
 	private boolean isUnexptedSkuChange(SKU newSku) {
-		return previousRecognizedSku.equals(newSku);
+		return !previousRecognizedSku.equals(newSku);
 	}
 
 	@Subscribe
@@ -85,7 +81,7 @@ public class SkuSelector {
 	}
 
 	private void setSku(SKU sku) {
-		logger.info("setting sku:" + sku);
+		ProductionParameters productionParameters = new ProductionParameters();
 		productionParameters.setSku(sku);
 		skuSelectionBehavior.duringProductionOnProductionParameterChanged(new ProductionParametersEvent(
 				productionParameters));
@@ -97,6 +93,9 @@ public class SkuSelector {
 	}
 
 	private boolean isTimeExceededSinceLastRecognizedSku() {
+		if (previousSkuEventTime == null) {
+			return false;
+		}
 		return productionChangeDetector.isPossibleProductionChange(previousSkuEventTime, Instant.now());
 	}
 
@@ -114,15 +113,15 @@ public class SkuSelector {
 		this.skuBuffer = skuBuffer;
 	}
 
-	public void setProductionParameters(ProductionParameters productionParameters) {
-		this.productionParameters = productionParameters;
-	}
-
 	public void setProductionChangeDetector(IProductionChangeDetector productionChangeDetector) {
 		this.productionChangeDetector = productionChangeDetector;
 	}
 
 	public void setSkuSelectionBehavior(ISkuSelectionBehavior skuSelectionBehavior) {
 		this.skuSelectionBehavior = skuSelectionBehavior;
+	}
+
+	public void setUnknownSkuProvider(UnknownSkuProvider unknownSkuProvider) {
+		this.unknownSkuProvider = unknownSkuProvider;
 	}
 }

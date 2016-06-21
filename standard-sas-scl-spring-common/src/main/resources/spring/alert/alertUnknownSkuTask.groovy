@@ -5,9 +5,8 @@ beans{
 
 	unkownSkuScheduledAlert(UnkownSkuRecognizedScheduledAlert){
 		enabled=props['alert.sku.recognition.enabled']
-		maxUnreadCount=props['alert.sku.recognition.maxUnreadCount']
+		threshold=props['alert.sku.recognition.maxUnreadCount']
 		sampleSize=props['alert.sku.recognition.sampleSize']
-		delaySec=props['alert.sku.recognition.delayInSec']
 		productionChangeDetector=ref('productionChangeDetector')
 	}
 

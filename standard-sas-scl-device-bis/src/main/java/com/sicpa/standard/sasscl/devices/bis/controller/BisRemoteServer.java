@@ -1,12 +1,11 @@
 package com.sicpa.standard.sasscl.devices.bis.controller;
 
+import static java.util.concurrent.Executors.newCachedThreadPool;
+
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.jboss.netty.bootstrap.ClientBootstrap;
 import org.jboss.netty.channel.Channel;
@@ -16,11 +15,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.protobuf.GeneratedMessage;
+import com.sicpa.standard.client.common.utils.TaskExecutor;
 import com.sicpa.standard.sasscl.devices.bis.BisAdaptorException;
 import com.sicpa.standard.sasscl.devices.bis.IBisController;
 import com.sicpa.standard.sasscl.devices.bis.IBisControllerListener;
-import com.sicpa.standard.sasscl.devices.bis.IScheduleWorker;
-import com.sicpa.standard.sasscl.devices.bis.worker.ConnectionLifeCheckWorker;
+import com.sicpa.standard.sasscl.devices.bis.worker.BisLifeCheckWorker;
 import com.sicpa.std.bis2.core.messages.RemoteMessages;
 import com.sicpa.std.bis2.core.messages.RemoteMessages.Alert;
 import com.sicpa.std.bis2.core.messages.RemoteMessages.Command;
@@ -35,44 +34,34 @@ public class BisRemoteServer implements IBisController, IBisMessageHandlerListen
 
 	private static final Logger logger = LoggerFactory.getLogger(BisRemoteServer.class);
 
-	private String ip;
-	private int port;
-
-	private int connectionLifeCheckIntervalMs;
+	private BisMessagesHandler bisMessagesHandler;
+	private BisLifeCheckWorker connectionLifeCheckWorker;
 
 	private Channel channel;
 	private ChannelFuture connectFuture;
 	private ClientBootstrap bootstrap;
-	private LifeCheck lifeCheck;
-	private IScheduleWorker connectionLifeCheckWorker;
-	private Stack<Integer> lifeCheckTags = new Stack<>();
-
-	private AtomicBoolean isSchedulerWorkerInit = new AtomicBoolean(false);
-
-	private BisMessagesHandler bisMessagesHandler;
 
 	private final List<IBisControllerListener> bisControllerListeners = new ArrayList<>();
+	private Stack<Integer> lifeCheckTags = new Stack<>();
 
-	private final ExecutorService singleThreadedExecutorService = Executors.newSingleThreadExecutor();
+	private String ip;
+	private int port;
+	private int connectionLifeCheckIntervalSec = 5;
 
 	public BisRemoteServer() {
-
 	}
 
 	public void init() {
-		connectionLifeCheckWorker = new ConnectionLifeCheckWorker(connectionLifeCheckIntervalMs);
-		connectionLifeCheckWorker.addController(this);
+		connectionLifeCheckWorker = new BisLifeCheckWorker(connectionLifeCheckIntervalSec, this);
 
 		// setting up bootstrap
-		bootstrap = new ClientBootstrap(new NioClientSocketChannelFactory(Executors.newCachedThreadPool(),
-				Executors.newCachedThreadPool()));
+		bootstrap = new ClientBootstrap(new NioClientSocketChannelFactory(newCachedThreadPool(), newCachedThreadPool()));
 
 		// Configure the pipeline factory.
 		bisMessagesHandler = new BisMessagesHandler();
 		bisMessagesHandler.addListener(this);
 		bootstrap.setPipelineFactory(new ProtobufPipelineFactory(bisMessagesHandler));
 		bootstrap.setOption("remoteAddress", new InetSocketAddress(ip, port));
-		logger.debug("Scheduler tasks started.");
 	}
 
 	@Override
@@ -89,9 +78,7 @@ public class BisRemoteServer implements IBisController, IBisMessageHandlerListen
 				}
 			}
 
-			if (isSchedulerWorkerInit.compareAndSet(false, true)) {
-				connectionLifeCheckWorker.create();
-			}
+			connectionLifeCheckWorker.start();
 
 			// Make a new connection.
 			connectFuture = bootstrap.connect();
@@ -116,23 +103,12 @@ public class BisRemoteServer implements IBisController, IBisMessageHandlerListen
 		channel.disconnect().awaitUninterruptibly();
 		channel.close();
 		bootstrap.releaseExternalResources();
-		connectionLifeCheckWorker.dispose();
-		isSchedulerWorkerInit.set(false);
-	}
-
-	@Override
-	public void start() throws BisAdaptorException {
-		// recognitionResultRequestWorker.start();
-	}
-
-	@Override
-	public void stop() {
+		connectionLifeCheckWorker.stop();
 	}
 
 	@Override
 	public void sendSkuList(SkusMessage skus) {
 		sendMessage(skus);
-
 	}
 
 	protected void sendMessage(GeneratedMessage message) {
@@ -143,19 +119,13 @@ public class BisRemoteServer implements IBisController, IBisMessageHandlerListen
 
 	@Override
 	public void sendLifeCheck() {
-		lifeCheck = LifeCheck.newBuilder().setType(LifeCheckType.REQUEST)
+		LifeCheck lifeCheck = LifeCheck.newBuilder().setType(LifeCheckType.REQUEST)
 				.setTag((int) (System.currentTimeMillis() / 1000)).build();
 
 		// keep pending life check request in lifeCheckTags
 		lifeCheckTags.add(0, lifeCheck.getTag());
 
 		sendMessage(lifeCheck);
-	}
-
-	@Override
-	public void sendRecognitionResultRequest() {
-		sendMessage(Command.newBuilder().setCommand(CommandType.RECOGNITION_REQUEST).build());
-
 	}
 
 	@Override
@@ -170,11 +140,9 @@ public class BisRemoteServer implements IBisController, IBisMessageHandlerListen
 
 	@Override
 	public boolean isConnected() {
-
 		if ((lifeCheckTags.size() < 3) && (channel.isConnected())) {
 			return true;
 		}
-
 		return false;
 	}
 
@@ -194,34 +162,21 @@ public class BisRemoteServer implements IBisController, IBisMessageHandlerListen
 
 	@Override
 	public void onLifeCheckFailed() {
-
-		// do connect again
-		singleThreadedExecutorService.execute(new Runnable() {
-
-			@Override
-			public void run() {
-				try {
-					if (isConnected()) {
-						return;
-					}
-					for (IBisControllerListener controllerListener : bisControllerListeners) {
-						controllerListener.onLifeCheckFailed();
-					}
-
-					connect();
-				} catch (BisAdaptorException e) {
-					logger.error(e.getMessage(), e);
-				}
+		logger.debug("on lifecheck failed");
+		TaskExecutor.execute(() -> {
+			try {
+				connect();
+			} catch (BisAdaptorException e) {
+				logger.error(e.getMessage(), e);
 			}
-		});
+
+		}, "bis lifecheck");
 
 	}
 
 	@Override
 	public void onLifeCheckSucceed() {
-		for (IBisControllerListener controllerListener : bisControllerListeners) {
-			controllerListener.onConnection();
-		}
+		onConnected();
 	}
 
 	@Override
@@ -240,10 +195,7 @@ public class BisRemoteServer implements IBisController, IBisMessageHandlerListen
 
 	@Override
 	public void lifeCheckReceived(LifeCheck lifeCheckResponse) {
-		this.receiveLifeCheckResponce(lifeCheckResponse);
-		for (IBisControllerListener controllerListener : bisControllerListeners) {
-			controllerListener.lifeCheckReceived(lifeCheckResponse);
-		}
+		receiveLifeCheckResponce(lifeCheckResponse);
 	}
 
 	@Override
@@ -262,9 +214,7 @@ public class BisRemoteServer implements IBisController, IBisMessageHandlerListen
 
 	@Override
 	public void onOtherMessageReceived(Object otherMessage) {
-		for (IBisControllerListener controllerListener : bisControllerListeners) {
-			controllerListener.otherMessageReceived(otherMessage);
-		}
+		logger.info("" + otherMessage);
 	}
 
 	@Override
@@ -272,6 +222,11 @@ public class BisRemoteServer implements IBisController, IBisMessageHandlerListen
 		RemoteMessages.SetUserPassword message = RemoteMessages.SetUserPassword.newBuilder().setUsername(user)
 				.setPassword(password).build();
 		sendMessage(message);
+	}
+
+	@Override
+	public void sendDomesticMode() {
+		sendMessage(Command.newBuilder().setCommand(CommandType.PRODUCTION_DOMESTIC).build());
 	}
 
 	@Override
@@ -292,7 +247,7 @@ public class BisRemoteServer implements IBisController, IBisMessageHandlerListen
 		this.ip = ip;
 	}
 
-	public void setConnectionLifeCheckIntervalMs(int connectionLifeCheckIntervalMs) {
-		this.connectionLifeCheckIntervalMs = connectionLifeCheckIntervalMs;
+	public void setConnectionLifeCheckIntervalSec(int connectionLifeCheckIntervalSec) {
+		this.connectionLifeCheckIntervalSec = connectionLifeCheckIntervalSec;
 	}
 }

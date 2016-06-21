@@ -19,6 +19,8 @@ import com.sicpa.standard.sasscl.Bootstrap;
 import com.sicpa.standard.sasscl.controller.flow.statemachine.FlowTransition;
 import com.sicpa.standard.sasscl.messages.ActionMessageType;
 import com.sicpa.standard.sasscl.messages.MessageEventKey;
+import com.sicpa.standard.sasscl.model.CodeType;
+import com.sicpa.standard.sasscl.provider.impl.UnknownSkuProvider;
 import com.sicpa.standard.sasscl.view.main.MainPanelGetter;
 import com.sicpa.tt016.view.selection.stop.StopReasonViewController;
 
@@ -26,12 +28,19 @@ public class TT016Bootstrap extends Bootstrap {
 
 	private MainPanelGetter mainPanelGetter;
 	private StopReasonViewController stopReasonViewController;
+	private UnknownSkuProvider unknownSkuProvider;
+	private int codeTypeId;
 
 	@Override
 	public void executeSpringInitTasks() {
 		super.executeSpringInitTasks();
 		noStopIfDmxDetectedInExport();
 		selectStopReasonWhenProductionStop();
+		setUnknownSkuCodeType();
+	}
+
+	private void setUnknownSkuCodeType() {
+		unknownSkuProvider.get().setCodeType(new CodeType(codeTypeId));
 	}
 
 	private void noStopIfDmxDetectedInExport() {
@@ -55,6 +64,14 @@ public class TT016Bootstrap extends Bootstrap {
 
 	public void setStopReasonViewController(StopReasonViewController stopReasonViewController) {
 		this.stopReasonViewController = stopReasonViewController;
+	}
+
+	public void setUnknownSkuProvider(UnknownSkuProvider unknownSkuProvider) {
+		this.unknownSkuProvider = unknownSkuProvider;
+	}
+
+	public void setCodeTypeId(int codeTypeId) {
+		this.codeTypeId = codeTypeId;
 	}
 
 }

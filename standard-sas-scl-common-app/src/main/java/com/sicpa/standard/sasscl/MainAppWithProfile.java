@@ -181,7 +181,7 @@ public class MainAppWithProfile extends MainApp implements IProfileSelectorListe
 		config.add("spring/init.groovy");
 		config.add("spring/activation.xml");
 		config.add("spring/statistics.xml");
-		config.add("spring/production.xml");
+		config.add("spring/production.groovy");
 		config.add("spring/provider.xml");
 		config.add("spring/camera/camera-cognex-import.groovy");
 		config.add("spring/config.xml");
