@@ -117,19 +117,17 @@ public class AlertCameraTest {
 
 			@Override
 			protected MessageEvent getAlertMessage() {
-
 				return new MessageEvent("alert camera key");
 			}
 
 			@Override
 			public String getAlertName() {
-
 				return null;
 			}
 
 			@Override
 			protected int getThreshold() {
-				return 03;
+				return 3;
 			}
 
 			@Override
@@ -159,7 +157,7 @@ public class AlertCameraTest {
 
 		executeScheduledTask();
 
-		assertThat(count, equalTo(3));
+		assertThat(count, equalTo(1));
 	}
 
 	@Test
