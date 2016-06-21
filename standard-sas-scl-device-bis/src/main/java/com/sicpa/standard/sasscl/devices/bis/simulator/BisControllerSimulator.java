@@ -15,6 +15,8 @@ import com.sicpa.std.bis2.core.messages.RemoteMessages.SkusMessage;
 
 public class BisControllerSimulator implements IBisController {
 
+	private static final int CONFIDENCE_MAX = 1;
+
 	private static final Logger logger = LoggerFactory.getLogger(BisControllerSimulator.class);
 
 	private final List<IBisControllerListener> listeners = new ArrayList<>();
@@ -24,12 +26,15 @@ public class BisControllerSimulator implements IBisController {
 		if (!isConnected()) {
 			return;
 		}
+		RecognitionResultMessage msg = createRecognitionMessage(skuId);
+		listeners.forEach(l -> l.recognitionResultReceived(msg));
+	}
 
-		SkuMessage skuMsg = SkuMessage.newBuilder().setConfidence(1).setId(skuId).build();
+	private RecognitionResultMessage createRecognitionMessage(int skuId) {
+		SkuMessage skuMsg = SkuMessage.newBuilder().setConfidence(CONFIDENCE_MAX).setId(skuId).build();
 		RecognitionResultMessage recognitionMsg = RecognitionResultMessage.newBuilder().setHeightCategory(0)
 				.setConfidence(skuMsg).build();
-
-		listeners.forEach(l -> l.recognitionResultReceived(recognitionMsg));
+		return recognitionMsg;
 	}
 
 	@Override
