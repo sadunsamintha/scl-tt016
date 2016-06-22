@@ -32,6 +32,9 @@ import com.sicpa.standard.sasscl.messages.MessageEventKey.RemoteServer;
 import com.sicpa.standard.sasscl.messages.MessageEventKey.Simulator;
 import com.sicpa.standard.sasscl.messages.MessageEventKey.SkuCheck;
 import com.sicpa.standard.sasscl.messages.MessageEventKey.Storage;
+import com.sicpa.standard.sasscl.messages.MessageEventKey.SkuRecognition;
+
+;
 
 public class SASDefaultMessagesMapping extends DefaultMessagesMapping {
 	private static final Logger logger = LoggerFactory.getLogger(SASDefaultMessagesMapping.class);
@@ -167,9 +170,7 @@ public class SASDefaultMessagesMapping extends DefaultMessagesMapping {
 
 		addEntry(MAINTENACE.TOO_MANY_PRODUCTS_COUNTED_ERROR, "[MAINTENACE_01]", ERROR);
 
-		addEntry(BIS.BIS_UNKNOWN_SKU, "[BIS_03]", WARNING);
 		addEntry(BIS.BIS_ALERT, "[BIS_04]", WARNING);
-		addEntry(BIS.BIS_UNKNOWN_SKU_EXCEED_THRESHOLD, "[BIS_05]", WARNING);
 
 		addEntry(Printer.CHARGE_FAULT, "[PR_01]", ERROR_DEVICE);
 		addEntry(Printer.GUTTER_FAULT, "[PR_02]", ERROR_DEVICE);
@@ -269,6 +270,8 @@ public class SASDefaultMessagesMapping extends DefaultMessagesMapping {
 		addEntry(Coding.ERROR_GETTING_CODES_FROM_ENCODER, "[COD_02]", ERROR);
 		addEntry(Coding.INVALID_ENCODER, "[COD_03]", ERROR);
 		addEntry(Coding.FAILED_TO_PROVIDE_CODES, "[COD_04]", ERROR);
+
+		addEntry(SkuRecognition.UNEXPECTED_SKU_CHANGED, "[SKU_REC_01]", WARNING);
 	}
 
 	private void overrideMessageMapping(String key, String type) {

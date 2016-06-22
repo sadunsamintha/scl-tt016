@@ -1,19 +1,13 @@
-import com.sicpa.standard.client.common.utils.ConfigUtils
 import com.sicpa.standard.sasscl.devices.bis.BisAdapter
 import com.sicpa.standard.sasscl.devices.bis.controller.BisRemoteServer
-import com.sicpa.standard.sasscl.skureader.SkuFinder;
 
 
 beans{
 
 	bis(BisAdapter){ b->
+		b.parent=ref('bisParent')
 		b.scope='prototype'
 		controller = ref('bisRemoteServer')
-		blockProduction = props['bis.disconnected.production.block']
-		skuFinder=ref('skuFinder')
-		unknownSkuId=props['bis.unknownSkuId']
-		displayAlertMessage=props['bis.displayAlertMessage']
-		skuBisProvider=ref('skuBisProvider')
 	}
 
 	bisRemoteServer(BisRemoteServer){b->
@@ -22,10 +16,5 @@ beans{
 		ip=props['bis.ip']
 		port=props['bis.port']
 		connectionLifeCheckIntervalSec=props['bis.connectionLifeCheckInterval.sec']
-	}
-
-	skuFinder(SkuFinder){
-		skuListProvider=ref('skuListProvider')
-		productionParameters=ref('productionParameters')
 	}
 }

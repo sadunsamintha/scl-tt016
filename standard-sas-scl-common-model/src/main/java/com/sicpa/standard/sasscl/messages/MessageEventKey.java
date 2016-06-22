@@ -204,9 +204,11 @@ public interface MessageEventKey {
 	}
 
 	public static interface BIS {
-		String BIS_UNKNOWN_SKU = "bis.unknownSku.exceedThreshold";
 		String BIS_ALERT = "bis.alert";
-		String BIS_UNKNOWN_SKU_EXCEED_THRESHOLD = "bis.unknownSku.exceedWindowThreshold";
+	}
+
+	public static interface SkuRecognition {
+		String UNEXPECTED_SKU_CHANGED = "sku.recognition.unexpected.sku.changed";
 	}
 
 }
