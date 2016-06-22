@@ -182,4 +182,11 @@ public abstract class AbstractPlcAdaptor extends AbstractStartableDevice impleme
 			}
 		}
 	}
+
+	public void removeAllListener() {
+		synchronized (allPlcVariableListeners) {
+			allPlcVariableListeners.clear();
+			varListenersMap.clear();
+		}
+	}
 }

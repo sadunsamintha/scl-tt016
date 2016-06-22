@@ -114,6 +114,7 @@ public class PlcAdaptor extends AbstractPlcAdaptor implements IPlcControllerList
 	protected void doDisconnect() {
 		controller.shutdown();
 		fireDeviceStatusChanged(DeviceStatus.DISCONNECTED);
+		removeAllListener();
 	}
 
 	/**
@@ -180,7 +181,8 @@ public class PlcAdaptor extends AbstractPlcAdaptor implements IPlcControllerList
 		logger.info("PLC - execute request: {}", request.getDescription());
 		IPlcRequestExecutor executor = getRequestExecutor(request);
 		if (executor == null) {
-			throw new PlcAdaptorException(MessageFormat.format("No request action(s) defined for {0}", request.getDescription()));
+			throw new PlcAdaptorException(MessageFormat.format("No request action(s) defined for {0}",
+					request.getDescription()));
 		}
 		executor.execute(controller);
 	}
@@ -344,8 +346,8 @@ public class PlcAdaptor extends AbstractPlcAdaptor implements IPlcControllerList
 	public boolean isLineActive(int lineIndex) {
 		return getActiveLines().contains(lineIndex);
 	}
-	
-	private Collection<Integer> getActiveLines(){
+
+	private Collection<Integer> getActiveLines() {
 		return getActiveLines(null);
 	}
 
