@@ -1,24 +1,26 @@
 package com.sicpa.tt016.view.selection.stop;
 
+import static com.sicpa.tt016.controller.flow.TT016ActivityTrigger.TRG_STOP_REASON_SELECTED;
+import static com.sicpa.tt016.monitoring.system.TT016SystemEventType.PROD_STOP_REASON;
+import static com.sicpa.tt016.view.TT016ScreenFlowTriggers.STOP_PRODUCTION;
+import static com.sicpa.tt016.view.TT016ScreenFlowTriggers.STOP_PRODUCTION_REASON_SELECTED;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.i18n.Messages;
 import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState;
 import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowStateChangedEvent;
 import com.sicpa.standard.sasscl.controller.flow.FlowControl;
+import com.sicpa.standard.sasscl.controller.hardware.HardwareControllerStatus;
+import com.sicpa.standard.sasscl.controller.hardware.HardwareControllerStatusEvent;
 import com.sicpa.standard.sasscl.controller.view.flow.DefaultScreensFlow;
 import com.sicpa.standard.sasscl.monitoring.MonitoringService;
 import com.sicpa.standard.sasscl.monitoring.system.SystemEventLevel;
 import com.sicpa.standard.sasscl.monitoring.system.event.BasicSystemEvent;
 import com.sicpa.standard.sasscl.view.AbstractViewFlowController;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import static com.sicpa.tt016.controller.flow.TT016ActivityTrigger.TRG_STOP_REASON_SELECTED;
-import static com.sicpa.tt016.monitoring.system.TT016SystemEventType.PROD_STOP_REASON;
-import static com.sicpa.tt016.view.TT016ScreenFlowTriggers.STOP_PRODUCTION;
-import static com.sicpa.tt016.view.TT016ScreenFlowTriggers.STOP_PRODUCTION_REASON_SELECTED;
 
 public class StopReasonViewController extends AbstractViewFlowController implements IStopReasonListener {
 
@@ -27,6 +29,7 @@ public class StopReasonViewController extends AbstractViewFlowController impleme
 	private DefaultScreensFlow screensFlow;
 	private FlowControl flowControl;
 
+	private volatile HardwareControllerStatus status;
 
 	@Subscribe
 	public void handleStopProduction(ApplicationFlowStateChangedEvent event) {
@@ -36,13 +39,30 @@ public class StopReasonViewController extends AbstractViewFlowController impleme
 		}
 	}
 
+	@Subscribe
+	public void handleHardwareConnecting(HardwareControllerStatusEvent evt) {
+		status = evt.getStatus();
+	}
+
+	@Override
+	protected void displayView() {
+		if (status.equals(HardwareControllerStatus.CONNECTED)) {
+			super.displayView();
+		} else {
+			moveToNext();
+		}
+	}
+
 	@Override
 	public void stopReasonSelected(StopReason stopReason) {
 		logger.info(Messages.format("stopreason.key", Messages.get(stopReason.getKey())));
 
-		MonitoringService.addSystemEvent(new BasicSystemEvent(SystemEventLevel.INFO,
-				PROD_STOP_REASON, Messages.get(stopReason.getKey())));
+		MonitoringService.addSystemEvent(new BasicSystemEvent(SystemEventLevel.INFO, PROD_STOP_REASON, Messages
+				.get(stopReason.getKey())));
+		moveToNext();
+	}
 
+	private void moveToNext() {
 		screensFlow.moveToNext(STOP_PRODUCTION_REASON_SELECTED);
 		flowControl.moveToNextState(TRG_STOP_REASON_SELECTED);
 		EventBusService.post(new StopReasonSelectedEvent());

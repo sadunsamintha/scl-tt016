@@ -17,7 +17,7 @@ beans{
 		unknownSkuProvider=ref('unknownSkuProvider')
 	}
 
-	importBeans('spring/custo/tt016/tt016-view.xml')
+	importBeans('spring/custo/tt016/tt016View.xml')
 	importBeans('spring/offlineCounting.xml')
 
 	addAlias('bisCredentialProvider','remoteServer')
