@@ -5,7 +5,6 @@ import static com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState.STT
 import static com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState.STT_RECOVERING;
 
 import com.google.common.eventbus.Subscribe;
-import com.sicpa.standard.gui.utils.ThreadUtils;
 import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState;
 import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowStateChangedEvent;
 import com.sicpa.standard.sasscl.controller.flow.IFlowControl;

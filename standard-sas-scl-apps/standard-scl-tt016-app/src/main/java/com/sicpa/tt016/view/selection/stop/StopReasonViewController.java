@@ -9,7 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.eventbus.Subscribe;
-import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.i18n.Messages;
 import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState;
 import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowStateChangedEvent;
@@ -65,7 +64,6 @@ public class StopReasonViewController extends AbstractViewFlowController impleme
 	private void moveToNext() {
 		screensFlow.moveToNext(STOP_PRODUCTION_REASON_SELECTED);
 		flowControl.moveToNextState(TRG_STOP_REASON_SELECTED);
-		EventBusService.post(new StopReasonSelectedEvent());
 	}
 
 	public void setScreensFlow(DefaultScreensFlow screensFlow) {
