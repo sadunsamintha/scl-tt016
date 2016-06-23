@@ -317,5 +317,9 @@
 		<property name="hardwareController" ref="hardwareController" />
 	</bean>
 
+	<bean id="greyScreenHandler" class="com.sicpa.standard.sasscl.view.main.GreyScreenHandler">
+		<property name="mfController" ref="mainFrameController" />
+		<property name="flowControl" ref="flowControl" />
+	</bean>
 
 </beans>

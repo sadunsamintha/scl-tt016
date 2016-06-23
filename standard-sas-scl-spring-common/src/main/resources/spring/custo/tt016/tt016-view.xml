@@ -37,5 +37,10 @@
         <property name="snapshotView" ref="snapshotView" />
     </bean>
 
+	<bean id="greyScreenHandler" class="com.sicpa.tt016.view.TT016GreyScreenHandler">
+		<property name="mfController" ref="mainFrameController" />
+		<property name="flowControl" ref="flowControl" />
+		<property name="stopReasonControler" ref="stopReasonViewController" />
+	</bean>
 
 </beans>

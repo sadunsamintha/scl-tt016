@@ -1,6 +1,7 @@
 package com.sicpa.tt016.view.selection.stop;
 
 import com.google.common.eventbus.Subscribe;
+import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.i18n.Messages;
 import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState;
 import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowStateChangedEvent;
@@ -10,6 +11,7 @@ import com.sicpa.standard.sasscl.monitoring.MonitoringService;
 import com.sicpa.standard.sasscl.monitoring.system.SystemEventLevel;
 import com.sicpa.standard.sasscl.monitoring.system.event.BasicSystemEvent;
 import com.sicpa.standard.sasscl.view.AbstractViewFlowController;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,6 +45,7 @@ public class StopReasonViewController extends AbstractViewFlowController impleme
 
 		screensFlow.moveToNext(STOP_PRODUCTION_REASON_SELECTED);
 		flowControl.moveToNextState(TRG_STOP_REASON_SELECTED);
+		EventBusService.post(new StopReasonSelectedEvent());
 	}
 
 	public void setScreensFlow(DefaultScreensFlow screensFlow) {
