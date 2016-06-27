@@ -11,6 +11,7 @@ import com.sicpa.standard.crypto.exceptions.CryptoException;
 import com.sicpa.standard.sasscl.devices.remote.stdCrypto.ICryptoFieldsConfig;
 import com.sicpa.standard.sasscl.sicpadata.CryptographyException;
 import com.sicpa.standard.sasscl.sicpadata.generator.AbstractEncoder;
+import com.sicpa.standard.sasscl.sicpadata.generator.EncoderEmptyException;
 import com.sicpa.standard.sasscl.sicpadata.generator.IEncoder;
 import com.sicpa.tt018.interfaces.security.IAlbaniaEncoder;
 import com.sicpa.tt018.interfaces.security.dto.SequenceDTO;
@@ -51,6 +52,9 @@ public class AlbaniaEncoderWrapper extends AbstractEncoder implements IEncoder {
 		// load is needed after deserialized
 		loadPassword();
 		try {
+			if (currentIndex >= getAlbaniaEncoder().getCapacity()) {
+				throw new EncoderEmptyException();
+			}
 			// Generate next encoded code
 			return getAlbaniaEncoder().getCode(getNextSequenceValue());
 		} catch (final CryptoException e) {
