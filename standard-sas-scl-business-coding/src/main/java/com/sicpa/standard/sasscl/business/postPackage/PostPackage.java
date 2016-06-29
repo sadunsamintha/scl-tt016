@@ -57,13 +57,13 @@ public class PostPackage implements IPostPackage {
 	}
 
 	@Override
-	public List<Product> handleBadCode(Code code, Object receiver) {
-		return getModule(receiver).handleBadCode(code);
+	public List<Product> handleBadCode(Code code) {
+		return getModule(code.getSource()).handleBadCode(code);
 	}
 
 	@Override
-	public List<Product> handleGoodCode(Code code, Object receiver) {
-		return getModule(receiver).handleGoodCode(code);
+	public List<Product> handleGoodCode(Code code) {
+		return getModule(code.getSource()).handleGoodCode(code);
 	}
 
 	@Override

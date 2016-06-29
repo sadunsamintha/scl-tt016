@@ -92,14 +92,14 @@ public class ActivationTest {
 	@Test
 	public void receiveCodeTest() {
 
-		activation.receiveCameraCode(new CameraGoodCodeEvent(new Code("000"), cameraAdaptor));
+		activation.receiveCameraCode(new CameraGoodCodeEvent(new Code("000")));
 
 		// good code
 		Assert.assertThat(productsRepository.count, IsEqual.equalTo(1));
 		Assert.assertThat(productsRepository.pop(), IsNull.notNullValue());
 
 		// bad code
-		activation.receiveCameraCodeError(new CameraBadCodeEvent(new Code("001"), cameraAdaptor));
+		activation.receiveCameraCodeError(new CameraBadCodeEvent(new Code("001")));
 		Assert.assertThat(productsRepository.count, IsEqual.equalTo(2));
 		Assert.assertThat(productsRepository.pop(), IsNull.notNullValue());
 	}
@@ -107,7 +107,7 @@ public class ActivationTest {
 	@Test
 	public void updateProductionBatchTest() {
 
-		activation.receiveCameraCode(new CameraGoodCodeEvent(new Code("000"), cameraAdaptor));
+		activation.receiveCameraCode(new CameraGoodCodeEvent(new Code("000")));
 
 		String batchId = productsRepository.pop().getProductionBatchId();
 		Assert.assertThat(batchId, IsNull.notNullValue());

@@ -15,9 +15,9 @@ import com.sicpa.standard.sasscl.model.Product;
  */
 public interface IPostPackage extends ICodeReceiver {
 
-	List<Product> handleGoodCode(Code code, Object receiver);
+	List<Product> handleGoodCode(Code code);
 
-	List<Product> handleBadCode(Code code, Object receiver);
+	List<Product> handleBadCode(Code code);
 
 	void registerModule(IPostPackageBehavior behavior, List<IStartableDevice> relatedDevices);
 

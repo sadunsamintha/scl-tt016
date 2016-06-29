@@ -53,8 +53,7 @@ public class DuplicatedCodeTest {
 
 		// receive same camera code
 		for (int i = 1; i < 15; i++) {
-			this.task.receiveCameraCode(new CameraGoodCodeEvent(new Code("1001001001"), Mockito
-					.mock(ICameraAdaptor.class)));
+			this.task.receiveCameraCode(new CameraGoodCodeEvent(new Code("1001001001")));
 			this.count = i;
 			// stop the loop when the message event is triggered
 			if (model.getThreshold() == i) {

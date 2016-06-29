@@ -72,7 +72,7 @@ public abstract class ProductCountAlertTaskAbstractTest {
 
     private void receiveCameraCode(int numberOfCameraCodes) {
         for(int i =  0; i < numberOfCameraCodes; i++) {
-            task.receiveCameraCode(new CameraGoodCodeEvent(null, null));
+            task.receiveCameraCode(new CameraGoodCodeEvent(null));
         }
     }
 

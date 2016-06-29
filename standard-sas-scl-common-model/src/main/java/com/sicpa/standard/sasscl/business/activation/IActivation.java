@@ -19,6 +19,6 @@ public interface IActivation {
 	 * @param code
 	 * @param good
 	 */
-	void receiveCode(final Code code, final boolean good, ICameraAdaptor source);
+	void receiveCode(final Code code, final boolean good);
 
 }

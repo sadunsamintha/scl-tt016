@@ -58,9 +58,9 @@ public class Activation implements IActivation {
 	 *            true if the code is good, false otherwise
 	 */
 	@Override
-	public void receiveCode(Code code, boolean good, ICameraAdaptor source) {
+	public void receiveCode(Code code, boolean good) {
 
-		String cameraName = source.getName();
+		String cameraName = code.getSource();
 
 		logger.debug("Code received at {} = {} , Is good code = {}", new Object[] { cameraName, code, good });
 
@@ -78,7 +78,7 @@ public class Activation implements IActivation {
 			goodAfterPreAction = good;
 		}
 
-		Product product = null;
+		Product product;
 
 		if (activationBehaviorProvider.get() == null) {
 			logger.error("Activation behavior is null");
@@ -108,12 +108,12 @@ public class Activation implements IActivation {
 
 	@Subscribe
 	public synchronized void receiveCameraCode(CameraGoodCodeEvent evt) {
-		receiveCode(evt.getCode(), true, evt.getSource());
+		receiveCode(evt.getCode(), true);
 	}
 
 	@Subscribe
 	public synchronized void receiveCameraCodeError(CameraBadCodeEvent evt) {
-		receiveCode(evt.getCode(), false, evt.getSource());
+		receiveCode(evt.getCode(), false);
 	}
 
 	public void setPreActivationAction(IBeforeActivationAction preActivationAction) {

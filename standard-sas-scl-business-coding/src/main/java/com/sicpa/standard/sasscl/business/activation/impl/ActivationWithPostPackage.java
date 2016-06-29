@@ -23,20 +23,20 @@ public class ActivationWithPostPackage extends Activation {
 	}
 
 	@Override
-	public void receiveCode(Code code, boolean good, ICameraAdaptor source) {
+	public void receiveCode(Code code, boolean good) {
 		if (postPackage != null && postPackage.isEnabled()) {
 			List<Product> productsGeneratedByPostPackage;
 			if (good) {
-				productsGeneratedByPostPackage = postPackage.handleGoodCode(code, source);
-				super.receiveCode(code, good, source);
+				productsGeneratedByPostPackage = postPackage.handleGoodCode(code);
+				super.receiveCode(code, good);
 			} else {
-				productsGeneratedByPostPackage = postPackage.handleBadCode(code, source);
+				productsGeneratedByPostPackage = postPackage.handleBadCode(code);
 			}
 			for (Product p : productsGeneratedByPostPackage) {
 				fireNewProduct(p);
 			}
 		} else {
-			super.receiveCode(code, good, source);
+			super.receiveCode(code, good);
 		}
 	}
 

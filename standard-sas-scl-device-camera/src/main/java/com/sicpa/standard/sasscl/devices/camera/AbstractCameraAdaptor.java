@@ -15,12 +15,12 @@ public abstract class AbstractCameraAdaptor extends AbstractStartableDevice impl
 	}
 
 	protected void fireGoodCode(final String code) {
-		CameraGoodCodeEvent evt = new CameraGoodCodeEvent(new Code(code), this);
+		CameraGoodCodeEvent evt = new CameraGoodCodeEvent(new Code(code, getName()));
 		EventBusService.post(evt);
 	}
 
 	protected void fireBadCode(final String code) {
-		CameraBadCodeEvent evt = new CameraBadCodeEvent(new Code(code), this);
+		CameraBadCodeEvent evt = new CameraBadCodeEvent(new Code(code, getName()));
 		EventBusService.post(evt);
 	}
 
