@@ -28,7 +28,7 @@ public class TT016TrilightWarningCameraAlert {
 
     @Subscribe
     public void handleActionEventWarning(ActionEventWarning warning) {
-        if (warning.getKey().equals(MessageEventKey.Alert.TOO_MUCH_CAMERA_WARNING)) {
+        if (warning.getKey().equals(MessageEventKey.Alert.TOO_MANY_CAMERA_WARNING)) {
             logger.debug("Process too many bad codes warning event {} with params {}.", warning.getKey(), Arrays.toString(warning.getParams()));
             activateTrilightWarning();
         }

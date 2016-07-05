@@ -14,8 +14,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyObject;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -45,7 +43,7 @@ public class TT016TrilightWarningCameraAlertTest {
         when(plcProvider.get()).thenReturn(plcAdaptor);
 
         ActionEventWarning warning = new ActionEventWarning();
-        warning.setKey(MessageEventKey.Alert.TOO_MUCH_CAMERA_WARNING);
+        warning.setKey(MessageEventKey.Alert.TOO_MANY_CAMERA_WARNING);
         alert.handleActionEventWarning(warning);
 
         verify(reqJavaErrorRegisterVar, times(1)).setValue(TRILIGHT_BLINKING_YELLOW);
@@ -56,7 +54,7 @@ public class TT016TrilightWarningCameraAlertTest {
     @Test
     public void handleNoActionEventWarning() throws PlcAdaptorException {
         ActionEventWarning warning = new ActionEventWarning();
-        warning.setKey(MessageEventKey.Alert.TOO_MUCH_CAMERA_ERROR);
+        warning.setKey(MessageEventKey.Alert.TOO_MANY_CAMERA_ERROR);
         alert.handleActionEventWarning(warning);
 
         verify(reqJavaErrorRegisterVar, times(0)).setValue(TRILIGHT_BLINKING_YELLOW);

@@ -8,7 +8,7 @@ public class TT016CameraCountAlertTask extends CameraCountAlertTask {
 
     @Override
     protected MessageEvent getAlertMessage() {
-        return new MessageEvent(MessageEventKey.Alert.TOO_MUCH_CAMERA_WARNING);
+        return new MessageEvent(MessageEventKey.Alert.TOO_MANY_CAMERA_WARNING);
     }
 }
 

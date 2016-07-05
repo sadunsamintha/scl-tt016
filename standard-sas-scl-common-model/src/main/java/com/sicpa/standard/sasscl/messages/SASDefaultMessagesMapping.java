@@ -110,12 +110,12 @@ public class SASDefaultMessagesMapping extends DefaultMessagesMapping {
 		addEntry(PLC.PLC_ERR_TEMPERATURE_IJ_INK, "[PLC_62]", ERROR);
 		addEntry(PLC.PLC_ERR_DOOR_SWITCH_IJ_OPEN, "[PLC_63]", ERROR);
 
-		addEntry(Alert.TOO_MUCH_CAMERA_ERROR, "[ALT_01]", ERROR);
+		addEntry(Alert.TOO_MANY_CAMERA_ERROR, "[ALT_01]", ERROR);
 		addEntry(Alert.DUPLICATED_CODE, "[ALT_03]", ERROR);
 		addEntry(Alert.CAMERA_TRIGGER_TOO_FAST, "[ALT_04]", WARNING);
 		addEntry(Alert.TOO_MUCH_CAMERA_IDLE_TIME, "[ALT_05]", ERROR);
 		addEntry(Alert.PLC_ACTIVATION_CROSS_CHECK_FAILED, "[ALT_06]", ERROR);
-		addEntry(Alert.TOO_MUCH_CAMERA_WARNING, "[ALT_07]", WARNING);
+		addEntry(Alert.TOO_MANY_CAMERA_WARNING, "[ALT_07]", WARNING);
 
 
 		addEntry(Camera.CAMERA_FAIL_LOAD_JOB, "[CA_01]", ERROR);

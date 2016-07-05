@@ -31,7 +31,7 @@ public class CameraCountAlertTask extends AbstractScheduledBadCountAlertTask {
 
 	@Override
 	protected MessageEvent getAlertMessage() {
-		return new MessageEvent(MessageEventKey.Alert.TOO_MUCH_CAMERA_ERROR);
+		return new MessageEvent(MessageEventKey.Alert.TOO_MANY_CAMERA_ERROR);
 	}
 
 	@Subscribe
