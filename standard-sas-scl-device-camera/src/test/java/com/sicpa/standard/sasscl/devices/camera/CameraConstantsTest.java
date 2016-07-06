@@ -7,32 +7,42 @@ import org.junit.Test;
 
 public class CameraConstantsTest {
 
+
+    private static final String BLOB_ERROR_CODE_300 = "300";
+
+    private static final String BLOB_ERROR_CODE_100 = "100";
+
+    private static final String CAMERA_ERROR_CODE_0 = "0";
+
+    private static final String CAMERA_ERROR_CODE_1 = "-1";
+
+
     @Test
     public void cameraBlobErrorCode() {
         Code cameraBlobError = CameraConstants.getCameraBlobErrorCode();
-        Assert.assertEquals("100", cameraBlobError.getStringCode());
+        Assert.assertEquals(BLOB_ERROR_CODE_100, cameraBlobError.getStringCode());
     }
 
     @Test
     public void cameraErrorCode() {
         Code cameraError = CameraConstants.getCameraErrorCode();
-        Assert.assertEquals("0", cameraError.getStringCode());
+        Assert.assertEquals(CAMERA_ERROR_CODE_0, cameraError.getStringCode());
     }
 
     @Test
     public void setCameraBlobErrorCode() {
-        CameraConstants.setCameraBlobErrorCode("300");
+        CameraConstants.setCameraBlobErrorCode(BLOB_ERROR_CODE_300);
         Code cameraBlobError = CameraConstants.getCameraBlobErrorCode();
-        Assert.assertEquals("300", cameraBlobError.getStringCode());
-        CameraConstants.setCameraBlobErrorCode("100");
+        Assert.assertEquals(BLOB_ERROR_CODE_300, cameraBlobError.getStringCode());
+        CameraConstants.setCameraBlobErrorCode(BLOB_ERROR_CODE_100);
     }
 
     @Test
     public void setcameraErrorCode() {
-        CameraConstants.setCameraErrorCode("-1");
+        CameraConstants.setCameraErrorCode(CAMERA_ERROR_CODE_1);
         Code cameraError = CameraConstants.getCameraErrorCode();
-        Assert.assertEquals("-1", cameraError.getStringCode());
-        CameraConstants.setCameraErrorCode("0");
+        Assert.assertEquals(CAMERA_ERROR_CODE_1, cameraError.getStringCode());
+        CameraConstants.setCameraErrorCode(CAMERA_ERROR_CODE_0);
     }
 
 }
