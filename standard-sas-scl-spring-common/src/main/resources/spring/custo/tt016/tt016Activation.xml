@@ -7,7 +7,8 @@
     </bean>
 
     <bean id="productStatusMergerActivationBehavior"
-          class="com.sicpa.tt016.business.activation.ProductStatusMergerActivationBehavior">
+          class="com.sicpa.tt016.business.activation.ProductStatusMergerActivationBehavior"
+          parent="standardActivationBehavior">
         <property name="productionBatchProvider" ref="productionBatchProvider" />
         <property name="plcCameraResultIndexManager" ref="plcCameraResultIndexManager" />
     </bean>

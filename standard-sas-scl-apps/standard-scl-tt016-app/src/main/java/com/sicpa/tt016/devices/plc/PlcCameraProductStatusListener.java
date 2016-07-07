@@ -5,10 +5,14 @@ import com.sicpa.standard.sasscl.devices.plc.IPlcListener;
 import com.sicpa.standard.sasscl.devices.plc.PlcLineHelper;
 import com.sicpa.standard.sasscl.devices.plc.event.PlcEvent;
 import com.sicpa.standard.sasscl.provider.impl.PlcProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
 public class PlcCameraProductStatusListener implements IPlcListener {
+
+	private final static Logger logger = LoggerFactory.getLogger(PlcCameraProductStatusListener.class);
 
 	private PlcProvider plcProvider;
 	private String plcCameraProductStatusNtfVarName;
@@ -19,7 +23,9 @@ public class PlcCameraProductStatusListener implements IPlcListener {
 
 	@Override
 	public void onPlcEvent(PlcEvent event) {
-		EventBusService.post(PlcCameraResultParser.getPlcCameraResultEvent((String) event.getValue()));
+		logger.debug("PLC camera result received: {}", Integer.toHexString((Integer) event.getValue()));
+
+		EventBusService.post(PlcCameraResultParser.getPlcCameraResultEvent((Integer) event.getValue()));
 	}
 
 	@Override

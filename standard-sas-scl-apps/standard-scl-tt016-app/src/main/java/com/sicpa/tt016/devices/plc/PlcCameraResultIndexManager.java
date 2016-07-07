@@ -27,7 +27,7 @@ public class PlcCameraResultIndexManager {
 	public void syncPlcCameraResultIndex(ApplicationFlowStateChangedEvent event) {
 		if (event.getCurrentState().equals(STT_STARTING)) {
 			for (String var : PlcLineHelper.getLinesVariableName(plcCameraProductStatusNtfVarName)) {
-				previousIndex = readPlcVar(var);
+				previousIndex = PlcCameraResultParser.getPlcCameraResultIndex(readPlcVar(var));
 			}
 		}
 	}

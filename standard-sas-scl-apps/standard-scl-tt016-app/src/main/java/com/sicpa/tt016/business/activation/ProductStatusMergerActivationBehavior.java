@@ -6,6 +6,7 @@ import com.sicpa.standard.sasscl.business.activation.NewProductEvent;
 import com.sicpa.standard.sasscl.business.activation.impl.activationBehavior.standard.StandardActivationBehavior;
 import com.sicpa.standard.sasscl.model.Code;
 import com.sicpa.standard.sasscl.model.Product;
+import com.sicpa.standard.sasscl.model.ProductStatus;
 import com.sicpa.standard.sasscl.monitoring.MonitoringService;
 import com.sicpa.standard.sasscl.monitoring.system.event.BasicSystemEvent;
 import com.sicpa.standard.sasscl.provider.impl.ProductionBatchProvider;
@@ -16,7 +17,9 @@ import com.sicpa.tt016.model.TT016ProductStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.Queue;
 
 import static com.sicpa.standard.sasscl.model.ProductStatus.SENT_TO_PRINTER_WASTED;
@@ -51,8 +54,8 @@ public class ProductStatusMergerActivationBehavior extends StandardActivationBeh
 
 	@Subscribe
 	public void receivePlcCameraResult(PlcCameraResultEvent event) {
-		logger.debug("PLC camera result received: [index=" + event.getIndex() + ", decodingTime=" + event
-				.getDecodeTimeMs() + ", productStatus=" + event.getPlcCameraProductStatus().getDescription() + "]");
+		logger.debug("PLC camera result received: [index={}, decodingTime={}, productStatus={}]", event.getIndex(),
+				event.getDecodeTimeMs(), event.getPlcCameraProductStatus().getDescription());
 
 		synchronized (lock) {
 			insertMissingPlcCameraResultsIfNeeded(event.getIndex());
@@ -86,17 +89,31 @@ public class ProductStatusMergerActivationBehavior extends StandardActivationBeh
 		Product product = products.poll();
 		PlcCameraProductStatus plcCameraProductStatus = plcCameraProductStatuses.poll();
 
-		setProductAsEjectedIfPlcEjected(product, plcCameraProductStatus);
+		if (!isPlcCameraProductStatusNotDefined(plcCameraProductStatus)) {
+			if (isPlcCameraProductStatusEjected(plcCameraProductStatus)) {
+				setProductAsEjected(product);
+			} else if (!ProductStatusComparator.isEqual(plcCameraProductStatus, product.getStatus())) {
+				logger.warn("Product status from PLC and camera not matching! plc:{}, camera:{}",
+						plcCameraProductStatus.getDescription(), product.getStatus().toString());
+			}
+		}
+
 		product.setProductionBatchId(productionBatchProvider.get());
 		product.setQc(product.getCode().getSource());
 
 		fireNewProduct(product);
 	}
 
-	private void setProductAsEjectedIfPlcEjected(Product product, PlcCameraProductStatus plcCameraProductStatus) {
-		if (plcCameraProductStatus.equals(PlcCameraProductStatus.EJECTED_PRODUCER)) {
-			product.setStatus(TT016ProductStatus.EJECTED_PRODUCER);
-		}
+	private boolean isPlcCameraProductStatusEjected(PlcCameraProductStatus plcCameraProductStatus) {
+		return plcCameraProductStatus.equals(PlcCameraProductStatus.EJECTED_PRODUCER);
+	}
+
+	private boolean isPlcCameraProductStatusNotDefined(PlcCameraProductStatus plcCameraProductStatus) {
+		return plcCameraProductStatus.equals(PlcCameraProductStatus.NOT_DEFINED);
+	}
+
+	private void setProductAsEjected(Product product) {
+		product.setStatus(TT016ProductStatus.EJECTED_PRODUCER);
 	}
 
 	private void insertMissingPlcCameraResultsIfNeeded(int index) {
@@ -106,8 +123,7 @@ public class ProductStatusMergerActivationBehavior extends StandardActivationBeh
 			logger.warn("Missing PLC camera result! Number of results missing: " + indexDifference);
 
 			for (int i = 1; i <= indexDifference; i++) {
-				plcCameraProductStatuses.add(PlcCameraProductStatus.valueOf(PlcCameraProductStatus.NOT_DEFINED.getId()
-				));
+				plcCameraProductStatuses.add(PlcCameraProductStatus.NOT_DEFINED);
 			}
 		}
 	}
@@ -118,5 +134,22 @@ public class ProductStatusMergerActivationBehavior extends StandardActivationBeh
 
 	public void setPlcCameraResultIndexManager(PlcCameraResultIndexManager plcCameraResultIndexManager) {
 		this.plcCameraResultIndexManager = plcCameraResultIndexManager;
+	}
+
+	private static class ProductStatusComparator {
+
+		private static Map<PlcCameraProductStatus, ProductStatus> statusesMapping;
+
+		static {
+			statusesMapping = new HashMap<>(4);
+			statusesMapping.put(PlcCameraProductStatus.GOOD, ProductStatus.AUTHENTICATED);
+			statusesMapping.put(PlcCameraProductStatus.UNREADABLE, ProductStatus.UNREAD);
+			statusesMapping.put(PlcCameraProductStatus.NO_INK, ProductStatus.NO_INK);
+			statusesMapping.put(PlcCameraProductStatus.EJECTED_PRODUCER, TT016ProductStatus.EJECTED_PRODUCER);
+		}
+
+		public static boolean isEqual(PlcCameraProductStatus plcStatus, ProductStatus cameraStatus) {
+			return statusesMapping.get(plcStatus).equals(cameraStatus);
+		}
 	}
 }

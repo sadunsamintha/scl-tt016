@@ -153,7 +153,7 @@ beans {
 	plcMap['NTF_LINE_JAVA_CPT_UNREADABLES']=[v:LINE_NTF+'nJavaCpt_Unreadables' ,t:I ]
 	plcMap['NTF_LINE_JAVA_CPT_NO_INK_DETECTED']=[v:LINE_NTF+'nJavaCpt_NoInkDetected' ,t:I ]
 	plcMap['NTF_LINE_JAVA_CPT_ACQ_ERRORS']=[v:LINE_NTF+'nJavaCpt_AcquisitionErrors' ,t:I ]
-	plcMap['NTF_LINE_JAVA_PRODUCT_STATUS']=[v:LINE_NTF+'nDRSValueForJava' ,t:STR, l:8, lineNtf:'true']
+	plcMap['NTF_LINE_JAVA_PRODUCT_STATUS']=[v:LINE_NTF+'nDRSValueForJava' ,t:I, lineNtf:'true']
 
 
 	//CABINET PARAM
