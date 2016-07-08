@@ -1,9 +1,7 @@
 package com.sicpa.tt016.devices.plc;
 
 import com.sicpa.tt016.model.PlcCameraProductStatus;
-import com.sicpa.tt016.model.PlcCameraResultEvent;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.sicpa.tt016.model.event.PlcCameraResultEvent;
 
 import java.nio.ByteBuffer;
 

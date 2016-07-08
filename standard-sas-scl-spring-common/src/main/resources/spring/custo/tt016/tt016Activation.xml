@@ -6,6 +6,11 @@
           class="com.sicpa.tt016.business.activation.NoActionBeforeActivation">
     </bean>
 
+    <bean id="activation" class="com.sicpa.tt016.business.activation.TT016ActivationWithPostPackage">
+        <property name="activationBehaviorProvider" ref="activationBehaviorProvider" />
+        <property name="productionBatchProvider" ref="productionBatchProvider" />
+    </bean>
+
     <bean id="productStatusMergerActivationBehavior"
           class="com.sicpa.tt016.business.activation.ProductStatusMergerActivationBehavior"
           parent="standardActivationBehavior">

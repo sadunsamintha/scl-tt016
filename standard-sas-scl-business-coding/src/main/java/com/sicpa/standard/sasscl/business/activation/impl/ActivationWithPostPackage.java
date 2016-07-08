@@ -16,7 +16,7 @@ import com.sicpa.standard.sasscl.model.Product;
 
 public class ActivationWithPostPackage extends Activation {
 
-	private IPostPackage postPackage;
+	protected IPostPackage postPackage;
 
 	public ActivationWithPostPackage() {
 		super();

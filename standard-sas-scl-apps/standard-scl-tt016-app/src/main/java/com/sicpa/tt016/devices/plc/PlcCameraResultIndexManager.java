@@ -17,7 +17,7 @@ public class PlcCameraResultIndexManager {
 
 	private static int MIN_INDEX_VALUE = 0;
 	private static int MAX_INDEX_VALUE = 255;
-	private int previousIndex = 0;
+	protected int previousIndex = 0;
 
 	private PlcProvider plcProvider;
 

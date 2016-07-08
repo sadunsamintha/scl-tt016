@@ -1,4 +1,6 @@
-package com.sicpa.tt016.model;
+package com.sicpa.tt016.model.event;
+
+import com.sicpa.tt016.model.PlcCameraProductStatus;
 
 public class PlcCameraResultEvent {
 

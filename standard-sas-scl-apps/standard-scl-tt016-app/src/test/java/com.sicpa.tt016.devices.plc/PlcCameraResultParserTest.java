@@ -1,7 +1,7 @@
 package com.sicpa.tt016.devices.plc;
 
 import com.sicpa.tt016.model.PlcCameraProductStatus;
-import com.sicpa.tt016.model.PlcCameraResultEvent;
+import com.sicpa.tt016.model.event.PlcCameraResultEvent;
 import junit.framework.Assert;
 import org.junit.Test;
 
