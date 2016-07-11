@@ -72,6 +72,12 @@ public class TT016RemoteServices implements ITT016RemoteServices {
 	}
 
 	@Override
+	public boolean isRefeedAvailable() {
+		// let's mock this value temporary
+		return true;
+	}
+
+	@Override
 	@TimeoutLifeCheck
 	public boolean isAlive() {
 		logger.debug("remote server isalive called");

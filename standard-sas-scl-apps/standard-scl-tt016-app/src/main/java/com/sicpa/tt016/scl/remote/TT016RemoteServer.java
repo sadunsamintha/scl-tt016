@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
+import com.sicpa.tt016.refeed.TT016RefeedAvailabilityProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,9 +49,11 @@ public class TT016RemoteServer extends AbstractRemoteServer implements IBisCrede
 	private AbstractMasterConnector connector;
 	private IStorage storage;
 
+	private TT016RefeedAvailabilityProvider refeedAvailabilityProvider;
 	private SkuConverter skuConverter;
 	private final EncryptionConverter encryptionConverter = new EncryptionConverter();
 	private final ProductionDataConverter productionDataConverter = new ProductionDataConverter();
+
 
 	public TT016RemoteServer() {
 	}
@@ -66,7 +69,7 @@ public class TT016RemoteServer extends AbstractRemoteServer implements IBisCrede
 			return null;
 		}
 		try {
-			return skuConverter.convert(remoteServices.getSkuList());
+			return skuConverter.convert(remoteServices.getSkuList(), refeedAvailabilityProvider.isRefeedAvailable());
 		} catch (InternalException e) {
 			throw new RemoteServerException(e);
 		}
@@ -242,4 +245,10 @@ public class TT016RemoteServer extends AbstractRemoteServer implements IBisCrede
 	public String getPassword() {
 		return remoteServices.getBisTrainerPassword(getUserName());
 	}
+
+	public void setRefeedAvailabilityProvider(TT016RefeedAvailabilityProvider refeedAvailabilityProvider) {
+		this.refeedAvailabilityProvider = refeedAvailabilityProvider;
+	}
+
+
 }

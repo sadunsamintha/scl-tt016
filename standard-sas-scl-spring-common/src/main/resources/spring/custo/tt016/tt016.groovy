@@ -1,4 +1,6 @@
 import com.sicpa.tt016.scl.TT016Bootstrap
+import com.sicpa.tt016.refeed.TT016RefeedAvailabilityProvider
+
 
 beans{
 
@@ -15,10 +17,17 @@ beans{
 		stopReasonViewController=ref('stopReasonViewController')
 		codeTypeId=props['codeTypeId']
 		unknownSkuProvider=ref('unknownSkuProvider')
+		tt016RemoteServices=ref('remoteServices')
 	}
 
 	importBeans('spring/custo/tt016/tt016View.xml')
 	importBeans('spring/offlineCounting.xml')
 
 	addAlias('bisCredentialProvider','remoteServer')
+
+
+	refeedAvailabilityProvider(TT016RefeedAvailabilityProvider){
+		isRefeedAvailableInRemoteServer=props['refeedAvailable']
+		isHeuftSystem=props['heuftSystem']
+	}
 }
