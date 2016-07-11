@@ -64,7 +64,7 @@ public class TT016Bootstrap extends Bootstrap {
 	private void saveIsRefeedAvailable(boolean isRefeedAvailable) {
 		try {
 			File globalPropertiesFile = new ClassPathResource(ConfigUtilEx.GLOBAL_PROPERTIES_PATH).getFile();
-			PropertiesUtils.savePropertiesKeepOrderAndComment(globalPropertiesFile, "isRefeedAvailable", Boolean.toString(isRefeedAvailable));
+			PropertiesUtils.savePropertiesKeepOrderAndComment(globalPropertiesFile, "refeedAvailable", Boolean.toString(isRefeedAvailable));
 		} catch (Exception ex) {
 			logger.error("Failed to save IsRefeedAvailable property", ex);
 		}
