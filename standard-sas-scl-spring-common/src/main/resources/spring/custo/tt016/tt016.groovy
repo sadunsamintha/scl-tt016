@@ -4,6 +4,8 @@ import com.sicpa.tt016.scl.TT016Bootstrap
 
 beans{
 	def serverBehavior=props['remoteServer.behavior'].toUpperCase()
+	def plcBehavior=props['plc.behavior'].toUpperCase()
+	def cameraBehavior=props['camera.behavior'].toUpperCase()
 
 	if(serverBehavior == "STANDARD") {
 		importBeans('spring/custo/tt016/tt016-server.groovy')
@@ -20,9 +22,11 @@ beans{
 		plcCameraResultIndexManager=ref('plcCameraResultIndexManager')
 	}
 
-	addAlias('cameraSimulatorControllerAlias', 'cameraSimulatorController')
-	cameraSimulatorController(TT016CameraSimulatorController){ b->
-		b.parent=ref('cameraSimulatorControllerAlias')
+	if (plcBehavior == "SIMULATOR" && cameraBehavior == "SIMULATOR") {
+		addAlias('cameraSimulatorControllerAlias', 'cameraSimulatorController')
+		cameraSimulatorController(TT016CameraSimulatorController){ b->
+			b.parent=ref('cameraSimulatorControllerAlias')
+		}
 	}
 
 	importBeans('spring/custo/tt016/tt016Plc.xml')
