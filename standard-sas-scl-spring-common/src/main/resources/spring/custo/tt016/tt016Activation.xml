@@ -11,11 +11,4 @@
         <property name="productionBatchProvider" ref="productionBatchProvider" />
     </bean>
 
-    <bean id="productStatusMergerActivationBehavior"
-          class="com.sicpa.tt016.business.activation.ProductStatusMergerActivationBehavior"
-          parent="standardActivationBehavior">
-        <property name="productionBatchProvider" ref="productionBatchProvider" />
-        <property name="plcCameraResultIndexManager" ref="plcCameraResultIndexManager" />
-    </bean>
-
 </beans>

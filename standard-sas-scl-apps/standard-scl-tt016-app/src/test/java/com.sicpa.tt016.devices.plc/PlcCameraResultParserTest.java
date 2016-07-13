@@ -29,9 +29,9 @@ public class PlcCameraResultParserTest {
 	public void plcCameraResultGoodArgument3() {
 		PlcCameraResultEvent event = PlcCameraResultParser.getPlcCameraResultEvent(0x788d5603);
 
-		Assert.assertEquals(255, event.getIndex());
-		Assert.assertEquals(1, event.getDecodeTimeMs());
-		Assert.assertEquals(PlcCameraProductStatus.GOOD, event.getPlcCameraProductStatus());
+		Assert.assertEquals(141, event.getIndex());
+		Assert.assertEquals(86, event.getDecodeTimeMs());
+		Assert.assertEquals(PlcCameraProductStatus.NO_INK, event.getPlcCameraProductStatus());
 	}
 
 	@Test

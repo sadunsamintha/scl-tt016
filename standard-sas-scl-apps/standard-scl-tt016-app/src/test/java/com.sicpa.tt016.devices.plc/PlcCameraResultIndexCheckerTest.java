@@ -57,5 +57,6 @@ public class PlcCameraResultIndexCheckerTest {
 		plcCameraResultIndexManager.setPreviousIndex(255);
 
 		Assert.assertEquals(0, plcCameraResultIndexManager.getIndexDifference(255));
+		Assert.assertEquals(255, plcCameraResultIndexManager.getPreviousIndex());
 	}
 }

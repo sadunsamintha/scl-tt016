@@ -36,6 +36,4 @@ public class PlcCameraResultParser {
 
 		return plcCameraResults[1] & 0xFF;
 	}
-
-
 }

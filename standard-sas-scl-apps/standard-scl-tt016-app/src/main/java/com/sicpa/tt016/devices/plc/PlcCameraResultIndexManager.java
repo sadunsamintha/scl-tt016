@@ -26,8 +26,12 @@ public class PlcCameraResultIndexManager {
 	@Subscribe
 	public void syncPlcCameraResultIndex(ApplicationFlowStateChangedEvent event) {
 		if (event.getCurrentState().equals(STT_STARTING)) {
-			for (String var : PlcLineHelper.getLinesVariableName(plcCameraProductStatusNtfVarName)) {
+			String var = PlcLineHelper.getLinesVariableName(plcCameraProductStatusNtfVarName).get(0);
+
+			try {
 				previousIndex = PlcCameraResultParser.getPlcCameraResultIndex(readPlcVar(var));
+			} catch (Exception e) {
+				previousIndex = 0;
 			}
 		}
 	}
@@ -35,6 +39,7 @@ public class PlcCameraResultIndexManager {
 	/**
 	 * Method that returns the difference between the current supplied index and the previous one. Each call to this
 	 * method will update the previous index by one.
+	 *
 	 * @param index
 	 * @return
 	 */
@@ -45,19 +50,19 @@ public class PlcCameraResultIndexManager {
 
 		if (index > previousIndex) {
 			indexDifference = index - previousIndex;
+			updatePreviousIndex(index);
 		} else if (index < previousIndex) {
 			indexDifference = (MAX_INDEX_VALUE - ((previousIndex - index) - 1));
+			updatePreviousIndex(index);
 		} else {
 			indexDifference = 0;
 		}
 
-		updatePreviousIndex();
-
 		return indexDifference;
 	}
 
-	private int updatePreviousIndex() {
-		return previousIndex == MAX_INDEX_VALUE ? MIN_INDEX_VALUE : previousIndex++;
+	private void updatePreviousIndex(int index) {
+		previousIndex = (previousIndex == MAX_INDEX_VALUE) ? MIN_INDEX_VALUE : index;
 	}
 
 	private void checkIndexWithinRange(int index) {
@@ -70,7 +75,7 @@ public class PlcCameraResultIndexManager {
 		try {
 			return plcProvider.get().read(PlcVariable.createInt32Var(varName));
 		} catch (PlcAdaptorException e) {
-			logger.error("Couldn't read PLC var: var");
+			logger.error("Couldn't read PLC var: {}", varName);
 		}
 
 		return 0;
@@ -86,5 +91,9 @@ public class PlcCameraResultIndexManager {
 
 	public void setPlcCameraProductStatusNtfVarName(String plcCameraProductStatusNtfVarName) {
 		this.plcCameraProductStatusNtfVarName = plcCameraProductStatusNtfVarName;
+	}
+
+	public int getPreviousIndex() {
+		return previousIndex;
 	}
 }

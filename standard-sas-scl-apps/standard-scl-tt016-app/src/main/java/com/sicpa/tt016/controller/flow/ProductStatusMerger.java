@@ -3,6 +3,7 @@ package com.sicpa.tt016.controller.flow;
 import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.sasscl.business.activation.NewProductEvent;
+import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowStateChangedEvent;
 import com.sicpa.standard.sasscl.model.Product;
 import com.sicpa.standard.sasscl.model.ProductStatus;
 import com.sicpa.tt016.devices.plc.PlcCameraResultIndexManager;
@@ -17,6 +18,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
+
+import static com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState.STT_STARTING;
 
 public class ProductStatusMerger {
 
@@ -52,6 +55,22 @@ public class ProductStatusMerger {
 
 			if (isCameraStatusAvailable()) {
 				mergeProductStatuses();
+			}
+		}
+	}
+
+	@Subscribe
+	public void flushProductAndPlcCameraProductStatusesQueues(ApplicationFlowStateChangedEvent event) {
+		if (event.getCurrentState().equals(STT_STARTING)) {
+			if (!products.isEmpty()) {
+				logger.warn("Removed {} elements from \"products\" queue", products.size());
+				products.clear();
+			}
+
+			if (!plcCameraProductStatuses.isEmpty()) {
+				logger.warn("Removed {} elements from \"plc camera product statuses\" queue",
+						plcCameraProductStatuses.size());
+				plcCameraProductStatuses.clear();
 			}
 		}
 	}
