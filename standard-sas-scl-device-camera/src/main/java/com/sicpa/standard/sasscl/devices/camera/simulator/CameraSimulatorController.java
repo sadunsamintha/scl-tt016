@@ -493,17 +493,17 @@ public class CameraSimulatorController implements ICognexCameraController<Camera
 
 	@Override
 	public void writeAliasValueInt(String alias, int cellValue) throws CameraException {
-
+		logger.info("writeAliasValueInt {}={}", alias, "" + cellValue);
 	}
 
 	@Override
 	public void writeAliasValueString(String alias, String cellValue) throws CameraException {
-
+		logger.info("writeAliasValueString {}={}", alias, cellValue);
 	}
 
 	@Override
 	public void writeAliasValue(String alias, String cellValue) throws CameraException {
-
+		logger.info("writeAliasValue {}={}", alias, cellValue);
 	}
 
 	@Override

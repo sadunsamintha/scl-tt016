@@ -24,5 +24,6 @@ beans{
 		b.scope='prototype'
 		productionParameters=ref('productionParameters')
 		cameraJobFilesConfig=ref('cameraJobFilesConfig')
+		cameraJobParametersProvider=ref('cameraJobParametersProvider')
 	}
 }

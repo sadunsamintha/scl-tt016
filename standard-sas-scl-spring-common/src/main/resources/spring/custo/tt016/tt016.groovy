@@ -1,5 +1,6 @@
 import com.sicpa.tt016.scl.TT016Bootstrap
 
+
 beans{
 
 	def serverBehavior=props['remoteServer.behavior'].toUpperCase()
@@ -17,8 +18,10 @@ beans{
 		unknownSkuProvider=ref('unknownSkuProvider')
 	}
 
-	importBeans('spring/custo/tt016/tt016View.xml')
+	importBeans('spring/custo/tt016/tt016-view.xml')
 	importBeans('spring/offlineCounting.xml')
 
 	addAlias('bisCredentialProvider','remoteServer')
+
+	importBeans('spring/custo/tt016/tt016-camera.groovy')
 }
