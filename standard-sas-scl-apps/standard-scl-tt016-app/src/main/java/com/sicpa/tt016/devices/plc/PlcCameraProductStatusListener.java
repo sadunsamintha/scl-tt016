@@ -7,6 +7,7 @@ import com.sicpa.standard.sasscl.devices.plc.IPlcListener;
 import com.sicpa.standard.sasscl.devices.plc.PlcLineHelper;
 import com.sicpa.standard.sasscl.devices.plc.event.PlcEvent;
 import com.sicpa.standard.sasscl.provider.impl.PlcProvider;
+import com.sicpa.tt016.model.event.PlcCameraResultEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,7 +34,8 @@ public class PlcCameraProductStatusListener implements IPlcListener {
 		if (isProductionStartingOrStarted.get()) {
 			logger.debug("PLC camera result received: {}", Integer.toHexString((Integer) event.getValue()));
 
-			EventBusService.post(PlcCameraResultParser.getPlcCameraResultEvent((Integer) event.getValue()));
+			EventBusService.post(new PlcCameraResultEvent(PlcCameraResultParser.getPlcCameraResultEvent((Integer) event
+					.getValue())));
 		}
 	}
 

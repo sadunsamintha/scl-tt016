@@ -1,35 +1,21 @@
 package com.sicpa.tt016.model.event;
 
 import com.sicpa.tt016.model.PlcCameraProductStatus;
+import com.sicpa.tt016.model.PlcCameraResult;
 
 public class PlcCameraResultEvent {
 
-	private int encryptedCodeLastByte;
-	private int index;
-	private int decodeTimeMs;
-	private PlcCameraProductStatus plcCameraProductStatus;
+	private PlcCameraResult plcCameraResult;
 
-	public PlcCameraResultEvent(int encryptedCodeLastByte, int index, int decodeTimeMs, PlcCameraProductStatus
-			plcCameraProductStatus) {
-		this.encryptedCodeLastByte = encryptedCodeLastByte;
-		this.index = index;
-		this.decodeTimeMs = decodeTimeMs;
-		this.plcCameraProductStatus = plcCameraProductStatus;
+	public PlcCameraResultEvent(PlcCameraResult plcCameraResult) {
+		this.plcCameraResult = plcCameraResult;
 	}
 
-	public int getEncryptedCodeLastByte() {
-		return encryptedCodeLastByte;
+	public PlcCameraResult getPlcCameraResult() {
+		return plcCameraResult;
 	}
 
-	public int getIndex() {
-		return index;
-	}
-
-	public int getDecodeTimeMs() {
-		return decodeTimeMs;
-	}
-
-	public PlcCameraProductStatus getPlcCameraProductStatus() {
-		return plcCameraProductStatus;
+	public void setPlcCameraResult(PlcCameraResult plcCameraResult) {
+		this.plcCameraResult = plcCameraResult;
 	}
 }

@@ -1,6 +1,7 @@
 package com.sicpa.tt016.devices.plc;
 
 import com.sicpa.tt016.model.PlcCameraProductStatus;
+import com.sicpa.tt016.model.PlcCameraResult;
 import com.sicpa.tt016.model.event.PlcCameraResultEvent;
 
 import java.nio.ByteBuffer;
@@ -19,7 +20,7 @@ public class PlcCameraResultParser {
 	 *                        the result; BB is the decoding time in milliseconds and CC is the product status.
 	 * @return The instance representing the PLC camera result
 	 */
-	public static PlcCameraResultEvent getPlcCameraResultEvent(int plcCameraResult) {
+	public static PlcCameraResult getPlcCameraResultEvent(int plcCameraResult) {
 		byte[] plcCameraResults = ByteBuffer.allocate(4).putInt(plcCameraResult).array();
 
 		int encryptedCodeLastByte = plcCameraResults[0] & 0xFF;
@@ -27,7 +28,7 @@ public class PlcCameraResultParser {
 		int decodingTime = plcCameraResults[2] & 0xFF;
 		int productStatus = plcCameraResults[3] & 0xFF;
 
-		return new PlcCameraResultEvent(encryptedCodeLastByte, index, decodingTime, PlcCameraProductStatus.valueOf
+		return new PlcCameraResult(encryptedCodeLastByte, index, decodingTime, PlcCameraProductStatus.valueOf
 				(productStatus));
 	}
 

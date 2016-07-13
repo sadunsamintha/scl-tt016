@@ -8,9 +8,10 @@ import com.sicpa.standard.sasscl.model.Product;
 import com.sicpa.standard.sasscl.model.ProductStatus;
 import com.sicpa.tt016.devices.plc.PlcCameraResultIndexManager;
 import com.sicpa.tt016.model.PlcCameraProductStatus;
+import com.sicpa.tt016.model.PlcCameraResult;
+import com.sicpa.tt016.model.TT016ProductStatus;
 import com.sicpa.tt016.model.event.PlcCameraResultEvent;
 import com.sicpa.tt016.model.event.TT016NewProductEvent;
-import com.sicpa.tt016.model.TT016ProductStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,7 +26,7 @@ public class ProductStatusMerger {
 
 	private static final Logger logger = LoggerFactory.getLogger(ProductStatusMerger.class);
 
-	private Queue<PlcCameraProductStatus> plcCameraProductStatuses = new LinkedList<>();
+	private Queue<PlcCameraResult> plcCameraResults = new LinkedList<>();
 	private Queue<Product> products = new LinkedList<>();
 
 	private PlcCameraResultIndexManager plcCameraResultIndexManager;
@@ -45,13 +46,16 @@ public class ProductStatusMerger {
 
 	@Subscribe
 	public void receivePlcCameraResult(PlcCameraResultEvent event) {
-		logger.debug("PLC camera result received: [index={}, decodingTime={}, productStatus={}]", event.getIndex(),
-				event.getDecodeTimeMs(), event.getPlcCameraProductStatus().getDescription());
+		PlcCameraResult plcCameraResult = event.getPlcCameraResult();
+
+		logger.debug("PLC camera result received: [index={}, decodingTime={}, productStatus={}]", plcCameraResult
+						.getIndex(), plcCameraResult.getDecodeTimeMs(), plcCameraResult.getPlcCameraProductStatus()
+				.getDescription());
 
 		synchronized (lock) {
-			insertMissingPlcCameraResultsIfNeeded(event.getIndex());
+			insertMissingPlcCameraResultsIfNeeded(plcCameraResult.getIndex());
 
-			plcCameraProductStatuses.add(event.getPlcCameraProductStatus());
+			plcCameraResults.add(plcCameraResult);
 
 			if (isCameraStatusAvailable()) {
 				mergeProductStatuses();
@@ -67,10 +71,10 @@ public class ProductStatusMerger {
 				products.clear();
 			}
 
-			if (!plcCameraProductStatuses.isEmpty()) {
+			if (!plcCameraResults.isEmpty()) {
 				logger.warn("Removed {} elements from \"plc camera product statuses\" queue",
-						plcCameraProductStatuses.size());
-				plcCameraProductStatuses.clear();
+						plcCameraResults.size());
+				plcCameraResults.clear();
 			}
 		}
 	}
@@ -90,12 +94,13 @@ public class ProductStatusMerger {
 	}
 
 	private boolean isPlcCameraStatusAvailable() {
-		return !plcCameraProductStatuses.isEmpty();
+		return !plcCameraResults.isEmpty();
 	}
 
 	private void mergeProductStatuses() {
 		Product product = products.poll();
-		PlcCameraProductStatus plcCameraProductStatus = plcCameraProductStatuses.poll();
+		PlcCameraResult plcCameraResult = plcCameraResults.poll();
+		PlcCameraProductStatus plcCameraProductStatus = plcCameraResult.getPlcCameraProductStatus();
 
 		if (!isPlcCameraProductStatusNotDefined(plcCameraProductStatus)) {
 			if (isPlcCameraProductStatusEjected(plcCameraProductStatus)) {
@@ -128,8 +133,16 @@ public class ProductStatusMerger {
 			logger.warn("Missing PLC camera result! Number of results missing: " + indexDifference);
 
 			for (int i = 1; i <= indexDifference; i++) {
-				plcCameraProductStatuses.add(PlcCameraProductStatus.NOT_DEFINED);
+				plcCameraResults.add(new PlcCameraResult(0, 0, 0, PlcCameraProductStatus.NOT_DEFINED));
 			}
+		}
+	}
+
+	private static class CodeComparator {
+		public static boolean isEqual(String code, int lastByteEncryptedCode) {
+			byte[] codeBytes = code.getBytes();
+
+			return ((int) codeBytes[codeBytes.length - 1]) == lastByteEncryptedCode;
 		}
 	}
 

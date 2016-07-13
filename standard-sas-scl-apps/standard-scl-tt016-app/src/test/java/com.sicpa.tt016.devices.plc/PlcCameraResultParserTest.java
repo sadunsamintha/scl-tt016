@@ -1,6 +1,7 @@
 package com.sicpa.tt016.devices.plc;
 
 import com.sicpa.tt016.model.PlcCameraProductStatus;
+import com.sicpa.tt016.model.PlcCameraResult;
 import com.sicpa.tt016.model.event.PlcCameraResultEvent;
 import junit.framework.Assert;
 import org.junit.Test;
@@ -9,29 +10,29 @@ public class PlcCameraResultParserTest {
 
 	@Test
 	public void plcCameraResultGoodArgument1() {
-		PlcCameraResultEvent event = PlcCameraResultParser.getPlcCameraResultEvent(0x00AABB02);
+		PlcCameraResult plcCameraResult = PlcCameraResultParser.getPlcCameraResultEvent(0x00AABB02);
 
-		Assert.assertEquals(170, event.getIndex());
-		Assert.assertEquals(187, event.getDecodeTimeMs());
-		Assert.assertEquals(PlcCameraProductStatus.UNREADABLE, event.getPlcCameraProductStatus());
+		Assert.assertEquals(170, plcCameraResult.getIndex());
+		Assert.assertEquals(187, plcCameraResult.getDecodeTimeMs());
+		Assert.assertEquals(PlcCameraProductStatus.UNREADABLE, plcCameraResult.getPlcCameraProductStatus());
 	}
 
 	@Test
 	public void plcCameraResultGoodArgument2() {
-		PlcCameraResultEvent event = PlcCameraResultParser.getPlcCameraResultEvent(0x0010101);
+		PlcCameraResult plcCameraResult = PlcCameraResultParser.getPlcCameraResultEvent(0x0010101);
 
-		Assert.assertEquals(1, event.getIndex());
-		Assert.assertEquals(1, event.getDecodeTimeMs());
-		Assert.assertEquals(PlcCameraProductStatus.GOOD, event.getPlcCameraProductStatus());
+		Assert.assertEquals(1, plcCameraResult.getIndex());
+		Assert.assertEquals(1, plcCameraResult.getDecodeTimeMs());
+		Assert.assertEquals(PlcCameraProductStatus.GOOD, plcCameraResult.getPlcCameraProductStatus());
 	}
 
 	@Test
 	public void plcCameraResultGoodArgument3() {
-		PlcCameraResultEvent event = PlcCameraResultParser.getPlcCameraResultEvent(0x788d5603);
+		PlcCameraResult plcCameraResult = PlcCameraResultParser.getPlcCameraResultEvent(0x788d5603);
 
-		Assert.assertEquals(141, event.getIndex());
-		Assert.assertEquals(86, event.getDecodeTimeMs());
-		Assert.assertEquals(PlcCameraProductStatus.NO_INK, event.getPlcCameraProductStatus());
+		Assert.assertEquals(141, plcCameraResult.getIndex());
+		Assert.assertEquals(86, plcCameraResult.getDecodeTimeMs());
+		Assert.assertEquals(PlcCameraProductStatus.NO_INK, plcCameraResult.getPlcCameraProductStatus());
 	}
 
 	@Test

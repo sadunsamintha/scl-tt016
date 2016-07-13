@@ -6,6 +6,7 @@ import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowStateChangedEven
 import com.sicpa.standard.sasscl.devices.camera.simulator.CameraSimulatorConfig;
 import com.sicpa.standard.sasscl.devices.camera.simulator.CameraSimulatorController;
 import com.sicpa.tt016.devices.plc.PlcCameraResultParser;
+import com.sicpa.tt016.model.PlcCameraResult;
 import com.sicpa.tt016.model.event.PlcCameraResultEvent;
 
 import java.nio.ByteBuffer;
@@ -22,7 +23,7 @@ public class TT016CameraSimulatorController extends CameraSimulatorController {
 	}
 
 	//byte order: last byte of encrypted code, index, decoding time, product status
-	private byte[] plcCameraResult = new byte[] {0x00, 0x00, 0x00, 0x00};
+	private byte[] plcCameraResultBytes = new byte[] {0x00, 0x00, 0x00, 0x00};
 
 	@Override
 	public void fireGoodCode(String code) {
@@ -39,18 +40,18 @@ public class TT016CameraSimulatorController extends CameraSimulatorController {
 	@Subscribe
 	public void resetPlcCameraResultIndex(ApplicationFlowStateChangedEvent event) {
 		if (event.getCurrentState().equals(STT_STARTING)) {
-			plcCameraResult[1] = 0x00;
+			plcCameraResultBytes[1] = 0x00;
 		}
 	}
 
 	private void sendPlcCameraResult(boolean valid) {
-		plcCameraResult[3] = valid ? (byte) 0x01 : (byte) 0x02;
+		plcCameraResultBytes[3] = valid ? (byte) 0x01 : (byte) 0x02;
 
-		PlcCameraResultEvent event = PlcCameraResultParser.getPlcCameraResultEvent(
-				ByteBuffer.wrap(plcCameraResult).getInt());
+		PlcCameraResult plcCameraResult = PlcCameraResultParser.getPlcCameraResultEvent(ByteBuffer.wrap
+				(plcCameraResultBytes).getInt());
 
-		plcCameraResult[1]++;
+		plcCameraResultBytes[1]++;
 
-		EventBusService.post(event);
+		EventBusService.post(new PlcCameraResultEvent(plcCameraResult));
 	}
 }
