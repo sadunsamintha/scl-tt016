@@ -18,6 +18,7 @@ beans{
 		codeTypeId=props['codeTypeId']
 		unknownSkuProvider=ref('unknownSkuProvider')
 		tt016RemoteServices=ref('remoteServices')
+		refeedAvailabilityProvider=ref('refeedAvailabilityProvider')
 	}
 
 	importBeans('spring/custo/tt016/tt016View.xml')
