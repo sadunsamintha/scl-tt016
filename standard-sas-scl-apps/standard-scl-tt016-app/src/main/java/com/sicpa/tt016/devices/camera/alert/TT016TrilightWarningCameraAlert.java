@@ -4,6 +4,7 @@ import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.plc.value.IPlcVariable;
 import com.sicpa.standard.sasscl.devices.plc.IPlcParamSender;
 import com.sicpa.standard.sasscl.devices.plc.PlcAdaptorException;
+import com.sicpa.standard.sasscl.messages.ActionEventError;
 import com.sicpa.standard.sasscl.messages.ActionEventWarning;
 import com.sicpa.standard.sasscl.messages.MessageEventKey;
 import com.sicpa.standard.sasscl.provider.impl.PlcProvider;
@@ -25,11 +26,10 @@ public class TT016TrilightWarningCameraAlert {
     private final int TRILIGHT_BLINKING_YELLOW = 2;
 
 
-
     @Subscribe
     public void handleActionEventWarning(ActionEventWarning warning) {
-        if (warning.getKey().equals(MessageEventKey.Alert.TOO_MANY_CAMERA_WARNING)) {
-            logger.debug("Process too many bad codes warning event {} with params {}.", warning.getKey(), Arrays.toString(warning.getParams()));
+        if (warning.getKey().equals(MessageEventKey.Alert.TOO_MANY_CAMERA_ERROR)) {
+            logger.debug("Process too many bad codes error event {} with params {}.", warning.getKey(), Arrays.toString(warning.getParams()));
             activateTrilightWarning();
         }
     }
