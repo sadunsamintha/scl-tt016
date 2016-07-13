@@ -15,6 +15,7 @@ import com.sicpa.standard.camera.controller.model.ImageRetrievalType;
 import com.sicpa.standard.camera.controller.model.SimulatorSendCodeMode;
 import com.sicpa.standard.camera.parser.CameraCodeParser;
 import com.sicpa.standard.client.common.utils.ConfigUtils;
+import com.sicpa.standard.sasscl.devices.camera.jobconfig.parameters.provider.NoCameraJobParametersProvider;
 import com.sicpa.standard.sasscl.devices.camera.transformer.IRoiCameraImageTransformer;
 
 public class PhysicalCameraTest extends AbstractCameraAdaptorTest {
@@ -28,7 +29,8 @@ public class PhysicalCameraTest extends AbstractCameraAdaptorTest {
 	public void setUp() throws Exception {
 		setupCameraModel();
 		CognexCameraControllerImpl cimpl = new CognexCameraControllerImpl(this.cameraModel);
-		this.cameraController = new CameraAdaptor(cimpl, Mockito.mock(IRoiCameraImageTransformer.class));
+		cameraController = new CameraAdaptor(cimpl, Mockito.mock(IRoiCameraImageTransformer.class));
+		cameraController.setCameraJobParametersProvider(new NoCameraJobParametersProvider());
 		cimpl.addListener(cameraController);
 		super.setup();
 	}
@@ -70,7 +72,7 @@ public class PhysicalCameraTest extends AbstractCameraAdaptorTest {
 		CameraModel model = ConfigUtils.load("testresources/camera/camera_model.xml");
 
 		new CameraAdaptor(new CognexCameraControllerImpl(model), Mockito.mock(IRoiCameraImageTransformer.class));
-
+		
 		// test a few attribute of the camera model
 		Assert.assertEquals(1, model.getId());
 		Assert.assertEquals("CognexCameraDriver", model.getDriverName());
