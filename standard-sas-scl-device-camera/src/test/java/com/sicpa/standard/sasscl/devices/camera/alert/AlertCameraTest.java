@@ -3,6 +3,7 @@ package com.sicpa.standard.sasscl.devices.camera.alert;
 import static com.sicpa.standard.sasscl.model.ProductionMode.MAINTENANCE;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
@@ -11,6 +12,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicReference;
 
+import com.sicpa.standard.sasscl.devices.camera.blobDetection.BlobDetectionUtils;
 import junit.framework.Assert;
 
 import org.junit.Before;
@@ -70,6 +72,10 @@ public class AlertCameraTest {
 		ICameraAdaptor cameraAdaptor = Mockito.mock(ICameraAdaptor.class);
 		Mockito.when(cameraAdaptor.getName()).thenReturn("camera-1");
 
+		BlobDetectionUtils blobDetectionUtils = Mockito.mock(BlobDetectionUtils.class);
+		Mockito.when(blobDetectionUtils.isBlobDetected(any())).thenReturn(false);
+
+
 		CameraCountAlertTask cca = new CameraCountAlertTask();
 		CameraCountAlertTaskModel model = new CameraCountAlertTaskModel();
 		model.setSampleSize(10);
@@ -77,6 +83,7 @@ public class AlertCameraTest {
 		model.setDelayInSec(1);
 		model.setEnabled(true);
 		cca.setModel(model);
+		cca.setBlobDetectionUtils(blobDetectionUtils);
 
 		ProductionParameters productionParameters = new ProductionParameters();
 		productionParameters.setProductionMode(ProductionMode.STANDARD);
@@ -166,6 +173,10 @@ public class AlertCameraTest {
 		ICameraAdaptor cameraAdaptor = Mockito.mock(ICameraAdaptor.class);
 		Mockito.when(cameraAdaptor.getName()).thenReturn("camera-1");
 
+		BlobDetectionUtils blobDetectionUtils = Mockito.mock(BlobDetectionUtils.class);
+		Mockito.when(blobDetectionUtils.isBlobDetected(any())).thenReturn(false);
+
+
 		ProductionParameters productionParameters = new ProductionParameters();
 		productionParameters.setProductionMode(MAINTENANCE);
 
@@ -176,6 +187,8 @@ public class AlertCameraTest {
 		model.setDelayInSec(1);
 		model.setEnabled(true);
 		cca.setModel(model);
+		cca.setBlobDetectionUtils(blobDetectionUtils);
+
 
 		cca.setProductionParameters(productionParameters);
 		EventBusService.register(new IncrementingMessageListener());

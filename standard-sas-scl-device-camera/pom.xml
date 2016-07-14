@@ -24,5 +24,6 @@
 			<groupId>com.sicpa.standard.sasscl</groupId>
 			<artifactId>business-alert</artifactId>
 		</dependency>
+
 	</dependencies>
 </project>

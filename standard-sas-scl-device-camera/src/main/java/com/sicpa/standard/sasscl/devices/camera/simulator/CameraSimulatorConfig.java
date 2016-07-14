@@ -45,6 +45,9 @@ public class CameraSimulatorConfig implements ICameraModel, Serializable {
 
 	// getter and setter
 
+	private int percentageBlobCode = 0;
+
+
 	public String getDataFilePath() {
 		return dataFilePath;
 	}
@@ -75,5 +78,13 @@ public class CameraSimulatorConfig implements ICameraModel, Serializable {
 
 	public void setPercentageBadCode(final int percentageBadCode) {
 		this.percentageBadCode = percentageBadCode;
+	}
+
+	public int getPercentageBlobCode() {
+		return percentageBlobCode;
+	}
+
+	public void setPercentageBlobCode(int percentageBlobCode) {
+		this.percentageBlobCode = percentageBlobCode;
 	}
 }

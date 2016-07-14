@@ -1,3 +1,4 @@
+import com.sicpa.standard.sasscl.devices.camera.jobconfig.parameters.provider.NoCameraJobParametersProvider;
 import com.sicpa.standard.sasscl.devices.camera.transformer.CameraImageRotator
 import com.sicpa.standard.sasscl.devices.camera.transformer.CropImageTransformer
 import com.sicpa.standard.sasscl.devices.camera.transformer.OneAreaRoiImageTransformer
@@ -18,4 +19,6 @@ beans{
 		aliasROI_w='nDMXROIwide'
 		aliasROI_h='nDMXROIhigh'
 	}
+	
+	cameraJobParametersProvider(NoCameraJobParametersProvider)
 }

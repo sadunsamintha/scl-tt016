@@ -34,6 +34,8 @@
 		<property name="productionParameters" ref="productionParameters" />
 		<property name="authenticatorProvider" ref="authenticatorProvider" />
 		<property name="authenticatorModeProvider" ref="authenticatorModeProvider" />
+		<property name="blobDetectionUtils" ref="blobDetectionUtils" />
+
 	</bean>
 
 </beans>
