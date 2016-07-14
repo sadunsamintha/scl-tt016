@@ -1,7 +1,14 @@
 import com.sicpa.tt016.scl.TT016Bootstrap
+import com.sicpa.tt016.devices.camera.alert.TT016TrilightWarningCameraAlert
 import com.sicpa.tt016.refeed.TT016RefeedAvailabilityProvider
 
 beans{
+
+	tt016TrilightWarningCameraAlert(TT016TrilightWarningCameraAlert) {
+		plcParamSender=ref('plcParamSender')
+		reqJavaErrorRegisterVar= ref('REQUEST_JAVA_WARNINGS_AND_ERRORS_REGISTER_var')
+		plcProvider=ref('plcProvider')
+	}
 
 	def serverBehavior=props['remoteServer.behavior'].toUpperCase()
 
