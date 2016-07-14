@@ -3,6 +3,7 @@ package com.sicpa.standard.sasscl.business.activation.impl.activationBehavior;
 import static com.sicpa.standard.sasscl.messages.MessageEventKey.Activation.EXCEPTION_CODE_IN_EXPORT;
 import static com.sicpa.standard.sasscl.model.ProductStatus.UNREAD;
 
+import com.sicpa.standard.sasscl.devices.camera.blobDetection.BlobDetectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,11 +22,13 @@ public class ExportActivationBehavior extends AbstractActivationBehavior {
 
 	private static final Logger logger = LoggerFactory.getLogger(ExportActivationBehavior.class);
 
+	private BlobDetectionUtils blobDetectionUtils;
+
 	@Override
 	public Product receiveCode(Code code, boolean valid) {
 		logger.debug("Code received = {} , Is good code = {}", code, valid);
 		Product p = new Product();
-		if (valid) {
+		if (valid || blobDetectionUtils.isBlobDetected(code)) {
 			handleGoodCodes(p, code);
 		} else {
 			p.setStatus(ProductStatus.EXPORT);
@@ -41,4 +44,9 @@ public class ExportActivationBehavior extends AbstractActivationBehavior {
 		product.setCode(code);
 		EventBusService.post(new MessageEvent(EXCEPTION_CODE_IN_EXPORT));
 	}
+
+	public void setBlobDetectionUtils(BlobDetectionUtils blobDetectionUtils) {
+		this.blobDetectionUtils = blobDetectionUtils;
+	}
+
 }

@@ -85,4 +85,8 @@ public class StatisticsValues implements Serializable {
 			mapValues.clear();
 		}
 	}
+
+	public boolean isEmpty() {
+		return  mapValues.isEmpty();
+	}
 }

@@ -21,9 +21,9 @@ import javax.swing.JComponent;
 
 import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
+import com.sicpa.standard.client.common.i18n.Messages;
 import com.sicpa.standard.client.common.messages.IMessageCodeMapper;
 import com.sicpa.standard.client.common.view.ISecuredComponentGetter;
-import com.sicpa.standard.client.common.i18n.Messages;
 import com.sicpa.standard.gui.components.layeredComponents.lock.lockingError.LockingErrorModel;
 import com.sicpa.standard.gui.plaf.SicpaColor;
 import com.sicpa.standard.gui.screen.machine.MachineViewController;
@@ -31,11 +31,7 @@ import com.sicpa.standard.gui.screen.machine.component.IdInput.IdInputmodel;
 import com.sicpa.standard.gui.screen.machine.component.applicationStatus.ApplicationStatus;
 import com.sicpa.standard.gui.utils.ThreadUtils;
 import com.sicpa.standard.sasscl.controller.ProductionParametersEvent;
-import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState;
 import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowStateChangedEvent;
-import com.sicpa.standard.sasscl.controller.hardware.HardwareControllerStatus;
-import com.sicpa.standard.sasscl.controller.hardware.HardwareControllerStatusEvent;
-import com.sicpa.standard.sasscl.controller.view.event.ErrorBlockingViewEvent;
 import com.sicpa.standard.sasscl.devices.camera.CameraImageEvent;
 import com.sicpa.standard.sasscl.event.LockFullScreenEvent;
 import com.sicpa.standard.sasscl.event.UnlockFullScreenEvent;
@@ -47,7 +43,6 @@ import com.sicpa.standard.sasscl.view.messages.I18nableLockingErrorModel;
 
 public class MainFrameController extends MachineViewController {
 
-	private ApplicationFlowState currentApplicationState = ApplicationFlowState.STT_NO_SELECTION;
 	private final List<ISecuredComponentGetter> securedPanels = new ArrayList<>();
 	private String lineId;
 	private ProductionParameters productionParameters;
@@ -71,14 +66,9 @@ public class MainFrameController extends MachineViewController {
 		setApplicationStatus(getApplicationStatus());
 	}
 
-	@Subscribe
-	public void addErrorMainPanel(final ErrorBlockingViewEvent evt) {
-		addErrorMainPanel(evt.getKey(), evt.getMessage());
-	}
-
-	public void addErrorMainPanel(final String key, final String message, final Object... params) {
-		if (lockingErrorModel != null) {
-			((I18nableLockingErrorModel) this.lockingErrorModel).addMessage(key, message, params);
+	public void addErrorMainPanel(String key, String message, Object... params) {
+		if (lockingErrorModel != null && lockingErrorModel instanceof I18nableLockingErrorModel) {
+			((I18nableLockingErrorModel) lockingErrorModel).addMessage(key, message, params);
 		}
 	}
 
@@ -120,17 +110,15 @@ public class MainFrameController extends MachineViewController {
 	}
 
 	@Override
-	protected void setBarcodeModel(final IdInputmodel barcodeModel) {
+	protected void setBarcodeModel(IdInputmodel barcodeModel) {
 		super.setBarcodeModel(barcodeModel);
 	}
 
 	@Subscribe
-	public void processStateChanged(final ApplicationFlowStateChangedEvent evt) {
+	public void processStateChanged(ApplicationFlowStateChangedEvent evt) {
 		ThreadUtils.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-
-				currentApplicationState = evt.getCurrentState();
 
 				if (evt.getCurrentState() == STT_NO_SELECTION) {
 					onNoSelection();
@@ -200,29 +188,6 @@ public class MainFrameController extends MachineViewController {
 
 	private void onConnecting(final ApplicationFlowStateChangedEvent evt) {
 		setApplicationStatus(new STDSASSCLApplicationStatus(SicpaColor.RED, "view.status.recovering"));
-	}
-
-	@Subscribe
-	public void handleHardwareConnecting(final HardwareControllerStatusEvent evt) {
-		ThreadUtils.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-
-				removeAllErrorMainPanel();
-
-				if (currentApplicationState == STT_SELECT_WITH_PREVIOUS) {
-					return;
-				}
-
-				if (evt.getStatus().equals(HardwareControllerStatus.CONNECTING)) {
-					String errorMsg = "";
-					for (String error : evt.getErrors()) {
-						errorMsg += error + "\n";
-					}
-					addErrorMainPanel("", "controller.device.recovering.waiting", "\n" + errorMsg);
-				}
-			}
-		});
 	}
 
 	@Subscribe

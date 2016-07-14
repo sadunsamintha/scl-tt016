@@ -2,6 +2,7 @@ package com.sicpa.standard.sasscl.devices.camera;
 
 import com.sicpa.standard.camera.controller.ICameraController;
 import com.sicpa.standard.sasscl.devices.DeviceException;
+import com.sicpa.standard.sasscl.devices.camera.jobconfig.parameters.provider.NoCameraJobParametersProvider;
 import com.sicpa.standard.sasscl.devices.camera.simulator.CameraSimulatorConfig;
 import com.sicpa.standard.sasscl.devices.camera.simulator.CameraSimulatorController;
 import com.sicpa.standard.sasscl.devices.camera.simulator.CodeGetMethod;
@@ -9,6 +10,7 @@ import com.sicpa.standard.sasscl.devices.camera.simulator.ICodeProvider;
 import com.sicpa.standard.sasscl.devices.camera.transformer.IRoiCameraImageTransformer;
 import com.sicpa.standard.sasscl.model.Code;
 import com.sicpa.standard.sasscl.model.ProductionMode;
+
 import org.apache.commons.io.FileUtils;
 import org.junit.Assert;
 import org.junit.Before;
@@ -32,6 +34,7 @@ public class CameraSimulatorTest extends AbstractCameraAdaptorTest {
 		simulator = new CameraSimulatorController(camConfig);
 		simulator.setProductionParameters(productionParameters);
 		cameraController = new CameraAdaptor(simulator, Mockito.mock(IRoiCameraImageTransformer.class));
+		cameraController.setCameraJobParametersProvider(new NoCameraJobParametersProvider());
 		simulator.addListener(cameraController);
 		super.setup();
 	}
@@ -151,6 +154,7 @@ public class CameraSimulatorTest extends AbstractCameraAdaptorTest {
 		simulator = new CameraSimulatorController(camConfig);
 		simulator.setProductionParameters(productionParameters);
 		cameraController = new CameraAdaptor(simulator, Mockito.mock(IRoiCameraImageTransformer.class));
+		cameraController.setCameraJobParametersProvider(new NoCameraJobParametersProvider());
 		cameraController.connect();
 		cameraController.start();
 		waitToGetBadCodes();

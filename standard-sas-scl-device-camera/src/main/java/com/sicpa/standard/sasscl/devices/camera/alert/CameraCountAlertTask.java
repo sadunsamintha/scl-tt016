@@ -1,27 +1,29 @@
 package com.sicpa.standard.sasscl.devices.camera.alert;
 
-import java.util.function.Function;
-
 import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.messages.MessageEvent;
 import com.sicpa.standard.sasscl.business.alert.task.model.CameraCountAlertTaskModel;
 import com.sicpa.standard.sasscl.business.alert.task.scheduled.AbstractScheduledBadCountAlertTask;
 import com.sicpa.standard.sasscl.devices.camera.CameraCodeEvent;
 import com.sicpa.standard.sasscl.devices.camera.CameraGoodCodeEvent;
+import com.sicpa.standard.sasscl.devices.camera.blobDetection.BlobDetectionUtils;
 import com.sicpa.standard.sasscl.messages.MessageEventKey;
 import com.sicpa.standard.sasscl.model.ProductionParameters;
+
+import java.util.function.Function;
 
 /**
  * implementation of an alert task for the camera<br/>
  * send an alert when too many bad codes are received from the camera
- * 
+ *
  * @author DIelsch
- * 
  */
 public class CameraCountAlertTask extends AbstractScheduledBadCountAlertTask {
 
-	protected ProductionParameters productionParameters;
-	protected CameraCountAlertTaskModel model;
+	private ProductionParameters productionParameters;
+	private CameraCountAlertTaskModel model;
+
+	private BlobDetectionUtils blobDetectionUtils;
 
 	private Function<CameraCodeEvent, Boolean> codeValidator = (evt) -> isValidCodeDefaultImpl(evt);
 
@@ -56,7 +58,9 @@ public class CameraCountAlertTask extends AbstractScheduledBadCountAlertTask {
 	}
 
 	protected boolean isValidCodeDefaultImpl(CameraCodeEvent evt) {
-		return evt instanceof CameraGoodCodeEvent;
+         /* if the  CameraBadCodeEvent is mark as blob detected then
+          * we can consider as valid */
+		return evt instanceof CameraGoodCodeEvent || blobDetectionUtils.isBlobDetected(evt.getCode());
 	}
 
 	@Override
@@ -98,4 +102,10 @@ public class CameraCountAlertTask extends AbstractScheduledBadCountAlertTask {
 	public int getSampleSize() {
 		return model.getSampleSize();
 	}
+
+	public void setBlobDetectionUtils(BlobDetectionUtils blobDetectionUtils) {
+		this.blobDetectionUtils = blobDetectionUtils;
+	}
+
+
 }

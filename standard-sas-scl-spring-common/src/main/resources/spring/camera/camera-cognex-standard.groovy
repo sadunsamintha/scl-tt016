@@ -20,5 +20,6 @@ beans{
 			ref('cropImageTransformer'),
 			ref('cameraImageRotator')
 		]
+		cameraJobParametersProvider=ref('cameraJobParametersProvider')
 	}
 }

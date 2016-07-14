@@ -6,6 +6,12 @@ import com.sicpa.std.common.api.activation.dto.productionData.ProcessedProductsS
 
 public class DefaultRemoteServerProductStatusMapping extends RemoteServerProductStatusMapping {
 
+	/**
+	 * TODO, to be replaced by ProcessedProductsStatusDto.ACTIVATED_BLOB_DETECTION
+	 */
+	private static final int ACTIVATED_BLOB_DETECTION = 35;
+
+
 	public DefaultRemoteServerProductStatusMapping() {
 
 		//acti
@@ -23,6 +29,9 @@ public class DefaultRemoteServerProductStatusMapping extends RemoteServerProduct
 		//eject
 		add(ProductStatus.UNREAD, ProcessedProductsStatusDto.COUNTED_EJECTED_UNREAD);//0 =>12
 		add(ProductStatus.NOT_AUTHENTICATED, ProcessedProductsStatusDto.COUNTED_EJECTED_AUTHENTICATIONFAIL);//1=>14
+
+		//blob
+		add(ProductStatus.BLOB_ACTIVATED, ACTIVATED_BLOB_DETECTION); //100=>35
 
 	}
 
