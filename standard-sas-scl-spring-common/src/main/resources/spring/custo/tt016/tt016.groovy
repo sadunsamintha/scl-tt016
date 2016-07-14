@@ -1,5 +1,6 @@
 import com.sicpa.tt016.scl.TT016Bootstrap
 import com.sicpa.tt016.devices.camera.alert.TT016TrilightWarningCameraAlert
+import com.sicpa.tt016.refeed.TT016RefeedAvailabilityProvider
 
 beans{
 
@@ -22,6 +23,8 @@ beans{
 		stopReasonViewController=ref('stopReasonViewController')
 		codeTypeId=props['codeTypeId']
 		unknownSkuProvider=ref('unknownSkuProvider')
+		tt016RemoteServices=ref('remoteServices')
+		refeedAvailabilityProvider=ref('refeedAvailabilityProvider')
 	}
 
 	importBeans('spring/custo/tt016/tt016-view.xml')
@@ -30,4 +33,10 @@ beans{
 	addAlias('bisCredentialProvider','remoteServer')
 
 	importBeans('spring/custo/tt016/tt016-camera.groovy')
+
+
+	refeedAvailabilityProvider(TT016RefeedAvailabilityProvider){
+		isRefeedAvailableInRemoteServer=props['refeedAvailable']
+		isHeuftSystem=props['heuftSystem']
+	}
 }

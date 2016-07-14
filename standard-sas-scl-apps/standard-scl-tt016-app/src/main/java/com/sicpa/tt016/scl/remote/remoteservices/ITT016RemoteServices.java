@@ -47,4 +47,6 @@ public interface ITT016RemoteServices {
 
 	int getSubsystemId();
 
+	boolean isRefeedAvailable();
+
 }
