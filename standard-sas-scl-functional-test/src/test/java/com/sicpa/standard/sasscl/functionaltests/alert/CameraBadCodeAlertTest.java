@@ -27,7 +27,7 @@ public class CameraBadCodeAlertTest extends AbstractFunctionnalTest {
 		runAllTasks();
 		cameraCountAlertTask.checkForMessage();
 		checkApplicationStatusCONNECTED();
-		checkWarningMessage(MessageEventKey.Alert.TOO_MUCH_CAMERA_ERROR);
+		checkWarningMessage(MessageEventKey.Alert.TOO_MANY_CAMERA_ERROR);
 		exit();
 	}
 

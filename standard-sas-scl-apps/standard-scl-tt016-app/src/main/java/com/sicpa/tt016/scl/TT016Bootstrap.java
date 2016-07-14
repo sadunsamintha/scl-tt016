@@ -6,10 +6,8 @@ import static com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState.STT
 import static com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState.STT_EXIT;
 import static com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState.STT_RECOVERING;
 import static com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState.STT_STOPPING;
-import static com.sicpa.standard.sasscl.custoBuilder.CustoBuilder.addScreen;
-import static com.sicpa.standard.sasscl.custoBuilder.CustoBuilder.addScreenTransitions;
-import static com.sicpa.standard.sasscl.custoBuilder.CustoBuilder.setMessageType;
-import static com.sicpa.standard.sasscl.custoBuilder.CustoBuilder.setStateNextPossibleStates;
+import static com.sicpa.standard.sasscl.custoBuilder.CustoBuilder.*;
+import static com.sicpa.standard.sasscl.messages.ActionMessageType.WARNING;
 import static com.sicpa.tt016.controller.flow.TT016ActivityTrigger.TRG_STOP_REASON_SELECTED;
 import static com.sicpa.tt016.view.TT016ScreenFlowTriggers.STOP_PRODUCTION;
 import static com.sicpa.tt016.view.TT016ScreenFlowTriggers.STOP_PRODUCTION_REASON_SELECTED;
@@ -34,9 +32,15 @@ public class TT016Bootstrap extends Bootstrap {
 	@Override
 	public void executeSpringInitTasks() {
 		super.executeSpringInitTasks();
+		messageCusto();
 		noStopIfDmxDetectedInExport();
 		selectStopReasonWhenProductionStop();
 		setUnknownSkuCodeType();
+	}
+
+	private void messageCusto() {
+		// let's override the severity from error to warning
+		setMessageType(MessageEventKey.Alert.TOO_MANY_CAMERA_ERROR, WARNING);
 	}
 
 	private void setUnknownSkuCodeType() {

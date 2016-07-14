@@ -20,92 +20,92 @@ import java.util.function.Function;
  */
 public class CameraCountAlertTask extends AbstractScheduledBadCountAlertTask {
 
-    private ProductionParameters productionParameters;
-    private CameraCountAlertTaskModel model;
+	private ProductionParameters productionParameters;
+	private CameraCountAlertTaskModel model;
 
-    private BlobDetectionUtils blobDetectionUtils;
+	private BlobDetectionUtils blobDetectionUtils;
 
-    private Function<CameraCodeEvent, Boolean> codeValidator = (evt) -> isValidCodeDefaultImpl(evt);
+	private Function<CameraCodeEvent, Boolean> codeValidator = (evt) -> isValidCodeDefaultImpl(evt);
 
-    public CameraCountAlertTask() {
-        super();
-    }
+	public CameraCountAlertTask() {
+		super();
+	}
 
-    @Override
-    protected MessageEvent getAlertMessage() {
-        return new MessageEvent(MessageEventKey.Alert.TOO_MUCH_CAMERA_ERROR);
-    }
+	@Override
+	protected MessageEvent getAlertMessage() {
+		return new MessageEvent(MessageEventKey.Alert.TOO_MANY_CAMERA_ERROR);
+	}
 
-    @Subscribe
-    public void receiveCameraCode(CameraCodeEvent evt) {
-        dispatchEvent(evt);
-    }
+	@Subscribe
+	public void receiveCameraCode(CameraCodeEvent evt) {
+		dispatchEvent(evt);
+	}
 
-    private void dispatchEvent(CameraCodeEvent evt) {
-        if (isValidCode(evt)) {
-            increaseGood();
-        } else {
-            increaseBad();
-        }
-    }
+	private void dispatchEvent(CameraCodeEvent evt) {
+		if (isValidCode(evt)) {
+			increaseGood();
+		} else {
+			increaseBad();
+		}
+	}
 
-    public void setCodeValidator(Function<CameraCodeEvent, Boolean> isValidCode) {
-        this.codeValidator = isValidCode;
-    }
+	public void setCodeValidator(Function<CameraCodeEvent, Boolean> isValidCode) {
+		this.codeValidator = isValidCode;
+	}
 
-    private boolean isValidCode(CameraCodeEvent evt) {
-        return codeValidator.apply(evt);
-    }
+	private boolean isValidCode(CameraCodeEvent evt) {
+		return codeValidator.apply(evt);
+	}
 
-    protected boolean isValidCodeDefaultImpl(CameraCodeEvent evt) {
+	protected boolean isValidCodeDefaultImpl(CameraCodeEvent evt) {
          /* if the  CameraBadCodeEvent is mark as blob detected then
           * we can consider as valid */
-        return evt instanceof CameraGoodCodeEvent || blobDetectionUtils.isBlobDetected(evt.getCode());
-    }
+		return evt instanceof CameraGoodCodeEvent || blobDetectionUtils.isBlobDetected(evt.getCode());
+	}
 
-    @Override
-    protected boolean isEnabledDefaultImpl() {
-        if (!productionParameters.getProductionMode().isWithSicpaData()) {
-            return false;
-        }
-        return model.isEnabled();
-    }
+	@Override
+	protected boolean isEnabledDefaultImpl() {
+		if (!productionParameters.getProductionMode().isWithSicpaData()) {
+			return false;
+		}
+		return model.isEnabled();
+	}
 
-    public void setProductionParameters(ProductionParameters productionParameters) {
-        this.productionParameters = productionParameters;
-    }
+	public void setProductionParameters(ProductionParameters productionParameters) {
+		this.productionParameters = productionParameters;
+	}
 
-    @Override
-    public String getAlertName() {
-        return "Too many bad codes alert";
-    }
+	@Override
+	public String getAlertName() {
+		return "Too many bad codes alert";
+	}
 
-    @Override
-    public long getDelay() {
-        return getModel().getDelay();
-    }
+	@Override
+	public long getDelay() {
+		return getModel().getDelay();
+	}
 
-    public void setModel(CameraCountAlertTaskModel model) {
-        this.model = model;
-    }
+	public void setModel(CameraCountAlertTaskModel model) {
+		this.model = model;
+	}
 
-    public CameraCountAlertTaskModel getModel() {
-        return model;
-    }
+	public CameraCountAlertTaskModel getModel() {
+		return model;
+	}
 
-    @Override
-    public int getThreshold() {
-        return model.getMaxUnreadCount();
-    }
+	@Override
+	public int getThreshold() {
+		return model.getMaxUnreadCount();
+	}
 
-    @Override
-    public int getSampleSize() {
-        return model.getSampleSize();
-    }
+	@Override
+	public int getSampleSize() {
+		return model.getSampleSize();
+	}
 
-    public void setBlobDetectionUtils(BlobDetectionUtils blobDetectionUtils) {
-        this.blobDetectionUtils = blobDetectionUtils;
-    }
+	public void setBlobDetectionUtils(BlobDetectionUtils blobDetectionUtils) {
+		this.blobDetectionUtils = blobDetectionUtils;
+	}
 
 
 }
