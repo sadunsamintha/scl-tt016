@@ -6,9 +6,10 @@ import java.util.List;
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.sasscl.devices.AbstractStartableDevice;
 import com.sicpa.standard.sasscl.devices.DeviceException;
+import com.sicpa.standard.sasscl.devices.camera.jobconfig.parameters.IJobParameterWriter;
 import com.sicpa.standard.sasscl.model.Code;
 
-public abstract class AbstractCameraAdaptor extends AbstractStartableDevice implements ICameraAdaptor {
+public abstract class AbstractCameraAdaptor extends AbstractStartableDevice implements ICameraAdaptor, IJobParameterWriter {
 
 	public AbstractCameraAdaptor() {
 		setName("Camera");

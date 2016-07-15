@@ -56,11 +56,6 @@ public class Production implements IProduction {
 	private final Object packageLock = new Object();
 	private final Object saveProductionLock = new Object();
 
-	public Production(final IStorage storage, final IRemoteServer remoteServer) {
-		this.storage = storage;
-		this.remoteServer = remoteServer;
-	}
-
 	/**
 	 * store in memory the product created by the activation
 	 */
@@ -68,14 +63,17 @@ public class Production implements IProduction {
 	public void notifyNewProduct(NewProductEvent evt) {
 		Product product = evt.getProduct();
 		if (product != null) {
-
-			product.setSubsystem(subsystemIdProvider.get());
-
-			if (product.getSku() != null) {
-				SKU sku = product.getSku().copySkuForProductionData();
-				product.setSku(sku);
-			}
+			prepareProduct(product);
 			products.add(product);
+		}
+	}
+
+	protected void prepareProduct(Product product) {
+		product.setSubsystem(subsystemIdProvider.get());
+
+		if (product.getSku() != null) {
+			SKU sku = product.getSku().copySkuForProductionData();
+			product.setSku(sku);
 		}
 	}
 
@@ -236,7 +234,7 @@ public class Production implements IProduction {
 	}
 
 	protected void sendABatchOfProducts(PackagedProducts batch, int totalBatchCount, AtomicInteger currentIndex,
-	                                    AtomicInteger productCount) {
+			AtomicInteger productCount) {
 
 		currentIndex.incrementAndGet();
 		logger.info("Sending package {}/{}", currentIndex.get(), totalBatchCount);
@@ -319,5 +317,13 @@ public class Production implements IProduction {
 
 	public void setSubsystemIdProvider(SubsystemIdProvider subsystemIdProvider) {
 		this.subsystemIdProvider = subsystemIdProvider;
+	}
+
+	public void setStorage(IStorage storage) {
+		this.storage = storage;
+	}
+
+	public void setRemoteServer(IRemoteServer remoteServer) {
+		this.remoteServer = remoteServer;
 	}
 }

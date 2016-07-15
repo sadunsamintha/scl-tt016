@@ -93,12 +93,14 @@ public interface MessageEventKey {
 	}
 
 	public static interface Alert {
-		String TOO_MUCH_CAMERA_ERROR = "CAMERA.ERR.TOO_MUCH_ERROR";
+		String TOO_MANY_CAMERA_ERROR = "CAMERA.ERR.TOO_MANY_ERROR";
+		String TOO_MANY_CAMERA_WARNING = "CAMERA.WARNING.WARNING";
+
 		String DUPLICATED_CODE = "CAMERA.ERR.DUPLICATED_CODE";
 		String CAMERA_TRIGGER_TOO_FAST = "CAMERA.ERR.TRIGGER.TOO_FAST";
 		String TOO_MUCH_CAMERA_IDLE_TIME = "CAMERA.ERR.TOO_MUCH_IDLE_TIME";
 		String PLC_ACTIVATION_CROSS_CHECK_FAILED = "plc.activation.crosscheck.failed";
-		String SKU_RECOGNITIONTOO_MANY_UNKNOWN = "sku.recognition.too.many.unknown";
+		String SKU_RECOGNITION_TOO_MANY_UNKNOWN = "sku.recognition.too.many.unknown";
 	}
 
 	public static interface Camera {
@@ -204,11 +206,11 @@ public interface MessageEventKey {
 	}
 
 	public static interface BIS {
-		String BIS_CONNECTED = "bis.isConnected";
-		String BIS_DISCONNECTED = "bis.notConnected";
-		String BIS_UNKNOWN_SKU = "bis.unknownSku.exceedThreshold";
 		String BIS_ALERT = "bis.alert";
-		String BIS_UNKNOWN_SKU_EXCEED_THRESHOLD = "bis.unknownSku.exceedWindowThreshold";
+	}
+
+	public static interface SkuRecognition {
+		String UNEXPECTED_SKU_CHANGED = "sku.recognition.unexpected.sku.changed";
 	}
 
 }

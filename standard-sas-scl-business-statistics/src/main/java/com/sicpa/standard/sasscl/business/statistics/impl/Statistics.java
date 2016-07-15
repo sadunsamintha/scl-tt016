@@ -100,12 +100,13 @@ public class Statistics implements IStatistics {
 	}
 
 	public void saveStatistics() {
-		if (stats != null) {
-			// do not change the stats while it is being save
-			synchronized (stats) {
-				logger.debug("Saving statistics {}", stats.getMapValues());
-				storage.saveStatistics(stats);
-			}
+		if (stats == null || stats.isEmpty())
+			return;
+
+		// do not change the stats while it is being save
+		synchronized (stats) {
+			logger.debug("Saving statistics {}", stats.getMapValues());
+			storage.saveStatistics(stats);
 		}
 	}
 

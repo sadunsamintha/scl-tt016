@@ -40,6 +40,7 @@ beans{
 				def ct=new CodeType(ctid)
 				sku.setCodeType(ct)
 				sku.setImage(new ImageIcon(ImageUtils.createRandomStrippedImage(60, 30)));
+				sku.setAppearanceCode(description);
 				def skuNode=new SKUNode(sku)
 				pmn.getChildren().add(skuNode)
 				skuId++

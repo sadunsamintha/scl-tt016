@@ -15,6 +15,7 @@
 			</bean>
 		</property>
 		<property name="productionParameters" ref="productionParameters" />
+		<property name="blobDetectionUtils" ref="blobDetectionUtils" />
 	</bean>
 
 	<bean id="alertCameraCountAddTask" class="com.sicpa.standard.client.common.ioc.InjectByMethodBean">

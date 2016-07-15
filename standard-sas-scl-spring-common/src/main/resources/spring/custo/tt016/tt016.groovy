@@ -1,11 +1,16 @@
 import com.sicpa.tt016.controller.flow.ProductStatusMerger
-import com.sicpa.tt016.devices.camera.TT016CameraSimulatorController
 import com.sicpa.tt016.scl.TT016Bootstrap
+import com.sicpa.tt016.devices.camera.alert.TT016TrilightWarningCameraAlert
+import com.sicpa.tt016.refeed.TT016RefeedAvailabilityProvider
 
 beans{
+	tt016TrilightWarningCameraAlert(TT016TrilightWarningCameraAlert) {
+		plcParamSender=ref('plcParamSender')
+		reqJavaErrorRegisterVar= ref('REQUEST_JAVA_WARNINGS_AND_ERRORS_REGISTER_var')
+		plcProvider=ref('plcProvider')
+	}
+
 	def serverBehavior=props['remoteServer.behavior'].toUpperCase()
-	def plcBehavior=props['plc.behavior'].toUpperCase()
-	def cameraBehavior=props['camera.behavior'].toUpperCase()
 
 	if(serverBehavior == "STANDARD") {
 		importBeans('spring/custo/tt016/tt016-server.groovy')
@@ -16,25 +21,29 @@ beans{
 		b.parent=ref('bootstrapAlias')
 		mainPanelGetter=ref('mainPanelGetter')
 		stopReasonViewController=ref('stopReasonViewController')
+		codeTypeId=props['codeTypeId']
+		unknownSkuProvider=ref('unknownSkuProvider')
+		tt016RemoteServices=ref('remoteServices')
+		refeedAvailabilityProvider=ref('refeedAvailabilityProvider')
 	}
 
 	productStatusMerger(ProductStatusMerger) {
 		plcCameraResultIndexManager=ref('plcCameraResultIndexManager')
 	}
 
-	if (plcBehavior == "SIMULATOR" && cameraBehavior == "SIMULATOR") {
-		addAlias('cameraSimulatorControllerAlias', 'cameraSimulatorController')
-		cameraSimulatorController(TT016CameraSimulatorController){ b->
-			b.parent=ref('cameraSimulatorControllerAlias')
-		}
-	}
-
 	importBeans('spring/custo/tt016/tt016Plc.xml')
-	importBeans('spring/custo/tt016/tt016View.xml')
 	importBeans('spring/custo/tt016/tt016Activation.xml')
 	importBeans('spring/custo/tt016/tt016Statistics.xml')
+	importBeans('spring/custo/tt016/tt016-view.xml')
 	importBeans('spring/offlineCounting.xml')
 
 	addAlias('bisCredentialProvider','remoteServer')
 
+	importBeans('spring/custo/tt016/tt016-camera.groovy')
+
+
+	refeedAvailabilityProvider(TT016RefeedAvailabilityProvider){
+		isRefeedAvailableInRemoteServer=props['refeedAvailable']
+		isHeuftSystem=props['heuftSystem']
+	}
 }

@@ -1,4 +1,4 @@
-<ProductionConfig activationBehavior="standardActivationBehavior" authenticatorMode="SCL_EXPORT">
+<ProductionConfig activationBehavior="standardActivationBehavior" authenticatorMode="SCL">
 
 	<!-- to use the brs uncomment the following -->
 	<!-- <BrsConfig /> -->

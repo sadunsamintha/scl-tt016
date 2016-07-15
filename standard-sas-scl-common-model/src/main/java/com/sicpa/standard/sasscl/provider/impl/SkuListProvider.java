@@ -62,7 +62,7 @@ public class SkuListProvider extends AbstractProvider<ProductionParameterRootNod
 	}
 
 	public Set<CodeType> getAvailableCodeTypes() {
-		Set<CodeType> res = new HashSet<CodeType>();
+		Set<CodeType> res = new HashSet<>();
 		if (get() != null) {
 			populateCodeTypesList(res, get());
 		}
@@ -71,7 +71,10 @@ public class SkuListProvider extends AbstractProvider<ProductionParameterRootNod
 
 	public void populateCodeTypesList(Set<CodeType> codeTypes, final IProductionParametersNode node) {
 		if (node instanceof SKUNode) {
-			codeTypes.add(((SKU) node.getValue()).getCodeType());
+			SKU sku = (SKU) node.getValue();
+			if (sku.getCodeType() != null) {
+				codeTypes.add(sku.getCodeType());
+			}
 		} else {
 			if (node.getChildren() != null) {
 				for (IProductionParametersNode child : node.getChildren()) {

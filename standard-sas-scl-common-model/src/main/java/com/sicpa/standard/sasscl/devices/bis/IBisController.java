@@ -9,15 +9,9 @@ public interface IBisController {
 
 	void disconnect();
 
-	void start() throws BisAdaptorException;
-
-	void stop();
-
 	void sendSkuList(SkusMessage skus);
 
 	void sendLifeCheck();
-
-	void sendRecognitionResultRequest();
 
 	void sendAutoSave();
 
@@ -36,5 +30,7 @@ public interface IBisController {
 	void sendUnknownSave();
 
 	void sendCredential(String user, String password);
+
+	void sendDomesticMode();
 
 }

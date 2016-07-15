@@ -13,6 +13,7 @@ beans{
 		connector=ref('masterConnector')
 		skuConverter=ref('skuConverter')
 		storage=ref('storage')
+		refeedAvailabilityProvider=ref('refeedAvailabilityProvider')
 	}
 	remoteServices(TT016RemoteServices){
 		userMachine=props['server.machine.user']

@@ -8,6 +8,8 @@ import static com.sicpa.standard.sasscl.model.ProductStatus.REFEED;
 import static com.sicpa.standard.sasscl.model.ProductStatus.SENT_TO_PRINTER_UNREAD;
 import static com.sicpa.standard.sasscl.model.ProductStatus.TYPE_MISMATCH;
 import static com.sicpa.standard.sasscl.model.ProductStatus.UNREAD;
+import static com.sicpa.standard.sasscl.model.ProductStatus.BLOB_ACTIVATED;
+
 import static com.sicpa.standard.sasscl.model.statistics.StatisticsKey.BAD;
 import static com.sicpa.standard.sasscl.model.statistics.StatisticsKey.GOOD;
 
@@ -46,6 +48,8 @@ public class DefaultProductStatusToStatisticsKeyMapper implements IProductStatus
 		add(EXPORT, GOOD);
 		add(REFEED, GOOD);
 		add(MAINTENANCE, GOOD);
+		add(BLOB_ACTIVATED, GOOD);
+
 	}
 
 	@Override

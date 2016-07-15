@@ -4,18 +4,15 @@ import java.time.Instant;
 
 import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.messages.MessageEvent;
-import com.sicpa.standard.sasscl.business.alert.task.scheduled.AbstractScheduledOverTimeAlertTask;
+import com.sicpa.standard.sasscl.business.alert.task.AbstractBadCountAlert;
 import com.sicpa.standard.sasscl.business.sku.IProductionChangeDetector;
 import com.sicpa.standard.sasscl.messages.MessageEventKey;
 import com.sicpa.standard.sasscl.skureader.SkuNotRecognizedEvent;
 import com.sicpa.standard.sasscl.skureader.SkuRecognizedEvent;
 
-public class UnkownSkuRecognizedScheduledAlert extends AbstractScheduledOverTimeAlertTask {
+public class UnkownSkuRecognizedScheduledAlert extends AbstractBadCountAlert {
 
 	private boolean enabled;
-	private int delaySec;
-	private int maxUnreadCount;
-	private int sampleSize;
 	private IProductionChangeDetector productionChangeDetector;
 	private Instant previousSkuEventTime;
 
@@ -23,13 +20,14 @@ public class UnkownSkuRecognizedScheduledAlert extends AbstractScheduledOverTime
 	public void handleSkuNotRecognizedEvent(SkuNotRecognizedEvent evt) {
 		handleMaxDurationBetweenEvent();
 		previousSkuEventTime = Instant.now();
-		addCounterToGrid();
+		increaseBad();
 	}
 
 	@Subscribe
 	public void handleSkuRecognizedEvent(SkuRecognizedEvent evt) {
 		handleMaxDurationBetweenEvent();
 		previousSkuEventTime = Instant.now();
+		increaseGood();
 	}
 
 	private void handleMaxDurationBetweenEvent() {
@@ -39,17 +37,15 @@ public class UnkownSkuRecognizedScheduledAlert extends AbstractScheduledOverTime
 	}
 
 	private boolean isTimeExceededSinceLastRecognizedSku() {
+		if (previousSkuEventTime == null) {
+			return false;
+		}
 		return productionChangeDetector.isPossibleProductionChange(previousSkuEventTime, Instant.now());
 	}
 
 	@Override
-	public long getDelay() {
-		return delaySec * 1000;
-	}
-
-	@Override
 	protected MessageEvent getAlertMessage() {
-		return new MessageEvent(MessageEventKey.Alert.SKU_RECOGNITIONTOO_MANY_UNKNOWN);
+		return new MessageEvent(MessageEventKey.Alert.SKU_RECOGNITION_TOO_MANY_UNKNOWN);
 	}
 
 	@Override
@@ -59,33 +55,11 @@ public class UnkownSkuRecognizedScheduledAlert extends AbstractScheduledOverTime
 
 	@Override
 	public String getAlertName() {
-		return "TooManyUnkownSkuIdentified";
-	}
-
-	@Override
-	protected int getThreshold() {
-		return maxUnreadCount;
-	}
-
-	@Override
-	protected int getSampleSize() {
-		return sampleSize;
-	}
-
-	public void setMaxUnreadCount(int maxUnreadCount) {
-		this.maxUnreadCount = maxUnreadCount;
+		return "TooManyUnkownRecognizedSku";
 	}
 
 	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
-	}
-
-	public void setDelaySec(int delaySec) {
-		this.delaySec = delaySec;
-	}
-
-	public void setSampleSize(int sampleSize) {
-		this.sampleSize = sampleSize;
 	}
 
 	public void setProductionChangeDetector(IProductionChangeDetector productionChangeDetector) {

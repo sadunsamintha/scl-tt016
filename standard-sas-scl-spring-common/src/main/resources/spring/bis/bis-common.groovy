@@ -1,8 +1,18 @@
 import com.sicpa.standard.sasscl.devices.bis.BisUserSender
 import com.sicpa.standard.sasscl.devices.bis.SkuBisProvider
+import com.sicpa.standard.sasscl.skureader.SkuFinder;
 
 
 beans{
+
+	bisParent(){ b->
+		b.abstract=true
+		blockProduction = props['bis.disconnected.production.block']
+		skuFinder=ref('skuFinder')
+		unknownSkuId=props['bis.unknownSkuId']
+		displayAlertMessage=props['bis.displayAlertMessage']
+		skuBisProvider=ref('skuBisProvider')
+	}
 
 	importBeans('spring/alert/alertUnknownSkuTask.groovy')
 
@@ -14,4 +24,9 @@ beans{
 	}
 
 	skuBisProvider(SkuBisProvider){ skuListProvider=ref('skuListProvider') }
+
+	skuFinder(SkuFinder){
+		skuListProvider=ref('skuListProvider')
+		productionParameters=ref('productionParameters')
+	}
 }

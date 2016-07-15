@@ -32,6 +32,9 @@ import com.sicpa.standard.sasscl.messages.MessageEventKey.RemoteServer;
 import com.sicpa.standard.sasscl.messages.MessageEventKey.Simulator;
 import com.sicpa.standard.sasscl.messages.MessageEventKey.SkuCheck;
 import com.sicpa.standard.sasscl.messages.MessageEventKey.Storage;
+import com.sicpa.standard.sasscl.messages.MessageEventKey.SkuRecognition;
+
+;
 
 public class SASDefaultMessagesMapping extends DefaultMessagesMapping {
 	private static final Logger logger = LoggerFactory.getLogger(SASDefaultMessagesMapping.class);
@@ -72,7 +75,7 @@ public class SASDefaultMessagesMapping extends DefaultMessagesMapping {
 		addEntry(PLC.PLC_WAR_DRS_UNKNOWN_ANSWER, "[PLC_28]", WARNING);
 		addEntry(PLC.PLC_WAR_DRS_FIFOS_FAULT, "[PLC_29]", WARNING);
 		addEntry(PLC.PLC_WAR_DRS_NOT_CONNECTED, "[PLC_30]", WARNING);
-		addEntry(PLC.PLC_WAR_ENCODER_FAULT, "[PLC_31]", WARNING);
+		addEntry(PLC.PLC_WAR_ENCODER_FAULT, "[PLC_31]", ERROR);
 		addEntry(PLC.PLC_WAR_TEMPERATURE_IJ_CABINET, "[PLC_32]", WARNING);
 		addEntry(PLC.PLC_WAR_TEMPERATURE_IJ_INK, "[PLC_33]", WARNING);
 		addEntry(PLC.PLC_WAR_EXT_AIR_DRYER_WARNING, "[PLC_34]", WARNING);
@@ -107,14 +110,15 @@ public class SASDefaultMessagesMapping extends DefaultMessagesMapping {
 		addEntry(PLC.PLC_ERR_TEMPERATURE_IJ_INK, "[PLC_62]", ERROR);
 		addEntry(PLC.PLC_ERR_DOOR_SWITCH_IJ_OPEN, "[PLC_63]", ERROR);
 
-		addEntry(Alert.TOO_MUCH_CAMERA_ERROR, "[ALT_01]", ERROR);
+		addEntry(Alert.TOO_MANY_CAMERA_ERROR, "[ALT_01]", ERROR);
 		addEntry(Alert.DUPLICATED_CODE, "[ALT_03]", ERROR);
 		addEntry(Alert.CAMERA_TRIGGER_TOO_FAST, "[ALT_04]", WARNING);
 		addEntry(Alert.TOO_MUCH_CAMERA_IDLE_TIME, "[ALT_05]", ERROR);
 		addEntry(Alert.PLC_ACTIVATION_CROSS_CHECK_FAILED, "[ALT_06]", ERROR);
+		addEntry(Alert.TOO_MANY_CAMERA_WARNING, "[ALT_07]", WARNING);
+
 
 		addEntry(Camera.CAMERA_FAIL_LOAD_JOB, "[CA_01]", ERROR);
-
 		addEntry(Activation.EXCEPTION_NOT_AUTHENTICATED, "[ACT_01]", ERROR);
 		addEntry(Activation.EXCEPTION_CODE_TYPE_MISMATCH, "[ACT_02]", ERROR);
 		addEntry(Activation.EXCEPTION_CODE_IN_EXPORT, "[ACT_03]", ERROR);
@@ -167,11 +171,7 @@ public class SASDefaultMessagesMapping extends DefaultMessagesMapping {
 
 		addEntry(MAINTENACE.TOO_MANY_PRODUCTS_COUNTED_ERROR, "[MAINTENACE_01]", ERROR);
 
-		addEntry(BIS.BIS_CONNECTED, "[BIS_01]", WARNING);
-		addEntry(BIS.BIS_DISCONNECTED, "[BIS_02]", WARNING);
-		addEntry(BIS.BIS_UNKNOWN_SKU, "[BIS_03]", WARNING);
 		addEntry(BIS.BIS_ALERT, "[BIS_04]", WARNING);
-		addEntry(BIS.BIS_UNKNOWN_SKU_EXCEED_THRESHOLD, "[BIS_05]", WARNING);
 
 		addEntry(Printer.CHARGE_FAULT, "[PR_01]", ERROR_DEVICE);
 		addEntry(Printer.GUTTER_FAULT, "[PR_02]", ERROR_DEVICE);
@@ -271,6 +271,8 @@ public class SASDefaultMessagesMapping extends DefaultMessagesMapping {
 		addEntry(Coding.ERROR_GETTING_CODES_FROM_ENCODER, "[COD_02]", ERROR);
 		addEntry(Coding.INVALID_ENCODER, "[COD_03]", ERROR);
 		addEntry(Coding.FAILED_TO_PROVIDE_CODES, "[COD_04]", ERROR);
+
+		addEntry(SkuRecognition.UNEXPECTED_SKU_CHANGED, "[SKU_REC_01]", WARNING);
 	}
 
 	private void overrideMessageMapping(String key, String type) {

@@ -19,6 +19,11 @@ public class ProductStatus implements Serializable {
 	public final static ProductStatus OFFLINE = new ProductStatus(10, "OFFLINE");
 	public final static ProductStatus REFEED = new ProductStatus(11, "REFEED");
 
+	/* Status for Activated Product when datamatrix
+       could not be read but blobs are detected  */
+	public final static ProductStatus BLOB_ACTIVATED = new ProductStatus(100, "BLOB_DETECTION");
+
+
 	protected int id;
 	protected String description;
 

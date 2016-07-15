@@ -45,235 +45,239 @@ import com.sicpa.standard.sicpadata.spi.manager.StaticServiceProviderManager;
 
 public class Bootstrap implements IBootstrap {
 
-	private static final Logger logger = LoggerFactory.getLogger(Bootstrap.class);
-	private static final String JMX_BEAN_NAME = "com.sicpa.standard.sasscl.monitoring.mbean:type=SclApp";
+    protected static final Logger logger = LoggerFactory.getLogger(Bootstrap.class);
+    private static final String JMX_BEAN_NAME = "com.sicpa.standard.sasscl.monitoring.mbean:type=SclApp";
 
-	private IRemoteServer server;
-	private IGroupDevicesController startupDevicesGroup;
-	private IStorage storage;
-	protected ProductionParameters productionParameters;
-	private IPlcValuesLoader plcLoader;
-	private SkuListProvider skuListProvider;
-	private AuthenticatorProvider authenticatorProvider;
-	private RemoteServerScheduledJobs remoteServerSheduledJobs;
-	private SubsystemIdProvider subsystemIdProvider;
-	private Statistics statistics;
-	private IServiceProviderManager cryptoProviderManager;
-	private List<PlcVariableGroup> linePlcVarGroup;
-	private List<PlcVariableGroup> cabPlcVarGroups;
-	private SclAppMBean jmxBean;
-	private IEncoderSequenceValidator encoderSequenceValidator;
-	private ISkuSelectionBehavior skuSelectionBehavior;
+    private IRemoteServer server;
+    private IGroupDevicesController startupDevicesGroup;
+    private IStorage storage;
+    private IPlcValuesLoader plcLoader;
+    private SkuListProvider skuListProvider;
+    private AuthenticatorProvider authenticatorProvider;
+    private SubsystemIdProvider subsystemIdProvider;
+    private Statistics statistics;
+    private IServiceProviderManager cryptoProviderManager;
+    private List<PlcVariableGroup> linePlcVarGroup;
+    private List<PlcVariableGroup> cabPlcVarGroups;
+    private SclAppMBean jmxBean;
+    private IEncoderSequenceValidator encoderSequenceValidator;
+    private ISkuSelectionBehavior skuSelectionBehavior;
+    protected ProductionParameters productionParameters;
+    protected RemoteServerScheduledJobs remoteServerSheduledJobs;
 
-	@Override
-	public void executeSpringInitTasks() {
-		initPlc();
-		initProductionParameter();
-		initAuthenticator();
-		initCrypto();
-		validateEncoderSequence();
-		addConnectionListenerOnServer();
-		connectStartupDevices();
 
-		if (skuSelectionBehavior.isLoadPreviousSelection()) {
-			restoreStatistics();
-			restorePreviousSelectedProductionParams();
-		}
 
-		installJMXBeans();
-	}
+    @Override
+    public void executeSpringInitTasks() {
+        initPlc();
+        initProductionParameter();
+        initAuthenticator();
+        initCrypto();
+        validateEncoderSequence();
+        addConnectionListenerOnServer();
+        connectStartupDevices();
 
-	private void addConnectionListenerOnServer() {
-		server.addDeviceStatusListener(evt -> {
-			if (evt.getStatus() == DeviceStatus.CONNECTED) {
-				initRemoteServerConnected();
-			}
-		});
-	}
+        if (skuSelectionBehavior.isLoadPreviousSelection()) {
+            restoreStatistics();
+            restorePreviousSelectedProductionParams();
+        }
 
-	private void connectStartupDevices() {
-		startupDevicesGroup.start();
-	}
+        installJMXBeans();
+    }
 
-	private void restorePreviousSelectedProductionParams() {
-		ProductionParameters previous = storage.getSelectedProductionParameters();
+    private void addConnectionListenerOnServer() {
+        server.addDeviceStatusListener(evt -> {
+            if (evt.getStatus() == DeviceStatus.CONNECTED) {
+                initRemoteServerConnected();
+            }
+        });
+    }
 
-		if (previous != null) {
-			productionParameters.setBarcode(previous.getBarcode());
-			productionParameters.setSku(previous.getSku());
-			productionParameters.setProductionMode(previous.getProductionMode());
-			EventBusService.post(new ProductionParametersEvent(previous));
-		}
-	}
+    private void connectStartupDevices() {
+        startupDevicesGroup.start();
+    }
 
-	private void initPlc() {
-		generateAllEditableVariableGroup(plcLoader.getValues());
-	}
+    private void restorePreviousSelectedProductionParams() {
+        ProductionParameters previous = storage.getSelectedProductionParameters();
 
-	private void initProductionParameter() {
-		skuListProvider.set(storage.getProductionParameters());
-	}
+        if (previous != null) {
+            productionParameters.setBarcode(previous.getBarcode());
+            productionParameters.setSku(previous.getSku());
+            productionParameters.setProductionMode(previous.getProductionMode());
+            EventBusService.post(new ProductionParametersEvent(previous));
+        }
+    }
 
-	private void initAuthenticator() {
-		authenticatorProvider.set(storage.getAuthenticator());
-	}
+    private void initPlc() {
+        generateAllEditableVariableGroup(plcLoader.getValues());
+    }
 
-	private void initRemoteServerConnected() {
-		long subsystemId = getSubsystemIdFromRemoteServer();
+    private void initProductionParameter() {
+        skuListProvider.set(storage.getProductionParameters());
+    }
 
-		if (subsystemId > ERROR_DEFAULT_SUBSYSTEM_ID) {
-			setAndSaveSubsystemId(subsystemId);
-		}
+    private void initAuthenticator() {
+        authenticatorProvider.set(storage.getAuthenticator());
+    }
 
-		remoteServerSheduledJobs.executeInitialTasks();
-	}
+    protected void initRemoteServerConnected() {
+        initSubsystemId();
+        remoteServerSheduledJobs.executeInitialTasks();
+    }
 
-	private void setAndSaveSubsystemId(long subsystemId) {
-		subsystemIdProvider.set(subsystemId);
-		saveSubsystemId(subsystemId);
-	}
+    protected void initSubsystemId() {
+        long subsystemId = getSubsystemIdFromRemoteServer();
+        if (subsystemId > ERROR_DEFAULT_SUBSYSTEM_ID) {
+            setAndSaveSubsystemId(subsystemId);
+        }
+    }
 
-	private void saveSubsystemId(long id) {
-		try {
-			File globalPropertiesFile = new ClassPathResource(ConfigUtilEx.GLOBAL_PROPERTIES_PATH).getFile();
+    private void setAndSaveSubsystemId(long subsystemId) {
+        subsystemIdProvider.set(subsystemId);
+        saveSubsystemId(subsystemId);
+    }
 
-			PropertiesUtils.savePropertiesKeepOrderAndComment(globalPropertiesFile, "subsystemId", Long.toString(id));
-			PropertiesUtils.savePropertiesKeepOrderAndComment(globalPropertiesFile, "lineId", Long.toString(id));
+    private void saveSubsystemId(long id) {
+        try {
+            File globalPropertiesFile = new ClassPathResource(ConfigUtilEx.GLOBAL_PROPERTIES_PATH).getFile();
 
-		} catch (Exception ex) {
-			logger.error("Failed to save subsystem Id, line Id", ex);
-		}
-	}
+            PropertiesUtils.savePropertiesKeepOrderAndComment(globalPropertiesFile, "subsystemId", Long.toString(id));
+            PropertiesUtils.savePropertiesKeepOrderAndComment(globalPropertiesFile, "lineId", Long.toString(id));
 
-	private long getSubsystemIdFromRemoteServer() {
-		return server.getSubsystemID();
-	}
+        } catch (Exception ex) {
+            logger.error("Failed to save subsystem Id, line Id", ex);
+        }
+    }
 
-	private void restoreStatistics() {
-		StatisticsValues statsValues = storage.getStatistics();
-		boolean restored = false;
-		if (statsValues != null) {
-			logger.debug("Restoring statistics {} ", statsValues.getMapValues());
-			restored = true;
-		} else {
-			statsValues = new StatisticsValues();
-		}
-		statistics.setValues(statsValues);
-		if (restored) {
-			EventBusService.post(new StatisticsRestoredEvent(statsValues));
-		}
-	}
+    private long getSubsystemIdFromRemoteServer() {
+        return server.getSubsystemID();
+    }
 
-	private void initCrypto() {
-		StaticServiceProviderManager.register(cryptoProviderManager);
-	}
+    private void restoreStatistics() {
+        StatisticsValues statsValues = storage.getStatistics();
+        boolean restored = false;
+        if (statsValues != null) {
+            logger.debug("Restoring statistics {} ", statsValues.getMapValues());
+            restored = true;
+        } else {
+            statsValues = new StatisticsValues();
+        }
+        statistics.setValues(statsValues);
+        if (restored) {
+            EventBusService.post(new StatisticsRestoredEvent(statsValues));
+        }
+    }
 
-	private void validateEncoderSequence() {
-		encoderSequenceValidator.validateAndFixSequence();
-	}
+    private void initCrypto() {
+        StaticServiceProviderManager.register(cryptoProviderManager);
+    }
 
-	private void generateAllEditableVariableGroup(Map<Integer, StringMap> values) {
-		generateCabinetGroup(values.get(0));
-		generateAllLinesEditableVariable(values);
-	}
+    private void validateEncoderSequence() {
+        encoderSequenceValidator.validateAndFixSequence();
+    }
 
-	private void generateAllLinesEditableVariable(Map<Integer, StringMap> values) {
-		for (int i = 1; i < plcLoader.getLineCount() + 1; i++) {
-			generateLineEditableVariables(i, linePlcVarGroup, values.get(i));
-		}
-	}
+    private void generateAllEditableVariableGroup(Map<Integer, StringMap> values) {
+        generateCabinetGroup(values.get(0));
+        generateAllLinesEditableVariable(values);
+    }
 
-	private void generateCabinetGroup(StringMap values) {
-		for (PlcVariableGroup grp : cabPlcVarGroups) {
-			for (PlcVariableDescriptor desc : grp.getPlcVars()) {
-				desc.initValue(values.get(desc.getVarName()));
-			}
-		}
-		EventBusService.post(new PlcVariableGroupEvent(cabPlcVarGroups, "cabinet"));
-	}
+    private void generateAllLinesEditableVariable(Map<Integer, StringMap> values) {
+        for (int i = 1; i < plcLoader.getLineCount() + 1; i++) {
+            generateLineEditableVariables(i, linePlcVarGroup, values.get(i));
+        }
+    }
 
-	private void generateLineEditableVariables(int index, List<PlcVariableGroup> lineVarGroups, StringMap values) {
-		List<PlcVariableGroup> groups = PlcLineHelper.replaceLinePlaceholder(lineVarGroups, index);
-		for (PlcVariableGroup grp : groups) {
-			for (PlcVariableDescriptor desc : grp.getPlcVars()) {
-				desc.initValue(values.get(desc.getVarName()));
-			}
-		}
-		EventBusService.post(new PlcVariableGroupEvent(groups, "" + index));
-	}
+    private void generateCabinetGroup(StringMap values) {
+        for (PlcVariableGroup grp : cabPlcVarGroups) {
+            for (PlcVariableDescriptor desc : grp.getPlcVars()) {
+                desc.initValue(values.get(desc.getVarName()));
+            }
+        }
+        EventBusService.post(new PlcVariableGroupEvent(cabPlcVarGroups, "cabinet"));
+    }
 
-	private void installJMXBeans() {
+    private void generateLineEditableVariables(int index, List<PlcVariableGroup> lineVarGroups, StringMap values) {
+        List<PlcVariableGroup> groups = PlcLineHelper.replaceLinePlaceholder(lineVarGroups, index);
+        for (PlcVariableGroup grp : groups) {
+            for (PlcVariableDescriptor desc : grp.getPlcVars()) {
+                desc.initValue(values.get(desc.getVarName()));
+            }
+        }
+        EventBusService.post(new PlcVariableGroupEvent(groups, "" + index));
+    }
 
-		MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
-		try {
-			ObjectName name = new ObjectName(JMX_BEAN_NAME);
-			mbs.registerMBean(jmxBean, name);
-		} catch (Exception e) {
-			logger.error("", e);
-		}
-	}
+    private void installJMXBeans() {
 
-	public void setServer(IRemoteServer server) {
-		this.server = server;
-	}
+        MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
+        try {
+            ObjectName name = new ObjectName(JMX_BEAN_NAME);
+            mbs.registerMBean(jmxBean, name);
+        } catch (Exception e) {
+            logger.error("", e);
+        }
+    }
 
-	public void setStartupDevicesGroup(IGroupDevicesController startupDevicesGroup) {
-		this.startupDevicesGroup = startupDevicesGroup;
-	}
+    public void setServer(IRemoteServer server) {
+        this.server = server;
+    }
 
-	public void setStorage(IStorage storage) {
-		this.storage = storage;
-	}
+    public void setStartupDevicesGroup(IGroupDevicesController startupDevicesGroup) {
+        this.startupDevicesGroup = startupDevicesGroup;
+    }
 
-	public void setProductionParameters(ProductionParameters productionParameters) {
-		this.productionParameters = productionParameters;
-	}
+    public void setStorage(IStorage storage) {
+        this.storage = storage;
+    }
 
-	public void setPlcLoader(IPlcValuesLoader plcLoader) {
-		this.plcLoader = plcLoader;
-	}
+    public void setProductionParameters(ProductionParameters productionParameters) {
+        this.productionParameters = productionParameters;
+    }
 
-	public void setSkuListProvider(SkuListProvider skuListProvider) {
-		this.skuListProvider = skuListProvider;
-	}
+    public void setPlcLoader(IPlcValuesLoader plcLoader) {
+        this.plcLoader = plcLoader;
+    }
 
-	public void setAuthenticatorProvider(AuthenticatorProvider authenticatorProvider) {
-		this.authenticatorProvider = authenticatorProvider;
-	}
+    public void setSkuListProvider(SkuListProvider skuListProvider) {
+        this.skuListProvider = skuListProvider;
+    }
 
-	public void setRemoteServerSheduledJobs(RemoteServerScheduledJobs remoteServerSheduledJobs) {
-		this.remoteServerSheduledJobs = remoteServerSheduledJobs;
-	}
+    public void setAuthenticatorProvider(AuthenticatorProvider authenticatorProvider) {
+        this.authenticatorProvider = authenticatorProvider;
+    }
 
-	public void setSubsystemIdProvider(SubsystemIdProvider subsystemIdProvider) {
-		this.subsystemIdProvider = subsystemIdProvider;
-	}
+    public void setRemoteServerSheduledJobs(RemoteServerScheduledJobs remoteServerSheduledJobs) {
+        this.remoteServerSheduledJobs = remoteServerSheduledJobs;
+    }
 
-	public void setStatistics(Statistics statistics) {
-		this.statistics = statistics;
-	}
+    public void setSubsystemIdProvider(SubsystemIdProvider subsystemIdProvider) {
+        this.subsystemIdProvider = subsystemIdProvider;
+    }
 
-	public void setCryptoProviderManager(IServiceProviderManager cryptoProviderManager) {
-		this.cryptoProviderManager = cryptoProviderManager;
-	}
+    public void setStatistics(Statistics statistics) {
+        this.statistics = statistics;
+    }
 
-	public void setLinePlcVarGroup(List<PlcVariableGroup> linePlcVarGroup) {
-		this.linePlcVarGroup = linePlcVarGroup;
-	}
+    public void setCryptoProviderManager(IServiceProviderManager cryptoProviderManager) {
+        this.cryptoProviderManager = cryptoProviderManager;
+    }
 
-	public void setCabPlcVarGroups(List<PlcVariableGroup> cabPlcVarGroups) {
-		this.cabPlcVarGroups = cabPlcVarGroups;
-	}
+    public void setLinePlcVarGroup(List<PlcVariableGroup> linePlcVarGroup) {
+        this.linePlcVarGroup = linePlcVarGroup;
+    }
 
-	public void setJmxBean(SclAppMBean jmxBean) {
-		this.jmxBean = jmxBean;
-	}
+    public void setCabPlcVarGroups(List<PlcVariableGroup> cabPlcVarGroups) {
+        this.cabPlcVarGroups = cabPlcVarGroups;
+    }
 
-	public void setEncoderSequenceValidator(IEncoderSequenceValidator encoderSequenceValidator) {
-		this.encoderSequenceValidator = encoderSequenceValidator;
-	}
+    public void setJmxBean(SclAppMBean jmxBean) {
+        this.jmxBean = jmxBean;
+    }
 
-	public void setSkuSelectionBehavior(ISkuSelectionBehavior skuSelectionBehavior) {
-		this.skuSelectionBehavior = skuSelectionBehavior;
-	}
+    public void setEncoderSequenceValidator(IEncoderSequenceValidator encoderSequenceValidator) {
+        this.encoderSequenceValidator = encoderSequenceValidator;
+    }
+
+    public void setSkuSelectionBehavior(ISkuSelectionBehavior skuSelectionBehavior) {
+        this.skuSelectionBehavior = skuSelectionBehavior;
+    }
 }

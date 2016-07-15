@@ -1,5 +1,10 @@
 package com.sicpa.standard.sasscl.business.activation.impl.ActivationBehavior;
 
+import com.sicpa.standard.sasscl.blobDetection.BlobDetectionMode;
+import com.sicpa.standard.sasscl.blobDetection.BlobDetectionState;
+import com.sicpa.standard.sasscl.devices.camera.blobDetection.BlobDetectionProvider;
+import com.sicpa.standard.sasscl.devices.camera.blobDetection.BlobDetectionSKUProvider;
+import com.sicpa.standard.sasscl.devices.camera.blobDetection.BlobDetectionUtils;
 import junit.framework.Assert;
 
 import org.junit.Before;
@@ -43,14 +48,15 @@ import com.sicpa.standard.sasscl.sicpadata.reader.IDecodedResult;
 
 public class ActivationBehaviorsTest {
 
-	ProductStatus status;
+	private ProductStatus status;
 
-	ExportActivationBehavior exportActiBehav;
-	MaintenanceActivationBehavior maintActiBehav;
-	IAuthenticator authenticator;
-	ProductionParameters productionParameters;
-	Code code;
-	ActivationBehaviorProvider activationBehaviorProvider = new ActivationBehaviorProvider();
+	private ExportActivationBehavior exportActiBehav;
+	private MaintenanceActivationBehavior maintActiBehav;
+	private IAuthenticator authenticator;
+	private ProductionParameters productionParameters;
+	private Code code;
+	private BlobDetectionUtils blobDetectionUtils;
+	private ActivationBehaviorProvider activationBehaviorProvider = new ActivationBehaviorProvider();
 	
 	ICameraAdaptor cameraAdaptor = new CameraAdaptor();
 
@@ -71,6 +77,10 @@ public class ActivationBehaviorsTest {
 
 		maintActiBehav = new MaintenanceActivationBehavior();
 		maintActiBehav.setProductionParameters(productionParameters);
+
+		BlobDetectionProvider blobDetectionProvider =  new BlobDetectionSKUProvider(productionParameters, BlobDetectionMode.NONE);
+		blobDetectionUtils = new BlobDetectionUtils(blobDetectionProvider);
+		exportActiBehav.setBlobDetectionUtils(blobDetectionUtils);
 
 	}
 

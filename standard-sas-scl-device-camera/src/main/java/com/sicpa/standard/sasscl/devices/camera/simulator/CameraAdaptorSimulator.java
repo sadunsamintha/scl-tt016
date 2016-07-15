@@ -17,7 +17,7 @@ public class CameraAdaptorSimulator extends CameraAdaptor implements ICameraAdap
 
 	@Override
 	public ICameraControllerSimulator getSimulatorController() {
-		return (ICameraControllerSimulator) this.controller;
+		return (ICameraControllerSimulator) getController();
 	}
 
 }

@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.sicpa.standard.sasscl.devices.camera.blobDetection.BlobDetectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,7 +25,7 @@ import com.sicpa.standard.sasscl.sicpadata.reader.IAuthenticator;
 public class PostPackageBehavior implements IPostPackageBehavior {
 	private static final Logger logger = LoggerFactory.getLogger(PostPackageBehavior.class);
 
-	protected final List<Code> codes = Collections.synchronizedList(new LinkedList<Code>());
+	protected final List<Code> codes = Collections.synchronizedList(new LinkedList<>());
 	protected ProductionBatchProvider batchIdProvider;
 	protected SubsystemIdProvider subsystemIdProvider;
 	protected ProductionParameters productionParameters;
@@ -35,6 +36,8 @@ public class PostPackageBehavior implements IPostPackageBehavior {
 	protected IProviderGetter<IAuthenticator> authenticatorProvider;
 
 	protected String assosiatedCamera;
+
+	protected BlobDetectionUtils blobDetectionUtils;
 
 	public PostPackageBehavior() {
 	}
@@ -130,7 +133,8 @@ public class PostPackageBehavior implements IPostPackageBehavior {
 				logger.debug("handling the current bad code {}. The code removes is {} " , code, codes.get(0));
 
 				badCode.add(codes.remove(0));
-				return generateBadProducts(badCode, ProductStatus.SENT_TO_PRINTER_UNREAD);
+				ProductStatus productStatus = blobDetectionUtils.isBlobDetected(code) ? ProductStatus.BLOB_ACTIVATED : ProductStatus.SENT_TO_PRINTER_UNREAD;
+				return generateBadProducts(badCode, productStatus);
 			}
 		}
 		return Collections.emptyList();
@@ -207,5 +211,9 @@ public class PostPackageBehavior implements IPostPackageBehavior {
 	public void setAssosiatedCamera(String cameraName) {
 		this.assosiatedCamera = cameraName;
 
+	}
+
+	public void setBlobDetectionUtils(BlobDetectionUtils blobDetectionUtils) {
+		this.blobDetectionUtils = blobDetectionUtils;
 	}
 }

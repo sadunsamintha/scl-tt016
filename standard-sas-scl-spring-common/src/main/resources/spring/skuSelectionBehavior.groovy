@@ -13,6 +13,7 @@ beans{
 		case 'OPERATOR_PARTIAL':
 			skuSelectionBehavior(SkuSelectionDuringProduction){
 				productionParameters=ref('productionParameters')
+				unknownSkuProvider=ref('unknownSkuProvider')
 			}
 			break
 		default:

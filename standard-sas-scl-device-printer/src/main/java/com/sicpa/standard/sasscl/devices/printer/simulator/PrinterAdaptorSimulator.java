@@ -96,8 +96,8 @@ public class PrinterAdaptorSimulator extends PrinterAdaptor implements ICodeProv
 				return null;
 			}
 
-			final String code = codeBuffer.remove(0);
-			logger.info("Printed Code: {}", code);
+			String code = codeBuffer.remove(0);
+			logger.debug("Printed Code: {}", code);
 			return code;
 		}
 	}

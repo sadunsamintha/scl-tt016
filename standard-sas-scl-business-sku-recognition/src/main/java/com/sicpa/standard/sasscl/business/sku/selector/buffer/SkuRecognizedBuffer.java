@@ -1,20 +1,25 @@
 package com.sicpa.standard.sasscl.business.sku.selector.buffer;
 
-import static java.util.stream.Collectors.groupingBy;
+import static java.util.Comparator.comparingInt;
 
+import java.util.Collection;
 import java.util.Comparator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 
+import org.apache.commons.collections.buffer.CircularFifoBuffer;
+
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
 import com.sicpa.standard.sasscl.business.sku.selector.ISkuRecognizedBuffer;
 import com.sicpa.standard.sasscl.model.SKU;
 
 public class SkuRecognizedBuffer implements ISkuRecognizedBuffer {
 
-	private final LinkedList<SKU> skus = new LinkedList<SKU>();
-	private int bufferSize;
+	private final CircularFifoBuffer skus;
+
+	public SkuRecognizedBuffer(int bufferSize) {
+		skus = new CircularFifoBuffer(bufferSize);
+	}
 
 	@Override
 	public void reset() {
@@ -26,22 +31,15 @@ public class SkuRecognizedBuffer implements ISkuRecognizedBuffer {
 	@Override
 	public void add(SKU sku) {
 		synchronized (skus) {
-			if (isFull()) {
-				skus.removeFirst();
-			}
 			skus.add(sku);
-		}
-	}
-
-	private boolean isFull() {
-		synchronized (skus) {
-			return skus.size() >= bufferSize;
 		}
 	}
 
 	@Override
 	public boolean isReady() {
-		return isFull();
+		synchronized (skus) {
+			return skus.isFull();
+		}
 	}
 
 	@Override
@@ -51,18 +49,27 @@ public class SkuRecognizedBuffer implements ISkuRecognizedBuffer {
 
 	private SKU getMostOccurringSku() {
 		synchronized (skus) {
-			Map<Integer, List<SKU>> skusById = skus.stream().collect(groupingBy(SKU::getId));
-
-			Comparator<Entry<Integer, List<SKU>>> skuListSizeComparator = (e1, e2) -> Integer.valueOf(
-					e1.getValue().size()).compareTo(e2.getValue().size());
-
-			SKU mostOccurringSku = skusById.entrySet().stream().max(skuListSizeComparator).get().getValue().get(0);
-
-			return mostOccurringSku;
+			Multimap<Integer, SKU> skusById = collectSkusById();
+			return getMostOccurringSku(skusById);
 		}
 	}
 
-	public void setBufferSize(int bufferSize) {
-		this.bufferSize = bufferSize;
+	private Multimap<Integer, SKU> collectSkusById() {
+		Multimap<Integer, SKU> skusById = ArrayListMultimap.create();
+		for (Object o : skus) {
+			SKU sku = (SKU) o;
+			skusById.put(sku.getId(), sku);
+		}
+		return skusById;
 	}
+
+	private SKU getMostOccurringSku(Multimap<Integer, SKU> skusById) {
+		Comparator<Entry<Integer, Collection<SKU>>> valueListSizeComparator = comparingInt(e -> e.getValue().size());
+
+		SKU mostOccurringSku = skusById.asMap().entrySet().stream().max(valueListSizeComparator).get().getValue()
+				.iterator().next();
+
+		return mostOccurringSku;
+	}
+
 }

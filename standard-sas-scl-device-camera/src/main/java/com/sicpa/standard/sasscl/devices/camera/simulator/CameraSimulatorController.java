@@ -1,23 +1,5 @@
 package com.sicpa.standard.sasscl.devices.camera.simulator;
 
-import static com.sicpa.standard.gui.utils.ImageUtils.changeSizeKeepRatio;
-import static com.sicpa.standard.gui.utils.ImageUtils.createCameraImage;
-
-import java.awt.Image;
-import java.io.File;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Random;
-
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang3.tuple.Pair;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.sicpa.standard.camera.controller.CameraException;
 import com.sicpa.standard.camera.controller.ICameraControllerListener;
 import com.sicpa.standard.camera.controller.ICameraImageSaver;
@@ -34,10 +16,24 @@ import com.sicpa.standard.camera.parser.event.ErrorCodeEventArgs;
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.messages.MessageEvent;
 import com.sicpa.standard.gui.utils.ThreadUtils;
+import com.sicpa.standard.sasscl.devices.camera.CameraConstants;
 import com.sicpa.standard.sasscl.devices.simulator.gui.SimulatorControlView;
 import com.sicpa.standard.sasscl.messages.MessageEventKey;
 import com.sicpa.standard.sasscl.model.ProductionMode;
 import com.sicpa.standard.sasscl.model.ProductionParameters;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.awt.*;
+import java.io.File;
+import java.io.OutputStream;
+import java.util.*;
+import java.util.List;
+
+import static com.sicpa.standard.gui.utils.ImageUtils.changeSizeKeepRatio;
+import static com.sicpa.standard.gui.utils.ImageUtils.createCameraImage;
 
 /**
  * 
@@ -166,11 +162,17 @@ public class CameraSimulatorController implements ICognexCameraController<Camera
 	private Pair<Boolean, String> defaultCodeTransformerImpl(String codeGenerated) {
 		String code;
 		boolean valid;
-		if (StringUtils.isNotBlank(codeGenerated) && shouldGenerateGoodCode()) {
+		int randomValue = new Random().nextInt(100);
+		if (StringUtils.isNotBlank(codeGenerated) && shouldGenerateGoodCode(randomValue)) {
 			code = codeGenerated;
 			valid = true;
-		} else {
-			code = "";
+		} else if(StringUtils.isNotBlank(codeGenerated) && shouldGenerateBlobDetectedCode(randomValue)) {
+			code = CameraConstants.getCameraBlobErrorCode().getStringCode();
+			valid = false;
+		}
+		 else {
+//			code = "";
+			code = CameraConstants.getCameraErrorCode().getStringCode();
 			valid = false;
 		}
 		return Pair.of(valid, code);
@@ -188,9 +190,15 @@ public class CameraSimulatorController implements ICognexCameraController<Camera
 		return transformer.apply(codeGenerated);
 	}
 
-	private boolean shouldGenerateGoodCode() {
-		return new Random().nextInt(100) >= config.getPercentageBadCode();
+	private boolean shouldGenerateGoodCode(int randomVal) {
+		return randomVal  >= config.getPercentageBadCode() && !shouldGenerateBlobDetectedCode(randomVal);
 	}
+
+	private boolean shouldGenerateBlobDetectedCode(int randomVal) {
+		return randomVal >= (100 - config.getPercentageBlobCode());
+	}
+
+
 
 	public String getGoodCode() {
 		String code;
@@ -480,17 +488,17 @@ public class CameraSimulatorController implements ICognexCameraController<Camera
 
 	@Override
 	public void writeAliasValueInt(String alias, int cellValue) throws CameraException {
-
+		logger.info("writeAliasValueInt {}={}", alias, "" + cellValue);
 	}
 
 	@Override
 	public void writeAliasValueString(String alias, String cellValue) throws CameraException {
-
+		logger.info("writeAliasValueString {}={}", alias, cellValue);
 	}
 
 	@Override
 	public void writeAliasValue(String alias, String cellValue) throws CameraException {
-
+		logger.info("writeAliasValue {}={}", alias, cellValue);
 	}
 
 	@Override

@@ -40,6 +40,8 @@
 
 	<bean id="exportActivationBehavior" class="com.sicpa.standard.sasscl.business.activation.impl.activationBehavior.ExportActivationBehavior">
 		<property name="productionParameters" ref="productionParameters" />
+		<property name="blobDetectionUtils" ref="blobDetectionUtils" />
+
 	</bean>
 
 	<bean id="maintenanceActivationBehavior" class="com.sicpa.standard.sasscl.business.activation.impl.activationBehavior.MaintenanceActivationBehavior">
@@ -64,6 +66,15 @@
 	<bean id="refeedActivationBehaviorCodeTypeCheck" parent="refeedActivationBehavior">
 		<property name="productValidator" ref="productValidatorCodeTypeCheck" />
 	</bean>
+
+	<bean id="blobDetectionUtils" class="com.sicpa.standard.sasscl.devices.camera.blobDetection.BlobDetectionUtils">
+		<constructor-arg ref="blobDetectionProvider"/>
+	</bean>
+	<bean id="blobDetectionProvider" class="com.sicpa.standard.sasscl.devices.camera.blobDetection.BlobDetectionSKUProvider">
+		<constructor-arg ref="productionParameters" />
+		<constructor-arg value="${blobDetection.mode}" />
+	</bean>
+
 
 </beans>
 
