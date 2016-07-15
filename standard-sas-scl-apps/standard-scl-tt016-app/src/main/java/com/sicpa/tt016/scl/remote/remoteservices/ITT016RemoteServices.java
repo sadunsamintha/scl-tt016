@@ -13,8 +13,9 @@ import com.sicpa.tt016.common.dto.OfflineSessionDTO;
 import com.sicpa.tt016.common.dto.SkuDTO;
 import com.sicpa.tt016.common.security.authenticator.IMoroccoAuthenticator;
 import com.sicpa.tt016.master.scl.exceptions.InternalException;
+import com.sicpa.tt016.scl.remote.RemoteServerRefeedAvailability;
 
-public interface ITT016RemoteServices {
+public interface ITT016RemoteServices extends RemoteServerRefeedAvailability {
 
 	int PRODUCTION_MODE_STANDARD = 0;
 	int PRODUCTION_MODE_REFEED = 7;
@@ -46,7 +47,5 @@ public interface ITT016RemoteServices {
 	String getBisTrainerPassword(String user);
 
 	int getSubsystemId();
-
-	boolean isRefeedAvailable();
 
 }

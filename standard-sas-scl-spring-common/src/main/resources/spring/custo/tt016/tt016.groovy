@@ -1,3 +1,4 @@
+import com.sicpa.tt016.scl.remote.simulator.TT016RemoteServerSimulator
 import com.sicpa.tt016.scl.TT016Bootstrap
 import com.sicpa.tt016.devices.camera.alert.TT016TrilightWarningCameraAlert
 import com.sicpa.tt016.refeed.TT016RefeedAvailabilityProvider
@@ -14,6 +15,19 @@ beans{
 
 	if(serverBehavior == "STANDARD") {
 		importBeans('spring/custo/tt016/tt016-server.groovy')
+	} else {
+		remoteServer(TT016RemoteServerSimulator,ref('simulatorRemoteModel')){
+			simulatorGui=ref('simulatorGui')
+			cryptoFieldsConfig=ref('cryptoFieldsConfig')
+			productionParameters=ref('productionParameters')
+			serviceProviderManager=ref('cryptoProviderManager')
+			storage=ref('storage')
+			fileSequenceStorageProvider=ref('fileSequenceStorageProvider')
+			remoteServerSimulatorOutputFolder = profilePath+'/simulProductSend'
+			cryptoMode=props['server.simulator.cryptoMode']
+			cryptoModelPreset=props['server.simulator.cryptoModelPreset']
+			isRefeedAvailable=props['refeedAvailable']
+		}
 	}
 
 	addAlias('bootstrapAlias','bootstrap')
@@ -23,9 +37,10 @@ beans{
 		stopReasonViewController=ref('stopReasonViewController')
 		codeTypeId=props['codeTypeId']
 		unknownSkuProvider=ref('unknownSkuProvider')
-		tt016RemoteServices=ref('remoteServices')
+		remoteServerRefeedAvailability=ref('remoteServer')
 		refeedAvailabilityProvider=ref('refeedAvailabilityProvider')
 	}
+
 
 	importBeans('spring/custo/tt016/tt016-view.xml')
 	importBeans('spring/offlineCounting.xml')
@@ -39,4 +54,6 @@ beans{
 		isRefeedAvailableInRemoteServer=props['refeedAvailable']
 		isHeuftSystem=props['heuftSystem']
 	}
+
+
 }

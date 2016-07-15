@@ -72,7 +72,7 @@ public class TT016RemoteServices implements ITT016RemoteServices {
 	}
 
 	@Override
-	public boolean isRefeedAvailable() {
+	public boolean isRemoteRefeedAvailable() {
 		// let's mock this value temporary
 		return true;
 	}

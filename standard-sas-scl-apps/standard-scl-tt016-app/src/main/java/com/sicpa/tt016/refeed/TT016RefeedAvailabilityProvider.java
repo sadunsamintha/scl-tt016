@@ -1,5 +1,7 @@
 package com.sicpa.tt016.refeed;
 
+import com.sicpa.tt016.scl.remote.RemoteServerRefeedAvailability;
+
 /**
  * Class responsible to know if the refeed {@link com.sicpa.standard.sasscl.model.ProductionMode} is available in the system.
  */
