@@ -1,27 +1,23 @@
 package com.sicpa.tt016.scl.remote.assembler;
 
-import static com.sicpa.tt016.common.dto.NonActivationSessionDTO.EXPORT_SESSION;
-import static com.sicpa.tt016.common.dto.NonActivationSessionDTO.MAINTENANCE_SESSION;
-import static com.sicpa.tt016.common.dto.NonActivationSessionDTO.OFFLINE_SESSION;
-import static com.sicpa.tt016.common.model.EjectionReason.UNREADABLE_INT;
-import static com.sicpa.tt016.common.model.EjectionReason.UNREADABLE_WITH_CODE_INT;
-import static com.sicpa.tt016.common.model.ProductStatus.VALID_ACTIV_INT;
-import static com.sicpa.tt016.common.model.ProductStatus.VALID_TYPE_MISMATCH_INT;
-import static com.sicpa.tt016.scl.remote.remoteservices.ITT016RemoteServices.PRODUCTION_MODE_STANDARD;
+import com.sicpa.standard.sasscl.model.PackagedProducts;
+import com.sicpa.standard.sasscl.model.Product;
+import com.sicpa.standard.sasscl.model.ProductStatus;
+import com.sicpa.tt016.common.dto.*;
+import com.sicpa.tt016.common.model.*;
+import com.sicpa.tt016.model.TT016ProductStatus;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import com.sicpa.standard.sasscl.model.PackagedProducts;
-import com.sicpa.standard.sasscl.model.Product;
-import com.sicpa.standard.sasscl.model.ProductStatus;
-import com.sicpa.tt016.common.dto.*;
-import com.sicpa.tt016.common.model.ActivationEjection;
-import com.sicpa.tt016.common.model.CodeType;
-import com.sicpa.tt016.common.model.EjectionReason;
-import com.sicpa.tt016.common.model.SKU;
-import com.sicpa.tt016.common.model.Subsystem;
+import static com.sicpa.tt016.common.dto.NonActivationSessionDTO.*;
+import static com.sicpa.tt016.common.model.EjectionReason.QUALITY;
+import static com.sicpa.tt016.common.model.EjectionReason.UNREADABLE_INT;
+import static com.sicpa.tt016.common.model.EjectionReason.UNREADABLE_WITH_CODE_INT;
+import static com.sicpa.tt016.common.model.ProductStatus.VALID_ACTIV_INT;
+import static com.sicpa.tt016.common.model.ProductStatus.VALID_TYPE_MISMATCH_INT;
+import static com.sicpa.tt016.scl.remote.remoteservices.ITT016RemoteServices.PRODUCTION_MODE_STANDARD;
 
 public class ProductionDataConverter {
 
@@ -58,7 +54,10 @@ public class ProductionDataConverter {
 			remoteStatus = UNREADABLE_WITH_CODE_INT;
 		} else if (status.equals(ProductStatus.TYPE_MISMATCH)) {
 			remoteStatus = VALID_TYPE_MISMATCH_INT;
+		} else if (status.equals(TT016ProductStatus.EJECTED_PRODUCER)) {
+			remoteStatus = QUALITY;
 		}
+
 		return remoteStatus;
 	}
 

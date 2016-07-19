@@ -8,6 +8,7 @@ import com.sicpa.standard.sasscl.business.postPackage.IPostPackage;
 import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState;
 import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowStateChangedEvent;
 import com.sicpa.standard.sasscl.model.Product;
+import com.sicpa.standard.sasscl.model.ProductStatus;
 import com.sicpa.standard.sasscl.monitoring.MonitoringService;
 import com.sicpa.standard.sasscl.monitoring.system.event.BasicSystemEvent;
 import com.sicpa.tt016.model.event.TT016NewProductEvent;
@@ -29,16 +30,17 @@ public class TT016ActivationWithPostPackage extends Activation {
 	}
 
 	protected void fireNewProduct(Product product) {
-		if (!product.getStatus().equals(SENT_TO_PRINTER_WASTED)) {
+		ProductStatus productStatus = product.getStatus();
+
+		if (!productStatus.equals(SENT_TO_PRINTER_WASTED)) {
 			logger.debug("New product = {}", product);
 		}
 
 		MonitoringService.addSystemEvent(new BasicSystemEvent(PRODUCT_SCANNED));
 
-		EventBusService.post(
-				!product.getStatus().equals(SENT_TO_PRINTER_WASTED)
-						? new TT016NewProductEvent(product)
-						: new NewProductEvent(product));
+		EventBusService.post(!productStatus.equals(SENT_TO_PRINTER_WASTED)
+				? new TT016NewProductEvent(product)
+				: new NewProductEvent(product));
 	}
 
 	public IPostPackage getPostPackage() {

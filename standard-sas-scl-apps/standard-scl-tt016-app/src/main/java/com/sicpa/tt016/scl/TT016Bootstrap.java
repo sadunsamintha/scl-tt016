@@ -2,14 +2,18 @@ package com.sicpa.tt016.scl;
 
 import com.sicpa.standard.client.common.utils.PropertiesUtils;
 import com.sicpa.standard.client.common.view.screensflow.ScreenTransition;
+import com.sicpa.standard.gui.plaf.SicpaColor;
 import com.sicpa.standard.sasscl.Bootstrap;
 import com.sicpa.standard.sasscl.controller.flow.statemachine.FlowTransition;
+import com.sicpa.standard.sasscl.custoBuilder.CustoBuilder;
 import com.sicpa.standard.sasscl.messages.ActionMessageType;
 import com.sicpa.standard.sasscl.messages.MessageEventKey;
 import com.sicpa.standard.sasscl.model.CodeType;
 import com.sicpa.standard.sasscl.provider.impl.UnknownSkuProvider;
 import com.sicpa.standard.sasscl.utils.ConfigUtilEx;
 import com.sicpa.standard.sasscl.view.main.MainPanelGetter;
+import com.sicpa.tt016.model.TT016ProductStatus;
+import com.sicpa.tt016.model.statistics.TT016StatisticsKey;
 import com.sicpa.tt016.refeed.TT016RefeedAvailabilityProvider;
 import com.sicpa.tt016.scl.remote.remoteservices.ITT016RemoteServices;
 import com.sicpa.tt016.view.selection.stop.StopReasonViewController;
@@ -42,6 +46,12 @@ public class TT016Bootstrap extends Bootstrap {
 		noStopIfDmxDetectedInExport();
 		selectStopReasonWhenProductionStop();
 		setUnknownSkuCodeType();
+		addProducerEjectedProductStatus();
+	}
+
+	private void addProducerEjectedProductStatus() {
+		CustoBuilder.addProductStatus(TT016ProductStatus.EJECTED_PRODUCER, TT016StatisticsKey.EJECTED_PRODUCER, -1,
+				SicpaColor.RED, 3, "stats.display.ejectedProducer", true);
 	}
 
 	private void messageCusto() {
