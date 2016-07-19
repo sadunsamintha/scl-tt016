@@ -21,4 +21,6 @@ public class TT016MasterConnector extends AbstractMasterConnector implements ICo
 	protected boolean checkIsAlive() {
 		return remoteServices.isAlive();
 	}
+
+
 }

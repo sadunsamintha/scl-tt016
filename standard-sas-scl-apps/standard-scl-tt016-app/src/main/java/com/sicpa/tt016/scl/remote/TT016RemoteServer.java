@@ -38,7 +38,7 @@ import com.sicpa.tt016.scl.remote.assembler.ProductionDataConverter;
 import com.sicpa.tt016.scl.remote.assembler.SkuConverter;
 import com.sicpa.tt016.scl.remote.remoteservices.ITT016RemoteServices;
 
-public class TT016RemoteServer extends AbstractRemoteServer implements IBisCredentialProvider {
+public class TT016RemoteServer extends AbstractRemoteServer implements IBisCredentialProvider, RemoteServerRefeedAvailability {
 
 	private static final Logger logger = LoggerFactory.getLogger(TT016RemoteServer.class);
 	// http://psdwiki.sicpa-net.ads/pages/viewpage.action?spaceKey=morocco&title=Development+and+Integration+Servers
@@ -250,5 +250,8 @@ public class TT016RemoteServer extends AbstractRemoteServer implements IBisCrede
 		this.refeedAvailabilityProvider = refeedAvailabilityProvider;
 	}
 
-
+	@Override
+	public boolean isRemoteRefeedAvailable() {
+		return remoteServices.isRemoteRefeedAvailable();
+	}
 }

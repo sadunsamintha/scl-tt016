@@ -59,7 +59,6 @@ public class Activation implements IActivation {
 	 */
 	@Override
 	public void receiveCode(Code code, boolean good) {
-
 		String cameraName = code.getSource();
 
 		logger.debug("Code received at {} = {} , Is good code = {}", new Object[] { cameraName, code, good });
@@ -78,12 +77,13 @@ public class Activation implements IActivation {
 			goodAfterPreAction = good;
 		}
 
-		Product product;
-
 		if (activationBehaviorProvider.get() == null) {
 			logger.error("Activation behavior is null");
 			return;
 		}
+
+		Product product;
+
 		try {
 			product = activationBehaviorProvider.get().receiveCode(codeAfterPreAction, goodAfterPreAction);
 

@@ -15,7 +15,7 @@ import com.sicpa.standard.sasscl.view.main.MainPanelGetter;
 import com.sicpa.tt016.model.TT016ProductStatus;
 import com.sicpa.tt016.model.statistics.TT016StatisticsKey;
 import com.sicpa.tt016.refeed.TT016RefeedAvailabilityProvider;
-import com.sicpa.tt016.scl.remote.remoteservices.ITT016RemoteServices;
+import com.sicpa.tt016.scl.remote.RemoteServerRefeedAvailability;
 import com.sicpa.tt016.view.selection.stop.StopReasonViewController;
 import org.springframework.core.io.ClassPathResource;
 
@@ -37,7 +37,8 @@ public class TT016Bootstrap extends Bootstrap {
 	private UnknownSkuProvider unknownSkuProvider;
 	private int codeTypeId;
 	private TT016RefeedAvailabilityProvider refeedAvailabilityProvider;
-	private ITT016RemoteServices tt016RemoteServices;
+
+	private RemoteServerRefeedAvailability remoteServerRefeedAvailability;
 
 	@Override
 	public void executeSpringInitTasks() {
@@ -50,8 +51,8 @@ public class TT016Bootstrap extends Bootstrap {
 	}
 
 	private void addProducerEjectedProductStatus() {
-		CustoBuilder.addProductStatus(TT016ProductStatus.EJECTED_PRODUCER, TT016StatisticsKey.EJECTED_PRODUCER, -1,
-				SicpaColor.RED, 3, "stats.display.ejectedProducer", true);
+		CustoBuilder.handleNewStatistic(TT016ProductStatus.EJECTED_PRODUCER, TT016StatisticsKey.EJECTED_PRODUCER,
+				SicpaColor.RED, 3, "stats.display.ejectedProducer");
 	}
 
 	private void messageCusto() {
@@ -67,9 +68,9 @@ public class TT016Bootstrap extends Bootstrap {
 	}
 
 	private void initIsRefeedAvailable() {
-		boolean isRefeedAvailable = tt016RemoteServices.isRefeedAvailable();
-		refeedAvailabilityProvider.setIsRefeedAvailableInRemoteServer(isRefeedAvailable);
-		saveIsRefeedAvailable(isRefeedAvailable);
+		boolean isRefeedAvailableInRemoteServer = remoteServerRefeedAvailability.isRemoteRefeedAvailable();
+		refeedAvailabilityProvider.setIsRefeedAvailableInRemoteServer(isRefeedAvailableInRemoteServer);
+		saveIsRefeedAvailable(isRefeedAvailableInRemoteServer);
 	}
 
 	private void saveIsRefeedAvailable(boolean isRefeedAvailable) {
@@ -118,8 +119,8 @@ public class TT016Bootstrap extends Bootstrap {
 	}
 
 
-	public void setTt016RemoteServices(ITT016RemoteServices tt016RemoteServices) {
-		this.tt016RemoteServices = tt016RemoteServices;
+	public void setRemoteServerRefeedAvailability(RemoteServerRefeedAvailability remoteServerRefeedAvailability) {
+		this.remoteServerRefeedAvailability = remoteServerRefeedAvailability;
 	}
 
 	public void setRefeedAvailabilityProvider(TT016RefeedAvailabilityProvider refeedAvailabilityProvider) {

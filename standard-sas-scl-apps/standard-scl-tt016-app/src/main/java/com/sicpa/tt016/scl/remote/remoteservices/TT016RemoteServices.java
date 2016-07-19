@@ -39,7 +39,8 @@ public class TT016RemoteServices implements ITT016RemoteServices {
 	private static final String CODING_SERVICE_NAME = "CodingActivationBean/remote";
 	private static final String BIS_SERVICE_NAME = "BisUserManagerBean/remote";
 	private static final int PRODUCTION_MODE_STANDARD_ID = 0;
-	private static final int PRODUCTION_MODE_EXPORT_ID = 1;
+	private static final int PRODUCTION_MODE_REFEED = 7;
+
 
 	private ICodingActivationRemote codingActivation;
 	private IBisUserManagerRemote bisUserManagerRemote;
@@ -72,9 +73,14 @@ public class TT016RemoteServices implements ITT016RemoteServices {
 	}
 
 	@Override
-	public boolean isRefeedAvailable() {
-		// let's mock this value temporary
-		return true;
+	@TimeoutLifeCheck
+	public boolean isRemoteRefeedAvailable() {
+		try {
+			return codingActivation.isRefeedMode(subsystemId);
+		} catch (InternalException ex) {
+			logger.error("Error retriveing the remote refeed mode", ex);
+			return false;
+		}
 	}
 
 	@Override
@@ -147,7 +153,7 @@ public class TT016RemoteServices implements ITT016RemoteServices {
 	@Timeout
 	public void sendRefeedProduction(CodingActivationSessionDTO activSession) throws InternalException {
 		logger.info("Sending refeed data");
-		codingActivation.sendProductionData(PRODUCTION_MODE_EXPORT_ID, activSession, emptyList(), subsystemId);
+		codingActivation.sendProductionData(PRODUCTION_MODE_REFEED, activSession, emptyList(), subsystemId);
 	}
 
 	@Override
@@ -193,5 +199,9 @@ public class TT016RemoteServices implements ITT016RemoteServices {
 
 	public void setSubsystemId(int subsystemId) {
 		this.subsystemId = subsystemId;
+	}
+
+	public void setWithBis(boolean withBis) {
+		this.withBis = withBis;
 	}
 }

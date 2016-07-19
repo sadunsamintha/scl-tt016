@@ -12,8 +12,6 @@ public class PlcCameraResultParser {
 	 * Method that parses the camera result received by the application from the PLC and returns an instance
 	 * representing such information.
 	 * <br><br>
-	 * An exception IllegalArgumentException is thrown if supplied String argument is null, blank or not of the
-	 * correct length.
 	 *
 	 * @param plcCameraResult Camera result sent by the PLC. The argument is an int where each byte corresponds to a
 	 *                        value. E.g.: 00AABBCC; 00 is the last byte of the encrypted code; AA - is the index of
