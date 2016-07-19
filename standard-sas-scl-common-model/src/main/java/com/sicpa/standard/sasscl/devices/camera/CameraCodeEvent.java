@@ -5,18 +5,12 @@ import com.sicpa.standard.sasscl.model.Code;
 public abstract class CameraCodeEvent {
 
 	private Code code;
-	private ICameraAdaptor source;
 
-	public CameraCodeEvent(Code code, ICameraAdaptor source) {
+	public CameraCodeEvent(Code code) {
 		this.code = code;
-		this.source = source;
 	}
 
 	public Code getCode() {
 		return this.code;
-	}
-
-	public ICameraAdaptor getSource() {
-		return source;
 	}
 }

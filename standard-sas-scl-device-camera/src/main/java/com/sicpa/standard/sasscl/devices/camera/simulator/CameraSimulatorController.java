@@ -106,12 +106,7 @@ public class CameraSimulatorController implements ICognexCameraController<Camera
 		deviceId = "camera" + idCount++;
 	}
 
-	public CameraSimulatorController(CameraSimulatorConfig config, ProductionParameters productionParameters,
-			SimulatorControlView simulatorGui) {
-		this(config);
-		this.productionParameters = productionParameters;
-		this.simulatorGui = simulatorGui;
-	}
+
 
 	public void setCodeProvider(ICodeProvider codeProvider) {
 		this.codeProvider = codeProvider;

@@ -22,6 +22,8 @@ public class Code extends Customizable implements Serializable {
 
 	private Integer version;
 
+	private String source;
+
 	public CodeType getCodeType() {
 		return this.codeType;
 	}
@@ -53,6 +55,11 @@ public class Code extends Customizable implements Serializable {
 	public Code(final String stringCode) {
 		super();
 		this.stringCode = stringCode;
+	}
+
+	public Code(String stringCode, String source) {
+		this.stringCode = stringCode;
+		this.source = source;
 	}
 
 	public String getStringCode() {
@@ -107,5 +114,13 @@ public class Code extends Customizable implements Serializable {
 
 	public Integer getVersion() {
 		return version;
+	}
+
+	public String getSource() {
+		return source;
+	}
+
+	public void setSource(String source) {
+		this.source = source;
 	}
 }

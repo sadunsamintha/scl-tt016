@@ -169,7 +169,7 @@ public class CameraSimulatorTest extends AbstractCameraAdaptorTest {
 	@Test
 	public void testCameraEvent() {
 		Code code = new Code("E");
-		CameraGoodCodeEvent event = new CameraGoodCodeEvent(code, Mockito.mock(ICameraAdaptor.class));
+		CameraGoodCodeEvent event = new CameraGoodCodeEvent(code);
 		Assert.assertSame(code, event.getCode());
 	}
 }

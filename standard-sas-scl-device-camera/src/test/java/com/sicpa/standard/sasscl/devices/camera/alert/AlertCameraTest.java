@@ -98,7 +98,7 @@ public class AlertCameraTest {
 
 		// bad code
 		for (int i = 0; i < 15; i++) {
-			cca.receiveCameraCode(new CameraBadCodeEvent(new Code("E"), cameraAdaptor));
+			cca.receiveCameraCode(new CameraBadCodeEvent(new Code("E")));
 		}
 
 		executeScheduledTask();
@@ -199,7 +199,7 @@ public class AlertCameraTest {
 
 		// bad code
 		for (int i = 0; i < 15; i++) {
-			cca.receiveCameraCode(new CameraBadCodeEvent(new Code("E"), cameraAdaptor));
+			cca.receiveCameraCode(new CameraBadCodeEvent(new Code("E")));
 		}
 
 		for (int i = 0; i < 5; i++)

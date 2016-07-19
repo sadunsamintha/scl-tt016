@@ -15,4 +15,5 @@ public interface IStartableDevice extends IDevice {
 
 	void setName(String name);
 
+	String getName();
 }

@@ -24,7 +24,7 @@ public class PostPackage implements IPostPackage {
 	protected ProductionParameters productionParameters;
 
 	// map device postpackage behavior, to be able to retrieve easily the behavior related to the device
-	protected final Map<IStartableDevice, IPostPackageBehavior> postPackageByModule = new HashMap<IStartableDevice, IPostPackageBehavior>();
+	protected final Map<String, IPostPackageBehavior> postPackageByModule = new HashMap<>();
 
 	protected ProductionConfigProvider productionConfigProvider;
 
@@ -44,7 +44,7 @@ public class PostPackage implements IPostPackage {
 		if (!isEnabled()) {
 			return;
 		}
-		IPostPackageBehavior behavior = getModule(requestor);
+		IPostPackageBehavior behavior = getModule(((IStartableDevice) requestor).getName());
 		if (behavior != null) {
 			behavior.addCodes(codes);
 		} else {
@@ -52,18 +52,18 @@ public class PostPackage implements IPostPackage {
 		}
 	}
 
-	protected IPostPackageBehavior getModule(final Object key) {
+	protected IPostPackageBehavior getModule(final String key) {
 		return postPackageByModule.get(key);
 	}
 
 	@Override
-	public List<Product> handleBadCode(Code code, Object receiver) {
-		return getModule(receiver).handleBadCode(code);
+	public List<Product> handleBadCode(Code code) {
+		return getModule(code.getSource()).handleBadCode(code);
 	}
 
 	@Override
-	public List<Product> handleGoodCode(Code code, Object receiver) {
-		return getModule(receiver).handleGoodCode(code);
+	public List<Product> handleGoodCode(Code code) {
+		return getModule(code.getSource()).handleGoodCode(code);
 	}
 
 	@Override
@@ -80,14 +80,14 @@ public class PostPackage implements IPostPackage {
 	public void registerModule(IPostPackageBehavior behavior, List<IStartableDevice> relatedDevices) {
 		synchronized (postPackageByModule) {
 			for (IStartableDevice key : relatedDevices) {
-				postPackageByModule.put(key, behavior);
+				postPackageByModule.put(key.getName(), behavior);
 			}
 		}
 	}
 
 	@Override
 	public List<Product> notifyProductionStopped() {
-		List<Product> res = new ArrayList<Product>();
+		List<Product> res = new ArrayList<>();
 
 		for (IPostPackageBehavior behavior : postPackageByModule.values()) {
 			res.addAll(behavior.notifyProductionStopped());

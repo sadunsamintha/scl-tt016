@@ -4,8 +4,8 @@ import com.sicpa.standard.sasscl.model.Code;
 
 public class CameraGoodCodeEvent extends CameraCodeEvent {
 
-	public CameraGoodCodeEvent(Code code, ICameraAdaptor source) {
-		super(code, source);
+	public CameraGoodCodeEvent(Code code) {
+		super(code);
 	}
 
 	@Override

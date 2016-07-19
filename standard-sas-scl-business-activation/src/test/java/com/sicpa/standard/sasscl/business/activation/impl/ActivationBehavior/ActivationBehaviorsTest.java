@@ -111,10 +111,10 @@ public class ActivationBehaviorsTest {
 
 		EventBusService.register(msgCatcher);
 
-		EventBusService.post(new CameraBadCodeEvent(new Code(""), cameraAdaptor));
+		EventBusService.post(new CameraBadCodeEvent(new Code("")));
 		Assert.assertEquals(ProductStatus.EXPORT, status);
 
-		activation.receiveCameraCode(new CameraGoodCodeEvent(new Code("132465"), cameraAdaptor));
+		activation.receiveCameraCode(new CameraGoodCodeEvent(new Code("132465")));
 	}
 
 	@Test

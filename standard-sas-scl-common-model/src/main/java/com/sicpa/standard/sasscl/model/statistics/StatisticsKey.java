@@ -65,7 +65,7 @@ public class StatisticsKey implements Serializable {
 		return true;
 	}
 
-	private static class ReadOnlyStatisticsKey extends StatisticsKey {
+	public static class ReadOnlyStatisticsKey extends StatisticsKey {
 		private static final long serialVersionUID = 1L;
 
 		public ReadOnlyStatisticsKey(String description) {

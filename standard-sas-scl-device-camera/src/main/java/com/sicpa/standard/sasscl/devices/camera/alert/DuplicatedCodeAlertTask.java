@@ -57,7 +57,7 @@ public class DuplicatedCodeAlertTask extends AbstractAlertTask {
 
 	@Subscribe
 	public void receiveCameraCode(CameraGoodCodeEvent cameraEvent) {
-		String cameraName = cameraEvent.getSource().getName();
+		String cameraName = cameraEvent.getCode().getSource();
 		String currentCode = cameraEvent.getCode().getStringCode();
 		synchronized (lock) {
 			if (isDuplicate(cameraEvent)) {
@@ -81,7 +81,7 @@ public class DuplicatedCodeAlertTask extends AbstractAlertTask {
 	}
 
 	private boolean isDuplicate(CameraGoodCodeEvent cameraEvent) {
-		String cameraName = cameraEvent.getSource().getName();
+		String cameraName = cameraEvent.getCode().getSource();
 		String previousCode = getPreviousCode(cameraName);
 		String currentCode = cameraEvent.getCode().getStringCode();
 		return getModel().getThreshold() > 0 && previousCode != null && previousCode.equals(currentCode);
