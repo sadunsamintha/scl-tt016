@@ -4,7 +4,7 @@ import com.sicpa.tt016.devices.plc.PlcCameraResultParser;
 import junit.framework.Assert;
 import org.junit.Test;
 
-public class ProductStatusMergerTest {
+public class ProductValidatorTest {
 
 	// 'A' is "41" in hexadecimal
 	@Test
@@ -12,7 +12,7 @@ public class ProductStatusMergerTest {
 		String cameraCode = "0000A";
 		byte plcCameraCodeLastByte = PlcCameraResultParser.getPlcCameraResultLastByteEncryptedCode(0x41000000);
 
-		Assert.assertEquals(true, ProductStatusMerger.CodeComparator.isEqual(cameraCode, plcCameraCodeLastByte));
+		Assert.assertEquals(true, ProductValidator.isCodeLastByteEquals(cameraCode, plcCameraCodeLastByte));
 	}
 
 	// '1' is "31" in hexadecimal
@@ -21,7 +21,7 @@ public class ProductStatusMergerTest {
 		String cameraCode = "00001";
 		byte plcCameraCodeLastByte = PlcCameraResultParser.getPlcCameraResultLastByteEncryptedCode(0x31000000);
 
-		Assert.assertEquals(true, ProductStatusMerger.CodeComparator.isEqual(cameraCode, plcCameraCodeLastByte));
+		Assert.assertEquals(true,  ProductValidator.isCodeLastByteEquals(cameraCode, plcCameraCodeLastByte));
 	}
 
 	// '?' is "3F" in hexadecimal
@@ -30,6 +30,6 @@ public class ProductStatusMergerTest {
 		String cameraCode = "0000?";
 		byte plcCameraCodeLastByte = PlcCameraResultParser.getPlcCameraResultLastByteEncryptedCode(0x3F000000);
 
-		Assert.assertEquals(true, ProductStatusMerger.CodeComparator.isEqual(cameraCode, plcCameraCodeLastByte));
+		Assert.assertEquals(true,  ProductValidator.isCodeLastByteEquals(cameraCode, plcCameraCodeLastByte));
 	}
 }
