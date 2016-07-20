@@ -39,8 +39,8 @@ public abstract class PrinterAdaptor extends AbstractPrinterAdaptor implements I
 
 	protected volatile boolean initialized = false;
 	protected volatile boolean codeSent = false;
-	private volatile boolean startedOnce;
-	private SequenceStatus lastSequence = SequenceStatus.UNKNOWN;
+	protected volatile boolean startedOnce;
+	protected SequenceStatus lastSequence = SequenceStatus.UNKNOWN;
 
 	public PrinterAdaptor(IPrinterController controller) {
 		this();
@@ -119,7 +119,7 @@ public abstract class PrinterAdaptor extends AbstractPrinterAdaptor implements I
 		lastSequence = args;
 	}
 
-	private void notifyAllIssuesSolved() {
+	protected void notifyAllIssuesSolved() {
 		EventBusService.post(new DeviceReadyEvent(this));
 	}
 
@@ -145,7 +145,7 @@ public abstract class PrinterAdaptor extends AbstractPrinterAdaptor implements I
 		}
 	}
 
-	private void checkForCodeSent(int counter) {
+	protected void checkForCodeSent(int counter) {
 		if (status != DeviceStatus.CONNECTED) {
 			return;
 		}
