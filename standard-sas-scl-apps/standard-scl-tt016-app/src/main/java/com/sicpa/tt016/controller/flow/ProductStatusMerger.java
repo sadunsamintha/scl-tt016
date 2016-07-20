@@ -153,8 +153,8 @@ public class ProductStatusMerger {
 		static {
 			statusesMapping = new HashMap<>(4);
 			statusesMapping.put(PlcCameraProductStatus.GOOD, ProductStatus.AUTHENTICATED);
-			statusesMapping.put(PlcCameraProductStatus.UNREADABLE, ProductStatus.UNREAD);
-			statusesMapping.put(PlcCameraProductStatus.NO_INK, ProductStatus.NO_INK);
+			statusesMapping.put(PlcCameraProductStatus.UNREADABLE, ProductStatus.INK_DETECTED);
+			statusesMapping.put(PlcCameraProductStatus.NO_INK, ProductStatus.SENT_TO_PRINTER_UNREAD);
 			statusesMapping.put(PlcCameraProductStatus.EJECTED_PRODUCER, TT016ProductStatus.EJECTED_PRODUCER);
 		}
 

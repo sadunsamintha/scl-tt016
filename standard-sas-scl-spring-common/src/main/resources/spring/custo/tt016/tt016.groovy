@@ -47,7 +47,6 @@ beans{
 
 	importBeans('spring/custo/tt016/tt016Plc.xml')
 	importBeans('spring/custo/tt016/tt016Activation.xml')
-	importBeans('spring/custo/tt016/tt016Statistics.xml')
 	importBeans('spring/custo/tt016/tt016-view.xml')
 	importBeans('spring/offlineCounting.xml')
 

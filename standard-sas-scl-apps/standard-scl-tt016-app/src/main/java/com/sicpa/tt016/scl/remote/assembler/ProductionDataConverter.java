@@ -12,9 +12,7 @@ import java.util.Date;
 import java.util.List;
 
 import static com.sicpa.tt016.common.dto.NonActivationSessionDTO.*;
-import static com.sicpa.tt016.common.model.EjectionReason.QUALITY;
-import static com.sicpa.tt016.common.model.EjectionReason.UNREADABLE_INT;
-import static com.sicpa.tt016.common.model.EjectionReason.UNREADABLE_WITH_CODE_INT;
+import static com.sicpa.tt016.common.model.EjectionReason.*;
 import static com.sicpa.tt016.common.model.ProductStatus.VALID_ACTIV_INT;
 import static com.sicpa.tt016.common.model.ProductStatus.VALID_TYPE_MISMATCH_INT;
 import static com.sicpa.tt016.scl.remote.remoteservices.ITT016RemoteServices.PRODUCTION_MODE_STANDARD;
@@ -41,8 +39,8 @@ public class ProductionDataConverter {
 		long seq = product.getCode().getSequence();
 		int skuId = product.getSku().getId();
 
-		return new CodingActivationDTO(encoderId, seq, product.getActivationDate(),
-				remoteStatus, codeTypeId, skuId, subsystemId, null);
+		return new CodingActivationDTO(encoderId, seq, product.getActivationDate(), remoteStatus, codeTypeId, skuId,
+				subsystemId, null);
 	}
 
 	private int getRemoteProductStatus(ProductStatus status) {
@@ -50,12 +48,16 @@ public class ProductionDataConverter {
 
 		if (status.equals(ProductStatus.UNREAD)) {
 			remoteStatus = UNREADABLE_WITH_CODE_INT;
+		} else if (status.equals(ProductStatus.INK_DETECTED)) {
+			remoteStatus = UNREADABLE_WITH_CODE_INT;
+		} else if (status.equals(ProductStatus.SENT_TO_PRINTER_UNREAD)) {   //No ink
+			remoteStatus = UNREADABLE_WITHOUT_CODE_INT;
+		} else if (status.equals(TT016ProductStatus.EJECTED_PRODUCER)) {
+			remoteStatus = QUALITY;
 		} else if (status.equals(ProductStatus.NOT_AUTHENTICATED)) {
 			remoteStatus = UNREADABLE_WITH_CODE_INT;
 		} else if (status.equals(ProductStatus.TYPE_MISMATCH)) {
 			remoteStatus = VALID_TYPE_MISMATCH_INT;
-		} else if (status.equals(TT016ProductStatus.EJECTED_PRODUCER)) {
-			remoteStatus = QUALITY;
 		}
 
 		return remoteStatus;

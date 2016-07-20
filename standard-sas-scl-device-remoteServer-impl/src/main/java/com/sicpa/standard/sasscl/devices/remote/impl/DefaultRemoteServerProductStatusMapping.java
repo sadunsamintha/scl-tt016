@@ -31,7 +31,7 @@ public class DefaultRemoteServerProductStatusMapping extends RemoteServerProduct
 		add(ProductStatus.NOT_AUTHENTICATED, ProcessedProductsStatusDto.COUNTED_EJECTED_AUTHENTICATIONFAIL);//1=>14
 
 		//blob
-		add(ProductStatus.BLOB_ACTIVATED, ACTIVATED_BLOB_DETECTION); //100=>35
+		add(ProductStatus.INK_DETECTED, ACTIVATED_BLOB_DETECTION); //100=>35
 
 	}
 
