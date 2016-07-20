@@ -48,9 +48,9 @@ public class ProductStatusMerger {
 	public void receivePlcCameraResult(PlcCameraResultEvent event) {
 		PlcCameraResult plcCameraResult = event.getPlcCameraResult();
 
-		logger.debug("PLC camera result received: [index={}, decodingTime={}, productStatus={}]", plcCameraResult
-						.getIndex(), plcCameraResult.getDecodeTimeMs(), plcCameraResult.getPlcCameraProductStatus()
-				.getDescription());
+		logger.debug("PLC camera result received: [lastByteEncryptedCode={}, index={}, decodingTime={}, " +
+						"productStatus={}]", plcCameraResult.getEncryptedCodeLastByte(), plcCameraResult.getIndex(),
+				plcCameraResult.getDecodeTimeMs(), plcCameraResult.getPlcCameraProductStatus().getDescription());
 
 		synchronized (lock) {
 			insertMissingPlcCameraResultsIfNeeded(plcCameraResult.getIndex());
@@ -72,8 +72,7 @@ public class ProductStatusMerger {
 			}
 
 			if (!plcCameraResults.isEmpty()) {
-				logger.warn("Removed {} elements from \"plc camera product statuses\" queue",
-						plcCameraResults.size());
+				logger.warn("Removed {} elements from \"plc camera product statuses\" queue", plcCameraResults.size());
 				plcCameraResults.clear();
 			}
 		}
@@ -100,14 +99,25 @@ public class ProductStatusMerger {
 	private void mergeProductStatuses() {
 		Product product = products.poll();
 		PlcCameraResult plcCameraResult = plcCameraResults.poll();
+		ProductStatus productStatus = product.getStatus();
 		PlcCameraProductStatus plcCameraProductStatus = plcCameraResult.getPlcCameraProductStatus();
 
 		if (!isPlcCameraProductStatusNotDefined(plcCameraProductStatus)) {
 			if (isPlcCameraProductStatusEjected(plcCameraProductStatus)) {
 				setProductAsEjected(product);
-			} else if (!ProductStatusComparator.isEqual(plcCameraProductStatus, product.getStatus())) {
+
+			} else if (!ProductStatusComparator.isEqual(plcCameraProductStatus, productStatus)) {
 				logger.warn("Product status from PLC and camera not matching! plc:{}, camera:{}",
-						plcCameraProductStatus.getDescription(), product.getStatus().toString());
+						plcCameraProductStatus.getDescription(), productStatus.toString());
+
+			} else if (isProductStatusValidFromPlcAndCamera(productStatus, plcCameraProductStatus)) {
+				String cameraCode = product.getCode().getStringCode();
+				byte plcLastByteCameraCode = plcCameraResult.getEncryptedCodeLastByte();
+
+				if (!CodeComparator.isEqual(cameraCode, plcLastByteCameraCode)) {
+					logger.warn("Encrypted code from PLC and camera not matching! plc:{}, camera:{}",
+							plcLastByteCameraCode, cameraCode);
+				}
 			}
 		}
 
@@ -122,6 +132,18 @@ public class ProductStatusMerger {
 		return plcCameraProductStatus.equals(PlcCameraProductStatus.NOT_DEFINED);
 	}
 
+	/**
+	 * Method that returns whether the product is considered valid or not (i.e.: code on the product was decoded
+	 * successfully) by the PLC and camera.
+	 *
+	 * @return true if the product is considered valid by the two sources, false otherwise
+	 */
+	private boolean isProductStatusValidFromPlcAndCamera(ProductStatus productStatus, PlcCameraProductStatus
+			plcCameraProductStatus) {
+		return productStatus.equals(ProductStatus.AUTHENTICATED) && plcCameraProductStatus.equals(
+				PlcCameraProductStatus.GOOD);
+	}
+
 	private void setProductAsEjected(Product product) {
 		product.setStatus(TT016ProductStatus.EJECTED_PRODUCER);
 	}
@@ -133,16 +155,20 @@ public class ProductStatusMerger {
 			logger.warn("Missing PLC camera result! Number of results missing: " + indexDifference);
 
 			for (int i = 1; i <= indexDifference; i++) {
-				plcCameraResults.add(new PlcCameraResult(0, 0, 0, PlcCameraProductStatus.NOT_DEFINED));
+				plcCameraResults.add(new PlcCameraResult((byte) 0, 0, 0, PlcCameraProductStatus.NOT_DEFINED));
 			}
 		}
 	}
 
-	private static class CodeComparator {
-		public static boolean isEqual(String code, int lastByteEncryptedCode) {
+	/**
+	 * Use to compare the last byte of the encrypted code received from the camera with the last byte from the code
+	 * received from the PLC.
+	 */
+	public static class CodeComparator {
+		public static boolean isEqual(String code, byte lastByteEncryptedCode) {
 			byte[] codeBytes = code.getBytes();
 
-			return ((int) codeBytes[codeBytes.length - 1]) == lastByteEncryptedCode;
+			return (codeBytes[codeBytes.length - 1]) == lastByteEncryptedCode;
 		}
 	}
 
