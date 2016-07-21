@@ -37,15 +37,13 @@ public class ProductValidator {
 			logger.warn("Product status from PLC and camera not matching! plc:{}, camera:{}",
 					plcCameraProductStatus.getDescription(), productStatus.toString());
 
-		} else {
-			if (isProductStatusValidFromPlcAndCamera(productStatus, plcCameraProductStatus)) {
-				String cameraCode = product.getCode().getStringCode();
-				byte plcLastByteCameraCode = plcCameraResult.getEncryptedCodeLastByte();
+		} else if (isProductStatusValidFromPlcAndCamera(productStatus, plcCameraProductStatus)) {
+			String cameraCode = product.getCode().getStringCode();
+			byte plcLastByteCameraCode = plcCameraResult.getEncryptedCodeLastByte();
 
-				if (!isCodeLastByteEquals(cameraCode, plcLastByteCameraCode)) {
-					logger.warn("Encrypted code from PLC and camera not matching! plc:{}, camera:{}",
-							plcLastByteCameraCode, cameraCode);
-				}
+			if (!isCodeLastByteEquals(cameraCode, plcLastByteCameraCode)) {
+				logger.warn("Encrypted code from PLC and camera not matching! plc:{}, camera:{}",
+						plcLastByteCameraCode, cameraCode);
 			}
 		}
 	}
