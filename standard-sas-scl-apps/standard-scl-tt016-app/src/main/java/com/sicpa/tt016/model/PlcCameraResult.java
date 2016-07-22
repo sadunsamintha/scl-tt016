@@ -2,12 +2,12 @@ package com.sicpa.tt016.model;
 
 public class PlcCameraResult {
 
-	private int encryptedCodeLastByte;
+	private byte encryptedCodeLastByte;
 	private int index;
 	private int decodeTimeMs;
 	private PlcCameraProductStatus plcCameraProductStatus;
 
-	public PlcCameraResult(int encryptedCodeLastByte, int index, int decodeTimeMs, PlcCameraProductStatus
+	public PlcCameraResult(byte encryptedCodeLastByte, int index, int decodeTimeMs, PlcCameraProductStatus
 			plcCameraProductStatus) {
 		this.encryptedCodeLastByte = encryptedCodeLastByte;
 		this.index = index;
@@ -15,11 +15,11 @@ public class PlcCameraResult {
 		this.plcCameraProductStatus = plcCameraProductStatus;
 	}
 
-	public int getEncryptedCodeLastByte() {
+	public byte getEncryptedCodeLastByte() {
 		return encryptedCodeLastByte;
 	}
 
-	public void setEncryptedCodeLastByte(int encryptedCodeLastByte) {
+	public void setEncryptedCodeLastByte(byte encryptedCodeLastByte) {
 		this.encryptedCodeLastByte = encryptedCodeLastByte;
 	}
 

@@ -5,7 +5,6 @@ import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.sasscl.business.activation.NewProductEvent;
 import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowStateChangedEvent;
 import com.sicpa.standard.sasscl.model.Product;
-import com.sicpa.standard.sasscl.model.ProductStatus;
 import com.sicpa.tt016.devices.plc.PlcCameraResultIndexManager;
 import com.sicpa.tt016.model.PlcCameraProductStatus;
 import com.sicpa.tt016.model.PlcCameraResult;
@@ -15,9 +14,7 @@ import com.sicpa.tt016.model.event.TT016NewProductEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.Map;
 import java.util.Queue;
 
 import static com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState.STT_STARTING;
@@ -48,9 +45,9 @@ public class ProductStatusMerger {
 	public void receivePlcCameraResult(PlcCameraResultEvent event) {
 		PlcCameraResult plcCameraResult = event.getPlcCameraResult();
 
-		logger.debug("PLC camera result received: [index={}, decodingTime={}, productStatus={}]", plcCameraResult
-						.getIndex(), plcCameraResult.getDecodeTimeMs(), plcCameraResult.getPlcCameraProductStatus()
-				.getDescription());
+		logger.debug("PLC camera result received: [lastByteEncryptedCode={}, index={}, decodingTime={}, " +
+						"productStatus={}]", plcCameraResult.getEncryptedCodeLastByte(), plcCameraResult.getIndex(),
+				plcCameraResult.getDecodeTimeMs(), plcCameraResult.getPlcCameraProductStatus().getDescription());
 
 		synchronized (lock) {
 			insertMissingPlcCameraResultsIfNeeded(plcCameraResult.getIndex());
@@ -72,8 +69,7 @@ public class ProductStatusMerger {
 			}
 
 			if (!plcCameraResults.isEmpty()) {
-				logger.warn("Removed {} elements from \"plc camera product statuses\" queue",
-						plcCameraResults.size());
+				logger.warn("Removed {} elements from \"plc camera product statuses\" queue", plcCameraResults.size());
 				plcCameraResults.clear();
 			}
 		}
@@ -105,9 +101,8 @@ public class ProductStatusMerger {
 		if (!isPlcCameraProductStatusNotDefined(plcCameraProductStatus)) {
 			if (isPlcCameraProductStatusEjected(plcCameraProductStatus)) {
 				setProductAsEjected(product);
-			} else if (!ProductStatusComparator.isEqual(plcCameraProductStatus, product.getStatus())) {
-				logger.warn("Product status from PLC and camera not matching! plc:{}, camera:{}",
-						plcCameraProductStatus.getDescription(), product.getStatus().toString());
+			} else {
+				ProductValidator.validate(product, plcCameraResult);
 			}
 		}
 
@@ -133,33 +128,8 @@ public class ProductStatusMerger {
 			logger.warn("Missing PLC camera result! Number of results missing: " + indexDifference);
 
 			for (int i = 1; i <= indexDifference; i++) {
-				plcCameraResults.add(new PlcCameraResult(0, 0, 0, PlcCameraProductStatus.NOT_DEFINED));
+				plcCameraResults.add(new PlcCameraResult((byte) 0, 0, 0, PlcCameraProductStatus.NOT_DEFINED));
 			}
-		}
-	}
-
-	private static class CodeComparator {
-		public static boolean isEqual(String code, int lastByteEncryptedCode) {
-			byte[] codeBytes = code.getBytes();
-
-			return ((int) codeBytes[codeBytes.length - 1]) == lastByteEncryptedCode;
-		}
-	}
-
-	private static class ProductStatusComparator {
-
-		private static Map<PlcCameraProductStatus, ProductStatus> statusesMapping;
-
-		static {
-			statusesMapping = new HashMap<>(4);
-			statusesMapping.put(PlcCameraProductStatus.GOOD, ProductStatus.AUTHENTICATED);
-			statusesMapping.put(PlcCameraProductStatus.UNREADABLE, ProductStatus.INK_DETECTED);
-			statusesMapping.put(PlcCameraProductStatus.NO_INK, ProductStatus.SENT_TO_PRINTER_UNREAD);
-			statusesMapping.put(PlcCameraProductStatus.EJECTED_PRODUCER, TT016ProductStatus.EJECTED_PRODUCER);
-		}
-
-		public static boolean isEqual(PlcCameraProductStatus plcStatus, ProductStatus cameraStatus) {
-			return statusesMapping.get(plcStatus).equals(cameraStatus);
 		}
 	}
 }

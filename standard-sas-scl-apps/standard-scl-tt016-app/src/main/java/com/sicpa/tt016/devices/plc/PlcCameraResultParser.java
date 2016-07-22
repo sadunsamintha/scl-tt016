@@ -21,7 +21,7 @@ public class PlcCameraResultParser {
 	public static PlcCameraResult getPlcCameraResultEvent(int plcCameraResult) {
 		byte[] plcCameraResults = ByteBuffer.allocate(4).putInt(plcCameraResult).array();
 
-		int encryptedCodeLastByte = plcCameraResults[0] & 0xFF;
+		byte encryptedCodeLastByte = plcCameraResults[0];
 		int index = plcCameraResults[1] & 0xFF;
 		int decodingTime = plcCameraResults[2] & 0xFF;
 		int productStatus = plcCameraResults[3] & 0xFF;
@@ -34,5 +34,11 @@ public class PlcCameraResultParser {
 		byte[] plcCameraResults = ByteBuffer.allocate(4).putInt(plcCameraResult).array();
 
 		return plcCameraResults[1] & 0xFF;
+	}
+
+	public static byte getPlcCameraResultLastByteEncryptedCode(int plcCameraResult) {
+		byte[] plcCameraResults = ByteBuffer.allocate(4).putInt(plcCameraResult).array();
+
+		return plcCameraResults[0];
 	}
 }
