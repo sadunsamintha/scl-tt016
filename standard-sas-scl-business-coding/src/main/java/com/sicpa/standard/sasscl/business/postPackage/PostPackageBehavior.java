@@ -133,7 +133,8 @@ public class PostPackageBehavior implements IPostPackageBehavior {
 				logger.debug("handling the current bad code {}. The code removes is {} " , code, codes.get(0));
 
 				badCode.add(codes.remove(0));
-				ProductStatus productStatus = blobDetectionUtils.isBlobDetected(code) ? ProductStatus.BLOB_ACTIVATED : ProductStatus.SENT_TO_PRINTER_UNREAD;
+				ProductStatus productStatus = blobDetectionUtils.isBlobDetected(code) ? ProductStatus.INK_DETECTED :
+						ProductStatus.SENT_TO_PRINTER_UNREAD;
 				return generateBadProducts(badCode, productStatus);
 			}
 		}

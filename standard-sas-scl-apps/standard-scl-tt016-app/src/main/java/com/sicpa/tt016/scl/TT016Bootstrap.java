@@ -9,6 +9,7 @@ import com.sicpa.standard.sasscl.custoBuilder.CustoBuilder;
 import com.sicpa.standard.sasscl.messages.ActionMessageType;
 import com.sicpa.standard.sasscl.messages.MessageEventKey;
 import com.sicpa.standard.sasscl.model.CodeType;
+import com.sicpa.standard.sasscl.model.ProductStatus;
 import com.sicpa.standard.sasscl.provider.impl.UnknownSkuProvider;
 import com.sicpa.standard.sasscl.utils.ConfigUtilEx;
 import com.sicpa.standard.sasscl.view.main.MainPanelGetter;
@@ -47,10 +48,16 @@ public class TT016Bootstrap extends Bootstrap {
 		noStopIfDmxDetectedInExport();
 		selectStopReasonWhenProductionStop();
 		setUnknownSkuCodeType();
-		addProducerEjectedProductStatus();
+		addProducerEjectedStatistic();
+		addInkDetectedStatistic();
 	}
 
-	private void addProducerEjectedProductStatus() {
+	private void addInkDetectedStatistic() {
+		CustoBuilder.handleNewStatistic(ProductStatus.INK_DETECTED, TT016StatisticsKey.INK_DETECTED,
+				SicpaColor.GREEN_DARK, 4, "stats.display.inkDetected");
+	}
+
+	private void addProducerEjectedStatistic() {
 		CustoBuilder.handleNewStatistic(TT016ProductStatus.EJECTED_PRODUCER, TT016StatisticsKey.EJECTED_PRODUCER,
 				SicpaColor.RED, 3, "stats.display.ejectedProducer");
 	}

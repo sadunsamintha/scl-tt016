@@ -15,13 +15,12 @@ public class ProductStatus implements Serializable {
 	public final static ProductStatus SENT_TO_PRINTER_WASTED = new ProductStatus(6, "SENT_TO_PRINTER_WASTED");
 	public final static ProductStatus SENT_TO_PRINTER_UNREAD = new ProductStatus(7, "SENT_TO_PRINTER_UNREAD");
 	public final static ProductStatus COUNTING = new ProductStatus(8, "COUNTING");
-	public final static ProductStatus NO_INK = new ProductStatus(9, "NO_INK");
+	//public final static ProductStatus NO_INK = new ProductStatus(9, "NO_INK");
 	public final static ProductStatus OFFLINE = new ProductStatus(10, "OFFLINE");
 	public final static ProductStatus REFEED = new ProductStatus(11, "REFEED");
 
-	/* Status for Activated Product when datamatrix
-       could not be read but blobs are detected  */
-	public final static ProductStatus BLOB_ACTIVATED = new ProductStatus(100, "BLOB_DETECTION");
+	//Status for Activated Product when datamatrix could not be read but blobs are detected
+	public final static ProductStatus INK_DETECTED = new ProductStatus(100, "INK_DETECTED");
 
 
 	protected int id;

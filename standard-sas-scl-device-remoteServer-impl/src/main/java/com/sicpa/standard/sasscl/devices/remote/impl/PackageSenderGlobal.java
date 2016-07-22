@@ -39,7 +39,7 @@ public class PackageSenderGlobal implements IPackageSenderGlobal {
 		addToActivatedPackager(ProductStatus.SENT_TO_PRINTER_UNREAD);
 		addToActivatedPackager(ProductStatus.SENT_TO_PRINTER_WASTED);
 		addToActivatedPackager(ProductStatus.TYPE_MISMATCH);
-		addToActivatedPackager(ProductStatus.BLOB_ACTIVATED);
+		addToActivatedPackager(ProductStatus.INK_DETECTED);
 
 		addToCounterPackager(ProductStatus.COUNTING);
 		addToCounterPackager(ProductStatus.EXPORT);

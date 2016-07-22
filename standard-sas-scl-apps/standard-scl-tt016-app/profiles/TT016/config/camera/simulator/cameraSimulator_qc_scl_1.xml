@@ -23,6 +23,9 @@
   <!-- Camera error code percentage -->
   <percentageBadCode>0</percentageBadCode>
 
+  <!-- Camera blob code percentage -->
+  <percentageBlobCode>0</percentageBlobCode>
+
   <!-- Camera simulator code frequency -->
   <readCodeInterval>500</readCodeInterval>
 
