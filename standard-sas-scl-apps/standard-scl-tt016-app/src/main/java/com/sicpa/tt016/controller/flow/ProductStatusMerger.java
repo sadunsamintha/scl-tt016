@@ -3,8 +3,13 @@ package com.sicpa.tt016.controller.flow;
 import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.sasscl.business.activation.NewProductEvent;
+import com.sicpa.standard.sasscl.business.activation.impl.activationBehavior.standard.StandardActivationBehavior;
 import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowStateChangedEvent;
+import com.sicpa.standard.sasscl.model.Code;
 import com.sicpa.standard.sasscl.model.Product;
+import com.sicpa.standard.sasscl.monitoring.MonitoringService;
+import com.sicpa.standard.sasscl.monitoring.system.event.BasicSystemEvent;
+import com.sicpa.standard.sasscl.provider.impl.ProductionBatchProvider;
 import com.sicpa.tt016.devices.plc.PlcCameraResultIndexManager;
 import com.sicpa.tt016.model.PlcCameraProductStatus;
 import com.sicpa.tt016.model.PlcCameraResult;
@@ -17,28 +22,32 @@ import org.slf4j.LoggerFactory;
 import java.util.LinkedList;
 import java.util.Queue;
 
+import static com.sicpa.standard.sasscl.model.ProductStatus.SENT_TO_PRINTER_WASTED;
+import static com.sicpa.standard.sasscl.monitoring.system.SystemEventType.PRODUCT_SCANNED;
 import static com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState.STT_STARTING;
 
-public class ProductStatusMerger {
+public class ProductStatusMerger extends StandardActivationBehavior {
 
 	private static final Logger logger = LoggerFactory.getLogger(ProductStatusMerger.class);
 
 	private Queue<PlcCameraResult> plcCameraResults = new LinkedList<>();
 	private Queue<Product> products = new LinkedList<>();
 
+	private ProductionBatchProvider productionBatchProvider;
 	private PlcCameraResultIndexManager plcCameraResultIndexManager;
 
 	private final Object lock = new Object();
 
-	@Subscribe
-	public void receiveNewProduct(TT016NewProductEvent event) {
-		synchronized (lock) {
-			products.add(event.getProduct());
+	@Override
+	public Product receiveCode(Code code, boolean isValid) {
+		handleNewCameraProduct(super.receiveCode(code, isValid));
 
-			if (isPlcCameraStatusAvailable()) {
-				mergeProductStatuses();
-			}
-		}
+		return null;
+	}
+
+	@Subscribe
+	public void receiveNewCameraProduct(TT016NewProductEvent event) {
+		handleNewCameraProduct(event.getProduct());
 	}
 
 	@Subscribe
@@ -79,10 +88,18 @@ public class ProductStatusMerger {
 		this.plcCameraResultIndexManager = plcCameraResultIndexManager;
 	}
 
-	private void fireNewProduct(Product product) {
-		logger.debug("New product after status merged = {}", product);
+	public void setProductionBatchProvider(ProductionBatchProvider productionBatchProvider) {
+		this.productionBatchProvider = productionBatchProvider;
+	}
 
-		EventBusService.post(new NewProductEvent(product));
+	private void handleNewCameraProduct(Product product) {
+		synchronized (lock) {
+			products.add(product);
+
+			if (isPlcCameraStatusAvailable()) {
+				mergeProductStatuses();
+			}
+		}
 	}
 
 	private boolean isCameraStatusAvailable() {
@@ -106,7 +123,23 @@ public class ProductStatusMerger {
 			}
 		}
 
+		setProductProperties(product);
+
 		fireNewProduct(product);
+	}
+
+	private void fireNewProduct(Product product) {
+		if (!product.getStatus().equals(SENT_TO_PRINTER_WASTED)) {
+			logger.debug("New product = {}", product);
+		}
+
+		MonitoringService.addSystemEvent(new BasicSystemEvent(PRODUCT_SCANNED));
+		EventBusService.post(new NewProductEvent(product));
+	}
+
+	private void setProductProperties(Product product) {
+		product.setProductionBatchId(productionBatchProvider.get());
+		product.setQc(product.getCode().getSource());
 	}
 
 	private boolean isPlcCameraProductStatusEjected(PlcCameraProductStatus plcCameraProductStatus) {

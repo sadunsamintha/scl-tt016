@@ -213,7 +213,7 @@ public class CameraSimulatorController implements ICognexCameraController<Camera
 		}
 	}
 
-	private boolean isCounting() {
+	protected boolean isCounting() {
 		return !productionParameters.getProductionMode().isWithSicpaData();
 	}
 

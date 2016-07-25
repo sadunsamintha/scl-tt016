@@ -2,7 +2,6 @@ package com.sicpa.tt016.devices.plc;
 
 import com.sicpa.tt016.model.PlcCameraProductStatus;
 import com.sicpa.tt016.model.PlcCameraResult;
-import com.sicpa.tt016.model.event.PlcCameraResultEvent;
 import junit.framework.Assert;
 import org.junit.Test;
 
@@ -14,7 +13,7 @@ public class PlcCameraResultParserTest {
 
 		Assert.assertEquals(170, plcCameraResult.getIndex());
 		Assert.assertEquals(187, plcCameraResult.getDecodeTimeMs());
-		Assert.assertEquals(PlcCameraProductStatus.UNREADABLE, plcCameraResult.getPlcCameraProductStatus());
+		Assert.assertEquals(PlcCameraProductStatus.INK_DETECTED, plcCameraResult.getPlcCameraProductStatus());
 	}
 
 	@Test
