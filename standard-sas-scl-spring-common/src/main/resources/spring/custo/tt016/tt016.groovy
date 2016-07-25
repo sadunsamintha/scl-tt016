@@ -1,4 +1,3 @@
-import com.sicpa.tt016.controller.flow.ProductStatusMerger
 import com.sicpa.tt016.scl.remote.simulator.TT016RemoteServerSimulator
 import com.sicpa.tt016.scl.TT016Bootstrap
 import com.sicpa.tt016.devices.camera.alert.TT016TrilightWarningCameraAlert
@@ -41,13 +40,10 @@ beans{
 		refeedAvailabilityProvider=ref('refeedAvailabilityProvider')
 	}
 
-	productStatusMerger(ProductStatusMerger) {
-		plcCameraResultIndexManager=ref('plcCameraResultIndexManager')
-	}
-
-	importBeans('spring/custo/tt016/tt016Plc.xml')
-	importBeans('spring/custo/tt016/tt016Activation.xml')
+	importBeans('spring/custo/tt016/tt016-plc.xml')
+	importBeans('spring/custo/tt016/tt016-activation.xml')
 	importBeans('spring/custo/tt016/tt016-view.xml')
+	importBeans('spring/custo/tt016/tt016-postPackage.xml')
 	importBeans('spring/offlineCounting.xml')
 
 	addAlias('bisCredentialProvider','remoteServer')

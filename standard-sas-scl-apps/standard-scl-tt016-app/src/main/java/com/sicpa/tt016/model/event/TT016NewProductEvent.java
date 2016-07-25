@@ -4,10 +4,9 @@ import com.sicpa.standard.sasscl.model.Product;
 
 /**
  * The class <code>TT016NewProductEvent</code> encapsulates a product. Created when communicating between
- * <code>Activation</code> module and the <code>ProductStatusMerger</code>.
+ * <code>TT016PostPackageBehavior</code> and the <code>ProductStatusMerger</code>.
  *
  * @author CDeAlmeida
- *
  */
 public class TT016NewProductEvent {
 
@@ -21,3 +20,4 @@ public class TT016NewProductEvent {
 		return product;
 	}
 }
+

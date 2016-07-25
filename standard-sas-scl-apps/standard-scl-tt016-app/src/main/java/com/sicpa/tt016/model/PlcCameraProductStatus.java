@@ -9,7 +9,7 @@ public class PlcCameraProductStatus {
 
 	public final static PlcCameraProductStatus NOT_DEFINED = new PlcCameraProductStatus(0, "NOT_DEFINED");
 	public final static PlcCameraProductStatus GOOD = new PlcCameraProductStatus(1, "GOOD_CODE");
-	public final static PlcCameraProductStatus UNREADABLE = new PlcCameraProductStatus(2, "UNREADABLE_CODE");
+	public final static PlcCameraProductStatus INK_DETECTED = new PlcCameraProductStatus(2, "INK_DETECTED");
 	public final static PlcCameraProductStatus NO_INK = new PlcCameraProductStatus(3, "NO_INK");
 	public final static PlcCameraProductStatus EJECTED_PRODUCER = new PlcCameraProductStatus(5, "EJECTED_PRODUCER");
 
@@ -26,7 +26,7 @@ public class PlcCameraProductStatus {
 			case 1:
 				return GOOD;
 			case 2:
-				return UNREADABLE;
+				return INK_DETECTED;
 			case 3:
 				return NO_INK;
 			case 5:

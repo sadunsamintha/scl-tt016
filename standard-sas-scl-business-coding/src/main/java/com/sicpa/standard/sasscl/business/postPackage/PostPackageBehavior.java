@@ -49,7 +49,7 @@ public class PostPackageBehavior implements IPostPackageBehavior {
 	public void addCodes(List<String> codes) {
 		logger.debug("Adding to the list {} the following codes {} ",this.codes.toString(), codes.toString());
 		for (String aCode : codes) {
-			this.codes.add(new Code(aCode));
+			this.codes.add(new Code(aCode, assosiatedCamera));
 		}
 	}
 
@@ -151,7 +151,8 @@ public class PostPackageBehavior implements IPostPackageBehavior {
 					codes.remove(index);
 					if (index != 0) {
 						List<Code> subList = codes.subList(0, index);
-						logger.debug("removing the following codes from the list {}. printer wasted " , codes.toString());
+						logger.warn("removing the following codes from the list {}. printer wasted " , codes.toString
+								());
 
 						List<Code> badCodes = new ArrayList<Code>(subList);
 						subList.clear();
