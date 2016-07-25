@@ -17,6 +17,9 @@ public class TT016PostPackageBehavior extends PostPackageBehavior {
 
 		EventBusService.post(new TT016NewProductEvent(products.get(0)));
 
+		//We return an empty list because we want to fire a product event to the ProductStatusMerger first and only
+		// later to the Statistics, Storage, and other modules. By returning an empty list the
+		// ActivationWithPostPackage won't fire the event.
 		return Collections.emptyList();
 	}
 
@@ -24,6 +27,8 @@ public class TT016PostPackageBehavior extends PostPackageBehavior {
 	public List<Product> handleGoodCode(Code code) {
 		super.handleGoodCode(code);
 
+		//We return an empty list because we don't want the SENT_TO_PRINTER_WASTED products to be sent to the
+		// ProductStatusMerger because it would result in the desynchronization of the queues of products
 		return Collections.emptyList();
 	}
 }
