@@ -160,9 +160,11 @@ public class ProductStatusMerger extends StandardActivationBehavior {
 		if (indexDifference > 1) {
 			logger.warn("Missing PLC camera result! Number of results missing: " + indexDifference);
 
+			/*
 			for (int i = 1; i <= indexDifference; i++) {
 				plcCameraResults.add(new PlcCameraResult((byte) 0, 0, 0, PlcCameraProductStatus.NOT_DEFINED));
 			}
+			*/
 		}
 	}
 }
