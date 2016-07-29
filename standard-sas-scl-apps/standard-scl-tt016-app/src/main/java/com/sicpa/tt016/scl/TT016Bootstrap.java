@@ -44,7 +44,7 @@ public class TT016Bootstrap extends Bootstrap {
 	@Override
 	public void executeSpringInitTasks() {
 		super.executeSpringInitTasks();
-		messageCusto();
+//		messageCusto();
 		noStopIfDmxDetectedInExport();
 		selectStopReasonWhenProductionStop();
 		setUnknownSkuCodeType();
@@ -62,10 +62,10 @@ public class TT016Bootstrap extends Bootstrap {
 				SicpaColor.RED, 3, "stats.display.ejectedProducer");
 	}
 
-	private void messageCusto() {
-		// let's override the severity from error to warning
-		setMessageType(MessageEventKey.Alert.TOO_MANY_CAMERA_ERROR, WARNING);
-	}
+//	private void messageCusto() {
+//		// let's override the severity from error to warning
+//		setMessageType(MessageEventKey.Alert.TOO_MANY_CAMERA_ERROR, WARNING);
+//	}
 
 	@Override
 	protected void initRemoteServerConnected() {

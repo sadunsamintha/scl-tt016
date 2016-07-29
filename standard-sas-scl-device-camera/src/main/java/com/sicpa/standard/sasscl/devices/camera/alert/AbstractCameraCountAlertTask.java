@@ -18,7 +18,7 @@ import java.util.function.Function;
  *
  * @author DIelsch
  */
-public class CameraCountAlertTask extends AbstractScheduledBadCountAlertTask {
+public abstract class AbstractCameraCountAlertTask extends AbstractScheduledBadCountAlertTask {
 
 	private ProductionParameters productionParameters;
 	private CameraCountAlertTaskModel model;
@@ -27,14 +27,10 @@ public class CameraCountAlertTask extends AbstractScheduledBadCountAlertTask {
 
 	private Function<CameraCodeEvent, Boolean> codeValidator = (evt) -> isValidCodeDefaultImpl(evt);
 
-	public CameraCountAlertTask() {
+	public AbstractCameraCountAlertTask() {
 		super();
 	}
 
-	@Override
-	protected MessageEvent getAlertMessage() {
-		return new MessageEvent(MessageEventKey.Alert.TOO_MANY_CAMERA_ERROR);
-	}
 
 	@Subscribe
 	public void receiveCameraCode(CameraCodeEvent evt) {
@@ -73,11 +69,6 @@ public class CameraCountAlertTask extends AbstractScheduledBadCountAlertTask {
 
 	public void setProductionParameters(ProductionParameters productionParameters) {
 		this.productionParameters = productionParameters;
-	}
-
-	@Override
-	public String getAlertName() {
-		return "Too many bad codes alert";
 	}
 
 	@Override

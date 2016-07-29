@@ -28,13 +28,13 @@
 
 	<!--CAMERA -->
 
-	<bean id="alertCameraCount" class="com.sicpa.tt018.scl.camera.alert.AlbaniaCameraCountAlertTask">
+	<bean id="alertCameraCountError" class="com.sicpa.tt018.scl.camera.alert.AlbaniaCameraCountAlertTask">
 		<property name="model">
 			<bean id="alertCameraCountModel" class="com.sicpa.standard.sasscl.business.alert.task.model.CameraCountAlertTaskModel">
-				<property name="enabled" value="${alert.cameraCount.enabled}" />
-				<property name="maxUnreadCount" value="${alert.cameraCount.maxUnreadCount}" />
-				<property name="sampleSize" value="${alert.cameraCount.sampleSize}" />
-				<property name="delayInSec" value="${alert.cameraCount.delayInSec}" />
+				<property name="enabled" value="${alert.cameraCount.error.enabled}" />
+				<property name="maxUnreadCount" value="${alert.cameraCount.error.maxUnreadCount}" />
+				<property name="sampleSize" value="${alert.cameraCount.error.sampleSize}" />
+				<property name="delayInSec" value="${alert.cameraCount.error.delayInSec}" />
 			</bean>
 		</property>
 		<property name="productionParameters" ref="productionParameters" />

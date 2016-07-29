@@ -36,6 +36,7 @@ public class TT016TrilightWarningCameraAlertTest {
     @InjectMocks
     private TT016TrilightWarningCameraAlert alert = new TT016TrilightWarningCameraAlert();
 
+
     private final int TRILIGHT_BLINKING_YELLOW = 2;
 
     @Test
@@ -43,7 +44,7 @@ public class TT016TrilightWarningCameraAlertTest {
         when(plcProvider.get()).thenReturn(plcAdaptor);
 
         ActionEventWarning warning = new ActionEventWarning();
-        warning.setKey(MessageEventKey.Alert.TOO_MANY_CAMERA_ERROR);
+        warning.setKey(MessageEventKey.Alert.TOO_MANY_CAMERA_WARNING);
         alert.handleActionEventWarning(warning);
 
         verify(reqJavaErrorRegisterVar, times(1)).setValue(TRILIGHT_BLINKING_YELLOW);
@@ -54,7 +55,7 @@ public class TT016TrilightWarningCameraAlertTest {
     @Test
     public void handleNoActionEventWarning() throws PlcAdaptorException {
         ActionEventWarning warning = new ActionEventWarning();
-        warning.setKey(MessageEventKey.Alert.TOO_MANY_CAMERA_WARNING);
+        warning.setKey(MessageEventKey.Alert.TOO_MANY_CAMERA_ERROR);
         alert.handleActionEventWarning(warning);
 
         verify(reqJavaErrorRegisterVar, times(0)).setValue(TRILIGHT_BLINKING_YELLOW);

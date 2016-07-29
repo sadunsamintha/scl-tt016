@@ -32,11 +32,17 @@ public interface BeansName {
 	/**
 	 * IAlertTask
 	 */
-	String ALERT_CAMERA_COUNT = "alertCameraCount";
+	String ERROR_ALERT_CAMERA_COUNT = "alertCameraCountError";
+
+	/**
+	 * IAlertTask
+	 */
+	String WARNING_ALERT_CAMERA_COUNT = "alertCameraCountWarning";
 	/**
 	 * IAlertTask
 	 */
 	String ALERT_DUPLICATED_CODE = "alertDuplicatedCode";
+
 	/**
 	 * IAlertTask
 	 */

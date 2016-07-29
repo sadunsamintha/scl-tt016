@@ -28,8 +28,8 @@ public class TT016TrilightWarningCameraAlert {
 
     @Subscribe
     public void handleActionEventWarning(ActionEventWarning warning) {
-        if (warning.getKey().equals(MessageEventKey.Alert.TOO_MANY_CAMERA_ERROR)) {
-            logger.debug("Process too many bad codes error event {} with params {}.", warning.getKey(), Arrays.toString(warning.getParams()));
+        if (warning.getKey().equals(MessageEventKey.Alert.TOO_MANY_CAMERA_WARNING)) {
+            logger.debug("Process too many bad codes warning event {} with params {}.", warning.getKey(), Arrays.toString(warning.getParams()));
             activateTrilightWarning();
         }
     }
@@ -55,6 +55,7 @@ public class TT016TrilightWarningCameraAlert {
     public void setReqJavaErrorRegisterVar(IPlcVariable<Integer> reqJavaErrorRegisterVar) {
         this.reqJavaErrorRegisterVar = reqJavaErrorRegisterVar;
     }
+
 
 }
 
