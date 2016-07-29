@@ -1,14 +1,9 @@
 <ProductionConfig activationBehavior="refeedActivationBehavior" authenticatorMode="SCL">
 
 	<CameraConfig deviceType="COGNEX" id="qc_scl_1" />
-	<CameraConfig deviceType="COGNEX" id="qc_scl_2" />
 
 	<plcConfig>
 		<line index="1">
-			<property key="PARAM_LINE_IS_ACTIVE" value="true" />
-			<property key="PARAM_LINE_REFEED_MODE_ENABLED" value="true" />
-		</line>
-		<line index="2">
 			<property key="PARAM_LINE_IS_ACTIVE" value="true" />
 			<property key="PARAM_LINE_REFEED_MODE_ENABLED" value="true" />
 		</line>
