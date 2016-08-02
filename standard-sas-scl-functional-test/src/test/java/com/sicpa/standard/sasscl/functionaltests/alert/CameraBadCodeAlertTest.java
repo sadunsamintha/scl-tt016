@@ -2,14 +2,14 @@ package com.sicpa.standard.sasscl.functionaltests.alert;
 
 import com.sicpa.standard.client.common.ioc.BeanProvider;
 import com.sicpa.standard.sasscl.AbstractFunctionnalTest;
-import com.sicpa.standard.sasscl.devices.camera.alert.CameraCountAlertTask;
+import com.sicpa.standard.sasscl.devices.camera.alert.CameraCountErrorAlertTask;
 import com.sicpa.standard.sasscl.ioc.BeansName;
 import com.sicpa.standard.sasscl.messages.MessageEventKey;
 import com.sicpa.standard.sasscl.model.ProductionMode;
 
 public class CameraBadCodeAlertTest extends AbstractFunctionnalTest {
 
-	private CameraCountAlertTask cameraCountAlertTask;
+	private CameraCountErrorAlertTask cameraCountAlertTask;
 
 	public void test() throws Exception {
 
@@ -40,7 +40,7 @@ public class CameraBadCodeAlertTest extends AbstractFunctionnalTest {
 	public void init() {
 		super.init();
 
-		cameraCountAlertTask = BeanProvider.getBean(BeansName.ALERT_CAMERA_COUNT);
+		cameraCountAlertTask = BeanProvider.getBean(BeansName.ERROR_ALERT_CAMERA_COUNT);
 		cameraCountAlertTask.getModel().setMaxUnreadCount(3);
 		cameraCountAlertTask.getModel().setSampleSize(10);
 		cameraCountAlertTask.getModel().setDelayInSec(99999);

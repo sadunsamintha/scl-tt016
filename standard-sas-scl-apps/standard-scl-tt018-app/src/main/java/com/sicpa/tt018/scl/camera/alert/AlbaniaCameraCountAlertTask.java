@@ -4,10 +4,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.sicpa.standard.sasscl.devices.camera.CameraCodeEvent;
-import com.sicpa.standard.sasscl.devices.camera.alert.CameraCountAlertTask;
+import com.sicpa.standard.sasscl.devices.camera.alert.CameraCountErrorAlertTask;
 import com.sicpa.tt018.scl.utils.AlbaniaBlobUtils;
 
-public class AlbaniaCameraCountAlertTask extends CameraCountAlertTask {
+public class AlbaniaCameraCountAlertTask extends CameraCountErrorAlertTask {
 
 	private static final Logger logger = LoggerFactory.getLogger(AlbaniaCameraCountAlertTask.class);
 

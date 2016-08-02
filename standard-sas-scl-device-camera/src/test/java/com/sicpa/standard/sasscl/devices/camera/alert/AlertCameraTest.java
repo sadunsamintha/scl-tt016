@@ -76,7 +76,7 @@ public class AlertCameraTest {
 		Mockito.when(blobDetectionUtils.isBlobDetected(any())).thenReturn(false);
 
 
-		CameraCountAlertTask cca = new CameraCountAlertTask();
+		CameraCountErrorAlertTask cca = new CameraCountErrorAlertTask();
 		CameraCountAlertTaskModel model = new CameraCountAlertTaskModel();
 		model.setSampleSize(10);
 		model.setMaxUnreadCount(5);
@@ -180,7 +180,7 @@ public class AlertCameraTest {
 		ProductionParameters productionParameters = new ProductionParameters();
 		productionParameters.setProductionMode(MAINTENANCE);
 
-		CameraCountAlertTask cca = new CameraCountAlertTask();
+		CameraCountErrorAlertTask cca = new CameraCountErrorAlertTask();
 		CameraCountAlertTaskModel model = new CameraCountAlertTaskModel();
 		model.setSampleSize(10);
 		model.setMaxUnreadCount(10);

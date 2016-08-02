@@ -1,15 +1,5 @@
 package com.sicpa.standard.sasscl.custoBuilder;
 
-import static com.sicpa.standard.sasscl.ioc.BeansName.ALERT_CAMERA_COUNT;
-import static com.sicpa.standard.sasscl.ioc.BeansName.DEVICES_GROUP_STARTUP;
-import static com.sicpa.standard.sasscl.ioc.BeansName.MESSAGES_MAPPING;
-import static com.sicpa.standard.sasscl.ioc.BeansName.PRODUCTION_CONFIG_MAPPING;
-import static com.sicpa.standard.sasscl.ioc.BeansName.PRODUCTION_MODE_MAPPING;
-import static com.sicpa.standard.sasscl.ioc.BeansName.REMOTE_SERVER_PRODUCT_STATUS_MAPPING;
-import static com.sicpa.standard.sasscl.ioc.BeansName.SELECTION_MODEL_FACTORY;
-import static com.sicpa.standard.sasscl.ioc.BeansName.STATISTICS_PRODUCTS_STATUS_MAPPER;
-import static com.sicpa.standard.sasscl.ioc.BeansName.STATISTICS_VIEW_MAPPER;
-
 import java.awt.Color;
 import java.util.HashMap;
 import java.util.Map;
@@ -43,7 +33,7 @@ import com.sicpa.standard.sasscl.controller.hardware.ProductionDevicesCreatedEve
 import com.sicpa.standard.sasscl.controller.productionconfig.mapping.IProductionConfigMapping;
 import com.sicpa.standard.sasscl.devices.IDevice;
 import com.sicpa.standard.sasscl.devices.camera.CameraCodeEvent;
-import com.sicpa.standard.sasscl.devices.camera.alert.CameraCountAlertTask;
+import com.sicpa.standard.sasscl.devices.camera.alert.CameraCountErrorAlertTask;
 import com.sicpa.standard.sasscl.devices.camera.simulator.CameraSimuCodeTransformer;
 import com.sicpa.standard.sasscl.devices.camera.simulator.CameraSimulatorController;
 import com.sicpa.standard.sasscl.devices.camera.simulator.ICameraAdaptorSimulator;
@@ -61,6 +51,8 @@ import com.sicpa.standard.sasscl.model.statistics.StatisticsKey;
 import com.sicpa.standard.sasscl.productionParameterSelection.ISelectionModelFactory;
 import com.sicpa.standard.sasscl.productionParameterSelection.ISelectionModelFactory.IConfigFlowModel;
 import com.sicpa.standard.sasscl.productionParameterSelection.selectionmodel.DefaultSelectionModel;
+
+import static com.sicpa.standard.sasscl.ioc.BeansName.*;
 
 /**
  * helper class for customization<br>
@@ -254,12 +246,27 @@ public class CustoBuilder {
 	}
 
 	/**
-	 * let the alert task know if the code event is consider valid or invalid
+	 * let the error alert task know if the code event is consider valid or invalid
 	 */
-	public static void setCameraCountAlertCodeValidator(Function<CameraCodeEvent, Boolean> validator) {
-		CameraCountAlertTask task = BeanProvider.getBean(ALERT_CAMERA_COUNT);
+	public static void setCameraCountErrorAlertCodeValidator(Function<CameraCodeEvent, Boolean> validator) {
+		setCameraCounAlertCodeValidator(ERROR_ALERT_CAMERA_COUNT, validator);
+	;
+	}
+
+	/**
+	 * let the warning alert task know if the code event is consider valid or invalid
+	 */
+	public static void setCameraCountWarningAlertCodeValidator(Function<CameraCodeEvent, Boolean> validator) {
+		setCameraCounAlertCodeValidator(WARNING_ALERT_CAMERA_COUNT, validator);
+
+	}
+
+
+	private static void setCameraCounAlertCodeValidator(String beanName, Function<CameraCodeEvent, Boolean> validator) {
+		CameraCountErrorAlertTask task = BeanProvider.getBean(beanName);
 		task.setCodeValidator(validator);
 	}
+
 
 	/**
 	 * provide a way to enabled/disabled an alert task

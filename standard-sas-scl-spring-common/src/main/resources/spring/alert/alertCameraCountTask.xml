@@ -5,13 +5,26 @@
 		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 
-	<bean id="alertCameraCount" class="com.sicpa.standard.sasscl.devices.camera.alert.CameraCountAlertTask">
+	<bean id="alertCameraCountError" class="com.sicpa.standard.sasscl.devices.camera.alert.CameraCountErrorAlertTask">
 		<property name="model">
-			<bean id="alertCameraCountModel" class="com.sicpa.standard.sasscl.business.alert.task.model.CameraCountAlertTaskModel">
-				<property name="enabled" value="${alert.cameraCount.enabled}" />
-				<property name="maxUnreadCount" value="${alert.cameraCount.maxUnreadCount}" />
-				<property name="sampleSize" value="${alert.cameraCount.sampleSize}" />
-				<property name="delayInSec" value="${alert.cameraCount.delayInSec}" />
+			<bean id="alertCameraCountModelError" class="com.sicpa.standard.sasscl.business.alert.task.model.CameraCountAlertTaskModel">
+				<property name="enabled" value="${alert.cameraCount.error.enabled}" />
+				<property name="maxUnreadCount" value="${alert.cameraCount.error.maxUnreadCount}" />
+				<property name="sampleSize" value="${alert.cameraCount.error.sampleSize}" />
+				<property name="delayInSec" value="${alert.cameraCount.error.delayInSec}" />
+			</bean>
+		</property>
+		<property name="productionParameters" ref="productionParameters" />
+		<property name="blobDetectionUtils" ref="blobDetectionUtils" />
+	</bean>
+
+	<bean id="alertCameraCountWarning" class="com.sicpa.standard.sasscl.devices.camera.alert.CameraCountErrorAlertTask">
+		<property name="model">
+			<bean id="alertCameraCountModelWarning" class="com.sicpa.standard.sasscl.business.alert.task.model.CameraCountAlertTaskModel">
+				<property name="enabled" value="${alert.cameraCount.warning.enabled}" />
+				<property name="maxUnreadCount" value="${alert.cameraCount.warning.maxUnreadCount}" />
+				<property name="sampleSize" value="${alert.cameraCount.warning.sampleSize}" />
+				<property name="delayInSec" value="${alert.cameraCount.warning.delayInSec}" />
 			</bean>
 		</property>
 		<property name="productionParameters" ref="productionParameters" />
@@ -21,7 +34,13 @@
 	<bean id="alertCameraCountAddTask" class="com.sicpa.standard.client.common.ioc.InjectByMethodBean">
 		<property name="target" ref="alert" />
 		<property name="methodName" value="addTask" />
-		<property name="params" ref="alertCameraCount" />
+		<property name="params" ref="alertCameraCountError" />
+	</bean>
+
+	<bean id="alertCameraCountWarningAddTask" class="com.sicpa.standard.client.common.ioc.InjectByMethodBean">
+		<property name="target" ref="alert" />
+		<property name="methodName" value="addTask" />
+		<property name="params" ref="alertCameraCountWarning" />
 	</bean>
 
 </beans>

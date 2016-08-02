@@ -44,7 +44,6 @@ public class TT016Bootstrap extends Bootstrap {
 	@Override
 	public void executeSpringInitTasks() {
 		super.executeSpringInitTasks();
-		messageCusto();
 		noStopIfDmxDetectedInExport();
 		selectStopReasonWhenProductionStop();
 		setUnknownSkuCodeType();
@@ -60,11 +59,6 @@ public class TT016Bootstrap extends Bootstrap {
 	private void addProducerEjectedStatistic() {
 		CustoBuilder.handleNewStatistic(TT016ProductStatus.EJECTED_PRODUCER, TT016StatisticsKey.EJECTED_PRODUCER,
 				SicpaColor.RED, 3, "stats.display.ejectedProducer");
-	}
-
-	private void messageCusto() {
-		// let's override the severity from error to warning
-		setMessageType(MessageEventKey.Alert.TOO_MANY_CAMERA_ERROR, WARNING);
 	}
 
 	@Override
