@@ -99,6 +99,8 @@ public class PrinterAdaptorLeibinger extends PrinterAdaptor {
             if (lastSequence == SequenceStatus.READY_NOZZLE_NOT_OPEN) {
                 blockStartPrinting();
                 notifyAllIssuesSolved();
+            } else {
+                controller.start();
             }
             if (startedOnce) {
                 // the printer has already been started so it has codes

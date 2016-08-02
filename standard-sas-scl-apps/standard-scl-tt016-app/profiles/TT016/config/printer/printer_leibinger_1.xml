@@ -21,6 +21,7 @@
 		<dataMatrixEncoding>ASCII</dataMatrixEncoding>
 	</printerParameters>
 	<wysiwyg>true</wysiwyg>
+	<nozzleMode>OPEN_MANUAL_CLOSE_AUTO</nozzleMode>
 	<encoderResolution>22000</encoderResolution>
 	<inverted>0</inverted>
 	<rotation>0</rotation>
