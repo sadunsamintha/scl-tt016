@@ -1,27 +1,9 @@
 package com.sicpa.standard.sasscl.view;
 
-import static com.sicpa.standard.client.common.security.SecurityService.hasPermission;
-
-import java.awt.Point;
-import java.awt.event.ActionEvent;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.swing.AbstractAction;
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JSeparator;
-import javax.swing.SwingUtilities;
-
-import net.miginfocom.swing.MigLayout;
-
+import com.sicpa.standard.client.common.i18n.Messages;
 import com.sicpa.standard.client.common.security.ILoginListener;
 import com.sicpa.standard.client.common.security.SecurityService;
 import com.sicpa.standard.client.common.view.ISecuredComponentGetter;
-import com.sicpa.standard.client.common.i18n.Messages;
 import com.sicpa.standard.gui.plaf.SicpaColor;
 import com.sicpa.standard.gui.screen.machine.AbstractMachineFrame;
 import com.sicpa.standard.gui.screen.machine.component.SelectionFlow.flow.DefaultSelectionFlowView;
@@ -31,6 +13,17 @@ import com.sicpa.standard.sasscl.security.SasSclPermission;
 import com.sicpa.standard.sasscl.view.licence.LicencePanel;
 import com.sicpa.standard.sasscl.view.lineid.LineIdWithAuthenticateButton;
 import com.sicpa.standard.sasscl.view.messages.I18nableLockingErrorModel;
+import net.miginfocom.swing.MigLayout;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.sicpa.standard.client.common.security.SecurityService.hasPermission;
 
 @SuppressWarnings("serial")
 public class MainFrame extends AbstractMachineFrame {
@@ -78,13 +71,14 @@ public class MainFrame extends AbstractMachineFrame {
 
 	private void addLoginListener() {
 		SecurityService.addLoginListener(new ILoginListener() {
+
 			@Override
-			public void logoutCompleted() {
+			public void loginSucceeded(String login) {
 				fireUserChanged();
 			}
 
 			@Override
-			public void loginSucceeded() {
+			public void logoutCompleted(String login) {
 				fireUserChanged();
 			}
 		});
