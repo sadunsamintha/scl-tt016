@@ -1,31 +1,24 @@
 package com.sicpa.standard.sasscl.view.lineid;
 
-import java.awt.Frame;
-
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-
+import com.google.common.eventbus.Subscribe;
+import com.sicpa.standard.client.common.eventbus.service.EventBusService;
+import com.sicpa.standard.client.common.i18n.Messages;
+import com.sicpa.standard.client.common.security.ILoginListener;
+import com.sicpa.standard.client.common.security.SecurityService;
+import com.sicpa.standard.client.common.security.User;
+import com.sicpa.standard.gui.components.dialog.login.LoginDialog;
+import com.sicpa.standard.gui.screen.machine.AbstractMachineFrame;
+import com.sicpa.standard.gui.screen.machine.component.lineId.DefaultLineIdPanel;
+import com.sicpa.standard.sasscl.view.LanguageSwitchEvent;
+import com.sicpa.standard.sasscl.view.MainFrame;
 import net.miginfocom.swing.MigLayout;
-
 import org.jdesktop.swingx.JXLoginPane;
 import org.jdesktop.swingx.auth.LoginAdapter;
 import org.jdesktop.swingx.auth.LoginEvent;
 import org.jdesktop.swingx.auth.LoginService;
 
-import com.google.common.eventbus.Subscribe;
-import com.sicpa.standard.client.common.eventbus.service.EventBusService;
-import com.sicpa.standard.client.common.security.ILoginListener;
-import com.sicpa.standard.client.common.security.SecurityService;
-import com.sicpa.standard.client.common.security.User;
-import com.sicpa.standard.client.common.i18n.Messages;
-import com.sicpa.standard.gui.components.dialog.login.LoginDialog;
-import com.sicpa.standard.gui.screen.machine.AbstractMachineFrame;
-import com.sicpa.standard.gui.screen.machine.component.lineId.DefaultLineIdPanel;
-import com.sicpa.standard.sasscl.common.log.OperatorLogger;
-import com.sicpa.standard.sasscl.view.LanguageSwitchEvent;
-import com.sicpa.standard.sasscl.view.MainFrame;
+import javax.swing.*;
+import java.awt.*;
 
 public class LineIdWithAuthenticateButton extends DefaultLineIdPanel {
 
@@ -46,13 +39,13 @@ public class LineIdWithAuthenticateButton extends DefaultLineIdPanel {
 		SecurityService.addLoginListener(new ILoginListener() {
 
 			@Override
-			public void logoutCompleted() {
-				logout();
+			public void loginSucceeded(String login) {
+				login();
 			}
 
 			@Override
-			public void loginSucceeded() {
-				login();
+			public void logoutCompleted(String login) {
+				logout();
 			}
 		});
 	}
@@ -96,7 +89,6 @@ public class LineIdWithAuthenticateButton extends DefaultLineIdPanel {
 	}
 
 	private void buttonLogoutActionPerformed() {
-		OperatorLogger.log("User Logout");
 		((MainFrame) getView()).logoutActionPerformed();
 	}
 
@@ -114,7 +106,6 @@ public class LineIdWithAuthenticateButton extends DefaultLineIdPanel {
 				@Override
 				public boolean authenticate(final String login, final char[] password, final String server)
 						throws Exception {
-					OperatorLogger.log("User Login: {}", login);
 					SecurityService.login(login, new String(password));
 					return true;
 				}

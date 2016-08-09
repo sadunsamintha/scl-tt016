@@ -1,24 +1,13 @@
 package com.sicpa.standard.sasscl;
 
-import static com.sicpa.standard.sasscl.devices.remote.IRemoteServer.ERROR_DEFAULT_SUBSYSTEM_ID;
-
-import java.io.File;
-import java.lang.management.ManagementFactory;
-import java.util.List;
-import java.util.Map;
-
-import javax.management.MBeanServer;
-import javax.management.ObjectName;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.core.io.ClassPathResource;
-
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
+import com.sicpa.standard.client.common.security.ILoginListener;
+import com.sicpa.standard.client.common.security.SecurityService;
 import com.sicpa.standard.client.common.utils.PropertiesUtils;
 import com.sicpa.standard.client.common.utils.StringMap;
 import com.sicpa.standard.sasscl.business.statistics.StatisticsRestoredEvent;
 import com.sicpa.standard.sasscl.business.statistics.impl.Statistics;
+import com.sicpa.standard.sasscl.common.log.OperatorLogger;
 import com.sicpa.standard.sasscl.common.storage.IStorage;
 import com.sicpa.standard.sasscl.controller.ProductionParametersEvent;
 import com.sicpa.standard.sasscl.controller.device.group.IGroupDevicesController;
@@ -34,7 +23,10 @@ import com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcVariableDesc
 import com.sicpa.standard.sasscl.devices.remote.IRemoteServer;
 import com.sicpa.standard.sasscl.model.ProductionParameters;
 import com.sicpa.standard.sasscl.model.statistics.StatisticsValues;
+import com.sicpa.standard.sasscl.monitoring.MonitoringService;
 import com.sicpa.standard.sasscl.monitoring.mbean.scl.SclAppMBean;
+import com.sicpa.standard.sasscl.monitoring.system.SystemEventType;
+import com.sicpa.standard.sasscl.monitoring.system.event.BasicSystemEvent;
 import com.sicpa.standard.sasscl.provider.impl.AuthenticatorProvider;
 import com.sicpa.standard.sasscl.provider.impl.SkuListProvider;
 import com.sicpa.standard.sasscl.provider.impl.SubsystemIdProvider;
@@ -42,6 +34,18 @@ import com.sicpa.standard.sasscl.sicpadata.generator.validator.IEncoderSequenceV
 import com.sicpa.standard.sasscl.utils.ConfigUtilEx;
 import com.sicpa.standard.sicpadata.spi.manager.IServiceProviderManager;
 import com.sicpa.standard.sicpadata.spi.manager.StaticServiceProviderManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.core.io.ClassPathResource;
+
+import javax.management.MBeanServer;
+import javax.management.ObjectName;
+import java.io.File;
+import java.lang.management.ManagementFactory;
+import java.util.List;
+import java.util.Map;
+
+import static com.sicpa.standard.sasscl.devices.remote.IRemoteServer.ERROR_DEFAULT_SUBSYSTEM_ID;
 
 public class Bootstrap implements IBootstrap {
 
@@ -65,8 +69,6 @@ public class Bootstrap implements IBootstrap {
     protected ProductionParameters productionParameters;
     protected RemoteServerScheduledJobs remoteServerSheduledJobs;
 
-
-
     @Override
     public void executeSpringInitTasks() {
         initPlc();
@@ -83,6 +85,32 @@ public class Bootstrap implements IBootstrap {
         }
 
         installJMXBeans();
+        initLoginListenerLogger();
+        loginDefaultLoginUser();
+    }
+
+    private void loginDefaultLoginUser() {
+        String login = SecurityService.getCurrentUser().getLogin();
+
+        OperatorLogger.log("Default user login: {}", login);
+        MonitoringService.addSystemEvent(new BasicSystemEvent(SystemEventType.USER_LOGIN, "Default login: " + login));
+    }
+
+    private void initLoginListenerLogger() {
+        SecurityService.addLoginListener(new ILoginListener() {
+
+            @Override
+            public void loginSucceeded(String login) {
+                OperatorLogger.log("User login: {}", login);
+                MonitoringService.addSystemEvent(new BasicSystemEvent(SystemEventType.USER_LOGIN, "Login: " + login));
+            }
+
+            @Override
+            public void logoutCompleted(String login) {
+                OperatorLogger.log("User logout: {}", login);
+                MonitoringService.addSystemEvent(new BasicSystemEvent(SystemEventType.USER_LOGIN, "Logout: " + login));
+            }
+        });
     }
 
     private void addConnectionListenerOnServer() {
