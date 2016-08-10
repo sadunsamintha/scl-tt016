@@ -1,10 +1,12 @@
+
 <LeibingerPrinterModel>
 	<name>LEIBINGER</name>
-	<ipAdress>192.168.1.11</ipAdress>
+	<ipAdress>192.168.1.110</ipAdress>
 	<deviceId>1</deviceId>
 	<udpPort>4321</udpPort>
 	<tcpTimeout>5000</tcpTimeout>
 	<tcpPort>3000</tcpPort>
+<nozzleMode>OPEN_AUTO_CLOSE_MANUAL</nozzleMode>
 	<tcpMaxExpiredRequests>3</tcpMaxExpiredRequests>
 	<transitionMaxExpiredRequests>10</transitionMaxExpiredRequests>
 	<resetOnStop>true</resetOnStop>
@@ -21,17 +23,17 @@
 		<dataMatrixEncoding>ASCII</dataMatrixEncoding>
 	</printerParameters>
 	<wysiwyg>true</wysiwyg>
-	<nozzleMode>OPEN_MANUAL_CLOSE_AUTO</nozzleMode>
-	<encoderResolution>22000</encoderResolution>
+	<securePing>true</securePing>
+	<encoderResolution>10000</encoderResolution>
 	<inverted>0</inverted>
 	<rotation>0</rotation>
-	<encoderSignal>3</encoderSignal>
-	<printGoSignal>1</printGoSignal>
-	<printHeight>95</printHeight>
-	<flightTimeCompensationMicrometers>0</flightTimeCompensationMicrometers>
-	<printMode>1</printMode>
-	<strokeDistanceMicrometers>500</strokeDistanceMicrometers>
-	<printGoDelayMicrometers>0</printGoDelayMicrometers>
+	<encoderSignal>1</encoderSignal>
+	<printGoSignal>0</printGoSignal>
+	<printHeight>0</printHeight>
+	<flightTimeCompensationMicrometers>4000</flightTimeCompensationMicrometers>
+	<printMode>4</printMode>
+	<strokeDistanceMicrometers>530</strokeDistanceMicrometers>
+	<printGoDelayMicrometers>6000</printGoDelayMicrometers>
 	<printGoDistance>0</printGoDistance>
-	<printGoRepetition>0</printGoRepetition>
+	<printGoRepetition>2000</printGoRepetition>
 </LeibingerPrinterModel>
