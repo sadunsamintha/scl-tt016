@@ -33,6 +33,7 @@
   <User login="OPERATOR" password="">
     <Permission name="PRODUCTION_CHANGE_PARAMETERS"/>
     <Permission name="PRODUCTION_MODE_STANDARD"/>
+    <Permission name="PRODUCTION_MODE_EXPORT"/>
     <Permission name="PRODUCTION_START"/>
     <Permission name="PRODUCTION_STOP"/>
     <Permission name="PRODUCTION_VIEW_STATISTICS"/>

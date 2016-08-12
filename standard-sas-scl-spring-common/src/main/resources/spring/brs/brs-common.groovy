@@ -15,9 +15,9 @@ beans{
 
 	brsBarcodeCheck(BrsBarcodeCheck){ compliantProductResolver=ref('compliantProduct') }
 
-	brsWrongBarcodeThreshold(BrsWrongBarcodeThreshold,props['brs.threshold.active'],props['brs.threshold'],ref('brsTimeWindow'))
+	brsWrongBarcodeThreshold(BrsWrongBarcodeThreshold,props['alert.wrongBarcode.enable'],props['alert.wrongBarcode.error.threshold'],ref('brsTimeWindow'))
 
-	brsTimeWindow(BrsTimeWindow,props['brs.threshold.window.time'])
+	brsTimeWindow(BrsTimeWindow,props['alert.wrongBarcode.window.time'])
 
 	brsWrongBarcodeThresholdAddTask(InjectByMethodBean){
 		target=ref('alert')
