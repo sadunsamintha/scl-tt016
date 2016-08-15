@@ -32,8 +32,7 @@ public class StopReasonViewController extends AbstractViewFlowController impleme
 
 	@Subscribe
 	public void handleStopProduction(ApplicationFlowStateChangedEvent event) {
-		if (event.getPreviousState().equals(ApplicationFlowState.STT_STARTED)
-				&& event.getCurrentState().equals(ApplicationFlowState.STT_STOPPING)) {
+		if (event.getPreviousState().equals(ApplicationFlowState.STT_STARTED) && event.getCurrentState().equals(ApplicationFlowState.STT_STOPPING)) {
 			screensFlow.moveToNext(STOP_PRODUCTION);
 		}
 	}
@@ -45,7 +44,7 @@ public class StopReasonViewController extends AbstractViewFlowController impleme
 
 	@Override
 	protected void displayView() {
-		if (status.equals(HardwareControllerStatus.CONNECTED)) {
+		if (status.equals(HardwareControllerStatus.CONNECTED) || status.equals(HardwareControllerStatus.STOPPING)) {
 			super.displayView();
 		} else {
 			moveToNext();

@@ -1,22 +1,5 @@
 package com.sicpa.standard.sasscl.view.selection.select.barcode;
 
-import java.awt.Window;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.SwingUtilities;
-import javax.swing.border.EmptyBorder;
-
-import net.miginfocom.swing.MigLayout;
-
-import org.jdesktop.jxlayer.JXLayer;
-
 import com.sicpa.standard.client.common.i18n.Messages;
 import com.sicpa.standard.gui.components.buttons.PaddedButton;
 import com.sicpa.standard.gui.components.buttons.shape.DirectionButton;
@@ -38,6 +21,19 @@ import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.Producti
 import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.SKUNode;
 import com.sicpa.standard.sasscl.view.MainFrame;
 import com.sicpa.standard.sasscl.view.selection.select.ISelectProductionParametersViewListener;
+import net.miginfocom.swing.MigLayout;
+import org.jdesktop.jxlayer.JXLayer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @SuppressWarnings("serial")
 public class BarcodeInputView extends DefaultIdInputView {
@@ -52,6 +48,8 @@ public class BarcodeInputView extends DefaultIdInputView {
 	protected ProductionParameterRootNode rootNode;
 
 	protected ISelectProductionParametersViewListener callback;
+
+	private static final Logger logger = LoggerFactory.getLogger(BarcodeInputView.class);
 
 	public BarcodeInputView() {
 		setModel(new BarcodeScreenModel());
@@ -251,6 +249,7 @@ public class BarcodeInputView extends DefaultIdInputView {
 			final IProductionParametersNode parent, final List<Entry> entries) {
 		if (node instanceof SKUNode) {
 			SKU sku = (SKU) node.getValue();
+			logger.debug("sku=" + sku.getDescription() + ",barcodes=" + sku.getBarCodes());
 			if (sku.containsBarcode(barcode)) {
 
 				Entry entry = new Entry();
