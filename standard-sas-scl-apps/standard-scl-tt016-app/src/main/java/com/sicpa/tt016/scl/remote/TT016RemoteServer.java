@@ -134,6 +134,7 @@ public class TT016RemoteServer extends AbstractRemoteServer implements IBisCrede
 			if (products.getProductStatus().equals(ProductStatus.AUTHENTICATED)) {
 				sendAuthenticatedData(products);
 			} else if (products.getProductStatus().equals(ProductStatus.SENT_TO_PRINTER_UNREAD)
+					|| products.getProductStatus().equals(ProductStatus.INK_DETECTED)
 					|| products.getProductStatus().equals(ProductStatus.UNREAD)) {
 				sendEjectedData(products);
 			} else if (products.getProductStatus().equals(ProductStatus.EXPORT)) {

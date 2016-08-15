@@ -48,10 +48,6 @@ public class ProductionDataConverter {
 
 		if (status.equals(ProductStatus.UNREAD)) {
 			remoteStatus = UNREADABLE_WITH_CODE_INT;
-		} else if (status.equals(ProductStatus.INK_DETECTED)) {
-			remoteStatus = UNREADABLE_WITH_CODE_INT;
-		} else if (status.equals(ProductStatus.SENT_TO_PRINTER_UNREAD)) {   //No ink
-			remoteStatus = UNREADABLE_WITHOUT_CODE_INT;
 		} else if (status.equals(TT016ProductStatus.EJECTED_PRODUCER)) {
 			remoteStatus = QUALITY;
 		} else if (status.equals(ProductStatus.NOT_AUTHENTICATED)) {
@@ -83,8 +79,9 @@ public class ProductionDataConverter {
 		SKU sku = new SKU(getSkuId(products));
 		Subsystem subsystem = new Subsystem(subsystemId);
 
-		ActivationEjection ejection = new ActivationEjection(0L, qty, new EjectionReason(UNREADABLE_INT), new Date(),
-				ct, sku, subsystem, PRODUCTION_MODE_STANDARD);
+		ActivationEjection ejection = new ActivationEjection(0L, qty,
+				new EjectionReason(getEjectionReasonId(products.getProductStatus())), new Date(),	ct, sku, subsystem,
+				PRODUCTION_MODE_STANDARD);
 
 		ActivationEjectionDTO ejectionDTO = new ActivationEjectionDTO(ejection);
 		ejectionDTO.setTimestamps(getDates(products));
@@ -137,5 +134,15 @@ public class ProductionDataConverter {
 
 	private int getCodeTypeId(PackagedProducts products) {
 		return (int) products.getProducts().get(0).getSku().getCodeType().getId();
+	}
+
+	private int getEjectionReasonId(ProductStatus productStatus) {
+		if (productStatus.equals(ProductStatus.SENT_TO_PRINTER_UNREAD)) {
+			return EjectionReason.UNREADABLE_WITHOUT_CODE_INT;
+		} else if (productStatus.equals(TT016ProductStatus.EJECTED_PRODUCER)){
+			return EjectionReason.QUALITY;
+		} else {
+			return EjectionReason.UNREADABLE_WITH_CODE_INT;
+		}
 	}
 }
