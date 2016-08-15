@@ -4,9 +4,9 @@ import com.sicpa.standard.sasscl.business.sku.alert.UnkownSkuRecognizedScheduled
 beans{
 
 	unkownSkuScheduledAlert(UnkownSkuRecognizedScheduledAlert){
-		enabled=props['alert.sku.recognition.enabled']
-		threshold=props['alert.sku.recognition.maxUnreadCount']
-		sampleSize=props['alert.sku.recognition.sampleSize']
+		enabled=props['alert.sku.recognition.unknown.enabled']
+		threshold=props['alert.sku.recognition.unknown.maxUnknownCount']
+		sampleSize=props['alert.sku.recognition.unknown.sampleSize']
 		productionChangeDetector=ref('productionChangeDetector')
 	}
 
