@@ -2,6 +2,7 @@ package com.sicpa.standard.sasscl.business.activation.offline;
 
 import java.util.Date;
 
+import com.sicpa.standard.sasscl.model.ProductionParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,19 +20,18 @@ public abstract class AbstractOfflineCounting implements IOfflineCounting {
 	private static final Logger logger = LoggerFactory.getLogger(AbstractOfflineCounting.class);
 
 	protected SubsystemIdProvider subsystemIdProvider;
-	protected SKU offlineSku;
+	protected ProductionParameters productionParameters;
 	protected String productionBatchId;
 
 	public AbstractOfflineCounting() {
-		offlineSku = new SKU(-1, "OFFLINE");
+
 	}
 
 	/**
 	 * generate "quantity" number of product giving each product a different timestamp from "from" to "to"
 	 */
 	protected void process(long from, long to, int quantity) {
-		logger.info("offline couting - last stop {} , last product {} , qty {}", new Object[] { new Date(from),
-				new Date(to), quantity });
+		logger.info("offline counting - last stop {} , last product {} , qty {}", new Object[] { new Date(from), new Date(to), quantity });
 
 		MonitoringService.addSystemEvent(new OfflineCountingSystemEvent(quantity, new Date(from), new Date(to)));
 		long current = from;
@@ -54,10 +54,19 @@ public abstract class AbstractOfflineCounting implements IOfflineCounting {
 	}
 
 	protected SKU getSKU() {
-		return offlineSku;
+		SKU ret = null;
+		if (productionParameters.getSku() == null || productionParameters.getSku().getId() == -1){
+			logger.info("not_able_to_determine_last_selected_sku_from_production_parameters");
+		}else {
+			ret = productionParameters.getSku();
+		}
+		return ret;
 	}
 
 	public void setSubsystemIdProvider(SubsystemIdProvider subsystemIdProvider) {
 		this.subsystemIdProvider = subsystemIdProvider;
+	}
+	public void setProductionParameters(ProductionParameters productionParameters) {
+		this.productionParameters = productionParameters;
 	}
 }
