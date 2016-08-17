@@ -175,7 +175,6 @@ public class BarcodeInputView extends DefaultIdInputView {
 		ThreadUtils.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				//getButtonOk().setEnabled(false);
 				getPanelSelect().removeAll();
 				getLabelCorespondingSKU().setVisible(false);
 				getTextError().setText("");
@@ -204,12 +203,6 @@ public class BarcodeInputView extends DefaultIdInputView {
 									}
 								});
 							}
-							//ThreadUtils.invokeLater(new Runnable() {
-							//	@Override
-							//	public void run() {
-							//		getButtonOk().setEnabled(true);
-							//	}
-							//});
 						}
 					});
 				}
