@@ -7,10 +7,12 @@ import static java.util.Arrays.asList;
 import java.util.List;
 
 import com.google.common.eventbus.Subscribe;
+import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.sasscl.common.log.OperatorLogger;
 import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState;
 import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowStateChangedEvent;
 import com.sicpa.standard.sasscl.controller.flow.IFlowControl;
+import com.sicpa.standard.sasscl.event.ManualStopEvent;
 
 public class StartStopViewController implements IStartStopViewListener {
 
@@ -44,6 +46,7 @@ public class StartStopViewController implements IStartStopViewListener {
 	@Override
 	public void stop() {
 		OperatorLogger.log("Stop Production");
+		EventBusService.post(new ManualStopEvent());
 		flowControl.notifyStopProduction();
 	}
 
