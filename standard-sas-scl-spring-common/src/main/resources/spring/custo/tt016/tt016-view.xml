@@ -13,6 +13,10 @@
 		<property name="flowControl" ref="flowControl" />
 	</bean>
 
+	<bean id="startStopViewController" class="com.sicpa.tt016.view.startstop.TT016StartStopViewController">
+		<property name="flowControl" ref="flowControl" />
+	</bean>
+
 
 	<!--RESET STATISTICS -->
 

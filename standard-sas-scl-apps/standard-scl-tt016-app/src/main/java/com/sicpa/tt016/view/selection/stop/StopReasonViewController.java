@@ -5,7 +5,7 @@ import static com.sicpa.tt016.monitoring.system.TT016SystemEventType.PROD_STOP_R
 import static com.sicpa.tt016.view.TT016ScreenFlowTriggers.STOP_PRODUCTION;
 import static com.sicpa.tt016.view.TT016ScreenFlowTriggers.STOP_PRODUCTION_REASON_SELECTED;
 
-import com.sicpa.standard.sasscl.event.ManualStopEvent;
+import com.sicpa.tt016.event.ManualStopEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

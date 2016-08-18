@@ -1,4 +1,4 @@
-package com.sicpa.standard.sasscl.event;
+package com.sicpa.tt016.event;
 
 
 import com.sicpa.standard.client.common.security.SecurityService;
