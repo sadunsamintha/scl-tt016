@@ -8,6 +8,7 @@
 	<bean id="offlineCounting" class="com.sicpa.standard.sasscl.business.activation.offline.impl.PlcOfflineCounting">
 		<property name="subsystemIdProvider" ref="subsystemIdProvider"/>
 		<property name="plcProvider" ref="plcProvider" />
+		<property name="productionParameters" ref="productionParameters" />
 	</bean>
 
 	<bean id="offlineCountingTrigger" class="com.sicpa.standard.sasscl.business.activation.offline.impl.PlcOfflineCountingTrigger">

@@ -7,7 +7,10 @@ import com.sicpa.standard.sasscl.business.activation.NewProductEvent;
 import com.sicpa.standard.sasscl.business.activation.offline.impl.PlcOfflineCounting;
 import com.sicpa.standard.sasscl.devices.plc.IPlcAdaptor;
 import com.sicpa.standard.sasscl.devices.plc.PlcAdaptorException;
+import com.sicpa.standard.sasscl.model.CodeType;
 import com.sicpa.standard.sasscl.model.Product;
+import com.sicpa.standard.sasscl.model.ProductionParameters;
+import com.sicpa.standard.sasscl.model.SKU;
 import com.sicpa.standard.sasscl.provider.impl.PlcProvider;
 import com.sicpa.standard.sasscl.provider.impl.SubsystemIdProvider;
 import junit.framework.Assert;
@@ -29,6 +32,9 @@ public class PlcOfflineCountingTest {
 		IPlcVariable<Integer> lastStopVar = Mockito.mock(IPlcVariable.class);
 		IPlcVariable<Integer> lastProductVar = Mockito.mock(IPlcVariable.class);
 
+		ProductionParameters productionParameters = Mockito.mock(ProductionParameters.class);
+		poc.setProductionParameters(productionParameters);
+
 		PlcProvider plcProvider = new PlcProvider();
 		IPlcAdaptor plc = Mockito.mock(IPlcAdaptor.class);
 
@@ -37,9 +43,20 @@ public class PlcOfflineCountingTest {
 		final int productsCount = 100;
 		int deltaProduct = ((lastProduct - lastStop) / productsCount) * 1000;
 
+		CodeType ct = new CodeType(4321);
+
+		SKU sku = new SKU();
+		sku.setId(1234);
+		sku.setDescription("TEST");
+		sku.setCodeType(ct);
+
 		Mockito.when(plc.read(qtyVar)).thenReturn(productsCount);
 		Mockito.when(plc.read(lastStopVar)).thenReturn(lastStop);
 		Mockito.when(plc.read(lastProductVar)).thenReturn(lastProduct);
+
+		Mockito.when(productionParameters.getSku()).thenReturn(sku);
+
+
 
 		poc.setPlcProvider(plcProvider);
 		poc.setSubsystemIdProvider(new SubsystemIdProvider(0));
@@ -60,9 +77,9 @@ public class PlcOfflineCountingTest {
 		int i = 0;
 
 		for (Product p : products) {
-			Assert.assertEquals(-1, p.getSku().getId());
+			Assert.assertEquals(sku.getId(), p.getSku().getId());
 			Assert.assertEquals(null, p.getCode());
-			Assert.assertEquals(null, p.getSku().getCodeType());
+			Assert.assertEquals(sku.getCodeType(), p.getSku().getCodeType());
 			Assert.assertEquals((1000l * lastStop + i * deltaProduct), p.getActivationDate().getTime());
 			i++;
 		}
