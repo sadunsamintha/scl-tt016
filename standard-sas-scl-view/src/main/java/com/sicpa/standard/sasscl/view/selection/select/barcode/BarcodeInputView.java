@@ -1,6 +1,8 @@
 package com.sicpa.standard.sasscl.view.selection.select.barcode;
 
 import com.sicpa.standard.client.common.i18n.Messages;
+import com.sicpa.standard.client.common.security.Permission;
+import com.sicpa.standard.client.common.security.SecurityService;
 import com.sicpa.standard.gui.components.buttons.PaddedButton;
 import com.sicpa.standard.gui.components.buttons.shape.DirectionButton;
 import com.sicpa.standard.gui.components.buttons.toggleButtons.ToggleImageAndTextButton;
@@ -19,6 +21,7 @@ import com.sicpa.standard.sasscl.productionParameterSelection.node.IProductionPa
 import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.ProductionModeNode;
 import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.ProductionParameterRootNode;
 import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.SKUNode;
+import com.sicpa.standard.sasscl.productionParameterSelection.selectionmodel.DefaultSelectionModel;
 import com.sicpa.standard.sasscl.view.MainFrame;
 import com.sicpa.standard.sasscl.view.selection.select.ISelectProductionParametersViewListener;
 import net.miginfocom.swing.MigLayout;
@@ -33,7 +36,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+
 
 @SuppressWarnings("serial")
 public class BarcodeInputView extends DefaultIdInputView {
@@ -44,6 +47,7 @@ public class BarcodeInputView extends DefaultIdInputView {
 	protected JPanel panelSelect;
 	protected JLabel labelConnected;
 	protected JPanel panelCenter;
+	protected DefaultSelectionModel dataSelectionModel;
 
 	protected ProductionParameterRootNode rootNode;
 
@@ -63,9 +67,11 @@ public class BarcodeInputView extends DefaultIdInputView {
 
 	public void reset(ProductionParameterRootNode rootNode) {
 		this.rootNode = rootNode;
+		this.dataSelectionModel = new DefaultSelectionModel(rootNode);
 		getModel().reset();
 		getLabelCorespondingSKU().setVisible(false);
 		getPanelSelect().removeAll();
+
 	}
 
 	@Override
@@ -95,6 +101,7 @@ public class BarcodeInputView extends DefaultIdInputView {
 
 		add(getLabelConnected(), "north");
 		hideCenterPanel();
+		getButtonOk().setVisible(true);
 
 	}
 
@@ -173,7 +180,6 @@ public class BarcodeInputView extends DefaultIdInputView {
 		ThreadUtils.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				getButtonOk().setEnabled(false);
 				getPanelSelect().removeAll();
 				getLabelCorespondingSKU().setVisible(false);
 				getTextError().setText("");
@@ -202,12 +208,6 @@ public class BarcodeInputView extends DefaultIdInputView {
 									}
 								});
 							}
-							ThreadUtils.invokeLater(new Runnable() {
-								@Override
-								public void run() {
-									getButtonOk().setEnabled(true);
-								}
-							});
 						}
 					});
 				}
@@ -255,9 +255,11 @@ public class BarcodeInputView extends DefaultIdInputView {
 				Entry entry = new Entry();
 				entry.sku = sku;
 				if (parent instanceof ProductionModeNode) {
+
 					entry.mode = (ProductionMode) parent.getValue();
+
 				}
-				entries.add(entry);
+				permissionFilterAndAdd(entries,entry);
 			}
 		} else {
 			List<? extends IProductionParametersNode> children = node.getChildren();
@@ -266,6 +268,13 @@ public class BarcodeInputView extends DefaultIdInputView {
 					populateMatchingSKU(barcode, child, node, entries);
 				}
 			}
+		}
+	}
+
+	private void permissionFilterAndAdd(List<Entry> entries, Entry entry) {
+		Permission p = dataSelectionModel.getPermissions().get(entry.mode);
+		if (SecurityService.hasPermission(p)) {
+			entries.add(entry);
 		}
 	}
 
