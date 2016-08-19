@@ -60,6 +60,7 @@ beans{
 
 
 	def ejectionTypeProductionModeOverride = [:]
+	ejectionTypeProductionModeOverride.put("productionmode.DEFAULT",props['ejection.type.default'])
 	ejectionTypeProductionModeOverride.put("productionmode.standard",props['ejection.type.productionmode.standard'])
 	ejectionTypeProductionModeOverride.put("productionmode.export",props['ejection.type.productionmode.export'])
 	ejectionTypeProductionModeOverride.put("productionmode.refeed.normal",props['ejection.type.productionmode.refeed.normal'])
