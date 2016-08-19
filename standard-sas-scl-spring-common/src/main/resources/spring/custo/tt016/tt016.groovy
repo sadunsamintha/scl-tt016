@@ -58,7 +58,7 @@ beans{
 	}
 
 
-
+    //values may or may not be present but all available production modes plus default are specified for full config support
 	def ejectionTypeProductionModeOverride = [:]
 	ejectionTypeProductionModeOverride.put("productionmode.DEFAULT",props['ejection.type.default'])
 	ejectionTypeProductionModeOverride.put("productionmode.standard",props['ejection.type.productionmode.standard'])
