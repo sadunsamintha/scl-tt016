@@ -8,8 +8,8 @@ import com.sicpa.standard.sasscl.view.startstop.StartStopViewController;
 public class TT016StartStopViewController extends StartStopViewController {
     @Override
     public void stop() {
-        super.stop();
         EventBusService.post(new ManualStopEvent());
+        super.stop();
     }
 
 }
