@@ -2,6 +2,7 @@ import com.sicpa.tt016.scl.remote.simulator.TT016RemoteServerSimulator
 import com.sicpa.tt016.scl.TT016Bootstrap
 import com.sicpa.tt016.devices.camera.alert.TT016TrilightWarningCameraAlert
 import com.sicpa.tt016.refeed.TT016RefeedAvailabilityProvider
+import com.sicpa.tt016.listeners.ProductionParametersEventListener
 
 beans{
 	tt016TrilightWarningCameraAlert(TT016TrilightWarningCameraAlert) {
@@ -54,5 +55,21 @@ beans{
 	refeedAvailabilityProvider(TT016RefeedAvailabilityProvider){
 		isRefeedAvailableInRemoteServer=props['refeedAvailable']
 		isHeuftSystem=props['heuftSystem']
+	}
+
+
+
+	def ejectionTypeProductionModeOverride = [:]
+	ejectionTypeProductionModeOverride.put("productionmode.standard",props['ejection.type.productionmode.standard'])
+	ejectionTypeProductionModeOverride.put("productionmode.export",props['ejection.type.productionmode.export'])
+	ejectionTypeProductionModeOverride.put("productionmode.refeed.normal",props['ejection.type.productionmode.refeed.normal'])
+	ejectionTypeProductionModeOverride.put("productionmode.maintenance",props['ejection.type.productionmode.maintenance'])
+
+
+	productionParametersEventListener(ProductionParametersEventListener){
+		plcMap= ref('plcVarMap')
+		plcParamSender= plcParamSender
+		overrideParameters=ejectionTypeProductionModeOverride
+
 	}
 }
