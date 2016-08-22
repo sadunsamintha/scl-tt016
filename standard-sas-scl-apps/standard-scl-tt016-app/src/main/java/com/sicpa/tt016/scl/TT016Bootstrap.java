@@ -13,7 +13,7 @@ import com.sicpa.standard.sasscl.model.ProductStatus;
 import com.sicpa.standard.sasscl.provider.impl.UnknownSkuProvider;
 import com.sicpa.standard.sasscl.utils.ConfigUtilEx;
 import com.sicpa.standard.sasscl.view.main.MainPanelGetter;
-import com.sicpa.tt016.business.ejection.EjectionTypeValidator;
+import com.sicpa.tt016.business.ejection.EjectionTypeSender;
 import com.sicpa.tt016.model.TT016ProductStatus;
 import com.sicpa.tt016.model.statistics.TT016StatisticsKey;
 import com.sicpa.tt016.refeed.TT016RefeedAvailabilityProvider;
@@ -27,7 +27,6 @@ import static com.sicpa.standard.sasscl.controller.flow.ActivityTrigger.TRG_EXIT
 import static com.sicpa.standard.sasscl.controller.flow.ActivityTrigger.TRG_RECOVERING_CONNECTION;
 import static com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState.*;
 import static com.sicpa.standard.sasscl.custoBuilder.CustoBuilder.*;
-import static com.sicpa.standard.sasscl.messages.ActionMessageType.WARNING;
 import static com.sicpa.tt016.controller.flow.TT016ActivityTrigger.TRG_STOP_REASON_SELECTED;
 import static com.sicpa.tt016.view.TT016ScreenFlowTriggers.STOP_PRODUCTION;
 import static com.sicpa.tt016.view.TT016ScreenFlowTriggers.STOP_PRODUCTION_REASON_SELECTED;
@@ -37,7 +36,7 @@ public class TT016Bootstrap extends Bootstrap {
 	private MainPanelGetter mainPanelGetter;
 	private StopReasonViewController stopReasonViewController;
 	private UnknownSkuProvider unknownSkuProvider;
-	private EjectionTypeValidator ejectionTypeValidator;
+	private EjectionTypeSender ejectionTypeSender;
 	private int codeTypeId;
 	private TT016RefeedAvailabilityProvider refeedAvailabilityProvider;
 
@@ -51,12 +50,12 @@ public class TT016Bootstrap extends Bootstrap {
 		setUnknownSkuCodeType();
 		addProducerEjectedStatistic();
 		addInkDetectedStatistic();
-		checkEjectionTypeByProductionMode();
+		sendEjectionTypeForProductionMode();
 	}
 
-	private void checkEjectionTypeByProductionMode() {
+	private void sendEjectionTypeForProductionMode() {
 		addActionOnStartingProduction(()->
-				ejectionTypeValidator.validate(productionParameters));
+				ejectionTypeSender.send(productionParameters));
 	}
 
 	private void addInkDetectedStatistic() {
@@ -136,7 +135,7 @@ public class TT016Bootstrap extends Bootstrap {
 		this.refeedAvailabilityProvider = refeedAvailabilityProvider;
 	}
 
-	public void setEjectionTypeValidator(EjectionTypeValidator ejectionTypeValidator) {
-		this.ejectionTypeValidator = ejectionTypeValidator;
+	public void setEjectionTypeSender(EjectionTypeSender ejectionTypeSender) {
+		this.ejectionTypeSender = ejectionTypeSender;
 	}
 }

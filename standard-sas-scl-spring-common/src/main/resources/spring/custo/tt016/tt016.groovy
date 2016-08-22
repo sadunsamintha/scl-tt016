@@ -2,7 +2,7 @@ import com.sicpa.tt016.scl.remote.simulator.TT016RemoteServerSimulator
 import com.sicpa.tt016.scl.TT016Bootstrap
 import com.sicpa.tt016.devices.camera.alert.TT016TrilightWarningCameraAlert
 import com.sicpa.tt016.refeed.TT016RefeedAvailabilityProvider
-import com.sicpa.tt016.business.ejection.EjectionTypeValidator
+import com.sicpa.tt016.business.ejection.EjectionTypeSender
 
 beans{
 	tt016TrilightWarningCameraAlert(TT016TrilightWarningCameraAlert) {
@@ -39,7 +39,7 @@ beans{
 		unknownSkuProvider=ref('unknownSkuProvider')
 		remoteServerRefeedAvailability=ref('remoteServer')
 		refeedAvailabilityProvider=ref('refeedAvailabilityProvider')
-		ejectionTypeValidator=ref('ejectionTypeValidator')
+		ejectionTypeSender=ref('ejectionTypeSender')
 	}
 
 	importBeans('spring/custo/tt016/tt016-plc.xml')
@@ -68,7 +68,7 @@ beans{
 	ejectionTypeProductionModeOverride.put("productionmode.maintenance",props['ejection.type.productionmode.maintenance'])
 
 
-	ejectionTypeValidator(EjectionTypeValidator){
+	ejectionTypeSender(EjectionTypeSender){
 		plcMap= ref('plcVarMap')
 		plcParamSender= plcParamSender
 		overrideParameters=ejectionTypeProductionModeOverride
