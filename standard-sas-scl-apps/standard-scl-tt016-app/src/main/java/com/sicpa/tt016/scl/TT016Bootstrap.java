@@ -13,6 +13,7 @@ import com.sicpa.standard.sasscl.model.ProductStatus;
 import com.sicpa.standard.sasscl.provider.impl.UnknownSkuProvider;
 import com.sicpa.standard.sasscl.utils.ConfigUtilEx;
 import com.sicpa.standard.sasscl.view.main.MainPanelGetter;
+import com.sicpa.tt016.business.ejection.EjectionTypeValidator;
 import com.sicpa.tt016.model.TT016ProductStatus;
 import com.sicpa.tt016.model.statistics.TT016StatisticsKey;
 import com.sicpa.tt016.refeed.TT016RefeedAvailabilityProvider;
@@ -36,6 +37,7 @@ public class TT016Bootstrap extends Bootstrap {
 	private MainPanelGetter mainPanelGetter;
 	private StopReasonViewController stopReasonViewController;
 	private UnknownSkuProvider unknownSkuProvider;
+	private EjectionTypeValidator ejectionTypeValidator;
 	private int codeTypeId;
 	private TT016RefeedAvailabilityProvider refeedAvailabilityProvider;
 
@@ -49,6 +51,12 @@ public class TT016Bootstrap extends Bootstrap {
 		setUnknownSkuCodeType();
 		addProducerEjectedStatistic();
 		addInkDetectedStatistic();
+		checkEjectionTypeByProductionMode();
+	}
+
+	private void checkEjectionTypeByProductionMode() {
+		addActionOnStartingProduction(()->
+				ejectionTypeValidator.validate(productionParameters));
 	}
 
 	private void addInkDetectedStatistic() {
@@ -128,4 +136,7 @@ public class TT016Bootstrap extends Bootstrap {
 		this.refeedAvailabilityProvider = refeedAvailabilityProvider;
 	}
 
+	public void setEjectionTypeValidator(EjectionTypeValidator ejectionTypeValidator) {
+		this.ejectionTypeValidator = ejectionTypeValidator;
+	}
 }

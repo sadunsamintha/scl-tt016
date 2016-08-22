@@ -1,6 +1,5 @@
-package com.sicpa.tt016.listeners;
+package com.sicpa.tt016.business.ejection;
 
-import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.device.plc.PLCVariableMap;
 import com.sicpa.standard.sasscl.controller.ProductionParametersEvent;
 import com.sicpa.standard.sasscl.devices.plc.PlcLineHelper;
@@ -15,7 +14,7 @@ import java.util.Map;
 import java.util.Optional;
 
 
-public class ProductionParametersEventListener {
+public class EjectionTypeValidator {
 
     private PLCVariableMap plcMap;
 
@@ -28,11 +27,10 @@ public class ProductionParametersEventListener {
 
     private Map<String,String> overrideParameters = new HashMap<>();
 
-    private static final Logger logger = LoggerFactory.getLogger(ProductionParametersEventListener.class);
-
-    @Subscribe
-    public void handleEvent(ProductionParametersEvent evt){
-        ProductionParameters pp = evt.getProductionParameters();
+    private static final Logger logger = LoggerFactory.getLogger(EjectionTypeValidator.class);
+    
+    
+    public void validate(ProductionParameters pp){
         ProductionMode mode = pp.getProductionMode();
         for (Integer lineIndex : PlcLineHelper.getLineIndexes()) {
             try {
