@@ -5,6 +5,7 @@ import static com.sicpa.tt016.monitoring.system.TT016SystemEventType.PROD_STOP_R
 import static com.sicpa.tt016.view.TT016ScreenFlowTriggers.STOP_PRODUCTION;
 import static com.sicpa.tt016.view.TT016ScreenFlowTriggers.STOP_PRODUCTION_REASON_SELECTED;
 
+import com.sicpa.tt016.event.ManualStopEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,6 +22,8 @@ import com.sicpa.standard.sasscl.monitoring.system.SystemEventLevel;
 import com.sicpa.standard.sasscl.monitoring.system.event.BasicSystemEvent;
 import com.sicpa.standard.sasscl.view.AbstractViewFlowController;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 public class StopReasonViewController extends AbstractViewFlowController implements IStopReasonListener {
 
 	private static final Logger logger = LoggerFactory.getLogger(StopReasonViewController.class);
@@ -30,12 +33,20 @@ public class StopReasonViewController extends AbstractViewFlowController impleme
 
 	private volatile HardwareControllerStatus status;
 
+	private AtomicBoolean stopButtonPressed = new AtomicBoolean(false);
+
+
 	@Subscribe
 	public void handleStopProduction(ApplicationFlowStateChangedEvent event) {
-		if (event.getPreviousState().equals(ApplicationFlowState.STT_STARTED)
-				&& event.getCurrentState().equals(ApplicationFlowState.STT_STOPPING)) {
+		if (event.getPreviousState().equals(ApplicationFlowState.STT_STARTED) && event.getCurrentState().equals(ApplicationFlowState.STT_STOPPING)) {
 			screensFlow.moveToNext(STOP_PRODUCTION);
 		}
+	}
+
+	@Subscribe
+	public void handleStopButtonPressed(ManualStopEvent evt){
+		stopButtonPressed.set(true);
+		logger.info("StopButtonPressed,user=" + evt.user.getLogin() + ",date=" + evt.date.toString());
 	}
 
 	@Subscribe
@@ -43,10 +54,13 @@ public class StopReasonViewController extends AbstractViewFlowController impleme
 		status = evt.getStatus();
 	}
 
+
+
 	@Override
 	protected void displayView() {
-		if (status.equals(HardwareControllerStatus.CONNECTED)) {
+		if (stopButtonPressed.get()) {
 			super.displayView();
+			stopButtonPressed.set(false);
 		} else {
 			moveToNext();
 		}
