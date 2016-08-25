@@ -85,7 +85,7 @@ public class Coding implements ICoding {
 	 *            the number of codes needed
 	 * @return the last used encoder
 	 */
-	protected IEncoder retreiveEnoughtCodeToPrint(IEncoder encoder, final List<String> codes, final long numberCodes) {
+	protected IEncoder retreiveEnoughCodesToPrint(IEncoder encoder, final List<String> codes, final long numberCodes) {
 
 		try {
 
@@ -114,8 +114,7 @@ public class Coding implements ICoding {
 		// Gets the codes from the current encoder and adds them to the
 		// container to be send to the printer.
 		codes.addAll(encoder.getEncryptedCodes(numberCodes - codes.size()));
-		MonitoringService.addSystemEvent(new BasicSystemEvent(SystemEventType.GET_CODE_FROM_ENCODER, encoder.getId()
-				+ ""));
+		MonitoringService.addSystemEvent(new BasicSystemEvent(SystemEventType.GET_CODE_FROM_ENCODER, encoder.getId() + ""));
 	}
 
 	/**
@@ -136,7 +135,7 @@ public class Coding implements ICoding {
 			}
 			return null;
 		} else {
-			return retreiveEnoughtCodeToPrint(newencoder, codes, numberCodes);
+			return retreiveEnoughCodesToPrint(newencoder, codes, numberCodes);
 		}
 	}
 
@@ -213,7 +212,7 @@ public class Coding implements ICoding {
 				// codes to be sent to the printer
 				List<String> codes = new ArrayList<String>();
 
-				encoder = retreiveEnoughtCodeToPrint(encoder, codes, number);
+				encoder = retreiveEnoughCodesToPrint(encoder, codes, number);
 
 				sendCodeToPrinter(codes, target, encoder, codeType);
 			}
