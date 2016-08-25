@@ -118,9 +118,10 @@ public class TT016Encoder implements IEncoder {
 	@Override
 	public List<String> getEncryptedCodes(long numberOfCodes) throws CryptographyException {
 		updateDateOfUse();
+		long numberOfCodesToRequest = Math.min(numberOfCodes,getRemainingCodes());
 		try {
 			List<String> codes = new ArrayList<>();
-			for (long i = 0; i < numberOfCodes; i++) {
+			for (long i = 0; i < numberOfCodesToRequest; i++) {
 				codes.add(getCode());
 			}
 			return codes;
