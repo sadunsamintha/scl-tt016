@@ -1,11 +1,13 @@
 package com.sicpa.tt016.scl;
 
+import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.utils.PropertiesUtils;
 import com.sicpa.standard.client.common.view.screensflow.ScreenTransition;
 import com.sicpa.standard.gui.plaf.SicpaColor;
 import com.sicpa.standard.sasscl.Bootstrap;
 import com.sicpa.standard.sasscl.controller.flow.statemachine.FlowTransition;
 import com.sicpa.standard.sasscl.custoBuilder.CustoBuilder;
+import com.sicpa.standard.sasscl.messages.ActionEventWarning;
 import com.sicpa.standard.sasscl.messages.ActionMessageType;
 import com.sicpa.standard.sasscl.messages.MessageEventKey;
 import com.sicpa.standard.sasscl.model.CodeType;
@@ -14,6 +16,7 @@ import com.sicpa.standard.sasscl.provider.impl.UnknownSkuProvider;
 import com.sicpa.standard.sasscl.utils.ConfigUtilEx;
 import com.sicpa.standard.sasscl.view.main.MainPanelGetter;
 import com.sicpa.tt016.business.ejection.EjectionTypeSender;
+import com.sicpa.tt016.model.DisallowedConfiguration;
 import com.sicpa.tt016.model.TT016ProductStatus;
 import com.sicpa.tt016.model.statistics.TT016StatisticsKey;
 import com.sicpa.tt016.refeed.TT016RefeedAvailabilityProvider;
@@ -22,6 +25,10 @@ import com.sicpa.tt016.view.selection.stop.StopReasonViewController;
 import org.springframework.core.io.ClassPathResource;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
+import java.util.List;
+import java.util.Properties;
 
 import static com.sicpa.standard.sasscl.controller.flow.ActivityTrigger.TRG_EXIT_APPLICATION;
 import static com.sicpa.standard.sasscl.controller.flow.ActivityTrigger.TRG_RECOVERING_CONNECTION;
@@ -39,24 +46,30 @@ public class TT016Bootstrap extends Bootstrap {
 	private EjectionTypeSender ejectionTypeSender;
 	private int codeTypeId;
 	private TT016RefeedAvailabilityProvider refeedAvailabilityProvider;
-
 	private RemoteServerRefeedAvailability remoteServerRefeedAvailability;
+	private File globalPropertiesFile;
+	private List<DisallowedConfiguration> disallowedConfigurations;
 
 	@Override
 	public void executeSpringInitTasks() {
+		Properties configuration = new Properties();
+		try {
+			globalPropertiesFile = new ClassPathResource(ConfigUtilEx.GLOBAL_PROPERTIES_PATH).getFile();
+			configuration.load(new FileInputStream(globalPropertiesFile));
+		}catch(Exception ex){
+			logger.error("Cannot load properties file,file=" + ConfigUtilEx.GLOBAL_PROPERTIES_PATH, ex);
+		}
+
 		super.executeSpringInitTasks();
 		noStopIfDmxDetectedInExport();
 		selectStopReasonWhenProductionStop();
-		setUnknownSkuCodeType();
+		unknownSkuProvider.get().setCodeType(new CodeType(codeTypeId));
 		addProducerEjectedStatistic();
 		addInkDetectedStatistic();
-		sendEjectionTypeForProductionMode();
+		addActionOnStartingProduction(()-> ejectionTypeSender.send(productionParameters));
+		disallowedConfigurations.forEach(d -> d.validate(configuration, (k,p) -> EventBusService.post(new ActionEventWarning(k,null,p))));
 	}
 
-	private void sendEjectionTypeForProductionMode() {
-		addActionOnStartingProduction(()->
-				ejectionTypeSender.send(productionParameters));
-	}
 
 	private void addInkDetectedStatistic() {
 		CustoBuilder.handleNewStatistic(ProductStatus.INK_DETECTED, TT016StatisticsKey.INK_DETECTED,
@@ -83,7 +96,6 @@ public class TT016Bootstrap extends Bootstrap {
 
 	private void saveIsRefeedAvailable(boolean isRefeedAvailable) {
 		try {
-			File globalPropertiesFile = new ClassPathResource(ConfigUtilEx.GLOBAL_PROPERTIES_PATH).getFile();
 			PropertiesUtils.savePropertiesKeepOrderAndComment(globalPropertiesFile, "refeedAvailable", Boolean.toString(isRefeedAvailable));
 		} catch (Exception ex) {
 			logger.error("Failed to save IsRefeedAvailable property", ex);
@@ -91,9 +103,6 @@ public class TT016Bootstrap extends Bootstrap {
 	}
 
 
-	private void setUnknownSkuCodeType() {
-		unknownSkuProvider.get().setCodeType(new CodeType(codeTypeId));
-	}
 
 	private void noStopIfDmxDetectedInExport() {
 		setMessageType(MessageEventKey.Activation.EXCEPTION_CODE_IN_EXPORT, ActionMessageType.WARNING);
@@ -137,5 +146,9 @@ public class TT016Bootstrap extends Bootstrap {
 
 	public void setEjectionTypeSender(EjectionTypeSender ejectionTypeSender) {
 		this.ejectionTypeSender = ejectionTypeSender;
+	}
+
+	public void setDisallowedConfigurations(List<DisallowedConfiguration> disallowedConfigurations) {
+		this.disallowedConfigurations = disallowedConfigurations;
 	}
 }

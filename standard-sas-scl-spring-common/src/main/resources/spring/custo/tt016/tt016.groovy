@@ -3,6 +3,10 @@ import com.sicpa.tt016.scl.TT016Bootstrap
 import com.sicpa.tt016.devices.camera.alert.TT016TrilightWarningCameraAlert
 import com.sicpa.tt016.refeed.TT016RefeedAvailabilityProvider
 import com.sicpa.tt016.business.ejection.EjectionTypeSender
+import com.sicpa.tt016.model.DisallowedConfiguration
+
+
+
 
 beans{
 	tt016TrilightWarningCameraAlert(TT016TrilightWarningCameraAlert) {
@@ -30,6 +34,29 @@ beans{
 		}
 	}
 
+
+	//define disallowed configurations
+	def dcProps1 = [:]
+	dcProps1.put("useBarcodeReader","true")
+	dcProps1.put("skuSelection.behavior","operator_partial")
+	def dc1 = new DisallowedConfiguration(dcProps1,"If selecting SKU using a barcode reader, it implies that the sku selection is done by operator,change the sku selection behavior, or the use of barcode reader")
+
+	def dcProps2 = [:]
+	dcProps2.put("sku.recognition.behavior","check")
+	dcProps2.put("skuSelection.behavior","operator_full")
+	def dc2 = new DisallowedConfiguration(dcProps2,"You have specified operator is in full control of SKU selection but sku recognition as \"check\" indicating that you intend to use BRS.")
+
+	def dcProps3 = [:]
+	dcProps3.put("sku.recognition.behavior","selector")
+	dcProps3.put("skuSelection.behavior","operator_full")
+	def dc3 = new DisallowedConfiguration(dcProps3,"You have specified operator is in full control of SKU selection but sku recognition as \"selector\" indicating that you intend to use BIS.")
+
+
+	def disallowedConf = []
+	disallowedConf.add(dc1)
+	disallowedConf.add(dc2)
+	disallowedConf.add(dc3)
+
 	addAlias('bootstrapAlias','bootstrap')
 	bootstrap(TT016Bootstrap){b->
 		b.parent=ref('bootstrapAlias')
@@ -40,6 +67,7 @@ beans{
 		remoteServerRefeedAvailability=ref('remoteServer')
 		refeedAvailabilityProvider=ref('refeedAvailabilityProvider')
 		ejectionTypeSender=ref('ejectionTypeSender')
+		disallowedConfigurations=disallowedConf
 	}
 
 	importBeans('spring/custo/tt016/tt016-plc.xml')
@@ -74,4 +102,7 @@ beans{
 		overrideParameters=ejectionTypeProductionModeOverride
 
 	}
+
+
+
 }
