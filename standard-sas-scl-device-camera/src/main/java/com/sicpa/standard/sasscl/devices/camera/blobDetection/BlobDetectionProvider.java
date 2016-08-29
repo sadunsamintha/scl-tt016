@@ -21,4 +21,11 @@ public interface BlobDetectionProvider {
      */
     boolean isBlobDetectionEnable();
 
+
+    /**
+     * @return <code>true</code> if the current production blob detection mechanism is enable and the blob pattern is
+     * printed otherwise returns <code>false</code>.
+     */
+    boolean isBlobPatternPrinted();
+
 }

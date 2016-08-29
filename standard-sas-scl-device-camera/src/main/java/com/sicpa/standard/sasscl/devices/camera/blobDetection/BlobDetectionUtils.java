@@ -20,5 +20,9 @@ public class BlobDetectionUtils {
         return isBlobEnable && CameraConstants.getCameraBlobErrorCode().equals(code);
     }
 
+    public boolean isBlobPatternPrinted() {
+       return blobDetectionProvider.isBlobPatternPrinted();
+    }
+
 
 }

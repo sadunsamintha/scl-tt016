@@ -73,6 +73,7 @@
 	<bean id="blobDetectionProvider" class="com.sicpa.standard.sasscl.devices.camera.blobDetection.BlobDetectionSKUProvider">
 		<constructor-arg ref="productionParameters" />
 		<constructor-arg value="${blobDetection.mode}" />
+		<constructor-arg value="${blobDetection.printed}" />
 	</bean>
 
 

@@ -15,7 +15,7 @@ public class BlobDetectionUtilsTest {
 
     @Test
     public void blobDetected() {
-        BlobDetectionProvider blobDetectionProvider = new BlobDetectionSKUProvider(createProductionParameters(new SKU()), BlobDetectionMode.ALWAYS);
+        BlobDetectionProvider blobDetectionProvider = new BlobDetectionSKUProvider(createProductionParameters(new SKU()), BlobDetectionMode.ALWAYS, true);
         BlobDetectionUtils blobDetectionUtils = new BlobDetectionUtils(blobDetectionProvider);
 
 
@@ -27,7 +27,7 @@ public class BlobDetectionUtilsTest {
 
     @Test
     public void blobNotDetected() {
-        BlobDetectionProvider blobDetectionProvider = new BlobDetectionSKUProvider(createProductionParameters(new SKU()), BlobDetectionMode.ALWAYS);
+        BlobDetectionProvider blobDetectionProvider = new BlobDetectionSKUProvider(createProductionParameters(new SKU()), BlobDetectionMode.ALWAYS, true);
         BlobDetectionUtils blobDetectionUtils = new BlobDetectionUtils(blobDetectionProvider);
 
 

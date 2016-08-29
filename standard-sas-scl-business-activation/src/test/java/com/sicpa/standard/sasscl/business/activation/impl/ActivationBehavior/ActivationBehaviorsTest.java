@@ -78,7 +78,7 @@ public class ActivationBehaviorsTest {
 		maintActiBehav = new MaintenanceActivationBehavior();
 		maintActiBehav.setProductionParameters(productionParameters);
 
-		BlobDetectionProvider blobDetectionProvider =  new BlobDetectionSKUProvider(productionParameters, BlobDetectionMode.NONE);
+		BlobDetectionProvider blobDetectionProvider =  new BlobDetectionSKUProvider(productionParameters, BlobDetectionMode.NONE, false);
 		blobDetectionUtils = new BlobDetectionUtils(blobDetectionProvider);
 		exportActiBehav.setBlobDetectionUtils(blobDetectionUtils);
 

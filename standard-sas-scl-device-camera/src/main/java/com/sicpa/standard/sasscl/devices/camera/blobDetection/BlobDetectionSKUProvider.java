@@ -12,16 +12,19 @@ public class BlobDetectionSKUProvider implements BlobDetectionProvider {
 
     private BlobDetectionMode blobDetectionMode ;
 
+    private Boolean isBlobPrinted;
+
 
     /**
      * @throws IllegalArgumentException if any of the given parameters are <code>null</code>.
      */
-    public BlobDetectionSKUProvider(ProductionParameters productionParameters, BlobDetectionMode blobDetectionMode) {
+    public BlobDetectionSKUProvider(ProductionParameters productionParameters, BlobDetectionMode blobDetectionMode, boolean isBlobPrinted) {
         Validate.notNull(productionParameters);
         Validate.notNull(blobDetectionMode);
 
         this.productionParameters = productionParameters;
         this.blobDetectionMode = blobDetectionMode;
+        this.isBlobPrinted = isBlobPrinted;
     }
 
     @Override
@@ -42,6 +45,11 @@ public class BlobDetectionSKUProvider implements BlobDetectionProvider {
         return blobDetectionMode != BlobDetectionMode.NONE;
     }
 
+    @Override
+    public boolean isBlobPatternPrinted() {
+        return getProductionBlobDetectionState().isBlobDetectionEnable() && isBlobPrinted;
+    }
+
     private BlobDetectionState createBlobDetectionAlwaysEnable() {
         return new BlobDetectionState() {
             @Override
@@ -59,5 +67,10 @@ public class BlobDetectionSKUProvider implements BlobDetectionProvider {
                 return false;
             }
         };
+    }
+
+
+    public void setIsBlobPrinted(Boolean isBlobPrinted) {
+        this.isBlobPrinted = isBlobPrinted;
     }
 }
