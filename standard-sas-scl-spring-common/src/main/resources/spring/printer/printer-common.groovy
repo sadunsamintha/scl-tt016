@@ -1,8 +1,14 @@
-import com.sicpa.standard.sasscl.devices.printer.xcode.SicpaDataOnlyExCodeBehavior
+import com.sicpa.standard.sasscl.devices.printer.xcode.SicpaDataAndBlobExCodeBehavior
 import com.sicpa.standard.sasscl.devices.printer.xcode.mapping.MappingExtendedCodeBehavior
 beans{
 
-	sicpaDataOnly8_18OExtendedCodeBehavior(SicpaDataOnlyExCodeBehavior)
-
-	mappingExtendedCodeBehavior(MappingExtendedCodeBehavior){ defaultBehavior=ref('sicpaDataOnly8_18OExtendedCodeBehavior') }
+	extendedCodeBehavior(SicpaDataAndBlobExCodeBehavior) {
+		dmFormat=props['dm.format']
+		dmEncoding=props['dm.encoding']
+		dmOrientation=props['dm.orientation']
+		blobPosition=props['blob.position']
+		blobType=props['blob.type']
+		blobUtils=ref('blobDetectionUtils')
+	}
+	mappingExtendedCodeBehavior(MappingExtendedCodeBehavior){ defaultBehavior=ref('extendedCodeBehavior') }
 }

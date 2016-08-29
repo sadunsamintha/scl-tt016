@@ -12,7 +12,7 @@ public class BlobDetectionStateSKUProviderTest {
 
     @Test
     public void blobDetectionAlwaysEnable() {
-        BlobDetectionProvider blobDetectionProvider = new BlobDetectionSKUProvider(createProductionParameters(new SKU()), BlobDetectionMode.ALWAYS);
+        BlobDetectionProvider blobDetectionProvider = new BlobDetectionSKUProvider(createProductionParameters(new SKU()), BlobDetectionMode.ALWAYS,true);
         BlobDetectionState blobDetectionState = blobDetectionProvider.getProductionBlobDetectionState();
         boolean isBlobDetectionEnable = blobDetectionState.isBlobDetectionEnable();
         Assert.assertTrue(isBlobDetectionEnable);
@@ -20,7 +20,7 @@ public class BlobDetectionStateSKUProviderTest {
 
     @Test
     public void blobDetectionNotEnabledInProduction() {
-        BlobDetectionProvider blobDetectionProvider = new BlobDetectionSKUProvider(createProductionParameters(new SKU()), BlobDetectionMode.STANDARD);
+        BlobDetectionProvider blobDetectionProvider = new BlobDetectionSKUProvider(createProductionParameters(new SKU()), BlobDetectionMode.STANDARD, true);
         BlobDetectionState blobDetectionState = blobDetectionProvider.getProductionBlobDetectionState();
         boolean isBlobDetectionEnable = blobDetectionState.isBlobDetectionEnable();
         Assert.assertFalse(isBlobDetectionEnable);
@@ -28,7 +28,7 @@ public class BlobDetectionStateSKUProviderTest {
 
     @Test
     public void blobDetectionEnabledInProduction() {
-        BlobDetectionProvider blobDetectionProvider = new BlobDetectionSKUProvider(createProductionParameters(new SKUWithBlobDetectionEnable()), BlobDetectionMode.STANDARD);
+        BlobDetectionProvider blobDetectionProvider = new BlobDetectionSKUProvider(createProductionParameters(new SKUWithBlobDetectionEnable()), BlobDetectionMode.STANDARD, true);
         BlobDetectionState blobDetectionState = blobDetectionProvider.getProductionBlobDetectionState();
         boolean isBlobDetectionEnable = blobDetectionState.isBlobDetectionEnable();
         Assert.assertTrue(isBlobDetectionEnable);
@@ -36,21 +36,42 @@ public class BlobDetectionStateSKUProviderTest {
 
     @Test
     public void isBlobDetectionEnableStandard() {
-        BlobDetectionProvider blobDetectionProvider = new BlobDetectionSKUProvider(createProductionParameters(new SKU()), BlobDetectionMode.STANDARD);
+        BlobDetectionProvider blobDetectionProvider = new BlobDetectionSKUProvider(createProductionParameters(new SKU()), BlobDetectionMode.STANDARD, true);
         Assert.assertTrue(blobDetectionProvider.isBlobDetectionEnable());
     }
 
     @Test
     public void isBlobDetectionEnableAlways() {
-        BlobDetectionProvider blobDetectionProvider = new BlobDetectionSKUProvider(createProductionParameters(new SKU()), BlobDetectionMode.ALWAYS);
+        BlobDetectionProvider blobDetectionProvider = new BlobDetectionSKUProvider(createProductionParameters(new SKU()), BlobDetectionMode.ALWAYS, true);
         Assert.assertTrue(blobDetectionProvider.isBlobDetectionEnable());
     }
 
     @Test
     public void isBlobDetectionEnableNone() {
-        BlobDetectionProvider blobDetectionProvider = new BlobDetectionSKUProvider(createProductionParameters(new SKU()), BlobDetectionMode.NONE);
+        BlobDetectionProvider blobDetectionProvider = new BlobDetectionSKUProvider(createProductionParameters(new SKU()), BlobDetectionMode.NONE, false);
         Assert.assertFalse(blobDetectionProvider.isBlobDetectionEnable());
     }
+
+    @Test
+    public void BlobPatternPrinted() {
+        BlobDetectionProvider blobDetectionProvider = new BlobDetectionSKUProvider(createProductionParameters(new SKU()), BlobDetectionMode.ALWAYS, true);
+        Assert.assertTrue(blobDetectionProvider.isBlobPatternPrinted());
+    }
+
+    @Test
+    public void BlobPatternNonPrinted() {
+        BlobDetectionProvider blobDetectionProvider = new BlobDetectionSKUProvider(createProductionParameters(new SKU()), BlobDetectionMode.ALWAYS, false);
+        Assert.assertFalse(blobDetectionProvider.isBlobPatternPrinted());
+    }
+
+    @Test
+    public void BlobPatternPrintedButBlobDetectionDisable() {
+        BlobDetectionProvider blobDetectionProvider = new BlobDetectionSKUProvider(createProductionParameters(new SKU()), BlobDetectionMode.NONE, true);
+        Assert.assertFalse(blobDetectionProvider.isBlobPatternPrinted());
+    }
+
+
+
 
     private ProductionParameters createProductionParameters(SKU sku) {
         ProductionParameters productionParameters = new ProductionParameters();

@@ -16,6 +16,11 @@
 		</dependency>
 
 		<dependency>
+			<groupId>com.sicpa.standard.sasscl</groupId>
+			<artifactId>device-camera</artifactId>
+		</dependency>
+
+		<dependency>
 			<groupId>com.sicpa.standard.printer</groupId>
 			<artifactId>standard-printer-domino</artifactId>
 		</dependency>
