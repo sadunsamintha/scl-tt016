@@ -1,12 +1,14 @@
 package com.sicpa.tt016.scl;
 
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
+import com.sicpa.standard.client.common.ioc.BeanProvider;
 import com.sicpa.standard.client.common.utils.PropertiesUtils;
 import com.sicpa.standard.client.common.view.screensflow.ScreenTransition;
 import com.sicpa.standard.gui.plaf.SicpaColor;
 import com.sicpa.standard.sasscl.Bootstrap;
 import com.sicpa.standard.sasscl.controller.flow.statemachine.FlowTransition;
 import com.sicpa.standard.sasscl.custoBuilder.CustoBuilder;
+import com.sicpa.standard.sasscl.ioc.BeansName;
 import com.sicpa.standard.sasscl.messages.ActionEventWarning;
 import com.sicpa.standard.sasscl.messages.ActionMessageType;
 import com.sicpa.standard.sasscl.messages.MessageEventKey;
@@ -52,22 +54,26 @@ public class TT016Bootstrap extends Bootstrap {
 
 	@Override
 	public void executeSpringInitTasks() {
-		Properties configuration = new Properties();
-		try {
-			globalPropertiesFile = new ClassPathResource(ConfigUtilEx.GLOBAL_PROPERTIES_PATH).getFile();
-			configuration.load(new FileInputStream(globalPropertiesFile));
-		}catch(Exception ex){
-			logger.error("Cannot load properties file,file=" + ConfigUtilEx.GLOBAL_PROPERTIES_PATH, ex);
-		}
-
 		super.executeSpringInitTasks();
 		noStopIfDmxDetectedInExport();
 		selectStopReasonWhenProductionStop();
-		unknownSkuProvider.get().setCodeType(new CodeType(codeTypeId));
+		setCodetypeForUnknownSKU();
 		addProducerEjectedStatistic();
 		addInkDetectedStatistic();
-		addActionOnStartingProduction(()-> ejectionTypeSender.send(productionParameters));
+		addProductionStartActionForEjectionTypes();
+		addDisallowedConfigurations(BeanProvider.getBean(BeansName.ALL_PROPERTIES));
+	}
+
+	private void addDisallowedConfigurations(Properties configuration) {
 		disallowedConfigurations.forEach(d -> d.validate(configuration, (k,p) -> EventBusService.post(new ActionEventWarning(k,null,p))));
+	}
+
+	private void addProductionStartActionForEjectionTypes() {
+		addActionOnStartingProduction(()-> ejectionTypeSender.send(productionParameters));
+	}
+
+	private void setCodetypeForUnknownSKU() {
+		unknownSkuProvider.get().setCodeType(new CodeType(codeTypeId));
 	}
 
 
