@@ -9,7 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class SicpaDataAndBlobExCodeBehavior implements IExCodeBehavior {
@@ -40,12 +39,12 @@ public class SicpaDataAndBlobExCodeBehavior implements IExCodeBehavior {
 		return res;
 	}
 
-	private List<Object> createCompositeCode(String code, boolean isBlobEnable) {
+	private List<Object> createCompositeCode(String code, boolean isBlobEnabled) {
 
 		List<Object> compositeCode = new ArrayList<>();
 
 		compositeCode.add(code);
-		if (isBlobEnable) {
+		if (isBlobEnabled) {
 			/*
 			 * The blobFactory give us a default implementation of the blob pattern. Nevertheless we need to provide a
 			 * composite code due to xcode api design.
