@@ -72,7 +72,7 @@ beans{
 
 	importBeans('spring/custo/tt016/tt016-plc.xml')
 	importBeans('spring/custo/tt016/tt016-activation.xml')
-	importBeans('spring/custo/tt016/tt016-view.xml')
+	importBeans('spring/custo/tt016/tt016-view.xml')vi 
 	importBeans('spring/custo/tt016/tt016-postPackage.xml')
 	importBeans('spring/offlineCounting.xml')
 
