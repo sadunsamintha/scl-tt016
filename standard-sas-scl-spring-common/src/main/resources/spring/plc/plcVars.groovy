@@ -117,7 +117,9 @@ beans {
 	plcMap['PARAM_LINE_FANS_TEMP_OFF_DELTA_HYST_PRINTER']=[v:LINE_PRM+'nFans_Temp_OFF_delta_hyst_Printer' ,t:S ,lineGrp:'temp']
 	plcMap['PARAM_LINE_INK_VORTEX_ON_THRESHOLD']=[v:LINE_PRM+'nInk_Vortex_ON_threshold' ,t:S ,lineGrp:'misc']
 	plcMap['PARAM_LINE_INK_VORTEX_OFF_DELTA_HYSTERESIS']=[v:LINE_PRM+'nInk_Vortex_OFF_delta_hysteresis' ,t:S ,lineGrp:'misc']
-	plcMap['PARAM_LINE_PRODUCT_DETECTOR_ACTIVE_LOW']=[v:LINE_PRM+'bProductDetectorIsActiveLow' ,t:B]
+	plcMap['PARAM_LINE_PRODUCT_DETECTOR_ACTIVE_LOW']=[v:LINE_PRM+'bProductDetectorIsActiveLow' ,t:B, lineGrp:'misc']
+	plcMap['PARAM_LINE_INHIBIT_STOP_LINE_IF_CODE_IN_EXPORT_MODE']=[v:LINE_PRM+'bInhibitStopLineIfCodeInExportMode' ,t:B, lineGrp:'misc']
+
 
 	//LINE NOTIF
 	plcMap['NTF_LINE_SPEED']=[v:LINE_NTF+'nLineSpeed' ,t:I ,lineNtf:'true']
