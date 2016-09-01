@@ -7,7 +7,7 @@ beans{
 	bis(BisAdapter){ b->
 		b.parent=ref('bisParent')
 		b.scope='prototype'
-		controller = ref('bisRemoteServer')
+		controller=ref('bisRemoteServer')
 	}
 
 	bisRemoteServer(BisRemoteServer){b->
