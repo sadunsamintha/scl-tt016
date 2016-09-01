@@ -41,8 +41,8 @@ public class PlcMonitoringView extends AbstractView<IMonitoringViewListener, Plc
 
 	@Subscribe
 	public void handleLanguageSwitch(LanguageSwitchEvent evt) {
-		checkEnableMonitoring = null;
 		removeAll();
+		checkEnableMonitoring = null;
 		initGUI();
 		revalidate();
 	}

@@ -56,6 +56,19 @@ public class LineIdWithAuthenticateButton extends DefaultLineIdPanel {
 	}
 
 
+	@Subscribe
+	public void handleLanguageSwitch(LanguageSwitchEvent evt) {
+		logger.info("refresh_language,lang=" + evt.getLanguage());
+		remove(panelButton);
+	    panelButton = null;
+		buttonLogin = null;
+		labelLogAs = null;
+		labelUserInfo = null;
+		getPanelButton();
+		initGUI();
+	}
+
+
 
 	private void logout() {
 		showUserInfo(SecurityService.getCurrentUser());

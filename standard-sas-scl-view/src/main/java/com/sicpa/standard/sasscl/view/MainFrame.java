@@ -59,7 +59,7 @@ public class MainFrame extends AbstractMachineFrame {
 		lockModel.setLockedComponent(getInternalCenterPanel());
 		getProdPanel().setModel(lockModel);
 		getController().setLockingErrorModel(getProdPanel().getModel());
-		updateHeader();
+		updateLineIDText();
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		addLoginListener();
 		fireUserChanged();
@@ -74,16 +74,13 @@ public class MainFrame extends AbstractMachineFrame {
 
 	@Subscribe
 	public void handleLanguageSwitch(LanguageSwitchEvent evt) {
-		updateHeader();
+		updateLineIDText();
 		buildConfigPanelsList();
 		userChanged();
-		initGUI();
-
 	}
 
 	private void addLoginListener() {
 		SecurityService.addLoginListener(new ILoginListener() {
-
 			@Override
 			public void loginSucceeded(String login) {
 				fireUserChanged();
@@ -101,13 +98,9 @@ public class MainFrame extends AbstractMachineFrame {
 	}
 
 
-	private void updateHeader() {
+	private void updateLineIDText() {
 		String lineId = Messages.get("lineId") + MainFrameController.LINE_LABEL_SEPARATOR + getMainFrameController().getLineId();
 		((LineIdWithAuthenticateButton) getLineIdPanel()).getLabelLineId().setText(lineId);
-		((LineIdWithAuthenticateButton) getLineIdPanel()).getButtonLogin().setText(Messages.get("security.login"));
-		((LineIdWithAuthenticateButton) getLineIdPanel()).getLabelLogAs().setText(Messages.get("security.logas"));
-
-
 	}
 
 	private void fireUserChanged() {

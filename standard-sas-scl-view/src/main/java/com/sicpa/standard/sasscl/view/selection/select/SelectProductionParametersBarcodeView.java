@@ -44,9 +44,9 @@ public class SelectProductionParametersBarcodeView extends JPanel implements ISe
 
 	@Subscribe
 	public void handleLanguageSwitch(LanguageSwitchEvent evt) {
-		logger.info("refreshing_view,reason=language switch");
-		delegate = new BarcodeInputView();
-		this.removeAll();
+		logger.info("refreshing_view,reason=language switch,lang=" + evt.getLanguage());
+		removeAll();
+		this.delegate = null;
 		initGUI();
 	}
 

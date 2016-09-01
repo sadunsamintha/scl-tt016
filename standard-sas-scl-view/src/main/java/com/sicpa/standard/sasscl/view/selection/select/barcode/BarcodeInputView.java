@@ -1,6 +1,5 @@
 package com.sicpa.standard.sasscl.view.selection.select.barcode;
 
-import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.i18n.Messages;
 import com.sicpa.standard.client.common.security.Permission;
 import com.sicpa.standard.client.common.security.SecurityService;
@@ -23,7 +22,6 @@ import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.Producti
 import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.ProductionParameterRootNode;
 import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.SKUNode;
 import com.sicpa.standard.sasscl.productionParameterSelection.selectionmodel.DefaultSelectionModel;
-import com.sicpa.standard.sasscl.view.LanguageSwitchEvent;
 import com.sicpa.standard.sasscl.view.MainFrame;
 import com.sicpa.standard.sasscl.view.selection.select.ISelectProductionParametersViewListener;
 import net.miginfocom.swing.MigLayout;
@@ -50,10 +48,10 @@ public class BarcodeInputView extends DefaultIdInputView {
 	protected JLabel labelConnected;
 	protected JPanel panelCenter;
 	protected DefaultSelectionModel dataSelectionModel;
-
 	protected ProductionParameterRootNode rootNode;
-
 	protected ISelectProductionParametersViewListener callback;
+	protected JXLayer<JScrollPane> scrollSelectPanel;
+	protected JLabel labelCorespondingSKU;
 
 	private static final Logger logger = LoggerFactory.getLogger(BarcodeInputView.class);
 
@@ -64,9 +62,6 @@ public class BarcodeInputView extends DefaultIdInputView {
 		initGUInew();
 	}
 
-
-	protected JXLayer<JScrollPane> scrollSelectPanel;
-	protected JLabel labelCorespondingSKU;
 
 	public void reset(ProductionParameterRootNode rootNode) {
 		this.rootNode = rootNode;
@@ -82,9 +77,7 @@ public class BarcodeInputView extends DefaultIdInputView {
 		return (BarcodeScreenModel) super.getModel();
 	}
 
-	public void setCallback(ISelectProductionParametersViewListener callback) {
-		this.callback = callback;
-	}
+
 
 	protected void initGUI() {
 
@@ -368,5 +361,8 @@ public class BarcodeInputView extends DefaultIdInputView {
 			modelBarcodeConnectionStatusChanged(getModel().isBarcodeConnected());
 		}
 		return this.labelConnected;
+	}
+	public void setCallback(ISelectProductionParametersViewListener callback) {
+		this.callback = callback;
 	}
 }

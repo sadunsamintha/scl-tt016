@@ -1,10 +1,7 @@
 package com.sicpa.tt016.view.selection.stop;
 
-import com.google.common.eventbus.Subscribe;
-import com.sicpa.standard.client.common.view.mvc.AbstractView;
 import com.sicpa.standard.client.common.i18n.Messages;
-
-import com.sicpa.standard.sasscl.view.LanguageSwitchEvent;
+import com.sicpa.standard.client.common.view.mvc.AbstractView;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
@@ -25,7 +22,6 @@ public class StopReasonView extends AbstractView<IStopReasonListener, StopReason
 		add(new JLabel(Messages.get("stopreason.view.title")));
 		add(new JSeparator(), "growx, pushx, wrap");
 		add(getStopReasonPanel(), "span, split 2, pushy, growx, growy");
-
 	}
 
 
@@ -33,7 +29,6 @@ public class StopReasonView extends AbstractView<IStopReasonListener, StopReason
 		if (stopReasonPanel == null) {
 			stopReasonPanel = new StopReasonPanel();
 		}
-
 		return stopReasonPanel;
 	}
 
@@ -67,7 +62,6 @@ public class StopReasonView extends AbstractView<IStopReasonListener, StopReason
 		private JButton getStopReasonButton(StopReason stopReason) {
 			JButton stopReasonButton = new JButton(Messages.get(stopReason.getKey()));
 			stopReasonButton.addActionListener(e -> fireStopReasonSelected(stopReason));
-
 			return stopReasonButton;
 		}
 	}

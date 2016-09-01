@@ -36,12 +36,9 @@ public class StopReasonViewController extends AbstractViewFlowController impleme
 
 	private AtomicBoolean stopButtonPressed = new AtomicBoolean(false);
 
-
-
-
 	@Subscribe
 	public void handleLanguageSwitch(LanguageSwitchEvent evt) {
-		logger.info("refreshing_panel,reason=language switch");
+		logger.info("refreshing_panel,reason=language switch,lang=" + evt.getLanguage());
 		StopReasonView srv = new StopReasonView();
 		srv.setController(this);
 		this.setView(srv);
