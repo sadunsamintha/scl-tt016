@@ -1,5 +1,6 @@
 package com.sicpa.standard.sasscl.view.selection.select.barcode;
 
+import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.i18n.Messages;
 import com.sicpa.standard.client.common.security.Permission;
 import com.sicpa.standard.client.common.security.SecurityService;
@@ -22,6 +23,7 @@ import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.Producti
 import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.ProductionParameterRootNode;
 import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.SKUNode;
 import com.sicpa.standard.sasscl.productionParameterSelection.selectionmodel.DefaultSelectionModel;
+import com.sicpa.standard.sasscl.view.LanguageSwitchEvent;
 import com.sicpa.standard.sasscl.view.MainFrame;
 import com.sicpa.standard.sasscl.view.selection.select.ISelectProductionParametersViewListener;
 import net.miginfocom.swing.MigLayout;
@@ -61,6 +63,7 @@ public class BarcodeInputView extends DefaultIdInputView {
 		setOpaque(true);
 		initGUInew();
 	}
+
 
 	protected JXLayer<JScrollPane> scrollSelectPanel;
 	protected JLabel labelCorespondingSKU;

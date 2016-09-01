@@ -2,16 +2,25 @@ package com.sicpa.standard.sasscl.view.selection.select;
 
 import javax.swing.JComponent;
 
+import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.view.screensflow.IScreensFlow;
+import com.sicpa.standard.gui.screen.machine.component.IdInput.DefaultIdInputView;
 import com.sicpa.standard.sasscl.common.log.OperatorLogger;
 import com.sicpa.standard.sasscl.model.ProductionParameters;
 import com.sicpa.standard.sasscl.provider.impl.SkuListProvider;
 import com.sicpa.standard.sasscl.view.AbstractViewFlowController;
+import com.sicpa.standard.sasscl.view.LanguageSwitchEvent;
 import com.sicpa.standard.sasscl.view.MainFrameController;
 import com.sicpa.standard.sasscl.view.ScreensFlowTriggers;
+import com.sicpa.standard.sasscl.view.selection.select.barcode.BarcodeInputView;
+import com.sicpa.standard.sasscl.view.selection.select.barcode.BarcodeScreenModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SelectProductionParametersViewController extends AbstractViewFlowController implements
 		ISelectProductionParametersViewListener {
+
+	private static final Logger logger = LoggerFactory.getLogger(SelectProductionParametersViewController.class);
 
 	protected ISelectProductionParametersView handPickingview;
 	protected ISelectProductionParametersView barcodeView;
@@ -66,6 +75,7 @@ public class SelectProductionParametersViewController extends AbstractViewFlowCo
 	public void setBarcodeView(ISelectProductionParametersView barcodeView) {
 		this.barcodeView = barcodeView;
 	}
+
 
 	@Override
 	protected void displayView() {

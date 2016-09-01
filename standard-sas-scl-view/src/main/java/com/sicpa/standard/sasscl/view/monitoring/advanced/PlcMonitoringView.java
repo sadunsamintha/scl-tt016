@@ -11,6 +11,8 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
+import com.google.common.eventbus.Subscribe;
+import com.sicpa.standard.sasscl.view.LanguageSwitchEvent;
 import net.miginfocom.swing.MigLayout;
 
 import com.sicpa.standard.client.common.security.Permission;
@@ -35,6 +37,14 @@ public class PlcMonitoringView extends AbstractView<IMonitoringViewListener, Plc
 		setLayout(new MigLayout("fill,inset 0 0 0 0,gap 0 0 0 0"));
 		add(getCheckEnableMonitoring(), "wrap");
 		add(createLayerSmallScrollBar(new JScrollPane(getPanelViews())), "grow,push");
+	}
+
+	@Subscribe
+	public void handleLanguageSwitch(LanguageSwitchEvent evt) {
+		checkEnableMonitoring = null;
+		removeAll();
+		initGUI();
+		revalidate();
 	}
 
 	private void addPlcComponentToLayout(IMonitoringViewComponent view) {

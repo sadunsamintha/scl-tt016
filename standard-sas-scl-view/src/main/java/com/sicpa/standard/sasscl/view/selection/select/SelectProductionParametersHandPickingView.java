@@ -33,6 +33,8 @@ public class SelectProductionParametersHandPickingView extends JPanel implements
 		add(getDelegate(), "grow,push,spanx");
 	}
 
+
+
 	public void setCallback(ISelectProductionParametersViewListener callback) {
 		this.callback = callback;
 	}
