@@ -40,7 +40,8 @@ public class BisAdapter extends AbstractStartableDevice implements IBisAdaptor, 
 	protected IBisController controller;
 	private ISkuBisProvider skuBisProvider;
 	private boolean blockProduction;
-	private int unknownSkuId;
+	private int unknownSkuIdDomestic;
+	private int unknownSkuIdExport;
 	private boolean displayAlertMessage;
 	private ISkuFinder skuFinder;
 
@@ -137,25 +138,28 @@ public class BisAdapter extends AbstractStartableDevice implements IBisAdaptor, 
 	}
 
 	private void skuRecognized(int skuid) {
-		Optional<SKU> sku = getSkuFromResult(skuid);
+        Optional<SKU> sku = getSkuFromResult(skuid);
+
 		if (sku.isPresent()) {
-			EventBusService.post(new SkuRecognizedEvent(sku.get()));
-		} else {
-			logger.error("no sku for id:" + skuid);
-			fireSkuNotIdentified();
-		}
-	}
+            EventBusService.post(new SkuRecognizedEvent(sku.get()));
+        } else {
+            logger.error("no sku for id:" + skuid);
+            fireSkuNotIdentified();
+        }
+    }
 
 	private void fireSkuNotIdentified() {
 		EventBusService.post(new SkuNotRecognizedEvent());
 	}
 
-	private Optional<SKU> getSkuFromResult(int skuid) {
-		return skuFinder.getSkuFromId(skuid);
+	private Optional<SKU> getSkuFromResult(int skuId) {
+		return skuFinder.getSkuFromId(skuId);
 	}
 
 	private boolean isResultUnknownSKU(RecognitionResultMessage result) {
-		return (result.getConfidence() == null) || (result.getConfidence().getId() == unknownSkuId);
+		return (result.getConfidence() == null)
+                || (result.getConfidence().getId() == unknownSkuIdDomestic)
+                || (result.getConfidence().getId() == unknownSkuIdExport);
 	}
 
 	private void sendSkusToBis() {
@@ -204,9 +208,13 @@ public class BisAdapter extends AbstractStartableDevice implements IBisAdaptor, 
 		this.blockProduction = blockProduction;
 	}
 
-	public void setUnknownSkuId(int unknownSkuId) {
-		this.unknownSkuId = unknownSkuId;
+	public void setUnknownSkuIdDomestic(int unknownSkuIdDomestic) {
+		this.unknownSkuIdDomestic = unknownSkuIdDomestic;
 	}
+
+    public void setUnknownSkuIdExport(int unknownSkuIdExport) {
+        this.unknownSkuIdExport = unknownSkuIdExport;
+    }
 
 	public void setDisplayAlertMessage(boolean displayAlertMessage) {
 		this.displayAlertMessage = displayAlertMessage;

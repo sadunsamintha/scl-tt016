@@ -92,7 +92,7 @@ public class TT016Bootstrap extends Bootstrap {
 
 
 	private void setUnknownSkuCodeType() {
-		unknownSkuProvider.get().setCodeType(new CodeType(codeTypeId));
+		unknownSkuProvider.setCodeType(new CodeType(codeTypeId));
 	}
 
 	private void noStopIfDmxDetectedInExport() {
