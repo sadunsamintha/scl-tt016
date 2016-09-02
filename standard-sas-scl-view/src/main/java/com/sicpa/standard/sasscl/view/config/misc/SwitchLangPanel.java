@@ -23,7 +23,8 @@ public class SwitchLangPanel extends JPanel {
 	protected JButton buttonResetLang;
 	protected String defaultLang;
 
-	public SwitchLangPanel() {
+	public SwitchLangPanel(String defaultLang) {
+		this.defaultLang = defaultLang;
 		initGUI();
 	}
 
@@ -42,7 +43,7 @@ public class SwitchLangPanel extends JPanel {
 			this.buttonSwitchLanguageToEnglish.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(final ActionEvent e) {
-					OperatorLogger.log("Switch languange to English");
+					OperatorLogger.log("Switch language to English");
 					buttonSwitchLanguageToEnglishActionPerformed();
 				}
 			});
@@ -52,13 +53,13 @@ public class SwitchLangPanel extends JPanel {
 
 	protected void buttonSwitchLanguageToEnglishActionPerformed() {
 		LangUtils.initLanguageFiles("en");
-		applyLangToAllComponents();
+		applyLangToAllComponents("en");
 		getButtonResetLang().setEnabled(true);
 		getButtonSwitchLanguageToEnglish().setEnabled(false);
 	}
 
-	protected void applyLangToAllComponents() {
-		EventBusService.post(new LanguageSwitchEvent());
+	protected void applyLangToAllComponents(String lang) {
+		EventBusService.post(new LanguageSwitchEvent(lang));
 	}
 
 	public JButton getButtonResetLang() {
@@ -78,12 +79,9 @@ public class SwitchLangPanel extends JPanel {
 
 	protected void buttonResetActionPerformed() {
 		LangUtils.initLanguageFiles(defaultLang);
-		applyLangToAllComponents();
+		applyLangToAllComponents(defaultLang);
 		getButtonResetLang().setEnabled(false);
 		getButtonSwitchLanguageToEnglish().setEnabled(true);
 	}
 
-	public void setDefaultLang(String defaultLang) {
-		this.defaultLang = defaultLang;
-	}
 }

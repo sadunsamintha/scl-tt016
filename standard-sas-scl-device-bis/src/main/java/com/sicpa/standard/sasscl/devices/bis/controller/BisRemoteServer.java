@@ -78,8 +78,6 @@ public class BisRemoteServer implements IBisController, IBisMessageHandlerListen
 				}
 			}
 
-			connectionLifeCheckWorker.start();
-
 			// Make a new connection.
 			connectFuture = bootstrap.connect();
 
@@ -163,7 +161,10 @@ public class BisRemoteServer implements IBisController, IBisMessageHandlerListen
 	@Override
 	public void onLifeCheckFailed() {
 		logger.debug("on lifecheck failed");
-		TaskExecutor.execute(() -> {
+
+		onDisconnected();
+
+        TaskExecutor.execute(() -> {
 			try {
 				connect();
 			} catch (BisAdaptorException e) {
@@ -171,7 +172,6 @@ public class BisRemoteServer implements IBisController, IBisMessageHandlerListen
 			}
 
 		}, "bis lifecheck");
-
 	}
 
 	@Override

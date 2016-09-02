@@ -11,11 +11,14 @@ import com.sicpa.standard.gui.screen.machine.AbstractMachineFrame;
 import com.sicpa.standard.gui.screen.machine.component.lineId.DefaultLineIdPanel;
 import com.sicpa.standard.sasscl.view.LanguageSwitchEvent;
 import com.sicpa.standard.sasscl.view.MainFrame;
+import com.sicpa.standard.sasscl.view.selection.select.barcode.BarcodeInputView;
 import net.miginfocom.swing.MigLayout;
 import org.jdesktop.swingx.JXLoginPane;
 import org.jdesktop.swingx.auth.LoginAdapter;
 import org.jdesktop.swingx.auth.LoginEvent;
 import org.jdesktop.swingx.auth.LoginService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.awt.*;
@@ -23,6 +26,8 @@ import java.awt.*;
 public class LineIdWithAuthenticateButton extends DefaultLineIdPanel {
 
 	private static final long serialVersionUID = 1L;
+	private static final Logger logger = LoggerFactory.getLogger(LineIdWithAuthenticateButton.class);
+
 
 	private JButton buttonLogin;
 	private JButton buttonLogout;
@@ -49,6 +54,21 @@ public class LineIdWithAuthenticateButton extends DefaultLineIdPanel {
 			}
 		});
 	}
+
+
+	@Subscribe
+	public void handleLanguageSwitch(LanguageSwitchEvent evt) {
+		logger.info("refresh_language,lang=" + evt.getLanguage());
+		remove(panelButton);
+	    panelButton = null;
+		buttonLogin = null;
+		labelLogAs = null;
+		labelUserInfo = null;
+		getPanelButton();
+		initGUI();
+	}
+
+
 
 	private void logout() {
 		showUserInfo(SecurityService.getCurrentUser());

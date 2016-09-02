@@ -27,12 +27,6 @@ public class BisMessagesHandler extends SimpleChannelUpstreamHandler {
 
 	@Override
 	public void channelConnected(ChannelHandlerContext ctx, ChannelStateEvent e) throws Exception {
-		logger.info("New client connected closed");
-		if (listeners != null) {
-			for (IBisMessageHandlerListener listener : listeners) {
-				listener.onConnected();
-			}
-		}
 	}
 
 	@Override
@@ -49,6 +43,7 @@ public class BisMessagesHandler extends SimpleChannelUpstreamHandler {
 				return;
 			}
 		}
+
 		if (message instanceof Alert) {
 			for (IBisMessageHandlerListener listener : listeners) {
 				listener.alertReceived((Alert) message);
@@ -74,12 +69,6 @@ public class BisMessagesHandler extends SimpleChannelUpstreamHandler {
 
 	@Override
 	public void channelClosed(ChannelHandlerContext ctx, ChannelStateEvent e) {
-		logger.info("Channel closed, {}", e.getState().toString());
-		if (listeners != null) {
-			for (IBisMessageHandlerListener listener : listeners) {
-				listener.onDisconnected();
-			}
-		}
 		e.getChannel().close();
 	}
 

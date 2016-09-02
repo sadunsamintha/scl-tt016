@@ -48,10 +48,10 @@ public class BarcodeInputView extends DefaultIdInputView {
 	protected JLabel labelConnected;
 	protected JPanel panelCenter;
 	protected DefaultSelectionModel dataSelectionModel;
-
 	protected ProductionParameterRootNode rootNode;
-
 	protected ISelectProductionParametersViewListener callback;
+	protected JXLayer<JScrollPane> scrollSelectPanel;
+	protected JLabel labelCorespondingSKU;
 
 	private static final Logger logger = LoggerFactory.getLogger(BarcodeInputView.class);
 
@@ -62,8 +62,6 @@ public class BarcodeInputView extends DefaultIdInputView {
 		initGUInew();
 	}
 
-	protected JXLayer<JScrollPane> scrollSelectPanel;
-	protected JLabel labelCorespondingSKU;
 
 	public void reset(ProductionParameterRootNode rootNode) {
 		this.rootNode = rootNode;
@@ -79,9 +77,7 @@ public class BarcodeInputView extends DefaultIdInputView {
 		return (BarcodeScreenModel) super.getModel();
 	}
 
-	public void setCallback(ISelectProductionParametersViewListener callback) {
-		this.callback = callback;
-	}
+
 
 	protected void initGUI() {
 
@@ -365,5 +361,8 @@ public class BarcodeInputView extends DefaultIdInputView {
 			modelBarcodeConnectionStatusChanged(getModel().isBarcodeConnected());
 		}
 		return this.labelConnected;
+	}
+	public void setCallback(ISelectProductionParametersViewListener callback) {
+		this.callback = callback;
 	}
 }

@@ -1,7 +1,5 @@
 package com.sicpa.standard.sasscl.view.selection.select;
 
-import javax.swing.JComponent;
-
 import com.sicpa.standard.client.common.view.screensflow.IScreensFlow;
 import com.sicpa.standard.sasscl.common.log.OperatorLogger;
 import com.sicpa.standard.sasscl.model.ProductionParameters;
@@ -9,6 +7,8 @@ import com.sicpa.standard.sasscl.provider.impl.SkuListProvider;
 import com.sicpa.standard.sasscl.view.AbstractViewFlowController;
 import com.sicpa.standard.sasscl.view.MainFrameController;
 import com.sicpa.standard.sasscl.view.ScreensFlowTriggers;
+
+import javax.swing.*;
 
 public class SelectProductionParametersViewController extends AbstractViewFlowController implements
 		ISelectProductionParametersViewListener {
@@ -26,13 +26,6 @@ public class SelectProductionParametersViewController extends AbstractViewFlowCo
 	public SelectProductionParametersViewController() {
 	}
 
-	public void setSkuListProvider(SkuListProvider skuListProvider) {
-		this.skuListProvider = skuListProvider;
-	}
-
-	public void setUseBarcodeReader(boolean useBarcodeReader) {
-		this.useBarcodeReader = useBarcodeReader;
-	}
 
 	@Override
 	public void productionParametersSelected(ProductionParameters pp) {
@@ -67,6 +60,7 @@ public class SelectProductionParametersViewController extends AbstractViewFlowCo
 		this.barcodeView = barcodeView;
 	}
 
+
 	@Override
 	protected void displayView() {
 		super.displayView();
@@ -80,4 +74,12 @@ public class SelectProductionParametersViewController extends AbstractViewFlowCo
 	public void setMainFrameController(MainFrameController mainFrameController) {
 		this.mainFrameController = mainFrameController;
 	}
+	public void setSkuListProvider(SkuListProvider skuListProvider) {
+		this.skuListProvider = skuListProvider;
+	}
+
+	public void setUseBarcodeReader(boolean useBarcodeReader) {
+		this.useBarcodeReader = useBarcodeReader;
+	}
+
 }
