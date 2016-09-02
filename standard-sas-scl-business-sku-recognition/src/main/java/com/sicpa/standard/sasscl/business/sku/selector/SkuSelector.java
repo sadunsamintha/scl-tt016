@@ -1,25 +1,24 @@
 package com.sicpa.standard.sasscl.business.sku.selector;
 
-import static com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState.STT_SELECT_WITH_PREVIOUS;
-import static com.sicpa.standard.sasscl.messages.MessageEventKey.SkuRecognition.UNEXPECTED_SKU_CHANGED;
-
-import java.time.Instant;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.messages.MessageEvent;
+import com.sicpa.standard.client.common.provider.IProvider;
 import com.sicpa.standard.sasscl.business.sku.IProductionChangeDetector;
 import com.sicpa.standard.sasscl.controller.ProductionParametersEvent;
 import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowStateChangedEvent;
 import com.sicpa.standard.sasscl.controller.skuselection.ISkuSelectionBehavior;
 import com.sicpa.standard.sasscl.model.ProductionParameters;
 import com.sicpa.standard.sasscl.model.SKU;
-import com.sicpa.standard.sasscl.provider.impl.UnknownSkuProvider;
 import com.sicpa.standard.sasscl.skureader.SkuNotRecognizedEvent;
 import com.sicpa.standard.sasscl.skureader.SkuRecognizedEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.time.Instant;
+
+import static com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState.STT_SELECT_WITH_PREVIOUS;
+import static com.sicpa.standard.sasscl.messages.MessageEventKey.SkuRecognition.UNEXPECTED_SKU_CHANGED;
 
 public class SkuSelector {
 
@@ -28,7 +27,7 @@ public class SkuSelector {
 	private ISkuRecognizedBuffer skuBuffer;
 	private ISkuSelectionBehavior skuSelectionBehavior;
 	private IProductionChangeDetector productionChangeDetector;
-	private UnknownSkuProvider unknownSkuProvider;
+	private IProvider<SKU> unknownSkuProvider;
 
 	private SKU previousRecognizedSku;
 	private Instant previousSkuEventTime;
@@ -137,7 +136,7 @@ public class SkuSelector {
 		this.skuSelectionBehavior = skuSelectionBehavior;
 	}
 
-	public void setUnknownSkuProvider(UnknownSkuProvider unknownSkuProvider) {
+	public void setUnknownSkuProvider(IProvider<SKU> unknownSkuProvider) {
 		this.unknownSkuProvider = unknownSkuProvider;
 	}
 }
