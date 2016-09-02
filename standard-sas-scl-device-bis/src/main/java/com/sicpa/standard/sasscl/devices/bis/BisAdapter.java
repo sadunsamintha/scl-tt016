@@ -40,8 +40,7 @@ public class BisAdapter extends AbstractStartableDevice implements IBisAdaptor, 
 	protected IBisController controller;
 	private ISkuBisProvider skuBisProvider;
 	private boolean blockProduction;
-	private int unknownSkuIdDomestic;
-	private int unknownSkuIdExport;
+	private int unknownSkuId;
 	private boolean displayAlertMessage;
 	private ISkuFinder skuFinder;
 
@@ -157,9 +156,7 @@ public class BisAdapter extends AbstractStartableDevice implements IBisAdaptor, 
 	}
 
 	private boolean isResultUnknownSKU(RecognitionResultMessage result) {
-		return (result.getConfidence() == null)
-                || (result.getConfidence().getId() == unknownSkuIdDomestic)
-                || (result.getConfidence().getId() == unknownSkuIdExport);
+		return (result.getConfidence() == null) || (result.getConfidence().getId() == unknownSkuId);
 	}
 
 	private void sendSkusToBis() {
@@ -208,13 +205,9 @@ public class BisAdapter extends AbstractStartableDevice implements IBisAdaptor, 
 		this.blockProduction = blockProduction;
 	}
 
-	public void setUnknownSkuIdDomestic(int unknownSkuIdDomestic) {
-		this.unknownSkuIdDomestic = unknownSkuIdDomestic;
+	public void setUnknownSkuId(int unknownSkuId) {
+		this.unknownSkuId = unknownSkuId;
 	}
-
-    public void setUnknownSkuIdExport(int unknownSkuIdExport) {
-        this.unknownSkuIdExport = unknownSkuIdExport;
-    }
 
 	public void setDisplayAlertMessage(boolean displayAlertMessage) {
 		this.displayAlertMessage = displayAlertMessage;

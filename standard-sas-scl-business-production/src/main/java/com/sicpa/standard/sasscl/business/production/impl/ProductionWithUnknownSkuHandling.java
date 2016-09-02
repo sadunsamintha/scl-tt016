@@ -1,29 +1,28 @@
 package com.sicpa.standard.sasscl.business.production.impl;
 
-import static com.sicpa.standard.client.common.utils.TaskExecutor.schedule;
-import static java.util.Collections.synchronizedList;
-import static java.util.concurrent.TimeUnit.SECONDS;
-
-import java.util.LinkedList;
-import java.util.List;
-import java.util.concurrent.ScheduledFuture;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.google.common.eventbus.Subscribe;
+import com.sicpa.standard.client.common.provider.IProvider;
 import com.sicpa.standard.sasscl.business.activation.NewProductEvent;
 import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState;
 import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowStateChangedEvent;
 import com.sicpa.standard.sasscl.model.Product;
 import com.sicpa.standard.sasscl.model.SKU;
-import com.sicpa.standard.sasscl.provider.impl.UnknownSkuProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.LinkedList;
+import java.util.List;
+import java.util.concurrent.ScheduledFuture;
+
+import static com.sicpa.standard.client.common.utils.TaskExecutor.schedule;
+import static java.util.Collections.synchronizedList;
+import static java.util.concurrent.TimeUnit.SECONDS;
 
 public class ProductionWithUnknownSkuHandling extends Production {
 
 	private static final Logger logger = LoggerFactory.getLogger(ProductionWithUnknownSkuHandling.class);
 
-	private UnknownSkuProvider unknownSkuProvider;
+	private IProvider<SKU> unknownSkuProvider;
 
 	private int unknownsBufferSize;
 	private int stillUnknownCheckDelaySec;
@@ -112,7 +111,7 @@ public class ProductionWithUnknownSkuHandling extends Production {
 		unknownsBuffer.clear();
 	}
 
-	public void setUnknownSkuProvider(UnknownSkuProvider unknownSkuProvider) {
+	public void setUnknownSkuProvider(IProvider<SKU> unknownSkuProvider) {
 		this.unknownSkuProvider = unknownSkuProvider;
 	}
 

@@ -9,8 +9,7 @@ beans{
 		b.abstract=true
 		blockProduction = props['bis.disconnected.production.block']
 		skuFinder=ref('skuFinder')
-		unknownSkuIdDomestic=props['bis.unknownSkuId.domestic']
-		unknownSkuIdExport=props['bis.unknownSkuId.export']
+		unknownSkuId=props['bis.unknownSkuId']
 		displayAlertMessage=props['bis.displayAlertMessage']
 		skuBisProvider=ref('skuBisProvider')
 	}

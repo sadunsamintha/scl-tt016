@@ -24,11 +24,7 @@
 
 	<bean id="bisProvider" class="com.sicpa.standard.sasscl.provider.impl.BisProvider" />
 	
-	<bean id="unknownSkuProvider" class="com.sicpa.standard.sasscl.provider.impl.UnknownSkuProvider" >
-		<constructor-arg value="${bis.unknownSkuId.domestic}" />
-		<constructor-arg value="${bis.unknownSkuId.export}" />
-		<property name="productionParameters" ref="productionParameters" />
-	</bean>
+	<bean id="unknownSkuProvider" class="com.sicpa.standard.sasscl.provider.impl.UnknownSkuProvider" />
 
 </beans>
 

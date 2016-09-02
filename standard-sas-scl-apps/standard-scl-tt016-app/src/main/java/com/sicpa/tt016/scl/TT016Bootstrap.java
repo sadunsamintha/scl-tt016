@@ -10,12 +10,12 @@ import com.sicpa.standard.sasscl.messages.ActionMessageType;
 import com.sicpa.standard.sasscl.messages.MessageEventKey;
 import com.sicpa.standard.sasscl.model.CodeType;
 import com.sicpa.standard.sasscl.model.ProductStatus;
-import com.sicpa.standard.sasscl.provider.impl.UnknownSkuProvider;
 import com.sicpa.standard.sasscl.utils.ConfigUtilEx;
 import com.sicpa.standard.sasscl.view.main.MainPanelGetter;
 import com.sicpa.tt016.business.ejection.EjectionTypeSender;
 import com.sicpa.tt016.model.TT016ProductStatus;
 import com.sicpa.tt016.model.statistics.TT016StatisticsKey;
+import com.sicpa.tt016.provider.impl.TT016UnknownSkuProvider;
 import com.sicpa.tt016.refeed.TT016RefeedAvailabilityProvider;
 import com.sicpa.tt016.scl.remote.RemoteServerRefeedAvailability;
 import com.sicpa.tt016.view.selection.stop.StopReasonViewController;
@@ -35,7 +35,7 @@ public class TT016Bootstrap extends Bootstrap {
 
 	private MainPanelGetter mainPanelGetter;
 	private StopReasonViewController stopReasonViewController;
-	private UnknownSkuProvider unknownSkuProvider;
+	private TT016UnknownSkuProvider unknownSkuProvider;
 	private EjectionTypeSender ejectionTypeSender;
 	private int codeTypeId;
 	private TT016RefeedAvailabilityProvider refeedAvailabilityProvider;
@@ -118,7 +118,7 @@ public class TT016Bootstrap extends Bootstrap {
 		this.stopReasonViewController = stopReasonViewController;
 	}
 
-	public void setUnknownSkuProvider(UnknownSkuProvider unknownSkuProvider) {
+	public void setUnknownSkuProvider(TT016UnknownSkuProvider unknownSkuProvider) {
 		this.unknownSkuProvider = unknownSkuProvider;
 	}
 
