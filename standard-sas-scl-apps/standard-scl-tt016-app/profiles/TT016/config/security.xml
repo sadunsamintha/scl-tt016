@@ -1,12 +1,12 @@
 <SecurityModel loginDefaultUser="OPERATOR">
 
 <!-- FULL ADMIN -->
-  <User login="ADMIN" password="12345">
+  <User login="ADMIN" password="">
     <Permission name=".*"/>
   </User>
   
 <!--   OPERATOR -->
-  <User login="OPERATOR" password="12345">
+  <User login="OPERATOR" password="">
     <Permission name="PRODUCTION_CHANGE_PARAMETERS"/>
     <Permission name="PRODUCTION_MODE_STANDARD"/>
     <Permission name="PRODUCTION_MODE_EXPORT"/>
@@ -14,6 +14,7 @@
     <Permission name="PRODUCTION_STOP"/>
     <Permission name="PRODUCTION_VIEW_STATISTICS"/>
     <Permission name="PRODUCTION_REPORT"/>
+    <Permission name="ADVANCED_CONTROL"/>
     <Permission name="EXIT"/>
   </User>
 </SecurityModel>

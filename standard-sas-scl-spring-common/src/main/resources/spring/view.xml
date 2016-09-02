@@ -305,6 +305,7 @@
 		<property name="views">
 			<list>
 				<ref bean="printerControlView" />
+				<ref bean="leibingerPrinterControlView" />
 			</list>
 		</property>
 	</bean>
@@ -316,6 +317,17 @@
 	<bean id="printerControlViewController" class="com.sicpa.standard.sasscl.view.advancedControl.component.printer.PrinterControlViewController">
 		<property name="hardwareController" ref="hardwareController" />
 	</bean>
+
+
+	<bean id="leibingerPrinterControlView" class="com.sicpa.standard.sasscl.view.advancedControl.component.leibinger.LeibingerPrinterControlView">
+		<property name="controller" ref="leibingerPrinterControlViewController" />
+		<property name="model" value="#{leibingerPrinterControlViewController.model}" />
+	</bean>
+
+	<bean id="leibingerPrinterControlViewController" class="com.sicpa.standard.sasscl.view.advancedControl.component.leibinger.LeibingerPrinterControlViewController">
+		<property name="hardwareController" ref="hardwareController" />
+	</bean>
+
 
 	<bean id="greyScreenHandler" class="com.sicpa.standard.sasscl.view.main.GreyScreenHandler">
 		<property name="mfController" ref="mainFrameController" />

@@ -33,6 +33,11 @@
 
 		<dependency>
 			<groupId>com.sicpa.standard.sasscl</groupId>
+			<artifactId>device-printer</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.sicpa.standard.sasscl</groupId>
 			<artifactId>service-monitoring</artifactId>
 		</dependency>
 
