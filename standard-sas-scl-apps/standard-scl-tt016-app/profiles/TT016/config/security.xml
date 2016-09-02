@@ -1,37 +1,12 @@
-<SecurityModel loginDefaultUser="0">
+<SecurityModel loginDefaultUser="OPERATOR">
 
 <!-- FULL ADMIN -->
-  <User login="0" password="">
+  <User login="ADMIN" password="12345">
     <Permission name=".*"/>
-  </User>
-  <User login="1" password="">
-    <Permission name=".*"/>
-  </User>
-  <User login="2" password="">
-    <Permission name=".*"/>
-  </User>
-  <User login="3" password="">
-    <Permission name=".*"/>
-  </User>
-  <User login="4" password="">
-    <Permission name=".*"/>
-  </User>
-  
-  <User login="5" password="">
-    <Permission name="PRODUCTION_CHANGE_PARAMETERS"/>
-    <Permission name="PRODUCTION_MODE_STANDARD"/>
-    <Permission name="PRODUCTION_MODE_REFEED_NORMAL"/>
-    <Permission name="PRODUCTION_START"/>
-    <Permission name="PRODUCTION_STOP"/>
-    <Permission name="PRODUCTION_VIEW_STATISTICS"/>
-    <Permission name="PRODUCTION_REPORT"/>
-    <Permission name="EDIT_PLC_VARIABLES"/>
-    <Permission name="EDIT_PLC_SECURE_VARIABLES"/>
-    <Permission name="EXIT"/>
   </User>
   
 <!--   OPERATOR -->
-  <User login="OPERATOR" password="">
+  <User login="OPERATOR" password="12345">
     <Permission name="PRODUCTION_CHANGE_PARAMETERS"/>
     <Permission name="PRODUCTION_MODE_STANDARD"/>
     <Permission name="PRODUCTION_MODE_EXPORT"/>
