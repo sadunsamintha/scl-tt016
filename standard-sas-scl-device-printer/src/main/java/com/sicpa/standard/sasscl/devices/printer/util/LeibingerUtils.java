@@ -7,8 +7,7 @@ import java.util.Properties;
 
 public class LeibingerUtils {
 
-
-    private static final String LEIBINGER_USER_LEVEL_KEY = "user.leibinger.level.%s";
+    private static final String LEIBINGER_USER_LEVEL_KEY = "leibinger.user.level.%s";
 
     public static int getPrinterUserLevelBySclUserName(Properties properties, String sclUsername) {
         Validate.notNull(sclUsername);

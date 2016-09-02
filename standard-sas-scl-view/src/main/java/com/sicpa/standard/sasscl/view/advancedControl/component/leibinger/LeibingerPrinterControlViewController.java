@@ -17,6 +17,7 @@ public class LeibingerPrinterControlViewController implements ILeibingerPrinterV
 
     private static final Logger logger = LoggerFactory.getLogger(LeibingerPrinterControlViewController.class);
 
+
     private final LeibingerPrinterControlViewModel model = new LeibingerPrinterControlViewModel();
     private IHardwareController hardwareController;
 
@@ -32,7 +33,7 @@ public class LeibingerPrinterControlViewController implements ILeibingerPrinterV
     @Override
     public void changeLeibingerUserLevel(String printerId, int userLevel) {
         PrinterAdaptorLeibinger printer = findPrinter(printerId);
-        OperatorLogger.log("change user level on printer {} to user level {}", printerId, userLevel);
+        logger.debug("change user level on printer {} to user level {}", printerId, userLevel);
         printer.setUserLevel(new ChangePrinterUserLevelEvent(userLevel));
     }
 
