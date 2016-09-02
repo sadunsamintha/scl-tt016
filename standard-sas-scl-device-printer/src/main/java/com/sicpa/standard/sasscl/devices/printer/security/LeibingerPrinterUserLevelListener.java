@@ -6,20 +6,16 @@ import com.sicpa.standard.client.common.security.ILoginListener;
 import com.sicpa.standard.client.common.security.SecurityService;
 import com.sicpa.standard.sasscl.devices.printer.util.LeibingerUtils;
 import com.sicpa.standard.sasscl.event.ChangePrinterUserLevelEvent;
-import com.sicpa.standard.sasscl.utils.ConfigUtilEx;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.io.ClassPathResource;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.Properties;
 
 public class LeibingerPrinterUserLevelListener {
 
     private static final Logger logger = LoggerFactory.getLogger(LeibingerPrinterUserLevelListener.class);
 
+    private Properties allProperties;
 
 
     public void initLoginListenerLogger() {
@@ -46,11 +42,13 @@ public class LeibingerPrinterUserLevelListener {
 
     public int getPrinterUserLeveLoggedIn() {
         final String userLoggedIn = SecurityService.getCurrentUser().getLogin().toLowerCase();
-        final int printerUserLevel = LeibingerUtils.getPrinterUserLevelBySclUserName(userLoggedIn);
+        final int printerUserLevel = LeibingerUtils.getPrinterUserLevelBySclUserName(allProperties, userLoggedIn);
         logger.debug("The  printer user level of the current user loggedIn is {}", printerUserLevel);
         return printerUserLevel;
     }
 
-
+    public void setAllProperties(Properties allProperties) {
+        this.allProperties = allProperties;
+    }
 
 }

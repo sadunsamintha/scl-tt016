@@ -55,6 +55,10 @@
 
 	<bean id="ethernetAdaptor" class="com.sicpa.standard.printer.leibinger.connector.impl.EthernetAdaptor" scope="prototype" />
 
-	<bean id="printerUserLevelListener" class="com.sicpa.standard.sasscl.devices.printer.security.LeibingerPrinterUserLevelListener" init-method="initLoginListenerLogger" />
+	<bean id="printerUserLevelListener" class="com.sicpa.standard.sasscl.devices.printer.security.LeibingerPrinterUserLevelListener"
+		  init-method="initLoginListenerLogger" >
+		<property name="allProperties" ref="allProperties" />
+
+	</bean>
 
 </beans>
