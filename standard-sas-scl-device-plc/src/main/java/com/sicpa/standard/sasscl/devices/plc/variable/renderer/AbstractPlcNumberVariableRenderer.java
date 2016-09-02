@@ -1,6 +1,8 @@
 package com.sicpa.standard.sasscl.devices.plc.variable.renderer;
 
 import java.awt.Font;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -63,6 +65,8 @@ public abstract class AbstractPlcNumberVariableRenderer<TYPE extends Number> ext
 		if (spinner == null) {
 			SpinnerNumberModel model = createSpinnerNumberModel();
 			spinner = new JSpinner(model);
+			//((JSpinner.NumberEditor)spinner.getEditor()).getFormat().applyPattern("#0,00");
+			//((JSpinner.NumberEditor)spinner.getEditor()).getFormat().setRoundingMode(RoundingMode.UP);
 			spinner.addChangeListener(new CoalescentChangeListener(1000) {
 				@Override
 				public void doAction() {

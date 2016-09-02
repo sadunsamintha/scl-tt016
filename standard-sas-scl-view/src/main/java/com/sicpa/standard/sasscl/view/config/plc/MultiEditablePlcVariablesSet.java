@@ -29,10 +29,8 @@ public class MultiEditablePlcVariablesSet extends JPanel implements ISecuredComp
 
 	protected JButton buttonShowCameraImage;
 	protected FrameCameraImage frameCamera;
-
 	protected JScrollPane scroll;
 	protected JPanel mainPanel;
-
 	protected Map<String, PlcVariablePanel> panelsLines = new HashMap<>();
 
 	public MultiEditablePlcVariablesSet() {
@@ -43,6 +41,14 @@ public class MultiEditablePlcVariablesSet extends JPanel implements ISecuredComp
 		setLayout(new MigLayout("fill, inset 0 0 0 0, gap 0 0 0 0"));
 		add(getButtonShowCameraImage(), "wrap,center, h 50");
 		add(SmallScrollBar.createLayerSmallScrollBar(getScroll()), "push,grow");
+	}
+	@Subscribe
+	public void handleLanguageSwitch(LanguageSwitchEvent evt) {
+		removeAll();
+		mainPanel = null;
+		scroll = null;
+		initGUI();
+		revalidate();
 	}
 
 	public JButton getButtonShowCameraImage() {
@@ -114,14 +120,7 @@ public class MultiEditablePlcVariablesSet extends JPanel implements ISecuredComp
 		});
 	}
 
-	@Subscribe
-	public void handleLanguageSwitch(LanguageSwitchEvent evt) {
-		removeAll();
-		mainPanel = null;
-		scroll = null;
-		initGUI();
-		revalidate();
-	}
+
 
 	public Map<String, PlcVariablePanel> getPanelsLines() {
 		return panelsLines;
