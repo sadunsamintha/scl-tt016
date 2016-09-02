@@ -1,5 +1,7 @@
 package com.sicpa.standard.sasscl.view.report;
 
+import com.google.common.eventbus.Subscribe;
+import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.security.Permission;
 import com.sicpa.standard.client.common.utils.TaskExecutor;
 import com.sicpa.standard.client.common.view.ISecuredComponentGetter;
@@ -12,6 +14,7 @@ import com.sicpa.standard.sasscl.security.SasSclPermission;
 import com.sicpa.standard.sasscl.view.LanguageSwitchEvent;
 import com.sicpa.standard.sasscl.view.monitoring.ProductionStatisticsAggregator;
 import net.miginfocom.swing.MigLayout;
+import org.apache.commons.lang.LocaleUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.divxdede.swing.busy.JBusyComponent;
 import org.jdesktop.swingx.JXDatePicker;
@@ -26,6 +29,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class ReportScreen extends JPanel implements ISecuredComponentGetter {
 
@@ -51,30 +55,56 @@ public class ReportScreen extends JPanel implements ISecuredComponentGetter {
 	protected String dateFormatForKeyMonth;
 	protected String dateFormatForKeyWeek;
 
-	public ReportScreen() {
+	private String defaultLang;
+
+	public ReportScreen(String defaultLang) {
+		this.defaultLang = defaultLang;
 		initGUI();
-
-		setupDateformat();
+		setupDateformat(defaultLang);
 	}
 
-	protected void setupDateformat() {
-		dateFormatForKeyDailyDetailed = initPattern("yyyy-MM-dd HH:mm:ss", "date.pattern.report.day.detail");
-		dateFormatForKeyDay = initPattern("dd/MM/yy", "date.pattern.report.day.normal");
-		dateFormatForKeyMonth = initPattern("dd/MM/yy", "date.pattern.report.day.month");
-		dateFormatForKeyWeek = initPattern("dd/MM/yy", "date.pattern.report.day.week");
+	@Subscribe
+	public void handleLanguageSwitch(LanguageSwitchEvent evt) {
+		removeAll();
+		this.busyPanel = null;
+		this.mainPanel = null;
+		this.buttonDay = null;
+		this.buttonWeek = null;
+		this.buttonMonth = null;
+		this.buttonGroupByProduct = null;
+		this.buttonDailyDetailed = null;
+		this.buttonPrint = null;
+		this.dateFrom = null;
+		this.dateTo   = null;
+		setupDateformat(evt.getLanguage());
+		getMainPanel();
+		initGUI();
+		revalidate();
 	}
 
-	protected String initPattern(String defaultPattern, String langKey) {
+	protected void setupDateformat(String language) {
+		dateFormatForKeyDailyDetailed = initPattern("yyyy-MM-dd HH:mm:ss", "date.pattern.report.day.detail",language);
+		dateFormatForKeyDay = initPattern("dd/MM/yy", "date.pattern.report.day.normal",language);
+		dateFormatForKeyMonth = initPattern("dd/MM/yy", "date.pattern.report.day.month",language);
+		dateFormatForKeyWeek = initPattern("dd/MM/yy", "date.pattern.report.day.week",language);
+	}
+
+	protected String initPattern(String defaultPattern, String patternKey,String language) {
 		String pattern = null;
 		try {
-			pattern = Messages.get(langKey);
+			pattern = Messages.get(patternKey);
 			// to test if the pattern is valid
-			new SimpleDateFormat(pattern);
+			new SimpleDateFormat(pattern, getLocaleFromLanguage(language));
 			return pattern;
 		} catch (Exception e) {
 			logger.error("invalid or pattern not found {}", pattern);
 			return defaultPattern;
 		}
+	}
+
+	private Locale getLocaleFromLanguage(String language) {
+		return ((List<Locale>) LocaleUtils.availableLocaleList()).stream()
+				.filter(l -> l.getLanguage().equals(language) && l.getCountry() == "").findFirst().get();
 	}
 
 	public JXDatePicker getDateFrom() {
@@ -313,28 +343,6 @@ public class ReportScreen extends JPanel implements ISecuredComponentGetter {
 		getTable().printReport();
 	}
 
-	public void handleLanguageSwitch(LanguageSwitchEvent evt) {
-		removeAll();
-
-		mainPanel = null;
-		busyPanel = null;
-
-		buttonDay = null;
-		buttonWeek = null;
-		buttonMonth = null;
-		buttonGroupByProduct = null;
-		buttonDailyDetailed = null;
-
-		table = null;
-		buttonPrint = null;
-		dateTo = null;
-		dateFrom = null;
-
-		setupDateformat();
-
-		initGUI();
-		revalidate();
-	}
 
 	@Override
 	public Component getComponent() {
@@ -350,4 +358,6 @@ public class ReportScreen extends JPanel implements ISecuredComponentGetter {
 	public String getTitle() {
 		return "report.production";
 	}
+
+
 }

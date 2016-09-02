@@ -1,5 +1,7 @@
 package com.sicpa.standard.sasscl.view;
 
+import com.google.common.eventbus.Subscribe;
+import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.i18n.Messages;
 import com.sicpa.standard.client.common.security.ILoginListener;
 import com.sicpa.standard.client.common.security.SecurityService;
@@ -57,7 +59,7 @@ public class MainFrame extends AbstractMachineFrame {
 		lockModel.setLockedComponent(getInternalCenterPanel());
 		getProdPanel().setModel(lockModel);
 		getController().setLockingErrorModel(getProdPanel().getModel());
-		updateLineId();
+		updateLineIDText();
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		addLoginListener();
 		fireUserChanged();
@@ -67,11 +69,18 @@ public class MainFrame extends AbstractMachineFrame {
 		getStopButton().setVisible(false);
 
 		replaceMainPanel(mainPanel);
+		EventBusService.register(this);
+	}
+
+	@Subscribe
+	public void handleLanguageSwitch(LanguageSwitchEvent evt) {
+		updateLineIDText();
+		buildConfigPanelsList();
+		userChanged();
 	}
 
 	private void addLoginListener() {
 		SecurityService.addLoginListener(new ILoginListener() {
-
 			@Override
 			public void loginSucceeded(String login) {
 				fireUserChanged();
@@ -88,9 +97,9 @@ public class MainFrame extends AbstractMachineFrame {
 		return (MainFrameController) controller;
 	}
 
-	private void updateLineId() {
-		String lineId = MainFrameController.LINE_LABEL_ID + MainFrameController.LINE_LABEL_SEPARATOR
-				+ getMainFrameController().getLineId();
+
+	private void updateLineIDText() {
+		String lineId = Messages.get("lineId") + MainFrameController.LINE_LABEL_SEPARATOR + getMainFrameController().getLineId();
 		((LineIdWithAuthenticateButton) getLineIdPanel()).getLabelLineId().setText(lineId);
 	}
 

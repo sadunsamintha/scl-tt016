@@ -22,7 +22,6 @@ public class MessageHandlerWarning {
 	public void handleMessage(ActionEventWarning warning) {
 		logger.info("key="+warning.getKey() +"; params:"+ Arrays.toString(warning.getParams()));
 		EventBusService.post(new WarningViewEvent(warning.getKey(), null, true, warning.getParams()));
-		MonitoringService.addSystemEvent(new BasicSystemEvent(SystemEventLevel.WARNING,
-				SystemEventType.APPLICATION_MESSAGE, warning.getSource() + ": " + warning.getKey()));
+		MonitoringService.addSystemEvent(new BasicSystemEvent(SystemEventLevel.WARNING, SystemEventType.APPLICATION_MESSAGE, warning.getSource() + ": " + warning.getKey()));
 	}
 }

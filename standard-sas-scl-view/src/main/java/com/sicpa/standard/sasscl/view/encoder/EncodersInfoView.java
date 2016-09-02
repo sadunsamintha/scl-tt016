@@ -21,6 +21,8 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.table.TableCellRenderer;
 
+import com.google.common.eventbus.Subscribe;
+import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import net.miginfocom.swing.MigLayout;
 
 import org.slf4j.Logger;
@@ -58,6 +60,20 @@ public class EncodersInfoView extends JPanel implements ISecuredComponentGetter 
 	public EncodersInfoView() {
 		initGUI();
 		setupDateFormatter();
+	}
+
+	@Subscribe
+	public void handleLanguageSwitch(LanguageSwitchEvent evt) {
+		removeAll();
+		buttonRefreshNow = null;
+		autoRefresh = null;
+		refreshTime = null;
+		quarantineEncoderView = null;
+		tablePanel = null;
+		table = null;
+		setupDateFormatter();
+		initGUI();
+		revalidate();
 	}
 
 	private void setupDateFormatter() {
@@ -219,18 +235,7 @@ public class EncodersInfoView extends JPanel implements ISecuredComponentGetter 
 		this.storage = storage;
 	}
 
-	public void handleLanguageSwitch(LanguageSwitchEvent evt) {
-		removeAll();
-		buttonRefreshNow = null;
-		autoRefresh = null;
-		refreshTime = null;
-		quarantineEncoderView = null;
-		tablePanel = null;
-		table = null;
-		setupDateFormatter();
-		initGUI();
-		revalidate();
-	}
+
 
 	@Override
 	public Component getComponent() {

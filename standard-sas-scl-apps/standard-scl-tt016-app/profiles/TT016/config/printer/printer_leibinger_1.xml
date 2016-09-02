@@ -6,10 +6,11 @@
 	<udpPort>4321</udpPort>
 	<tcpTimeout>5000</tcpTimeout>
 	<tcpPort>3000</tcpPort>
-<nozzleMode>OPEN_AUTO_CLOSE_MANUAL</nozzleMode>
+	<nozzleMode>OPEN_MANUAL_CLOSE_AUTO</nozzleMode>
+	<nozzleCloseDelayMs>2000</nozzleCloseDelayMs>
 	<tcpMaxExpiredRequests>3</tcpMaxExpiredRequests>
 	<transitionMaxExpiredRequests>10</transitionMaxExpiredRequests>
-	<resetOnStop>true</resetOnStop>
+	<resetOnStop>false</resetOnStop>
 	<requestBufferStatusPeriod>500</requestBufferStatusPeriod>
 	<requestMonitoringLowFrequency>86400000</requestMonitoringLowFrequency>
 	<requestMonitoringMediumFrequency>3600000</requestMonitoringMediumFrequency>
@@ -27,13 +28,13 @@
 	<encoderResolution>10000</encoderResolution>
 	<inverted>0</inverted>
 	<rotation>0</rotation>
-	<encoderSignal>1</encoderSignal>
-	<printGoSignal>0</printGoSignal>
-	<printHeight>0</printHeight>
+	<encoderSignal>3</encoderSignal>
+	<printGoSignal>1</printGoSignal>
+	<printHeight>90</printHeight>
 	<flightTimeCompensationMicrometers>4000</flightTimeCompensationMicrometers>
-	<printMode>4</printMode>
+	<printMode>1</printMode>
 	<strokeDistanceMicrometers>530</strokeDistanceMicrometers>
 	<printGoDelayMicrometers>6000</printGoDelayMicrometers>
 	<printGoDistance>0</printGoDistance>
-	<printGoRepetition>2000</printGoRepetition>
+	<printGoRepetition>0</printGoRepetition>
 </LeibingerPrinterModel>

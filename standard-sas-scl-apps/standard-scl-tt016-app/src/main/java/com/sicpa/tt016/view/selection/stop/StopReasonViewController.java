@@ -5,6 +5,7 @@ import static com.sicpa.tt016.monitoring.system.TT016SystemEventType.PROD_STOP_R
 import static com.sicpa.tt016.view.TT016ScreenFlowTriggers.STOP_PRODUCTION;
 import static com.sicpa.tt016.view.TT016ScreenFlowTriggers.STOP_PRODUCTION_REASON_SELECTED;
 
+import com.sicpa.standard.sasscl.view.LanguageSwitchEvent;
 import com.sicpa.tt016.event.ManualStopEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,6 +35,14 @@ public class StopReasonViewController extends AbstractViewFlowController impleme
 	private volatile HardwareControllerStatus status;
 
 	private AtomicBoolean stopButtonPressed = new AtomicBoolean(false);
+
+	@Subscribe
+	public void handleLanguageSwitch(LanguageSwitchEvent evt) {
+		logger.info("refreshing_panel,reason=language switch,lang=" + evt.getLanguage());
+		StopReasonView srv = new StopReasonView();
+		srv.setController(this);
+		this.setView(srv);
+	}
 
 
 	@Subscribe
@@ -70,8 +79,7 @@ public class StopReasonViewController extends AbstractViewFlowController impleme
 	public void stopReasonSelected(StopReason stopReason) {
 		logger.info(Messages.format("stopreason.key", Messages.get(stopReason.getKey())));
 
-		MonitoringService.addSystemEvent(new BasicSystemEvent(SystemEventLevel.INFO, PROD_STOP_REASON, Messages
-				.get(stopReason.getKey())));
+		MonitoringService.addSystemEvent(new BasicSystemEvent(SystemEventLevel.INFO, PROD_STOP_REASON, Messages.get(stopReason.getKey())));
 		moveToNext();
 	}
 

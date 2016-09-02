@@ -49,9 +49,8 @@ public class MainFrameController extends MachineViewController {
 	private IMessageCodeMapper messageCodeMapper;
 	private boolean filterProductionChangedEvent = false;
 	private FrameCameraImage frameCameraImage;
-
 	public static String LINE_LABEL_SEPARATOR = " : ";
-	public static String LINE_LABEL_ID = Messages.get("lineId");
+
 
 	public void addSecuredPanel(ISecuredComponentGetter securedComponentGetter) {
 		securedPanels.add(securedComponentGetter);

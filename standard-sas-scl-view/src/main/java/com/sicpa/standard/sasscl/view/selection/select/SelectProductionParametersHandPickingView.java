@@ -33,9 +33,7 @@ public class SelectProductionParametersHandPickingView extends JPanel implements
 		add(getDelegate(), "grow,push,spanx");
 	}
 
-	public void setCallback(ISelectProductionParametersViewListener callback) {
-		this.callback = callback;
-	}
+
 
 	@Override
 	public void displaySelectionScreen(ProductionParameterRootNode root) {
@@ -111,5 +109,9 @@ public class SelectProductionParametersHandPickingView extends JPanel implements
 
 	public void setSelectionModelFactory(ISelectionModelFactory selectionModelFactory) {
 		this.selectionModelFactory = selectionModelFactory;
+	}
+
+	public void setCallback(ISelectProductionParametersViewListener callback) {
+		this.callback = callback;
 	}
 }

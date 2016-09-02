@@ -137,21 +137,22 @@ public class BisAdapter extends AbstractStartableDevice implements IBisAdaptor, 
 	}
 
 	private void skuRecognized(int skuid) {
-		Optional<SKU> sku = getSkuFromResult(skuid);
+        Optional<SKU> sku = getSkuFromResult(skuid);
+
 		if (sku.isPresent()) {
-			EventBusService.post(new SkuRecognizedEvent(sku.get()));
-		} else {
-			logger.error("no sku for id:" + skuid);
-			fireSkuNotIdentified();
-		}
-	}
+            EventBusService.post(new SkuRecognizedEvent(sku.get()));
+        } else {
+            logger.error("no sku for id:" + skuid);
+            fireSkuNotIdentified();
+        }
+    }
 
 	private void fireSkuNotIdentified() {
 		EventBusService.post(new SkuNotRecognizedEvent());
 	}
 
-	private Optional<SKU> getSkuFromResult(int skuid) {
-		return skuFinder.getSkuFromId(skuid);
+	private Optional<SKU> getSkuFromResult(int skuId) {
+		return skuFinder.getSkuFromId(skuId);
 	}
 
 	private boolean isResultUnknownSKU(RecognitionResultMessage result) {
