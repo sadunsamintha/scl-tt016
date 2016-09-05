@@ -13,8 +13,6 @@ public class UnknownSkuProvider extends AbstractProvider<SKU> {
 	}
 	@Override
 	public SKU get() {
-		// TODO Auto-generated method stub
 		return super.get();
 	}
-
 }

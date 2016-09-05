@@ -1,24 +1,23 @@
 package com.sicpa.standard.sasscl.controller.skuselection.impl;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
+import com.sicpa.standard.client.common.provider.IProvider;
 import com.sicpa.standard.sasscl.controller.ProductionParametersEvent;
 import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState;
 import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowStateChangedEvent;
 import com.sicpa.standard.sasscl.controller.skuselection.ISkuSelectionBehavior;
 import com.sicpa.standard.sasscl.model.ProductionParameters;
 import com.sicpa.standard.sasscl.model.SKU;
-import com.sicpa.standard.sasscl.provider.impl.UnknownSkuProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SkuSelectionDuringProduction implements ISkuSelectionBehavior {
 
 	private static final Logger logger = LoggerFactory.getLogger(SkuSelectionDuringProduction.class);
 
 	private ProductionParameters productionParameters;
-	private UnknownSkuProvider unknownSkuProvider;
+	private IProvider<SKU> unknownSkuProvider;
 
 	@Override
 	public boolean isLoadPreviousSelection() {
@@ -50,7 +49,7 @@ public class SkuSelectionDuringProduction implements ISkuSelectionBehavior {
 		this.productionParameters = productionParameters;
 	}
 
-	public void setUnknownSkuProvider(UnknownSkuProvider unknownSkuProvider) {
+	public void setUnknownSkuProvider(IProvider<SKU> unknownSkuProvider) {
 		this.unknownSkuProvider = unknownSkuProvider;
 	}
 }

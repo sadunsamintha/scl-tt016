@@ -5,7 +5,9 @@
 		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 
-	<bean id="reportScreen" class="com.sicpa.standard.sasscl.view.report.ReportScreen" />
+	<bean id="reportScreen" class="com.sicpa.standard.sasscl.view.report.ReportScreen">
+		<constructor-arg value="${language}"/>
+	</bean>
 
 	<bean id="mainFrameController" class="com.sicpa.standard.sasscl.view.MainFrameController">
 		<property name="productionParameters" ref="productionParameters" />
@@ -47,7 +49,11 @@
 
 	<bean id="productionStatisticsPanel" class="com.sicpa.standard.sasscl.view.monitoring.ProductionStatisticsPanel" />
 	<bean id="systemEventPanel" class="com.sicpa.standard.sasscl.view.monitoring.SystemEventPanel" />
-	<bean id="miscPanel" class="com.sicpa.standard.sasscl.view.config.misc.MiscConfigPanelGetter" />
+
+
+	<bean id="miscPanel" class="com.sicpa.standard.sasscl.view.config.misc.MiscConfigPanelGetter">
+		<property name="defaultLang" value="${language}" />
+	</bean>
 
 	<bean id="simulatorGui" class="com.sicpa.standard.sasscl.devices.simulator.gui.SimulatorControlView">
 		<property name="visible" value="${displaySimulatorGui}" />
