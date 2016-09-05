@@ -24,10 +24,8 @@ public class LeibingerPrinterControlViewController implements ILeibingerPrinterV
     private PrinterAdaptorLeibinger findPrinter(String printerId) {
         Optional<PrinterAdaptorLeibinger> printer = hardwareController.getDevices().stream()
                 .filter(d -> d.getName().equals(printerId)).map(d -> (PrinterAdaptorLeibinger) d).findFirst();
-        if (printer.get() == null) {
-            throw new IllegalArgumentException("no printer found for:" + printerId);
-        }
-        return printer.get();
+
+        return printer.orElseThrow(() -> new IllegalArgumentException("no printer found for:" + printerId));
     }
 
     @Override
