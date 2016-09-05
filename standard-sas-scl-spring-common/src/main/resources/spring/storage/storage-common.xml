@@ -7,5 +7,4 @@
 
 	<bean id="productsPackager" class="com.sicpa.standard.sasscl.common.storage.productPackager.DefaultProductsPackager" />
 
-	<bean id="userIdStorage" class="com.sicpa.standard.sasscl.common.storage.UserIdStorage" p:fileName="${userRegistry.filePath}" />
 </beans>

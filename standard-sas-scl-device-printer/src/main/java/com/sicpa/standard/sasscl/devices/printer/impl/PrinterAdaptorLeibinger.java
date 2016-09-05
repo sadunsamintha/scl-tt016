@@ -9,7 +9,7 @@ import com.sicpa.standard.printer.leibinger.driver.leibinger.LeibingerUserLevel;
 import com.sicpa.standard.sasscl.devices.DeviceStatus;
 import com.sicpa.standard.sasscl.devices.printer.PrinterAdaptorException;
 import com.sicpa.standard.sasscl.devices.printer.xcode.mapping.IMappingExtendedCodeBehavior;
-import com.sicpa.standard.sasscl.event.PrinterProfileEvent;
+import com.sicpa.standard.sasscl.event.ChangePrinterUserLevelEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,7 +38,7 @@ public class PrinterAdaptorLeibinger extends PrinterAdaptor {
 
 
     @Subscribe
-    public void setUserLevel(PrinterProfileEvent event) {
+    public void setUserLevel(ChangePrinterUserLevelEvent event) {
         try {
             controller.sendSpecificSettings(CMD_SET_USER_LEVEL.getValue(), LeibingerUserLevel.get(event.getLevel()));
         } catch (PrinterException e) {

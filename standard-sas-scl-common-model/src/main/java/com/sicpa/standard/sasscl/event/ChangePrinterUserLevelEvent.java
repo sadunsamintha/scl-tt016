@@ -1,10 +1,10 @@
 package com.sicpa.standard.sasscl.event;
 
-public class PrinterProfileEvent {
+public class ChangePrinterUserLevelEvent {
 	
 	private int level;
 
-	public PrinterProfileEvent(int level) {
+	public ChangePrinterUserLevelEvent(int level) {
 		super();
 		this.level = level;
 	}
