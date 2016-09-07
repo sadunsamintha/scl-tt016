@@ -199,10 +199,24 @@ public class CustoBuilder {
 	 * add a task that will be executed in the STARTING state
 	 */
 	public static void addActionOnStartingProduction(Runnable task) {
+		addActionOnStartingProduction( task, ApplicationFlowState.STT_STARTING);
+	}
+
+	/**
+	 * add a task that will be executed in the connected state
+	 */
+	public static void addActionOnConnectedApplicationState(Runnable task) {
+		addActionOnStartingProduction( task, ApplicationFlowState.STT_CONNECTED);
+	}
+
+	/**
+	 * add a task that will be executed in the STARTING state
+	 */
+	private static void addActionOnStartingProduction(Runnable task, ApplicationFlowState applicationFlowState) {
 		Object listener = new Object() {
 			@Subscribe
 			public void handleApplicationStateChanged(ApplicationFlowStateChangedEvent evt) {
-				if (evt.getCurrentState().equals(ApplicationFlowState.STT_STARTING)) {
+				if (evt.getCurrentState().equals(applicationFlowState)) {
 					task.run();
 				}
 			}

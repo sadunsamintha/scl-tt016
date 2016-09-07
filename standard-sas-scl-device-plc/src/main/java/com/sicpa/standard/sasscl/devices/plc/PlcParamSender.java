@@ -22,6 +22,18 @@ public class PlcParamSender implements IPlcParamSender {
 
 	@Override
 	public void sendToPlc(String plcLogicalVarName, String value, int lineIndex) throws PlcAdaptorException {
+		final boolean reloadParams = false;
+		sendToPlc(plcLogicalVarName, value, lineIndex, reloadParams);
+	}
+
+	@Override
+	public void sendToPlcAndReloadParams(String plcLogicalVarName, String value, int lineIndex) throws PlcAdaptorException {
+		final boolean reloadParams = true;
+		sendToPlc(plcLogicalVarName, value, lineIndex, reloadParams);
+	}
+
+
+	private void sendToPlc(String plcLogicalVarName, String value, int lineIndex, boolean reloadParams) throws PlcAdaptorException {
 
 		String valueToSend;
 		if (convertionNeeded(value)) {
@@ -31,7 +43,11 @@ public class PlcParamSender implements IPlcParamSender {
 			valueToSend = value;
 		}
 		findVarTypeAndsendToPlc(plcLogicalVarName, valueToSend, lineIndex);
+		if(reloadParams) {
+			plcProvider.get().executeRequest(PlcRequest.RELOAD_PLC_PARAM);
+		}
 	}
+
 
 	private IPlcVariable<?> createVar(String logicalName, String value, int lineIndex) {
 		String physicalName = getPhysicalLineVariable(logicalName, lineIndex);

@@ -62,7 +62,7 @@ public class TT016Bootstrap extends Bootstrap {
 	}
 
 	private void sendEjectionTypeForProductionMode() {
-		addActionOnStartingProduction(()->
+		addActionOnConnectedApplicationState(()->
 				ejectionTypeSender.send(productionParameters));
 	}
 
@@ -105,6 +105,8 @@ public class TT016Bootstrap extends Bootstrap {
 
 	private void noStopIfDmxDetectedInExport() {
 		setMessageType(MessageEventKey.Activation.EXCEPTION_CODE_IN_EXPORT, ActionMessageType.WARNING);
+		setMessageType(MessageEventKey.PLC.PLC_ERR_VALID_CODE_IN_EXPORT_MODE, ActionMessageType.IGNORE);
+
 	}
 
 	private void selectStopReasonWhenProductionStop() {
