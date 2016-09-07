@@ -1,13 +1,5 @@
 package com.sicpa.standard.sasscl.custoBuilder;
 
-import java.awt.Color;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
-import java.util.function.Function;
-
-import org.springframework.beans.factory.NoSuchBeanDefinitionException;
-
 import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.ioc.BeanProvider;
@@ -51,6 +43,13 @@ import com.sicpa.standard.sasscl.model.statistics.StatisticsKey;
 import com.sicpa.standard.sasscl.productionParameterSelection.ISelectionModelFactory;
 import com.sicpa.standard.sasscl.productionParameterSelection.ISelectionModelFactory.IConfigFlowModel;
 import com.sicpa.standard.sasscl.productionParameterSelection.selectionmodel.DefaultSelectionModel;
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
+
+import java.awt.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
+import java.util.function.Function;
 
 import static com.sicpa.standard.sasscl.ioc.BeansName.*;
 
@@ -199,20 +198,20 @@ public class CustoBuilder {
 	 * add a task that will be executed in the STARTING state
 	 */
 	public static void addActionOnStartingProduction(Runnable task) {
-		addActionOnStartingProduction( task, ApplicationFlowState.STT_STARTING);
+		addAction(task, ApplicationFlowState.STT_STARTING);
 	}
 
 	/**
 	 * add a task that will be executed in the connected state
 	 */
 	public static void addActionOnConnectedApplicationState(Runnable task) {
-		addActionOnStartingProduction( task, ApplicationFlowState.STT_CONNECTED);
+		addAction(task, ApplicationFlowState.STT_CONNECTED);
 	}
 
 	/**
 	 * add a task that will be executed in the STARTING state
 	 */
-	private static void addActionOnStartingProduction(Runnable task, ApplicationFlowState applicationFlowState) {
+	private static void addAction(Runnable task, ApplicationFlowState applicationFlowState) {
 		Object listener = new Object() {
 			@Subscribe
 			public void handleApplicationStateChanged(ApplicationFlowStateChangedEvent evt) {
