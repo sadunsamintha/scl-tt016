@@ -14,7 +14,6 @@
     <Permission name="PRODUCTION_STOP"/>
     <Permission name="PRODUCTION_VIEW_STATISTICS"/>
     <Permission name="PRODUCTION_REPORT"/>
-    <Permission name="ADVANCED_CONTROL"/>
     <Permission name="EXIT"/>
   </User>
 </SecurityModel>
