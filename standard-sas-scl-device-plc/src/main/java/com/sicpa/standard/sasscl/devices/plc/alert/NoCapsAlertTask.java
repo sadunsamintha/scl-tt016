@@ -17,7 +17,7 @@ import java.util.Map;
 
 public class NoCapsAlertTask extends AbstractScheduledAlertTask {
 
-    private static Logger logger = LoggerFactory.getLogger(NoCapsAlertTask.class);
+    private static final Logger logger = LoggerFactory.getLogger(NoCapsAlertTask.class);
 
     private PlcProvider plcProvider;
 
@@ -26,13 +26,15 @@ public class NoCapsAlertTask extends AbstractScheduledAlertTask {
     private String productCounterVarName;
     private String noCapsCounterVarName;
 
-    private Map<Integer, Integer> plcProductCounterByLine = new HashMap<>();
-    private Map<Integer, Integer> plcNoCapsCounterByLine = new HashMap<>();
+    private final Map<Integer, Integer> plcProductCounterByLine = new HashMap<>();
+    private final Map<Integer, Integer> plcNoCapsCounterByLine = new HashMap<>();
 
-    private Map<Integer, Integer> previousPlcProductCounterByLine = new HashMap<>();
-    private Map<Integer, Integer> previousPlcNoCapsCounterByLine = new HashMap<>();
+    private final Map<Integer, Integer> previousPlcProductCounterByLine = new HashMap<>();
+    private final Map<Integer, Integer> previousPlcNoCapsCounterByLine = new HashMap<>();
 
     private int alertPresentLineIndex;
+    private int numProductsSinceLastThresholdCheck;
+    private int numNoCapsProductsSinceLastThresholdCheck;
 
     @Override
     protected MessageEvent getAlertMessage() {
@@ -43,29 +45,26 @@ public class NoCapsAlertTask extends AbstractScheduledAlertTask {
     protected boolean isAlertPresent() {
         updateLocalPlcCounters();
 
-        if (previousPlcProductCounterByLine.isEmpty() || previousPlcNoCapsCounterByLine.isEmpty()) {
-            previousPlcProductCounterByLine.putAll(plcProductCounterByLine);
-            previousPlcNoCapsCounterByLine.putAll(plcNoCapsCounterByLine);
+        if (isFirstTime()) {
+            storeCurrentPlcCountersIntoPreviousPlcCounters();
             return false;
         }
 
-        boolean isAlertPresent = false;
-
         for (Integer lineIndex : PlcLineHelper.getLineIndexes()) {
-            int numProductsSinceLastThresholdCheck = getNumProductsSinceLastThresholdCheck(lineIndex);
-            int numNoCapsProductsSinceLastThresholdCheck = getNumNoCapsProductsSinceLastThresholdCheck(lineIndex);
+            numProductsSinceLastThresholdCheck = getNumProductsSinceLastThresholdCheck(lineIndex);
+            numNoCapsProductsSinceLastThresholdCheck = getNumNoCapsProductsSinceLastThresholdCheck(lineIndex);
 
-            if (numProductsSinceLastThresholdCheck >= model.getSampleSize()
-                    && numNoCapsProductsSinceLastThresholdCheck >= model.getThreshold()) {
-                alertPresentLineIndex = lineIndex;
-                isAlertPresent = true;
+            if (isSampleSizeReached()) {
+                if (isThresholdReached()) {
+                    alertPresentLineIndex = lineIndex;
+                    return true;
+                }
 
-                previousPlcProductCounterByLine.putAll(plcProductCounterByLine);
-                previousPlcNoCapsCounterByLine.putAll(plcNoCapsCounterByLine);
+                storeCurrentPlcCountersIntoPreviousPlcCounters();
             }
         }
 
-        return isAlertPresent;
+        return false;
     }
 
     @Override
@@ -114,6 +113,23 @@ public class NoCapsAlertTask extends AbstractScheduledAlertTask {
 
     private int getNumNoCapsProductsSinceLastThresholdCheck(int lineIndex) {
         return plcNoCapsCounterByLine.get(lineIndex) - previousPlcNoCapsCounterByLine.get(lineIndex);
+    }
+
+    private boolean isSampleSizeReached() {
+        return numProductsSinceLastThresholdCheck >= model.getSampleSize();
+    }
+
+    private boolean isThresholdReached() {
+        return numNoCapsProductsSinceLastThresholdCheck >= model.getThreshold();
+    }
+
+    private boolean isFirstTime() {
+        return previousPlcProductCounterByLine.isEmpty() || previousPlcNoCapsCounterByLine.isEmpty();
+    }
+
+    private void storeCurrentPlcCountersIntoPreviousPlcCounters() {
+        previousPlcProductCounterByLine.putAll(plcProductCounterByLine);
+        previousPlcNoCapsCounterByLine.putAll(plcNoCapsCounterByLine);
     }
 
     private void updateLocalPlcCounters() {
