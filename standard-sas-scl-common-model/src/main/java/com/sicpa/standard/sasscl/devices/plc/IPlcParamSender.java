@@ -5,4 +5,6 @@ public interface IPlcParamSender {
 
 	void sendToPlc(String varName, String value,int lineIndex) throws PlcAdaptorException;
 
+	void sendToPlcAndReloadParams(String varName, String value,int lineIndex) throws PlcAdaptorException;
+
 }
