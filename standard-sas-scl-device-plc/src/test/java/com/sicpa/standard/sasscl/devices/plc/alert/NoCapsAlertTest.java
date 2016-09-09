@@ -61,53 +61,66 @@ public class NoCapsAlertTest {
 
     @Test
     public void alertIsNotPresentNoPreviousPlcCounters() throws PlcAdaptorException {
-        updatePlcCounters(10, 0);
+        setProductCounterValue(10);
+        setNoCapsCounterValue(0);
         assertFalse(noCapsAlertTask.isAlertPresent());
     }
 
     @Test
     public void alertIsNotPresentSampleSizeNotEnough() throws PlcAdaptorException {
-        updatePlcCounters(10, 1);
+        setProductCounterValue(10);
+        setNoCapsCounterValue(1);
         assertFalse(noCapsAlertTask.isAlertPresent());
 
-        updatePlcCounters(14, 1);
+        setProductCounterValue(14);
+        setNoCapsCounterValue(1);
         assertFalse(noCapsAlertTask.isAlertPresent());
     }
 
     @Test
     public void alertIsNotPresentThresholdNotReached() throws PlcAdaptorException {
-        updatePlcCounters(10, 1);
+        setProductCounterValue(10);
+        setNoCapsCounterValue(1);
         assertFalse(noCapsAlertTask.isAlertPresent());
 
-        updatePlcCounters(15, 2);
+        setProductCounterValue(15);
+        setNoCapsCounterValue(2);
         assertFalse(noCapsAlertTask.isAlertPresent());
     }
 
     @Test
     public void alertIsPresent() throws PlcAdaptorException {
-        updatePlcCounters(10, 1);
+        setProductCounterValue(10);
+        setNoCapsCounterValue(1);
         assertFalse(noCapsAlertTask.isAlertPresent());
 
-        updatePlcCounters(15, 3);
+        setProductCounterValue(15);
+        setNoCapsCounterValue(3);
         assertTrue(noCapsAlertTask.isAlertPresent());
     }
 
     @Test
     public void alertIsPresentTwice() throws PlcAdaptorException {
-        updatePlcCounters(10, 1);
+        setProductCounterValue(10);
+        setNoCapsCounterValue(1);
         assertFalse(noCapsAlertTask.isAlertPresent());
 
-        updatePlcCounters(15, 3);
+        setProductCounterValue(15);
+        setNoCapsCounterValue(3);
         assertTrue(noCapsAlertTask.isAlertPresent());
 
-        updatePlcCounters(20, 5);
+        setProductCounterValue(20);
+        setNoCapsCounterValue(5);
         assertTrue(noCapsAlertTask.isAlertPresent());
     }
 
-    private void updatePlcCounters(int numProducts, int numNoCapsProducts) throws PlcAdaptorException {
+    private void setProductCounterValue(int productCounterValue) throws PlcAdaptorException {
         when(plcAdaptor.read(createInt32Var(
-                replaceLinePlaceholder(productCounterVarName, 1)))).thenReturn(numProducts);
+                replaceLinePlaceholder(productCounterVarName, 1)))).thenReturn(productCounterValue);
+    }
+
+    private void setNoCapsCounterValue(int noCapsCounterValue) throws PlcAdaptorException {
         when(plcAdaptor.read(createInt32Var(
-                replaceLinePlaceholder(noCapsCounterVarName, 1)))).thenReturn(numNoCapsProducts);
+                replaceLinePlaceholder(noCapsCounterVarName, 1)))).thenReturn(noCapsCounterValue);
     }
 }
