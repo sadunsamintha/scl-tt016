@@ -1,11 +1,8 @@
-import static com.sicpa.standard.sasscl.devices.plc.PlcRequest.*
-import static com.sicpa.standard.sasscl.devices.plc.PlcUtils.*
-import static com.sicpa.standard.sasscl.devices.plc.PlcUtils.PLC_TYPE.*
-import groovy.transform.Field
-
 import com.sicpa.standard.client.common.device.plc.PLCVariableMap
-import com.sicpa.standard.plc.controller.actions.*
-import com.sicpa.standard.plc.value.*
+import com.sicpa.standard.plc.controller.actions.IPlcAction
+import com.sicpa.standard.plc.controller.actions.PlcAction
+import com.sicpa.standard.plc.value.IPlcVariable
+import com.sicpa.standard.plc.value.PlcVariable
 import com.sicpa.standard.sasscl.devices.plc.DefaultPlcRequestExecutor
 import com.sicpa.standard.sasscl.devices.plc.IPlcRequestExecutor
 import com.sicpa.standard.sasscl.devices.plc.PlcRequest
@@ -13,6 +10,11 @@ import com.sicpa.standard.sasscl.devices.plc.PlcUtils
 import com.sicpa.standard.sasscl.devices.plc.variable.PlcVariableGroup
 import com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcPulseVariableDescriptor
 import com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcVariableDescriptor
+import groovy.transform.Field
+
+import static com.sicpa.standard.sasscl.devices.plc.PlcRequest.*
+import static com.sicpa.standard.sasscl.devices.plc.PlcUtils.*
+import static com.sicpa.standard.sasscl.devices.plc.PlcUtils.PLC_TYPE.*
 
 @Field def allVars = new ArrayList<IPlcVariable>()
 @Field def lineJmxReport= new ArrayList<IPlcVariable>()
@@ -160,6 +162,7 @@ beans {
 
 	//CABINET PARAM
 	plcMap['PARAM_CAB_TIMEOUT_LIFECHECK']=[v:CAB_PRM+'nTimeoutLifeCheck' ,t:I ,cabGrp:'system']
+	plcMap['PARAM_CAB_COOLING_ENABLED']=[v:CAB_PRM+'bCoolingSystemEnabled' ,t:B ,cabGrp:'system']
 	plcMap['PARAM_CAB_COOLING_ERR_ACTIVATION_TIMEOUT']=[v:CAB_PRM+'nCoolingErrorActivationTimeout' ,t:I ,cabGrp:'system']
 	plcMap['PARAM_CAB_COM_STRUC_STORED_IN_RAM']=[v:CAB_PRM+'bComStructureStoredInRAM' ,t:B ,cabGrp:'system']
 	plcMap['PARAM_CAB_INHIBIT_RAM_WRITING']=[v:CAB_PRM+'bInhibitRamWriting' ,t:B ,cabGrp:'system']
