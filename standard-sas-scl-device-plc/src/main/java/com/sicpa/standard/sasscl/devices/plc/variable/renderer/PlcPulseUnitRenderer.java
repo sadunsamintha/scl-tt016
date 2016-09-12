@@ -64,9 +64,16 @@ public class PlcPulseUnitRenderer extends AbstractPlcNumberVariableRenderer<Floa
 	private void ValueChangedInEDT() {
 		try {
 			getComboUnit().setSelectedItem(getPulseDescriptor().getCurrentUnit());
+			getSpinner().setValue(getNumericValueFromDescription());
 		} catch (Exception e) {
 			logger.error("error setting value for:" + desc.getVarName() + " value:" + desc.getValue(), e);
 		}
+	}
+
+	private Float getNumericValueFromDescription(){
+		String valueWithUnit = desc.getValue();
+		String valueOnly = valueWithUnit.replace(getPulseDescriptor().getCurrentUnit().getSuffix(), "");
+		return Float.parseFloat(valueOnly);
 	}
 
 	@Override

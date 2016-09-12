@@ -5,6 +5,7 @@ import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.gui.listener.CoalescentChangeListener;
 import com.sicpa.standard.gui.plaf.SicpaFont;
 import com.sicpa.standard.gui.utils.TextUtils;
+import com.sicpa.standard.gui.utils.ThreadUtils;
 import com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcVariableDescriptor;
 import com.sicpa.standard.sasscl.view.LanguageSwitchEvent;
 import net.miginfocom.swing.MigLayout;
@@ -84,7 +85,15 @@ public abstract class AbstractPlcNumberVariableRenderer<TYPE extends Number> ext
 		return spinner;
 	}
 
-	public void valueChanged(){};
+	public void valueChanged(){
+		ThreadUtils.invokeLater(() -> {
+			try {
+				getSpinner().setValue(parseValue(desc.getValue()));
+			} catch (Exception e) {
+				logger.error("error setting value for:" + desc.getVarName());
+			}
+		});
+	};
 
 	protected abstract SpinnerNumberModel createSpinnerNumberModel();
 
