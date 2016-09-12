@@ -14,7 +14,10 @@ beans{
 		skuBisProvider=ref('skuBisProvider')
 	}
 
-	importBeans('spring/alert/alertUnknownSkuTask.groovy')
+	def skuRecognitionBehavior=props['sku.recognition.behavior'].toUpperCase()
+	if(skuRecognitionBehavior != "NONE") {
+		importBeans('spring/alert/alertUnknownSkuTask.groovy')
+	}
 
 	bisUserSender(BisUserSender){b->
 		b.initMethod='init'

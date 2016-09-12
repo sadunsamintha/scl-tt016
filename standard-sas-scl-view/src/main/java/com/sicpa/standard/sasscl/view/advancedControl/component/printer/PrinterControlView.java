@@ -10,10 +10,10 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 
+import com.sicpa.standard.client.common.i18n.Messages;
 import net.miginfocom.swing.MigLayout;
 
 import com.sicpa.standard.client.common.view.mvc.AbstractView;
-import com.sicpa.standard.common.util.Messages;
 import com.sicpa.standard.sasscl.view.advancedControl.component.IControlViewComponent;
 
 @SuppressWarnings("serial")

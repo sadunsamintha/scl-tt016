@@ -26,13 +26,15 @@
 	<wysiwyg>true</wysiwyg>
 	<securePing>true</securePing>
 	<encoderResolution>10000</encoderResolution>
-	<inverted>0</inverted>
+	<inverted>1</inverted>
 	<rotation>0</rotation>
+	<bitmapRotation>0</bitmapRotation>
+	<bitmapInverted>0</bitmapInverted>
 	<encoderSignal>3</encoderSignal>
 	<printGoSignal>1</printGoSignal>
 	<printHeight>90</printHeight>
 	<flightTimeCompensationMicrometers>4000</flightTimeCompensationMicrometers>
-	<printMode>1</printMode>
+	<printMode>4</printMode>
 	<strokeDistanceMicrometers>530</strokeDistanceMicrometers>
 	<printGoDelayMicrometers>6000</printGoDelayMicrometers>
 	<printGoDistance>0</printGoDistance>

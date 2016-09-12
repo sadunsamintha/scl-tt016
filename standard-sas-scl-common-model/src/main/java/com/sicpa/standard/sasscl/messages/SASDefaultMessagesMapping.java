@@ -1,38 +1,15 @@
 package com.sicpa.standard.sasscl.messages;
 
-import static com.sicpa.standard.sasscl.messages.ActionMessageType.ERROR;
-import static com.sicpa.standard.sasscl.messages.ActionMessageType.ERROR_DEVICE;
-import static com.sicpa.standard.sasscl.messages.ActionMessageType.ERROR_DISPLAY;
-import static com.sicpa.standard.sasscl.messages.ActionMessageType.IGNORE;
-import static com.sicpa.standard.sasscl.messages.ActionMessageType.WARNING;
-
-import java.util.Properties;
-
+import com.sicpa.standard.client.common.messages.DefaultMessagesMapping;
+import com.sicpa.standard.client.common.utils.PropertiesUtils;
+import com.sicpa.standard.sasscl.messages.MessageEventKey.*;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sicpa.standard.client.common.messages.DefaultMessagesMapping;
-import com.sicpa.standard.client.common.utils.PropertiesUtils;
-import com.sicpa.standard.sasscl.messages.MessageEventKey.Activation;
-import com.sicpa.standard.sasscl.messages.MessageEventKey.Alert;
-import com.sicpa.standard.sasscl.messages.MessageEventKey.BIS;
-import com.sicpa.standard.sasscl.messages.MessageEventKey.BRS;
-import com.sicpa.standard.sasscl.messages.MessageEventKey.Camera;
-import com.sicpa.standard.sasscl.messages.MessageEventKey.Coding;
-import com.sicpa.standard.sasscl.messages.MessageEventKey.DevicesController;
-import com.sicpa.standard.sasscl.messages.MessageEventKey.FlowControl;
-import com.sicpa.standard.sasscl.messages.MessageEventKey.MAINTENACE;
-import com.sicpa.standard.sasscl.messages.MessageEventKey.ModelEditing;
-import com.sicpa.standard.sasscl.messages.MessageEventKey.PLC;
-import com.sicpa.standard.sasscl.messages.MessageEventKey.Printer;
-import com.sicpa.standard.sasscl.messages.MessageEventKey.Production;
-import com.sicpa.standard.sasscl.messages.MessageEventKey.ProductionParameters;
-import com.sicpa.standard.sasscl.messages.MessageEventKey.RemoteServer;
-import com.sicpa.standard.sasscl.messages.MessageEventKey.Simulator;
-import com.sicpa.standard.sasscl.messages.MessageEventKey.SkuCheck;
-import com.sicpa.standard.sasscl.messages.MessageEventKey.Storage;
-import com.sicpa.standard.sasscl.messages.MessageEventKey.SkuRecognition;
+import java.util.Properties;
+
+import static com.sicpa.standard.sasscl.messages.ActionMessageType.*;
 
 ;
 
@@ -116,6 +93,7 @@ public class SASDefaultMessagesMapping extends DefaultMessagesMapping {
 		addEntry(Alert.TOO_MUCH_CAMERA_IDLE_TIME, "[ALT_05]", ERROR);
 		addEntry(Alert.PLC_ACTIVATION_CROSS_CHECK_FAILED, "[ALT_06]", ERROR);
 		addEntry(Alert.TOO_MANY_CAMERA_WARNING, "[ALT_07]", WARNING);
+		addEntry(Alert.PLC_TOO_MANY_NO_CAPS, "[ALT_08]", WARNING);
 
 
 		addEntry(Camera.CAMERA_FAIL_LOAD_JOB, "[CA_01]", ERROR);

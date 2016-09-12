@@ -99,10 +99,8 @@ beans{
 
 
 	ejectionTypeSender(EjectionTypeSender){
-		plcMap= ref('plcVarMap')
 		plcParamSender= plcParamSender
 		overrideParameters=ejectionTypeProductionModeOverride
-
 	}
 
 
