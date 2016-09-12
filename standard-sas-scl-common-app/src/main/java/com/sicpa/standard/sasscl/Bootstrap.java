@@ -1,10 +1,12 @@
 package com.sicpa.standard.sasscl;
 
+import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.security.ILoginListener;
 import com.sicpa.standard.client.common.security.SecurityService;
 import com.sicpa.standard.client.common.utils.PropertiesUtils;
 import com.sicpa.standard.client.common.utils.StringMap;
+import com.sicpa.standard.gui.components.virtualKeyboard.SpinnerNumericVirtualKeyboard;
 import com.sicpa.standard.sasscl.business.statistics.StatisticsRestoredEvent;
 import com.sicpa.standard.sasscl.business.statistics.impl.Statistics;
 import com.sicpa.standard.sasscl.common.log.OperatorLogger;
@@ -32,6 +34,7 @@ import com.sicpa.standard.sasscl.provider.impl.SkuListProvider;
 import com.sicpa.standard.sasscl.provider.impl.SubsystemIdProvider;
 import com.sicpa.standard.sasscl.sicpadata.generator.validator.IEncoderSequenceValidator;
 import com.sicpa.standard.sasscl.utils.ConfigUtilEx;
+import com.sicpa.standard.sasscl.view.LanguageSwitchEvent;
 import com.sicpa.standard.sicpadata.spi.manager.IServiceProviderManager;
 import com.sicpa.standard.sicpadata.spi.manager.StaticServiceProviderManager;
 import org.slf4j.Logger;
@@ -66,6 +69,7 @@ public class Bootstrap implements IBootstrap {
     private SclAppMBean jmxBean;
     private IEncoderSequenceValidator encoderSequenceValidator;
     private ISkuSelectionBehavior skuSelectionBehavior;
+    private String defaultLang = "en";
     protected ProductionParameters productionParameters;
     protected RemoteServerScheduledJobs remoteServerSheduledJobs;
 
@@ -86,7 +90,21 @@ public class Bootstrap implements IBootstrap {
 
         installJMXBeans();
         initLoginListenerLogger();
+        setJVMParameters();
         loginDefaultLoginUser();
+    }
+
+    @Subscribe
+    public void handleLangugeSwitch(LanguageSwitchEvent evt){
+        defaultLang = evt.getLanguage();
+        setJVMParameters();
+        logger.info("destroy_spinner_keyboard_static_instance_with_old_locale");
+        SpinnerNumericVirtualKeyboard.destroyInstance();
+    }
+
+    private void setJVMParameters() {
+        System.setProperty("local.language",defaultLang);
+        logger.info("set_jvm_parameter,param=local.language,value=" + defaultLang);
     }
 
     private void loginDefaultLoginUser() {
@@ -307,5 +325,9 @@ public class Bootstrap implements IBootstrap {
 
     public void setSkuSelectionBehavior(ISkuSelectionBehavior skuSelectionBehavior) {
         this.skuSelectionBehavior = skuSelectionBehavior;
+    }
+
+    public void setDefaultLang(String defaultLang) {
+        this.defaultLang = defaultLang;
     }
 }

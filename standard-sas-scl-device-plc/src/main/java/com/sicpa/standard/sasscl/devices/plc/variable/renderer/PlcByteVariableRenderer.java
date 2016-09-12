@@ -13,8 +13,7 @@ public class PlcByteVariableRenderer extends AbstractPlcNumberVariableRenderer<B
 
 	@Override
 	protected SpinnerNumberModel createSpinnerNumberModel() {
-		return new SpinnerNumberModel(new Byte((byte) 0), new Byte((byte) 0), new Byte(Byte.MAX_VALUE), new Byte(
-				(byte) 1));
+		return new SpinnerNumberModel(new Byte((byte) 0), new Byte((byte) 0), new Byte(Byte.MAX_VALUE), new Byte((byte) 1));
 	}
 
 	@Override

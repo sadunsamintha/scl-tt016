@@ -9,6 +9,9 @@ import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 
+import com.google.common.eventbus.Subscribe;
+import com.sicpa.standard.client.common.eventbus.service.EventBusService;
+import com.sicpa.standard.sasscl.view.LanguageSwitchEvent;
 import net.miginfocom.swing.MigLayout;
 
 import org.slf4j.Logger;
@@ -40,6 +43,14 @@ public abstract class AbstractPlcNumberVariableRenderer<TYPE extends Number> ext
 		initGUI();
 		valueChanged();
 		desc.setInit(false);
+		EventBusService.register(this);
+	}
+
+	@Subscribe
+	public void handleLanguageSwitch(LanguageSwitchEvent evt) {
+		removeAll();
+		initGUI();
+		revalidate();
 	}
 
 	private void initGUI() {
@@ -65,8 +76,6 @@ public abstract class AbstractPlcNumberVariableRenderer<TYPE extends Number> ext
 		if (spinner == null) {
 			SpinnerNumberModel model = createSpinnerNumberModel();
 			spinner = new JSpinner(model);
-			//((JSpinner.NumberEditor)spinner.getEditor()).getFormat().applyPattern("#0,00");
-			//((JSpinner.NumberEditor)spinner.getEditor()).getFormat().setRoundingMode(RoundingMode.UP);
 			spinner.addChangeListener(new CoalescentChangeListener(1000) {
 				@Override
 				public void doAction() {
@@ -91,15 +100,7 @@ public abstract class AbstractPlcNumberVariableRenderer<TYPE extends Number> ext
 	}
 
 	@Override
-	public void valueChanged() {
-		ThreadUtils.invokeLater(() -> {
-			try {
-				getSpinner().setValue(parseValue(desc.getValue()));
-			} catch (Exception e) {
-				logger.error("error setting value for:" + desc.getVarName());
-			}
-		});
-	}
+	public void valueChanged() {}
 
 	protected abstract TYPE parseValue(String value);
 }

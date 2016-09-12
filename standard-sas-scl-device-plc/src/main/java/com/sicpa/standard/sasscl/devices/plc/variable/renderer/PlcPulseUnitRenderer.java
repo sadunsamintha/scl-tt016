@@ -3,6 +3,9 @@ package com.sicpa.standard.sasscl.devices.plc.variable.renderer;
 import javax.swing.JComboBox;
 import javax.swing.SpinnerNumberModel;
 
+import com.google.common.eventbus.Subscribe;
+import com.sicpa.standard.client.common.eventbus.service.EventBusService;
+import com.sicpa.standard.sasscl.view.LanguageSwitchEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,6 +26,8 @@ public class PlcPulseUnitRenderer extends AbstractPlcNumberVariableRenderer<Floa
 		comboUnitActionPerformed();
 		desc.setInit(false);
 	}
+
+
 
 	private void initGUI() {
 		add(getComboUnit(), "growx , w 100");
@@ -63,8 +68,8 @@ public class PlcPulseUnitRenderer extends AbstractPlcNumberVariableRenderer<Floa
 
 	private void ValueChangedInEDT() {
 		try {
-			float valueNumber = extractValueOnly();
-			getSpinner().setValue(valueNumber);
+			//float valueNumber = extractValueOnly();
+			//getSpinner().setValue(valueNumber);
 			getComboUnit().setSelectedItem(getPulseDescriptor().getCurrentUnit());
 		} catch (Exception e) {
 			logger.error("error setting value for:" + desc.getVarName() + " value:" + desc.getValue(), e);

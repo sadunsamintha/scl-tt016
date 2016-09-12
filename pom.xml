@@ -470,7 +470,7 @@
 			<dependency>
 				<groupId>com.sicpa.standard.gui</groupId>
 				<artifactId>standard-gui-screen</artifactId>
-				<version>1.2.8</version>
+				<version>1.2.10-SNAPSHOT</version>
 			</dependency>
 
 			<dependency>
