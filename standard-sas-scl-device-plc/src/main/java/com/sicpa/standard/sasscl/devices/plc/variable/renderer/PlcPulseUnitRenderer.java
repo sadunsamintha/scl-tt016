@@ -73,7 +73,7 @@ public class PlcPulseUnitRenderer extends AbstractPlcNumberVariableRenderer<Floa
 			logger.error("error setting value for:" + desc.getVarName() + " value:" + desc.getValue(), e);
 		}
 	}
-	
+
 	@Override
 	protected SpinnerNumberModel createSpinnerNumberModel() {
 		return new SpinnerNumberModel(new Float(0), new Float(0f), new Float(Short.MAX_VALUE), new Float(0.1f));
