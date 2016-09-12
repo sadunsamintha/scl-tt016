@@ -1,4 +1,4 @@
-<SecurityModel loginDefaultUser="OPERATOR">
+<SecurityModel loginDefaultUser="ADMIN">
 
 <!-- FULL ADMIN -->
   <User login="ADMIN" password="">
