@@ -1,17 +1,12 @@
 package com.sicpa.standard.sasscl.devices.plc.variable.renderer;
 
-import javax.swing.JComboBox;
-import javax.swing.SpinnerNumberModel;
-
-import com.google.common.eventbus.Subscribe;
-import com.sicpa.standard.client.common.eventbus.service.EventBusService;
-import com.sicpa.standard.sasscl.view.LanguageSwitchEvent;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.sicpa.standard.gui.utils.ThreadUtils;
 import com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcPulseVariableDescriptor;
 import com.sicpa.standard.sasscl.devices.plc.variable.descriptor.unit.PlcUnit;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.swing.*;
 
 public class PlcPulseUnitRenderer extends AbstractPlcNumberVariableRenderer<Float> {
 	private static final Logger logger = LoggerFactory.getLogger(PlcPulseUnitRenderer.class);
