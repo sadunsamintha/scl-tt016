@@ -21,7 +21,4 @@ public class PlcIntegerVariableRenderer extends AbstractPlcNumberVariableRendere
 		return Integer.parseInt(value);
 	}
 
-	@Override
-	public void valueChanged() {
-	}
 }

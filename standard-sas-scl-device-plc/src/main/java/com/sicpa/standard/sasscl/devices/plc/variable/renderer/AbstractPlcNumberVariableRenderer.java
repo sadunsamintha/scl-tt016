@@ -93,14 +93,14 @@ public abstract class AbstractPlcNumberVariableRenderer<TYPE extends Number> ext
 		return spinner;
 	}
 
+	public void valueChanged(){};
+
 	protected abstract SpinnerNumberModel createSpinnerNumberModel();
 
 	protected void spinnerChangeListener() {
 		desc.setValue("" + getSpinner().getValue());
 	}
 
-	@Override
-	public void valueChanged() {}
 
 	protected abstract TYPE parseValue(String value);
 }
