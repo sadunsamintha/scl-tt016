@@ -10,7 +10,6 @@
 
 	<bean id="offlineCountingTrigger" class="com.sicpa.standard.sasscl.business.activation.offline.impl.PlcOfflineCountingTrigger">
 		<constructor-arg ref="offlineCounting" />
-		<property name="plcProvider" ref="plcProvider" />
 		<property name="quantityVarName" value="#{plcVarMap['OFFLINE_COUNTING_QTY']}" />
 		<property name="lastStopTimeVarName" value="#{plcVarMap['OFFLINE_COUNTING_LAST_STOP']}" />
 		<property name="lastProductTimeVarName" value="#{plcVarMap['OFFLINE_COUNTING_LAST_PRODUCT']}" />
