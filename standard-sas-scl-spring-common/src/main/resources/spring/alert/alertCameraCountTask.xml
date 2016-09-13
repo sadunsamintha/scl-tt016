@@ -18,7 +18,7 @@
 		<property name="blobDetectionUtils" ref="blobDetectionUtils" />
 	</bean>
 
-	<bean id="alertCameraCountWarning" class="com.sicpa.standard.sasscl.devices.camera.alert.CameraCountErrorAlertTask">
+	<bean id="alertCameraCountWarning" class="com.sicpa.standard.sasscl.devices.camera.alert.CameraCountWarningAlertTask">
 		<property name="model">
 			<bean id="alertCameraCountModelWarning" class="com.sicpa.standard.sasscl.business.alert.task.model.CameraCountAlertTaskModel">
 				<property name="enabled" value="${alert.cameraCount.warning.enabled}" />
