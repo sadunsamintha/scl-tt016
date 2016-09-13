@@ -10,6 +10,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 
+import com.google.common.eventbus.Subscribe;
+import com.sicpa.standard.client.common.eventbus.service.EventBusService;
+import com.sicpa.standard.sasscl.view.LanguageSwitchEvent;
 import net.miginfocom.swing.MigLayout;
 
 import com.sicpa.standard.client.common.i18n.Messages;
@@ -22,6 +25,7 @@ public class PlcVariablePanel extends JPanel {
 	protected List<PlcVariableGroup> groups;
 
 	public PlcVariablePanel(List<PlcVariableGroup> groups) {
+		EventBusService.register(this);
 		this.groups = groups;
 		initGUI();
 	}
@@ -31,6 +35,13 @@ public class PlcVariablePanel extends JPanel {
 		for (PlcVariableGroup grp : groups) {
 			add(new PanelGroup(grp), "growx,pushx,wrap");
 		}
+	}
+
+	@Subscribe
+	public void handleLanguageSwitch(LanguageSwitchEvent evt) {
+		removeAll();
+		initGUI();
+		revalidate();
 	}
 
 	public List<PlcVariableGroup> getGroups() {

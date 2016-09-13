@@ -68,6 +68,7 @@ beans{
 		refeedAvailabilityProvider=ref('refeedAvailabilityProvider')
 		ejectionTypeSender=ref('ejectionTypeSender')
 		disallowedConfigurations=disallowedConf
+		defaultLang=props['language']
 	}
 
 	importBeans('spring/custo/tt016/tt016-plc.xml')

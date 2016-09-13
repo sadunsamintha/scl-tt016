@@ -1,22 +1,19 @@
 package com.sicpa.standard.sasscl.devices.plc.variable.renderer;
 
-import java.awt.Font;
-
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JSpinner;
-import javax.swing.SpinnerNumberModel;
-
-import net.miginfocom.swing.MigLayout;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import com.google.common.eventbus.Subscribe;
+import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.gui.listener.CoalescentChangeListener;
 import com.sicpa.standard.gui.plaf.SicpaFont;
 import com.sicpa.standard.gui.utils.TextUtils;
 import com.sicpa.standard.gui.utils.ThreadUtils;
 import com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcVariableDescriptor;
+import com.sicpa.standard.sasscl.view.LanguageSwitchEvent;
+import net.miginfocom.swing.MigLayout;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.swing.*;
+import java.awt.*;
 
 @SuppressWarnings("serial")
 public abstract class AbstractPlcNumberVariableRenderer<TYPE extends Number> extends JPanel implements
@@ -38,6 +35,14 @@ public abstract class AbstractPlcNumberVariableRenderer<TYPE extends Number> ext
 		initGUI();
 		valueChanged();
 		desc.setInit(false);
+		EventBusService.register(this);
+	}
+
+	@Subscribe
+	public void handleLanguageSwitch(LanguageSwitchEvent evt) {
+		removeAll();
+		initGUI();
+		revalidate();
 	}
 
 	private void initGUI() {
@@ -80,14 +85,7 @@ public abstract class AbstractPlcNumberVariableRenderer<TYPE extends Number> ext
 		return spinner;
 	}
 
-	protected abstract SpinnerNumberModel createSpinnerNumberModel();
-
-	protected void spinnerChangeListener() {
-		desc.setValue("" + getSpinner().getValue());
-	}
-
-	@Override
-	public void valueChanged() {
+	public void valueChanged(){
 		ThreadUtils.invokeLater(() -> {
 			try {
 				getSpinner().setValue(parseValue(desc.getValue()));
@@ -95,7 +93,14 @@ public abstract class AbstractPlcNumberVariableRenderer<TYPE extends Number> ext
 				logger.error("error setting value for:" + desc.getVarName());
 			}
 		});
+	};
+
+	protected abstract SpinnerNumberModel createSpinnerNumberModel();
+
+	protected void spinnerChangeListener() {
+		desc.setValue("" + getSpinner().getValue());
 	}
+
 
 	protected abstract TYPE parseValue(String value);
 }
