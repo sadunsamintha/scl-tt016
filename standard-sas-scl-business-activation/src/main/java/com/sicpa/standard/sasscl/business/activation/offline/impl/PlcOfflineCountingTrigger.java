@@ -1,57 +1,52 @@
 package com.sicpa.standard.sasscl.business.activation.offline.impl;
 
-import com.sicpa.standard.plc.value.IPlcVariable;
+import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.sasscl.business.activation.offline.IOfflineCounting;
-import com.sicpa.standard.sasscl.devices.DeviceStatus;
-import com.sicpa.standard.sasscl.devices.DeviceStatusEvent;
-import com.sicpa.standard.sasscl.devices.IDeviceStatusListener;
-import com.sicpa.standard.sasscl.devices.plc.PlcLineHelper;
-import com.sicpa.standard.sasscl.provider.impl.PlcProvider;
+import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState;
+import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowStateChangedEvent;
 
 import java.util.List;
 
-public class PlcOfflineCountingTrigger implements IDeviceStatusListener {
+import static com.sicpa.standard.plc.value.PlcVariable.createInt32Var;
+import static com.sicpa.standard.sasscl.devices.plc.PlcLineHelper.getLineIndexes;
+import static com.sicpa.standard.sasscl.devices.plc.PlcLineHelper.replaceLinePlaceholder;
+
+public class PlcOfflineCountingTrigger {
 
 	private IOfflineCounting offlineCounting;
 
-	private IPlcVariable<Integer> quantityVar;
-	private IPlcVariable<Integer> lastStopTimeVar;
-	private IPlcVariable<Integer> lastProductTimeVar;
+	private String quantityVarName;
+	private String lastStopTimeVarName;
+	private String lastProductTimeVarName;
 
 	public PlcOfflineCountingTrigger(IOfflineCounting offlineCounting) {
 		this.offlineCounting = offlineCounting;
 	}
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public void deviceStatusChanged(DeviceStatusEvent evt) {
-		if (evt.getStatus().equals(DeviceStatus.CONNECTED)) {
+	@Subscribe
+	public void onProductionStart(final ApplicationFlowStateChangedEvent evt) {
+		if (evt.getCurrentState().equals(ApplicationFlowState.STT_STARTING)) {
 
-			List<Integer> lineIndexes = PlcLineHelper.getLineIndexes();
+			List<Integer> lineIndexes = getLineIndexes();
 
 			for (Integer lineIndex : lineIndexes) {
 				offlineCounting.processOfflineCounting(
-						(IPlcVariable<Integer>) PlcLineHelper.clone(quantityVar, lineIndex),
-						(IPlcVariable<Integer>)	PlcLineHelper.clone(lastStopTimeVar, lineIndex),
-						(IPlcVariable<Integer>) PlcLineHelper.clone(lastProductTimeVar, lineIndex));
+						createInt32Var(replaceLinePlaceholder(quantityVarName, lineIndex)),
+						createInt32Var(replaceLinePlaceholder(lastStopTimeVarName, lineIndex)),
+						createInt32Var(replaceLinePlaceholder(lastProductTimeVarName, lineIndex)));
 			}
 		}
 	}
 
-	public void setPlcProvider(final PlcProvider plcProvider) {
-		plcProvider.addChangeListener(
-				arg0 -> plcProvider.get().addDeviceStatusListener(PlcOfflineCountingTrigger.this));
+	public void setQuantityVarName(String quantityVarName) {
+		this.quantityVarName = quantityVarName;
 	}
 
-	public void setQuantityVar(IPlcVariable<Integer> quantityVar) {
-		this.quantityVar = quantityVar;
+	public void setLastStopTimeVarName(String lastStopTimeVarName) {
+		this.lastStopTimeVarName = lastStopTimeVarName;
 	}
 
-	public void setLastStopTimeVar(IPlcVariable<Integer> lastStopTimeVar) {
-		this.lastStopTimeVar = lastStopTimeVar;
-	}
-
-	public void setLastProductTimeVar(IPlcVariable<Integer> lastProductTimeVar) {
-		this.lastProductTimeVar = lastProductTimeVar;
+	public void setLastProductTimeVarName(String lastProductTimeVarName) {
+		this.lastProductTimeVarName = lastProductTimeVarName;
 	}
 }

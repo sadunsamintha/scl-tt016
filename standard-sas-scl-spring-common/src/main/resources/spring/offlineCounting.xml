@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:util="http://www.springframework.org/schema/util"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
-		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
-		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
 	<bean id="offlineCounting" class="com.sicpa.standard.sasscl.business.activation.offline.impl.PlcOfflineCounting">
 		<property name="subsystemIdProvider" ref="subsystemIdProvider"/>
@@ -13,21 +10,9 @@
 
 	<bean id="offlineCountingTrigger" class="com.sicpa.standard.sasscl.business.activation.offline.impl.PlcOfflineCountingTrigger">
 		<constructor-arg ref="offlineCounting" />
-		<property name="plcProvider" ref="plcProvider" />
-		<property name="quantityVar" ref="plcOfflineCountingQtyVar" />
-		<property name="lastStopTimeVar" ref="plcOfflineCountingLastStopVar" />
-		<property name="lastProductTimeVar" ref="plcOfflineCountingLastProductVar" />
+		<property name="quantityVarName" value="#{plcVarMap['OFFLINE_COUNTING_QTY']}" />
+		<property name="lastStopTimeVarName" value="#{plcVarMap['OFFLINE_COUNTING_LAST_STOP']}" />
+		<property name="lastProductTimeVarName" value="#{plcVarMap['OFFLINE_COUNTING_LAST_PRODUCT']}" />
 	</bean>
 
-	<bean id="plcOfflineCountingQtyVar" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createInt32Var">
-		<constructor-arg value="#{plcVarMap['OFFLINE_COUNTING_QTY']}" />
-	</bean>
-
-	<bean id="plcOfflineCountingLastStopVar" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createInt32Var">
-		<constructor-arg value="#{plcVarMap['OFFLINE_COUNTING_LAST_STOP']}" />
-	</bean>
-
-	<bean id="plcOfflineCountingLastProductVar" class="com.sicpa.standard.plc.value.PlcVariable" factory-method="createInt32Var">
-		<constructor-arg value="#{plcVarMap['OFFLINE_COUNTING_LAST_PRODUCT']}" />
-	</bean>
 </beans>
