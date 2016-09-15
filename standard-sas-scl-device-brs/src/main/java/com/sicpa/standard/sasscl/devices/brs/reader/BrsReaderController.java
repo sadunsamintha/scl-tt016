@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.net.ConnectException;
 import java.net.URISyntaxException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -77,7 +78,7 @@ public class BrsReaderController implements CodeReaderController {
     @Override
     public void connect() throws DeviceException {
         createReader();
-        if(codeReaderAdaptor != null) {
+        if (codeReaderAdaptor != null) {
             codeReaderAdaptor.start(); // Allow life check
         }
     }
@@ -106,15 +107,23 @@ public class BrsReaderController implements CodeReaderController {
 
     private void createReader() throws DeviceException {
         try {
-        codeReaderAdaptor = CodeReaderFactory.createCodeReaderAdaptor(brsReaderModel, this);
+            codeReaderAdaptor = CodeReaderFactory.createCodeReaderAdaptor(brsReaderModel, this);
+        } catch (ConnectException ex) {
+            logger.error("Error connection to the brs reader {} ." +
+                    " Let's try to create again the code reader", ex.getMessage());
+            /* if during the process of initializing the codeReader the BRS is diconnected
+               the lifecheck mechanism is not initialize in the driver and therefore
+               we are not able to reconnect anymore to the device. Let's
+               try to create again the code reader. */
+            createReader();
         } catch (IOException | URISyntaxException ex) {
             logger.error("Error creating code readers {}", ex.getMessage());
             codeReaderAdaptor = null;
         }
-
     }
 
-    private void onBrsConnected(boolean connected)  {
+
+    private void onBrsConnected(boolean connected) {
         logger.debug("onBrsConnected {} ", connected);
         isConnected.set(connected);
         codeReaderListener.onReaderConnected(connected, brsReaderModel.getAddress());
@@ -143,7 +152,7 @@ public class BrsReaderController implements CodeReaderController {
                             try {
                                 connect();
                             } catch (DeviceException ex) {
-                               logger.error("Error on reconnection", ex.getMessage());
+                                logger.error("Error on reconnection", ex.getMessage());
                             }
                             ThreadUtils.sleepQuietly(5000);
                         }
