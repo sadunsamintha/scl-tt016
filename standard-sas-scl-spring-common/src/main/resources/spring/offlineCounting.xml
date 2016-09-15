@@ -6,13 +6,14 @@
 		<property name="subsystemIdProvider" ref="subsystemIdProvider"/>
 		<property name="plcProvider" ref="plcProvider" />
 		<property name="productionParameters" ref="productionParameters" />
+		<property name="quantityVarName" value="#{plcVarMap['OFFLINE_COUNTING_QTY']}" />
+		<property name="lastStopTimeVarName" value="#{plcVarMap['OFFLINE_COUNTING_LAST_STOP']}" />
+		<property name="lastProductTimeVarName" value="#{plcVarMap['OFFLINE_COUNTING_LAST_PRODUCT']}" />
+		<property name="resetCountersVarName" value="#{plcVarMap['OFFLINE_RESET_COUNTERS']}" />
 	</bean>
 
 	<bean id="offlineCountingTrigger" class="com.sicpa.standard.sasscl.business.activation.offline.impl.PlcOfflineCountingTrigger">
 		<constructor-arg ref="offlineCounting" />
-		<property name="quantityVarName" value="#{plcVarMap['OFFLINE_COUNTING_QTY']}" />
-		<property name="lastStopTimeVarName" value="#{plcVarMap['OFFLINE_COUNTING_LAST_STOP']}" />
-		<property name="lastProductTimeVarName" value="#{plcVarMap['OFFLINE_COUNTING_LAST_PRODUCT']}" />
 	</bean>
 
 </beans>
