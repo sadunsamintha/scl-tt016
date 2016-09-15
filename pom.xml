@@ -135,11 +135,13 @@
 						<artifactId>maven-surefire-plugin</artifactId>
 						<version>2.18.1</version>
 						<configuration>
+							<skip>false</skip>
 							<includes>
-								<include>**/*TestSAS.java</include>
-								<include>**/*TestSCL.java</include>
 								<include>**/*Test.java</include>
 							</includes>
+							<excludes>
+								<exclude>**/nothingtoexclude/**</exclude>
+							</excludes>
 							<argLine>-Djava.awt.headless=true -Xmx256m</argLine>
 							<reuseForks>false</reuseForks>
 						</configuration>
