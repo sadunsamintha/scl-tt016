@@ -21,6 +21,8 @@ public class PlcOfflineCounting extends AbstractOfflineCounting {
 
     private PlcProvider plcProvider;
 
+    private IPlcAdaptor plc;
+
     private String quantityVarName;
     private String lastStopTimeVarName;
     private String lastProductTimeVarName;
@@ -29,7 +31,7 @@ public class PlcOfflineCounting extends AbstractOfflineCounting {
     @Override
     public void processOfflineCounting() {
         try {
-            IPlcAdaptor plc = plcProvider.get();
+            plc = plcProvider.get();
 
             if (plc == null) {
                 return;
@@ -38,25 +40,32 @@ public class PlcOfflineCounting extends AbstractOfflineCounting {
             List<Integer> lineIndexes = getLineIndexes();
 
             for (Integer lineIndex : lineIndexes) {
-                Integer quantity = plc.read(createInt32Var(replaceLinePlaceholder(quantityVarName, lineIndex)));
-                Integer lastStop = plc.read(createInt32Var(replaceLinePlaceholder(lastStopTimeVarName, lineIndex)));
-                Integer lastProduct = plc.read(createInt32Var(replaceLinePlaceholder(lastProductTimeVarName, lineIndex)));
+                Integer quantity = readPlcOfflineVar(quantityVarName, lineIndex);
+                Integer lastStop = readPlcOfflineVar(lastStopTimeVarName, lineIndex);
+                Integer lastProduct = readPlcOfflineVar(lastProductTimeVarName, lineIndex);
 
                 if (quantity != null && lastProduct != null && lastStop != null && quantity > 0 && lastStop > 0
                         && lastProduct > 0) {
                     process(1000L * lastStop, 1000L * lastProduct, quantity);
                 }
 
-                reset(createBooleanVar(replaceLinePlaceholder(resetCountersVarName, lineIndex)));
+                resetPlcOfflineCounters(lineIndex);
             }
         } catch (Exception e) {
             logger.error("", e);
         }
     }
 
-    protected void reset(IPlcVariable<Boolean> var) throws PlcAdaptorException {
+    private Integer readPlcOfflineVar(String varName, Integer lineIndex) throws PlcAdaptorException {
+        return plc.read(createInt32Var(replaceLinePlaceholder(varName, lineIndex)));
+    }
+
+    private void resetPlcOfflineCounters(Integer lineIndex) throws PlcAdaptorException {
+        IPlcVariable<Boolean> var = createBooleanVar(replaceLinePlaceholder(resetCountersVarName, lineIndex));
+
         var.setValue(true);
-        plcProvider.get().write(var);
+
+        plc.write(var);
     }
 
     public PlcProvider getPlcProvider() {
