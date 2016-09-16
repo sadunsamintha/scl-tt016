@@ -8,54 +8,87 @@ import com.sicpa.standard.sasscl.provider.impl.PlcProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
+
+import static com.sicpa.standard.plc.value.PlcVariable.createBooleanVar;
+import static com.sicpa.standard.plc.value.PlcVariable.createInt32Var;
+import static com.sicpa.standard.sasscl.devices.plc.PlcLineHelper.getLineIndexes;
+import static com.sicpa.standard.sasscl.devices.plc.PlcLineHelper.replaceLinePlaceholder;
+
 public class PlcOfflineCounting extends AbstractOfflineCounting {
 
-	private static final Logger logger = LoggerFactory.getLogger(PlcOfflineCounting.class);
+    private static final Logger logger = LoggerFactory.getLogger(PlcOfflineCounting.class);
 
-	private PlcProvider plcProvider;
+    private PlcProvider plcProvider;
 
-	protected final Object lock = new Object();
+    private IPlcAdaptor plc;
 
-	@Override
-	public void processOfflineCounting(IPlcVariable<Integer> quantityVar, IPlcVariable<Integer> lastStopTimeVar,
-	                                   IPlcVariable<Integer> lastProductTimeVar) {
-		synchronized (lock) {
-			try {
-				IPlcAdaptor plc = plcProvider.get();
+    private String quantityVarName;
+    private String lastStopTimeVarName;
+    private String lastProductTimeVarName;
+    private String resetCountersVarName;
 
-				if (plc == null) {
-					return;
-				}
+    @Override
+    public void processOfflineCounting() {
+        try {
+            plc = plcProvider.get();
 
-				Integer quantity = plc.read(quantityVar);
-				Integer lastStop = plc.read(lastStopTimeVar);
-				Integer lastProduct = plc.read(lastProductTimeVar);
+            if (plc == null) {
+                return;
+            }
 
-				if (quantity != null && lastProduct != null && lastStop != null && quantity > 0 && lastStop > 0
-						&& lastProduct > 0) {
-					process(1000L * lastStop, 1000L * lastProduct, quantity);
-				}
+            List<Integer> lineIndexes = getLineIndexes();
 
-				reset(lastProductTimeVar);
-				reset(lastStopTimeVar);
-				reset(quantityVar);
+            for (Integer lineIndex : lineIndexes) {
+                Integer quantity = readPlcOfflineVar(quantityVarName, lineIndex);
+                Integer lastStop = readPlcOfflineVar(lastStopTimeVarName, lineIndex);
+                Integer lastProduct = readPlcOfflineVar(lastProductTimeVarName, lineIndex);
 
-			} catch (Exception e) {
-				logger.error("", e);
-			}
-		}
-	}
+                if (quantity != null && lastProduct != null && lastStop != null && quantity > 0 && lastStop > 0
+                        && lastProduct > 0) {
+                    process(1000L * lastStop, 1000L * lastProduct, quantity);
+                }
 
-	protected void reset(IPlcVariable<Integer> var) throws PlcAdaptorException {
-		var.setValue(0);
-		plcProvider.get().write(var);
-	}
+                resetPlcOfflineCounters(lineIndex);
+            }
+        } catch (Exception e) {
+            logger.error("", e);
+        }
+    }
 
-	public PlcProvider getPlcProvider() {
-		return plcProvider;
-	}
+    private Integer readPlcOfflineVar(String varName, Integer lineIndex) throws PlcAdaptorException {
+        return plc.read(createInt32Var(replaceLinePlaceholder(varName, lineIndex)));
+    }
 
-	public void setPlcProvider(final PlcProvider plcProvider) {
-		this.plcProvider = plcProvider;
-	}
+    private void resetPlcOfflineCounters(Integer lineIndex) throws PlcAdaptorException {
+        IPlcVariable<Boolean> var = createBooleanVar(replaceLinePlaceholder(resetCountersVarName, lineIndex));
+
+        var.setValue(true);
+
+        plc.write(var);
+    }
+
+    public PlcProvider getPlcProvider() {
+        return plcProvider;
+    }
+
+    public void setPlcProvider(final PlcProvider plcProvider) {
+        this.plcProvider = plcProvider;
+    }
+
+    public void setQuantityVarName(String quantityVarName) {
+        this.quantityVarName = quantityVarName;
+    }
+
+    public void setLastStopTimeVarName(String lastStopTimeVarName) {
+        this.lastStopTimeVarName = lastStopTimeVarName;
+    }
+
+    public void setLastProductTimeVarName(String lastProductTimeVarName) {
+        this.lastProductTimeVarName = lastProductTimeVarName;
+    }
+
+    public void setResetCountersVarName(String resetCountersVarName) {
+        this.resetCountersVarName = resetCountersVarName;
+    }
 }

@@ -214,6 +214,7 @@ beans {
 	plcMap['OFFLINE_COUNTING_QTY']=[v:OFFLINE + 'nProductsCounterOFF' ,t:I]
 	plcMap['OFFLINE_COUNTING_LAST_STOP']=[v:OFFLINE +'nSecondsWhenStopped' ,t:I]
 	plcMap['OFFLINE_COUNTING_LAST_PRODUCT']=[v:OFFLINE + 'nSecondsLastOFFProduct' ,t:I]
+	plcMap['OFFLINE_RESET_COUNTERS']=[v:OFFLINE + 'bResetOffCounters' ,t:B]
 
 	injectCustoVar();
 
