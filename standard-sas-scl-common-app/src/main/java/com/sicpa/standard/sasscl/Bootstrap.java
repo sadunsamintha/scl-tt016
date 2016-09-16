@@ -14,6 +14,7 @@ import com.sicpa.standard.sasscl.common.storage.IStorage;
 import com.sicpa.standard.sasscl.controller.ProductionParametersEvent;
 import com.sicpa.standard.sasscl.controller.device.group.IGroupDevicesController;
 import com.sicpa.standard.sasscl.controller.flow.IBootstrap;
+import com.sicpa.standard.sasscl.controller.productionconfig.validator.ProductionParametersValidator;
 import com.sicpa.standard.sasscl.controller.scheduling.RemoteServerScheduledJobs;
 import com.sicpa.standard.sasscl.controller.skuselection.ISkuSelectionBehavior;
 import com.sicpa.standard.sasscl.devices.DeviceStatus;
@@ -72,6 +73,7 @@ public class Bootstrap implements IBootstrap {
     private String defaultLang = "en";
     protected ProductionParameters productionParameters;
     protected RemoteServerScheduledJobs remoteServerSheduledJobs;
+    protected ProductionParametersValidator productionParametersValidator;
 
     @Override
     public void executeSpringInitTasks() {
@@ -145,8 +147,7 @@ public class Bootstrap implements IBootstrap {
 
     private void restorePreviousSelectedProductionParams() {
         ProductionParameters previous = storage.getSelectedProductionParameters();
-
-        if (previous != null) {
+        if (productionParametersValidator.validate(previous)) {
             productionParameters.setBarcode(previous.getBarcode());
             productionParameters.setSku(previous.getSku());
             productionParameters.setProductionMode(previous.getProductionMode());
@@ -329,5 +330,9 @@ public class Bootstrap implements IBootstrap {
 
     public void setDefaultLang(String defaultLang) {
         this.defaultLang = defaultLang;
+    }
+
+    public void setProductionParametersValidator(ProductionParametersValidator productionParametersValidator) {
+        this.productionParametersValidator = productionParametersValidator;
     }
 }

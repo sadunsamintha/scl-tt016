@@ -2,6 +2,8 @@ package com.sicpa.standard.sasscl.view.selection.select;
 
 import javax.swing.JPanel;
 
+import com.sicpa.standard.sasscl.controller.productionconfig.validator.ProductionParametersValidator;
+import com.sicpa.standard.sasscl.view.selection.select.productionparameters.ProductionParametersSelectionFlowView;
 import net.miginfocom.swing.MigLayout;
 
 import com.sicpa.standard.gui.screen.machine.component.SelectionFlow.SelectableItem;
@@ -21,8 +23,9 @@ import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.Producti
 public class SelectProductionParametersHandPickingView extends JPanel implements ISelectProductionParametersView {
 
 	private ISelectProductionParametersViewListener callback;
-	protected DefaultSelectionFlowView delegate;
+	protected ProductionParametersSelectionFlowView delegate;
 	private ISelectionModelFactory selectionModelFactory;
+	private ProductionParametersValidator productionParametersValidator;
 
 	public SelectProductionParametersHandPickingView() {
 		initGUI();
@@ -43,6 +46,7 @@ public class SelectProductionParametersHandPickingView extends JPanel implements
 			return;
 		}
 		getDelegate().setModel(model);
+		getDelegate().setProductionParametersValidator(productionParametersValidator);
 		addSelectionCompleteCallback(model);
 
 		getDelegate().setBackButtonVisibleForFirstScreen(false);
@@ -99,12 +103,15 @@ public class SelectProductionParametersHandPickingView extends JPanel implements
 		return null;
 	}
 
-	public DefaultSelectionFlowView getDelegate() {
+	public ProductionParametersSelectionFlowView getDelegate() {
 		if (delegate == null) {
-			delegate = new DefaultSelectionFlowView();
-			delegate.setUsePreviousPanel(false);
+			delegate = new ProductionParametersSelectionFlowView();
 		}
 		return delegate;
+	}
+
+	public void setDelegate(ProductionParametersSelectionFlowView delegate) {
+		this.delegate = delegate;
 	}
 
 	public void setSelectionModelFactory(ISelectionModelFactory selectionModelFactory) {
@@ -113,5 +120,9 @@ public class SelectProductionParametersHandPickingView extends JPanel implements
 
 	public void setCallback(ISelectProductionParametersViewListener callback) {
 		this.callback = callback;
+	}
+
+	public void setProductionParametersValidator(ProductionParametersValidator productionParametersValidator) {
+		this.productionParametersValidator = productionParametersValidator;
 	}
 }

@@ -82,4 +82,6 @@ public class SelectProductionParametersViewController extends AbstractViewFlowCo
 		this.useBarcodeReader = useBarcodeReader;
 	}
 
+
+
 }

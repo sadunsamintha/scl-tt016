@@ -8,6 +8,7 @@
 		<property name="productionParameters" ref="productionParameters" />
 	</bean>
 
+
 	<!-- encoder validators -->
 	<bean id="encoderSubsystemIdValidator" class="com.sicpa.standard.sasscl.business.coding.validator.EncoderSubsystemIdValidator">
 		<property name="subsystemIdProvider" ref="subsystemIdProvider" />
