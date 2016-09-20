@@ -19,130 +19,131 @@ import static com.sicpa.tt016.scl.remote.remoteservices.ITT016RemoteServices.PRO
 
 public class ProductionDataConverter {
 
-	public CodingActivationSessionDTO convertAuthenticated(PackagedProducts products, int subsystemId) {
-		List<CodingActivationDTO> activated = new ArrayList<>();
+    public CodingActivationSessionDTO convertAuthenticated(PackagedProducts products, int subsystemId) {
+        List<CodingActivationDTO> activated = new ArrayList<>();
 
-		for (Product p : products.getProducts()) {
-			activated.add(convertProduct(p, subsystemId, products.getProductStatus()));
-		}
+        for (Product p : products.getProducts()) {
+            activated.add(convertProduct(p, subsystemId, products.getProductStatus()));
+        }
 
-		CodingActivationSessionDTO res = new CodingActivationSessionDTO(activated);
-		res.setQty(activated.size());
+        CodingActivationSessionDTO res = new CodingActivationSessionDTO(activated);
+        res.setQty(activated.size());
 
-		return res;
-	}
+        return res;
+    }
 
-	private CodingActivationDTO convertProduct(Product product, int subsystemId, ProductStatus status) {
-		int remoteStatus = getRemoteProductStatus(status);
-		int codeTypeId = getCodeTypeId(product);
-		long encoderId = product.getCode().getEncoderId();
-		long seq = product.getCode().getSequence();
-		int skuId = product.getSku().getId();
+    private CodingActivationDTO convertProduct(Product product, int subsystemId, ProductStatus status) {
+        int remoteStatus = getRemoteProductStatus(status);
+        int codeTypeId = getCodeTypeId(product);
+        long encoderId = product.getCode().getEncoderId();
+        long seq = product.getCode().getSequence();
+        int skuId = product.getSku().getId();
 
-		return new CodingActivationDTO(encoderId, seq, product.getActivationDate(), remoteStatus, codeTypeId, skuId,
-				subsystemId, null);
-	}
+        return new CodingActivationDTO(encoderId, seq, product.getActivationDate(), remoteStatus, codeTypeId, skuId,
+                subsystemId, null);
+    }
 
-	private int getRemoteProductStatus(ProductStatus status) {
-		int remoteStatus = VALID_ACTIV_INT;
+    private int getRemoteProductStatus(ProductStatus status) {
+        int remoteStatus = VALID_ACTIV_INT;
 
-		if (status.equals(ProductStatus.UNREAD)) {
-			remoteStatus = UNREADABLE_WITH_CODE_INT;
-		} else if (status.equals(TT016ProductStatus.EJECTED_PRODUCER)) {
-			remoteStatus = QUALITY;
-		} else if (status.equals(ProductStatus.NOT_AUTHENTICATED)) {
-			remoteStatus = UNREADABLE_WITH_CODE_INT;
-		} else if (status.equals(ProductStatus.TYPE_MISMATCH)) {
-			remoteStatus = VALID_TYPE_MISMATCH_INT;
-		}
+        if (status == ProductStatus.UNREAD) {
+            remoteStatus = UNREADABLE_WITHOUT_CODE_INT;
+        } else if (status == TT016ProductStatus.EJECTED_PRODUCER) {
+            remoteStatus = QUALITY;
+        } else if (status == ProductStatus.NOT_AUTHENTICATED) {
+            remoteStatus = UNREADABLE_WITH_CODE_INT;
+        } else if (status == ProductStatus.TYPE_MISMATCH) {
+            remoteStatus = VALID_TYPE_MISMATCH_INT;
+        } else if(status == ProductStatus.INK_DETECTED || status == ProductStatus.SENT_TO_PRINTER_UNREAD) {
+            remoteStatus = UNREADABLE_WITH_CODE_INT;
+        }
+        return remoteStatus;
+    }
 
-		return remoteStatus;
-	}
+    private int getCodeTypeId(Product product) {
+        int codeTypeId;
+        com.sicpa.standard.sasscl.model.CodeType ctFromCode = product.getCode().getCodeType();
 
-	private int getCodeTypeId(Product product) {
-		int codeTypeId;
-		com.sicpa.standard.sasscl.model.CodeType ctFromCode = product.getCode().getCodeType();
+        if (ctFromCode == null) {
+            // SCL - from the selected sku
+            codeTypeId = (int) product.getSku().getCodeType().getId();
+        } else {
+            codeTypeId = (int) ctFromCode.getId();
+        }
 
-		if (ctFromCode == null) {
-			// SCL - from the selected sku
-			codeTypeId = (int) product.getSku().getCodeType().getId();
-		} else {
-			codeTypeId = (int) ctFromCode.getId();
-		}
+        return codeTypeId;
+    }
 
-		return codeTypeId;
-	}
+    public IEjectionDTO convertEjection(PackagedProducts products, int subsystemId) {
+        int qty = products.getProducts().size();
+        CodeType ct = new CodeType(getCodeTypeId(products));
+        SKU sku = new SKU(getSkuId(products));
+        Subsystem subsystem = new Subsystem(subsystemId);
 
-	public IEjectionDTO convertEjection(PackagedProducts products, int subsystemId) {
-		int qty = products.getProducts().size();
-		CodeType ct = new CodeType(getCodeTypeId(products));
-		SKU sku = new SKU(getSkuId(products));
-		Subsystem subsystem = new Subsystem(subsystemId);
+        ActivationEjection ejection = new ActivationEjection(0L, qty,
+                new EjectionReason(getEjectionReasonId(products.getProductStatus())), new Date(), ct, sku, subsystem,
+                PRODUCTION_MODE_STANDARD);
 
-		ActivationEjection ejection = new ActivationEjection(0L, qty,
-				new EjectionReason(getEjectionReasonId(products.getProductStatus())), new Date(),	ct, sku, subsystem,
-				PRODUCTION_MODE_STANDARD);
+        ActivationEjectionDTO ejectionDTO = new ActivationEjectionDTO(ejection);
+        ejectionDTO.setTimestamps(getDates(products));
 
-		ActivationEjectionDTO ejectionDTO = new ActivationEjectionDTO(ejection);
-		ejectionDTO.setTimestamps(getDates(products));
+        return ejectionDTO;
+    }
 
-		return ejectionDTO;
-	}
+    public ExportSessionDTO convertExport(PackagedProducts products, int subsystemId) {
+        int qty = products.getProducts().size();
+        int skuId = getSkuId(products);
 
-	public ExportSessionDTO convertExport(PackagedProducts products, int subsystemId) {
-		int qty = products.getProducts().size();
-		int skuId = getSkuId(products);
+        ExportSessionDTO session = new ExportSessionDTO(1L, EXPORT_SESSION, qty, new Date(), skuId, subsystemId);
+        session.setTimestamps(getDates(products));
 
-		ExportSessionDTO session = new ExportSessionDTO(1L, EXPORT_SESSION, qty, new Date(), skuId, subsystemId);
-		session.setTimestamps(getDates(products));
+        return session;
+    }
 
-		return session;
-	}
+    public MaintenanceSessionDTO convertMaintenance(PackagedProducts products, int subsystemId) {
+        int qty = products.getProducts().size();
 
-	public MaintenanceSessionDTO convertMaintenance(PackagedProducts products, int subsystemId) {
-		int qty = products.getProducts().size();
+        MaintenanceSessionDTO session = new MaintenanceSessionDTO(1L, MAINTENANCE_SESSION, qty, new Date(), subsystemId);
+        session.setTimestamps(getDates(products));
 
-		MaintenanceSessionDTO session = new MaintenanceSessionDTO(1L, MAINTENANCE_SESSION, qty, new Date(), subsystemId);
-		session.setTimestamps(getDates(products));
+        return session;
+    }
 
-		return session;
-	}
+    public OfflineSessionDTO convertOffline(PackagedProducts products, int subsystemId) {
+        int qty = products.getProducts().size();
+        int skuId = getSkuId(products);
 
-	public OfflineSessionDTO convertOffline(PackagedProducts products, int subsystemId) {
-		int qty = products.getProducts().size();
-		int skuId = getSkuId(products);
+        OfflineSessionDTO session = new OfflineSessionDTO(1L, OFFLINE_SESSION, qty, new Date(), skuId, subsystemId);
+        session.setTimestamps(getDates(products));
 
-		OfflineSessionDTO session = new OfflineSessionDTO(1L, OFFLINE_SESSION, qty, new Date(), skuId, subsystemId);
-		session.setTimestamps(getDates(products));
+        return session;
+    }
 
-		return session;
-	}
+    private List<Date> getDates(PackagedProducts products) {
+        List<Date> dates = new ArrayList<>();
 
-	private List<Date> getDates(PackagedProducts products) {
-		List<Date> dates = new ArrayList<>();
+        for (Product p : products.getProducts()) {
+            dates.add(p.getActivationDate());
+        }
 
-		for (Product p : products.getProducts()) {
-			dates.add(p.getActivationDate());
-		}
+        return dates;
+    }
 
-		return dates;
-	}
+    private int getSkuId(PackagedProducts products) {
+        return products.getProducts().get(0).getSku().getId();
+    }
 
-	private int getSkuId(PackagedProducts products) {
-		return products.getProducts().get(0).getSku().getId();
-	}
+    private int getCodeTypeId(PackagedProducts products) {
+        return (int) products.getProducts().get(0).getSku().getCodeType().getId();
+    }
 
-	private int getCodeTypeId(PackagedProducts products) {
-		return (int) products.getProducts().get(0).getSku().getCodeType().getId();
-	}
-
-	private int getEjectionReasonId(ProductStatus productStatus) {
-		if (productStatus.equals(ProductStatus.SENT_TO_PRINTER_UNREAD)) {
-			return EjectionReason.UNREADABLE_WITHOUT_CODE_INT;
-		} else if (productStatus.equals(TT016ProductStatus.EJECTED_PRODUCER)){
-			return EjectionReason.QUALITY;
-		} else {
-			return EjectionReason.UNREADABLE_WITH_CODE_INT;
-		}
-	}
+    private int getEjectionReasonId(ProductStatus productStatus) {
+        if (productStatus == ProductStatus.SENT_TO_PRINTER_UNREAD || productStatus == ProductStatus.INK_DETECTED) {
+            return EjectionReason.UNREADABLE_WITH_CODE_INT;
+        } else if (productStatus == TT016ProductStatus.EJECTED_PRODUCER) {
+            return EjectionReason.QUALITY;
+        } else {
+            return EjectionReason.UNREADABLE_WITHOUT_CODE_INT;
+        }
+    }
 }
