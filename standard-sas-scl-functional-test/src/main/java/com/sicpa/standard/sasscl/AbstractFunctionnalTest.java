@@ -253,7 +253,7 @@ public abstract class AbstractFunctionnalTest extends TestCase {
 
 	public List<String> getDataFromRemoteServer() {
 		try {
-			File folder = new File("profiles/test/SimulProductSend");
+			File folder = new File("profiles/test/simulProductSend");
 			List<String> codes = new ArrayList<>();
 			for (File f : folder.listFiles()) {
 				String content = FileUtils.readFileToString(f);
