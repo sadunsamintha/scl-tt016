@@ -1,12 +1,15 @@
 package com.sicpa.standard.sasscl.controller.productionconfig.loader;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.utils.ConfigUtils;
 import com.sicpa.standard.sasscl.controller.productionconfig.IProductionConfig;
 import com.sicpa.standard.sasscl.controller.productionconfig.mapping.IProductionConfigMapping;
+import com.sicpa.standard.sasscl.controller.view.event.WarningViewEvent;
 import com.sicpa.standard.sasscl.model.ProductionMode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.File;
 
 public class ProductionConfigFileLoader implements IProductionConfigLoader {
 
@@ -15,20 +18,22 @@ public class ProductionConfigFileLoader implements IProductionConfigLoader {
 	private IProductionConfigMapping mapping;
 	private String folder;
 
-	/**
-	 * This method gets a production Configuration given a production mode.
-	 */
+
 	@Override
 	public IProductionConfig get(ProductionMode mode) {
-		String file = folder + "/" + mapping.getProductionConfigId(mode) + ".xml";
-		logger.debug("loading production config :{}", file);
+		String path = folder + "/" + mapping.getProductionConfigId(mode) + ".xml";
+		logger.debug("loading production config :{}", path);
+		IProductionConfig ret = null;
 		try {
-			return (IProductionConfig) ConfigUtils.load(file);
+			ret =  (IProductionConfig) ConfigUtils.load(path);
 		} catch (Exception e) {
-			logger.error("", e);
+			logger.error(e.getMessage());
 		}
-		return null;
+		return ret;
+
 	}
+
+
 
 	public void setMapping(IProductionConfigMapping mapping) {
 		this.mapping = mapping;

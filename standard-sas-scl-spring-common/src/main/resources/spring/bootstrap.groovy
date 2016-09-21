@@ -19,6 +19,7 @@ beans{
 		jmxBean=ref('statsMBean')
 		encoderSequenceValidator=ref('encoderSequenceValidator')
 		skuSelectionBehavior=ref('skuSelectionBehavior')
+		productionParametersValidator=ref('productionParametersValidator')
 	}
 
 	encoderSequenceValidator(EncoderSequenceValidator){

@@ -13,7 +13,6 @@
 		<property name="productionParameters" ref="productionParameters" />
 		<property name="lineId" value="${lineId}" />
 		<property name="messageCodeMapper" ref="messagesMapping" />
-
 		<property name="securedPanels">
 			<list>
 				<ref bean="plcMonitoringView" />
@@ -237,10 +236,15 @@
 	<bean id="selectProductionParametersHandPickingView" class="com.sicpa.standard.sasscl.view.selection.select.SelectProductionParametersHandPickingView">
 		<property name="callback" ref="selectProductionParametersViewController" />
 		<property name="selectionModelFactory" ref="selectionModelFactory" />
+		<property name="productionParametersValidator" ref="productionParametersValidator" />
+
 	</bean>
+
+
 	<bean id="selectProductionParametersBarcodeView" class="com.sicpa.standard.sasscl.view.selection.select.SelectProductionParametersBarcodeView">
 		<property name="callback" ref="selectProductionParametersViewController" />
 	</bean>
+
 	<bean id="selectProductionParametersViewController" class="com.sicpa.standard.sasscl.view.selection.select.SelectProductionParametersViewController">
 		<property name="handPickingview" ref="selectProductionParametersHandPickingView" />
 		<property name="barcodeView" ref="selectProductionParametersBarcodeView" />
@@ -339,5 +343,7 @@
 		<property name="mfController" ref="mainFrameController" />
 		<property name="flowControl" ref="flowControl" />
 	</bean>
+
+
 
 </beans>
