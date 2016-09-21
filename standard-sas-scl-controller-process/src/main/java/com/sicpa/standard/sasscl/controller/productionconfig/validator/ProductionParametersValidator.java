@@ -20,12 +20,12 @@ public class ProductionParametersValidator {
 
     public boolean validate(ProductionParameters productionParameters){
         if (productionParameters !=null) {
-            return _validate(productionParameters.getProductionMode());
+            return checkConfigurationExists(productionParameters.getProductionMode());
         }
         return false;
     }
 
-    private boolean _validate(ProductionMode productionMode) {
+    private boolean checkConfigurationExists(ProductionMode productionMode) {
         IProductionConfig config = loader.get(productionMode);
         if (config == null) {
             logger.info("configuration_error,production_mode=" + productionMode + "reason=Configuration does not exist for this production mode");
@@ -37,7 +37,7 @@ public class ProductionParametersValidator {
     }
 
     public boolean validate(ProductionMode productionMode){
-       return _validate(productionMode);
+       return checkConfigurationExists(productionMode);
 
     }
 
