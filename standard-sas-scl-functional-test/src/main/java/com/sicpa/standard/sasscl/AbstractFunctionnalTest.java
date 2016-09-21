@@ -62,6 +62,8 @@ public abstract class AbstractFunctionnalTest extends TestCase {
 	public static final ProductionMode SAS_MODE = new ProductionMode(50, "productionmode.sas", true);
 	public static final ProductionMode SCL_MODE = new ProductionMode(51, "productionmode.scl", true);
 
+	public static final int cleanupDateThreshold = 30;
+
 	protected List<String> dataGenerated = new ArrayList<>();
 
 	protected Statistics statistiscs;
@@ -191,12 +193,10 @@ public abstract class AbstractFunctionnalTest extends TestCase {
 
 		if (!AppUtils.isHeadless()) {
 			SicpaLookAndFeel.install();
+			LangUtils.initLanguageFiles("en", "sasscl");
 		}
 
-		LangUtils.initLanguageFiles("en", "sasscl");
-
 		TestHelper.initExecutor();
-
 		emptyStorageFolders();
 		emptyRemoteServerReceivedData();
 		loadSpring();

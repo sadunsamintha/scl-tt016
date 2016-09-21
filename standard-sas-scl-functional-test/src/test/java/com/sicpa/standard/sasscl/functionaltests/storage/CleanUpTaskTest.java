@@ -2,9 +2,13 @@ package com.sicpa.standard.sasscl.functionaltests.storage;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigInteger;
+import java.util.Date;
+import java.util.stream.IntStream;
 
 import com.sicpa.standard.sasscl.AbstractFunctionnalTest;
 import com.sicpa.standard.sasscl.common.storage.FileStorage;
+import com.sicpa.standard.sasscl.common.utils.ComparatorUtils;
 import com.sicpa.standard.sasscl.model.ProductionMode;
 
 public class CleanUpTaskTest extends AbstractFunctionnalTest {
@@ -55,6 +59,7 @@ public class CleanUpTaskTest extends AbstractFunctionnalTest {
 	}
 
 	private void createDataFiles() throws IOException {
+		setProductionParameter();
 		createSomeOldDataFiles();
 		createRecentFile();
 	}
@@ -64,8 +69,15 @@ public class CleanUpTaskTest extends AbstractFunctionnalTest {
 		for (int i = START_INDEX_OLD_FILE; i < END_INDEX_OLD_FILE; i++) {
 			File f = new File(datapath + "/" + i);
 			f.createNewFile();
-			f.setLastModified(1);
+			f.setLastModified(getTimeThreshold());
 		}
+	}
+
+	private long getTimeThreshold() {
+		BigInteger timeThreshold = BigInteger.valueOf(System.currentTimeMillis());
+		BigInteger day = BigInteger.valueOf(1000L * 60 * 60 * 24);
+		BigInteger offset = BigInteger.valueOf(cleanupDateThreshold + 1);
+		return timeThreshold.subtract(day.multiply(offset)).longValue();
 	}
 
 	private void createRecentFile() throws IOException {
