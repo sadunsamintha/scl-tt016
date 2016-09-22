@@ -1,18 +1,15 @@
 package com.sicpa.standard.sasscl.view.selection.select;
 
-import javax.swing.JPanel;
-
-import com.sicpa.standard.client.common.i18n.Messages;
-import com.sicpa.standard.sasscl.view.LanguageSwitchEvent;
-import com.sicpa.standard.sasscl.view.selection.select.barcode.BarcodeScreenModel;
-import net.miginfocom.swing.MigLayout;
-
 import com.google.common.eventbus.Subscribe;
-import com.sicpa.standard.sasscl.controller.view.event.BarcodeReadEvent;
+import com.sicpa.standard.sasscl.devices.barcode.BarcodeReaderEvent;
 import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.ProductionParameterRootNode;
+import com.sicpa.standard.sasscl.view.LanguageSwitchEvent;
 import com.sicpa.standard.sasscl.view.selection.select.barcode.BarcodeInputView;
+import net.miginfocom.swing.MigLayout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.swing.*;
 
 @SuppressWarnings("serial")
 public class SelectProductionParametersBarcodeView extends JPanel implements ISelectProductionParametersView {
@@ -59,7 +56,7 @@ public class SelectProductionParametersBarcodeView extends JPanel implements ISe
 	}
 
 	@Subscribe
-	public void barcodeRead(final BarcodeReadEvent evt) {
+	public void barcodeRead(final BarcodeReaderEvent evt) {
 		if (isShowing()) {
 			getDelegate().getModel().setId(evt.getBarcode());
 			getDelegate().getModel().selectionComplete();
