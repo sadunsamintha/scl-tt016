@@ -549,7 +549,6 @@
 			</dependency>
 
 			<!--TEST -->
-			<!--TEST -->
 
 			<dependency>
 				<groupId>org.easytesting</groupId>

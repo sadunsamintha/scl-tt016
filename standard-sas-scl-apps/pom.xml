@@ -14,6 +14,8 @@
 		<module>standard-scl-core-app</module>
 		<module>standard-scl-tt018-app</module>
 		<module>standard-scl-tt016-app</module>
+        <module>standard-scl-tt065-app</module>
+    </modules>
 		<module>standard-scl-tt053-app</module>
 		<module>standard-sas-tt053-app</module>
 		<module>standard-scl-tt077-app</module>
@@ -158,7 +160,6 @@
 								<exclude>*.sh</exclude>
 								<exclude>license</exclude>
 								<exclude>version</exclude>
-								<exclude>**/language/</exclude>
 							</excludes>
 						</configuration>
 					</plugin>
@@ -178,7 +179,7 @@
 			<activation>
 				<file>
 					<missing>nobuild.txt</missing>
-<!-- 					<exists>/usr/bin/rpmbuild</exists> -->
+					<!--<exists>/usr/bin/rpmbuild</exists>-->
 				</file>
 
 			</activation>
