@@ -4,11 +4,9 @@ import com.sicpa.standard.client.common.i18n.Messages;
 import com.sicpa.standard.client.common.security.Permission;
 import com.sicpa.standard.client.common.security.SecurityService;
 import com.sicpa.standard.gui.components.buttons.PaddedButton;
-import com.sicpa.standard.gui.components.buttons.shape.DirectionButton;
 import com.sicpa.standard.gui.components.buttons.toggleButtons.ToggleImageAndTextButton;
 import com.sicpa.standard.gui.components.scroll.SmallScrollBar;
 import com.sicpa.standard.gui.components.scroll.SmoothScrolling;
-import com.sicpa.standard.gui.plaf.SicpaColor;
 import com.sicpa.standard.gui.screen.machine.AbstractMachineFrame;
 import com.sicpa.standard.gui.screen.machine.component.IdInput.DefaultIdInputView;
 import com.sicpa.standard.gui.screen.machine.component.IdInput.IdInputEvent;
@@ -42,48 +40,35 @@ import java.util.List;
 public class BarcodeInputView extends DefaultIdInputView {
 
 	protected MainFrame mainFrame;
-	protected DirectionButton backButton;
 	protected JButton buttonMaintenance;
 	protected JPanel panelSelect;
-	protected JLabel labelConnected;
 	protected JPanel panelCenter;
 	protected DefaultSelectionModel dataSelectionModel;
 	protected ProductionParameterRootNode rootNode;
 	protected ISelectProductionParametersViewListener callback;
 	protected JXLayer<JScrollPane> scrollSelectPanel;
-	protected JLabel labelCorespondingSKU;
+	protected JLabel labelCorrespondingSKU;
 
 	private static final Logger logger = LoggerFactory.getLogger(BarcodeInputView.class);
 
 	public BarcodeInputView() {
-		setModel(new BarcodeScreenModel());
 		getModel().setDescription(Messages.get("view.main.barcodepanel.label"));
 		setOpaque(true);
-		initGUInew();
+		initGUINew();
 	}
-
 
 	public void reset(ProductionParameterRootNode rootNode) {
 		this.rootNode = rootNode;
 		this.dataSelectionModel = new DefaultSelectionModel(rootNode);
 		getModel().reset();
-		getLabelCorespondingSKU().setVisible(false);
+		getLabelCorrespondingSKU().setVisible(false);
 		getPanelSelect().removeAll();
-
 	}
-
-	@Override
-	public BarcodeScreenModel getModel() {
-		return (BarcodeScreenModel) super.getModel();
-	}
-
-
 
 	protected void initGUI() {
-
 	}
 
-	protected void initGUInew() {
+	protected void initGUINew() {
 		removeAll();
 
 		setLayout(new MigLayout("fill", "", ""));
@@ -95,10 +80,9 @@ public class BarcodeInputView extends DefaultIdInputView {
 
 		add(getPanelCenter(), "grow,push,span");
 
-		add(getLabelConnected(), "north");
 		hideCenterPanel();
 		getButtonOk().setVisible(true);
-
+		getTextId().requestFocusInWindow();
 	}
 
 	public JPanel getPanelCenter() {
@@ -107,53 +91,43 @@ public class BarcodeInputView extends DefaultIdInputView {
 			panelCenter.setLayout(new MigLayout("fill,hidemode 3"));
 			panelCenter.add(getTextError(), "grow,span");
 
-			panelCenter.add(getLabelCorespondingSKU(), "");
+			panelCenter.add(getLabelCorrespondingSKU(), "");
 			panelCenter.add(getScrollSelectPanel(), "grow,push,span");
 		}
 		return panelCenter;
 	}
 
 	protected void displaySkuSelectionInCenter() {
-		ThreadUtils.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				getTextError().setVisible(false);
-				getLabelCorespondingSKU().setVisible(true);
-				getScrollSelectPanel().setVisible(true);
-			}
-		});
+		ThreadUtils.invokeLater(() -> {
+            getTextError().setVisible(false);
+            getLabelCorrespondingSKU().setVisible(true);
+            getScrollSelectPanel().setVisible(true);
+        });
 	}
 
 	protected void displayTextErrorInCenter() {
-		ThreadUtils.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				getTextError().setVisible(true);
-				getLabelCorespondingSKU().setVisible(false);
-				getScrollSelectPanel().setVisible(false);
-			}
-		});
+		ThreadUtils.invokeLater(() -> {
+            getTextError().setVisible(true);
+            getLabelCorrespondingSKU().setVisible(false);
+            getScrollSelectPanel().setVisible(false);
+        });
 	}
 
 	protected void hideCenterPanel() {
-		ThreadUtils.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				getTextError().setVisible(false);
-				getLabelCorespondingSKU().setVisible(false);
-				getScrollSelectPanel().setVisible(false);
-			}
-		});
+		ThreadUtils.invokeLater(() -> {
+            getTextError().setVisible(false);
+            getLabelCorrespondingSKU().setVisible(false);
+            getScrollSelectPanel().setVisible(false);
+        });
 
 	}
 
-	public JLabel getLabelCorespondingSKU() {
-
-		if (this.labelCorespondingSKU == null) {
-			this.labelCorespondingSKU = new JLabel("Corresponding SKU:");
-			this.labelCorespondingSKU.setVisible(false);
+	public JLabel getLabelCorrespondingSKU() {
+		if (this.labelCorrespondingSKU == null) {
+			this.labelCorrespondingSKU = new JLabel("Corresponding SKU:");
+			this.labelCorrespondingSKU.setVisible(false);
 		}
-		return this.labelCorespondingSKU;
+		return this.labelCorrespondingSKU;
 	}
 
 	public JXLayer<JScrollPane> getScrollSelectPanel() {
@@ -173,49 +147,39 @@ public class BarcodeInputView extends DefaultIdInputView {
 	}
 
 	protected void barcodeEntered(final IdInputEvent evt) {
-		ThreadUtils.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				getPanelSelect().removeAll();
-				getLabelCorespondingSKU().setVisible(false);
-				getTextError().setText("");
-				if (getMainFrame() != null) {
-					getMainFrame().getController().executeTaskInBackground(new Runnable() {
-						@Override
-						public void run() {
-							final String barcode = evt.getId().trim();
-							final List<Entry> possibleParams = retreiveSkuFromBarcode(barcode);
+		ThreadUtils.invokeLater(() -> {
+            getPanelSelect().removeAll();
+            getLabelCorrespondingSKU().setVisible(false);
+            getTextError().setText("");
+            if (getMainFrame() != null) {
+                getMainFrame().getController().executeTaskInBackground(() -> {
+                    final String barcode = evt.getId().trim();
+                    final List<Entry> possibleParams = retrieveSkuFromBarcode(barcode);
 
-							if (possibleParams == null || possibleParams.isEmpty()) {
-								displayTextErrorInCenter();
-								getModel().setError(Messages.get("view.main.barcodepanel.error") + ":\n" + barcode);
-							} else if (possibleParams.size() == 1) {
-								hideCenterPanel();
-								SKU selectedSKU = possibleParams.get(0).sku;
-								ProductionMode selectectMode = possibleParams.get(0).mode;
-								selectProductionParameters(selectedSKU, selectectMode, barcode);
+                    if (possibleParams == null || possibleParams.isEmpty()) {
+                        displayTextErrorInCenter();
+                        getModel().setError(Messages.get("view.main.barcodepanel.error") + ":\n" + barcode);
+                    } else if (possibleParams.size() == 1) {
+                        hideCenterPanel();
+                        SKU selectedSKU = possibleParams.get(0).sku;
+                        ProductionMode selectedMode = possibleParams.get(0).mode;
+                        selectProductionParameters(selectedSKU, selectedMode, barcode);
 
-							} else {
-								ThreadUtils.invokeLater(new Runnable() {
-									@Override
-									public void run() {
-										displaySkuSelectionInCenter();
-										populateSelectPanel(possibleParams, barcode);
-									}
-								});
-							}
-						}
-					});
-				}
-			}
-		});
+                    } else {
+                        ThreadUtils.invokeLater(() -> {
+                            displaySkuSelectionInCenter();
+                            populateSelectPanel(possibleParams, barcode);
+                        });
+                    }
+                });
+            }
+        });
 	}
 
 	protected void selectProductionParameters(final SKU sku, final ProductionMode mode, final String barcode) {
-
 		getMainFrame().resetMainPanel();
 		getPanelSelect().setVisible(false);
-		getLabelCorespondingSKU().setVisible(false);
+		getLabelCorrespondingSKU().setVisible(false);
 
 		callback.productionParametersSelected(new ProductionParameters(mode, sku, barcode));
 	}
@@ -235,8 +199,8 @@ public class BarcodeInputView extends DefaultIdInputView {
 		ProductionMode mode;
 	}
 
-	protected List<Entry> retreiveSkuFromBarcode(final String barcode) {
-		ArrayList<Entry> skus = new ArrayList<Entry>();
+	protected List<Entry> retrieveSkuFromBarcode(final String barcode) {
+		ArrayList<Entry> skus = new ArrayList<>();
 		populateMatchingSKU(barcode, rootNode, null, skus);
 		return skus;
 	}
@@ -246,15 +210,15 @@ public class BarcodeInputView extends DefaultIdInputView {
 		if (node instanceof SKUNode) {
 			SKU sku = (SKU) node.getValue();
 			logger.debug("sku=" + sku.getDescription() + ",barcodes=" + sku.getBarCodes());
-			if (sku.containsBarcode(barcode)) {
 
+			if (sku.containsBarcode(barcode)) {
 				Entry entry = new Entry();
 				entry.sku = sku;
+
 				if (parent instanceof ProductionModeNode) {
-
 					entry.mode = (ProductionMode) parent.getValue();
-
 				}
+
 				permissionFilterAndAdd(entries,entry);
 			}
 		} else {
@@ -277,19 +241,12 @@ public class BarcodeInputView extends DefaultIdInputView {
 	public JButton getButtonMaintenance() {
 		if (this.buttonMaintenance == null) {
 			this.buttonMaintenance = new JButton("Maintenance");
-			this.buttonMaintenance.addActionListener(new ActionListener() {
-
-				@Override
-				public void actionPerformed(final ActionEvent e) {
-					buttonMaintenanceActionPerformed();
-				}
-			});
+			this.buttonMaintenance.addActionListener(e -> buttonMaintenanceActionPerformed());
 		}
 		return this.buttonMaintenance;
 	}
 
 	protected void buttonMaintenanceActionPerformed() {
-
 		getPanelSelect().setVisible(false);
 
 		ProductionMode mode = ProductionMode.MAINTENANCE;
@@ -305,10 +262,9 @@ public class BarcodeInputView extends DefaultIdInputView {
 	}
 
 	protected void populateSelectPanel(final List<Entry> entries, final String barcode) {
-
 		this.panelSelect = null;
 		this.scrollSelectPanel.getView().setViewportView(getPanelSelect());
-		getLabelCorespondingSKU().setVisible(true);
+		getLabelCorrespondingSKU().setVisible(true);
 
 		for (Entry entry : entries) {
 			ToggleImageAndTextButton button = new ToggleImageAndTextButton(entry.mode + "\n" + entry.sku);
@@ -333,35 +289,13 @@ public class BarcodeInputView extends DefaultIdInputView {
 		}
 	}
 
-	public void modelBarcodeConnectionStatusChanged(final boolean connected) {
-		if (connected) {
-			getLabelConnected().setText(" ");
-		} else {
-			getLabelConnected().setText(Messages.get("barcode.status.notConnected"));
-		}
-	}
-
 	@Override
 	public void setModel(final IdInputmodel model) {
 		if (this.model != model) {
-			model.addIdListener(new BarcodeViewAdapter() {
-				@Override
-				public void barcodeConnectionStatusChanged(final BarcodeViewEvent evt) {
-					modelBarcodeConnectionStatusChanged(evt.isConnected());
-				}
-			});
 			super.setModel(model);
 		}
 	}
 
-	public JLabel getLabelConnected() {
-		if (this.labelConnected == null) {
-			this.labelConnected = new JLabel();
-			this.labelConnected.setForeground(SicpaColor.RED);
-			modelBarcodeConnectionStatusChanged(getModel().isBarcodeConnected());
-		}
-		return this.labelConnected;
-	}
 	public void setCallback(ISelectProductionParametersViewListener callback) {
 		this.callback = callback;
 	}
