@@ -52,7 +52,6 @@ public class BarcodeInputView extends DefaultIdInputView {
 	private static final Logger logger = LoggerFactory.getLogger(BarcodeInputView.class);
 
 	public BarcodeInputView() {
-		setModel(new BarcodeScreenModel());
 		getModel().setDescription(Messages.get("view.main.barcodepanel.label"));
 		setOpaque(true);
 		initGUINew();
@@ -64,11 +63,6 @@ public class BarcodeInputView extends DefaultIdInputView {
 		getModel().reset();
 		getLabelCorrespondingSKU().setVisible(false);
 		getPanelSelect().removeAll();
-	}
-
-	@Override
-	public BarcodeScreenModel getModel() {
-		return (BarcodeScreenModel) super.getModel();
 	}
 
 	protected void initGUI() {
