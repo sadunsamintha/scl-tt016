@@ -10,7 +10,7 @@
 	<nozzleCloseDelayMs>2000</nozzleCloseDelayMs>
 	<tcpMaxExpiredRequests>3</tcpMaxExpiredRequests>
 	<transitionMaxExpiredRequests>10</transitionMaxExpiredRequests>
-	<resetOnStop>false</resetOnStop>
+	<resetOnStop>true</resetOnStop>
 	<requestBufferStatusPeriod>500</requestBufferStatusPeriod>
 	<requestMonitoringLowFrequency>86400000</requestMonitoringLowFrequency>
 	<requestMonitoringMediumFrequency>3600000</requestMonitoringMediumFrequency>

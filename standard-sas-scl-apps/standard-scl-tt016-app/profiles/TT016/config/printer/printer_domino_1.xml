@@ -8,7 +8,7 @@
   <requestFluidLevelsInterval>10</requestFluidLevelsInterval>
   <requestReservoirHoursLeftInterval>30</requestReservoirHoursLeftInterval>
   <mUsePrinterSimulator>false</mUsePrinterSimulator>
-  <resetOnStop>false</resetOnStop>
+  <resetOnStop>true</resetOnStop>
   <mDebugMode>false</mDebugMode>
   <mPrinterParameters class="com.sicpa.standard.printer.driver.DominoParameter">
   		<mCodeType>DYNAMIC_DATAMATRIX</mCodeType>
@@ -29,7 +29,7 @@
   		<mPrintBlobs>false</mPrintBlobs>
   		<mTextFormat>TF_1_LINE</mTextFormat>
   		<isPrinterBufferSizeControlled>true</isPrinterBufferSizeControlled>
-  		<noFlushOnStop>true</noFlushOnStop>
+  		<noFlushOnStop>false</noFlushOnStop>
 		<mCodeSizePerRequest>100</mCodeSizePerRequest>
 		<mCodeBufferLowThreshold>20</mCodeBufferLowThreshold>
   </mPrinterParameters>
