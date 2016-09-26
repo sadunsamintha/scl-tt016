@@ -1,10 +1,5 @@
 package com.sicpa.standard.sasscl.controller.flow.statemachine.executor;
 
-import java.util.TimerTask;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.sicpa.standard.client.common.controller.predicate.start.IStartProductionValidator;
 import com.sicpa.standard.client.common.controller.predicate.start.NoStartReason;
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
@@ -16,6 +11,10 @@ import com.sicpa.standard.sasscl.common.utils.Timeout;
 import com.sicpa.standard.sasscl.controller.hardware.IHardwareController;
 import com.sicpa.standard.sasscl.messages.MessageEventKey;
 import com.sicpa.standard.sasscl.provider.impl.ProductionBatchProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.TimerTask;
 
 public class ExecutorStarting implements IStateAction {
 
@@ -32,20 +31,19 @@ public class ExecutorStarting implements IStateAction {
 
 	@Override
 	public void enter() {
-		TaskExecutor.execute(() -> startProduction());
+		TaskExecutor.execute(this::startProduction);
 	}
 
 	public void startProduction() {
-
 		if (!validatePossibleToStart()) {
 			return;
 		}
 
 		startTimeoutStart();
 		updateNextProductionBatchTime();
-		alert.start();
 		startHardware();
-		stopTimeoutStart();
+        alert.start();
+        stopTimeoutStart();
 	}
 
 	private void startHardware() {
@@ -64,10 +62,12 @@ public class ExecutorStarting implements IStateAction {
 
 	private boolean validatePossibleToStart() {
 		NoStartReason reasons = startValidators.isPossibleToStartProduction();
-		for (String r : reasons.getReasons()) {
+
+        for (String r : reasons.getReasons()) {
 			logger.error("failed to start:" + r);
 			EventBusService.post(new MessageEvent(r));
 		}
+
 		return reasons.isEmpty();
 	}
 
@@ -87,8 +87,7 @@ public class ExecutorStarting implements IStateAction {
 			@Override
 			public void run() {
 				logger.error("Start Timeout reached");
-				// start in a new thread to not break the timer by throwing a
-				// runtime exception
+				// start in a new thread to not break the timer by throwing a runtime exception
 				EventBusService.post(new MessageEvent(MessageEventKey.FlowControl.START_TIMEOUT));
 			}
 		}, timeoutDelay);
@@ -116,6 +115,5 @@ public class ExecutorStarting implements IStateAction {
 
 	@Override
 	public void leave() {
-
 	}
 }
