@@ -19,7 +19,7 @@
   			<mValue>1</mValue>
 		</mPersistence>
   		<mDelay>1</mDelay>
-  		<mRaster>R_4</mRaster>
+  		<mRaster>R_1</mRaster>
   		<mAperture>26</mAperture>
   		<mFlightTime>35</mFlightTime>
   		<mFlightTimeStroke>10</mFlightTimeStroke>
