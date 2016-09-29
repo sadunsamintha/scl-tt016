@@ -19,7 +19,7 @@
   			<mValue>1</mValue>
 		</mPersistence>
   		<mDelay>1</mDelay>
-  		<mRaster>R_4</mRaster>
+  		<mRaster>R_1</mRaster>
   		<mAperture>26</mAperture>
   		<mFlightTime>35</mFlightTime>
   		<mFlightTimeStroke>10</mFlightTimeStroke>
@@ -29,7 +29,7 @@
   		<mPrintBlobs>false</mPrintBlobs>
   		<mTextFormat>TF_1_LINE</mTextFormat>
   		<isPrinterBufferSizeControlled>true</isPrinterBufferSizeControlled>
-  		<noFlushOnStop>true</noFlushOnStop>
+  		<noFlushOnStop>false</noFlushOnStop>
 		<mCodeSizePerRequest>100</mCodeSizePerRequest>
 		<mCodeBufferLowThreshold>20</mCodeBufferLowThreshold>
   </mPrinterParameters>

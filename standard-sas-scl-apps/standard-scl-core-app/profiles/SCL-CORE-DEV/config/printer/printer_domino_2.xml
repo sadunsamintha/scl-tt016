@@ -29,7 +29,7 @@
   		<isPrinterBufferSizeControlled>true</isPrinterBufferSizeControlled>
   		<mPrintBlobs>false</mPrintBlobs>
   		<mTextFormat>TF_1_LINE</mTextFormat>
-  		<noFlushOnStop>true</noFlushOnStop>
+  		<noFlushOnStop>false</noFlushOnStop>
 		<mCodeSizePerRequest>100</mCodeSizePerRequest>
 		<mCodeBufferLowThreshold>20</mCodeBufferLowThreshold>
   </mPrinterParameters>
