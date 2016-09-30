@@ -1,5 +1,5 @@
 <CameraModel>
-	<mId>3</mId>
+	<mId>2</mId>
 	<mDriverName>CognexCameraDriver</mDriverName>
 	<mPort>3000</mPort>
 	<mIp>192.168.1.6</mIp>

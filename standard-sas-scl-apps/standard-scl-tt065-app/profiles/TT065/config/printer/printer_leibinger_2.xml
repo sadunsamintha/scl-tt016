@@ -1,7 +1,7 @@
 <LeibingerPrinterModel>
 	<name>LEIBINGER</name>
 	<ipAdress>192.168.1.12</ipAdress>
-	<deviceId>1</deviceId>
+	<deviceId>2</deviceId>
 	<udpPort>4321</udpPort>
 	<tcpTimeout>5000</tcpTimeout>
 	<tcpPort>3000</tcpPort>

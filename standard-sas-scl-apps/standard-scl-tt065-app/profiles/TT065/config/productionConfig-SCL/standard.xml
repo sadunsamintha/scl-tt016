@@ -2,8 +2,10 @@
 
 	<!-- <PrinterConfig deviceType="DOMINO" id="domino_1" validatedBy="qc_scl_1" /> -->
 	<PrinterConfig deviceType="LEIBINGER" id="leibinger_1" validatedBy="qc_scl_1" />
+	<PrinterConfig deviceType="LEIBINGER" id="leibinger_2" validatedBy="qc_scl_2" />
 
 	<CameraConfig deviceType="COGNEX" id="qc_scl_1" />
+	<CameraConfig deviceType="COGNEX" id="qc_scl_2" />
 
 	<!-- to use the brs uncomment the following -->
 	<!-- <BrsConfig /> -->
