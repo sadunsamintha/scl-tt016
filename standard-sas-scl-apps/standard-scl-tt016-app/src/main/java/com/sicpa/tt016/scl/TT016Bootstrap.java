@@ -56,14 +56,9 @@ public class TT016Bootstrap extends Bootstrap {
 		selectStopReasonWhenProductionStop();
 		setUnknownSkuCodeType();
 		addProducerEjectionStatistic();
-		addProducerEjectionToPackageSenderActivated();
 		addInkDetectedStatistic();
 		sendEjectionTypeForProductionMode();
 		addDisallowedConfigurations(BeanProvider.getBean(BeansName.ALL_PROPERTIES));
-	}
-
-	private void addProducerEjectionToPackageSenderActivated() {
-		addPackagerType(TT016ProductStatus.EJECTED_PRODUCER, true);
 	}
 
 	private void sendEjectionTypeForProductionMode() {
