@@ -13,6 +13,10 @@
     </parent>
 
     <dependencies>
+        <dependency>
+            <groupId>com.sicpa.standard.sasscl</groupId>
+            <artifactId>device-remoteServer-impl</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

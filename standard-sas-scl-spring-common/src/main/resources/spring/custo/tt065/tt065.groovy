@@ -11,9 +11,10 @@ beans{
         b.parent=ref('bootstrapAlias')
     }
 
-//    addAlias('cameraAlias','camera')
-//    bootstrap(TT065Bootstrap){ b->
-//        b.parent=ref('cameraAlias')
-//    }
+    def serverBehavior=props['remoteServer.behavior'].toUpperCase()
+
+    if(serverBehavior == "STANDARD") {
+        importBeans('spring/server/server-core5.groovy')
+    }
 
 }
