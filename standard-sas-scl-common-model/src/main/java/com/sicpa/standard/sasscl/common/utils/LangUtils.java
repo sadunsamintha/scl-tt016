@@ -1,22 +1,20 @@
 package com.sicpa.standard.sasscl.common.utils;
 
-import java.awt.HeadlessException;
-import java.io.UnsupportedEncodingException;
-import java.util.Enumeration;
-import java.util.Locale;
-import java.util.ResourceBundle;
-
-import javax.swing.JOptionPane;
-
+import com.sicpa.standard.client.common.i18n.Messages;
+import com.sicpa.standard.client.common.utils.AppUtils;
+import com.sicpa.standard.gui.I18n.GUIi18nManager;
+import com.sicpa.standard.gui.plaf.SicpaLookAndFeel;
 import org.jdesktop.swingx.JXDatePicker;
 import org.jdesktop.swingx.JXLoginPane;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sicpa.standard.client.common.utils.AppUtils;
-import com.sicpa.standard.common.util.Messages;
-import com.sicpa.standard.gui.I18n.GUIi18nManager;
-import com.sicpa.standard.gui.plaf.SicpaLookAndFeel;
+import javax.swing.*;
+import java.awt.*;
+import java.io.UnsupportedEncodingException;
+import java.util.Enumeration;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 public class LangUtils {
 
