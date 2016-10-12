@@ -55,7 +55,7 @@ public class TT016Bootstrap extends Bootstrap {
 		noStopIfDmxDetectedInExport();
 		selectStopReasonWhenProductionStop();
 		setUnknownSkuCodeType();
-		addProducerEjectedStatistic();
+		addProducerEjectionStatistic();
 		addInkDetectedStatistic();
 		sendEjectionTypeForProductionMode();
 		addDisallowedConfigurations(BeanProvider.getBean(BeansName.ALL_PROPERTIES));
@@ -71,7 +71,7 @@ public class TT016Bootstrap extends Bootstrap {
 				SicpaColor.GREEN_DARK, 4, "stats.display.inkDetected");
 	}
 
-	private void addProducerEjectedStatistic() {
+	private void addProducerEjectionStatistic() {
 		CustoBuilder.handleNewStatistic(TT016ProductStatus.EJECTED_PRODUCER, TT016StatisticsKey.EJECTED_PRODUCER,
 				SicpaColor.RED, 3, "stats.display.ejectedProducer");
 	}

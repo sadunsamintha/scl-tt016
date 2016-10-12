@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
+import com.sicpa.tt016.model.TT016ProductStatus;
 import com.sicpa.tt016.refeed.TT016RefeedAvailabilityProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -134,6 +135,7 @@ public class TT016RemoteServer extends AbstractRemoteServer implements IBisCrede
 			if (products.getProductStatus().equals(ProductStatus.AUTHENTICATED)) {
 				sendAuthenticatedData(products);
 			} else if (products.getProductStatus().equals(ProductStatus.SENT_TO_PRINTER_UNREAD)
+					|| products.getProductStatus().equals(TT016ProductStatus.EJECTED_PRODUCER)
 					|| products.getProductStatus().equals(ProductStatus.INK_DETECTED)
 					|| products.getProductStatus().equals(ProductStatus.UNREAD)) {
 				sendEjectedData(products);

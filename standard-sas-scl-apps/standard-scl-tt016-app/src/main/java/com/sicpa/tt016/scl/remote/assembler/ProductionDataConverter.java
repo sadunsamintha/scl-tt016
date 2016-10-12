@@ -46,17 +46,14 @@ public class ProductionDataConverter {
     private int getRemoteProductStatus(ProductStatus status) {
         int remoteStatus = VALID_ACTIV_INT;
 
-        if (status == ProductStatus.UNREAD) {
-            remoteStatus = UNREADABLE_WITHOUT_CODE_INT;
-        } else if (status == TT016ProductStatus.EJECTED_PRODUCER) {
-            remoteStatus = QUALITY;
-        } else if (status == ProductStatus.NOT_AUTHENTICATED) {
+        if (status.equals(ProductStatus.UNREAD)) {
             remoteStatus = UNREADABLE_WITH_CODE_INT;
-        } else if (status == ProductStatus.TYPE_MISMATCH) {
+        } else if (status.equals(ProductStatus.NOT_AUTHENTICATED)) {
+            remoteStatus = UNREADABLE_WITH_CODE_INT;
+        } else if (status.equals(ProductStatus.TYPE_MISMATCH)) {
             remoteStatus = VALID_TYPE_MISMATCH_INT;
-        } else if(status == ProductStatus.INK_DETECTED || status == ProductStatus.SENT_TO_PRINTER_UNREAD) {
-            remoteStatus = UNREADABLE_WITH_CODE_INT;
         }
+
         return remoteStatus;
     }
 
@@ -138,12 +135,12 @@ public class ProductionDataConverter {
     }
 
     private int getEjectionReasonId(ProductStatus productStatus) {
-        if (productStatus == ProductStatus.SENT_TO_PRINTER_UNREAD || productStatus == ProductStatus.INK_DETECTED) {
-            return EjectionReason.UNREADABLE_WITH_CODE_INT;
-        } else if (productStatus == TT016ProductStatus.EJECTED_PRODUCER) {
+        if (productStatus.equals(ProductStatus.SENT_TO_PRINTER_UNREAD)) {
+            return EjectionReason.UNREADABLE_WITHOUT_CODE_INT;
+        }  else if (productStatus.equals(TT016ProductStatus.EJECTED_PRODUCER)) {
             return EjectionReason.QUALITY;
         } else {
-            return EjectionReason.UNREADABLE_WITHOUT_CODE_INT;
+            return EjectionReason.UNREADABLE_WITH_CODE_INT;
         }
     }
 }
