@@ -4,14 +4,10 @@ import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.ioc.BeanProvider;
 import com.sicpa.standard.client.common.utils.PropertiesUtils;
 import com.sicpa.standard.client.common.view.screensflow.ScreenTransition;
-import com.sicpa.standard.gui.plaf.SicpaColor;
 import com.sicpa.standard.sasscl.Bootstrap;
 import com.sicpa.standard.sasscl.controller.flow.statemachine.FlowTransition;
-import com.sicpa.standard.sasscl.custoBuilder.CustoBuilder;
 import com.sicpa.standard.sasscl.ioc.BeansName;
 import com.sicpa.standard.sasscl.messages.ActionEventWarning;
-import com.sicpa.standard.sasscl.messages.ActionMessageType;
-import com.sicpa.standard.sasscl.messages.MessageEventKey;
 import com.sicpa.standard.sasscl.model.CodeType;
 import com.sicpa.standard.sasscl.model.ProductStatus;
 import com.sicpa.standard.sasscl.utils.ConfigUtilEx;
@@ -19,7 +15,6 @@ import com.sicpa.standard.sasscl.view.main.MainPanelGetter;
 import com.sicpa.tt016.business.ejection.EjectionTypeSender;
 import com.sicpa.tt016.model.DisallowedConfiguration;
 import com.sicpa.tt016.model.TT016ProductStatus;
-import com.sicpa.tt016.model.statistics.TT016StatisticsKey;
 import com.sicpa.tt016.provider.impl.TT016UnknownSkuProvider;
 import com.sicpa.tt016.refeed.TT016RefeedAvailabilityProvider;
 import com.sicpa.tt016.scl.remote.RemoteServerRefeedAvailability;
@@ -30,11 +25,21 @@ import java.io.File;
 import java.util.List;
 import java.util.Properties;
 
+import static com.sicpa.standard.gui.plaf.SicpaColor.GREEN_DARK;
+import static com.sicpa.standard.gui.plaf.SicpaColor.RED;
+import static com.sicpa.standard.gui.plaf.SicpaColor.GREEN_DARK;
 import static com.sicpa.standard.sasscl.controller.flow.ActivityTrigger.TRG_EXIT_APPLICATION;
 import static com.sicpa.standard.sasscl.controller.flow.ActivityTrigger.TRG_RECOVERING_CONNECTION;
 import static com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState.*;
 import static com.sicpa.standard.sasscl.custoBuilder.CustoBuilder.*;
+import static com.sicpa.standard.sasscl.messages.ActionMessageType.WARNING;
+import static com.sicpa.standard.sasscl.messages.MessageEventKey.Activation.EXCEPTION_CODE_IN_EXPORT;
+import static com.sicpa.standard.sasscl.messages.MessageEventKey.BRS.BRS_WRONG_SKU;
 import static com.sicpa.tt016.controller.flow.TT016ActivityTrigger.TRG_STOP_REASON_SELECTED;
+import static com.sicpa.tt016.model.statistics.TT016StatisticsKey.EJECTED_PRODUCER;
+import static com.sicpa.tt016.model.statistics.TT016StatisticsKey.INK_DETECTED;
+import static com.sicpa.tt016.model.statistics.TT016StatisticsKey.EJECTED_PRODUCER;
+import static com.sicpa.tt016.model.statistics.TT016StatisticsKey.INK_DETECTED;
 import static com.sicpa.tt016.view.TT016ScreenFlowTriggers.STOP_PRODUCTION;
 import static com.sicpa.tt016.view.TT016ScreenFlowTriggers.STOP_PRODUCTION_REASON_SELECTED;
 
@@ -59,21 +64,24 @@ public class TT016Bootstrap extends Bootstrap {
 		addInkDetectedStatistic();
 		sendEjectionTypeForProductionMode();
 		addDisallowedConfigurations(BeanProvider.getBean(BeansName.ALL_PROPERTIES));
+		noStopIfBrsWrongCodeDetected();
+	}
+
+	private void noStopIfBrsWrongCodeDetected() {
+		setMessageType(BRS_WRONG_SKU, WARNING);
 	}
 
 	private void sendEjectionTypeForProductionMode() {
-		addActionOnConnectedApplicationState(()->
-				ejectionTypeSender.send(productionParameters));
+		addActionOnConnectedApplicationState(()-> ejectionTypeSender.send(productionParameters));
 	}
 
 	private void addInkDetectedStatistic() {
-		CustoBuilder.handleNewStatistic(ProductStatus.INK_DETECTED, TT016StatisticsKey.INK_DETECTED,
-				SicpaColor.GREEN_DARK, 4, "stats.display.inkDetected");
+		handleNewStatistic(ProductStatus.INK_DETECTED, INK_DETECTED, GREEN_DARK, 4, "stats.display.inkDetected");
 	}
 
 	private void addProducerEjectionStatistic() {
-		CustoBuilder.handleNewStatistic(TT016ProductStatus.EJECTED_PRODUCER, TT016StatisticsKey.EJECTED_PRODUCER,
-				SicpaColor.RED, 3, "stats.display.ejectedProducer");
+		handleNewStatistic(TT016ProductStatus.EJECTED_PRODUCER, EJECTED_PRODUCER,
+                RED, 3, "stats.display.ejectedProducer");
 	}
 
 	@Override
@@ -92,7 +100,8 @@ public class TT016Bootstrap extends Bootstrap {
 	private void saveIsRefeedAvailable(boolean isRefeedAvailable) {
 		try {
 			File globalPropertiesFile = new ClassPathResource(ConfigUtilEx.GLOBAL_PROPERTIES_PATH).getFile();
-			PropertiesUtils.savePropertiesKeepOrderAndComment(globalPropertiesFile, "refeedAvailable", Boolean.toString(isRefeedAvailable));
+			PropertiesUtils.savePropertiesKeepOrderAndComment(globalPropertiesFile, "refeedAvailable",
+					Boolean.toString(isRefeedAvailable));
 		} catch (Exception ex) {
 			logger.error("Failed to save IsRefeedAvailable property", ex);
 		}
@@ -104,7 +113,7 @@ public class TT016Bootstrap extends Bootstrap {
 	}
 
 	private void noStopIfDmxDetectedInExport() {
-		setMessageType(MessageEventKey.Activation.EXCEPTION_CODE_IN_EXPORT, ActionMessageType.WARNING);
+		setMessageType(EXCEPTION_CODE_IN_EXPORT, WARNING);
 
 	}
 

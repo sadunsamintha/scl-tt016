@@ -27,14 +27,14 @@ beans{
 
 	alertBrsProductWarningCount(ProductWarningCountAlertTask){
 		unreadBarcodesThreshold=props['alert.unreadbarcodes.warning.threshold']
-		isUnreadBarcodesEnable=props['alert.unreadbarcodes.enable']
+		isUnreadBarcodesEnable=props['alert.unreadbarcodes.warning.enable']
 		productionConfigProvider=ref('productionConfigProvider')
 		compliantProductResolver=ref('compliantProduct')
 	}
 
 	alertBrsProductErrorCount(ProductErrorCountAlertTask){
 		unreadBarcodesThreshold=props['alert.unreadbarcodes.error.threshold']
-		isUnreadBarcodesEnable=props['alert.unreadbarcodes.enable']
+		isUnreadBarcodesEnable=props['alert.unreadbarcodes.error.enable']
 		productionConfigProvider=ref('productionConfigProvider')
 		compliantProductResolver=ref('compliantProduct')
 	}
