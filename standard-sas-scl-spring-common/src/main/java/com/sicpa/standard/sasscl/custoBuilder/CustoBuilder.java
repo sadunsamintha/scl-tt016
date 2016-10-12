@@ -108,7 +108,7 @@ public class CustoBuilder {
 		} catch (NoSuchBeanDefinitionException e) {
 			// ignore as bean only present with standard core 5 server
 		}
-		setPackagerType(status, isProductActivated);
+		addPackagerType(status, isProductActivated);
 	}
 
 	/**
@@ -147,7 +147,7 @@ public class CustoBuilder {
 		mapping.add(mode, idOnRemoteServer);
 	}
 
-	private static void setPackagerType(ProductStatus status, boolean isProductActivated) {
+	public static void addPackagerType(ProductStatus status, boolean isProductActivated) {
 		IPackageSenderGlobal sender = BeanProvider.getBean(BeansName.PACKAGE_SENDER);
 		if (isProductActivated) {
 			sender.addToActivatedPackager(status);

@@ -151,6 +151,7 @@
 								<exclude>*.sh</exclude>
 								<exclude>license</exclude>
 								<exclude>version</exclude>
+								<exclude>**/language/</exclude>
 							</excludes>
 						</configuration>
 					</plugin>
