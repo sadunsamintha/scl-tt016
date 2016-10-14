@@ -31,6 +31,7 @@
 		<property name="errorsRepository" ref="errorsRepository" />
 		<property name="plcJmxInfo" ref="plcJmxInfo" />
 		<property name="productionConfigProvider" ref="productionConfigProvider" />
+		<property name="appVersionProvider" ref="appVersionProvider" />
 	</bean>
 
 	<bean id="MBeanStatsDelegate" class="com.sicpa.standard.sasscl.monitoring.mbean.scl.SclAppBeanStatistics">

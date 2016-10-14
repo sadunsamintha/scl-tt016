@@ -1,29 +1,5 @@
 package com.sicpa.standard.sasscl.monitoring.mbean.sas;
 
-import static com.sicpa.standard.sasscl.monitoring.mbean.StandardMonitoringMBeanConstants.ERROR_BUSINESS_FOLDER;
-import static com.sicpa.standard.sasscl.monitoring.mbean.StandardMonitoringMBeanConstants.ERROR_LOAD_FOLDER;
-
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import javax.management.AttributeChangeNotification;
-import javax.management.MBeanNotificationInfo;
-import javax.management.Notification;
-import javax.management.NotificationBroadcasterSupport;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.statemachine.State;
@@ -38,9 +14,23 @@ import com.sicpa.standard.sasscl.devices.plc.IPlcJmxInfo;
 import com.sicpa.standard.sasscl.model.ProductionParameters;
 import com.sicpa.standard.sasscl.model.statistics.StatisticsKey;
 import com.sicpa.standard.sasscl.monitoring.mbean.StandardMonitoringMBeanConstants;
+import com.sicpa.standard.sasscl.provider.impl.AppVersionProvider;
 import com.sicpa.standard.sasscl.provider.impl.ProductionConfigProvider;
 import com.sicpa.standard.sasscl.repository.errors.AppMessage;
 import com.sicpa.standard.sasscl.repository.errors.IErrorsRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.management.AttributeChangeNotification;
+import javax.management.MBeanNotificationInfo;
+import javax.management.Notification;
+import javax.management.NotificationBroadcasterSupport;
+import java.io.File;
+import java.util.*;
+import java.util.Map.Entry;
+
+import static com.sicpa.standard.sasscl.monitoring.mbean.StandardMonitoringMBeanConstants.ERROR_BUSINESS_FOLDER;
+import static com.sicpa.standard.sasscl.monitoring.mbean.StandardMonitoringMBeanConstants.ERROR_LOAD_FOLDER;
 
 public class SasApp extends NotificationBroadcasterSupport implements SasAppMBean {
 
@@ -52,6 +42,7 @@ public class SasApp extends NotificationBroadcasterSupport implements SasAppMBea
 	private IErrorsRepository errorsRepository;
 	private IPlcJmxInfo plcJmxInfo;
 	protected ProductionConfigProvider productionConfigProvider;
+	protected AppVersionProvider appVersionProvider;
 
 	private long sequenceNumber = 0;
 	private Map<String, String[]> propertyMap = new HashMap<>();
@@ -77,10 +68,6 @@ public class SasApp extends NotificationBroadcasterSupport implements SasAppMBea
 		return currentState == null ? StandardMonitoringMBeanConstants.UNKNOWb
 				: isProductionState(currentState) ? StandardMonitoringMBeanConstants.INPRODUCTION
 						: StandardMonitoringMBeanConstants.STOPPED;
-	}
-
-	private boolean isProductionState(State state) {
-		return stats.isRunning();
 	}
 
 	@Override
@@ -190,14 +177,6 @@ public class SasApp extends NotificationBroadcasterSupport implements SasAppMBea
 		return totalValidProducts;
 	}
 
-	private boolean isValidStats(StatisticsKey key) {
-		return key.getDescription().equals(StatisticsKey.GOOD.getDescription());
-	}
-
-	private boolean isInvalidStats(StatisticsKey key) {
-		return key.getDescription().equals(StatisticsKey.BAD.getDescription());
-	}
-
 	@Override
 	public int getNbInvalidProducts() {
 		Map<StatisticsKey, Integer> statisticsMap = stats.getProductsStatistics().getValues();
@@ -212,21 +191,18 @@ public class SasApp extends NotificationBroadcasterSupport implements SasAppMBea
 
 	public void setStats(SasAppBeanStatistics stats) {
 		this.stats = stats;
-		stats.addPropertyChangeListener(new PropertyChangeListener() {
-			@Override
-			public void propertyChange(PropertyChangeEvent evt) {
+		stats.addPropertyChangeListener(evt -> {
 
-				String[] properties = propertyMap.get(evt.getPropertyName());
-				if (properties != null) {
-					for (String prop : properties) {
-						Object newValue = getFieldValue(prop);
-						Notification n = new AttributeChangeNotification(SasApp.this, sequenceNumber++, System
-								.currentTimeMillis(), prop + " changed", prop, "Object", null, newValue);
-						sendNotification(n);
-					}
-				}
-			}
-		});
+            String[] properties = propertyMap.get(evt.getPropertyName());
+            if (properties != null) {
+                for (String prop : properties) {
+                    Object newValue = getFieldValue(prop);
+                    Notification n = new AttributeChangeNotification(SasApp.this, sequenceNumber++, System
+                            .currentTimeMillis(), prop + " changed", prop, "Object", null, newValue);
+                    sendNotification(n);
+                }
+            }
+        });
 	}
 
 	private Object getFieldValue(String property) {
@@ -512,6 +488,28 @@ public class SasApp extends NotificationBroadcasterSupport implements SasAppMBea
 		return plcJmxInfo.getPlcInfoVars();
 	}
 
+	@Override
+	public String getAppVersion() {
+		return appVersionProvider.get();
+	}
+
+	@Override
+	public String getTrilightValues() {
+		return plcJmxInfo.getTrilightValues();
+	}
+
+	private boolean isProductionState(State state) {
+		return stats.isRunning();
+	}
+
+	private boolean isValidStats(StatisticsKey key) {
+		return key.getDescription().equals(StatisticsKey.GOOD.getDescription());
+	}
+
+	private boolean isInvalidStats(StatisticsKey key) {
+		return key.getDescription().equals(StatisticsKey.BAD.getDescription());
+	}
+
 	public void setPlcJmxInfo(IPlcJmxInfo plcJmxInfo) {
 		this.plcJmxInfo = plcJmxInfo;
 	}
@@ -520,4 +518,7 @@ public class SasApp extends NotificationBroadcasterSupport implements SasAppMBea
 		this.productionConfigProvider = productionConfigProvider;
 	}
 
+	public void setAppVersionProvider(AppVersionProvider appVersionProvider) {
+		this.appVersionProvider = appVersionProvider;
+	}
 }

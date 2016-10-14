@@ -26,6 +26,8 @@
 	
 	<bean id="unknownSkuProvider" class="com.sicpa.standard.sasscl.provider.impl.UnknownSkuProvider" />
 
+	<bean id="appVersionProvider" class="com.sicpa.standard.sasscl.provider.impl.AppVersionProvider" />
+
 </beans>
 
 

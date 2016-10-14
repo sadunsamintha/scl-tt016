@@ -335,4 +335,14 @@ public class RemoteControlSas implements RemoteControlSasMBean {
 	public String getPlcInfoVars() {
 		return appBean.getPlcInfoVars();
 	}
+
+	@Override
+	public String getAppVersion() {
+		return appBean.getAppVersion();
+	}
+
+	@Override
+	public String getTrilightValues() {
+		return appBean.getTrilightValues();
+	}
 }

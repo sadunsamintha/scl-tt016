@@ -1,15 +1,15 @@
 package com.sicpa.standard.sasscl.devices.plc;
 
+import com.sicpa.standard.plc.value.IPlcVariable;
+import com.sicpa.standard.plc.value.PlcVariable;
+import com.sicpa.standard.sasscl.provider.impl.PlcProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.sicpa.standard.plc.value.IPlcVariable;
-import com.sicpa.standard.sasscl.provider.impl.PlcProvider;
 
 public class PlcJmxInfo implements IPlcJmxInfo {
 
@@ -20,12 +20,33 @@ public class PlcJmxInfo implements IPlcJmxInfo {
 	private final Collection<IPlcVariable<?>> plcLineVars = new ArrayList<>();
 	private final Set<Integer> indexesToCheck = new HashSet<>();
 
+	private String trilightGreenVarName;
+	private String trilightYellowVarName;
+	private String trilightRedVarName;
+
 	public String getPlcVersion() {
 		return readPlcVersion();
 	}
 
 	public String getPlcInfoVars() {
 		return readAllInfoVar();
+	}
+
+    @Override
+	public String getTrilightValues() {
+		IPlcAdaptor plcAdaptor = plcProvider.get();
+
+		if (plcAdaptor == null || !plcAdaptor.isConnected()) {
+			return "plc not connected";
+		}
+
+		try {
+			return getTrilightValuesString(plcAdaptor);
+        } catch (Exception e) {
+            logger.error("", e);
+        }
+
+		return "";
 	}
 
 	protected Collection<IPlcVariable<?>> transformToIndex(Collection<IPlcVariable<?>> vars, int index) {
@@ -88,6 +109,25 @@ public class PlcJmxInfo implements IPlcJmxInfo {
 		return plc.getPlcVersion();
 	}
 
+	private String getTrilightValuesString(IPlcAdaptor plcAdaptor) throws PlcAdaptorException {
+		String trilightValues = "";
+
+		for (Integer lineIndex : PlcLineHelper.getLineIndexes()) {
+			int greenValue = plcAdaptor.read(PlcVariable.createInt32Var(
+					PlcLineHelper.replaceLinePlaceholder(trilightGreenVarName, lineIndex)));
+			int yellowValue = plcAdaptor.read(PlcVariable.createInt32Var(
+					PlcLineHelper.replaceLinePlaceholder(trilightYellowVarName, lineIndex)));
+			int redValue = plcAdaptor.read(PlcVariable.createInt32Var(
+					PlcLineHelper.replaceLinePlaceholder(trilightRedVarName, lineIndex)));
+
+			trilightValues += String.format("line%d[green:%d|yellow:%d|red:%d]",
+					lineIndex, greenValue, yellowValue, redValue);
+
+		}
+
+		return trilightValues;
+	}
+
 	public void setPlcCabinetVars(Collection<IPlcVariable<?>> plcCabinetVars) {
 		this.plcCabinetVars.addAll(plcCabinetVars);
 	}
@@ -113,4 +153,16 @@ public class PlcJmxInfo implements IPlcJmxInfo {
 			indexesToCheck.add(i);
 		}
 	}
+
+    public void setTrilightGreenVarName(String trilightGreenVarName) {
+        this.trilightGreenVarName = trilightGreenVarName;
+    }
+
+    public void setTrilightYellowVarName(String trilightYellowVarName) {
+        this.trilightYellowVarName = trilightYellowVarName;
+    }
+
+    public void setTrilightRedVarName(String trilightRedVarName) {
+        this.trilightRedVarName = trilightRedVarName;
+    }
 }

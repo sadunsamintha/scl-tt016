@@ -244,4 +244,19 @@ public interface SasAppMBean {
 	String getPlcVersion();
 
 	String getPlcInfoVars();
+
+	String getAppVersion();
+
+	/**
+	 * Returns the values of the cabinet trilight (green, yellow and red).<br>
+	 *
+	 * 0 - light is off<br>
+	 * 1 - light is on<br>
+	 * 2 - light is blinking<br>
+	 *
+	 * E.g.: line1[green:1|yellow:1|red:0]line2[green:0|yellow:0|red:1]
+	 *
+	 * @return String
+	 */
+	String getTrilightValues();
 }
