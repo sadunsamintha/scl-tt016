@@ -133,13 +133,13 @@ public class RemoteControlSas implements RemoteControlSasMBean {
 	}
 
 	@Override
-	public String getApplicationLastRunnningStartDate() {
-		return this.appBean.getApplicationLastRunnningStartDate();
+	public String getApplicationLastRunningStartDate() {
+		return this.appBean.getApplicationLastRunningStartDate();
 	}
 
 	@Override
-	public String getApplicationLastRunnningStopDate() {
-		return this.appBean.getApplicationLastRunnningStopDate();
+	public String getApplicationLastRunningStopDate() {
+		return this.appBean.getApplicationLastRunningStopDate();
 	}
 
 	@Override
@@ -334,5 +334,15 @@ public class RemoteControlSas implements RemoteControlSasMBean {
 	@Override
 	public String getPlcInfoVars() {
 		return appBean.getPlcInfoVars();
+	}
+
+	@Override
+	public String getAppVersion() {
+		return appBean.getAppVersion();
+	}
+
+	@Override
+	public String getTrilightStatus() {
+		return appBean.getTrilightStatus();
 	}
 }

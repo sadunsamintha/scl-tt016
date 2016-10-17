@@ -1,18 +1,15 @@
-import com.sicpa.standard.client.common.utils.ConfigUtils;
-import com.sicpa.standard.sasscl.devices.plc.variable.PlcVarValueChangeHandler;
-import com.sicpa.standard.sasscl.devices.plc.variable.descriptor.converter.PlcPulseToMMConverterHandler
-import com.sicpa.standard.sasscl.devices.plc.remoteserver.PlcRemoteServerConnectionHandler
-import com.sicpa.standard.sasscl.devices.plc.PlcParamSender;
-import com.sicpa.standard.sasscl.devices.plc.PlcStateListener
-import com.sicpa.standard.sasscl.devices.plc.PlcValuesLoader;
-import com.sicpa.standard.sasscl.devices.plc.warningerror.PlcRegisterHandler
-import com.sicpa.standard.sasscl.devices.plc.impl.PlcAdaptor
-import com.sicpa.standard.sasscl.devices.plc.impl.PlcSpeedHandler;
 import com.sicpa.standard.sasscl.devices.plc.PlcJmxInfo
+import com.sicpa.standard.sasscl.devices.plc.PlcParamSender
+import com.sicpa.standard.sasscl.devices.plc.PlcStateListener
+import com.sicpa.standard.sasscl.devices.plc.PlcValuesLoader
+import com.sicpa.standard.sasscl.devices.plc.impl.PlcAdaptor
+import com.sicpa.standard.sasscl.devices.plc.impl.PlcSpeedHandler
+import com.sicpa.standard.sasscl.devices.plc.remoteserver.PlcRemoteServerConnectionHandler
+import com.sicpa.standard.sasscl.devices.plc.variable.PlcVarValueChangeHandler
+import com.sicpa.standard.sasscl.devices.plc.variable.descriptor.converter.PlcPulseToMMConverterHandler
+import com.sicpa.standard.sasscl.devices.plc.warningerror.PlcRegisterHandler
 
 import static com.sicpa.standard.sasscl.messages.MessageEventKey.PLC.*
-
-import com.sicpa.standard.client.common.ioc.InjectByMethodBean;
 
 beans{
 
@@ -79,6 +76,9 @@ beans{
 		plcCabinetVars=ref('plcCabJmxReport')
 		plcLineVars=ref('plcLineJmxReport')
 		lineCount=props['line.count']
+		trilightGreenVarName="#{plcVarMap['NTF_LINE_TRILIGHT_GREEN']}"
+		trilightYellowVarName="#{plcVarMap['NTF_LINE_TRILIGHT_YELLOW']}"
+		trilightRedVarName="#{plcVarMap['NTF_LINE_TRILIGHT_RED']}"
 	}
 
 	def cab_msg=[

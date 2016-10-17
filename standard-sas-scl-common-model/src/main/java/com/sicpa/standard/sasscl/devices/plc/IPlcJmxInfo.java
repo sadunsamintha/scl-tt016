@@ -5,4 +5,6 @@ public interface IPlcJmxInfo {
 	String getPlcVersion();
 
 	String getPlcInfoVars();
+
+	String getTrilightValues();
 }
