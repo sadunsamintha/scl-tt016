@@ -29,6 +29,8 @@ import java.io.File;
 import java.util.*;
 import java.util.Map.Entry;
 
+import static com.sicpa.standard.sasscl.model.statistics.StatisticsKey.BAD;
+import static com.sicpa.standard.sasscl.model.statistics.StatisticsKey.GOOD;
 import static com.sicpa.standard.sasscl.monitoring.mbean.StandardMonitoringMBeanConstants.ERROR_BUSINESS_FOLDER;
 import static com.sicpa.standard.sasscl.monitoring.mbean.StandardMonitoringMBeanConstants.ERROR_LOAD_FOLDER;
 
@@ -42,7 +44,7 @@ public class SasApp extends NotificationBroadcasterSupport implements SasAppMBea
 	private IErrorsRepository errorsRepository;
 	private IPlcJmxInfo plcJmxInfo;
 	protected ProductionConfigProvider productionConfigProvider;
-	protected AppVersionProvider appVersionProvider;
+	private AppVersionProvider appVersionProvider;
 
 	private long sequenceNumber = 0;
 	private Map<String, String[]> propertyMap = new HashMap<>();
@@ -65,8 +67,8 @@ public class SasApp extends NotificationBroadcasterSupport implements SasAppMBea
 
 	@Override
 	public int getIsInProduction() {
-		return currentState == null ? StandardMonitoringMBeanConstants.UNKNOWb
-				: isProductionState(currentState) ? StandardMonitoringMBeanConstants.INPRODUCTION
+		return currentState == null ? StandardMonitoringMBeanConstants.UNKNOWN
+				: isProductionState() ? StandardMonitoringMBeanConstants.INPRODUCTION
 						: StandardMonitoringMBeanConstants.STOPPED;
 	}
 
@@ -95,7 +97,7 @@ public class SasApp extends NotificationBroadcasterSupport implements SasAppMBea
 	}
 
 	@Override
-	public String getApplicationLastRunnningStartDate() {
+	public String getApplicationLastRunningStartDate() {
 		if (stats.getStartTime() != null) {
 			return DateUtils.format(DATE_FORMAT, stats.getStartTime());
 		} else {
@@ -104,7 +106,7 @@ public class SasApp extends NotificationBroadcasterSupport implements SasAppMBea
 	}
 
 	@Override
-	public String getApplicationLastRunnningStopDate() {
+	public String getApplicationLastRunningStopDate() {
 		if (stats.getStopTime() != null) {
 			return DateUtils.format(DATE_FORMAT, stats.getStopTime());
 		} else {
@@ -167,27 +169,26 @@ public class SasApp extends NotificationBroadcasterSupport implements SasAppMBea
 
 	@Override
 	public int getNbValidProducts() {
-		Map<StatisticsKey, Integer> statisticsMap = stats.getProductsStatistics().getValues();
-		int totalValidProducts = 0;
-		for (Entry<StatisticsKey, Integer> entry : statisticsMap.entrySet()) {
-			if (isValidStats(entry.getKey())) {
-				totalValidProducts += entry.getValue();
-			}
-		}
-		return totalValidProducts;
+		return getNbProductsByType(GOOD);
 	}
 
 	@Override
 	public int getNbInvalidProducts() {
-		Map<StatisticsKey, Integer> statisticsMap = stats.getProductsStatistics().getValues();
-		int totalInvalidProducts = 0;
-		for (Entry<StatisticsKey, Integer> entry : statisticsMap.entrySet()) {
-			if (isInvalidStats(entry.getKey())) {
-				totalInvalidProducts += entry.getValue();
-			}
-		}
-		return totalInvalidProducts;
+        return getNbProductsByType(BAD);
 	}
+
+	protected int getNbProductsByType(StatisticsKey key) {
+        Map<StatisticsKey, Integer> statisticsMap = stats.getProductsStatistics().getValues();
+
+        int productsTotal = 0;
+        for (Entry<StatisticsKey, Integer> entry : statisticsMap.entrySet()) {
+            if (entry.getKey().getDescription().equals(key.getDescription())) {
+                productsTotal += entry.getValue();
+            }
+        }
+
+        return productsTotal;
+    }
 
 	public void setStats(SasAppBeanStatistics stats) {
 		this.stats = stats;
@@ -278,10 +279,6 @@ public class SasApp extends NotificationBroadcasterSupport implements SasAppMBea
 		return plcJmxInfo.getPlcVersion();
 	}
 
-	public void setErrorsRepository(IErrorsRepository errorsRepository) {
-		this.errorsRepository = errorsRepository;
-	}
-
 	@Override
 	public String getWarnings() {
 
@@ -340,7 +337,7 @@ public class SasApp extends NotificationBroadcasterSupport implements SasAppMBea
 		} else if (DeviceStatus.DISCONNECTED.equals(status)) {
 			return StandardMonitoringMBeanConstants.DISCONNECTED;
 		} else {
-			return StandardMonitoringMBeanConstants.UNKNOWb;
+			return StandardMonitoringMBeanConstants.UNKNOWN;
 		}
 	}
 
@@ -359,12 +356,11 @@ public class SasApp extends NotificationBroadcasterSupport implements SasAppMBea
 
 	@Override
 	public String getDeviceCameraStatus() {
-
 		IProductionConfig pc = productionConfigProvider.get();
 		if (pc == null) {
 			return "";
 		}
-		Collection<String> cameras = new ArrayList<String>();
+		Collection<String> cameras = new ArrayList<>();
 		for (CameraConfig cc : pc.getCameraConfigs()) {
 			cameras.add(cc.getId());
 		}
@@ -452,7 +448,7 @@ public class SasApp extends NotificationBroadcasterSupport implements SasAppMBea
 				totalFileList.addAll(Arrays.asList(errors.list()));
 			}
 		}
-		return totalFileList == null ? 0 : totalFileList.size();
+		return totalFileList.size();
 	}
 
 	@Override
@@ -494,20 +490,16 @@ public class SasApp extends NotificationBroadcasterSupport implements SasAppMBea
 	}
 
 	@Override
-	public String getTrilightValues() {
+	public String getTrilightStatus() {
 		return plcJmxInfo.getTrilightValues();
 	}
 
-	private boolean isProductionState(State state) {
+	private boolean isProductionState() {
 		return stats.isRunning();
 	}
 
-	private boolean isValidStats(StatisticsKey key) {
-		return key.getDescription().equals(StatisticsKey.GOOD.getDescription());
-	}
-
-	private boolean isInvalidStats(StatisticsKey key) {
-		return key.getDescription().equals(StatisticsKey.BAD.getDescription());
+	public void setErrorsRepository(IErrorsRepository errorsRepository) {
+		this.errorsRepository = errorsRepository;
 	}
 
 	public void setPlcJmxInfo(IPlcJmxInfo plcJmxInfo) {

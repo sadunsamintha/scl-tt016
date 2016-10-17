@@ -107,7 +107,7 @@ public interface SasAppMBean {
 
 	String getApplicationStatus();
 
-	String getApplicationLastRunnningStartDate();
+	String getApplicationLastRunningStartDate();
 
 	// Stop Time
 	/**
@@ -115,7 +115,7 @@ public interface SasAppMBean {
 	 * 
 	 * @return String
 	 */
-	String getApplicationLastRunnningStopDate();
+	String getApplicationLastRunningStopDate();
 
 	/**
 	 * Return the line identification. This identification is used by the client for the Master authentification. It's
@@ -248,7 +248,7 @@ public interface SasAppMBean {
 	String getAppVersion();
 
 	/**
-	 * Returns the values of the cabinet trilight (green, yellow and red).<br>
+	 * Returns the values of the trilight for all lines (green, yellow and red).<br>
 	 *
 	 * 0 - light is off<br>
 	 * 1 - light is on<br>
@@ -258,5 +258,5 @@ public interface SasAppMBean {
 	 *
 	 * @return String
 	 */
-	String getTrilightValues();
+	String getTrilightStatus();
 }

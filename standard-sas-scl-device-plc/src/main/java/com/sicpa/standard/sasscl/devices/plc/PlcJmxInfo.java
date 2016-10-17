@@ -113,16 +113,19 @@ public class PlcJmxInfo implements IPlcJmxInfo {
 		String trilightValues = "";
 
 		for (Integer lineIndex : PlcLineHelper.getLineIndexes()) {
-			int greenValue = plcAdaptor.read(PlcVariable.createInt32Var(
+			Integer greenValue = plcAdaptor.read(PlcVariable.createInt32Var(
 					PlcLineHelper.replaceLinePlaceholder(trilightGreenVarName, lineIndex)));
-			int yellowValue = plcAdaptor.read(PlcVariable.createInt32Var(
+			Integer yellowValue = plcAdaptor.read(PlcVariable.createInt32Var(
 					PlcLineHelper.replaceLinePlaceholder(trilightYellowVarName, lineIndex)));
-			int redValue = plcAdaptor.read(PlcVariable.createInt32Var(
+			Integer redValue = plcAdaptor.read(PlcVariable.createInt32Var(
 					PlcLineHelper.replaceLinePlaceholder(trilightRedVarName, lineIndex)));
+
+			if (greenValue == null || yellowValue == null || redValue == null) {
+				return "";
+			}
 
 			trilightValues += String.format("line%d[green:%d|yellow:%d|red:%d]",
 					lineIndex, greenValue, yellowValue, redValue);
-
 		}
 
 		return trilightValues;

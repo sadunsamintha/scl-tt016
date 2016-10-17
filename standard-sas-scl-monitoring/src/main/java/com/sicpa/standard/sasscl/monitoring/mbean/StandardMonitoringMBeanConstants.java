@@ -27,7 +27,7 @@ public class StandardMonitoringMBeanConstants {
 	// -------------------------------------------------------------------------
 
 	public static final String UNDEFINED = " - ";
-	public static final int UNKNOWb = -1;
+	public static final int UNKNOWN = -1;
 	public static final int STOPPED = 0;
 	public static final int INPRODUCTION = 1;
 
