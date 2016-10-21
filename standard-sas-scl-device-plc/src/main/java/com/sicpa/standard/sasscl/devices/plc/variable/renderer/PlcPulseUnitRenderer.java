@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import javax.swing.*;
 
 public class PlcPulseUnitRenderer extends AbstractPlcNumberVariableRenderer<Float> {
+
 	private static final Logger logger = LoggerFactory.getLogger(PlcPulseUnitRenderer.class);
 
 	private static final long serialVersionUID = 1L;
@@ -22,8 +23,6 @@ public class PlcPulseUnitRenderer extends AbstractPlcNumberVariableRenderer<Floa
 		desc.setInit(false);
 	}
 
-
-
 	private void initGUI() {
 		add(getComboUnit(), "growx , w 100");
 	}
@@ -32,10 +31,11 @@ public class PlcPulseUnitRenderer extends AbstractPlcNumberVariableRenderer<Floa
 		return (PlcPulseVariableDescriptor) desc;
 	}
 
-	public JComboBox<PlcUnit> getComboUnit() {
+	private JComboBox<PlcUnit> getComboUnit() {
 		if (comboUnit == null) {
 			comboUnit = new JComboBox<>();
 
+			comboUnit.addItem(PlcUnit.PULSES);
 			comboUnit.addItem(PlcUnit.MM);
 			comboUnit.addItem(PlcUnit.MS);
 
@@ -58,10 +58,10 @@ public class PlcPulseUnitRenderer extends AbstractPlcNumberVariableRenderer<Floa
 
 	@Override
 	public void valueChanged() {
-		ThreadUtils.invokeLater(() -> ValueChangedInEDT());
+		ThreadUtils.invokeLater(this::valueChangedInEDT);
 	}
 
-	private void ValueChangedInEDT() {
+	private void valueChangedInEDT() {
 		try {
 			getComboUnit().setSelectedItem(getPulseDescriptor().getCurrentUnit());
 			getSpinner().setValue(getNumericValueFromDescription());

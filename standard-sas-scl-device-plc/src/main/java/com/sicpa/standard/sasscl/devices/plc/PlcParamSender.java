@@ -1,8 +1,5 @@
 package com.sicpa.standard.sasscl.devices.plc;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.sicpa.standard.client.common.device.plc.IPLCVariableMappping;
 import com.sicpa.standard.plc.value.IPlcVariable;
 import com.sicpa.standard.plc.value.PlcVariable;
@@ -10,6 +7,9 @@ import com.sicpa.standard.sasscl.devices.plc.PlcUtils.PLC_TYPE;
 import com.sicpa.standard.sasscl.devices.plc.variable.descriptor.converter.PlcPulseToMMConverterHandler;
 import com.sicpa.standard.sasscl.devices.plc.variable.descriptor.unit.PlcUnit;
 import com.sicpa.standard.sasscl.provider.impl.PlcProvider;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class PlcParamSender implements IPlcParamSender {
 
@@ -32,22 +32,19 @@ public class PlcParamSender implements IPlcParamSender {
 		sendToPlc(plcLogicalVarName, value, lineIndex, reloadParams);
 	}
 
-
 	private void sendToPlc(String plcLogicalVarName, String value, int lineIndex, boolean reloadParams) throws PlcAdaptorException {
-
 		String valueToSend;
-		if (convertionNeeded(value)) {
+		if (conversionNeeded(value)) {
 			valueToSend = convertValue(plcLogicalVarName, value, lineIndex);
 			sendUnitVar(plcLogicalVarName, value, lineIndex);
 		} else {
 			valueToSend = value;
 		}
-		findVarTypeAndsendToPlc(plcLogicalVarName, valueToSend, lineIndex);
+		findVarTypeAndSendToPlc(plcLogicalVarName, valueToSend, lineIndex);
 		if(reloadParams) {
 			plcProvider.get().executeRequest(PlcRequest.RELOAD_PLC_PARAM);
 		}
 	}
-
 
 	private IPlcVariable<?> createVar(String logicalName, String value, int lineIndex) {
 		String physicalName = getPhysicalLineVariable(logicalName, lineIndex);
@@ -111,6 +108,8 @@ public class PlcParamSender implements IPlcParamSender {
 			return convertToPulses(value, lineIndex) + "";
 		} else if (value.endsWith(PlcUnit.MS.getSuffix())) {
 			return value.replace(PlcUnit.MS.getSuffix(), "").trim();
+		} else if (value.endsWith(PlcUnit.PULSES.getSuffix())) {
+			return value.replace(PlcUnit.PULSES.getSuffix(), "").trim();
 		} else {
 			throw new IllegalArgumentException("unit is missing for " + varName);
 		}
@@ -122,15 +121,16 @@ public class PlcParamSender implements IPlcParamSender {
 	}
 
 	private boolean createUnitValue(String value) {
-		// value of the plc is true for mm
-		return value.endsWith(PlcUnit.MM.getSuffix());
+		// value of the plc is true for mm and pulses
+		return value.endsWith(PlcUnit.MM.getSuffix()) || value.endsWith(PlcUnit.PULSES.getSuffix());
 	}
 
-	private boolean convertionNeeded(String value) {
-		return value.endsWith(PlcUnit.MM.getSuffix()) || value.endsWith(PlcUnit.MS.getSuffix());
+	private boolean conversionNeeded(String value) {
+		return value.endsWith(PlcUnit.MM.getSuffix()) || value.endsWith(PlcUnit.MS.getSuffix())
+				|| value.endsWith(PlcUnit.PULSES.getSuffix());
 	}
 
-	private void findVarTypeAndsendToPlc(String varName, String value, int lineIndex) throws PlcAdaptorException {
+	private void findVarTypeAndSendToPlc(String varName, String value, int lineIndex) throws PlcAdaptorException {
 		plcProvider.get().write(createVar(varName, value, lineIndex));
 	}
 
