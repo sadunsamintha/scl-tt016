@@ -2,7 +2,7 @@ package com.sicpa.standard.sasscl.devices.plc.variable.descriptor.unit;
 
 public enum PlcUnit {
 
-	MS("ms"), MM("mm");
+	MS("ms"), MM("mm"), PULSES("pulses");
 
 	private String suffix;
 
@@ -24,6 +24,8 @@ public enum PlcUnit {
 			return MM;
 		} else if (value.endsWith(MS.getSuffix())) {
 			return MS;
+		} else if (value.endsWith(PULSES.getSuffix())) {
+			return PULSES;
 		} else {
 			throw new IllegalArgumentException("unit is missing for " + value);
 		}
