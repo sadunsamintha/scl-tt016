@@ -14,6 +14,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 
+import com.sicpa.standard.client.common.device.plc.IPLCVariableMappping;
+import com.sicpa.standard.sasscl.devices.plc.variable.descriptor.unit.PlcUnit;
 import net.miginfocom.swing.MigLayout;
 
 import com.sicpa.standard.gui.plaf.SicpaFont;
@@ -25,9 +27,11 @@ public class PlcMonitoringRawDisplay extends JPanel implements IMonitoringViewCo
 	private static final String TAB_LINE_PREFIX = "line:";
 	private static final String TAB_CABINET = "cabinet";
 
-	private JTabbedPane tabpane;
+	private JTabbedPane tabbedPane;
 	private final Map<String, JLabel> labelByVarName = new TreeMap<>();
 	private final Map<String, JPanel> tabByLineKey = new HashMap<>();
+
+	private IPLCVariableMappping plcVarMap;
 
 	public PlcMonitoringRawDisplay() {
 		initGUI();
@@ -35,7 +39,7 @@ public class PlcMonitoringRawDisplay extends JPanel implements IMonitoringViewCo
 
 	private void initGUI() {
 		setLayout(new MigLayout("fill, inset 0 0 0 0, gap 0 0 0 0"));
-		add(getTabpane(), "grow, h 430!");
+		add(getTabPane(), "grow, h 430!");
 	}
 
 	@Override
@@ -47,7 +51,12 @@ public class PlcMonitoringRawDisplay extends JPanel implements IMonitoringViewCo
 				JPanel panel = getOrCreateTabPanel(tabIndexKey);
 
 				JLabel labelValue = getOrCreateLabelDisplay(varName, panel);
-				labelValue.setText(entry.getValue());
+
+				if (PlcLineHelper.isLineTypeVariable(varName)) {
+					labelValue.setText(getLineVarTypeUnit(entry.getValue()));
+				} else {
+					labelValue.setText(entry.getValue());
+				}
 			}
 		}
 	}
@@ -81,25 +90,27 @@ public class PlcMonitoringRawDisplay extends JPanel implements IMonitoringViewCo
 	}
 
 	private void addTab(String key, JPanel panel) {
-		getTabpane().addTab(key, new JScrollPane(panel));
+		getTabPane().addTab(key, new JScrollPane(panel));
 	}
 
 	private JLabel createLabel(String varName, JPanel container) {
 		JLabel labelValue = new JLabel();
-		JLabel label = new JLabel(varName + " : ");
+
+		JLabel label = new JLabel(getVarLogicalName(varName) + " : ");
 		label.setFont(new Font(SicpaFont.getFont(12).getName(), Font.BOLD, 12));
 		labelValue.setFont(new Font(SicpaFont.getFont(12).getName(), Font.BOLD, 12));
 		container.add(label, "grow");
+
 		container.add(labelValue, "grow,wrap");
 
 		return labelValue;
 	}
 
-	public JTabbedPane getTabpane() {
-		if (tabpane == null) {
-			tabpane = new JTabbedPane();
+	private JTabbedPane getTabPane() {
+		if (tabbedPane == null) {
+			tabbedPane = new JTabbedPane();
 		}
-		return tabpane;
+		return tabbedPane;
 	}
 
 	@Override
@@ -110,5 +121,19 @@ public class PlcMonitoringRawDisplay extends JPanel implements IMonitoringViewCo
 	@Override
 	public String getConstraints() {
 		return "newline,grow,pushx";
+	}
+
+	public void setPlcVarMap(IPLCVariableMappping plcVarMap) {
+		this.plcVarMap = plcVarMap;
+	}
+
+	private String getVarLogicalName(String varPhysicalName) {
+		return PlcLineHelper.isLineVariable(varPhysicalName)
+				? plcVarMap.getLogicalName(PlcLineHelper.replaceLineIndexWithPlaceHolder(varPhysicalName))
+				: plcVarMap.getLogicalName(varPhysicalName);
+	}
+
+	private String getLineVarTypeUnit(String value) {
+		return Boolean.parseBoolean(value) ? PlcUnit.PULSES.toString() : PlcUnit.MS.toString();
 	}
 }

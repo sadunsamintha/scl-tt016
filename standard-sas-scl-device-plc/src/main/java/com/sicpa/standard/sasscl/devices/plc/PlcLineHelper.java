@@ -14,9 +14,14 @@ public class PlcLineHelper {
 	public static final String LINE_INDEX_PLACEHOLDER = "#x";
 	private static final int LINE_INDEX_POSITION = ".com.stLine[1]".length();
 	private static final String LINE_PREFIX = ".com.stLine[";
+	private static final String LINE_TYPE_VARIABLE_SUFFIX = "Type";
 
 	public static boolean isLineVariable(String plcVarName) {
 		return plcVarName.startsWith(LINE_PREFIX);
+	}
+
+	public static boolean isLineTypeVariable(String plcVarName) {
+		return plcVarName.startsWith(LINE_PREFIX) && plcVarName.endsWith(LINE_TYPE_VARIABLE_SUFFIX);
 	}
 
 	public static List<String> getLinesVariableName(String varName) {
@@ -35,7 +40,7 @@ public class PlcLineHelper {
 
 	public static List<Integer> getLineIndexes() {
 		synchronized (lineIndexes) {
-			return new ArrayList<Integer>(lineIndexes);
+			return new ArrayList<>(lineIndexes);
 		}
 	}
 
@@ -54,6 +59,12 @@ public class PlcLineHelper {
 
 	public static String replaceLinePlaceholder(String varName, int lineIndex) {
 		return varName.replace(LINE_INDEX_PLACEHOLDER, lineIndex + "");
+	}
+
+	public static String replaceLineIndexWithPlaceHolder(String varName) {
+		return varName.substring(0, LINE_INDEX_POSITION -2)
+				+ LINE_INDEX_PLACEHOLDER + "]"
+				+ varName.substring(LINE_INDEX_POSITION);
 	}
 
 	/**
@@ -82,5 +93,4 @@ public class PlcLineHelper {
 		}
 		return res;
 	}
-
 }
