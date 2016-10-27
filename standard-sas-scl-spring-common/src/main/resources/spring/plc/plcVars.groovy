@@ -89,8 +89,6 @@ beans {
 	plcMap['PARAM_LINE_TEST_ADDITIONAL_CHECK']=[v:LINE_PRM+'bTestAdditionalCheck' ,t:B ,lineGrp:'misc']
 	plcMap['PARAM_LINE_TRIGGER_ACT_ON_FAILING_EDGE']=[v:LINE_PRM+'bTriggerActOnFallingEdge' ,t:B ,lineGrp:'misc']
 	plcMap['PARAM_LINE_SIMULATE_PC_EJECTION_IF_ADD_CHECK']=[v:LINE_PRM+'bSimulatePCEjectionIfAddCheck' ,t:B ,lineGrp:'ejection']
-	plcMap['PARAM_LINE_TRIG_CAMERA_IF_PC_EJECTION_SIMULATED']=[v:LINE_PRM+'bTrigCameraIfPCEjectionSimulated' ,t:B ,lineGrp:'ejection']
-	plcMap['PARAM_LINE_INHIBIT_PC_EJECTION_IF_ADD_CHECK']=[v:LINE_PRM+'bInhibitPCEjectionIfAddCheck' ,t:B ,lineGrp:'ejection']
 	plcMap['PARAM_LINE_TRIG_EJECTION_ONLY_FOR_SICPA_EJECTIONS']=[v:LINE_PRM+'bTrigEjectionOnlyForSicpaEjections' ,t:B ,lineGrp:'ejection']
 	plcMap['PARAM_LINE_TRIG_AUDIO_VISUAL_ONLY_FOR_SICPA_EJECTIONS']=[v:LINE_PRM+'bTrigAudioVisualOnlyForSicpaEjections' ,t:B ,lineGrp:'ejection']
 	plcMap['PARAM_LINE_SYSTEM_TYPE']=[v:LINE_PRM+'nSystemType' ,t:S ,lineGrp:'system']

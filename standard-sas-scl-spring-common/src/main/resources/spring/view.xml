@@ -291,7 +291,9 @@
 
 
 	<!-- advanced monitoring -->
-	<bean id="plcMonitoringRawDisplay" class="com.sicpa.standard.sasscl.view.monitoring.advanced.PlcMonitoringRawDisplay" />
+	<bean id="plcMonitoringRawDisplay" class="com.sicpa.standard.sasscl.view.monitoring.advanced.PlcMonitoringRawDisplay">
+		<property name="plcVarMap" ref="plcVarMap" />
+	</bean>
 
 	<bean id="PlcMonitoringController" class="com.sicpa.standard.sasscl.view.monitoring.advanced.PlcMonitoringController">
 		<property name="plcVars" ref="allPlcVars" />
