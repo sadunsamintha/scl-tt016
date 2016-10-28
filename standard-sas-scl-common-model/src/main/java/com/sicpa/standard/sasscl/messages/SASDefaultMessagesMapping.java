@@ -133,7 +133,6 @@ public class SASDefaultMessagesMapping extends DefaultMessagesMapping {
 		addEntry(ProductionParameters.NO_LONGER_AVAILABLE, "[PROC_03]", ERROR);
 		addEntry(ProductionParameters.NONE_AVAILABLE, "[PROC_04]", ERROR);
 		addEntry(FlowControl.START_FAILED, "[PROC_05]", ERROR);
-		addEntry(FlowControl.START_TIMEOUT, "[PROC_06]", ERROR);
 
 		addEntry(ModelEditing.ERROR_FAILED_TO_SAVE_BEAN_PROPERTY, "[VW_01]");
 

@@ -4,6 +4,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class Timeout {
+
 	protected final Timer timer;
 	protected TimerTask timeoutTask;
 	protected long time;

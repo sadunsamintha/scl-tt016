@@ -21,7 +21,7 @@ public class ExecutorStarting implements IStateAction {
 	private final static Logger logger = LoggerFactory.getLogger(ExecutorStarting.class);
 
 	private IStartProductionValidator startValidators;
-	private int timeoutDelay = 30000;
+	private int timeoutDelay;
 	private ProductionBatchProvider productionBatchProvider;
 	private IAlert alert;
 	private IHardwareController hardwareController;
@@ -56,8 +56,8 @@ public class ExecutorStarting implements IStateAction {
 	}
 
 	private void updateNextProductionBatchTime() {
-		String stime = System.currentTimeMillis() + "";
-		productionBatchProvider.set(stime);
+		String sTime = System.currentTimeMillis() + "";
+		productionBatchProvider.set(sTime);
 	}
 
 	private boolean validatePossibleToStart() {
