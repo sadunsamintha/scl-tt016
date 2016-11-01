@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+	<bean id="batchIdSkuView" class="com.sicpa.tt065.view.sku.batchId.BatchIdSkuView">
+		<property name="controller" ref="batchIdSkuViewController" />
+	</bean>
+
+	<bean id="batchIdSkuViewController" class="com.sicpa.tt065.view.sku.batchId.BatchIdSkuViewController">
+		<property name="view" ref="batchIdSkuView" />
+		<property name="viewController" ref="mainFrameController" />
+		<property name="screensFlow" ref="screensFlow" />
+		<property name="flowControl" ref="flowControl" />
+	</bean>
+
+	<bean id="screensFlow" class="com.sicpa.tt065.view.flow.TT065DefaultScreensFlow" init-method="buildScreensFlow">
+		<property name="initialScreen" ref="mainPanelGetter" />
+		<property name="selectionScreen" ref="selectProductionParametersViewController" />
+		<property name="batchIdScreen" ref="batchIdSkuViewController" />
+		<property name="mainScreen" ref="mainPanelGetter" />
+		<property name="exitScreen" ref="productionSendingViewController" />
+	</bean>
+
+	<!-- SELECT PARAMETER -->
+	<bean id="selectProductionParametersViewController" class="com.sicpa.tt065.view.selection.select.productionparameters.TT065SelectProductionParametersViewController">
+		<property name="handPickingview" ref="selectProductionParametersHandPickingView" />
+		<property name="barcodeView" ref="selectProductionParametersBarcodeView" />
+		<property name="viewController" ref="mainFrameController" />
+		<property name="skuListProvider" ref="skuListProvider" />
+		<property name="useBarcodeReader" value="${useBarcodeReader}" />
+		<property name="screensFlow" ref="screensFlow" />
+		<property name="mainFrameController" ref="mainFrameController" />
+	</bean>
+
+	<!-- SELECTION DISPLAY -->
+	<bean id="selectionDisplayView" class="com.sicpa.tt065.view.selection.display.TT065SelectionDisplayView">
+		<property name="controller" ref="selectionDisplayViewController" />
+		<property name="model" value="#{selectionDisplayViewController.model}" />
+	</bean>
+
+</beans>
