@@ -43,6 +43,7 @@
 	<bean id="executorStarted" class="com.sicpa.standard.sasscl.controller.flow.statemachine.executor.ExecutorStarted" />
 
 	<bean id="executorStarting" class="com.sicpa.standard.sasscl.controller.flow.statemachine.executor.ExecutorStarting">
+		<property name="timeoutDelay" value="#{${startProduction.timeoutInSec} * 1000}" />
 		<property name="alert" ref="alert" />
 		<property name="productionBatchProvider" ref="productionBatchProvider" />
 		<property name="hardwareController" ref="hardwareController" />
