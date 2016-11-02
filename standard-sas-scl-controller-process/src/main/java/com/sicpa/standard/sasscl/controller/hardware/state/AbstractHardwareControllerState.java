@@ -1,30 +1,22 @@
 package com.sicpa.standard.sasscl.controller.hardware.state;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
-
-import org.apache.commons.lang.NotImplementedException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
+import com.sicpa.standard.client.common.i18n.Messages;
 import com.sicpa.standard.client.common.messages.MessageEvent;
 import com.sicpa.standard.client.common.utils.TaskExecutor;
 import com.sicpa.standard.sasscl.controller.hardware.HardwareControllerStatusEvent;
 import com.sicpa.standard.sasscl.controller.hardware.IDeviceErrorRepository;
 import com.sicpa.standard.sasscl.controller.hardware.IHardwareControllerState;
-import com.sicpa.standard.sasscl.devices.DeviceException;
-import com.sicpa.standard.sasscl.devices.DeviceStatus;
-import com.sicpa.standard.sasscl.devices.DeviceStatusEvent;
-import com.sicpa.standard.sasscl.devices.IDevice;
-import com.sicpa.standard.sasscl.devices.IStartableDevice;
+import com.sicpa.standard.sasscl.devices.*;
 import com.sicpa.standard.sasscl.devices.plc.IPlcAdaptor;
 import com.sicpa.standard.sasscl.devices.plc.PlcAdaptorException;
 import com.sicpa.standard.sasscl.messages.MessageEventKey;
+import org.apache.commons.lang.NotImplementedException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class AbstractHardwareControllerState implements IHardwareControllerState {
 
@@ -66,15 +58,12 @@ public abstract class AbstractHardwareControllerState implements IHardwareContro
     protected void runPlc() {
         if (plc.isConnected()) {
             logger.debug("Running plc");
-            TaskExecutor.execute(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        plc.doRun();
-                    } catch (DeviceException e) {
-                        logger.error("", e);
-                        EventBusService.post(new MessageEvent(MessageEventKey.DevicesController.FAILED_TO_START_DEVICE));
-                    }
+            TaskExecutor.execute(() -> {
+                try {
+                    plc.doRun();
+                } catch (DeviceException e) {
+                    logger.error("", e);
+                    EventBusService.post(new MessageEvent(MessageEventKey.DevicesController.FAILED_TO_START_DEVICE));
                 }
             });
         }
@@ -163,16 +152,14 @@ public abstract class AbstractHardwareControllerState implements IHardwareContro
 
     protected void connectDevice(final IStartableDevice device) {
         logger.info("Connect device: {}", device.getName());
-        TaskExecutor.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    device.connect();
-                } catch (DeviceException e) {
-                    logger.error("", e);
-                    EventBusService.post(new MessageEvent(MessageEventKey.DevicesController.FAILED_TO_CONNECT_DEVICE,
-                            device.getName()));
-                }
+
+        TaskExecutor.execute(() -> {
+            try {
+                device.connect();
+            } catch (DeviceException e) {
+                logger.error("", e);
+                EventBusService.post(new MessageEvent(MessageEventKey.DevicesController.FAILED_TO_CONNECT_DEVICE,
+                        device.getName()));
             }
         });
     }
@@ -180,10 +167,11 @@ public abstract class AbstractHardwareControllerState implements IHardwareContro
     /**
      * start device with another thread
      *
-     * @param startableDevice
+     * @param device
      */
     protected void startDevice(final IStartableDevice device) {
         logger.info("Starting device: {}", device.getName());
+
         try {
             device.start();
         } catch (DeviceException e) {
@@ -194,14 +182,12 @@ public abstract class AbstractHardwareControllerState implements IHardwareContro
 
     protected void stoppingDevice(final IStartableDevice device) {
         logger.info("Stopping device: {}", device.getName());
-        TaskExecutor.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    device.stop();
-                } catch (DeviceException e) {
-                    logger.error("", e);
-                }
+
+        TaskExecutor.execute(() -> {
+            try {
+                device.stop();
+            } catch (DeviceException e) {
+                logger.error("", e);
             }
         });
     }
@@ -213,16 +199,12 @@ public abstract class AbstractHardwareControllerState implements IHardwareContro
      */
     protected void disconnectDevice(final IStartableDevice device) {
         logger.info("disconnect device: {}", device.getName());
-        TaskExecutor.execute(new Runnable() {
-            @Override
-            public void run() {
-                device.disconnect();
-            }
-        });
+
+        TaskExecutor.execute(device::disconnect);
     }
 
     protected Collection<String> getErrorMessages() {
-        Collection<String> res = new ArrayList<String>();
+        Collection<String> res = new ArrayList<>();
         for (String error : deviceErrorRepository.getErrors()) {
             res.add(error);
         }
@@ -230,13 +212,13 @@ public abstract class AbstractHardwareControllerState implements IHardwareContro
         for (IStartableDevice dev : startableDevices) {
             if (dev.isBlockProductionStart()) {
                 if (!dev.isConnected()) {
-                    res.add(dev.getName() + " not connected");
+                    res.add(dev.getName() + " " + Messages.get("device.notConnected"));
                 }
             }
         }
 
         if (!plc.isConnected()) {
-            res.add(plc.getName() + " not connected");
+            res.add(plc.getName() + " " + Messages.get("device.notConnected"));
         }
         return res;
     }
@@ -256,6 +238,7 @@ public abstract class AbstractHardwareControllerState implements IHardwareContro
                 }
             }
         }
+
         if (!devicesStatusList.contains(plc.getStatus())) {
             return false;
         }
@@ -268,6 +251,7 @@ public abstract class AbstractHardwareControllerState implements IHardwareContro
                 return true;
             }
         }
+
         if (!plc.getStatus().equals(DeviceStatus.DISCONNECTED)) {
             return true;
         }
@@ -280,6 +264,7 @@ public abstract class AbstractHardwareControllerState implements IHardwareContro
                 return false;
             }
         }
+
         if (!isDeviceStoppedOrDisconnected(plc)) {
             return false;
         }
@@ -299,7 +284,7 @@ public abstract class AbstractHardwareControllerState implements IHardwareContro
     }
 
     protected Collection<String> getDevicesErrors() {
-        return new HashSet<String>(deviceErrorRepository.getErrors());
+        return new HashSet<>(deviceErrorRepository.getErrors());
     }
 
     protected boolean areDevicesReady() {
@@ -314,6 +299,7 @@ public abstract class AbstractHardwareControllerState implements IHardwareContro
                 }
             }
         }
+
         if (!plc.getStatus().isConnected()) {
             return false;
         }
@@ -323,11 +309,9 @@ public abstract class AbstractHardwareControllerState implements IHardwareContro
 
     @Override
     public void errorMessageAdded() {
-
     }
 
     @Override
     public void errorMessageRemoved() {
-
     }
 }

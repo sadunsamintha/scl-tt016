@@ -1,6 +1,6 @@
 <ProductionConfig activationBehavior="exportActivationBehavior">
 
-	<CameraConfig deviceType="COGNEX" id="qc_scl_1" />
+	<CameraConfig deviceType="COGNEX" id="Cognex" />
 
 	<!-- <BisConfig /> -->
 
