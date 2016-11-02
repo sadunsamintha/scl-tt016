@@ -9,10 +9,8 @@ beans{
     addAlias('bootstrapAlias','bootstrap')
     bootstrap(TT065Bootstrap){ b->
         b.parent=ref('bootstrapAlias')
-        mainPanelGetter=ref('mainPanelGetter')
-        batchIdSkuViewController=ref('batchIdSkuViewController')
-        selectProductionParametersViewController=ref('selectProductionParametersViewController')
     }
+
     importBeans('spring/custo/tt065/tt065-view.xml')
     importBeans('spring/custo/tt065/tt065-provider.xml')
     importBeans('spring/custo/tt065/tt065-flowControl.xml')

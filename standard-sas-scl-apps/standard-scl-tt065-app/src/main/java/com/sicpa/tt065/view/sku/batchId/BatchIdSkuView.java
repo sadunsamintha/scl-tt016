@@ -116,7 +116,7 @@ public class BatchIdSkuView extends AbstractView<IBatchIdSkuListener, BatchIdSku
 
 	private void saveBatchIdSelected() {
 		for (IBatchIdSkuListener listener : listeners) {
-			listener.saveBatchId();;
+			listener.saveBatchId();
 		}
 	}
 }

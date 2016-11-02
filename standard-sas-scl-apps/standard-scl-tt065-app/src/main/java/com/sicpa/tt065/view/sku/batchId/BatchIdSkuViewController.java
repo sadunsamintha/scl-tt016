@@ -2,14 +2,12 @@ package com.sicpa.tt065.view.sku.batchId;
 
 import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.i18n.Messages;
-import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState;
 import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowStateChangedEvent;
 import com.sicpa.standard.sasscl.controller.flow.FlowControl;
 import com.sicpa.standard.sasscl.controller.hardware.HardwareControllerStatus;
 import com.sicpa.standard.sasscl.model.ProductionParameters;
 import com.sicpa.standard.sasscl.view.AbstractViewFlowController;
 import com.sicpa.standard.sasscl.view.LanguageSwitchEvent;
-import com.sicpa.tt065.event.BatchIdViewEvent;
 import com.sicpa.tt065.view.flow.TT065DefaultScreensFlow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +15,6 @@ import org.slf4j.LoggerFactory;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.sicpa.tt065.view.TT065ScreenFlowTriggers.BATCH_ID_REGISTERED;
-import static com.sicpa.tt065.view.TT065ScreenFlowTriggers.PRODUCTION_PARAMETER_TO_BATCH;
 
 public class BatchIdSkuViewController extends AbstractViewFlowController implements IBatchIdSkuListener {
 
@@ -60,27 +57,12 @@ public class BatchIdSkuViewController extends AbstractViewFlowController impleme
 		}*/
 	}
 
-	@Subscribe
-	public void handleSkuSelectionButtonPressed(BatchIdViewEvent evt){
-		batchIdButtonPressed.set(true);
-		pp = evt.getPp();
-		screensFlow.moveToNext(PRODUCTION_PARAMETER_TO_BATCH);
-		logger.info("SkuSelectionButtonPressed,user=" + evt.user.getLogin() + ",date=" + evt.date.toString() + ", batchId=");
-	}
-
 	@Override
 	protected void displayView() {
 		if (!batchIdButtonPressed.get()) {
 			super.displayView();
 			batchIdButtonPressed.set(true);
-		} else {
-			moveToNext();
 		}
-	}
-
-	private void moveToNext() {
-		screensFlow.moveToNext(BATCH_ID_REGISTERED);
-		//flowControl.moveToNextState(TRG_STOP_REASON_SELECTED);
 	}
 
 	public void setScreensFlow(TT065DefaultScreensFlow screensFlow) {
@@ -96,6 +78,10 @@ public class BatchIdSkuViewController extends AbstractViewFlowController impleme
 		logger.info(Messages.format("sku.batch.id.registered", "987654321"));
 
 		//MonitoringService.addSystemEvent(new BasicSystemEvent(SystemEventLevel.INFO, PROD_STOP_REASON, Messages.get(stopReason.getKey())));
-		moveToNext();
+		batchIdButtonPressed.set(true);
+
+		viewController.productionParametersChanged();
+		screensFlow.moveToNext(BATCH_ID_REGISTERED);
+		//logger.info("SkuSelectionButtonPressed,user=" + evt.user.getLogin() + ",date=" + evt.date.toString() + ", batchId=");
 	}
 }
