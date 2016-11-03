@@ -4,26 +4,34 @@ import com.sicpa.standard.client.common.i18n.Messages;
 import com.sicpa.standard.client.common.view.mvc.AbstractView;
 import com.sicpa.standard.gui.plaf.SicpaColor;
 import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowStateChangedEvent;
+import com.sicpa.standard.sasscl.model.ProductionParameters;
 import com.sicpa.standard.sasscl.model.SKU;
+import com.sicpa.standard.sasscl.provider.ProductBatchIdProvider;
 import net.miginfocom.swing.MigLayout;
 
+import javax.annotation.PostConstruct;
 import javax.swing.*;
 import java.awt.*;
 
 @SuppressWarnings("serial")
-public class BatchIdSkuView extends AbstractView<IBatchIdSkuListener, BatchIdSkuModel> {
+public class BatchIdSkuView extends AbstractView<IBatchIdSkuListener, BatchIdSkuModel> implements ProductBatchIdProvider {
 
 	protected BatchIdSkuPanel batchIdSkuPanel;
-	private String strBatchId;
-	private SKU sku;
+	private ProductionParameters productionParameters;
 
-	public BatchIdSkuView() {
+	public BatchIdSkuView(){
+
+	}
+
+	public BatchIdSkuView(ProductionParameters productionParameters) {
+		this.productionParameters = productionParameters;
 		initGUI();
 	}
 
 	private void initGUI() {
 		setLayout(new MigLayout("ltr,fill"));
-		add(new JLabel(Messages.get("sku.batch.id.title")));
+		String strSKU = productionParameters.getSku().getDescription();
+		add(new JLabel(Messages.get("sku.batch.id.title")+" "+strSKU));
 		add(new JSeparator(), "growx, pushx, wrap");
 		add(getBatchIdSkuPanel(), "span, split 2, pushy, growx, growy");
 	}
@@ -38,14 +46,13 @@ public class BatchIdSkuView extends AbstractView<IBatchIdSkuListener, BatchIdSku
 
 	@Override
 	public void modelChanged() {
-		strBatchId = model.getBatchId();
-		sku = model.getSku();
+
 	}
 
 	public static void main(String[] args) {
 		JFrame frame = new JFrame();
 		frame.setSize(650, 300);
-		frame.setContentPane(new BatchIdSkuView());
+		frame.setContentPane(new BatchIdSkuView(new ProductionParameters()));
 		frame.setVisible(true);
 	}
 
@@ -75,7 +82,7 @@ public class BatchIdSkuView extends AbstractView<IBatchIdSkuListener, BatchIdSku
 		private JButton getSaveBatchIdButton() {
 			if (saveBatchIdButton==null) {
 				saveBatchIdButton = new JButton(Messages.get("sku.batch.id.button.save.label"));
-				saveBatchIdButton.addActionListener(e -> saveBatchIdSelected());
+				saveBatchIdButton.addActionListener(e -> saveBatchIdSelected(batchIdText.getText()));
 			}
 			return saveBatchIdButton;
 		}
@@ -95,7 +102,7 @@ public class BatchIdSkuView extends AbstractView<IBatchIdSkuListener, BatchIdSku
 				batchIdText.setMinimumSize(new Dimension(200,40));
 				batchIdText.setMaximumSize(new Dimension(200,40));
 				batchIdText.setBackground(SicpaColor.BLUE_ULTRA_LIGHT);
-				batchIdText.setText(strBatchId);
+				batchIdText.setText(productionParameters.getProperty(productionBatchId));
 				//batchIdText.setForeground(SicpaColor.BLUE_ULTRA_LIGHT);
 				//batchIdText.setBackground(SicpaColor.BLUE_ULTRA_LIGHT);
 			}
@@ -114,9 +121,9 @@ public class BatchIdSkuView extends AbstractView<IBatchIdSkuListener, BatchIdSku
 		}
 	}
 
-	private void saveBatchIdSelected() {
+	private void saveBatchIdSelected(String strBatchId) {
 		for (IBatchIdSkuListener listener : listeners) {
-			listener.saveBatchId();
+			listener.saveBatchId(strBatchId);
 		}
 	}
 }

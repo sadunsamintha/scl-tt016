@@ -4,6 +4,7 @@
 
 	<bean id="batchIdSkuView" class="com.sicpa.tt065.view.sku.batchId.BatchIdSkuView">
 		<property name="controller" ref="batchIdSkuViewController" />
+		<property name="model" value="#{batchIdSkuViewController.model}" />
 	</bean>
 
 	<bean id="batchIdSkuViewController" class="com.sicpa.tt065.view.sku.batchId.BatchIdSkuViewController">
