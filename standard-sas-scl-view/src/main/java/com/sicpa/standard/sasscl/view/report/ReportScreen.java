@@ -1,11 +1,11 @@
 package com.sicpa.standard.sasscl.view.report;
 
 import com.google.common.eventbus.Subscribe;
-import com.sicpa.standard.client.common.eventbus.service.EventBusService;
+import com.sicpa.standard.client.common.i18n.Messages;
+import com.sicpa.standard.client.common.ioc.BeanProvider;
 import com.sicpa.standard.client.common.security.Permission;
 import com.sicpa.standard.client.common.utils.TaskExecutor;
 import com.sicpa.standard.client.common.view.ISecuredComponentGetter;
-import com.sicpa.standard.client.common.i18n.Messages;
 import com.sicpa.standard.gui.components.buttons.PaddedButton;
 import com.sicpa.standard.gui.components.buttons.toggleButtons.ToggleImageAndTextButton;
 import com.sicpa.standard.sasscl.monitoring.MonitoringService;
@@ -23,8 +23,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -60,7 +58,7 @@ public class ReportScreen extends JPanel implements ISecuredComponentGetter {
 	public ReportScreen(String defaultLang) {
 		this.defaultLang = defaultLang;
 		initGUI();
-		setupDateformat(defaultLang);
+		setupDateFormat(defaultLang);
 	}
 
 	@Subscribe
@@ -76,13 +74,13 @@ public class ReportScreen extends JPanel implements ISecuredComponentGetter {
 		this.buttonPrint = null;
 		this.dateFrom = null;
 		this.dateTo   = null;
-		setupDateformat(evt.getLanguage());
+		setupDateFormat(evt.getLanguage());
 		getMainPanel();
 		initGUI();
 		revalidate();
 	}
 
-	protected void setupDateformat(String language) {
+	protected void setupDateFormat(String language) {
 		dateFormatForKeyDailyDetailed = initPattern("yyyy-MM-dd HH:mm:ss", "date.pattern.report.day.detail",language);
 		dateFormatForKeyDay = initPattern("dd/MM/yy", "date.pattern.report.day.normal",language);
 		dateFormatForKeyMonth = initPattern("dd/MM/yy", "date.pattern.report.day.month",language);
@@ -124,7 +122,6 @@ public class ReportScreen extends JPanel implements ISecuredComponentGetter {
 	}
 
 	protected void initGUI() {
-
 		setLayout(new BorderLayout());
 		add(getBusyPanel(), BorderLayout.CENTER);
 		ButtonGroup grp = new ButtonGroup();
@@ -136,12 +133,7 @@ public class ReportScreen extends JPanel implements ISecuredComponentGetter {
 	public JToggleButton getButtonDay() {
 		if (this.buttonDay == null) {
 			this.buttonDay = new ToggleImageAndTextButton(Messages.get("production.report.day"));
-			this.buttonDay.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(final ActionEvent e) {
-					buttonDayActionPerformed();
-				}
-			});
+			this.buttonDay.addActionListener(e -> buttonDayActionPerformed());
 		}
 		return this.buttonDay;
 	}
@@ -149,13 +141,7 @@ public class ReportScreen extends JPanel implements ISecuredComponentGetter {
 	public JToggleButton getButtonDailyDetailed() {
 		if (buttonDailyDetailed == null) {
 			buttonDailyDetailed = new ToggleImageAndTextButton(Messages.get("production.report.detailed"));
-			buttonDailyDetailed.addActionListener(new ActionListener() {
-
-				@Override
-				public void actionPerformed(ActionEvent arg0) {
-					buttonDailyDetailedActionPerformed();
-				}
-			});
+			buttonDailyDetailed.addActionListener(a -> buttonDailyDetailedActionPerformed());
 		}
 		return buttonDailyDetailed;
 	}
@@ -166,32 +152,24 @@ public class ReportScreen extends JPanel implements ISecuredComponentGetter {
 
 	protected void buttonDayActionPerformed() {
 		getButtonDailyDetailed().setEnabled(getButtonGroupByProduct().isSelected());
-		startStatisticsRetreiving();
+		startStatisticsRetrieving();
 	}
 
-	protected void startStatisticsRetreiving() {
+	protected void startStatisticsRetrieving() {
 		getBusyPanel().setBusy(true);
-		TaskExecutor.execute(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					getAndShowReport();
-				} catch (Exception e) {
-					logger.error("", e);
-				}
+		TaskExecutor.execute(() -> {
+            try {
+                getAndShowReport();
+            } catch (Exception e) {
+                logger.error("", e);
+            }
 
-				SwingUtilities.invokeLater(new Runnable() {
-					@Override
-					public void run() {
-						getBusyPanel().setBusy(false);
-					}
-				});
-			}
-		});
+            SwingUtilities.invokeLater(() -> getBusyPanel().setBusy(false));
+        });
 	}
 
 	protected void getAndShowReport() {
-		ProductionStatisticsAggregator aggre = new ProductionStatisticsAggregator();
+		ProductionStatisticsAggregator aggre = BeanProvider.getBean("productionStatisticsAggregator");
 		aggre.setDateFormatForKeyDailyDetailed(dateFormatForKeyDailyDetailed);
 		aggre.setDateFormatForKeyDay(dateFormatForKeyDay);
 		aggre.setDateFormatForKeyMonth(dateFormatForKeyMonth);
@@ -225,12 +203,7 @@ public class ReportScreen extends JPanel implements ISecuredComponentGetter {
 	public JToggleButton getButtonMonth() {
 		if (this.buttonMonth == null) {
 			this.buttonMonth = new ToggleImageAndTextButton(Messages.get("production.report.month"));
-			this.buttonMonth.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(final ActionEvent e) {
-					buttonMonthActionPerformed();
-				}
-			});
+			this.buttonMonth.addActionListener(e -> buttonMonthActionPerformed());
 		}
 		return this.buttonMonth;
 	}
@@ -238,19 +211,13 @@ public class ReportScreen extends JPanel implements ISecuredComponentGetter {
 	protected void buttonMonthActionPerformed() {
 		getButtonDailyDetailed().setEnabled(false);
 		getButtonDailyDetailed().setSelected(false);
-		startStatisticsRetreiving();
+		startStatisticsRetrieving();
 	}
 
 	public JToggleButton getButtonWeek() {
 		if (this.buttonWeek == null) {
 			this.buttonWeek = new ToggleImageAndTextButton(Messages.get("production.report.week"));
-			this.buttonWeek.addActionListener(new ActionListener() {
-
-				@Override
-				public void actionPerformed(final ActionEvent e) {
-					buttonWeekActionPerformed();
-				}
-			});
+			this.buttonWeek.addActionListener(e -> buttonWeekActionPerformed());
 		}
 		return this.buttonWeek;
 	}
@@ -258,26 +225,21 @@ public class ReportScreen extends JPanel implements ISecuredComponentGetter {
 	protected void buttonWeekActionPerformed() {
 		getButtonDailyDetailed().setEnabled(false);
 		getButtonDailyDetailed().setSelected(false);
-		startStatisticsRetreiving();
+		startStatisticsRetrieving();
 	}
 
 	public ReportTable getTable() {
-		if (this.table == null) {
-			this.table = new ReportTable();
+		if (table == null) {
+			table = BeanProvider.getBean("reportTable");
 		}
-		return this.table;
+
+		return table;
 	}
 
 	public JToggleButton getButtonGroupByProduct() {
 		if (this.buttonGroupByProduct == null) {
 			this.buttonGroupByProduct = new ToggleImageAndTextButton(Messages.get("production.report.group"));
-			this.buttonGroupByProduct.addActionListener(new ActionListener() {
-
-				@Override
-				public void actionPerformed(final ActionEvent e) {
-					buttonGroupByProductActionPerformed();
-				}
-			});
+			this.buttonGroupByProduct.addActionListener(e -> buttonGroupByProductActionPerformed());
 		}
 		return this.buttonGroupByProduct;
 	}
@@ -321,7 +283,7 @@ public class ReportScreen extends JPanel implements ISecuredComponentGetter {
 
 	public JBusyComponent<JComponent> getBusyPanel() {
 		if (this.busyPanel == null) {
-			this.busyPanel = new JBusyComponent<JComponent>(getMainPanel());
+			this.busyPanel = new JBusyComponent<>(getMainPanel());
 		}
 		return this.busyPanel;
 	}
@@ -329,12 +291,7 @@ public class ReportScreen extends JPanel implements ISecuredComponentGetter {
 	public JButton getButtonPrint() {
 		if (buttonPrint == null) {
 			buttonPrint = new JButton(Messages.get("production.report.print"));
-			buttonPrint.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					buttonPrintActionPerformed();
-				}
-			});
+			buttonPrint.addActionListener(e -> buttonPrintActionPerformed());
 		}
 		return buttonPrint;
 	}
@@ -342,7 +299,6 @@ public class ReportScreen extends JPanel implements ISecuredComponentGetter {
 	protected void buttonPrintActionPerformed() {
 		getTable().printReport();
 	}
-
 
 	@Override
 	public Component getComponent() {
@@ -358,6 +314,4 @@ public class ReportScreen extends JPanel implements ISecuredComponentGetter {
 	public String getTitle() {
 		return "report.production";
 	}
-
-
 }

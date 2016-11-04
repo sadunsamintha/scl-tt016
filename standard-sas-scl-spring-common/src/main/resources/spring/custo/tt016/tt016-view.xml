@@ -41,4 +41,9 @@
 		<property name="snapshotView" ref="snapshotView" />
 	</bean>
 
+	<bean id="productionStatisticsAggregator"
+		  class="com.sicpa.tt016.monitoring.TT016ProductionStatisticsAggregator" scope="prototype"/>
+
+	<bean id="reportTable" class="com.sicpa.tt016.view.report.TT016ReportTable" scope="prototype"/>
+
 </beans>
