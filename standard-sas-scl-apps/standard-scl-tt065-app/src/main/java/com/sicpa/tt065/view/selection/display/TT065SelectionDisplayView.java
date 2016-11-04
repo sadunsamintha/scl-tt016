@@ -8,6 +8,7 @@ import com.sicpa.standard.sasscl.model.CodeType;
 import com.sicpa.standard.sasscl.model.ProductionMode;
 import com.sicpa.standard.sasscl.model.ProductionParameters;
 import com.sicpa.standard.sasscl.model.SKU;
+import com.sicpa.standard.sasscl.provider.ProductBatchIdProvider;
 import com.sicpa.standard.sasscl.view.LanguageSwitchEvent;
 import com.sicpa.standard.sasscl.view.selection.display.SelectionDisplayView;
 import net.miginfocom.swing.MigLayout;
@@ -16,43 +17,13 @@ import javax.swing.*;
 import java.awt.*;
 
 @SuppressWarnings("serial")
-public class TT065SelectionDisplayView extends SelectionDisplayView {
-
-	private JPanel mainPanel;
-	private JLabel labelTitle;
-
-	public TT065SelectionDisplayView() {
-		initGUI();
-		handleLanguageSwitch(null);
-	}
-
-	protected void initGUI() {
-		setLayout(new MigLayout("fill"));
-		add(getLabelTitle(), "spanx , split 2");
-		add(new JSeparator(), "growx");
-		add(getMainPanel(), "grow,push");
-	}
-
-	public JLabel getLabelTitle() {
-		if (labelTitle == null) {
-			labelTitle = new JLabel();
-		}
-		return labelTitle;
-	}
+public class TT065SelectionDisplayView extends SelectionDisplayView implements ProductBatchIdProvider {
 
 	@Override
 	public void modelChanged() {
 		if (model != null && model.getProductionParameters() != null) {
 			buildSelectionPanel(model.getProductionParameters());
 		}
-	}
-
-	public JPanel getMainPanel() {
-		if (mainPanel == null) {
-			mainPanel = new JPanel();
-			mainPanel.setLayout(new MigLayout());
-		}
-		return mainPanel;
 	}
 
 	protected void buildSelectionPanel(ProductionParameters pp) {
@@ -62,6 +33,7 @@ public class TT065SelectionDisplayView extends SelectionDisplayView {
 		String barcode = pp.getBarcode();
 		CodeType codeType = sku != null ? sku.getCodeType() : null;
 		ProductionMode mode = pp.getProductionMode();
+		String strBatchId = pp.getProperty(productionBatchId);
 
 		if (mode != null) {
 			getMainPanel().add(new MultiLineLabel(Messages.get(mode.getDescription())), "grow, w 200, h 45 , spanx");
@@ -76,6 +48,9 @@ public class TT065SelectionDisplayView extends SelectionDisplayView {
 			}
 			getMainPanel().add(new MultiLineLabel(sku.getDescription()), "grow, w 200, h 135 , spanx");
 		}
+		if (strBatchId != null && !strBatchId.equals("0")){
+			getMainPanel().add(new MultiLineLabel(Messages.get("sku.batch.id.label")+" "+strBatchId), "grow, w 200, h 45 , spanx");
+		}
 
 		if (barcode != null) {
 			getMainPanel().add(new MultiLineLabel(barcode), "grow, w 200, h 45 , spanx");
@@ -85,30 +60,4 @@ public class TT065SelectionDisplayView extends SelectionDisplayView {
 		getMainPanel().repaint();
 	}
 
-	protected JComponent toScaledImage(Image img) {
-		Image scaled = ImageUtils.changeSizeKeepRatio(img, Math.min(getMaxImageWidth(), img.getWidth(null)),
-				Math.min(getMaxImageHeight(), img.getHeight(null)));
-		return new JLabel(new ImageIcon(scaled));
-	}
-
-	protected int getMaxImageWidth() {
-		return 200;
-	}
-
-	protected int getMaxImageHeight() {
-		return 200;
-	}
-
-	@Subscribe
-	public void handleLanguageSwitch(LanguageSwitchEvent evt) {
-		getLabelTitle().setText(Messages.get("selectiondisplay.title"));
-		modelChanged();
-	}
-
-	public static void main(String[] args) {
-		JFrame frame = new JFrame();
-		frame.setSize(650, 300);
-		frame.setContentPane(new TT065SelectionDisplayView());
-		frame.setVisible(true);
-	}
 }
