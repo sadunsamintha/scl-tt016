@@ -45,6 +45,8 @@
 		<property name="language" value="${language}"/>
 	</bean>
 
-	<bean id="reportTable" class="com.sicpa.tt016.view.report.TT016ReportTable" scope="prototype"/>
+	<bean id="reportScreen" class="com.sicpa.tt016.view.report.TT016ReportScreen">
+		<property name="productionStatisticsAggregatorFactory" ref="productionStatisticsAggregatorFactory"/>
+	</bean>
 
 </beans>

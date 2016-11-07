@@ -350,7 +350,4 @@
 		<property name="language" value="${language}"/>
 	</bean>
 
-	<bean id="reportTable"
-		  class="com.sicpa.standard.sasscl.view.report.ReportTable" scope="prototype"/>
-
 </beans>

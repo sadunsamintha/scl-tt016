@@ -1,31 +1,23 @@
 package com.sicpa.standard.sasscl.view.report;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Point;
+import com.sicpa.standard.client.common.i18n.Messages;
+import com.sicpa.standard.gui.components.renderers.SicpaTableCellRenderer;
+import com.sicpa.standard.gui.components.scroll.SmallScrollBar;
+import com.sicpa.standard.gui.components.table.BeanReaderJTable;
+import com.sicpa.standard.gui.utils.ThreadUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.swing.*;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
+import java.awt.*;
 import java.awt.print.PrinterException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
-import javax.swing.DefaultRowSorter;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.ListSelectionModel;
-import javax.swing.table.TableModel;
-import javax.swing.table.TableRowSorter;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.sicpa.standard.client.common.i18n.Messages;
-import com.sicpa.standard.gui.components.renderers.SicpaTableCellRenderer;
-import com.sicpa.standard.gui.components.scroll.SmallScrollBar;
-import com.sicpa.standard.gui.components.table.BeanReaderJTable;
-import com.sicpa.standard.gui.utils.ThreadUtils;
 
 public class ReportTable extends JPanel {
 
@@ -45,7 +37,7 @@ public class ReportTable extends JPanel {
 		add(SmallScrollBar.createLayerSmallScrollBar(getScroll()), BorderLayout.CENTER);
 	}
 
-	public JScrollPane getScroll() {
+	protected JScrollPane getScroll() {
 		if (this.scroll == null) {
 			this.scroll = new JScrollPane(new JPanel());
 		}

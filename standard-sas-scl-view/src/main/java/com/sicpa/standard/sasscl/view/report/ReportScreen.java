@@ -52,11 +52,11 @@ public class ReportScreen extends JPanel implements ISecuredComponentGetter {
 
 	protected IProductionStatisticsAggregatorFactory productionStatisticsAggregatorFactory;
 
-	public ReportScreen() {
-		initGUI();
-	}
+    public ReportScreen() {
+        initGUI();
+    }
 
-	@Subscribe
+    @Subscribe
 	public void handleLanguageSwitch(LanguageSwitchEvent evt) {
 		removeAll();
 		this.busyPanel = null;
@@ -195,7 +195,7 @@ public class ReportScreen extends JPanel implements ISecuredComponentGetter {
 
 	public ReportTable getTable() {
 		if (table == null) {
-			table = BeanProvider.getBean("reportTable");
+            table = new ReportTable();
 		}
 
 		return table;
