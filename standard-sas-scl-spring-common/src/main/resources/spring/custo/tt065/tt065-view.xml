@@ -2,6 +2,26 @@
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
+	<bean id="mainFrameController" class="com.sicpa.tt065.view.TT065MainFrameController">
+		<property name="productionParameters" ref="productionParameters" />
+		<property name="lineId" value="${lineId}" />
+		<property name="messageCodeMapper" ref="messagesMapping" />
+		<property name="securedPanels">
+			<list>
+				<ref bean="plcMonitoringView" />
+				<ref bean="advancedControlView" />
+				<ref bean="plcVariablesPanel" />
+				<ref bean="productionStatisticsPanel" />
+				<ref bean="systemEventPanel" />
+				<ref bean="MBeanViewer" />
+				<ref bean="miscPanel" />
+				<ref bean="beanCallPanel" />
+				<ref bean="encodersInfoView" />
+				<ref bean="reportScreen" />
+			</list>
+		</property>
+	</bean>
+
 	<bean id="batchIdSkuView" class="com.sicpa.tt065.view.sku.batchId.BatchIdSkuView">
 		<property name="controller" ref="batchIdSkuViewController" />
 		<property name="model" value="#{batchIdSkuViewController.model}" />

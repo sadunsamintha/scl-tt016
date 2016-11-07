@@ -5,7 +5,7 @@
 		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 
-	<bean id="executorStarting" class="com.sicpa.standard.sasscl.controller.flow.statemachine.executor.ExecutorStarting">
+	<bean id="executorStarting" class="com.sicpa.standard.sasscl.controller.flow.statemachine.executor.TT065ExecutorStarting">
 		<property name="alert" ref="alert" />
 		<property name="productionBatchProvider" ref="productionBatchProvider" />
 		<property name="hardwareController" ref="hardwareController" />

@@ -2,9 +2,10 @@ package com.sicpa.standard.sasscl.provider.impl;
 
 import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.sasscl.model.ProductionParameters;
+import com.sicpa.standard.sasscl.provider.ProductBatchIdProvider;
 import com.sicpa.tt065.event.BatchIdViewEvent;
 
-public class TT065ProductionBatchProvider extends ProductionBatchProvider {
+public class TT065ProductionBatchProvider extends ProductionBatchProvider implements ProductBatchIdProvider {
 
 	public TT065ProductionBatchProvider() {
 		super();
@@ -12,9 +13,10 @@ public class TT065ProductionBatchProvider extends ProductionBatchProvider {
 
 	@Subscribe
 	public void handleSkuSelectionButtonPressed(BatchIdViewEvent evt){
-		ProductionParameters pp = evt.getPp();
-		set("987654321");
-		logger.info("TT065ProductionBatchProvider,user=" + evt.user.getLogin() + ",date=" + evt.date.toString() + ", batchId=");
+		ProductionParameters pp = evt.getProductionParameters();
+		String strBatchId = pp.getProperty(productionBatchId);
+		set(strBatchId);
+		logger.info("TT065ProductionBatchProvider,user=" + evt.user.getLogin() + ",date=" + evt.date.toString() + ", batchId=" + strBatchId);
 	}
 
 

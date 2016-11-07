@@ -3,9 +3,12 @@ package com.sicpa.tt065.event;
 
 import com.sicpa.standard.client.common.security.SecurityService;
 import com.sicpa.standard.client.common.security.User;
+import com.sicpa.standard.sasscl.custoBuilder.CustoBuilder;
 import com.sicpa.standard.sasscl.model.ProductionParameters;
 
 import java.util.Date;
+
+import static com.sicpa.standard.sasscl.provider.ProductBatchIdProvider.productionBatchId;
 
 /**
  * Event to be fired when a manual intervention stops the production
@@ -13,15 +16,16 @@ import java.util.Date;
 public class BatchIdViewEvent {
     public final User user;
     public final Date date;
-    private ProductionParameters pp;
+    private ProductionParameters productionParameters;
 
-    public BatchIdViewEvent(ProductionParameters pp) {
-        this.pp = pp;
+    public BatchIdViewEvent(ProductionParameters productionParameters) {
+        CustoBuilder.addPropertyToClass(ProductionParameters.class, productionBatchId);
+        this.productionParameters = productionParameters;
         this.user = SecurityService.getCurrentUser();
         this.date = new Date();
     }
 
-    public ProductionParameters getPp() {
-        return pp;
+    public ProductionParameters getProductionParameters() {
+        return productionParameters;
     }
 }

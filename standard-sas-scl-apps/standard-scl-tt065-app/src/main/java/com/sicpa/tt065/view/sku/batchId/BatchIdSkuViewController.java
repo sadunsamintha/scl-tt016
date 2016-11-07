@@ -1,15 +1,18 @@
 package com.sicpa.tt065.view.sku.batchId;
 
 import com.google.common.eventbus.Subscribe;
+import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.i18n.Messages;
+import com.sicpa.standard.sasscl.business.activation.NewProductEvent;
 import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowStateChangedEvent;
 import com.sicpa.standard.sasscl.controller.flow.FlowControl;
 import com.sicpa.standard.sasscl.controller.hardware.HardwareControllerStatus;
 import com.sicpa.standard.sasscl.custoBuilder.CustoBuilder;
 import com.sicpa.standard.sasscl.model.ProductionParameters;
 import com.sicpa.standard.sasscl.provider.ProductBatchIdProvider;
-import com.sicpa.standard.sasscl.view.AbstractViewFlowController;
 import com.sicpa.standard.sasscl.view.LanguageSwitchEvent;
+import com.sicpa.tt065.event.BatchIdViewEvent;
+import com.sicpa.tt065.view.TT065AbstractViewFlowController;
 import com.sicpa.tt065.view.flow.TT065DefaultScreensFlow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +21,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.sicpa.tt065.view.TT065ScreenFlowTriggers.BATCH_ID_REGISTERED;
 
-public class BatchIdSkuViewController extends AbstractViewFlowController implements IBatchIdSkuListener, ProductBatchIdProvider {
+public class BatchIdSkuViewController extends TT065AbstractViewFlowController implements IBatchIdSkuListener, ProductBatchIdProvider {
 
 	private static final Logger logger = LoggerFactory.getLogger(BatchIdSkuViewController.class);
 
@@ -93,13 +96,14 @@ public class BatchIdSkuViewController extends AbstractViewFlowController impleme
 		pp.setProperty(productionBatchId, strBatchId);
 		logger.info(Messages.format("sku.batch.id.registered", strBatchId));
 
-		//MonitoringService.addSystemEvent(new BasicSystemEvent(SystemEventLevel.INFO, PROD_STOP_REASON, Messages.get(stopReason.getKey())));
 		batchIdButtonPressed.set(false);
 
 		viewController.setProductionParameters(pp);
 		viewController.productionParametersChanged();
 		screensFlow.moveToNext(BATCH_ID_REGISTERED);
-		//logger.info("SkuSelectionButtonPressed,user=" + evt.user.getLogin() + ",date=" + evt.date.toString() + ", batchId=");
+
+		//store the batchId on ProductionBatchProvider to save later on database
+		EventBusService.post(new BatchIdViewEvent(pp));
 	}
 
 	public BatchIdSkuModel getModel() {

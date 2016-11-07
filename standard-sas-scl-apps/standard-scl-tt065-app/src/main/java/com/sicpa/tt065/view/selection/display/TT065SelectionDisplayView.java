@@ -33,7 +33,12 @@ public class TT065SelectionDisplayView extends SelectionDisplayView implements P
 		String barcode = pp.getBarcode();
 		CodeType codeType = sku != null ? sku.getCodeType() : null;
 		ProductionMode mode = pp.getProductionMode();
-		String strBatchId = pp.getProperty(productionBatchId);
+		String strBatchId = null;
+		try {
+			strBatchId = pp.getProperty(productionBatchId);
+		}catch (IllegalArgumentException e){
+		}
+
 
 		if (mode != null) {
 			getMainPanel().add(new MultiLineLabel(Messages.get(mode.getDescription())), "grow, w 200, h 45 , spanx");
