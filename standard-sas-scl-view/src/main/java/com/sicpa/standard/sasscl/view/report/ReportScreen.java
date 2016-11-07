@@ -45,7 +45,7 @@ public class ReportScreen extends JPanel implements ISecuredComponentGetter {
 	protected JToggleButton buttonGroupByProduct;
 	protected JToggleButton buttonDailyDetailed;
 
-	protected ReportTable table;
+	protected IReportTable table;
 	protected JButton buttonPrint;
 	protected JXDatePicker dateTo;
 	protected JXDatePicker dateFrom;
@@ -193,7 +193,7 @@ public class ReportScreen extends JPanel implements ISecuredComponentGetter {
 		startStatisticsRetrieving();
 	}
 
-	public ReportTable getTable() {
+	public IReportTable getTable() {
 		if (table == null) {
             table = new ReportTable();
 		}
@@ -240,7 +240,7 @@ public class ReportScreen extends JPanel implements ISecuredComponentGetter {
 			this.mainPanel.add(getButtonMonth(), "grow,w 30%,wrap");
 			this.mainPanel.add(getButtonGroupByProduct(), "grow");
 			this.mainPanel.add(getButtonDailyDetailed(), "wrap,grow");
-			this.mainPanel.add(getTable(), "grow , span,push");
+			this.mainPanel.add(getTable().getComponent(), "grow , span,push");
 			this.mainPanel.add(new PaddedButton(getButtonPrint()), "spanx ,split 2,  right");
 		}
 		return this.mainPanel;

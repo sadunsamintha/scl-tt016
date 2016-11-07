@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-public class ReportTable extends JPanel {
+public class ReportTable extends JPanel implements IReportTable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -217,4 +217,9 @@ public class ReportTable extends JPanel {
 			}
 		}
 	}
+
+    @Override
+    public JComponent getComponent() {
+        return this;
+    }
 }
