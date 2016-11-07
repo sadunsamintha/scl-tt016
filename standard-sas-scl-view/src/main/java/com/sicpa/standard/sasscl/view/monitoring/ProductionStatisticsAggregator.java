@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 import java.util.*;
 import java.util.Map.Entry;
 
-public class ProductionStatisticsAggregator {
+public class ProductionStatisticsAggregator implements IProductionStatisticsAggregator {
 
 	private static final Logger logger = LoggerFactory.getLogger(ProductionStatisticsAggregator.class);
 
@@ -25,6 +25,7 @@ public class ProductionStatisticsAggregator {
 		this.mapData = new HashMap<>();
 	}
 
+	@Override
 	public void aggregate(final List<IncrementalStatistics> list, final ReportPeriod period,
 						  final boolean groupByProduct, final boolean dailyDetail, Date minimumDate, Date maxDate) {
 		this.period = period;
@@ -165,7 +166,7 @@ public class ProductionStatisticsAggregator {
 		return res;
 	}
 
-	public boolean isInSamePeriod(Date d1, Date d2, int unit) {
+	protected boolean isInSamePeriod(Date d1, Date d2, int unit) {
 		Calendar c = Calendar.getInstance();
 		c.setTime(d1);
 		int m1 = c.get(unit);
@@ -179,32 +180,16 @@ public class ProductionStatisticsAggregator {
 		return " - ";
 	}
 
-	public String getDateFormatForKeyDailyDetailed() {
-		return dateFormatForKeyDailyDetailed;
-	}
-
 	public void setDateFormatForKeyDailyDetailed(String dateFormatForKeyDailyDetailed) {
 		this.dateFormatForKeyDailyDetailed = dateFormatForKeyDailyDetailed;
-	}
-
-	public String getDateFormatForKeyDay() {
-		return dateFormatForKeyDay;
 	}
 
 	public void setDateFormatForKeyDay(String dateFormatForKeyDay) {
 		this.dateFormatForKeyDay = dateFormatForKeyDay;
 	}
 
-	public String getDateFormatForKeyMonth() {
-		return dateFormatForKeyMonth;
-	}
-
 	public void setDateFormatForKeyMonth(String dateFormatForKeyMonth) {
 		this.dateFormatForKeyMonth = dateFormatForKeyMonth;
-	}
-
-	public String getDateFormatForKeyWeek() {
-		return dateFormatForKeyWeek;
 	}
 
 	public void setDateFormatForKeyWeek(String dateFormatForKeyWeek) {

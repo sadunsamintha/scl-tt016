@@ -6,7 +6,7 @@
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 
 	<bean id="reportScreen" class="com.sicpa.standard.sasscl.view.report.ReportScreen">
-		<constructor-arg value="${language}"/>
+		<property name="productionStatisticsAggregatorFactory" ref="productionStatisticsAggregatorFactory"/>
 	</bean>
 
 	<bean id="mainFrameController" class="com.sicpa.standard.sasscl.view.MainFrameController">
@@ -346,8 +346,9 @@
 		<property name="flowControl" ref="flowControl" />
 	</bean>
 
-	<bean id="productionStatisticsAggregator"
-		  class="com.sicpa.standard.sasscl.view.monitoring.ProductionStatisticsAggregator" scope="prototype"/>
+	<bean id="productionStatisticsAggregatorFactory" class="com.sicpa.standard.sasscl.view.monitoring.ProductionStatisticsAggregatorFactory">
+		<property name="language" value="${language}"/>
+	</bean>
 
 	<bean id="reportTable"
 		  class="com.sicpa.standard.sasscl.view.report.ReportTable" scope="prototype"/>

@@ -12,6 +12,8 @@ import com.sicpa.standard.sasscl.monitoring.MonitoringService;
 import com.sicpa.standard.sasscl.monitoring.statistics.incremental.IncrementalStatistics;
 import com.sicpa.standard.sasscl.security.SasSclPermission;
 import com.sicpa.standard.sasscl.view.LanguageSwitchEvent;
+import com.sicpa.standard.sasscl.view.monitoring.IProductionStatisticsAggregator;
+import com.sicpa.standard.sasscl.view.monitoring.IProductionStatisticsAggregatorFactory;
 import com.sicpa.standard.sasscl.view.monitoring.ProductionStatisticsAggregator;
 import net.miginfocom.swing.MigLayout;
 import org.apache.commons.lang.LocaleUtils;
@@ -48,17 +50,10 @@ public class ReportScreen extends JPanel implements ISecuredComponentGetter {
 	protected JXDatePicker dateTo;
 	protected JXDatePicker dateFrom;
 
-	protected String dateFormatForKeyDailyDetailed;
-	protected String dateFormatForKeyDay;
-	protected String dateFormatForKeyMonth;
-	protected String dateFormatForKeyWeek;
+	protected IProductionStatisticsAggregatorFactory productionStatisticsAggregatorFactory;
 
-	private String defaultLang;
-
-	public ReportScreen(String defaultLang) {
-		this.defaultLang = defaultLang;
+	public ReportScreen() {
 		initGUI();
-		setupDateFormat(defaultLang);
 	}
 
 	@Subscribe
@@ -74,35 +69,9 @@ public class ReportScreen extends JPanel implements ISecuredComponentGetter {
 		this.buttonPrint = null;
 		this.dateFrom = null;
 		this.dateTo   = null;
-		setupDateFormat(evt.getLanguage());
 		getMainPanel();
 		initGUI();
 		revalidate();
-	}
-
-	protected void setupDateFormat(String language) {
-		dateFormatForKeyDailyDetailed = initPattern("yyyy-MM-dd HH:mm:ss", "date.pattern.report.day.detail",language);
-		dateFormatForKeyDay = initPattern("dd/MM/yy", "date.pattern.report.day.normal",language);
-		dateFormatForKeyMonth = initPattern("dd/MM/yy", "date.pattern.report.day.month",language);
-		dateFormatForKeyWeek = initPattern("dd/MM/yy", "date.pattern.report.day.week",language);
-	}
-
-	protected String initPattern(String defaultPattern, String patternKey,String language) {
-		String pattern = null;
-		try {
-			pattern = Messages.get(patternKey);
-			// to test if the pattern is valid
-			new SimpleDateFormat(pattern, getLocaleFromLanguage(language));
-			return pattern;
-		} catch (Exception e) {
-			logger.error("invalid or pattern not found {}", pattern);
-			return defaultPattern;
-		}
-	}
-
-	private Locale getLocaleFromLanguage(String language) {
-		return ((List<Locale>) LocaleUtils.availableLocaleList()).stream()
-				.filter(l -> l.getLanguage().equals(language) && l.getCountry() == "").findFirst().get();
 	}
 
 	public JXDatePicker getDateFrom() {
@@ -169,11 +138,7 @@ public class ReportScreen extends JPanel implements ISecuredComponentGetter {
 	}
 
 	protected void getAndShowReport() {
-		ProductionStatisticsAggregator aggre = BeanProvider.getBean("productionStatisticsAggregator");
-		aggre.setDateFormatForKeyDailyDetailed(dateFormatForKeyDailyDetailed);
-		aggre.setDateFormatForKeyDay(dateFormatForKeyDay);
-		aggre.setDateFormatForKeyMonth(dateFormatForKeyMonth);
-		aggre.setDateFormatForKeyWeek(dateFormatForKeyWeek);
+		IProductionStatisticsAggregator aggre = productionStatisticsAggregatorFactory.getInstance();
 
 		Date from = DateUtils.round(getDateFrom().getDate(), Calendar.DAY_OF_MONTH);
 		Date to = DateUtils.ceiling(getDateTo().getDate(), Calendar.DAY_OF_MONTH);// go to next day
@@ -313,5 +278,10 @@ public class ReportScreen extends JPanel implements ISecuredComponentGetter {
 	@Override
 	public String getTitle() {
 		return "report.production";
+	}
+
+	public void setProductionStatisticsAggregatorFactory(
+			IProductionStatisticsAggregatorFactory productionStatisticsAggregatorFactory) {
+		this.productionStatisticsAggregatorFactory = productionStatisticsAggregatorFactory;
 	}
 }
