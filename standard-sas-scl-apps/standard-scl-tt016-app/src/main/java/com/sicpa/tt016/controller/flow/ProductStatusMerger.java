@@ -11,9 +11,7 @@ import com.sicpa.standard.sasscl.monitoring.MonitoringService;
 import com.sicpa.standard.sasscl.monitoring.system.event.BasicSystemEvent;
 import com.sicpa.standard.sasscl.provider.impl.ProductionBatchProvider;
 import com.sicpa.tt016.devices.plc.PlcCameraResultIndexManager;
-import com.sicpa.tt016.model.PlcCameraProductStatus;
-import com.sicpa.tt016.model.PlcCameraResult;
-import com.sicpa.tt016.model.TT016ProductStatus;
+import com.sicpa.tt016.model.*;
 import com.sicpa.tt016.model.event.PlcCameraResultEvent;
 import com.sicpa.tt016.model.event.TT016NewProductEvent;
 import org.slf4j.Logger;
@@ -22,16 +20,16 @@ import org.slf4j.LoggerFactory;
 import java.util.LinkedList;
 import java.util.Queue;
 
+import static com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState.STT_STARTING;
 import static com.sicpa.standard.sasscl.model.ProductStatus.SENT_TO_PRINTER_WASTED;
 import static com.sicpa.standard.sasscl.monitoring.system.SystemEventType.PRODUCT_SCANNED;
-import static com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState.STT_STARTING;
 
 public class ProductStatusMerger extends StandardActivationBehavior {
 
 	private static final Logger logger = LoggerFactory.getLogger(ProductStatusMerger.class);
 
 	private Queue<PlcCameraResult> plcCameraResults = new LinkedList<>();
-	private Queue<Product> products = new LinkedList<>();
+	private Queue<CameraResult> cameraResults = new LinkedList<>();
 
 	private ProductionBatchProvider productionBatchProvider;
 	private PlcCameraResultIndexManager plcCameraResultIndexManager;
@@ -40,14 +38,14 @@ public class ProductStatusMerger extends StandardActivationBehavior {
 
 	@Override
 	public Product receiveCode(Code code, boolean isValid) {
-		handleNewCameraProduct(super.receiveCode(code, isValid));
+		handleNewCameraProduct(new CameraResult(new TT016Code(code, isValid)));
 
 		return null;
 	}
 
 	@Subscribe
 	public void receiveNewCameraProduct(TT016NewProductEvent event) {
-		handleNewCameraProduct(event.getProduct());
+		handleNewCameraProduct(new CameraResult(event.getProduct()));
 	}
 
 	@Subscribe
@@ -72,9 +70,9 @@ public class ProductStatusMerger extends StandardActivationBehavior {
 	@Subscribe
 	public void flushProductAndPlcCameraProductStatusesQueues(ApplicationFlowStateChangedEvent event) {
 		if (event.getCurrentState().equals(STT_STARTING)) {
-			if (!products.isEmpty()) {
-				logger.warn("Removed {} elements from \"products\" queue", products.size());
-				products.clear();
+			if (!cameraResults.isEmpty()) {
+				logger.warn("Removed {} elements from \"camera results\" queue", cameraResults.size());
+				cameraResults.clear();
 			}
 
 			if (!plcCameraResults.isEmpty()) {
@@ -92,9 +90,9 @@ public class ProductStatusMerger extends StandardActivationBehavior {
 		this.productionBatchProvider = productionBatchProvider;
 	}
 
-	private void handleNewCameraProduct(Product product) {
+	private void handleNewCameraProduct(CameraResult cameraResult) {
 		synchronized (lock) {
-			products.add(product);
+			cameraResults.add(cameraResult);
 
 			if (isPlcCameraStatusAvailable()) {
 				mergeProductStatuses();
@@ -103,7 +101,7 @@ public class ProductStatusMerger extends StandardActivationBehavior {
 	}
 
 	private boolean isCameraStatusAvailable() {
-		return !products.isEmpty();
+		return !cameraResults.isEmpty();
 	}
 
 	private boolean isPlcCameraStatusAvailable() {
@@ -111,7 +109,7 @@ public class ProductStatusMerger extends StandardActivationBehavior {
 	}
 
 	private void mergeProductStatuses() {
-		Product product = products.poll();
+		Product product = getProductFromCameraResult(cameraResults.poll());
 		PlcCameraResult plcCameraResult = plcCameraResults.poll();
 		PlcCameraProductStatus plcCameraProductStatus = plcCameraResult.getPlcCameraProductStatus();
 
@@ -166,5 +164,15 @@ public class ProductStatusMerger extends StandardActivationBehavior {
 			}
 			*/
 		}
+	}
+
+	private Product getProductFromCameraResult(CameraResult cameraResult) {
+		Product product = cameraResult.getProduct();
+
+		return product != null ? product : getActivationBehaviorProduct(cameraResult.getCode());
+	}
+
+	private Product getActivationBehaviorProduct(TT016Code code) {
+		return super.receiveCode(code.getCode(), code.isValid());
 	}
 }
