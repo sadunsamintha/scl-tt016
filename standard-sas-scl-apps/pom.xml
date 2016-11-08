@@ -171,7 +171,7 @@
 			<activation>
 				<file>
 					<missing>nobuild.txt</missing>
-					<exists>/usr/bin/rpmbuild</exists>
+					<!--<exists>/usr/bin/rpmbuild</exists>-->
 				</file>
 
 			</activation>
