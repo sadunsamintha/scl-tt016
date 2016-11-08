@@ -69,12 +69,6 @@ public class TT016ReportTable extends ReportTable {
     }
 
     @Override
-    protected void setTableColumnProperties(BeanReaderJTable<ReportDataWrapper> table,
-                                            TableRowSorter<TableModel> sorter) {
-        super.setTableColumnProperties(table, sorter);
-    }
-
-    @Override
     protected void setTableColumnPropertiesGroupByProduct(BeanReaderJTable<ReportDataWrapper> table,
                                                           TableRowSorter<TableModel> sorter, boolean detailed) {
         table.getColumnModel().getColumn(3).setCellRenderer(new TimeCellRenderer());
