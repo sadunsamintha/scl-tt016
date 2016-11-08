@@ -1,6 +1,7 @@
 package com.sicpa.standard.sasscl.view.report;
 
 public class ReportData {
+
 	protected int runningTime;
 	protected int good;
 	protected int bad;

@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 import java.util.*;
 import java.util.Map.Entry;
 
-public class ProductionStatisticsAggregator {
+public class ProductionStatisticsAggregator implements IProductionStatisticsAggregator {
 
 	private static final Logger logger = LoggerFactory.getLogger(ProductionStatisticsAggregator.class);
 
@@ -22,11 +22,12 @@ public class ProductionStatisticsAggregator {
 	protected boolean dailyDetailed;
 
 	public ProductionStatisticsAggregator() {
-		this.mapData = new HashMap<ReportKey, ReportData>();
+		this.mapData = new HashMap<>();
 	}
 
+	@Override
 	public void aggregate(final List<IncrementalStatistics> list, final ReportPeriod period,
-			final boolean groupByProduct, final boolean dailyDetail, Date minimumDate, Date maxDate) {
+						  final boolean groupByProduct, final boolean dailyDetail, Date minimumDate, Date maxDate) {
 		this.period = period;
 		this.groupByProduct = groupByProduct;
 		this.dailyDetailed = dailyDetail;
@@ -34,52 +35,64 @@ public class ProductionStatisticsAggregator {
 		for (IncrementalStatistics aStats : list) {
 			process(aStats, minimumDate, maxDate);
 		}
-
 	}
 
-	protected void process(final IncrementalStatistics aStats, Date minimumDate, Date maxDate) {
-
+	protected void process(final IncrementalStatistics incrStats, Date minimumDate, Date maxDate) {
 		try {
+			ReportData data = createReportData();
+			setReportData(data, incrStats);
 
-			Integer good = 0;
-			Integer bad = 0;
+			ReportKey key = createReportKey(incrStats, minimumDate, maxDate);
 
-			for (Entry<StatisticsKey, Integer> entry : aStats.getProductsStatistics().getValues().entrySet()) {
-				// TODO THIS should be outside, in a method to be customisable
-				if (entry.getKey().toString().endsWith("good")) {
-					good += entry.getValue();
-				} else if (entry.getKey().toString().endsWith("bad")) {
-					bad += entry.getValue();
-				}
-			}
-
-			ReportData data = new ReportData();
-
-			data.setBad(bad == null ? 0 : bad);
-			data.setGood(good == null ? 0 : good);
-
-			data.setRunningTime((int) ((aStats.getStopTime().getTime() - aStats.getStartTime().getTime()) / 1000));
-			ReportKey key = new ReportKey();
-			key.setDate(getDateAsKey(aStats.getStartTime(), aStats.getStopTime(), minimumDate, maxDate));
-			if (this.groupByProduct) {
-				key.setProductionMode(aStats.getProductionParameters().getProductionMode().getDescription());
-				key.setSku(aStats.getProductionParameters().getSku().getDescription());
-			}
 			addData(key, data);
+
 		} catch (Exception e) {
 			logger.error("", e);
 		}
+	}
 
+	protected ReportKey createReportKey(IncrementalStatistics incrStats, Date minimumDate, Date maxDate) {
+		ReportKey key = new ReportKey();
+
+		key.setDate(getDateAsKey(incrStats.getStartTime(), incrStats.getStopTime(), minimumDate, maxDate));
+		if (this.groupByProduct) {
+			key.setProductionMode(incrStats.getProductionParameters().getProductionMode().getDescription());
+			key.setSku(incrStats.getProductionParameters().getSku().getDescription());
+		}
+
+		return key;
+	}
+
+	protected ReportData createReportData() {
+		return new ReportData();
+	}
+
+	protected void setReportData(ReportData reportData, IncrementalStatistics incrStats) {
+		reportData.setRunningTime(
+				(int) ((incrStats.getStopTime().getTime() - incrStats.getStartTime().getTime()) / 1000));
+
+		Integer good = 0;
+		Integer bad = 0;
+
+		for (Entry<StatisticsKey, Integer> entry : incrStats.getProductsStatistics().getValues().entrySet()) {
+			if (entry.getKey().toString().endsWith("good")) {
+				good += entry.getValue();
+			} else if (entry.getKey().toString().endsWith("bad")) {
+				bad += entry.getValue();
+			}
+		}
+
+		reportData.setBad(bad);
+		reportData.setGood(good);
 	}
 
 	protected void addData(final ReportKey key, final ReportData data) {
 		ReportData previous = this.mapData.get(key);
 		if (previous == null) {
-			previous = new ReportData();
+			previous = createReportData();
 			this.mapData.put(key, previous);
 		}
 		previous.addData(data);
-
 	}
 
 	protected String dateFormatForKeyDailyDetailed;
@@ -102,33 +115,35 @@ public class ProductionStatisticsAggregator {
 			formatToUseEndDate = dateFormatForKeyDailyDetailed;
 		} else {
 			switch (this.period) {
-			case DAY:
-				formatToUseStartDate = dateFormatForKeyDay;
-				formatToUseEndDate = "";
-				break;
-			case WEEK:
-				formatToUseStartDate = dateFormatForKeyWeek;
-				formatToUseEndDate = dateFormatForKeyWeek;
+				case DAY:
+					formatToUseStartDate = dateFormatForKeyDay;
+					formatToUseEndDate = "";
+					break;
+				case WEEK:
+					formatToUseStartDate = dateFormatForKeyWeek;
+					formatToUseEndDate = dateFormatForKeyWeek;
 
-				int deltaStart = org.jdesktop.swingx.calendar.DateUtils.getDayOfWeek(startDate.getTime()) - 1;
-				int deltaEnd = 7 - deltaStart;
+					int deltaStart = org.jdesktop.swingx.calendar.DateUtils.getDayOfWeek(startDate.getTime()) - 1;
+					int deltaEnd = 7 - deltaStart;
 
-				dateStartToUse = new Date(org.jdesktop.swingx.calendar.DateUtils.addDays(startDate.getTime(),
-						-deltaStart));
-				dateEndToUse = new Date(org.jdesktop.swingx.calendar.DateUtils.addDays(startDate.getTime(), deltaEnd));
+					dateStartToUse = new Date(org.jdesktop.swingx.calendar.DateUtils.addDays(startDate.getTime(),
+							-deltaStart));
+					dateEndToUse = new Date(org.jdesktop.swingx.calendar.DateUtils.addDays(
+							startDate.getTime(), deltaEnd));
 
-				useMinimumSelectedDate = !isInSamePeriod(minimumDate, startDate, Calendar.WEEK_OF_YEAR);
-				useMaximumSelectedDate = !isInSamePeriod(maxDate, stopDate, Calendar.WEEK_OF_YEAR);
+					useMinimumSelectedDate = !isInSamePeriod(minimumDate, startDate, Calendar.WEEK_OF_YEAR);
+					useMaximumSelectedDate = !isInSamePeriod(maxDate, stopDate, Calendar.WEEK_OF_YEAR);
 
-				break;
-			case MONTH:
-				formatToUseStartDate = dateFormatForKeyMonth;
-				formatToUseEndDate = dateFormatForKeyMonth;
-				dateStartToUse = new Date(org.jdesktop.swingx.calendar.DateUtils.getStartOfMonth(startDate.getTime()));
-				dateEndToUse = new Date(org.jdesktop.swingx.calendar.DateUtils.getEndOfMonth(stopDate.getTime()));
-				useMinimumSelectedDate = !isInSamePeriod(minimumDate, startDate, Calendar.MONTH);
-				useMaximumSelectedDate = !isInSamePeriod(maxDate, stopDate, Calendar.MONTH);
-				break;
+					break;
+				case MONTH:
+					formatToUseStartDate = dateFormatForKeyMonth;
+					formatToUseEndDate = dateFormatForKeyMonth;
+					dateStartToUse = new Date(
+							org.jdesktop.swingx.calendar.DateUtils.getStartOfMonth(startDate.getTime()));
+					dateEndToUse = new Date(org.jdesktop.swingx.calendar.DateUtils.getEndOfMonth(stopDate.getTime()));
+					useMinimumSelectedDate = !isInSamePeriod(minimumDate, startDate, Calendar.MONTH);
+					useMaximumSelectedDate = !isInSamePeriod(maxDate, stopDate, Calendar.MONTH);
+					break;
 			}
 		}
 
@@ -145,13 +160,13 @@ public class ProductionStatisticsAggregator {
 		}
 
 		String res = DateUtils.format(formatToUseStartDate, dateStartToUse);
-		if (formatToUseEndDate != null && !formatToUseEndDate.isEmpty()) {
+		if (!formatToUseEndDate.isEmpty()) {
 			res += getDateSeparator() + DateUtils.format(formatToUseEndDate, dateEndToUse);
 		}
 		return res;
 	}
 
-	public boolean isInSamePeriod(Date d1, Date d2, int unit) {
+	protected boolean isInSamePeriod(Date d1, Date d2, int unit) {
 		Calendar c = Calendar.getInstance();
 		c.setTime(d1);
 		int m1 = c.get(unit);
@@ -165,32 +180,16 @@ public class ProductionStatisticsAggregator {
 		return " - ";
 	}
 
-	public String getDateFormatForKeyDailyDetailed() {
-		return dateFormatForKeyDailyDetailed;
-	}
-
 	public void setDateFormatForKeyDailyDetailed(String dateFormatForKeyDailyDetailed) {
 		this.dateFormatForKeyDailyDetailed = dateFormatForKeyDailyDetailed;
-	}
-
-	public String getDateFormatForKeyDay() {
-		return dateFormatForKeyDay;
 	}
 
 	public void setDateFormatForKeyDay(String dateFormatForKeyDay) {
 		this.dateFormatForKeyDay = dateFormatForKeyDay;
 	}
 
-	public String getDateFormatForKeyMonth() {
-		return dateFormatForKeyMonth;
-	}
-
 	public void setDateFormatForKeyMonth(String dateFormatForKeyMonth) {
 		this.dateFormatForKeyMonth = dateFormatForKeyMonth;
-	}
-
-	public String getDateFormatForKeyWeek() {
-		return dateFormatForKeyWeek;
 	}
 
 	public void setDateFormatForKeyWeek(String dateFormatForKeyWeek) {

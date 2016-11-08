@@ -41,4 +41,12 @@
 		<property name="snapshotView" ref="snapshotView" />
 	</bean>
 
+	<bean id="productionStatisticsAggregatorFactory" class="com.sicpa.tt016.monitoring.TT016ProductionStatisticsAggregatorFactory">
+		<property name="language" value="${language}"/>
+	</bean>
+
+	<bean id="reportScreen" class="com.sicpa.tt016.view.report.TT016ReportScreen">
+		<property name="productionStatisticsAggregatorFactory" ref="productionStatisticsAggregatorFactory"/>
+	</bean>
+
 </beans>

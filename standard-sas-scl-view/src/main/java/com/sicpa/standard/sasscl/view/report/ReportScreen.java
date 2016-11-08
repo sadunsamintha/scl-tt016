@@ -1,17 +1,19 @@
 package com.sicpa.standard.sasscl.view.report;
 
 import com.google.common.eventbus.Subscribe;
-import com.sicpa.standard.client.common.eventbus.service.EventBusService;
+import com.sicpa.standard.client.common.i18n.Messages;
+import com.sicpa.standard.client.common.ioc.BeanProvider;
 import com.sicpa.standard.client.common.security.Permission;
 import com.sicpa.standard.client.common.utils.TaskExecutor;
 import com.sicpa.standard.client.common.view.ISecuredComponentGetter;
-import com.sicpa.standard.client.common.i18n.Messages;
 import com.sicpa.standard.gui.components.buttons.PaddedButton;
 import com.sicpa.standard.gui.components.buttons.toggleButtons.ToggleImageAndTextButton;
 import com.sicpa.standard.sasscl.monitoring.MonitoringService;
 import com.sicpa.standard.sasscl.monitoring.statistics.incremental.IncrementalStatistics;
 import com.sicpa.standard.sasscl.security.SasSclPermission;
 import com.sicpa.standard.sasscl.view.LanguageSwitchEvent;
+import com.sicpa.standard.sasscl.view.monitoring.IProductionStatisticsAggregator;
+import com.sicpa.standard.sasscl.view.monitoring.IProductionStatisticsAggregatorFactory;
 import com.sicpa.standard.sasscl.view.monitoring.ProductionStatisticsAggregator;
 import net.miginfocom.swing.MigLayout;
 import org.apache.commons.lang.LocaleUtils;
@@ -23,8 +25,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -45,25 +45,18 @@ public class ReportScreen extends JPanel implements ISecuredComponentGetter {
 	protected JToggleButton buttonGroupByProduct;
 	protected JToggleButton buttonDailyDetailed;
 
-	protected ReportTable table;
+	protected IReportTable table;
 	protected JButton buttonPrint;
 	protected JXDatePicker dateTo;
 	protected JXDatePicker dateFrom;
 
-	protected String dateFormatForKeyDailyDetailed;
-	protected String dateFormatForKeyDay;
-	protected String dateFormatForKeyMonth;
-	protected String dateFormatForKeyWeek;
+	protected IProductionStatisticsAggregatorFactory productionStatisticsAggregatorFactory;
 
-	private String defaultLang;
+    public ReportScreen() {
+        initGUI();
+    }
 
-	public ReportScreen(String defaultLang) {
-		this.defaultLang = defaultLang;
-		initGUI();
-		setupDateformat(defaultLang);
-	}
-
-	@Subscribe
+    @Subscribe
 	public void handleLanguageSwitch(LanguageSwitchEvent evt) {
 		removeAll();
 		this.busyPanel = null;
@@ -76,35 +69,9 @@ public class ReportScreen extends JPanel implements ISecuredComponentGetter {
 		this.buttonPrint = null;
 		this.dateFrom = null;
 		this.dateTo   = null;
-		setupDateformat(evt.getLanguage());
 		getMainPanel();
 		initGUI();
 		revalidate();
-	}
-
-	protected void setupDateformat(String language) {
-		dateFormatForKeyDailyDetailed = initPattern("yyyy-MM-dd HH:mm:ss", "date.pattern.report.day.detail",language);
-		dateFormatForKeyDay = initPattern("dd/MM/yy", "date.pattern.report.day.normal",language);
-		dateFormatForKeyMonth = initPattern("dd/MM/yy", "date.pattern.report.day.month",language);
-		dateFormatForKeyWeek = initPattern("dd/MM/yy", "date.pattern.report.day.week",language);
-	}
-
-	protected String initPattern(String defaultPattern, String patternKey,String language) {
-		String pattern = null;
-		try {
-			pattern = Messages.get(patternKey);
-			// to test if the pattern is valid
-			new SimpleDateFormat(pattern, getLocaleFromLanguage(language));
-			return pattern;
-		} catch (Exception e) {
-			logger.error("invalid or pattern not found {}", pattern);
-			return defaultPattern;
-		}
-	}
-
-	private Locale getLocaleFromLanguage(String language) {
-		return ((List<Locale>) LocaleUtils.availableLocaleList()).stream()
-				.filter(l -> l.getLanguage().equals(language) && l.getCountry() == "").findFirst().get();
 	}
 
 	public JXDatePicker getDateFrom() {
@@ -124,7 +91,6 @@ public class ReportScreen extends JPanel implements ISecuredComponentGetter {
 	}
 
 	protected void initGUI() {
-
 		setLayout(new BorderLayout());
 		add(getBusyPanel(), BorderLayout.CENTER);
 		ButtonGroup grp = new ButtonGroup();
@@ -136,12 +102,7 @@ public class ReportScreen extends JPanel implements ISecuredComponentGetter {
 	public JToggleButton getButtonDay() {
 		if (this.buttonDay == null) {
 			this.buttonDay = new ToggleImageAndTextButton(Messages.get("production.report.day"));
-			this.buttonDay.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(final ActionEvent e) {
-					buttonDayActionPerformed();
-				}
-			});
+			this.buttonDay.addActionListener(e -> buttonDayActionPerformed());
 		}
 		return this.buttonDay;
 	}
@@ -149,13 +110,7 @@ public class ReportScreen extends JPanel implements ISecuredComponentGetter {
 	public JToggleButton getButtonDailyDetailed() {
 		if (buttonDailyDetailed == null) {
 			buttonDailyDetailed = new ToggleImageAndTextButton(Messages.get("production.report.detailed"));
-			buttonDailyDetailed.addActionListener(new ActionListener() {
-
-				@Override
-				public void actionPerformed(ActionEvent arg0) {
-					buttonDailyDetailedActionPerformed();
-				}
-			});
+			buttonDailyDetailed.addActionListener(a -> buttonDailyDetailedActionPerformed());
 		}
 		return buttonDailyDetailed;
 	}
@@ -166,36 +121,24 @@ public class ReportScreen extends JPanel implements ISecuredComponentGetter {
 
 	protected void buttonDayActionPerformed() {
 		getButtonDailyDetailed().setEnabled(getButtonGroupByProduct().isSelected());
-		startStatisticsRetreiving();
+		startStatisticsRetrieving();
 	}
 
-	protected void startStatisticsRetreiving() {
+	protected void startStatisticsRetrieving() {
 		getBusyPanel().setBusy(true);
-		TaskExecutor.execute(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					getAndShowReport();
-				} catch (Exception e) {
-					logger.error("", e);
-				}
+		TaskExecutor.execute(() -> {
+            try {
+                getAndShowReport();
+            } catch (Exception e) {
+                logger.error("", e);
+            }
 
-				SwingUtilities.invokeLater(new Runnable() {
-					@Override
-					public void run() {
-						getBusyPanel().setBusy(false);
-					}
-				});
-			}
-		});
+            SwingUtilities.invokeLater(() -> getBusyPanel().setBusy(false));
+        });
 	}
 
 	protected void getAndShowReport() {
-		ProductionStatisticsAggregator aggre = new ProductionStatisticsAggregator();
-		aggre.setDateFormatForKeyDailyDetailed(dateFormatForKeyDailyDetailed);
-		aggre.setDateFormatForKeyDay(dateFormatForKeyDay);
-		aggre.setDateFormatForKeyMonth(dateFormatForKeyMonth);
-		aggre.setDateFormatForKeyWeek(dateFormatForKeyWeek);
+		IProductionStatisticsAggregator aggre = productionStatisticsAggregatorFactory.getInstance();
 
 		Date from = DateUtils.round(getDateFrom().getDate(), Calendar.DAY_OF_MONTH);
 		Date to = DateUtils.ceiling(getDateTo().getDate(), Calendar.DAY_OF_MONTH);// go to next day
@@ -225,12 +168,7 @@ public class ReportScreen extends JPanel implements ISecuredComponentGetter {
 	public JToggleButton getButtonMonth() {
 		if (this.buttonMonth == null) {
 			this.buttonMonth = new ToggleImageAndTextButton(Messages.get("production.report.month"));
-			this.buttonMonth.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(final ActionEvent e) {
-					buttonMonthActionPerformed();
-				}
-			});
+			this.buttonMonth.addActionListener(e -> buttonMonthActionPerformed());
 		}
 		return this.buttonMonth;
 	}
@@ -238,19 +176,13 @@ public class ReportScreen extends JPanel implements ISecuredComponentGetter {
 	protected void buttonMonthActionPerformed() {
 		getButtonDailyDetailed().setEnabled(false);
 		getButtonDailyDetailed().setSelected(false);
-		startStatisticsRetreiving();
+		startStatisticsRetrieving();
 	}
 
 	public JToggleButton getButtonWeek() {
 		if (this.buttonWeek == null) {
 			this.buttonWeek = new ToggleImageAndTextButton(Messages.get("production.report.week"));
-			this.buttonWeek.addActionListener(new ActionListener() {
-
-				@Override
-				public void actionPerformed(final ActionEvent e) {
-					buttonWeekActionPerformed();
-				}
-			});
+			this.buttonWeek.addActionListener(e -> buttonWeekActionPerformed());
 		}
 		return this.buttonWeek;
 	}
@@ -258,26 +190,21 @@ public class ReportScreen extends JPanel implements ISecuredComponentGetter {
 	protected void buttonWeekActionPerformed() {
 		getButtonDailyDetailed().setEnabled(false);
 		getButtonDailyDetailed().setSelected(false);
-		startStatisticsRetreiving();
+		startStatisticsRetrieving();
 	}
 
-	public ReportTable getTable() {
-		if (this.table == null) {
-			this.table = new ReportTable();
+	public IReportTable getTable() {
+		if (table == null) {
+            table = new ReportTable();
 		}
-		return this.table;
+
+		return table;
 	}
 
 	public JToggleButton getButtonGroupByProduct() {
 		if (this.buttonGroupByProduct == null) {
 			this.buttonGroupByProduct = new ToggleImageAndTextButton(Messages.get("production.report.group"));
-			this.buttonGroupByProduct.addActionListener(new ActionListener() {
-
-				@Override
-				public void actionPerformed(final ActionEvent e) {
-					buttonGroupByProductActionPerformed();
-				}
-			});
+			this.buttonGroupByProduct.addActionListener(e -> buttonGroupByProductActionPerformed());
 		}
 		return this.buttonGroupByProduct;
 	}
@@ -313,7 +240,7 @@ public class ReportScreen extends JPanel implements ISecuredComponentGetter {
 			this.mainPanel.add(getButtonMonth(), "grow,w 30%,wrap");
 			this.mainPanel.add(getButtonGroupByProduct(), "grow");
 			this.mainPanel.add(getButtonDailyDetailed(), "wrap,grow");
-			this.mainPanel.add(getTable(), "grow , span,push");
+			this.mainPanel.add(getTable().getComponent(), "grow , span,push");
 			this.mainPanel.add(new PaddedButton(getButtonPrint()), "spanx ,split 2,  right");
 		}
 		return this.mainPanel;
@@ -321,7 +248,7 @@ public class ReportScreen extends JPanel implements ISecuredComponentGetter {
 
 	public JBusyComponent<JComponent> getBusyPanel() {
 		if (this.busyPanel == null) {
-			this.busyPanel = new JBusyComponent<JComponent>(getMainPanel());
+			this.busyPanel = new JBusyComponent<>(getMainPanel());
 		}
 		return this.busyPanel;
 	}
@@ -329,12 +256,7 @@ public class ReportScreen extends JPanel implements ISecuredComponentGetter {
 	public JButton getButtonPrint() {
 		if (buttonPrint == null) {
 			buttonPrint = new JButton(Messages.get("production.report.print"));
-			buttonPrint.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					buttonPrintActionPerformed();
-				}
-			});
+			buttonPrint.addActionListener(e -> buttonPrintActionPerformed());
 		}
 		return buttonPrint;
 	}
@@ -342,7 +264,6 @@ public class ReportScreen extends JPanel implements ISecuredComponentGetter {
 	protected void buttonPrintActionPerformed() {
 		getTable().printReport();
 	}
-
 
 	@Override
 	public Component getComponent() {
@@ -359,5 +280,8 @@ public class ReportScreen extends JPanel implements ISecuredComponentGetter {
 		return "report.production";
 	}
 
-
+	public void setProductionStatisticsAggregatorFactory(
+			IProductionStatisticsAggregatorFactory productionStatisticsAggregatorFactory) {
+		this.productionStatisticsAggregatorFactory = productionStatisticsAggregatorFactory;
+	}
 }
