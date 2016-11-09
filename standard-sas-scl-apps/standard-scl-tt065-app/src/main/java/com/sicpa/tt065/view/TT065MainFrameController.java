@@ -31,6 +31,12 @@ import java.util.List;
 
 import static com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState.*;
 
+/**
+ * Overwritting MainFrameController to manage the changed productionParameters variable
+ *
+ * @author mjimenez
+ *
+ */
 public class TT065MainFrameController extends MainFrameController {
 
 	private ProductionParameters productionParameters;

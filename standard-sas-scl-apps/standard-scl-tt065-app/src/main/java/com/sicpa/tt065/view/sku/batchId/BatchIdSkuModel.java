@@ -7,7 +7,10 @@ import com.sicpa.standard.sasscl.model.SKU;
 import com.sicpa.standard.sasscl.provider.ProductBatchIdProvider;
 
 /**
- * Created by mjimenez on 26/10/2016.
+ * Model of the BatchId associated used in the new view
+ *
+ * @author mjimenez
+ *
  */
 public class BatchIdSkuModel extends AbstractObservableModel implements ProductBatchIdProvider{
 

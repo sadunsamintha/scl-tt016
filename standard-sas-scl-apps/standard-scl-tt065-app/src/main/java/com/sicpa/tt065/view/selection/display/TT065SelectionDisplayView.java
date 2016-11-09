@@ -16,6 +16,13 @@ import net.miginfocom.swing.MigLayout;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * Overwritting class of the SelectionDisplayView to manage
+ * the productionParameterSelected with the new BatchId View
+ *
+ * @author mjimenez
+ *
+ */
 @SuppressWarnings("serial")
 public class TT065SelectionDisplayView extends SelectionDisplayView implements ProductBatchIdProvider {
 

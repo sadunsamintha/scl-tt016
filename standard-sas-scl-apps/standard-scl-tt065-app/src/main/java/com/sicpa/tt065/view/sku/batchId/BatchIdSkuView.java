@@ -13,6 +13,12 @@ import javax.annotation.PostConstruct;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * New view of the BatchId associated to the ProductionParameters variable
+ *
+ * @author mjimenez
+ *
+ */
 @SuppressWarnings("serial")
 public class BatchIdSkuView extends AbstractView<IBatchIdSkuListener, BatchIdSkuModel> implements ProductBatchIdProvider {
 

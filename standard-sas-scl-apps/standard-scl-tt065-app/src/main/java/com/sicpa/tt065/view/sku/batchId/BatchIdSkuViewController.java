@@ -21,6 +21,12 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.sicpa.tt065.view.TT065ScreenFlowTriggers.BATCH_ID_REGISTERED;
 
+/**
+ * Controller of the new BatchId view
+ *
+ * @author mjimenez
+ *
+ */
 public class BatchIdSkuViewController extends TT065AbstractViewFlowController implements IBatchIdSkuListener, ProductBatchIdProvider {
 
 	private static final Logger logger = LoggerFactory.getLogger(BatchIdSkuViewController.class);

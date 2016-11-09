@@ -1,7 +1,10 @@
 package com.sicpa.tt065.view.sku.batchId;
 
 /**
- * Created by mjimenez on 26/10/2016.
+ * Interface to manage the event saveBatchId the new window
+ *
+ * @author mjimenez
+ *
  */
 public interface IBatchIdSkuListener {
 

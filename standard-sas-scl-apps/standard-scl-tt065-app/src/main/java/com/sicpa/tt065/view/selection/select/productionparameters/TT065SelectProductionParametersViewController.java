@@ -5,6 +5,13 @@ import com.sicpa.standard.sasscl.model.ProductionParameters;
 import com.sicpa.standard.sasscl.view.ScreensFlowTriggers;
 import com.sicpa.standard.sasscl.view.selection.select.SelectProductionParametersViewController;
 
+/**
+ * Overwritting class of the SelectProductionParametersViewController to manage
+ * the productionParameterSelected with the next screen flow
+ *
+ * @author mjimenez
+ *
+ */
 public class TT065SelectProductionParametersViewController extends SelectProductionParametersViewController {
 
 	@Override

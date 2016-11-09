@@ -11,7 +11,10 @@ import java.util.Date;
 import static com.sicpa.standard.sasscl.provider.ProductBatchIdProvider.productionBatchId;
 
 /**
- * Event to be fired when a manual intervention stops the production
+ * Event to be fired when a manual intervention flow to the Selection Display View
+ *
+ * @author mjimenez
+ *
  */
 public class BatchIdViewEvent {
     public final User user;

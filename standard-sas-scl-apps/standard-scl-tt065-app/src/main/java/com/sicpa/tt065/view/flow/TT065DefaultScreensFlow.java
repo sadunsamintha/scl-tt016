@@ -9,6 +9,13 @@ import static com.sicpa.standard.sasscl.custoBuilder.CustoBuilder.addScreenTrans
 import static com.sicpa.standard.sasscl.view.ScreensFlowTriggers.*;
 import static com.sicpa.tt065.view.TT065ScreenFlowTriggers.BATCH_ID_REGISTERED;
 
+/**
+ * Overwritting class of DefaultScreensFlow to manage
+ * the flow  with the new BatchId View
+ *
+ * @author mjimenez
+ *
+ */
 public class TT065DefaultScreensFlow extends DefaultScreensFlow {
 
 	protected IScreenGetter batchIdScreen;

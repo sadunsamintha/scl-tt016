@@ -15,6 +15,13 @@ import org.slf4j.LoggerFactory;
 
 import java.util.TimerTask;
 
+/**
+ * Overwritting of the ExecutorStarting class to manage
+ * the saving of the new BatchId into the selectedProductionParam file
+ *
+ * @author mjimenez
+ *
+ */
 public class TT065ExecutorStarting extends ExecutorStarting {
 	private final static Logger logger = LoggerFactory.getLogger(TT065ExecutorStarting.class);
 

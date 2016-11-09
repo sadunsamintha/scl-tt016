@@ -5,6 +5,13 @@ import com.sicpa.standard.sasscl.model.ProductionParameters;
 import com.sicpa.standard.sasscl.provider.ProductBatchIdProvider;
 import com.sicpa.tt065.event.BatchIdViewEvent;
 
+/**
+ * Overwritting of the ProductionBatchProvider class to manage
+ * the new BatchIdEvent with the productionParameters variable
+ *
+ * @author mjimenez
+ *
+ */
 public class TT065ProductionBatchProvider extends ProductionBatchProvider implements ProductBatchIdProvider {
 
 	public TT065ProductionBatchProvider() {
