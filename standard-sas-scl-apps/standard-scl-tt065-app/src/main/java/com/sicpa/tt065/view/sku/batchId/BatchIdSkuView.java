@@ -104,7 +104,7 @@ public class BatchIdSkuView extends AbstractView<IBatchIdSkuListener, BatchIdSku
 
 		public JTextField getBatchIdText() {
 			if (batchIdText == null) {
-				batchIdText = new JTextField();
+				batchIdText = new JTextField(Integer.parseInt(Messages.get("sku.batch.id.maximum.length")));
 				batchIdText.setMinimumSize(new Dimension(200,40));
 				batchIdText.setMaximumSize(new Dimension(200,40));
 				batchIdText.setBackground(SicpaColor.BLUE_ULTRA_LIGHT);

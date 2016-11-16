@@ -20,6 +20,7 @@ public abstract class TT065AbstractViewFlowController extends AbstractViewFlowCo
 
 	private static Logger logger = LoggerFactory.getLogger(TT065AbstractViewFlowController.class);
 	protected TT065MainFrameController viewController;
+	private JOptionPane messagePanel;
 
 	protected void displayView() {
 		try {
@@ -33,4 +34,7 @@ public abstract class TT065AbstractViewFlowController extends AbstractViewFlowCo
 		this.viewController = viewController;
 	}
 
+	public void showMessageDialog(String message){
+		messagePanel.showMessageDialog(null, message);
+	}
 }

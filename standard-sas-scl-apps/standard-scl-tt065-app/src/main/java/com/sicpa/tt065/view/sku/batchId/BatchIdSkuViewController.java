@@ -14,10 +14,13 @@ import com.sicpa.standard.sasscl.view.LanguageSwitchEvent;
 import com.sicpa.tt065.event.BatchIdViewEvent;
 import com.sicpa.tt065.view.TT065AbstractViewFlowController;
 import com.sicpa.tt065.view.flow.TT065DefaultScreensFlow;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static com.sicpa.tt065.view.TT065ScreenFlowTriggers.BATCH_ID_REGISTERED;
 
@@ -99,6 +102,21 @@ public class BatchIdSkuViewController extends TT065AbstractViewFlowController im
 
 	@Override
 	public void saveBatchId(String strBatchId) {
+		if (StringUtils.isBlank(strBatchId)){
+			showMessageDialog(Messages.get("sku.batch.id.validation.blank"));
+			return;
+		}
+		Pattern patt = Pattern.compile("[%@!()*~^!#$%&+/]");//restrictions all symbols
+		Matcher matcher = patt.matcher(strBatchId);
+		if (matcher.find()){
+			showMessageDialog(Messages.get("sku.batch.id.validation.format"));
+			return;
+		}
+		if (strBatchId.length() != 15){
+			showMessageDialog(Messages.get("sku.batch.id.validation.size"));
+			return;
+		}
+
 		pp.setProperty(productionBatchId, strBatchId);
 		logger.info(Messages.format("sku.batch.id.registered", strBatchId));
 
