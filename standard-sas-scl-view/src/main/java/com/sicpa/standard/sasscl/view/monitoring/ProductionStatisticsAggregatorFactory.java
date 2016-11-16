@@ -51,8 +51,8 @@ public class ProductionStatisticsAggregatorFactory implements IProductionStatist
     private void setupDateFormat() {
         dateFormatForKeyDailyDetailed = initPattern("yyyy-MM-dd HH:mm:ss", "date.pattern.report.day.detail", language);
         dateFormatForKeyDay = initPattern("dd/MM/yy", "date.pattern.report.day.normal", language);
-        dateFormatForKeyMonth = initPattern("dd/MM/yy", "date.pattern.report.day.month", language);
-        dateFormatForKeyWeek = initPattern("dd/MM/yy", "date.pattern.report.day.week", language);
+        dateFormatForKeyMonth = initPattern("dd/MM/yy", "date.pattern.report.month", language);
+        dateFormatForKeyWeek = initPattern("dd/MM/yy", "date.pattern.report.week", language);
     }
 
     private String initPattern(String defaultPattern, String patternKey, String language) {

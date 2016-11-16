@@ -33,4 +33,9 @@ public class TT016ReportDataWrapper extends ReportDataWrapper {
     @Override
     public void setProductNumber(int good, int bad) {
     }
+
+    @Override
+    public int getTotal() {
+        return good + bad + ejectedProducer;
+    }
 }
