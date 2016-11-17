@@ -1,13 +1,11 @@
 package com.sicpa.standard.sasscl.devices.plc.variable.renderer;
 
-import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.gui.listener.CoalescentChangeListener;
 import com.sicpa.standard.gui.plaf.SicpaFont;
 import com.sicpa.standard.gui.utils.TextUtils;
 import com.sicpa.standard.gui.utils.ThreadUtils;
 import com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcVariableDescriptor;
-import com.sicpa.standard.sasscl.view.LanguageSwitchEvent;
 import net.miginfocom.swing.MigLayout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,13 +34,6 @@ public abstract class AbstractPlcNumberVariableRenderer<TYPE extends Number> ext
 		valueChanged();
 		desc.setInit(false);
 		EventBusService.register(this);
-	}
-
-	@Subscribe
-	public void handleLanguageSwitch(LanguageSwitchEvent evt) {
-		removeAll();
-		initGUI();
-		revalidate();
 	}
 
 	private void initGUI() {
