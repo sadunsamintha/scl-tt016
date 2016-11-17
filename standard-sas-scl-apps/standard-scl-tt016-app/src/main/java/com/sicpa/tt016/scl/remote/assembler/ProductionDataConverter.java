@@ -19,6 +19,8 @@ import static com.sicpa.tt016.scl.remote.remoteservices.ITT016RemoteServices.PRO
 
 public class ProductionDataConverter {
 
+    private final int OFFLINE_PRODUCTION_NO_SKU_ID = -1;
+
     public CodingActivationSessionDTO convertAuthenticated(PackagedProducts products, int subsystemId) {
         List<CodingActivationDTO> activated = new ArrayList<>();
 
@@ -108,7 +110,9 @@ public class ProductionDataConverter {
 
     public OfflineSessionDTO convertOffline(PackagedProducts products, int subsystemId) {
         int qty = products.getProducts().size();
-        int skuId = getSkuId(products);
+        int skuId = products.getProducts().get(0).getSku() != null
+                ? products.getProducts().get(0).getSku().getId()
+                : OFFLINE_PRODUCTION_NO_SKU_ID;
 
         OfflineSessionDTO session = new OfflineSessionDTO(1L, OFFLINE_SESSION, qty, new Date(), skuId, subsystemId);
         session.setTimestamps(getDates(products));
