@@ -1,23 +1,15 @@
 package com.sicpa.standard.sasscl.view.config.plc;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.List;
-
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JSeparator;
-
 import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
-import com.sicpa.standard.sasscl.view.LanguageSwitchEvent;
-import net.miginfocom.swing.MigLayout;
-
 import com.sicpa.standard.client.common.i18n.Messages;
 import com.sicpa.standard.sasscl.devices.plc.variable.PlcVariableGroup;
 import com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcVariableDescriptor;
+import com.sicpa.standard.sasscl.view.LanguageSwitchEvent;
+import net.miginfocom.swing.MigLayout;
+
+import javax.swing.*;
+import java.util.List;
 
 @SuppressWarnings("serial")
 public class PlcVariablePanel extends JPanel {
@@ -49,6 +41,7 @@ public class PlcVariablePanel extends JPanel {
 	}
 
 	public static class PanelGroup extends JPanel {
+
 		private static final long serialVersionUID = 1L;
 		protected JButton button;
 		protected JPanel panelVar;
@@ -70,20 +63,16 @@ public class PlcVariablePanel extends JPanel {
 		public JButton getButton() {
 			if (button == null) {
 				button = new JButton("+");
-				button.addActionListener(new ActionListener() {
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						getPanelVar().setVisible(!getPanelVar().isVisible());
-						String text = getPanelVar().isVisible() ? "-" : "+";
-						button.setText(text);
-					}
-				});
+				button.addActionListener(e -> {
+                    getPanelVar().setVisible(!getPanelVar().isVisible());
+                    String text = getPanelVar().isVisible() ? "-" : "+";
+                    button.setText(text);
+                });
 			}
 			return button;
 		}
 
 		public JPanel getPanelVar() {
-
 			if (panelVar == null) {
 				panelVar = new JPanel(new MigLayout());
 				for (PlcVariableDescriptor var : group.getPlcVars()) {

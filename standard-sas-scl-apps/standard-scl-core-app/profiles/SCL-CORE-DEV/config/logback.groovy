@@ -46,6 +46,7 @@ rollingFileAppendersSize = [
 	[id: "STDPRINTER",   file:"log/printer.log",   fileZip: "log/printer-.%i.log.zip"],
 	[id: "STDOPERATOR",  file:"log/operator.log",  fileZip: "log/operator-.%i.log.zip"],
 	[id: "BRS", 		 file:"log/brs.log",  fileZip: "log/brs-.%i.log.zip"],
+	[id: "PRINTERMONITORING",   file:"log/printer_monitoring.log",   fileZip: "log/printer_monitoring-.%i.log.zip"],
 ]
 
 
@@ -79,7 +80,7 @@ logger("com.sicpa.standard.sasscl.devices.brs",                 DEBUG,  ["BRS"],
 logger("com.sicpa.standard.camera",                             INFO,   ["STDCAMERA"],   true)
 logger("com.sicpa.standard.printer",                            WARN,   ["STDPRINTER"],  true)
 logger("com.sicpa.standard.plc",                                INFO,   ["STDPLC"],      true)
-
+logger("com.sicpa.standard.printer.leibinger.monitoring",       INFO,   ["PRINTERMONITORING"], true)
 
 
 root(DEBUG, ["CONSOLE"])

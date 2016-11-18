@@ -15,8 +15,8 @@ public class MonitoredProductStatisticsValues implements Serializable {
 	protected Map<StatisticsKey, Integer> mapOffset;
 
 	public MonitoredProductStatisticsValues() {
-		this.values = new HashMap<StatisticsKey, Integer>();
-		this.mapOffset = new HashMap<StatisticsKey, Integer>();
+		this.values = new HashMap<>();
+		this.mapOffset = new HashMap<>();
 	}
 
 	public Map<StatisticsKey, Integer> getValues() {
@@ -28,7 +28,7 @@ public class MonitoredProductStatisticsValues implements Serializable {
 	}
 
 	public void setMapOffset(final Map<StatisticsKey, Integer> mapOffset) {
-		this.mapOffset = new HashMap<StatisticsKey, Integer>(mapOffset);
+		this.mapOffset = new HashMap<>(mapOffset);
 	}
 
 	@Override

@@ -5,6 +5,7 @@ import com.sicpa.standard.exception.MonitoringException;
 import com.sicpa.standard.model.MonitorType;
 import com.sicpa.standard.monitor.IMonitorTypesMapping;
 import com.sicpa.standard.monitor.MonitorService;
+import com.sicpa.standard.sasscl.business.statistics.StatisticsResetEvent;
 import com.sicpa.standard.sasscl.business.statistics.StatisticsRestoredEvent;
 import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState;
 import com.sicpa.standard.sasscl.model.ProductionMode;
@@ -49,7 +50,6 @@ public class Monitoring implements IMonitoring {
 	protected Timer saveIncrTimer = new Timer("saveIncrTimer");
 
 	protected Object lockIncremental = new Object();
-	protected Object lockProduction = new Object();
 
 	protected volatile boolean restoreStats;
 
@@ -84,7 +84,7 @@ public class Monitoring implements IMonitoring {
 		FieldToString.addConverter(List.class, new IConverter<List>() {
 			@Override
 			public List convertFromString(final String value) {
-				List<String> list = new ArrayList<String>();
+				List<String> list = new ArrayList<>();
 
 				if (value != null && !value.isEmpty()) {
 					String[] array = value.split("----");
@@ -356,6 +356,13 @@ public class Monitoring implements IMonitoring {
 		initStats();
 
 		incrementalStatistics.setProductsStatisticsOffset(evt.getStatsValues().getMapValues());
+	}
+
+	@Subscribe
+	public void handleStatisticsReset(StatisticsResetEvent evt) {
+		if (incrementalStatistics != null) {
+			incrementalStatistics.setProductsStatisticsOffset(new HashMap<>());
+		}
 	}
 
 	private void initStats(){

@@ -27,7 +27,6 @@ import java.util.Properties;
 
 import static com.sicpa.standard.gui.plaf.SicpaColor.GREEN_DARK;
 import static com.sicpa.standard.gui.plaf.SicpaColor.RED;
-import static com.sicpa.standard.gui.plaf.SicpaColor.GREEN_DARK;
 import static com.sicpa.standard.sasscl.controller.flow.ActivityTrigger.TRG_EXIT_APPLICATION;
 import static com.sicpa.standard.sasscl.controller.flow.ActivityTrigger.TRG_RECOVERING_CONNECTION;
 import static com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState.*;
@@ -36,8 +35,6 @@ import static com.sicpa.standard.sasscl.messages.ActionMessageType.WARNING;
 import static com.sicpa.standard.sasscl.messages.MessageEventKey.Activation.EXCEPTION_CODE_IN_EXPORT;
 import static com.sicpa.standard.sasscl.messages.MessageEventKey.BRS.BRS_WRONG_SKU;
 import static com.sicpa.tt016.controller.flow.TT016ActivityTrigger.TRG_STOP_REASON_SELECTED;
-import static com.sicpa.tt016.model.statistics.TT016StatisticsKey.EJECTED_PRODUCER;
-import static com.sicpa.tt016.model.statistics.TT016StatisticsKey.INK_DETECTED;
 import static com.sicpa.tt016.model.statistics.TT016StatisticsKey.EJECTED_PRODUCER;
 import static com.sicpa.tt016.model.statistics.TT016StatisticsKey.INK_DETECTED;
 import static com.sicpa.tt016.view.TT016ScreenFlowTriggers.STOP_PRODUCTION;

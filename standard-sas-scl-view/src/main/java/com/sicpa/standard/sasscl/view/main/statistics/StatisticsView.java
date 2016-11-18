@@ -1,29 +1,20 @@
 package com.sicpa.standard.sasscl.view.main.statistics;
 
-import static java.util.Collections.sort;
-
-import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.TreeMap;
-
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JSeparator;
-
-import net.miginfocom.swing.MigLayout;
-
 import com.google.common.eventbus.Subscribe;
-import com.sicpa.standard.client.common.view.mvc.AbstractView;
 import com.sicpa.standard.client.common.i18n.Messages;
+import com.sicpa.standard.client.common.view.mvc.AbstractView;
 import com.sicpa.standard.gui.plaf.SicpaColor;
 import com.sicpa.standard.gui.utils.ThreadUtils;
 import com.sicpa.standard.sasscl.model.statistics.ViewStatisticsDescriptor;
 import com.sicpa.standard.sasscl.view.LanguageSwitchEvent;
+import net.miginfocom.swing.MigLayout;
+
+import javax.swing.*;
+import java.text.NumberFormat;
+import java.util.*;
+import java.util.Map.Entry;
+
+import static java.util.Collections.sort;
 
 @SuppressWarnings("serial")
 public class StatisticsView extends AbstractView<IStatisticsViewListener, StatisticsViewModel> {
@@ -39,17 +30,18 @@ public class StatisticsView extends AbstractView<IStatisticsViewListener, Statis
 	private JPanel panelLineStats;
 	private JPanel panelLineSpeed;
 
-	private NumberFormat percentFormater;
+	private NumberFormat percentFormatter;
 
-	private final UptimeFormater uptimeFormater = new UptimeFormater("HH'h'mm'm'ss's'");
+	private final String UPTIME_FORMATTER_PATTERN = "HH'h'mm'm'ss's'";
+	private UptimeFormatter uptimeFormatter = new UptimeFormatter(UPTIME_FORMATTER_PATTERN);
 
 	private int statDescriptorCounter = 0;
 	private SingleStatsPanel panelTotal;
 
 	public StatisticsView() {
-		percentFormater = NumberFormat.getNumberInstance();
-		percentFormater.setMinimumFractionDigits(2);
-		percentFormater.setMaximumFractionDigits(2);
+		percentFormatter = NumberFormat.getNumberInstance();
+		percentFormatter.setMinimumFractionDigits(2);
+		percentFormatter.setMaximumFractionDigits(2);
 		initGUI();
 		handleLanguageSwitch(null);
 	}
@@ -102,7 +94,7 @@ public class StatisticsView extends AbstractView<IStatisticsViewListener, Statis
 	}
 
 	private void setUptime() {
-		getLabelUptime().setText(uptimeFormater.format(model.getUptime()));
+		getLabelUptime().setText(uptimeFormatter.format(model.getUptime()));
 	}
 
 	private void buildSpeedPanel() {
@@ -186,7 +178,7 @@ public class StatisticsView extends AbstractView<IStatisticsViewListener, Statis
 	private void updateTotalPercentage(SingleStatsPanel panel, int qty, int total) {
 		if (total > 0) {
 			float percent = 100f * qty / total;
-			panel.setPercent(percentFormater.format(percent) + "%");
+			panel.setPercent(percentFormatter.format(percent) + "%");
 		} else {
 			panel.setPercent("-");
 		}
@@ -243,7 +235,7 @@ public class StatisticsView extends AbstractView<IStatisticsViewListener, Statis
 
 	@Subscribe
 	public void handleLanguageSwitch(LanguageSwitchEvent evt) {
-		ThreadUtils.invokeLater(() -> removeAllStatsFromScreen());
+		ThreadUtils.invokeLater(this::removeAllStatsFromScreen);
 	}
 
 	private void removeAllStatsFromScreen() {
@@ -253,5 +245,6 @@ public class StatisticsView extends AbstractView<IStatisticsViewListener, Statis
 		panelSpeedByLineIndex.clear();
 		getPanelLineStats().removeAll();
 		getPanelLineSpeed().removeAll();
+		uptimeFormatter = new UptimeFormatter(UPTIME_FORMATTER_PATTERN);
 	}
 }

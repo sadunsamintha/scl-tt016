@@ -24,26 +24,26 @@ public abstract class AbstractOfflineCounting implements IOfflineCounting {
 	protected String productionBatchId;
 
 	public AbstractOfflineCounting() {
-
 	}
 
 	/**
 	 * generate "quantity" number of product giving each product a different timestamp from "from" to "to"
 	 */
 	protected void process(long from, long to, int quantity) {
-		logger.info("offline counting - last stop {} , last product {} , qty {}", new Object[] { new Date(from), new Date(to), quantity });
+		logger.info("offline counting - last stop {} , last product {} , qty {}",
+				new Object[] { new Date(from), new Date(to), quantity });
 
 		MonitoringService.addSystemEvent(new OfflineCountingSystemEvent(quantity, new Date(from), new Date(to)));
 		long current = from;
 		long interval = (to - from) / quantity;
 		productionBatchId = String.valueOf(System.currentTimeMillis());
 		for (int i = 0; i < quantity; i++) {
-			notityProduct(new Date(current));
+			notifyProduct(new Date(current));
 			current += interval;
 		}
 	}
 
-	protected void notityProduct(Date time) {
+	protected void notifyProduct(Date time) {
 		Product p = new Product();
 		p.setActivationDate(time);
 		p.setSubsystem(subsystemIdProvider.get());
@@ -55,11 +55,13 @@ public abstract class AbstractOfflineCounting implements IOfflineCounting {
 
 	protected SKU getSKU() {
 		SKU ret = null;
-		if (productionParameters.getSku() == null || productionParameters.getSku().getId() == -1){
+
+		if (productionParameters.getSku() == null) {
 			logger.info("not_able_to_determine_last_selected_sku_from_production_parameters");
 		}else {
 			ret = productionParameters.getSku();
 		}
+
 		return ret;
 	}
 
