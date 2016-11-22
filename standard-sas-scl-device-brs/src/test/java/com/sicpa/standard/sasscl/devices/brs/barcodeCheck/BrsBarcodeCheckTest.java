@@ -72,6 +72,18 @@ public class BrsBarcodeCheckTest {
 
     }
 
+    @Test
+    public void barCodeInvalid(){
+        when(compliantProduct.isCompliant(anyObject())).thenReturn(true);
+        ProductionParametersEvent prodEvent = buildProductionParametersEvent();
+        brsBarcodeCheck.onProductionParametersChanged(prodEvent);
+
+        BrsProductEvent brsProductEvent = new BrsProductEvent("44444");
+        brsBarcodeCheck.onBrsCodeReceived(brsProductEvent);
+
+        Assert.assertFalse("Not should contain this barcode. ", barcodes.contains("44444"));
+    }
+
     private ProductionParametersEvent buildProductionParametersEvent() {
         List<String> barcodesExpected = Arrays.asList("12345", "123456");
         SKU sku = new SKU(1, "description", barcodesExpected);
