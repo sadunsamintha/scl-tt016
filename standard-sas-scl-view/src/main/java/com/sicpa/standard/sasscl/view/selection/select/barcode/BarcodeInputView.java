@@ -51,7 +51,9 @@ public class BarcodeInputView extends DefaultIdInputView {
 
 	private static final Logger logger = LoggerFactory.getLogger(BarcodeInputView.class);
 
-	public BarcodeInputView() {
+	public BarcodeInputView(ISelectProductionParametersViewListener callback) {
+		this.callback = callback;
+
 		getModel().setDescription(Messages.get("view.main.barcodepanel.label"));
 		setOpaque(true);
 		initGUINew();
@@ -246,6 +248,10 @@ public class BarcodeInputView extends DefaultIdInputView {
 		return this.buttonMaintenance;
 	}
 
+	public void setMaintenanceButtonVisibility(boolean visible) {
+		getButtonMaintenance().setVisible(visible);
+	}
+
 	protected void buttonMaintenanceActionPerformed() {
 		getPanelSelect().setVisible(false);
 
@@ -294,9 +300,5 @@ public class BarcodeInputView extends DefaultIdInputView {
 		if (this.model != model) {
 			super.setModel(model);
 		}
-	}
-
-	public void setCallback(ISelectProductionParametersViewListener callback) {
-		this.callback = callback;
 	}
 }

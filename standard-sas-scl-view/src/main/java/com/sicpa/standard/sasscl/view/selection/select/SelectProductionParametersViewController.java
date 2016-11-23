@@ -13,7 +13,7 @@ import javax.swing.*;
 public class SelectProductionParametersViewController extends AbstractViewFlowController implements
 		ISelectProductionParametersViewListener {
 
-	protected ISelectProductionParametersView handPickingview;
+	protected ISelectProductionParametersView handPickingView;
 	protected ISelectProductionParametersView barcodeView;
 	protected boolean useBarcodeReader;
 
@@ -25,7 +25,6 @@ public class SelectProductionParametersViewController extends AbstractViewFlowCo
 
 	public SelectProductionParametersViewController() {
 	}
-
 
 	@Override
 	public void productionParametersSelected(ProductionParameters pp) {
@@ -48,12 +47,12 @@ public class SelectProductionParametersViewController extends AbstractViewFlowCo
 		if (useBarcodeReader) {
 			return (JComponent) barcodeView;
 		} else {
-			return (JComponent) handPickingview;
+			return (JComponent) handPickingView;
 		}
 	}
 
-	public void setHandPickingview(ISelectProductionParametersView handPickingview) {
-		this.handPickingview = handPickingview;
+	public void setHandPickingView(ISelectProductionParametersView handPickingView) {
+		this.handPickingView = handPickingView;
 	}
 
 	public void setBarcodeView(ISelectProductionParametersView barcodeView) {
@@ -81,7 +80,4 @@ public class SelectProductionParametersViewController extends AbstractViewFlowCo
 	public void setUseBarcodeReader(boolean useBarcodeReader) {
 		this.useBarcodeReader = useBarcodeReader;
 	}
-
-
-
 }
