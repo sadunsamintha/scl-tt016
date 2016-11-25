@@ -31,39 +31,36 @@ public class ExecutorExit implements IStateAction {
 	private boolean switchOffPrinterOnExit;
 
 	public ExecutorExit() {
-		Runtime.getRuntime().addShutdownHook(new Thread(() -> executeShutdownHook()));
+		Runtime.getRuntime().addShutdownHook(new Thread(this::executeShutdownHook));
 	}
 
 	@Override
 	public void enter() {
-		TaskExecutor.execute(new Runnable() {
-			@Override
-			public void run() {
-				MonitoringService.addSystemEvent(new BasicSystemEvent(SystemEventLevel.INFO,
-						SystemEventType.APP_EXITING));
-				logger.info("Application is exiting");
+		TaskExecutor.execute(() -> {
+            MonitoringService.addSystemEvent(new BasicSystemEvent(SystemEventLevel.INFO,
+                    SystemEventType.APP_EXITING));
+            logger.info("Application is exiting");
 
-				screensFlow.moveToNext(ScreensFlowTriggers.EXIT);
+            screensFlow.moveToNext(ScreensFlowTriggers.EXIT);
 
-				switchOffAndDisconnect();
+            switchOffAndDisconnect();
 
-				storage.saveStatistics(statistics.getValues());
-				production.saveProductionData();
-				production.packageProduction();
+            storage.saveStatistics(statistics.getValues());
+            production.saveProductionData();
+            production.packageProduction();
 
-				// unlock the screen to be able to exit during the production sending
-				EventBusService.post(new UnlockFullScreenEvent());
-				production.onExitSendAllProductionData();
+            // unlock the screen to be able to exit during the production sending
+            EventBusService.post(new UnlockFullScreenEvent());
+            production.onExitSendAllProductionData();
 
-				SingleAppInstanceUtils.releaseLock();
+            SingleAppInstanceUtils.releaseLock();
 
-				exitJVM();
-			}
-		});
+            exitJVM();
+        });
 	}
 
 	protected void executeShutdownHook() {
-		logger.info("executing shutdownhook");
+		logger.info("Executing shutdown hook");
 		switchOffAndDisconnect();
 		production.saveProductionData();
 		storage.saveStatistics(statistics.getValues());
@@ -105,7 +102,6 @@ public class ExecutorExit implements IStateAction {
 
 	@Override
 	public void leave() {
-
 	}
 
 	public void setSwitchOffPrinterOnExit(boolean switchOffPrinterOnExit) {
