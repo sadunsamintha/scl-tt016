@@ -106,7 +106,7 @@ public class BatchIdSkuViewController extends TT065AbstractViewFlowController im
 			showMessageDialog(Messages.get("sku.batch.id.validation.blank"));
 			return;
 		}
-		Pattern patt = Pattern.compile("[%@!()*~^!#$%&+/]");//restrictions all symbols
+		Pattern patt = Pattern.compile("[%@!()*~^!#$%&+/ ]");//restrictions all symbols
 		Matcher matcher = patt.matcher(strBatchId);
 		if (matcher.find()){
 			showMessageDialog(Messages.get("sku.batch.id.validation.format"));

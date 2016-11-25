@@ -2,19 +2,14 @@ package com.sicpa.tt065.view.sku.batchId;
 
 import com.sicpa.standard.client.common.i18n.Messages;
 import com.sicpa.standard.client.common.view.mvc.AbstractView;
-import com.sicpa.standard.gui.components.dialog.login.LoginDialog;
 import com.sicpa.standard.gui.components.virtualKeyboard.VirtualKeyboardPanel;
 import com.sicpa.standard.gui.plaf.SicpaColor;
-import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowStateChangedEvent;
 import com.sicpa.standard.sasscl.model.ProductionParameters;
-import com.sicpa.standard.sasscl.model.SKU;
 import com.sicpa.standard.sasscl.provider.ProductBatchIdProvider;
 import net.miginfocom.swing.MigLayout;
 
-import javax.annotation.PostConstruct;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
 
 /**
  * New view of the BatchId associated to the ProductionParameters variable
