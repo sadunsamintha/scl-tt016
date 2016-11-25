@@ -1,9 +1,15 @@
 package com.sicpa.standard.sasscl.view.selection.select;
 
 import com.google.common.eventbus.Subscribe;
+import com.sicpa.standard.client.common.security.ISecurityController;
+import com.sicpa.standard.client.common.security.SecurityService;
 import com.sicpa.standard.gui.utils.ThreadUtils;
 import com.sicpa.standard.sasscl.devices.barcode.BarcodeReaderEvent;
+import com.sicpa.standard.sasscl.event.UserLoginEvent;
+import com.sicpa.standard.sasscl.event.UserLogoutEvent;
 import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.ProductionParameterRootNode;
+import com.sicpa.standard.sasscl.provider.impl.SkuListProvider;
+import com.sicpa.standard.sasscl.security.SasSclPermission;
 import com.sicpa.standard.sasscl.view.LanguageSwitchEvent;
 import com.sicpa.standard.sasscl.view.selection.select.barcode.BarcodeInputView;
 import net.miginfocom.swing.MigLayout;
@@ -17,6 +23,8 @@ public class SelectProductionParametersBarcodeView extends JPanel implements ISe
 
 	protected ISelectProductionParametersViewListener callback;
 	protected BarcodeInputView delegate;
+	protected SkuListProvider skuListProvider;
+	protected ISecurityController securityController;
 
 	private static final Logger logger = LoggerFactory.getLogger(SelectProductionParametersBarcodeView.class);
 
@@ -25,10 +33,6 @@ public class SelectProductionParametersBarcodeView extends JPanel implements ISe
 			setLayout(new MigLayout("fill, inset 0 0 0 0"));
 			add(getDelegate(), "growx,spanx,push");
 		});
-	}
-
-	public void setCallback(ISelectProductionParametersViewListener callback) {
-		this.callback = callback;
 	}
 
 	@Override
@@ -44,11 +48,20 @@ public class SelectProductionParametersBarcodeView extends JPanel implements ISe
 		initGUI();
 	}
 
+	@Subscribe
+	public void handleUserLogin(UserLoginEvent evt) {
+		getDelegate().setMaintenanceButtonVisibility(isMaintenanceModeAvailableForCurrentUser());
+	}
+
+	@Subscribe
+	public void handleUserLogout(UserLogoutEvent evt) {
+		getDelegate().setMaintenanceButtonVisibility(isMaintenanceModeAvailableForCurrentUser());
+	}
 
 	public BarcodeInputView getDelegate() {
 		if (delegate == null) {
-			delegate = new BarcodeInputView();
-			delegate.setCallback(callback);
+			delegate = new BarcodeInputView(callback);
+			delegate.reset(skuListProvider.get());
 		}
 		return delegate;
 	}
@@ -59,5 +72,21 @@ public class SelectProductionParametersBarcodeView extends JPanel implements ISe
 			getDelegate().getModel().setId(evt.getBarcode());
 			getDelegate().getModel().selectionComplete();
 		}
+	}
+
+	public void setCallback(ISelectProductionParametersViewListener callback) {
+		this.callback = callback;
+	}
+
+	public void setSkuListProvider(SkuListProvider skuListProvider) {
+		this.skuListProvider = skuListProvider;
+	}
+
+	public void setSecurityController(ISecurityController securityController) {
+		this.securityController = securityController;
+	}
+
+	private boolean isMaintenanceModeAvailableForCurrentUser() {
+		return SecurityService.hasPermission(SasSclPermission.PRODUCTION_MODE_MAINTENANCE);
 	}
 }

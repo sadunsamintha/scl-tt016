@@ -24,6 +24,8 @@ import com.sicpa.standard.sasscl.devices.plc.variable.PlcVariableGroup;
 import com.sicpa.standard.sasscl.devices.plc.variable.PlcVariableGroupEvent;
 import com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcVariableDescriptor;
 import com.sicpa.standard.sasscl.devices.remote.IRemoteServer;
+import com.sicpa.standard.sasscl.event.UserLoginEvent;
+import com.sicpa.standard.sasscl.event.UserLogoutEvent;
 import com.sicpa.standard.sasscl.model.ProductionParameters;
 import com.sicpa.standard.sasscl.model.statistics.StatisticsValues;
 import com.sicpa.standard.sasscl.monitoring.MonitoringService;
@@ -91,13 +93,13 @@ public class Bootstrap implements IBootstrap {
         }
 
         installJMXBeans();
-        initLoginListenerLogger();
+        initLoginListener();
         setJVMParameters();
         loginDefaultLoginUser();
     }
 
     @Subscribe
-    public void handleLangugeSwitch(LanguageSwitchEvent evt){
+    public void handleLanguageSwitch(LanguageSwitchEvent evt){
         defaultLang = evt.getLanguage();
         setJVMParameters();
         logger.info("destroy_spinner_keyboard_static_instance_with_old_locale");
@@ -114,21 +116,23 @@ public class Bootstrap implements IBootstrap {
 
         OperatorLogger.log("Default user login: {}", login);
         MonitoringService.addSystemEvent(new BasicSystemEvent(SystemEventType.USER_LOGIN, "Default login: " + login));
+        EventBusService.post(new UserLoginEvent());
     }
 
-    private void initLoginListenerLogger() {
+    private void initLoginListener() {
         SecurityService.addLoginListener(new ILoginListener() {
-
             @Override
             public void loginSucceeded(String login) {
                 OperatorLogger.log("User login: {}", login);
                 MonitoringService.addSystemEvent(new BasicSystemEvent(SystemEventType.USER_LOGIN, "Login: " + login));
+                EventBusService.post(new UserLoginEvent());
             }
 
             @Override
             public void logoutCompleted(String login) {
                 OperatorLogger.log("User logout: {}", login);
                 MonitoringService.addSystemEvent(new BasicSystemEvent(SystemEventType.USER_LOGIN, "Logout: " + login));
+                EventBusService.post(new UserLogoutEvent());
             }
         });
     }

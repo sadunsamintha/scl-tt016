@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:util="http://www.springframework.org/schema/util"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
-		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 
 	<bean id="reportScreen" class="com.sicpa.standard.sasscl.view.report.ReportScreen">
@@ -242,11 +242,12 @@
 	<bean id="selectProductionParametersBarcodeView"
 		  class="com.sicpa.standard.sasscl.view.selection.select.SelectProductionParametersBarcodeView" init-method="initGUI">
 		<property name="callback" ref="selectProductionParametersViewController" />
+		<property name="skuListProvider" ref="skuListProvider" />
 	</bean>
 
 	<bean id="selectProductionParametersViewController"
 		  class="com.sicpa.standard.sasscl.view.selection.select.SelectProductionParametersViewController">
-		<property name="handPickingview" ref="selectProductionParametersHandPickingView" />
+		<property name="handPickingView" ref="selectProductionParametersHandPickingView" />
 		<property name="barcodeView" ref="selectProductionParametersBarcodeView" />
 		<property name="viewController" ref="mainFrameController" />
 		<property name="skuListProvider" ref="skuListProvider" />

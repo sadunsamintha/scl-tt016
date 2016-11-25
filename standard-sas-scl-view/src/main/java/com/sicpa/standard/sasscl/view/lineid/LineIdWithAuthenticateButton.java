@@ -11,7 +11,6 @@ import com.sicpa.standard.gui.screen.machine.AbstractMachineFrame;
 import com.sicpa.standard.gui.screen.machine.component.lineId.DefaultLineIdPanel;
 import com.sicpa.standard.sasscl.view.LanguageSwitchEvent;
 import com.sicpa.standard.sasscl.view.MainFrame;
-import com.sicpa.standard.sasscl.view.selection.select.barcode.BarcodeInputView;
 import net.miginfocom.swing.MigLayout;
 import org.jdesktop.swingx.JXLoginPane;
 import org.jdesktop.swingx.auth.LoginAdapter;
@@ -37,6 +36,7 @@ public class LineIdWithAuthenticateButton extends DefaultLineIdPanel {
 	private LoginService loginService;
 	private JXLoginPane xloginPanel;
 	private LoginDialog loginDialog;
+	private boolean isUserLoggedIn;
 
 	public LineIdWithAuthenticateButton() {
 		EventBusService.register(this);
@@ -60,24 +60,41 @@ public class LineIdWithAuthenticateButton extends DefaultLineIdPanel {
 	public void handleLanguageSwitch(LanguageSwitchEvent evt) {
 		logger.info("refresh_language,lang=" + evt.getLanguage());
 		remove(panelButton);
+		loginDialog = null;
+		xloginPanel = null;
 	    panelButton = null;
 		buttonLogin = null;
+		buttonLogout = null;
 		labelLogAs = null;
 		labelUserInfo = null;
 		getPanelButton();
 		initGUI();
+
+		if (isUserLoggedIn) {
+			updateGUILoginLogoutButtonsOnLogin();
+		} else {
+			updateGUILoginLogoutButtonsOnLogout();
+		}
 	}
-
-
 
 	private void logout() {
 		showUserInfo(SecurityService.getCurrentUser());
-		getButtonLogout().setVisible(false);
-		getButtonLogin().setVisible(true);
+		updateGUILoginLogoutButtonsOnLogout();
+		isUserLoggedIn = false;
 	}
 
 	private void login() {
 		showUserInfo(SecurityService.getCurrentUser());
+		updateGUILoginLogoutButtonsOnLogin();
+		isUserLoggedIn = true;
+	}
+
+	private void updateGUILoginLogoutButtonsOnLogout() {
+		getButtonLogout().setVisible(false);
+		getButtonLogin().setVisible(true);
+	}
+
+	private void updateGUILoginLogoutButtonsOnLogin() {
 		getButtonLogin().setVisible(false);
 		getButtonLogout().setVisible(true);
 	}
@@ -153,12 +170,6 @@ public class LineIdWithAuthenticateButton extends DefaultLineIdPanel {
 			loginDialog.setLocationRelativeTo(getView().getConfigPanel());
 		}
 		return loginDialog;
-	}
-
-	@Subscribe
-	public void handleLanguageSwitchEvent(LanguageSwitchEvent evt) {
-		loginDialog = null;
-		xloginPanel = null;
 	}
 
 	public JXLoginPane getXloginPanel() {
