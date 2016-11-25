@@ -2,6 +2,8 @@ package com.sicpa.tt065.view.sku.batchId;
 
 import com.sicpa.standard.client.common.i18n.Messages;
 import com.sicpa.standard.client.common.view.mvc.AbstractView;
+import com.sicpa.standard.gui.components.dialog.login.LoginDialog;
+import com.sicpa.standard.gui.components.virtualKeyboard.VirtualKeyboardPanel;
 import com.sicpa.standard.gui.plaf.SicpaColor;
 import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowStateChangedEvent;
 import com.sicpa.standard.sasscl.model.ProductionParameters;
@@ -12,6 +14,7 @@ import net.miginfocom.swing.MigLayout;
 import javax.annotation.PostConstruct;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.*;
 
 /**
  * New view of the BatchId associated to the ProductionParameters variable
@@ -24,6 +27,7 @@ public class BatchIdSkuView extends AbstractView<IBatchIdSkuListener, BatchIdSku
 
 	protected BatchIdSkuPanel batchIdSkuPanel;
 	private ProductionParameters productionParameters;
+	private VirtualKeyboardPanel keyboard;
 
 	public BatchIdSkuView(){
 
@@ -62,7 +66,7 @@ public class BatchIdSkuView extends AbstractView<IBatchIdSkuListener, BatchIdSku
 		frame.setVisible(true);
 	}
 
-	private class BatchIdSkuPanel extends JPanel {
+	private class BatchIdSkuPanel extends JPanel{
 
 		private JButton saveBatchIdButton;
 		private JPanel contentPanel;
@@ -109,8 +113,11 @@ public class BatchIdSkuView extends AbstractView<IBatchIdSkuListener, BatchIdSku
 				batchIdText.setMaximumSize(new Dimension(200,40));
 				batchIdText.setBackground(SicpaColor.BLUE_ULTRA_LIGHT);
 				batchIdText.setText(productionParameters.getProperty(productionBatchId));
-				//batchIdText.setForeground(SicpaColor.BLUE_ULTRA_LIGHT);
-				//batchIdText.setBackground(SicpaColor.BLUE_ULTRA_LIGHT);
+				//to associate a virtual keyboard to the BatchId Text Field
+				VirtualKeyboardPanel virtualKeyboardPanel = VirtualKeyboardPanel.getDefaultKeyboard(batchIdText);
+				String[] defaultLayout = new String[]{"1234567890", "QWERTYUIOP", "ASDFGHJKL", "ZXCVBNM", "-{del}"};
+				virtualKeyboardPanel.setDefaultLayout(defaultLayout);
+				VirtualKeyboardPanel.attachKeyboardDialog(batchIdText, virtualKeyboardPanel);
 			}
 			return batchIdText;
 		}
