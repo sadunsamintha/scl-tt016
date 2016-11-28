@@ -4,7 +4,7 @@ package com.sicpa.standard.sasscl.business.production;
 public interface IProduction {
 
 	/**
-	 * save localy the in memory production data
+	 * save locally the in memory production data
 	 */
 	void saveProductionData();
 

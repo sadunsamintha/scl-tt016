@@ -73,6 +73,7 @@ public class ExecutorExit implements IStateAction {
 			}
 			hardwareController.disconnect();
 		} catch (Exception e) {
+			logger.error("Error switching off printer and disconnecting devices", e);
 		}
 	}
 
