@@ -94,7 +94,7 @@ public class TT016RemoteServices implements ITT016RemoteServices {
 	@Timeout
 	public List<SkuDTO> getSkuList() throws InternalException {
 		logger.info("Requesting sku list");
-		List<SkuDTO> skus = codingActivation.getSKU(subsystemId);
+		List<SkuDTO> skus = codingActivation.getSKU_bis(subsystemId);
 		Comparator<SkuDTO> c = (s1, s2) -> s1.getDescription().compareTo(s2.getDescription());
 		Collections.sort(skus, c);
 		return skus;
