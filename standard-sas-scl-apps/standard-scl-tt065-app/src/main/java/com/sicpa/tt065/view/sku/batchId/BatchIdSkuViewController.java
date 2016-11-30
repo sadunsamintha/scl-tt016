@@ -112,7 +112,7 @@ public class BatchIdSkuViewController extends TT065AbstractViewFlowController im
 			showMessageDialog(Messages.get("sku.batch.id.validation.format"));
 			return;
 		}
-		if (strBatchId.length() != 15){
+		if (strBatchId.length()==0 || strBatchId.length() > 15){
 			showMessageDialog(Messages.get("sku.batch.id.validation.size"));
 			return;
 		}
