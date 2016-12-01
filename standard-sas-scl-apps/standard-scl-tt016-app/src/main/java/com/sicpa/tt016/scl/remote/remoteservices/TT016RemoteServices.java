@@ -3,10 +3,7 @@ package com.sicpa.tt016.scl.remote.remoteservices;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
