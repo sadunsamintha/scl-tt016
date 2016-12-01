@@ -3,10 +3,7 @@ package com.sicpa.tt016.scl.remote.remoteservices;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -94,7 +91,7 @@ public class TT016RemoteServices implements ITT016RemoteServices {
 	@Timeout
 	public List<SkuDTO> getSkuList() throws InternalException {
 		logger.info("Requesting sku list");
-		List<SkuDTO> skus = codingActivation.getSKU(subsystemId);
+		List<SkuDTO> skus = codingActivation.getSKU_bis(subsystemId);
 		Comparator<SkuDTO> c = (s1, s2) -> s1.getDescription().compareTo(s2.getDescription());
 		Collections.sort(skus, c);
 		return skus;

@@ -16,7 +16,7 @@
 		<dependency>
 			<groupId>com.sicpa.tt016</groupId>
 			<artifactId>tt016-master-scl-ejb</artifactId>
-			<version>3.3.3</version>
+			<version>3.4.1</version>
 			<type>ejb-client</type>
 			<exclusions>
 				<exclusion>
