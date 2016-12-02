@@ -8,8 +8,8 @@ brs.behavior=standard
 
 
 Make sure that in the productionConfig-SCL folder, the device is enabled:
-<BisConfig />            <---- Enabled
-<!--<BisConfig /> -->    <---- Disabled
+<BrsConfig />            <---- Enabled
+<!--<BrsConfig /> -->    <---- Disabled
 
 
 In the "brsConfig.xml", depending on the number of BRS cameras to use, comment or uncomment:
