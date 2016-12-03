@@ -39,7 +39,7 @@ beans {
 	//lineNtf => notif on line
 	//lineGrp => add the var to the edit line var gui, grouped with over var sharing the same group name
 	//cabGrp => add the var to the edit cabinet var gui, grouped with over var sharing the same group name
-
+	def productionConfigFolder=props['production.config.folder'].toUpperCase()
 
 
 	//LINE PARAM
@@ -122,12 +122,16 @@ beans {
 	plcMap['PARAM_LINE_PRODUCT_DETECTOR_ACTIVE_LOW']=[v:LINE_PRM+'bProductDetectorIsActiveLow' ,t:B, lineGrp:'misc']
 	plcMap['PARAM_LINE_INHIBIT_STOP_LINE_IF_CODE_IN_EXPORT_MODE']=[v:LINE_PRM+'bInhibitStopLineIfCodeInExportMode' ,t:B, lineGrp:'misc']
 
-	plcMap['PARAM_LINE_VALVE_DISTANCE']=[v:LINE_PRM+'nValveDistance' ,t:I ,lineGrp:'misc']
-	plcMap['PARAM_LINE_VALVE_LENGTH']=[v:LINE_PRM+'nValveLength' ,t:I ,lineGrp:'misc']
-	plcMap['PARAM_LINE_RATIO_ENCONDER_MOTOR']=[v:LINE_PRM+'nRatioEncoderMotor' ,t:I ,lineGrp:'misc']
-	plcMap['PARAM_LINE_PULSES_PER_MM']=[v:LINE_PRM+'nPulsesPerMM' ,t:I ,lineGrp:'misc']
+	if(productionConfigFolder == "PRODUCTIONCONFIG-SAS") {
+		plcMap['PARAM_LINE_VALVE_DISTANCE'] = [v: LINE_PRM + 'nValveDistance', t: I, lineGrp: 'misc']
+		plcMap['PARAM_LINE_VALVE_LENGTH'] = [v: LINE_PRM + 'nValveLength', t: I, lineGrp: 'misc']
+		plcMap['PARAM_LINE_RATIO_ENCONDER_MOTOR'] = [v: LINE_PRM + 'nRatioEncoderMotor', t: I, lineGrp: 'misc']
+		plcMap['PARAM_LINE_PULSES_PER_MM'] = [v: LINE_PRM + 'nPulsesPerMM', t: I, lineGrp: 'misc']
 
 	//LINE NOTIF
+		plcMap['NTF_LINE_ENCODER_VALUE']=[v:LINE_NTF+'nEncoderValue' ,t:I, lineNtf:'true']
+
+	}
 	plcMap['NTF_LINE_SPEED']=[v:LINE_NTF+'nLineSpeed' ,t:I ,lineNtf:'true']
 	plcMap['NTF_LINE_PRODS_PER_SECOND']=[v:LINE_NTF+'nProdsPerSecond' ,t:I ]
 	plcMap['NTF_LINE_STATE']=[v:LINE_NTF+'nState' ,t:I ,lineNtf:'true']
@@ -162,8 +166,6 @@ beans {
 	plcMap['NTF_LINE_JAVA_CPT_NO_INK_DETECTED']=[v:LINE_NTF+'nJavaCpt_NoInkDetected' ,t:I ]
 	plcMap['NTF_LINE_JAVA_CPT_ACQ_ERRORS']=[v:LINE_NTF+'nJavaCpt_AcquisitionErrors' ,t:I ]
 	plcMap['NTF_LINE_JAVA_PRODUCT_STATUS']=[v:LINE_NTF+'nDRSValueForJava' ,t:I, lineNtf:'true']
-
-	plcMap['NTF_LINE_ENCODER_VALUE']=[v:LINE_NTF+'nEncoderValue' ,t:I, lineNtf:'true']
 
 
 	//CABINET PARAM
