@@ -6,6 +6,8 @@ import com.sicpa.tt065.scl.TT065Bootstrap
  */
 
 beans{
+    importBeans('spring/custo/tt065/plc/tt065.plc-import.groovy')
+
     addAlias('bootstrapAlias','bootstrap')
     bootstrap(TT065Bootstrap){ b->
         b.parent=ref('bootstrapAlias')
