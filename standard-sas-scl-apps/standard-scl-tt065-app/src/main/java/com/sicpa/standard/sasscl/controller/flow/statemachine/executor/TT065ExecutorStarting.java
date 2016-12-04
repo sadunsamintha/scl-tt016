@@ -26,7 +26,7 @@ public class TT065ExecutorStarting extends ExecutorStarting {
 	private final static Logger logger = LoggerFactory.getLogger(TT065ExecutorStarting.class);
 
 	private IStartProductionValidator startValidators;
-	private int timeoutDelay = 30000;
+	private int timeoutDelay = 120000;
 	private IAlert alert;
 	private IHardwareController hardwareController;
 
