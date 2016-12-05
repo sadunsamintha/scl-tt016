@@ -125,7 +125,7 @@ beans {
 	if(productionConfigFolder == "PRODUCTIONCONFIG-SAS") {
 		plcMap['PARAM_LINE_VALVE_DISTANCE'] = [v: LINE_PRM + 'nValveDistance', t: I, lineGrp: 'misc']
 		plcMap['PARAM_LINE_VALVE_LENGTH'] = [v: LINE_PRM + 'nValveLength', t: I, lineGrp: 'misc']
-		plcMap['PARAM_LINE_RATIO_ENCONDER_MOTOR'] = [v: LINE_PRM + 'nRatioEncoderMotor', t: I, lineGrp: 'misc']
+		plcMap['PARAM_LINE_RATIO_ENCODER_MOTOR'] = [v: LINE_PRM + 'nRatioEncoderMotor', t: I, lineGrp: 'misc']
 		plcMap['PARAM_LINE_PULSES_PER_MM'] = [v: LINE_PRM + 'nPulsesPerMM', t: I, lineGrp: 'misc']
 
 	//LINE NOTIF
