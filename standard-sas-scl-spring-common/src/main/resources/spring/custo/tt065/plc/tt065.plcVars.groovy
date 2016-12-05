@@ -123,10 +123,10 @@ beans {
 	plcMap['PARAM_LINE_INHIBIT_STOP_LINE_IF_CODE_IN_EXPORT_MODE']=[v:LINE_PRM+'bInhibitStopLineIfCodeInExportMode' ,t:B, lineGrp:'misc']
 
 	if(productionConfigFolder == "PRODUCTIONCONFIG-SAS") {
-		plcMap['PARAM_LINE_VALVE_DISTANCE'] = [v: LINE_PRM + 'nValveDistance', t: I, lineGrp: 'misc']
-		plcMap['PARAM_LINE_VALVE_LENGTH'] = [v: LINE_PRM + 'nValveLength', t: I, lineGrp: 'misc']
-		plcMap['PARAM_LINE_RATIO_ENCODER_MOTOR'] = [v: LINE_PRM + 'nRatioEncoderMotor', t: I, lineGrp: 'misc']
-		plcMap['PARAM_LINE_PULSES_PER_MM'] = [v: LINE_PRM + 'nPulsesPerMM', t: I, lineGrp: 'misc']
+		plcMap['PARAM_LINE_VALVE_DISTANCE'] = [v: LINE_PRM + 'nValveDistance', t: I, lineGrp: 'wipper']
+		plcMap['PARAM_LINE_VALVE_LENGTH'] = [v: LINE_PRM + 'nValveLength', t: I, lineGrp: 'wipper']
+		plcMap['PARAM_LINE_RATIO_ENCODER_MOTOR'] = [v: LINE_PRM + 'nRatioEncoderMotor', t: I, lineGrp: 'wipper']
+		plcMap['PARAM_LINE_PULSES_PER_MM'] = [v: LINE_PRM + 'nPulsesPerMM', t: I, lineGrp: 'wipper']
 
 	//LINE NOTIF
 		plcMap['NTF_LINE_ENCODER_VALUE']=[v:LINE_NTF+'nEncoderValue' ,t:I, lineNtf:'true']
