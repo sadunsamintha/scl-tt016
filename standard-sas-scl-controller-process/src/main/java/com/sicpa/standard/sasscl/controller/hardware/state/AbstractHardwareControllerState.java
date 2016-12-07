@@ -21,7 +21,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public abstract class AbstractHardwareControllerState implements IHardwareControllerState {
 
     private final static Logger logger = LoggerFactory.getLogger(AbstractHardwareControllerState.class);
-    protected final List<IStartableDevice> startableDevices = new ArrayList<IStartableDevice>();
+    protected final List<IStartableDevice> startableDevices = new ArrayList<>();
     protected IPlcAdaptor plc;
     protected IHardwareControllerStateSetter setter;
     protected IDeviceErrorRepository deviceErrorRepository;
@@ -49,23 +49,19 @@ public abstract class AbstractHardwareControllerState implements IHardwareContro
                 startDevice(startableDevice);
             }
         }
-        if (plc.isConnected()) {
-            startDevice(plc);
-        }
     }
 
-
-    protected void runPlc() {
+    protected void startPlc() {
         if (plc.isConnected()) {
-            logger.debug("Running plc");
-            TaskExecutor.execute(() -> {
-                try {
-                    plc.doRun();
-                } catch (DeviceException e) {
-                    logger.error("", e);
-                    EventBusService.post(new MessageEvent(MessageEventKey.DevicesController.FAILED_TO_START_DEVICE));
-                }
-            });
+            logger.info("Starting plc");
+
+            try {
+                plc.start();
+                plc.doRun();
+            } catch (DeviceException e) {
+                logger.error("", e);
+                EventBusService.post(new MessageEvent(MessageEventKey.DevicesController.FAILED_TO_START_DEVICE));
+            }
         }
     }
 
@@ -172,12 +168,14 @@ public abstract class AbstractHardwareControllerState implements IHardwareContro
     protected void startDevice(final IStartableDevice device) {
         logger.info("Starting device: {}", device.getName());
 
-        try {
-            device.start();
-        } catch (DeviceException e) {
-            logger.error("", e);
-            EventBusService.post(new MessageEvent(MessageEventKey.DevicesController.FAILED_TO_START_DEVICE));
-        }
+        TaskExecutor.execute(() -> {
+            try {
+                device.start();
+            } catch (DeviceException e) {
+                logger.error("", e);
+                EventBusService.post(new MessageEvent(MessageEventKey.DevicesController.FAILED_TO_START_DEVICE));
+            }
+        });
     }
 
     protected void stoppingDevice(final IStartableDevice device) {
@@ -224,24 +222,39 @@ public abstract class AbstractHardwareControllerState implements IHardwareContro
     }
 
     /**
-     * button if every devices have the same status
-     *
+     * Returns true if all startable devices + PLC match the supplied deviceStatuses
+     * @param checkOnlyBlockable
      * @param deviceStatus
      * @return
      */
     protected boolean checkAllDeviceStatus(boolean checkOnlyBlockable, DeviceStatus... deviceStatus) {
+        if (!checkAllStartableDeviceStatus(checkOnlyBlockable, deviceStatus)) {
+            return false;
+        }
+
         List<DeviceStatus> devicesStatusList = Arrays.asList(deviceStatus);
+
+        return devicesStatusList.contains(plc.getStatus());
+    }
+
+    /**
+     * Returns true if all startable devices status (doesn't include PLC) match the supplied deviceStatuses
+     *
+     * @param checkOnlyBlockable
+     * @param deviceStatus
+     * @return
+     */
+    protected boolean checkAllStartableDeviceStatus(boolean checkOnlyBlockable, DeviceStatus... deviceStatus) {
+        List<DeviceStatus> devicesStatusList = Arrays.asList(deviceStatus);
+
         for (IStartableDevice dev : startableDevices) {
-            if (!checkOnlyBlockable || checkOnlyBlockable && dev.isBlockProductionStart()) {
+            if (!checkOnlyBlockable || dev.isBlockProductionStart()) {
                 if (!devicesStatusList.contains(dev.getStatus())) {
                     return false;
                 }
             }
         }
 
-        if (!devicesStatusList.contains(plc.getStatus())) {
-            return false;
-        }
         return true;
     }
 

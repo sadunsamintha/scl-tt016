@@ -18,7 +18,7 @@ public class StartedState extends AbstractHardwareControllerState {
 	@Override
 	public void enter() {
 		super.enter();
-		runPlc();
+		startPlc();
 		fireStatusChanged(new HardwareControllerStatusEvent(HardwareControllerStatus.STARTED));
 	}
 
