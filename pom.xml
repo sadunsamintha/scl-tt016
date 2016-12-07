@@ -243,7 +243,8 @@
 		<module>standard-sas-scl-device-bis</module>
 		<module>standard-sas-scl-test-utils</module>
 		<module>standard-sas-scl-apps</module>
-	</modules>
+        <module>standard-sas-scl-config-templates</module>
+    </modules>
 
 
 
