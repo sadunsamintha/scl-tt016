@@ -35,7 +35,6 @@ public class StartingStateTest {
 
 	@Before
 	public void setup() {
-
 		TestHelper.initExecutor();
 
 		startingState = new StartingState();
@@ -62,10 +61,8 @@ public class StartingStateTest {
 
 	@Test
 	public void testEnter() throws DeviceException {
-
 		Mockito.when(startableDevice1.isConnected()).thenReturn(true);
 		Mockito.when(startableDevice2.isConnected()).thenReturn(true);
-		Mockito.when(plc.isConnected()).thenReturn(true);
 
 		EventBusService.register(new Object() {
 			@Subscribe
@@ -78,7 +75,6 @@ public class StartingStateTest {
 
 		Mockito.verify(startableDevice1).start();
 		Mockito.verify(startableDevice2).start();
-		Mockito.verify(plc).start();
 	}
 
 	@Test
@@ -90,7 +86,6 @@ public class StartingStateTest {
 
 	@Test
 	public void testDeviceStatusChangedAllStarted() {
-
 		Mockito.when(startableDevice1.getStatus()).thenReturn(DeviceStatus.STARTED);
 		Mockito.when(startableDevice2.getStatus()).thenReturn(DeviceStatus.STARTED);
 		Mockito.when(plc.getStatus()).thenReturn(DeviceStatus.STARTED);

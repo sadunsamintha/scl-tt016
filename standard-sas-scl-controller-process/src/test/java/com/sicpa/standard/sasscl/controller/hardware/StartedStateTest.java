@@ -3,6 +3,7 @@ package com.sicpa.standard.sasscl.controller.hardware;
 import java.util.Arrays;
 import java.util.List;
 
+import com.sicpa.standard.sasscl.devices.plc.PlcAdaptorException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,7 +32,6 @@ public class StartedStateTest {
 
 	@Before
 	public void setup() {
-
 		TestHelper.initExecutor();
 
 		startedState = new StartedState();
@@ -48,11 +48,12 @@ public class StartedStateTest {
 		startedState.setPlc(plc);
 		startedState.setSetter(conveyorController);
 		startedState.setStartableDevices(startableDevices);
-
 	}
 
 	@Test
-	public void testEnter() {
+	public void testEnter() throws PlcAdaptorException {
+		Mockito.when(plc.isConnected()).thenReturn(true);
+
 		EventBusService.register(new Object() {
 			@Subscribe
 			public void handleEvent(HardwareControllerStatusEvent evt) {
@@ -61,6 +62,9 @@ public class StartedStateTest {
 		});
 		startedState.enter();
 		TestHelper.runAllTasks();
+
+		Mockito.verify(plc).start();
+		Mockito.verify(plc).doRun();
 	}
 
 	@Test
