@@ -28,7 +28,7 @@ public class StartingState extends AbstractHardwareControllerState {
 		if (evt.getStatus().equals(DeviceStatus.DISCONNECTED)) {
 			setNextState(connectingState);
 		} else if (evt.getStatus().equals(DeviceStatus.STARTED)) {
-			if (checkAllDeviceStatus(true, DeviceStatus.STARTED)) {
+			if (checkAllStartableDeviceStatus(true, DeviceStatus.STARTED)) {
 				setNextState(startedState);
 			}
 		}
@@ -68,5 +68,4 @@ public class StartingState extends AbstractHardwareControllerState {
 	public void setConnectingState(IHardwareControllerState connectingState) {
 		this.connectingState = connectingState;
 	}
-
 }
