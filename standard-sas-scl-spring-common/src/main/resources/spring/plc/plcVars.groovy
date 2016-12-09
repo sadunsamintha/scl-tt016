@@ -119,7 +119,14 @@ beans {
 	plcMap['PARAM_LINE_INK_VORTEX_OFF_DELTA_HYSTERESIS']=[v:LINE_PRM+'nInk_Vortex_OFF_delta_hysteresis' ,t:S ,lineGrp:'misc']
 	plcMap['PARAM_LINE_PRODUCT_DETECTOR_ACTIVE_LOW']=[v:LINE_PRM+'bProductDetectorIsActiveLow' ,t:B, lineGrp:'misc']
 	plcMap['PARAM_LINE_INHIBIT_STOP_LINE_IF_CODE_IN_EXPORT_MODE']=[v:LINE_PRM+'bInhibitStopLineIfCodeInExportMode' ,t:B, lineGrp:'misc']
-
+	plcMap['PARAM_LINE_LABEL_APPLICATOR_DISTANCE']=[v:LINE_PRM+'nLabelApplicatorDistance' ,t:D]
+	plcMap['PARAM_LINE_LABEL_APPLICATOR_DISTANCE_TYPE']=[v:LINE_PRM+'bLabelApplicatorDistanceType' ,t:B]
+	plcMap['PARAM_LINE_LABEL_APPLICATOR_LENGTH']=[v:LINE_PRM+'nLabelApplicatorLength' ,t:D]
+	plcMap['PARAM_LINE_LABEL_APPLICATOR_LENGTH_TYPE']=[v:LINE_PRM+'bLabelApplicatorLengthType' ,t:B]
+	plcMap['PARAM_LINE_LABEL_APPLICATOR_2_DISTANCE']=[v:LINE_PRM+'n2ndLabelApplicatorDistance' ,t:D]
+	plcMap['PARAM_LINE_LABEL_APPLICATOR_2_DISTANCE_TYPE']=[v:LINE_PRM+'b2ndLabelApplicatorDistanceType' ,t:B]
+	plcMap['PARAM_LINE_LABEL_APPLICATOR_2_LENGTH']=[v:LINE_PRM+'n2ndLabelApplicatorLength' ,t:D]
+	plcMap['PARAM_LINE_LABEL_APPLICATOR_2_LENGTH_TYPE']=[v:LINE_PRM+'b2ndLabelApplicatorLengthType' ,t:B]
 
 	//LINE NOTIF
 	plcMap['NTF_LINE_SPEED']=[v:LINE_NTF+'nLineSpeed' ,t:I ,lineNtf:'true']
