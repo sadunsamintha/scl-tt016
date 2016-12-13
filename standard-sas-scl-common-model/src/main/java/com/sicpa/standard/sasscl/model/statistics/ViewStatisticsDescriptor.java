@@ -1,67 +1,53 @@
 package com.sicpa.standard.sasscl.model.statistics;
 
-import java.awt.Color;
+import java.awt.*;
 
 public class ViewStatisticsDescriptor {
-
-	@Override
-	public String toString() {
-		return "ViewStatisticsDescriptor [color=" + color + ", key=" + key + ", line=" + line + ", index=" + index
-				+ "]";
-	}
 
 	private Color color;
 	private String key;
 	private String line;
 	private int index;
+	private boolean countTowardsTotal = true;
 
 	public ViewStatisticsDescriptor() {
 	}
 
-	public ViewStatisticsDescriptor(Color color, String key, int index) {
+	public ViewStatisticsDescriptor(Color color, String key, int index, boolean countTowardsTotal) {
 		this.color = color;
 		this.key = key;
 		this.index = index;
+		this.countTowardsTotal = countTowardsTotal;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		ViewStatisticsDescriptor that = (ViewStatisticsDescriptor) o;
+
+		if (index != that.index) return false;
+		if (countTowardsTotal != that.countTowardsTotal) return false;
+		if (color != null ? !color.equals(that.color) : that.color != null) return false;
+		if (key != null ? !key.equals(that.key) : that.key != null) return false;
+		return line != null ? line.equals(that.line) : that.line == null;
 	}
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((color == null) ? 0 : color.hashCode());
-		result = prime * result + index;
-		result = prime * result + ((key == null) ? 0 : key.hashCode());
-		result = prime * result + ((line == null) ? 0 : line.hashCode());
+		int result = color != null ? color.hashCode() : 0;
+		result = 31 * result + (key != null ? key.hashCode() : 0);
+		result = 31 * result + (line != null ? line.hashCode() : 0);
+		result = 31 * result + index;
+		result = 31 * result + (countTowardsTotal ? 1 : 0);
 		return result;
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		ViewStatisticsDescriptor other = (ViewStatisticsDescriptor) obj;
-		if (color == null) {
-			if (other.color != null)
-				return false;
-		} else if (!color.equals(other.color))
-			return false;
-		if (index != other.index)
-			return false;
-		if (key == null) {
-			if (other.key != null)
-				return false;
-		} else if (!key.equals(other.key))
-			return false;
-		if (line == null) {
-			if (other.line != null)
-				return false;
-		} else if (!line.equals(other.line))
-			return false;
-		return true;
+	public String toString() {
+		return "ViewStatisticsDescriptor [color=" + color + ", key=" + key + ", line=" + line + ", index=" + index
+				+ ", countTowardsTotal=" + countTowardsTotal + "]";
 	}
 
 	public Color getColor() {
@@ -94,5 +80,13 @@ public class ViewStatisticsDescriptor {
 
 	public void setIndex(int index) {
 		this.index = index;
+	}
+
+	public boolean isCountTowardsTotal() {
+		return countTowardsTotal;
+	}
+
+	public void setCountTowardsTotal(boolean countTowardsTotal) {
+		this.countTowardsTotal = countTowardsTotal;
 	}
 }

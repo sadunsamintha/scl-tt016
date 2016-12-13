@@ -73,12 +73,12 @@ public class TT016Bootstrap extends Bootstrap {
 	}
 
 	private void addInkDetectedStatistic() {
-		handleNewStatistic(ProductStatus.INK_DETECTED, INK_DETECTED, GREEN_DARK, 4, "stats.display.inkDetected");
+		handleNewStatistic(ProductStatus.INK_DETECTED, INK_DETECTED, GREEN_DARK, 4, "stats.display.inkDetected", false);
 	}
 
 	private void addProducerEjectionStatistic() {
-		handleNewStatistic(TT016ProductStatus.EJECTED_PRODUCER, EJECTED_PRODUCER,
-                RED, 3, "stats.display.ejectedProducer");
+		handleNewStatistic(TT016ProductStatus.EJECTED_PRODUCER, EJECTED_PRODUCER, RED, 3,
+				"stats.display.ejectedProducer", true);
 	}
 
 	@Override
