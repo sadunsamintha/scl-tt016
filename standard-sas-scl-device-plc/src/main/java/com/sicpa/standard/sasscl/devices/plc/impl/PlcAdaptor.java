@@ -1,17 +1,5 @@
 package com.sicpa.standard.sasscl.devices.plc.impl;
 
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.concurrent.atomic.AtomicBoolean;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.messages.MessageEvent;
 import com.sicpa.standard.client.common.utils.StringMap;
@@ -28,15 +16,16 @@ import com.sicpa.standard.sasscl.controller.productionconfig.IConfigurable;
 import com.sicpa.standard.sasscl.controller.productionconfig.IConfigurator;
 import com.sicpa.standard.sasscl.controller.productionconfig.config.PlcConfig;
 import com.sicpa.standard.sasscl.devices.DeviceStatus;
-import com.sicpa.standard.sasscl.devices.plc.AbstractPlcAdaptor;
-import com.sicpa.standard.sasscl.devices.plc.IPlcParamSender;
-import com.sicpa.standard.sasscl.devices.plc.IPlcRequestExecutor;
-import com.sicpa.standard.sasscl.devices.plc.IPlcValuesLoader;
-import com.sicpa.standard.sasscl.devices.plc.PlcAdaptorException;
-import com.sicpa.standard.sasscl.devices.plc.PlcLineHelper;
-import com.sicpa.standard.sasscl.devices.plc.PlcRequest;
+import com.sicpa.standard.sasscl.devices.plc.*;
 import com.sicpa.standard.sasscl.devices.plc.event.PlcEvent;
 import com.sicpa.standard.sasscl.messages.MessageEventKey;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.text.MessageFormat;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @SuppressWarnings("rawtypes")
 public class PlcAdaptor extends AbstractPlcAdaptor implements IPlcControllerListener, IConfigurable<PlcConfig, PlcAdaptor> {
@@ -164,8 +153,8 @@ public class PlcAdaptor extends AbstractPlcAdaptor implements IPlcControllerList
 	}
 
 	private void onPlcConnected() {
-		sendAllParameters();
 		sendProductionVariableConfig();
+		sendAllParameters();
 		sendReloadPlcParametersRequest();
 		createNotifications();
 		fireDeviceStatusChanged(DeviceStatus.CONNECTED);
@@ -173,7 +162,6 @@ public class PlcAdaptor extends AbstractPlcAdaptor implements IPlcControllerList
 
 	private void sendAllParameters() {
 		loader.sendValues();
-		sendProductionVariableConfig();
 	}
 
 	@Override
@@ -258,16 +246,13 @@ public class PlcAdaptor extends AbstractPlcAdaptor implements IPlcControllerList
 
 	@Override
 	public IConfigurator<PlcConfig, PlcAdaptor> getConfigurator() {
-		return new IConfigurator<PlcConfig, PlcAdaptor>() {
-			@Override
-			public void execute(PlcConfig config, PlcAdaptor configurable) throws ConfigurationFailedException {
-				try {
-					configure(config);
-				} catch (Exception e) {
-					throw new ConfigurationFailedException(e);
-				}
-			}
-		};
+		return (config, configurable) -> {
+            try {
+                configure(config);
+            } catch (Exception e) {
+                throw new ConfigurationFailedException(e);
+            }
+        };
 	}
 
 	private void configure(PlcConfig config) throws Exception {
