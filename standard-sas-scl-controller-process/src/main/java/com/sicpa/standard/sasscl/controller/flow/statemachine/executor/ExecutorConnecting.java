@@ -1,8 +1,5 @@
 package com.sicpa.standard.sasscl.controller.flow.statemachine.executor;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.messages.MessageEvent;
@@ -16,6 +13,8 @@ import com.sicpa.standard.sasscl.controller.productionconfig.loader.IProductionC
 import com.sicpa.standard.sasscl.messages.MessageEventKey;
 import com.sicpa.standard.sasscl.model.ProductionParameters;
 import com.sicpa.standard.sasscl.provider.impl.ProductionConfigProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ExecutorConnecting implements IStateAction {
 
@@ -39,6 +38,7 @@ public class ExecutorConnecting implements IStateAction {
 			// do not reset the statistics when they are restored from the storage at startup
 			if (!ignoreStatsReset) {
 				statistics.reset();
+				statistics.resetUptimeCounter();
 			} else {
 				ignoreStatsReset = false;
 			}

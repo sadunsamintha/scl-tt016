@@ -1,17 +1,5 @@
 package com.sicpa.standard.sasscl.business.statistics.impl;
 
-import static com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState.STT_CONNECTED;
-import static com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState.STT_RECOVERING;
-import static com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState.STT_STARTING;
-import static com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState.STT_STOPPING;
-import static com.sicpa.standard.sasscl.model.ProductStatus.OFFLINE;
-import static com.sicpa.standard.sasscl.model.ProductStatus.SENT_TO_PRINTER_WASTED;
-
-import java.util.Collection;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.utils.listener.CoalescentPeriodicListener;
@@ -29,6 +17,14 @@ import com.sicpa.standard.sasscl.model.statistics.StatisticsValues;
 import com.sicpa.standard.sasscl.monitoring.MonitoringService;
 import com.sicpa.standard.sasscl.monitoring.system.event.StatisticsSystemEvent;
 import com.sicpa.standard.sasscl.provider.impl.ProductionConfigProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Collection;
+
+import static com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState.*;
+import static com.sicpa.standard.sasscl.model.ProductStatus.OFFLINE;
+import static com.sicpa.standard.sasscl.model.ProductStatus.SENT_TO_PRINTER_WASTED;
 
 /**
  * Statistics based on products created
@@ -118,7 +114,6 @@ public class Statistics implements IStatistics {
 	public void reset() {
 		logger.debug("Reset statistics");
 		stats.reset();
-		uptimeCounter.reset();
 		saveStatistics();
 		initStats();
 		EventBusService.post(new StatisticsResetEvent());
@@ -159,6 +154,11 @@ public class Statistics implements IStatistics {
 	@Override
 	public int getUptime() {
 		return uptimeCounter.getUptime();
+	}
+
+	@Override
+	public void resetUptimeCounter() {
+		uptimeCounter.reset();
 	}
 
 	public void setProductionConfigProvider(ProductionConfigProvider productionConfigProvider) {

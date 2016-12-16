@@ -19,4 +19,6 @@ public interface IStatistics {
 	 */
 	int getUptime();
 
+	void resetUptimeCounter();
+
 }
