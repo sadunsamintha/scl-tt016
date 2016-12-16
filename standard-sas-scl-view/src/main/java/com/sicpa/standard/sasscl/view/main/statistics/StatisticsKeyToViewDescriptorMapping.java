@@ -1,10 +1,5 @@
 package com.sicpa.standard.sasscl.view.main.statistics;
 
-import java.awt.Color;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import com.sicpa.standard.gui.plaf.SicpaColor;
@@ -12,18 +7,23 @@ import com.sicpa.standard.sasscl.business.statistics.IStatisticsKeyToViewDescrip
 import com.sicpa.standard.sasscl.model.statistics.StatisticsKey;
 import com.sicpa.standard.sasscl.model.statistics.ViewStatisticsDescriptor;
 
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+
 public class StatisticsKeyToViewDescriptorMapping implements IStatisticsKeyToViewDescriptorMapping {
 
 	private final Multimap<String, ViewStatisticsDescriptor> mapping = ArrayListMultimap.create();
 
 	public StatisticsKeyToViewDescriptorMapping() {
-		add(StatisticsKey.GOOD, SicpaColor.GREEN_DARK, 0, "stats.display.good");
-		add(StatisticsKey.BAD, SicpaColor.RED, 1, "stats.display.bad");
+		add(StatisticsKey.GOOD, SicpaColor.GREEN_DARK, 0, "stats.display.good", true);
+		add(StatisticsKey.BAD, SicpaColor.RED, 1, "stats.display.bad", true);
 	}
 
 	@Override
-	public void add(StatisticsKey key, Color color, int index, String langKey) {
-		mapping.put(key.getDescription(), new ViewStatisticsDescriptor(color, langKey, index));
+	public void add(StatisticsKey key, Color color, int index, String langKey, boolean countTowardsTotal) {
+		mapping.put(key.getDescription(), new ViewStatisticsDescriptor(color, langKey, index, countTowardsTotal));
 	}
 
 	@Override
@@ -41,6 +41,6 @@ public class StatisticsKeyToViewDescriptorMapping implements IStatisticsKeyToVie
 	}
 
 	private ViewStatisticsDescriptor clone(ViewStatisticsDescriptor desc) {
-		return new ViewStatisticsDescriptor(desc.getColor(), desc.getKey(), desc.getIndex());
+		return new ViewStatisticsDescriptor(desc.getColor(), desc.getKey(), desc.getIndex(), desc.isCountTowardsTotal());
 	}
 }

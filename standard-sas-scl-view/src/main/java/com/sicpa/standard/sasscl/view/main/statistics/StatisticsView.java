@@ -137,20 +137,18 @@ public class StatisticsView extends AbstractView<IStatisticsViewListener, Statis
 	}
 
 	private Map<ViewStatisticsDescriptor, SingleStatsPanel> getOrCreatePanelsByStatKeyForALine(String lineIndex) {
-		Map<ViewStatisticsDescriptor, SingleStatsPanel> panelsByStatKey = statsPanelByDescriptorByLine.get(lineIndex);
-
-		if (panelsByStatKey == null) {
-			panelsByStatKey = new HashMap<>();
-			statsPanelByDescriptorByLine.put(lineIndex, panelsByStatKey);
-		}
-		return panelsByStatKey;
+		return statsPanelByDescriptorByLine.computeIfAbsent(lineIndex, k -> new HashMap<>());
 	}
 
 	private int getTotalCountForLine(String lineIndex) {
 		int total = 0;
+
 		for (Entry<ViewStatisticsDescriptor, Integer> entry : getSortedStatsDescriptorList(lineIndex)) {
-			total += entry.getValue();
+			if (entry.getKey().isCountTowardsTotal()) {
+				total += entry.getValue();
+			}
 		}
+
 		return total;
 	}
 
@@ -200,7 +198,7 @@ public class StatisticsView extends AbstractView<IStatisticsViewListener, Statis
 	public SingleStatsPanel getPanelTotal() {
 		if (panelTotal == null) {
 			ViewStatisticsDescriptor desc = new ViewStatisticsDescriptor(SicpaColor.BLUE_MEDIUM, "stats.display.total",
-					999);
+					999, false);
 			desc.setLine("total");
 			panelTotal = new SingleStatsPanel(desc);
 			panelTotal.getLabelPercent().setVisible(false);

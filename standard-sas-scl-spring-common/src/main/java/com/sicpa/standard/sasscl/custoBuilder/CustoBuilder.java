@@ -10,7 +10,6 @@ import com.sicpa.standard.client.common.security.Permission;
 import com.sicpa.standard.client.common.view.screensflow.IScreenGetter;
 import com.sicpa.standard.client.common.view.screensflow.IScreensFlow;
 import com.sicpa.standard.client.common.view.screensflow.ScreenTransition;
-import com.sicpa.standard.gui.screen.machine.component.SelectionFlow.flow.AbstractSelectionFlowModel;
 import com.sicpa.standard.sasscl.business.alert.IAlert;
 import com.sicpa.standard.sasscl.business.alert.task.AbstractAlertTask;
 import com.sicpa.standard.sasscl.business.alert.task.IAlertTask;
@@ -41,7 +40,6 @@ import com.sicpa.standard.sasscl.model.custom.ICustomProperty;
 import com.sicpa.standard.sasscl.model.custom.ICustomizable;
 import com.sicpa.standard.sasscl.model.statistics.StatisticsKey;
 import com.sicpa.standard.sasscl.productionParameterSelection.ISelectionModelFactory;
-import com.sicpa.standard.sasscl.productionParameterSelection.ISelectionModelFactory.IConfigFlowModel;
 import com.sicpa.standard.sasscl.productionParameterSelection.selectionmodel.DefaultSelectionModel;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 
@@ -65,17 +63,14 @@ public class CustoBuilder {
 	public static void setProductionModePermission(ProductionMode mode, Permission permission) {
 
 		ISelectionModelFactory modelFactory = BeanProvider.getBean(SELECTION_MODEL_FACTORY);
-		modelFactory.addConfigFlowModelTask(new IConfigFlowModel() {
-			@Override
-			public void config(AbstractSelectionFlowModel flowmodel) {
-				if (flowmodel instanceof DefaultSelectionModel) {
-					((DefaultSelectionModel) flowmodel).getPermissions().put(mode, permission);
-				} else {
-					throw new IllegalArgumentException("cannot customize " + flowmodel.getClass()
-							+ " - expected class:" + DefaultSelectionModel.class);
-				}
-			}
-		});
+		modelFactory.addConfigFlowModelTask(flowModel -> {
+            if (flowModel instanceof DefaultSelectionModel) {
+                ((DefaultSelectionModel) flowModel).getPermissions().put(mode, permission);
+            } else {
+                throw new IllegalArgumentException("cannot customize " + flowModel.getClass()
+                        + " - expected class:" + DefaultSelectionModel.class);
+            }
+        });
 	}
 
 	/**
@@ -98,11 +93,15 @@ public class CustoBuilder {
 	 * the statistics increased for this product status will have the given StatisticsKey<br>
 	 * It will be handled as productDto or as a counter when reporting to the server based on
 	 * <code>isProductActivated</code>
+	 *
+	 * @param countTowardsTotal defines whether the new statistic value will be added to total counter
+	 *
 	 */
 	public static void addProductStatus(ProductStatus status, StatisticsKey statsKey, int idOnRemote,
-			Color colorOnScreen, int indexOnScreen, String langKey, boolean isProductActivated) {
+			Color colorOnScreen, int indexOnScreen, String langKey, boolean countTowardsTotal,
+										boolean isProductActivated) {
 
-		handleNewStatistic(status, statsKey, colorOnScreen, indexOnScreen, langKey);
+		handleNewStatistic(status, statsKey, colorOnScreen, indexOnScreen, langKey, countTowardsTotal);
 		try {
 			addToRemoteMapping(status, idOnRemote);
 		} catch (NoSuchBeanDefinitionException e) {
@@ -224,12 +223,14 @@ public class CustoBuilder {
 	}
 
 	/**
-	 * add a new statistics by line based on the product status
+	 * Add a new statistics by line based on the product status
+	 *
+	 * @param countTowardsTotal defines whether the new statistic value will be added to total counter
 	 */
 	public static void handleNewStatistic(ProductStatus status, StatisticsKey statsKey, Color colorOnScreen,
-			int indexOnScreen, String langKey) {
+			int indexOnScreen, String langKey, boolean countTowardsTotal) {
 		addToStatisticsMapper(status, statsKey);
-		addStatisticsOnView(status, statsKey, colorOnScreen, indexOnScreen, langKey);
+		addStatisticsOnView(statsKey, colorOnScreen, indexOnScreen, langKey, countTowardsTotal);
 	}
 
 	/**
@@ -242,12 +243,14 @@ public class CustoBuilder {
 	}
 
 	/**
-	 * display on the screen statistics of the given StatisticsKey
+	 * Display on the screen statistics of the given StatisticsKey
+	 *
+	 * @param countTowardsTotal defines whether the new statistic value will be added to total counter
 	 */
-	public static void addStatisticsOnView(ProductStatus status, StatisticsKey statsKey, Color colorOnScreen,
-			int indexOnScreen, String langKey) {
+	public static void addStatisticsOnView(StatisticsKey statsKey, Color colorOnScreen, int indexOnScreen,
+										   String langKey, boolean countTowardsTotal) {
 		IStatisticsKeyToViewDescriptorMapping viewMapping = BeanProvider.getBean(STATISTICS_VIEW_MAPPER);
-		viewMapping.add(statsKey, colorOnScreen, indexOnScreen, langKey);
+		viewMapping.add(statsKey, colorOnScreen, indexOnScreen, langKey, countTowardsTotal);
 	}
 
 	/**
@@ -345,7 +348,7 @@ public class CustoBuilder {
 	 * Sets the next possible states for the specified state. All previous possible states will be removed and
 	 * the specified flow transitions will be added as next possible states.
 	 *
-	 * @param current current state for which we want to define new possible states
+	 * @param state current state for which we want to define new possible states
 	 * @param flowTransitions the transitions which define the new possible states and the associated trigger
 	 */
 	public static void setStateNextPossibleStates(ApplicationFlowState state, FlowTransition... flowTransitions) {
