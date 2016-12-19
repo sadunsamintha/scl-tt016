@@ -202,6 +202,7 @@ public interface MessageEventKey {
 	public static interface DevicesController {
 		String FAILED_TO_START_DEVICE = "device.start.fail";
 		String FAILED_TO_CONNECT_DEVICE = "device.connect.fail";
+		String DEVICE_DISCONNECT_WARNING = "device.disconnect.warning";
 	}
 
 	public static interface BIS {

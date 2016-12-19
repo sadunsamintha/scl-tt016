@@ -1,15 +1,14 @@
 package com.sicpa.standard.sasscl.devices;
 
-import java.text.MessageFormat;
-import java.util.ArrayList;
-
+import com.sicpa.standard.client.common.eventbus.service.EventBusService;
+import com.sicpa.standard.client.common.i18n.Messages;
+import com.sicpa.standard.client.common.messages.MessageEvent;
+import com.sicpa.standard.sasscl.messages.IssueSolvedMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sicpa.standard.client.common.eventbus.service.EventBusService;
-import com.sicpa.standard.client.common.messages.MessageEvent;
-import com.sicpa.standard.client.common.i18n.Messages;
-import com.sicpa.standard.sasscl.messages.IssueSolvedMessage;
+import java.text.MessageFormat;
+import java.util.ArrayList;
 
 /**
  * abstract class for all devices
@@ -54,7 +53,6 @@ public abstract class AbstractDevice implements IDevice {
 	}
 
 	protected void fireDeviceStatusChanged(final DeviceStatus status) {
-
 		if (this.status != status) {
 			logger.info("Device Status Changed: device - {} , status - {} ", getName(), status.toString());
 
