@@ -153,8 +153,8 @@ public class PlcAdaptor extends AbstractPlcAdaptor implements IPlcControllerList
 	}
 
 	private void onPlcConnected() {
-		sendProductionVariableConfig();
 		sendAllParameters();
+		sendProductionVariableConfig();
 		sendReloadPlcParametersRequest();
 		createNotifications();
 		fireDeviceStatusChanged(DeviceStatus.CONNECTED);
