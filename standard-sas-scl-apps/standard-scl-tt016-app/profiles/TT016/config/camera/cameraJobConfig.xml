@@ -1,34 +1,38 @@
-<CameraJobFilesConfig setCameraJob="false" useDefaultCameraJobFile="false">
-  <CameraJobConfigNode>
-    <productCameraJob productId="0">
-      <cameraJobFile cameraJobFileName="cameraJobForMode0.job"/>
-    </productCameraJob>
-    <children>
-      <CameraJobConfigNode>
+<!-- PRODUCTION MODES: STANDARD = 1, EXPORT = 2, MAINTENANCE = 3, REFEED NORMAL = 5 -->
+<CameraJobFilesConfig setCameraJob="true" useDefaultCameraJobFile="false">
+    <CameraJobConfigNode>
         <productCameraJob productId="1">
-          <cameraJobFile cameraJobFileName="cameraJobForSKU0_1.job"/>
+            <cameraJobFile cameraJobFileName="StandardDMX.job"/>
         </productCameraJob>
-        <children/>
-      </CameraJobConfigNode>
-      <CameraJobConfigNode>
+        <!-- This section is if we want to define a specific camera job by SKU -->
+        <!--
+        <children>
+            <CameraJobConfigNode>
+                <productCameraJob productId="1">
+                    <cameraJobFile cameraJobFileName="cameraJobForSKU0_1.job"/>
+                </productCameraJob>
+                <children/>
+            </CameraJobConfigNode>
+            <CameraJobConfigNode>
+                <productCameraJob productId="2">
+                    <cameraJobFile cameraJobFileName="cameraJobForSKU0_2.job"/>
+                </productCameraJob>
+                <children/>
+            </CameraJobConfigNode>
+        </children>
+        -->
+    </CameraJobConfigNode>
+    <CameraJobConfigNode>
         <productCameraJob productId="2">
-          <cameraJobFile cameraJobFileName="cameraJobForSKU0_2.job"/>
+            <cameraJobFile cameraJobFileName="MA_Export_Job.job"/>
         </productCameraJob>
         <children/>
-      </CameraJobConfigNode>
-    </children>
-  </CameraJobConfigNode>
-  <CameraJobConfigNode>
-    <productCameraJob productId="1">
-      <cameraJobFile cameraJobFileName="cameraJobForMode1.job"/>
-    </productCameraJob>
-    <children/>
-  </CameraJobConfigNode>
-  <CameraJobConfigNode>
-    <productCameraJob productId="2">
-      <cameraJobFile cameraJobFileName="cameraJobForMode2.job"/>
-    </productCameraJob>
-    <children/>
-  </CameraJobConfigNode>
-  <defaultCameraJobFile cameraJobFileName="defaultCameraJob.job"/>
+    </CameraJobConfigNode>
+    <CameraJobConfigNode>
+        <productCameraJob productId="3">
+            <cameraJobFile cameraJobFileName="StandardDMX.job"/>
+        </productCameraJob>
+        <children/>
+    </CameraJobConfigNode>
+    <defaultCameraJobFile cameraJobFileName="StandardDMX.job"/>
 </CameraJobFilesConfig>

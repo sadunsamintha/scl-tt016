@@ -301,10 +301,10 @@ public abstract class AbstractHardwareControllerState implements IHardwareContro
     }
 
     protected boolean areDevicesReady() {
-        return allDevicesConnected() && deviceErrorRepository.isEmpty();
+        return allProductionBlockableDevicesConnected() && deviceErrorRepository.isEmpty();
     }
 
-    protected boolean allDevicesConnected() {
+    protected boolean allProductionBlockableDevicesConnected() {
         for (IStartableDevice device : this.startableDevices) {
             if (device.isBlockProductionStart()) {
                 if (!device.getStatus().isConnected()) {

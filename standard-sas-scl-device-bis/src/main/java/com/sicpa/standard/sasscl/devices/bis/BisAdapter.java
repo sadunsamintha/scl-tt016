@@ -1,19 +1,5 @@
 package com.sicpa.standard.sasscl.devices.bis;
 
-import static com.sicpa.standard.sasscl.messages.MessageEventKey.Alert.SKU_RECOGNITION_TOO_MANY_UNKNOWN;
-import static com.sicpa.standard.sasscl.messages.MessageEventKey.SkuRecognition.UNEXPECTED_SKU_CHANGED;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.messages.MessageEvent;
@@ -31,6 +17,15 @@ import com.sicpa.std.bis2.core.messages.RemoteMessages.Alert;
 import com.sicpa.std.bis2.core.messages.RemoteMessages.RecognitionResultMessage;
 import com.sicpa.std.bis2.core.messages.RemoteMessages.SkuMessage;
 import com.sicpa.std.bis2.core.messages.RemoteMessages.SkusMessage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
+import static com.sicpa.standard.sasscl.messages.MessageEventKey.Alert.SKU_RECOGNITION_TOO_MANY_UNKNOWN;
+import static com.sicpa.standard.sasscl.messages.MessageEventKey.SkuRecognition.UNEXPECTED_SKU_CHANGED;
 
 public class BisAdapter extends AbstractStartableDevice implements IBisAdaptor, IBisControllerListener {
 
@@ -85,14 +80,14 @@ public class BisAdapter extends AbstractStartableDevice implements IBisAdaptor, 
 
 	@Override
 	public void onConnection() {
-		logger.debug("bis connected");
+		logger.debug("BIS connected");
 		fireDeviceStatusChanged(DeviceStatus.CONNECTED);
-		TaskExecutor.execute(() -> sendSkusToBis());
+		TaskExecutor.execute(this::sendSkusToBis);
 	}
 
 	@Override
 	public void onDisconnection() {
-		logger.debug("bis disconntected");
+		logger.debug("BIS disconnected");
 		fireDeviceStatusChanged(DeviceStatus.DISCONNECTED);
 	}
 

@@ -139,6 +139,7 @@ public class SASDefaultMessagesMapping extends DefaultMessagesMapping {
 		addEntry(DevicesController.FAILED_TO_CONNECT_DEVICE, "[DEV_02]", ERROR);
 		addEntry(DevicesController.FAILED_TO_START_DEVICE, "[DEV_03]", ERROR);
 		addEntry(FlowControl.DEVICES_CONNECT_FAILED, "[DEV_01]", ERROR);
+		addEntry(DevicesController.DEVICE_DISCONNECT_WARNING, "[DEV_04]", WARNING);
 
 		addEntry(BRS.BRS_WRONG_SKU, "[BRS_01]", ActionMessageType.ERROR);
 		addEntry(BRS.BRS_TOO_MANY_UNREAD_BARCODES_WARNING, "[BRS_02]", WARNING);

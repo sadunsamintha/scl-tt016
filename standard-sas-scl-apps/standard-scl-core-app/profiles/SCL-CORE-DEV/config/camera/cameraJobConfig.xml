@@ -1,3 +1,4 @@
+<!-- PRODUCTION MODES: STANDARD = 1, EXPORT = 2, MAINTENANCE = 3, REFEED NORMAL = 5 -->
 <CameraJobFilesConfig setCameraJob="false" useDefaultCameraJobFile="false">
   <CameraJobConfigNode>
     <productCameraJob productId="0">
