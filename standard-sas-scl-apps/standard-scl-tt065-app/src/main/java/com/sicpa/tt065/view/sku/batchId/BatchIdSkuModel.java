@@ -1,9 +1,7 @@
 package com.sicpa.tt065.view.sku.batchId;
 
 import com.sicpa.standard.client.common.view.mvc.AbstractObservableModel;
-import com.sicpa.standard.sasscl.custoBuilder.CustoBuilder;
 import com.sicpa.standard.sasscl.model.ProductionParameters;
-import com.sicpa.standard.sasscl.model.SKU;
 import com.sicpa.standard.sasscl.provider.ProductBatchIdProvider;
 
 /**

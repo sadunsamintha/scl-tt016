@@ -9,7 +9,6 @@ import com.sicpa.standard.sasscl.business.alert.IAlert;
 import com.sicpa.standard.sasscl.common.utils.Timeout;
 import com.sicpa.standard.sasscl.controller.hardware.IHardwareController;
 import com.sicpa.standard.sasscl.messages.MessageEventKey;
-import com.sicpa.standard.sasscl.provider.impl.ProductionBatchProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

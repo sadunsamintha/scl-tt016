@@ -1,20 +1,13 @@
 package com.sicpa.tt065.view.selection.display;
 
-import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.i18n.Messages;
 import com.sicpa.standard.gui.components.text.MultiLineLabel;
-import com.sicpa.standard.gui.utils.ImageUtils;
 import com.sicpa.standard.sasscl.model.CodeType;
 import com.sicpa.standard.sasscl.model.ProductionMode;
 import com.sicpa.standard.sasscl.model.ProductionParameters;
 import com.sicpa.standard.sasscl.model.SKU;
 import com.sicpa.standard.sasscl.provider.ProductBatchIdProvider;
-import com.sicpa.standard.sasscl.view.LanguageSwitchEvent;
 import com.sicpa.standard.sasscl.view.selection.display.SelectionDisplayView;
-import net.miginfocom.swing.MigLayout;
-
-import javax.swing.*;
-import java.awt.*;
 
 /**
  * Overwritting class of the SelectionDisplayView to manage

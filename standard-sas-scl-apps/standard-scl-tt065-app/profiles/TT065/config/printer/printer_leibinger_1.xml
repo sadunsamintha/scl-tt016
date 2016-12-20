@@ -15,7 +15,8 @@
 	<requestStatusPeriod>500</requestStatusPeriod>
 	<allowedInkTags></allowedInkTags>
 	<allowedSolventTags></allowedSolventTags>
-	<fontType>PIXEL_7x5</fontType>
+	<fontType>PIXEL_5x5</fontType>
+	<securePing>true</securePing>
 	<nozzleMode>OPEN_MANUAL_CLOSE_AUTO</nozzleMode>
 	<nozzleCloseDelayMs>1000</nozzleCloseDelayMs>
 	<printerParameters class="com.sicpa.standard.printer.leibinger.model.LeibingerParameter">

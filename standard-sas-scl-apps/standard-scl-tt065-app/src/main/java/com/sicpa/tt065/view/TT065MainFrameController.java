@@ -2,32 +2,17 @@ package com.sicpa.tt065.view;
 
 import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
-import com.sicpa.standard.client.common.messages.IMessageCodeMapper;
-import com.sicpa.standard.client.common.view.ISecuredComponentGetter;
-import com.sicpa.standard.gui.components.layeredComponents.lock.lockingError.LockingErrorModel;
 import com.sicpa.standard.gui.plaf.SicpaColor;
-import com.sicpa.standard.gui.screen.machine.MachineViewController;
-import com.sicpa.standard.gui.screen.machine.component.IdInput.IdInputmodel;
-import com.sicpa.standard.gui.screen.machine.component.applicationStatus.ApplicationStatus;
 import com.sicpa.standard.gui.utils.ThreadUtils;
 import com.sicpa.standard.sasscl.controller.ProductionParametersEvent;
 import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowStateChangedEvent;
-import com.sicpa.standard.sasscl.devices.camera.CameraImageEvent;
-import com.sicpa.standard.sasscl.event.LockFullScreenEvent;
-import com.sicpa.standard.sasscl.event.UnlockFullScreenEvent;
 import com.sicpa.standard.sasscl.model.ProductionMode;
 import com.sicpa.standard.sasscl.model.ProductionParameters;
 import com.sicpa.standard.sasscl.model.SKU;
-import com.sicpa.standard.sasscl.view.LanguageSwitchEvent;
 import com.sicpa.standard.sasscl.view.MainFrameController;
 import com.sicpa.standard.sasscl.view.STDSASSCLApplicationStatus;
-import com.sicpa.standard.sasscl.view.config.plc.FrameCameraImage;
-import com.sicpa.standard.sasscl.view.messages.I18nableLockingErrorModel;
 
-import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
 
 import static com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState.*;
 

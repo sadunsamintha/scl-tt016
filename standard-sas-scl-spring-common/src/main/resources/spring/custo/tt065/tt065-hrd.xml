@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	       http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+	<bean id="mappingExtendedCodeBehavior" class="com.sicpa.standard.sasscl.devices.printer.xcode.mapping.MappingExtendedCodeBehavior">
+		<property name="defaultBehavior" ref="tt029DmAndHRCExtendedCodeBehavior" />
+	</bean>
+
+	<bean id="tt029DmAndHRCExtendedCodeBehavior" class="com.sicpa.tt065.printer.TT065ExtendedCodeFactory" >
+		<property name="dmFormat" value="${dm.format}" />
+		<property name="dmEncoding" value="${dm.encoding}" />
+		<property name="blobPosition" value="${blob.position}" />
+		<property name="text1Length" value="${text1.length}" />
+		<property name="text1Position" value="${text1.position}" />
+		<property name="text2Length" value="${text2.length}" />
+		<property name="text2Position" value="${text2.position}" />
+		<property name="blobUtils" ref="blobDetectionUtils" />
+		<property name="hrcEnable" value="${hrc.enable}" />
+	</bean>
+
+	<bean id="sicpaDataGeneratorStorage" class="com.sicpa.tt065.remote.impl.sicpadata.TT065SicpaDataGeneratorStorage">
+		<property name="cryptoFieldsConfig" ref="cryptoFieldsConfig" />
+		<property name="storage" ref="storage" />
+		<property name="subsystemIdProvider" ref="subsystemIdProvider" />
+		<property name="fileSequenceStorageProvider" ref="fileSequenceStorageProvider" />
+	</bean>
+
+	<bean id="postPackage" class="com.sicpa.tt065.business.TT065PostPackage">
+		<property name="productionParameters" ref="productionParameters" />
+		<property name="productionConfigProvider" ref="productionConfigProvider" />
+	</bean>
+
+</beans>

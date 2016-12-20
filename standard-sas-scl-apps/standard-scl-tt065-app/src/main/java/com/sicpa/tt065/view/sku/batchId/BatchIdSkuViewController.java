@@ -3,7 +3,6 @@ package com.sicpa.tt065.view.sku.batchId;
 import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.i18n.Messages;
-import com.sicpa.standard.sasscl.business.activation.NewProductEvent;
 import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowStateChangedEvent;
 import com.sicpa.standard.sasscl.controller.flow.FlowControl;
 import com.sicpa.standard.sasscl.controller.hardware.HardwareControllerStatus;
