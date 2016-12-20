@@ -11,9 +11,6 @@
 	</parent>
 
 	<modules>
-		<module>standard-scl-core-app</module>
-		<module>standard-scl-tt018-app</module>
-		<module>standard-scl-tt016-app</module>
         <module>standard-scl-tt065-app</module>
     </modules>
 		<module>standard-scl-tt053-app</module>
