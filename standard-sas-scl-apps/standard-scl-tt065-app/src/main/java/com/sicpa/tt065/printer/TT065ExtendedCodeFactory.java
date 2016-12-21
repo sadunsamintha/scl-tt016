@@ -25,7 +25,7 @@ public class TT065ExtendedCodeFactory implements IExCodeBehavior {
     private int text2Length;
     private RelativePosition text2Position;
 
-    private boolean hrcEnable = true;
+    private boolean hrdEnable = true;
     private static final Logger logger = LoggerFactory.getLogger(TT065ExtendedCodeFactory.class);
 
     private BlobDetectionUtils blobUtils;
@@ -62,7 +62,7 @@ public class TT065ExtendedCodeFactory implements IExCodeBehavior {
         List<Object> compositeCode = new ArrayList<>();
 
         compositeCode.add(getSicpadata(parsedCode));
-        if(hrcEnable) {
+        if(hrdEnable) {
             compositeCode.add(getTextLine1(parsedCode));
             compositeCode.add(getTextLine2(parsedCode));
         }
@@ -97,7 +97,7 @@ public class TT065ExtendedCodeFactory implements IExCodeBehavior {
         List<BlockFactory> blockFactories = new ArrayList<>();
 
         blockFactories.add(createDatamatrixBlockFactory());
-        if(hrcEnable) {
+        if(hrdEnable) {
             blockFactories.add(createTextLine1BlockFactory());
             blockFactories.add(createTextLine2BlockFactory());
         }
@@ -169,7 +169,7 @@ public class TT065ExtendedCodeFactory implements IExCodeBehavior {
         this.blobUtils = blobUtils;
     }
 
-    public void setHrcEnable(boolean hrcEnable) {
-        this.hrcEnable = hrcEnable;
+    public void setHrdEnable(boolean hrdEnable) {
+        this.hrdEnable = hrdEnable;
     }
 }
