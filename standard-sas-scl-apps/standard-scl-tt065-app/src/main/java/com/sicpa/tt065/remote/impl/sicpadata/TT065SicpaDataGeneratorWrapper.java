@@ -6,8 +6,8 @@ import com.sicpa.standard.sasscl.devices.remote.stdCrypto.ICryptoFieldsConfig;
 import com.sicpa.standard.sasscl.sicpadata.CryptographyException;
 import com.sicpa.standard.sasscl.sicpadata.generator.EncoderEmptyException;
 import com.sicpa.standard.sicpadata.api.exception.SicpadataException;
-import com.sicpa.std.common.api.activation.visiblecode.SCLCodesFactory;
 import com.sicpa.std.common.api.coding.dto.SicpadataGeneratorDto;
+import com.sicpa.std.common.core.coding.business.generator.scl.SCLCodesFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

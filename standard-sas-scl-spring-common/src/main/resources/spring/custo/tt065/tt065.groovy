@@ -19,7 +19,7 @@ beans{
     importBeans('spring/custo/tt065/tt065-view.xml')
     importBeans('spring/custo/tt065/tt065-provider.xml')
     importBeans('spring/custo/tt065/tt065-flowControl.xml')
-    importBeans('spring/custo/tt065/tt065-hrd.xml')
+
 
 
     def serverBehavior=props['remoteServer.behavior'].toUpperCase()
@@ -41,12 +41,12 @@ beans{
         }
     }
 
+    importBeans('spring/custo/tt065/tt065-hrd.xml')
+
     printerSimulatorAdaptor(TT065PrinterAdaptorSimulator,ref('printerSimulatorController')){b->
         b.scope='prototype'
     }
 
-    addAlias('printerLeibinger','printerSimulatorAdaptor')
-    addAlias('printerDomino','printerSimulatorAdaptor')
 
 
 }
