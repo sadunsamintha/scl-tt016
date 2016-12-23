@@ -84,7 +84,7 @@ public class Bootstrap implements IBootstrap {
     private SclAppMBean jmxBean;
     private IEncoderSequenceValidator encoderSequenceValidator;
     private ISkuSelectionBehavior skuSelectionBehavior;
-    private String defaultLang = "en";
+    protected String defaultLang = "en";
     protected ProductionParameters productionParameters;
     protected RemoteServerScheduledJobs remoteServerSheduledJobs;
     protected ProductionParametersValidator productionParametersValidator;
