@@ -4,6 +4,7 @@ import com.sicpa.standard.client.common.i18n.Messages;
 import com.sicpa.standard.client.common.view.mvc.AbstractView;
 import com.sicpa.standard.gui.components.virtualKeyboard.VirtualKeyboardPanel;
 import com.sicpa.standard.gui.plaf.SicpaColor;
+import com.sicpa.standard.sasscl.model.ProductionMode;
 import com.sicpa.standard.sasscl.model.ProductionParameters;
 import com.sicpa.standard.sasscl.provider.ProductBatchIdProvider;
 import net.miginfocom.swing.MigLayout;
@@ -33,9 +34,13 @@ public class BatchIdSkuView extends AbstractView<IBatchIdSkuListener, BatchIdSku
 		initGUI();
 	}
 
+
 	private void initGUI() {
 		setLayout(new MigLayout("ltr,fill"));
-		String strSKU = productionParameters.getSku().getDescription();
+		String strSKU = "";
+		if (!(productionParameters.getProductionMode().equals(ProductionMode.MAINTENANCE) && productionParameters.getSku()==null)) {
+			strSKU = productionParameters.getSku().getDescription();
+		}
 		add(new JLabel(Messages.get("sku.batch.id.title")+" "+strSKU));
 		add(new JSeparator(), "growx, pushx, wrap");
 		add(getBatchIdSkuPanel(), "span, split 2, pushy, growx, growy");
