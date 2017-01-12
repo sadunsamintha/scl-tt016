@@ -1,9 +1,9 @@
 package custo.tt065
 
-import com.sicpa.standard.sasscl.devices.remote.simulator.RemoteServerSimulator
-import com.sicpa.tt065.scl.TT065Bootstrap
-import com.sicpa.tt065.remote.simulator.TT065RemoteServerSimulator
 import com.sicpa.tt065.printer.simulator.TT065PrinterAdaptorSimulator
+import com.sicpa.tt065.remote.simulator.TT065RemoteServerSimulator
+import com.sicpa.tt065.scl.TT065Bootstrap
+
 /**
  * Created by mjimenez on 15/09/2016.
  */
@@ -23,6 +23,7 @@ beans{
 
 
     def serverBehavior=props['remoteServer.behavior'].toUpperCase()
+    def printerBehavior=props['printer.behavior'].toUpperCase()
 
 
     if(serverBehavior == "STANDARD") {
@@ -46,6 +47,12 @@ beans{
     printerSimulatorAdaptor(TT065PrinterAdaptorSimulator,ref('printerSimulatorController')){b->
         b.scope='prototype'
     }
+
+    if(printerBehavior == 'SIMULATOR') {
+        addAlias('printerLeibinger','printerSimulatorAdaptor')
+    }
+
+
 
 
 

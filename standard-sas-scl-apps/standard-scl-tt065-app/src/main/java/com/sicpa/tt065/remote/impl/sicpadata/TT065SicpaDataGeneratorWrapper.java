@@ -46,6 +46,8 @@ public class TT065SicpaDataGeneratorWrapper extends SicpaDataGeneratorWrapper {
                 codes.add(c.getCodeForPrinting(SCLCodesFactory.SCLCode.SERIAL_NUMBER_KEY) + BLOCK_SEPARATOR + c.getCodeForPrinting(SCLCodesFactory.SCLCode.HRC1_KEY));
             }
 
+            setSequence(getSequence() + codes.size());
+
             return codes;
 
         } catch (SicpadataException e) {
