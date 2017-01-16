@@ -9,7 +9,7 @@ public class DefaultRemoteServerProductStatusMapping extends RemoteServerProduct
 	/**
 	 * TODO, to be replaced by ProcessedProductsStatusDto.ACTIVATED_BLOB_DETECTION
 	 */
-	private static final int ACTIVATED_BLOB_DETECTION = 35;
+	private static final int ACTIVATED_BLOB_DETECTION = 100;
 
 
 	public DefaultRemoteServerProductStatusMapping() {
@@ -31,7 +31,7 @@ public class DefaultRemoteServerProductStatusMapping extends RemoteServerProduct
 		add(ProductStatus.NOT_AUTHENTICATED, ProcessedProductsStatusDto.COUNTED_EJECTED_AUTHENTICATIONFAIL);//1=>14
 
 		//blob
-		add(ProductStatus.INK_DETECTED, ACTIVATED_BLOB_DETECTION); //100=>35
+		add(ProductStatus.INK_DETECTED, ACTIVATED_BLOB_DETECTION);
 
 	}
 
