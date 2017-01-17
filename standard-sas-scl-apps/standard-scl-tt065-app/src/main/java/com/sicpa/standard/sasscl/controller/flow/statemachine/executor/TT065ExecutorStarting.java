@@ -5,7 +5,6 @@ import com.sicpa.standard.client.common.controller.predicate.start.NoStartReason
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.messages.MessageEvent;
 import com.sicpa.standard.client.common.utils.TaskExecutor;
-import com.sicpa.standard.sasscl.business.alert.IAlert;
 import com.sicpa.standard.sasscl.common.utils.Timeout;
 import com.sicpa.standard.sasscl.controller.hardware.IHardwareController;
 import com.sicpa.standard.sasscl.messages.MessageEventKey;
@@ -26,7 +25,6 @@ public class TT065ExecutorStarting extends ExecutorStarting {
 
 	private IStartProductionValidator startValidators;
 	private int timeoutDelay = 120000;
-	private IAlert alert;
 	private IHardwareController hardwareController;
 
 	// to be able to stop the production if the start takes too long
@@ -45,7 +43,6 @@ public class TT065ExecutorStarting extends ExecutorStarting {
 
 		startTimeoutStart();
 		startHardware();
-        alert.start();
         stopTimeoutStart();
 	}
 
@@ -97,10 +94,6 @@ public class TT065ExecutorStarting extends ExecutorStarting {
 
 	public void setTimeoutDelay(int timeoutDelay) {
 		this.timeoutDelay = timeoutDelay;
-	}
-
-	public void setAlert(IAlert alert) {
-		this.alert = alert;
 	}
 
 	public void setHardwareController(IHardwareController hardwareController) {
