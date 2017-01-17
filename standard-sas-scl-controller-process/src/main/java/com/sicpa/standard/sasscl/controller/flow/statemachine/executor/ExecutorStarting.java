@@ -6,7 +6,6 @@ import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.messages.MessageEvent;
 import com.sicpa.standard.client.common.statemachine.IStateAction;
 import com.sicpa.standard.client.common.utils.TaskExecutor;
-import com.sicpa.standard.sasscl.business.alert.IAlert;
 import com.sicpa.standard.sasscl.common.utils.Timeout;
 import com.sicpa.standard.sasscl.controller.hardware.IHardwareController;
 import com.sicpa.standard.sasscl.messages.MessageEventKey;
@@ -23,7 +22,6 @@ public class ExecutorStarting implements IStateAction {
 	private IStartProductionValidator startValidators;
 	private int timeoutDelay;
 	private ProductionBatchProvider productionBatchProvider;
-	private IAlert alert;
 	private IHardwareController hardwareController;
 
 	// to be able to stop the production if the start takes too long
@@ -42,7 +40,6 @@ public class ExecutorStarting implements IStateAction {
 		startTimeoutStart();
 		updateNextProductionBatchTime();
 		startHardware();
-        alert.start();
         stopTimeoutStart();
 	}
 
@@ -103,10 +100,6 @@ public class ExecutorStarting implements IStateAction {
 
 	public void setProductionBatchProvider(ProductionBatchProvider productionBatchProvider) {
 		this.productionBatchProvider = productionBatchProvider;
-	}
-
-	public void setAlert(IAlert alert) {
-		this.alert = alert;
 	}
 
 	public void setHardwareController(IHardwareController hardwareController) {
