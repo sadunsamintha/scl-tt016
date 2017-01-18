@@ -1,6 +1,8 @@
 package custo.tt065
 
+import com.sicpa.tt065.brs.sku.TT065CompliantProductSkuResolver
 import com.sicpa.tt065.printer.simulator.TT065PrinterAdaptorSimulator
+import com.sicpa.tt065.remote.impl.dtoconverter.TT065SkuConverter
 import com.sicpa.tt065.remote.simulator.TT065RemoteServerSimulator
 import com.sicpa.tt065.scl.TT065Bootstrap
 
@@ -19,7 +21,6 @@ beans{
     importBeans('spring/custo/tt065/tt065-view.xml')
     importBeans('spring/custo/tt065/tt065-provider.xml')
     importBeans('spring/custo/tt065/tt065-flowControl.xml')
-
 
 
     def serverBehavior=props['remoteServer.behavior'].toUpperCase()
@@ -41,6 +42,12 @@ beans{
             cryptoModelPreset=props['server.simulator.cryptoModelPreset']
         }
     }
+
+    skuConverter(TT065SkuConverter) {
+        productionModeMapping=ref('productionModeMapping')
+    }
+
+    compliantProduct(TT065CompliantProductSkuResolver)
 
     importBeans('spring/custo/tt065/tt065-hrd.xml')
 
