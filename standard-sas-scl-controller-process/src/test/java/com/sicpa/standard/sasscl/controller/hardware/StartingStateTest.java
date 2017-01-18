@@ -1,13 +1,5 @@
 package com.sicpa.standard.sasscl.controller.hardware;
 
-import java.util.Arrays;
-import java.util.List;
-
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mockito;
-
 import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.sasscl.controller.hardware.state.impl.StartingState;
@@ -17,6 +9,13 @@ import com.sicpa.standard.sasscl.devices.DeviceStatusEvent;
 import com.sicpa.standard.sasscl.devices.IStartableDevice;
 import com.sicpa.standard.sasscl.devices.plc.IPlcAdaptor;
 import com.sicpa.standard.sasscl.test.utils.TestHelper;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mockito;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class StartingStateTest {
 
