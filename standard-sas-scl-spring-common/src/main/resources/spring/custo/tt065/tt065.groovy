@@ -16,6 +16,7 @@ beans{
     addAlias('bootstrapAlias','bootstrap')
     bootstrap(TT065Bootstrap){ b->
         b.parent=ref('bootstrapAlias')
+        productionBatchProvider=ref('productionBatchProvider')
     }
 
     importBeans('spring/custo/tt065/tt065-view.xml')

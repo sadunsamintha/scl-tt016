@@ -6,8 +6,8 @@ import com.sicpa.standard.sasscl.provider.ProductBatchIdProvider;
 import com.sicpa.tt065.event.BatchIdViewEvent;
 
 /**
- * Overwritting of the ProductionBatchProvider class to manage
- * the new BatchIdEvent with the productionParameters variable
+ * Overwriting of the ProductionBatchProvider class to manage the new BatchIdEvent with the productionParameters
+ * variable
  *
  * @author mjimenez
  *
@@ -23,8 +23,7 @@ public class TT065ProductionBatchProvider extends ProductionBatchProvider implem
 		ProductionParameters pp = evt.getProductionParameters();
 		String strBatchId = pp.getProperty(productionBatchId);
 		set(strBatchId);
-		logger.info("TT065ProductionBatchProvider,user=" + evt.user.getLogin() + ",date=" + evt.date.toString() + ", batchId=" + strBatchId);
+		logger.info("TT065ProductionBatchProvider,user=" + evt.user.getLogin() + ",date=" + evt.date.toString()
+                + ", batchId=" + strBatchId);
 	}
-
-
 }

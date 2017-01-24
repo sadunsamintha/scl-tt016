@@ -8,5 +8,5 @@ import com.sicpa.standard.sasscl.model.custom.ICustomProperty;
  */
 public interface ProductBatchIdProvider {
 
-    static final ICustomProperty<String> productionBatchId = new CustomProperty<>("productBatchId",String.class,"");
+    ICustomProperty<String> productionBatchId = new CustomProperty<>("productBatchId",String.class,"");
 }
