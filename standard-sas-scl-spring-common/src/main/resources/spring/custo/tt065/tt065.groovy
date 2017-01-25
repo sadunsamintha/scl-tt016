@@ -30,6 +30,12 @@ beans{
 
     if(serverBehavior == "STANDARD") {
         importBeans('spring/server/server-core5.groovy')
+
+        skuConverter(TT065SkuConverter) {
+            productionModeMapping=ref('productionModeMapping')
+        }
+
+        compliantProduct(TT065CompliantProductSkuResolver)
     } else {
         remoteServer(TT065RemoteServerSimulator,ref('simulatorRemoteModel')){
             simulatorGui=ref('simulatorGui')
@@ -43,12 +49,6 @@ beans{
             cryptoModelPreset=props['server.simulator.cryptoModelPreset']
         }
     }
-
-    skuConverter(TT065SkuConverter) {
-        productionModeMapping=ref('productionModeMapping')
-    }
-
-    compliantProduct(TT065CompliantProductSkuResolver)
 
     importBeans('spring/custo/tt065/tt065-hrd.xml')
 
