@@ -1,15 +1,5 @@
 package com.sicpa.tt016.scl.remote;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.ResourceBundle;
-
-import com.sicpa.tt016.model.TT016ProductStatus;
-import com.sicpa.tt016.refeed.TT016RefeedAvailabilityProvider;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.sicpa.standard.sasscl.common.storage.IStorage;
 import com.sicpa.standard.sasscl.devices.DeviceException;
 import com.sicpa.standard.sasscl.devices.IDeviceStatusListener;
@@ -24,22 +14,23 @@ import com.sicpa.standard.sasscl.model.ProductStatus;
 import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.ProductionParameterRootNode;
 import com.sicpa.standard.sasscl.sicpadata.generator.IEncoder;
 import com.sicpa.standard.sasscl.sicpadata.reader.IAuthenticator;
-import com.sicpa.tt016.common.dto.CodingActivationSessionDTO;
-import com.sicpa.tt016.common.dto.EncoderInfoDTO;
-import com.sicpa.tt016.common.dto.EncoderInfoResultDTO;
+import com.sicpa.tt016.common.dto.*;
 import com.sicpa.tt016.common.dto.EncoderInfoResultDTO.InfoResult;
-import com.sicpa.tt016.common.dto.EncoderSclDTO;
-import com.sicpa.tt016.common.dto.ExportSessionDTO;
-import com.sicpa.tt016.common.dto.IEjectionDTO;
-import com.sicpa.tt016.common.dto.MaintenanceSessionDTO;
-import com.sicpa.tt016.common.dto.OfflineSessionDTO;
 import com.sicpa.tt016.master.scl.exceptions.InternalException;
+import com.sicpa.tt016.model.TT016ProductStatus;
 import com.sicpa.tt016.scl.remote.assembler.EncryptionConverter;
 import com.sicpa.tt016.scl.remote.assembler.ProductionDataConverter;
 import com.sicpa.tt016.scl.remote.assembler.SkuConverter;
 import com.sicpa.tt016.scl.remote.remoteservices.ITT016RemoteServices;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class TT016RemoteServer extends AbstractRemoteServer implements IBisCredentialProvider, RemoteServerRefeedAvailability {
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.ResourceBundle;
+
+public class TT016RemoteServer extends AbstractRemoteServer implements IBisCredentialProvider {
 
 	private static final Logger logger = LoggerFactory.getLogger(TT016RemoteServer.class);
 	// http://psdwiki.sicpa-net.ads/pages/viewpage.action?spaceKey=morocco&title=Development+and+Integration+Servers
@@ -50,14 +41,9 @@ public class TT016RemoteServer extends AbstractRemoteServer implements IBisCrede
 	private AbstractMasterConnector connector;
 	private IStorage storage;
 
-	private TT016RefeedAvailabilityProvider refeedAvailabilityProvider;
 	private SkuConverter skuConverter;
 	private final EncryptionConverter encryptionConverter = new EncryptionConverter();
 	private final ProductionDataConverter productionDataConverter = new ProductionDataConverter();
-
-
-	public TT016RemoteServer() {
-	}
 
 	@Override
 	public boolean isConnected() {
@@ -70,7 +56,7 @@ public class TT016RemoteServer extends AbstractRemoteServer implements IBisCrede
 			return null;
 		}
 		try {
-			return skuConverter.convert(remoteServices.getSkuList(), refeedAvailabilityProvider.isRefeedAvailable());
+			return skuConverter.convert(remoteServices.getSkuList());
 		} catch (InternalException e) {
 			throw new RemoteServerException(e);
 		}
@@ -145,7 +131,7 @@ public class TT016RemoteServer extends AbstractRemoteServer implements IBisCrede
 			} else if (products.getProductStatus().equals(ProductStatus.MAINTENANCE)) {
 				sendMaintenanceData(products);
 			} else if (products.getProductStatus().equals(ProductStatus.REFEED)) {
-				sendRefeedData(products);
+				sendExportData(products);
 			} else if (products.getProductStatus().equals(ProductStatus.OFFLINE)) {
 				sendOfflineCountingData(products);
 			} else {
@@ -248,14 +234,5 @@ public class TT016RemoteServer extends AbstractRemoteServer implements IBisCrede
 	@Override
 	public String getPassword() {
 		return remoteServices.getBisTrainerPassword(getUserName());
-	}
-
-	public void setRefeedAvailabilityProvider(TT016RefeedAvailabilityProvider refeedAvailabilityProvider) {
-		this.refeedAvailabilityProvider = refeedAvailabilityProvider;
-	}
-
-	@Override
-	public boolean isRemoteRefeedAvailable() {
-		return remoteServices.isRemoteRefeedAvailable();
 	}
 }

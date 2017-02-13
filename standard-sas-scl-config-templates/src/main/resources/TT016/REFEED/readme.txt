@@ -1,13 +1,18 @@
-=========================
-HOW TO ENABLE REFEED MODE
-=========================
+==========================
+HOW TO ENABLE REFEED MODE?
+==========================
 
-In the "global.properties", make sure that the "heuftSystem" is enabled (heuftSystem=true)
+In the "global.properties", make sure that the "refeedAvailable" is true
 
-======================================
-WHY REFEED I CAN'T CHOOSE REFEED MODE?
-======================================
+===============================================================
+WHY I CAN'T CHOOSE REFEED MODE OR REFEED MODE IS NOT DISPLAYED?
+===============================================================
 
-In addition to setting the "heuftSystem" to "true", the property "refeedAvailable" in the "global.properties" must also
-be set to "true". This property shouldn't be manually defined, it is automatically set by the application when it
-connects to the MSCL. Each line needs to be refeed authorized in the webapp.
+The "refeedAvailable" property in the "global.properties" must be set to "true".
+
+In addition the property "refeedSkuIds" MUST specify at least one SKU id. This SKU id must exist in the list of SKUs
+downloaded from the MSCL.
+
+Also, the user which is logged in, must have the permission to access this mode. In order to grant him/her this
+permission, add the permission "<Permission name="PRODUCTION_MODE_REFEED_NORMAL"/>" for the corresponding user in the
+file "security.xml".

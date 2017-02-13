@@ -10,4 +10,9 @@
         <property name="productionBatchProvider" ref="productionBatchProvider"/>
     </bean>
 
+    <bean id="TT016RefeedActivationBehavior" class="com.sicpa.tt016.activation.TT016RefeedActivationBehavior">
+        <property name="productionParameters" ref="productionParameters" />
+        <property name="blobDetectionUtils" ref="blobDetectionUtils" />
+    </bean>
+
 </beans>

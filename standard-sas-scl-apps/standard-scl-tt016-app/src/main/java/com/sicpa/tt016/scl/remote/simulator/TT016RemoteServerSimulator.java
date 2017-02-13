@@ -3,11 +3,10 @@ package com.sicpa.tt016.scl.remote.simulator;
 import com.sicpa.standard.sasscl.devices.remote.RemoteServerException;
 import com.sicpa.standard.sasscl.devices.remote.simulator.RemoteServerSimulator;
 import com.sicpa.standard.sasscl.devices.remote.simulator.RemoteServerSimulatorModel;
-import com.sicpa.tt016.scl.remote.RemoteServerRefeedAvailability;
 
-public class TT016RemoteServerSimulator extends RemoteServerSimulator implements RemoteServerRefeedAvailability {
+public class TT016RemoteServerSimulator extends RemoteServerSimulator {
 
-    private boolean isRefeedAvailable;
+    private boolean refeedAvailable;
 
     public TT016RemoteServerSimulator(RemoteServerSimulatorModel model) {
         super(model);
@@ -17,13 +16,7 @@ public class TT016RemoteServerSimulator extends RemoteServerSimulator implements
         super(configFile);
     }
 
-    @Override
-    public boolean isRemoteRefeedAvailable() {
-        return isRefeedAvailable;
+    public void setRefeedAvailable(boolean refeedAvailable) {
+        this.refeedAvailable = refeedAvailable;
     }
-
-    public void setIsRefeedAvailable(boolean isRefeedAvailable) {
-        this.isRefeedAvailable = isRefeedAvailable;
-    }
-
 }
