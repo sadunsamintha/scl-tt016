@@ -2,6 +2,7 @@ import com.sicpa.tt016.business.ejection.EjectionTypeSender
 import com.sicpa.tt016.devices.camera.alert.TT016TrilightWarningCameraAlert
 import com.sicpa.tt016.model.DisallowedConfiguration
 import com.sicpa.tt016.scl.TT016Bootstrap
+import com.sicpa.tt016.util.LegacyEncoderConverter
 
 beans{
 	tt016TrilightWarningCameraAlert(TT016TrilightWarningCameraAlert) {
@@ -50,6 +51,7 @@ beans{
 		ejectionTypeSender=ref('ejectionTypeSender')
 		disallowedConfigurations=disallowedConf
 		defaultLang=props['language']
+		legacyEncoderConverter=ref('legacyEncoderConverter')
 	}
 
 	importBeans('spring/custo/tt016/tt016-plc.xml')
@@ -74,7 +76,12 @@ beans{
 
 
 	ejectionTypeSender(EjectionTypeSender){
-		plcParamSender= plcParamSender
+		plcParamSender=plcParamSender
 		overrideParameters=ejectionTypeProductionModeOverride
+	}
+
+	legacyEncoderConverter(LegacyEncoderConverter) {
+		fileStorage=ref('storage')
+		codeTypeId=props['codeTypeId']
 	}
 }
