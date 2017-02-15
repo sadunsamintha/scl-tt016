@@ -1,34 +1,27 @@
 package com.sicpa.tt016.scl.remote.remoteservices;
 
-import static java.util.Arrays.asList;
-import static java.util.Collections.emptyList;
-
-import java.util.*;
-
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.sicpa.standard.client.common.timeout.Timeout;
 import com.sicpa.standard.client.common.timeout.TimeoutLifeCheck;
-import com.sicpa.tt016.common.dto.CodingActivationSessionDTO;
-import com.sicpa.tt016.common.dto.EncoderInfoDTO;
-import com.sicpa.tt016.common.dto.EncoderInfoResultDTO;
-import com.sicpa.tt016.common.dto.EncoderSclDTO;
-import com.sicpa.tt016.common.dto.ExportSessionDTO;
-import com.sicpa.tt016.common.dto.IEjectionDTO;
-import com.sicpa.tt016.common.dto.MaintenanceSessionDTO;
-import com.sicpa.tt016.common.dto.OfflineSessionDTO;
-import com.sicpa.tt016.common.dto.SkuDTO;
+import com.sicpa.tt016.common.dto.*;
 import com.sicpa.tt016.common.model.CodeType;
 import com.sicpa.tt016.common.security.CustomPrincipal;
 import com.sicpa.tt016.common.security.authenticator.IMoroccoAuthenticator;
 import com.sicpa.tt016.master.scl.business.interfaces.IBisUserManagerRemote;
 import com.sicpa.tt016.master.scl.business.interfaces.ICodingActivationRemote;
 import com.sicpa.tt016.master.scl.exceptions.InternalException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Properties;
+
+import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 
 public class TT016RemoteServices implements ITT016RemoteServices {
 
@@ -71,19 +64,8 @@ public class TT016RemoteServices implements ITT016RemoteServices {
 
 	@Override
 	@TimeoutLifeCheck
-	public boolean isRemoteRefeedAvailable() {
-		try {
-			return codingActivation.isRefeedMode(subsystemId);
-		} catch (InternalException ex) {
-			logger.error("Error retriveing the remote refeed mode", ex);
-			return false;
-		}
-	}
-
-	@Override
-	@TimeoutLifeCheck
 	public boolean isAlive() {
-		logger.debug("remote server isalive called");
+		logger.debug("remote server isAlive called");
 		return codingActivation.isAlive(subsystemId);
 	}
 

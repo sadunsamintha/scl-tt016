@@ -1,12 +1,8 @@
-import com.sicpa.tt016.scl.remote.simulator.TT016RemoteServerSimulator
-import com.sicpa.tt016.scl.TT016Bootstrap
-import com.sicpa.tt016.devices.camera.alert.TT016TrilightWarningCameraAlert
-import com.sicpa.tt016.refeed.TT016RefeedAvailabilityProvider
 import com.sicpa.tt016.business.ejection.EjectionTypeSender
+import com.sicpa.tt016.devices.camera.alert.TT016TrilightWarningCameraAlert
 import com.sicpa.tt016.model.DisallowedConfiguration
-
-
-
+import com.sicpa.tt016.scl.TT016Bootstrap
+import com.sicpa.tt016.util.LegacyEncoderConverter
 
 beans{
 	tt016TrilightWarningCameraAlert(TT016TrilightWarningCameraAlert) {
@@ -20,20 +16,8 @@ beans{
 	if(serverBehavior == "STANDARD") {
 		importBeans('spring/custo/tt016/tt016-server.groovy')
 	} else {
-		remoteServer(TT016RemoteServerSimulator,ref('simulatorRemoteModel')){
-			simulatorGui=ref('simulatorGui')
-			cryptoFieldsConfig=ref('cryptoFieldsConfig')
-			productionParameters=ref('productionParameters')
-			serviceProviderManager=ref('cryptoProviderManager')
-			storage=ref('storage')
-			fileSequenceStorageProvider=ref('fileSequenceStorageProvider')
-			remoteServerSimulatorOutputFolder = profilePath+'/simulProductSend'
-			cryptoMode=props['server.simulator.cryptoMode']
-			cryptoModelPreset=props['server.simulator.cryptoModelPreset']
-			isRefeedAvailable=props['refeedAvailable']
-		}
+		importBeans('spring/custo/tt016/tt016-server-simulator.groovy')
 	}
-
 
 	//define disallowed configurations
 	def dcProps1 = [:]
@@ -64,11 +48,10 @@ beans{
 		stopReasonViewController=ref('stopReasonViewController')
 		codeTypeId=props['codeTypeId']
 		unknownSkuProvider=ref('unknownSkuProvider')
-		remoteServerRefeedAvailability=ref('remoteServer')
-		refeedAvailabilityProvider=ref('refeedAvailabilityProvider')
 		ejectionTypeSender=ref('ejectionTypeSender')
 		disallowedConfigurations=disallowedConf
 		defaultLang=props['language']
+		legacyEncoderConverter=ref('legacyEncoderConverter')
 	}
 
 	importBeans('spring/custo/tt016/tt016-plc.xml')
@@ -83,13 +66,6 @@ beans{
 
 	importBeans('spring/custo/tt016/tt016-camera.groovy')
 
-
-	refeedAvailabilityProvider(TT016RefeedAvailabilityProvider){
-		isRefeedAvailableInRemoteServer=props['refeedAvailable']
-		isHeuftSystem=props['heuftSystem']
-	}
-
-
     //values may or may not be present but all available production modes plus default are specified for full config support
 	def ejectionTypeProductionModeOverride = [:]
 	ejectionTypeProductionModeOverride.put("productionmode.DEFAULT",props['ejection.type.default'])
@@ -100,10 +76,12 @@ beans{
 
 
 	ejectionTypeSender(EjectionTypeSender){
-		plcParamSender= plcParamSender
+		plcParamSender=plcParamSender
 		overrideParameters=ejectionTypeProductionModeOverride
 	}
 
-
-
+	legacyEncoderConverter(LegacyEncoderConverter) {
+		fileStorage=ref('storage')
+		codeTypeId=props['codeTypeId']
+	}
 }

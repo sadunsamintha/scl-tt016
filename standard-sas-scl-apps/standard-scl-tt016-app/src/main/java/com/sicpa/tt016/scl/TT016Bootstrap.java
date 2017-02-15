@@ -2,7 +2,6 @@ package com.sicpa.tt016.scl;
 
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.ioc.BeanProvider;
-import com.sicpa.standard.client.common.utils.PropertiesUtils;
 import com.sicpa.standard.client.common.view.screensflow.ScreenTransition;
 import com.sicpa.standard.sasscl.Bootstrap;
 import com.sicpa.standard.sasscl.controller.flow.statemachine.FlowTransition;
@@ -10,18 +9,14 @@ import com.sicpa.standard.sasscl.ioc.BeansName;
 import com.sicpa.standard.sasscl.messages.ActionEventWarning;
 import com.sicpa.standard.sasscl.model.CodeType;
 import com.sicpa.standard.sasscl.model.ProductStatus;
-import com.sicpa.standard.sasscl.utils.ConfigUtilEx;
 import com.sicpa.standard.sasscl.view.main.MainPanelGetter;
 import com.sicpa.tt016.business.ejection.EjectionTypeSender;
 import com.sicpa.tt016.model.DisallowedConfiguration;
 import com.sicpa.tt016.model.TT016ProductStatus;
 import com.sicpa.tt016.provider.impl.TT016UnknownSkuProvider;
-import com.sicpa.tt016.refeed.TT016RefeedAvailabilityProvider;
-import com.sicpa.tt016.scl.remote.RemoteServerRefeedAvailability;
+import com.sicpa.tt016.util.LegacyEncoderConverter;
 import com.sicpa.tt016.view.selection.stop.StopReasonViewController;
-import org.springframework.core.io.ClassPathResource;
 
-import java.io.File;
 import java.util.List;
 import java.util.Properties;
 
@@ -35,6 +30,8 @@ import static com.sicpa.standard.sasscl.messages.ActionMessageType.WARNING;
 import static com.sicpa.standard.sasscl.messages.MessageEventKey.Activation.EXCEPTION_CODE_IN_EXPORT;
 import static com.sicpa.standard.sasscl.messages.MessageEventKey.BRS.BRS_WRONG_SKU;
 import static com.sicpa.tt016.controller.flow.TT016ActivityTrigger.TRG_STOP_REASON_SELECTED;
+import static com.sicpa.tt016.messages.TT016MessageEventKey.ACTIVATION.NO_INK_IN_REFEED_MODE;
+import static com.sicpa.tt016.messages.TT016MessageEventKey.ACTIVATION.NO_INK_IN_REFEED_MODE_MSG_CODE;
 import static com.sicpa.tt016.model.statistics.TT016StatisticsKey.EJECTED_PRODUCER;
 import static com.sicpa.tt016.model.statistics.TT016StatisticsKey.INK_DETECTED;
 import static com.sicpa.tt016.view.TT016ScreenFlowTriggers.STOP_PRODUCTION;
@@ -47,9 +44,8 @@ public class TT016Bootstrap extends Bootstrap {
 	private TT016UnknownSkuProvider unknownSkuProvider;
 	private EjectionTypeSender ejectionTypeSender;
 	private int codeTypeId;
-	private TT016RefeedAvailabilityProvider refeedAvailabilityProvider;
-	private RemoteServerRefeedAvailability remoteServerRefeedAvailability;
 	private List<DisallowedConfiguration> disallowedConfigurations;
+	private LegacyEncoderConverter legacyEncoderConverter;
 
 	@Override
 	public void executeSpringInitTasks() {
@@ -62,6 +58,16 @@ public class TT016Bootstrap extends Bootstrap {
 		sendEjectionTypeForProductionMode();
 		addDisallowedConfigurations(BeanProvider.getBean(BeansName.ALL_PROPERTIES));
 		noStopIfBrsWrongCodeDetected();
+		addWarningIfNoInkInRefeedMode();
+		convertLegacyEncodersIfAny();
+	}
+
+	private void convertLegacyEncodersIfAny() {
+		legacyEncoderConverter.convertLegacyEncoders();
+	}
+
+	private void addWarningIfNoInkInRefeedMode() {
+		addMessage(NO_INK_IN_REFEED_MODE, NO_INK_IN_REFEED_MODE_MSG_CODE, WARNING);
 	}
 
 	private void noStopIfBrsWrongCodeDetected() {
@@ -84,26 +90,8 @@ public class TT016Bootstrap extends Bootstrap {
 	@Override
 	protected void initRemoteServerConnected() {
 		initSubsystemId();
-		initIsRefeedAvailable();
 		remoteServerSheduledJobs.executeInitialTasks();
 	}
-
-	private void initIsRefeedAvailable() {
-		boolean isRefeedAvailableInRemoteServer = remoteServerRefeedAvailability.isRemoteRefeedAvailable();
-		refeedAvailabilityProvider.setIsRefeedAvailableInRemoteServer(isRefeedAvailableInRemoteServer);
-		saveIsRefeedAvailable(isRefeedAvailableInRemoteServer);
-	}
-
-	private void saveIsRefeedAvailable(boolean isRefeedAvailable) {
-		try {
-			File globalPropertiesFile = new ClassPathResource(ConfigUtilEx.GLOBAL_PROPERTIES_PATH).getFile();
-			PropertiesUtils.savePropertiesKeepOrderAndComment(globalPropertiesFile, "refeedAvailable",
-					Boolean.toString(isRefeedAvailable));
-		} catch (Exception ex) {
-			logger.error("Failed to save IsRefeedAvailable property", ex);
-		}
-	}
-
 
 	private void setUnknownSkuCodeType() {
 		unknownSkuProvider.setCodeType(new CodeType(codeTypeId));
@@ -126,7 +114,8 @@ public class TT016Bootstrap extends Bootstrap {
 	}
 
 	private void addDisallowedConfigurations(Properties configuration) {
-		disallowedConfigurations.forEach(d -> d.validate(configuration, (k,p) -> EventBusService.post(new ActionEventWarning(k,null,p))));
+		disallowedConfigurations.forEach(
+				d -> d.validate(configuration, (k,p) -> EventBusService.post(new ActionEventWarning(k,null,p))));
 	}
 
 	public void setMainPanelGetter(MainPanelGetter mainPanelGetter) {
@@ -145,20 +134,15 @@ public class TT016Bootstrap extends Bootstrap {
 		this.codeTypeId = codeTypeId;
 	}
 
-
-	public void setRemoteServerRefeedAvailability(RemoteServerRefeedAvailability remoteServerRefeedAvailability) {
-		this.remoteServerRefeedAvailability = remoteServerRefeedAvailability;
-	}
-
-	public void setRefeedAvailabilityProvider(TT016RefeedAvailabilityProvider refeedAvailabilityProvider) {
-		this.refeedAvailabilityProvider = refeedAvailabilityProvider;
-	}
-
 	public void setEjectionTypeSender(EjectionTypeSender ejectionTypeSender) {
 		this.ejectionTypeSender = ejectionTypeSender;
 	}
 
 	public void setDisallowedConfigurations(List<DisallowedConfiguration> disallowedConfigurations) {
 		this.disallowedConfigurations = disallowedConfigurations;
+	}
+
+	public void setLegacyEncoderConverter(LegacyEncoderConverter legacyEncoderConverter) {
+		this.legacyEncoderConverter = legacyEncoderConverter;
 	}
 }

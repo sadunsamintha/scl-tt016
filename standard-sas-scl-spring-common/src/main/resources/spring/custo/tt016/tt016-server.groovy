@@ -1,10 +1,4 @@
-import com.sicpa.standard.sasscl.devices.remote.lifecheck.MasterLifeCheckWorker;
-import com.sicpa.tt016.scl.TT016Bootstrap
-import com.sicpa.tt016.scl.remote.remoteservices.*
-import com.sicpa.tt016.scl.remote.*
-import com.sicpa.tt016.scl.remote.*
-import com.sicpa.tt016.scl.remote.assembler.*
-
+import com.sicpa.standard.sasscl.devices.remote.lifecheck.MasterLifeCheckWorker
 
 beans{
 
@@ -13,9 +7,8 @@ beans{
 		connector=ref('masterConnector')
 		skuConverter=ref('skuConverter')
 		storage=ref('storage')
-		refeedAvailabilityProvider=ref('refeedAvailabilityProvider')
-
 	}
+
 	remoteServices(TT016RemoteServices){
 		userMachine=props['server.machine.user']
 		passwordMachine=props['server.machine.password']
@@ -35,5 +28,7 @@ beans{
 	
 	skuConverter(SkuConverter){
 		codeTypeId=props['codeTypeId']
+		refeedAvailable=props['refeedAvailable']
+		refeedSkuProvider=ref('refeedSkuProvider')
 	}
 }

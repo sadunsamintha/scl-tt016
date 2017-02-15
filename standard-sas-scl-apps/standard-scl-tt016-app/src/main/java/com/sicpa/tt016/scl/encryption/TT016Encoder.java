@@ -1,12 +1,5 @@
 package com.sicpa.tt016.scl.encryption;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.sicpa.standard.crypto.codes.StringBasedCode;
 import com.sicpa.standard.crypto.exceptions.CryptoException;
 import com.sicpa.standard.sasscl.sicpadata.CryptographyException;
@@ -14,6 +7,12 @@ import com.sicpa.standard.sasscl.sicpadata.generator.EncoderEmptyException;
 import com.sicpa.standard.sasscl.sicpadata.generator.IEncoder;
 import com.sicpa.tt016.common.security.bean.SequenceBean;
 import com.sicpa.tt016.common.security.encoder.IMoroccoEncoder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 @SuppressWarnings("serial")
 public class TT016Encoder implements IEncoder {
@@ -164,5 +163,13 @@ public class TT016Encoder implements IEncoder {
 	@Override
 	public void setOnClientDate(Date onClientDate) {
 		this.onClientDate = onClientDate;
+	}
+
+	public void setFirstCodeDate(Date firstCodeDate) {
+		this.firstCodeDate = firstCodeDate;
+	}
+
+	public void setLastCodeDate(Date lastCodeDate) {
+		this.lastCodeDate = lastCodeDate;
 	}
 }
