@@ -257,7 +257,7 @@ public class Bootstrap implements IBootstrap {
         EventBusService.post(new PlcVariableGroupEvent(groups, "" + index));
     }
 
-    private void installJMXBeans() {
+    protected void installJMXBeans() {
 
         MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
         try {

@@ -10,4 +10,8 @@
         <property name="appVersionProvider" ref="appVersionProvider" />
     </bean>
 
+    <bean id="legacyStatsMBean" class="com.sicpa.tt016.monitoring.mbean.TT016SclAppLegacy">
+        <property name="tt016SclApp" ref="statsMBean" />
+    </bean>
+
 </beans>
