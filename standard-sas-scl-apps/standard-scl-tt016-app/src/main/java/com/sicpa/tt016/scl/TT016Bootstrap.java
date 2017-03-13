@@ -9,6 +9,7 @@ import com.sicpa.standard.sasscl.ioc.BeansName;
 import com.sicpa.standard.sasscl.messages.ActionEventWarning;
 import com.sicpa.standard.sasscl.model.CodeType;
 import com.sicpa.standard.sasscl.model.ProductStatus;
+import com.sicpa.standard.sasscl.model.statistics.StatisticsKey;
 import com.sicpa.standard.sasscl.view.main.MainPanelGetter;
 import com.sicpa.tt016.business.ejection.EjectionTypeSender;
 import com.sicpa.tt016.model.DisallowedConfiguration;
@@ -65,6 +66,7 @@ public class TT016Bootstrap extends Bootstrap {
 		noStopIfBrsWrongCodeDetected();
 		addWarningIfNoInkInRefeedMode();
 		convertLegacyEncodersIfAny();
+		addNoInkInRefeedStatistic();
 	}
 
 	private void convertLegacyEncodersIfAny() {
@@ -90,6 +92,10 @@ public class TT016Bootstrap extends Bootstrap {
 	private void addProducerEjectionStatistic() {
 		handleNewStatistic(TT016ProductStatus.EJECTED_PRODUCER, EJECTED_PRODUCER, RED, 3,
 				"stats.display.ejectedProducer", true);
+	}
+
+	private void addNoInkInRefeedStatistic() {
+		addToStatisticsMapper(TT016ProductStatus.REFEED_NO_INK, StatisticsKey.BAD);
 	}
 
 	@Override
