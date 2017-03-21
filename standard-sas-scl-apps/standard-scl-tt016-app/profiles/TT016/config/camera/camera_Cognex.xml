@@ -7,7 +7,7 @@
 	<mLifeCheckInterval>1000</mLifeCheckInterval>
 	<mTelnetPort>23</mTelnetPort>
 	<mTelnetUser>admin</mTelnetUser>
-	<mTelnetPassword>admin</mTelnetPassword>
+	<mTelnetPassword></mTelnetPassword>
 	<mFTPPort>21</mFTPPort>
 	<mFTPUser>admin</mFTPUser>
 	<mFTPPassword>admin</mFTPPassword>

@@ -261,6 +261,9 @@ public class PlcTest {
 
 		plc.setPlcRequestActionMap(plcRequestActionMap);
 
+		PlcUpdateDateTimeSender plcUpdateDateTimeSender = mock(PlcUpdateDateTimeSender.class);
+		plc.setUpdateDateTimeSender(plcUpdateDateTimeSender);
+
 		// setup device status listener
 		IDeviceStatusListener deviceStatusListener = mock(IDeviceStatusListener.class);
 		plc.addDeviceStatusListener(deviceStatusListener);
