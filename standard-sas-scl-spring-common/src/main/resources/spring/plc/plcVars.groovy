@@ -216,6 +216,16 @@ beans {
 	plcMap['OFFLINE_COUNTING_LAST_PRODUCT']=[v:OFFLINE + 'nSecondsLastOFFProduct' ,t:I]
 	plcMap['OFFLINE_RESET_COUNTERS']=[v:OFFLINE + 'bResetOffCounters' ,t:B]
 
+	//UPDATE DATE TIME
+	plcMap['UPDATE_DATE_TIME_YEAR']=[v:UPDATE_DATE_TIME + 'wYear', t:S]
+	plcMap['UPDATE_DATE_TIME_MONTH']=[v:UPDATE_DATE_TIME + 'wMonth', t:S]
+	plcMap['UPDATE_DATE_TIME_DAY_OF_WEEK']=[v:UPDATE_DATE_TIME + 'wDayOfWeek', t:S]
+	plcMap['UPDATE_DATE_TIME_DAY']=[v:UPDATE_DATE_TIME + 'wDay', t:S]
+	plcMap['UPDATE_DATE_TIME_HOUR']=[v:UPDATE_DATE_TIME + 'wHour', t:S]
+	plcMap['UPDATE_DATE_TIME_MINUTE']=[v:UPDATE_DATE_TIME + 'wMinute', t:S]
+	plcMap['UPDATE_DATE_TIME_SECOND']=[v:UPDATE_DATE_TIME + 'wSecond', t:S]
+	plcMap['UPDATE_DATE_TIME_MILLISECONDS']=[v:UPDATE_DATE_TIME + 'wMilliseconds', t:S]
+
 	injectCustoVar();
 
 	//REQUEST
