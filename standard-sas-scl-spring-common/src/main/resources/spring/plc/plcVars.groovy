@@ -44,7 +44,6 @@ beans {
 
 	//LINE PARAM
 	plcMap['PARAM_LINE_IS_ACTIVE']=[v:LINE+'bLine_is_active' ,t:B]
-	plcMap['PARAM_LINE_COM_STRUC_STORED_IN_RAM']=[v:LINE_PRM+'bComStructureStoredInRAM' ,t:B]
 	plcMap['PARAM_LINE_COUNTER_FILTER_TYPE']=[v:LINE_PRM+'bCounterFilterType' ,t:B]
 	plcMap['PARAM_LINE_PRODUCT_DETECTOR_FILTER_TYPE']=[v:LINE_PRM+'bProductDetectorFilterType' ,t:B]
 	plcMap['PARAM_LINE_CAMERA_DISTANCE_TYPE']=[v:LINE_PRM+'bCameraDistanceType' ,t:B]
@@ -90,8 +89,6 @@ beans {
 	plcMap['PARAM_LINE_TRIGGER_ACT_ON_FAILING_EDGE']=[v:LINE_PRM+'bTriggerActOnFallingEdge' ,t:B ,lineGrp:'misc']
 	plcMap['PARAM_LINE_SIMULATE_PC_EJECTION_IF_ADD_CHECK']=[v:LINE_PRM+'bSimulatePCEjectionIfAddCheck' ,t:B ,lineGrp:'ejection']
 	plcMap['PARAM_LINE_TRIG_EJECTION_ONLY_FOR_SICPA_EJECTIONS']=[v:LINE_PRM+'bTrigEjectionOnlyForSicpaEjections' ,t:B ,lineGrp:'ejection']
-	plcMap['PARAM_LINE_TRIG_AUDIO_VISUAL_ONLY_FOR_SICPA_EJECTIONS']=[v:LINE_PRM+'bTrigAudioVisualOnlyForSicpaEjections' ,t:B ,lineGrp:'ejection']
-	plcMap['PARAM_LINE_SYSTEM_TYPE']=[v:LINE_PRM+'nSystemType' ,t:S ,lineGrp:'system']
 	plcMap['PARAM_LINE_ENCODER_USED']=[v:LINE_PRM+'bEncoderUsed' ,t:B ,lineGrp:'system']
 	plcMap['PARAM_LINE_INDEXED_PRODUCTS']=[v:LINE_PRM+'bIndexedProducts' ,t:B ,lineGrp:'misc']
 	plcMap['PARAM_LINE_INHIBIT_PRINTER']=[v:LINE_PRM+'bInhibitPrinter' ,t:B ,lineGrp:'printer']
@@ -99,7 +96,6 @@ beans {
 	plcMap['PARAM_LINE_INHIBIT_PC_EJECTION_RECEPTION']=[v:LINE_PRM+'bInhibitPCEjectionReception' ,t:B ,lineGrp:'ejection']
 	plcMap['PARAM_LINE_INHIBIT_EJECTION_EMISSION']=[v:LINE_PRM+'bInhibitEjectionEmission' ,t:B ,lineGrp:'ejection']
 	plcMap['PARAM_LINE_INHIBIT_EJECTION_AUDIO_VISUALS']=[v:LINE_PRM+'bInhibitEjectionAudiovisuals' ,t:B ,lineGrp:'ejection']
-	plcMap['PARAM_LINE_INHIBIT_PC_EJECTION_SIMULATION']=[v:LINE_PRM+'bInhibitPCEjectionSimulation' ,t:B ,lineGrp:'ejection']
 	plcMap['PARAM_LINE_INHIBIT_JAVA_NTF_EMISSION']=[v:LINE_PRM+'bInhibitJavaNtfEmission' ,t:B ,lineGrp:'misc']
 	plcMap['PARAM_LINE_INHIBIT_LBL_APP_OR_AIR_DRYER']=[v:LINE_PRM+'bInhibitLblAppOrAirDryer' ,t:B ,lineGrp:'misc']
 	plcMap['PARAM_LINE_EXPORT_MODE_ENABLED']=[v:LINE_PRM+'bExportModeEnabled' ,t:B]
@@ -166,11 +162,10 @@ beans {
 
 
 	//CABINET PARAM
+	plcMap['PARAM_CAB_SYSTEM_TYPE']=[v:CAB_PRM+'nSystemType' ,t:S ,cabGrp:'system']
 	plcMap['PARAM_CAB_TIMEOUT_LIFECHECK']=[v:CAB_PRM+'nTimeoutLifeCheck' ,t:I ,cabGrp:'system']
 	plcMap['PARAM_CAB_COOLING_ENABLED']=[v:CAB_PRM+'bCoolingSystemEnabled' ,t:B ,cabGrp:'system']
 	plcMap['PARAM_CAB_COOLING_ERR_ACTIVATION_TIMEOUT']=[v:CAB_PRM+'nCoolingErrorActivationTimeout' ,t:I ,cabGrp:'system']
-	plcMap['PARAM_CAB_COM_STRUC_STORED_IN_RAM']=[v:CAB_PRM+'bComStructureStoredInRAM' ,t:B ,cabGrp:'system']
-	plcMap['PARAM_CAB_INHIBIT_RAM_WRITING']=[v:CAB_PRM+'bInhibitRamWriting' ,t:B ,cabGrp:'system']
 	plcMap['PARAM_CAB_MULTILINE_REQ_MODE_ENABLED']=[v:CAB_PRM+'bMultiLineRequestsModeEnabled' ,t:B ,cabGrp:'system']
 	plcMap['PARAM_CAB_WAR_TEMP_EE_CAB_LVL']=[v:CAB_PRM+'nWar_Temperature_EE_cabinet_level' ,t:S ,cabGrp:'temp']
 	plcMap['PARAM_CAB_WAR_TEMP_AMBIANT_LVL']=[v:CAB_PRM+'nWar_Temperature_ambiant_level' ,t:S ,cabGrp:'temp']
