@@ -9,14 +9,19 @@ import com.sicpa.standard.sasscl.ioc.BeansName;
 import com.sicpa.standard.sasscl.messages.ActionEventWarning;
 import com.sicpa.standard.sasscl.model.CodeType;
 import com.sicpa.standard.sasscl.model.ProductStatus;
+import com.sicpa.standard.sasscl.model.statistics.StatisticsKey;
 import com.sicpa.standard.sasscl.view.main.MainPanelGetter;
 import com.sicpa.tt016.business.ejection.EjectionTypeSender;
 import com.sicpa.tt016.model.DisallowedConfiguration;
 import com.sicpa.tt016.model.TT016ProductStatus;
+import com.sicpa.tt016.monitoring.mbean.TT016SclAppLegacyMBean;
 import com.sicpa.tt016.provider.impl.TT016UnknownSkuProvider;
 import com.sicpa.tt016.util.LegacyEncoderConverter;
 import com.sicpa.tt016.view.selection.stop.StopReasonViewController;
 
+import javax.management.MBeanServer;
+import javax.management.ObjectName;
+import java.lang.management.ManagementFactory;
 import java.util.List;
 import java.util.Properties;
 
@@ -46,6 +51,7 @@ public class TT016Bootstrap extends Bootstrap {
 	private int codeTypeId;
 	private List<DisallowedConfiguration> disallowedConfigurations;
 	private LegacyEncoderConverter legacyEncoderConverter;
+	private TT016SclAppLegacyMBean sclAppLegacyMBean;
 
 	@Override
 	public void executeSpringInitTasks() {
@@ -60,6 +66,7 @@ public class TT016Bootstrap extends Bootstrap {
 		noStopIfBrsWrongCodeDetected();
 		addWarningIfNoInkInRefeedMode();
 		convertLegacyEncodersIfAny();
+		addNoInkInRefeedStatistic();
 	}
 
 	private void convertLegacyEncodersIfAny() {
@@ -87,10 +94,24 @@ public class TT016Bootstrap extends Bootstrap {
 				"stats.display.ejectedProducer", true);
 	}
 
+	private void addNoInkInRefeedStatistic() {
+		addToStatisticsMapper(TT016ProductStatus.REFEED_NO_INK, StatisticsKey.BAD);
+	}
+
 	@Override
 	protected void initRemoteServerConnected() {
 		initSubsystemId();
 		remoteServerSheduledJobs.executeInitialTasks();
+	}
+
+	@Override
+	protected void installJMXBeans() {
+		MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
+		try {
+			mbs.registerMBean(sclAppLegacyMBean, new ObjectName("SPLApplication:type=Statistics"));
+		} catch (Exception e) {
+			logger.error("", e);
+		}
 	}
 
 	private void setUnknownSkuCodeType() {
@@ -144,5 +165,9 @@ public class TT016Bootstrap extends Bootstrap {
 
 	public void setLegacyEncoderConverter(LegacyEncoderConverter legacyEncoderConverter) {
 		this.legacyEncoderConverter = legacyEncoderConverter;
+	}
+
+	public void setSclAppLegacyMBean(TT016SclAppLegacyMBean sclAppLegacyMBean) {
+		this.sclAppLegacyMBean = sclAppLegacyMBean;
 	}
 }

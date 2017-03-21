@@ -2,7 +2,6 @@ package com.sicpa.standard.sasscl.monitoring.mbean.sas;
 
 import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
-import com.sicpa.standard.client.common.statemachine.State;
 import com.sicpa.standard.client.common.utils.DateUtils;
 import com.sicpa.standard.client.common.utils.ReflectionUtils;
 import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState;
@@ -334,7 +333,7 @@ public class SasApp extends NotificationBroadcasterSupport implements SasAppMBea
 		if (DeviceStatus.CONNECTED.equals(status) || DeviceStatus.CONNECTING.equals(status)
 				|| DeviceStatus.STARTED.equals(status) || DeviceStatus.STOPPED.equals(status)) {
 			return StandardMonitoringMBeanConstants.CONNECTED;
-		} else if (DeviceStatus.DISCONNECTED.equals(status)) {
+		} else if (DeviceStatus.DISCONNECTED.equals(status) || DeviceStatus.DISCONNECTING.equals(status)) {
 			return StandardMonitoringMBeanConstants.DISCONNECTED;
 		} else {
 			return StandardMonitoringMBeanConstants.UNKNOWN;
@@ -472,6 +471,14 @@ public class SasApp extends NotificationBroadcasterSupport implements SasAppMBea
 			return "";
 		}
 		return DateUtils.format(DATE_FORMAT, date);
+	}
+
+	public SasAppBeanStatistics getStats() {
+		return stats;
+	}
+
+	public IErrorsRepository getErrorsRepository() {
+		return errorsRepository;
 	}
 
 	@Override

@@ -49,4 +49,8 @@
 		<property name="productionStatisticsAggregatorFactory" ref="productionStatisticsAggregatorFactory"/>
 	</bean>
 
+	<bean id="MBeanViewer" class="com.sicpa.standard.sasscl.view.monitoring.mbean.BeanViewer">
+		<property name="bean" ref="legacyStatsMBean" />
+	</bean>
+
 </beans>

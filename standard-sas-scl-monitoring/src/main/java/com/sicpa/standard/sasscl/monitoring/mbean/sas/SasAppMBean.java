@@ -249,12 +249,12 @@ public interface SasAppMBean {
 
 	/**
 	 * Returns the values of the trilight for all lines (green, yellow and red).<br>
-	 *
+	 * <br>
 	 * 0 - light is off<br>
 	 * 1 - light is on<br>
 	 * 2 - light is blinking<br>
-	 *
-	 * E.g.: line1[green:1|yellow:1|red:0]line2[green:0|yellow:0|red:1]
+	 * <br>
+	 * E.g.: line1[green:1,yellow:1,red:0]|line2[green:0,yellow:0,red:1]
 	 *
 	 * @return String
 	 */

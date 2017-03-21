@@ -52,6 +52,7 @@ beans{
 		disallowedConfigurations=disallowedConf
 		defaultLang=props['language']
 		legacyEncoderConverter=ref('legacyEncoderConverter')
+		sclAppLegacyMBean=ref('legacyStatsMBean')
 	}
 
 	importBeans('spring/custo/tt016/tt016-plc.xml')
