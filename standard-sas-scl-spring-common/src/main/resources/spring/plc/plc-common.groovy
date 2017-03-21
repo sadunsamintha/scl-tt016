@@ -1,6 +1,7 @@
 import com.sicpa.standard.sasscl.devices.plc.PlcJmxInfo
 import com.sicpa.standard.sasscl.devices.plc.PlcParamSender
 import com.sicpa.standard.sasscl.devices.plc.PlcStateListener
+import com.sicpa.standard.sasscl.devices.plc.PlcUpdateDateTimeSender
 import com.sicpa.standard.sasscl.devices.plc.PlcValuesLoader
 import com.sicpa.standard.sasscl.devices.plc.impl.PlcAdaptor
 import com.sicpa.standard.sasscl.devices.plc.impl.PlcSpeedHandler
@@ -60,6 +61,7 @@ beans{
 		plcVersionMVar=ref('NTF_CAB_VERSION_MEDIUM_var')
 		plcVersionLVar=ref('NTF_CAB_VERSION_LOW_var')
 		paramSender= ref('plcParamSender')
+		updateDateTimeSender=ref('plcUpdateDateTimeSender')
 	}
 
 	plcSpeedHandler(PlcSpeedHandler){
@@ -79,6 +81,18 @@ beans{
 		trilightGreenVarName="#{plcVarMap['NTF_LINE_TRILIGHT_GREEN']}"
 		trilightYellowVarName="#{plcVarMap['NTF_LINE_TRILIGHT_YELLOW']}"
 		trilightRedVarName="#{plcVarMap['NTF_LINE_TRILIGHT_RED']}"
+	}
+
+	plcUpdateDateTimeSender(PlcUpdateDateTimeSender) {
+		plcProvider=ref('plcProvider')
+		updateDateTimeYearVarName="#{plcVarMap['UPDATE_DATE_TIME_YEAR']}"
+		updateDateTimeMonthVarName="#{plcVarMap['UPDATE_DATE_TIME_MONTH']}"
+		updateDateTimeDayOfWeekVarName="#{plcVarMap['UPDATE_DATE_TIME_DAY_OF_WEEK']}"
+		updateDateTimeDayVarName="#{plcVarMap['UPDATE_DATE_TIME_DAY']}"
+		updateDateTimeYHourVarName="#{plcVarMap['UPDATE_DATE_TIME_HOUR']}"
+		updateDateTimeMinuteVarName="#{plcVarMap['UPDATE_DATE_TIME_MINUTE']}"
+		updateDateTimeSecondVarName="#{plcVarMap['UPDATE_DATE_TIME_SECOND']}"
+		updateDateTimeMillisecondsVarName="#{plcVarMap['UPDATE_DATE_TIME_MILLISECONDS']}"
 	}
 
 	def cab_msg=[

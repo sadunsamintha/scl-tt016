@@ -42,6 +42,7 @@ public class PlcAdaptor extends AbstractPlcAdaptor implements IPlcControllerList
 	private IPlcVariable<Integer> plcVersionHVar;
 	private IPlcVariable<Integer> plcVersionMVar;
 	private IPlcVariable<Integer> plcVersionLVar;
+	private PlcUpdateDateTimeSender updateDateTimeSender;
 
 	private final AtomicBoolean notificationCreated = new AtomicBoolean(false);
 	private PlcConfig currentProdConfig;
@@ -153,11 +154,16 @@ public class PlcAdaptor extends AbstractPlcAdaptor implements IPlcControllerList
 	}
 
 	private void onPlcConnected() {
+		sendUpdateDateTime();
 		sendAllParameters();
 		sendProductionVariableConfig();
 		sendReloadPlcParametersRequest();
 		createNotifications();
 		fireDeviceStatusChanged(DeviceStatus.CONNECTED);
+	}
+
+	private void sendUpdateDateTime() {
+		updateDateTimeSender.sendUpdateDateTime();
 	}
 
 	private void sendAllParameters() {
@@ -371,5 +377,9 @@ public class PlcAdaptor extends AbstractPlcAdaptor implements IPlcControllerList
 
 	public void setParamSender(IPlcParamSender paramSender) {
 		this.paramSender = paramSender;
+	}
+
+	public void setUpdateDateTimeSender(PlcUpdateDateTimeSender updateDateTimeSender) {
+		this.updateDateTimeSender = updateDateTimeSender;
 	}
 }

@@ -47,6 +47,8 @@ public class PlcUtils {
 	public static final String LINE_NTF = LINE + "stNotifications.";
 	public static final String CAB_NTF = CAB + "stNotifications.";
 	public static final String OFFLINE = LINE + "stOff_Counter.";
+	public static final String UPDATE_DATE_TIME = ".stUpdateDateTime.";
+
 
 	public static final Map<String, Map<String, ?>> custoInfo = new HashMap<>();
 
