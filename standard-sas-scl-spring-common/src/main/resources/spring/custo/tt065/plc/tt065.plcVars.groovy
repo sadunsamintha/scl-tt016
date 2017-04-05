@@ -193,9 +193,9 @@ beans {
 	plcMap['PARAM_CAB_FANS_TEMP_OFF_DELTA_HYST_BYPASS']=[v:CAB_PRM+'nFans_Temp_OFF_delta_hyst_Bypass' ,t:S ,cabGrp:'fan']
 
 	//CABINET NOTIF
-	plcMap['NTF_CAB_VERSION_HIGH']=[v:CAB_NTF+'nVersionHigh' ,t:I ]
-	plcMap['NTF_CAB_VERSION_MEDIUM']=[v:CAB_NTF+'nVersionMedium' ,t:I ]
-	plcMap['NTF_CAB_VERSION_LOW']=[v:CAB_NTF+'nVersionLow' ,t:I ]
+	plcMap['NTF_CAB_VERSION_HIGH']=[v:CAB_NTF+'nECUVersionHigh' ,t:I ]
+	plcMap['NTF_CAB_VERSION_MEDIUM']=[v:CAB_NTF+'nECUVersionMedium' ,t:I ]
+	plcMap['NTF_CAB_VERSION_LOW']=[v:CAB_NTF+'nECUVersionLow' ,t:I ]
 	plcMap['NTF_CAB_CAB_TRILIGHT_GREEN']=[v:CAB_NTF+'nCabTrilightGreen' ,t:I ]
 	plcMap['NTF_CAB_CAB_TRILIGHT_YELLOW']=[v:CAB_NTF+'nCabTrilightYellow' ,t:I ]
 	plcMap['NTF_CAB_CAB_TRILIGHT_RED']=[v:CAB_NTF+'nCabTrilightRed' ,t:I ]
@@ -222,7 +222,7 @@ beans {
 	plcMap['OFFLINE_COUNTING_QTY']=[v:OFFLINE + 'nProductsCounterOFF' ,t:I]
 	plcMap['OFFLINE_COUNTING_LAST_STOP']=[v:OFFLINE +'nSecondsWhenStopped' ,t:I]
 	plcMap['OFFLINE_COUNTING_LAST_PRODUCT']=[v:OFFLINE + 'nSecondsLastOFFProduct' ,t:I]
-	plcMap['OFFLINE_RESET_COUNTERS']=[v:OFFLINE + 'bResetOffCounters' ,t:B]
+	//plcMap['OFFLINE_RESET_COUNTERS']=[v:OFFLINE + 'bResetOffCounters' ,t:B]
 
 	injectCustoVar();
 
