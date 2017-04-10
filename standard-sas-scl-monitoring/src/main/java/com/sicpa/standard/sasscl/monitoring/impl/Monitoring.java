@@ -356,6 +356,10 @@ public class Monitoring implements IMonitoring {
 		initStats();
 
 		incrementalStatistics.setProductsStatisticsOffset(evt.getStatsValues().getMapValues());
+
+		if (mbeanStatistics != null) {
+			mbeanStatistics.setProductsStatisticsValues(evt.getStatsValues());
+		}
 	}
 
 	@Subscribe
