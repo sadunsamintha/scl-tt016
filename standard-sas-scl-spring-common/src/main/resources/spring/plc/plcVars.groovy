@@ -44,8 +44,7 @@ beans {
 
 	//LINE PARAM
 	plcMap['PARAM_LINE_IS_ACTIVE']=[v:LINE+'bLine_is_active' ,t:B]
-	plcMap['PARAM_LINE_COUNTER_FILTER_TYPE']=[v:LINE_PRM+'bCounterFilterType' ,t:B]
-	plcMap['PARAM_LINE_PRODUCT_DETECTOR_FILTER_TYPE']=[v:LINE_PRM+'bProductDetectorFilterType' ,t:B]
+	plcMap['PARAM_LINE_TRIGGERS_FILTER_TYPE']=[v:LINE_PRM+'bTriggersFilterType' ,t:B]
 	plcMap['PARAM_LINE_CAMERA_DISTANCE_TYPE']=[v:LINE_PRM+'bCameraDistanceType' ,t:B]
 	plcMap['PARAM_LINE_CAMERA_LENGTH_TYPE']=[v:LINE_PRM+'bCameraLengthType' ,t:B]
 	plcMap['PARAM_LINE_VALIDE_CODE_TIMEOUT_TYPE']=[v:LINE_PRM+'bValideCodeTimeoutType' ,t:B]
@@ -55,12 +54,10 @@ beans {
 	plcMap['PARAM_LINE_PRINTER_LENGTH_TYPE']=[v:LINE_PRM+'bPrinterLengthType' ,t:B]
 	plcMap['PARAM_LINE_PC_EJECTION_RECEPTION_DISTANCE_TYPE']=[v:LINE_PRM+'bPCEjectionReceptionDistanceType' ,t:B]
 	plcMap['PARAM_LINE_PC_EJECTION_RECEPTION_LENGTH_TYPE']=[v:LINE_PRM+'bPCEjectionReceptionLengthType' ,t:B]
-	plcMap['PARAM_LINE_PROD_CONTROL_DETECTOR_FILTER_TYPE']=[v:LINE_PRM+'bProdControlDetectorFilterType' ,t:B]
 	plcMap['PARAM_LINE_EJECTION_EMISSION_DISTANCE_TYPE']=[v:LINE_PRM+'bEjectionEmissionDistanceType' ,t:B]
 	plcMap['PARAM_LINE_EJECTION_EMISSION_LENGTH_TYPE']=[v:LINE_PRM+'bEjectionEmissionLengthType' ,t:B]
 	plcMap['PARAM_LINE_JAVA_NTF_DISTANCE_TYPE']=[v:LINE_PRM+'bJavaNotificationDistanceType' ,t:B]
-	plcMap['PARAM_LINE_COUNTER_FILTER']=[v:LINE_PRM+'nCounterFilter' ,t:D ,lineGrp:'misc']
-	plcMap['PARAM_LINE_PRODUCT_DETECTOR_FILTER']=[v:LINE_PRM+'nProductDetectorFilter' ,t:D ,lineGrp:'misc']
+	plcMap['PARAM_LINE_TRIGGERS_FILTER']=[v:LINE_PRM+'nTriggersFilter' ,t:D ,lineGrp:'misc']
 	plcMap['PARAM_LINE_CAMERA_DISTANCE']=[v:LINE_PRM+'nCameraDistance' ,t:D ,lineGrp:'camera']
 	plcMap['PARAM_LINE_CAMERA_LENGTH']=[v:LINE_PRM+'nCameraLength' ,t:D ,lineGrp:'camera']
 	plcMap['PARAM_LINE_VALIDE_CODE_TIMEOUT']=[v:LINE_PRM+'nValideCodeTimeout' ,t:D ,lineGrp:'misc']
@@ -70,7 +67,6 @@ beans {
 	plcMap['PARAM_LINE_PRINTER_LENGTH']=[v:LINE_PRM+'nPrinterLength' ,t:D ,lineGrp:'printer']
 	plcMap['PARAM_LINE_PC_EJECTION_RECEPTION_DISTANCE']=[v:LINE_PRM+'nPCEjectionReceptionDistance' ,t:D ,lineGrp:'ejection']
 	plcMap['PARAM_LINE_PC_EJECTION_RECEPTION_LENGTH']=[v:LINE_PRM+'nPCEjectionReceptionLength' ,t:I]
-	plcMap['PARAM_LINE_PROD_CONTROL_DETECTOR_FILTER']=[v:LINE_PRM+'nProdControlDetectorFilter' ,t:D ,lineGrp:'misc']
 	plcMap['PARAM_LINE_EJECTION_EMISSION_DISTANCE']=[v:LINE_PRM+'nEjectionEmissionDistance' ,t:D ,lineGrp:'ejection']
 	plcMap['PARAM_LINE_EJECTION_EMISSION_LENGTH']=[v:LINE_PRM+'nEjectionEmissionLength' ,t:D ,lineGrp:'ejection']
 	plcMap['PARAM_LINE_JAVA_NTF_DISTANCE']=[v:LINE_PRM+'nJavaNotificationDistance' ,t:D ,lineGrp:'misc']
@@ -212,8 +208,21 @@ beans {
 
 	//OFFLINE
 	plcMap['OFFLINE_COUNTING_QTY']=[v:OFFLINE + 'nProductsCounterOFF' ,t:I]
-	plcMap['OFFLINE_COUNTING_LAST_STOP']=[v:OFFLINE +'nSecondsWhenStopped' ,t:I]
-	plcMap['OFFLINE_COUNTING_LAST_PRODUCT']=[v:OFFLINE + 'nSecondsLastOFFProduct' ,t:I]
+
+	plcMap['OFFLINE_COUNTING_LAST_STOP_YEAR']=[v:DATE_TIME_WHEN_STOPPED + 'wYear' ,t:S]
+	plcMap['OFFLINE_COUNTING_LAST_STOP_MONTH']=[v:DATE_TIME_WHEN_STOPPED + 'wMonth' ,t:S]
+	plcMap['OFFLINE_COUNTING_LAST_STOP_DAY']=[v:DATE_TIME_WHEN_STOPPED + 'wDay' ,t:S]
+	plcMap['OFFLINE_COUNTING_LAST_STOP_HOUR']=[v:DATE_TIME_WHEN_STOPPED + 'wHour' ,t:S]
+	plcMap['OFFLINE_COUNTING_LAST_STOP_MINUTE']=[v:DATE_TIME_WHEN_STOPPED + 'wMinute' ,t:S]
+	plcMap['OFFLINE_COUNTING_LAST_STOP_SECOND']=[v:DATE_TIME_WHEN_STOPPED + 'wSecond' ,t:S]
+
+	plcMap['OFFLINE_COUNTING_LAST_PRODUCT_YEAR']=[v:DATE_TIME_LAST_PRODUCT + 'wYear' ,t:S]
+	plcMap['OFFLINE_COUNTING_LAST_PRODUCT_MONTH']=[v:DATE_TIME_LAST_PRODUCT + 'wMonth' ,t:S]
+	plcMap['OFFLINE_COUNTING_LAST_PRODUCT_DAY']=[v:DATE_TIME_LAST_PRODUCT + 'wDay' ,t:S]
+	plcMap['OFFLINE_COUNTING_LAST_PRODUCT_HOUR']=[v:DATE_TIME_LAST_PRODUCT + 'wHour' ,t:S]
+	plcMap['OFFLINE_COUNTING_LAST_PRODUCT_MINUTE']=[v:DATE_TIME_LAST_PRODUCT + 'wMinute' ,t:S]
+	plcMap['OFFLINE_COUNTING_LAST_PRODUCT_SECOND']=[v:DATE_TIME_LAST_PRODUCT + 'wSecond' ,t:S]
+
 	plcMap['OFFLINE_RESET_COUNTERS']=[v:OFFLINE + 'bResetOffCounters' ,t:B]
 
 	//UPDATE DATE TIME
