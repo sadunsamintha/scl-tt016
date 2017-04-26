@@ -1,4 +1,4 @@
-<ProductionConfig activationBehavior="maintenanceActivationBehavior">
+<ProductionConfig activationBehavior="maintenanceActivationBehavior" authenticatorMode="SCL">
 
 	<CameraConfig deviceType="COGNEX" id="qc_scl_1" />
 

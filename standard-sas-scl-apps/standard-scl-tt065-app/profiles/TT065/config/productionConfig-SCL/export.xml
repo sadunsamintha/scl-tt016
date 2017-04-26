@@ -1,4 +1,4 @@
-<ProductionConfig activationBehavior="exportActivationBehavior">
+<ProductionConfig activationBehavior="exportActivationBehavior" authenticatorMode="SCL">
 
 	<CameraConfig deviceType="COGNEX" id="qc_scl_1" />
 
