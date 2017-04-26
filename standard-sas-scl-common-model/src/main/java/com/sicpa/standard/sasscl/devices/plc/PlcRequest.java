@@ -17,6 +17,7 @@ public class PlcRequest implements Serializable {
 	public final static PlcRequest RUN = new PlcRequest("run");
 	public final static PlcRequest STOP = new PlcRequest("stop");
 	public final static PlcRequest RELOAD_PLC_PARAM = new PlcRequest("reload PLC parameters");
+	public final static PlcRequest RELOAD_DATE_TIME = new PlcRequest("reload date time");
 
 	protected final String description;
 

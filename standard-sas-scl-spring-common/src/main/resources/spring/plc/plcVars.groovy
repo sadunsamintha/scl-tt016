@@ -203,8 +203,9 @@ beans {
 	plcMap['REQUEST_RUN']=[v:'.com.stMultilineRequests.bRun' ,t:B]
 	plcMap['REQUEST_STOP']=[v:'.com.stMultilineRequests.bStop' ,t:B]
 	plcMap['REQUEST_RELOAD_PLC_PARAM']=[v:'.com.stMultilineRequests.bReloadConfig' ,t:B]
-	plcMap['REQUEST_LIFE_CHECK']=[v:CAB+'stRequests.bLifeCheck' ,t:B]
+	plcMap['REQUEST_LIFE_CHECK']=[v:CAB + 'stRequests.bLifeCheck' ,t:B]
 	plcMap['REQUEST_JAVA_WARNINGS_AND_ERRORS_REGISTER']=[v:'.com.nJavaWarningsAndErrorsRegister' ,t:I]
+	plcMap['REQUEST_RELOAD_DATE_TIME']=[v:CAB + 'stRequests.bUpdateDateTime' ,t:B]
 
 	//OFFLINE
 	plcMap['OFFLINE_COUNTING_QTY']=[v:OFFLINE + 'nProductsCounterOFF' ,t:I]
@@ -242,6 +243,7 @@ beans {
 	requestMapping[(RUN)]=[REQUEST_RUN:true]
 	requestMapping[(STOP)]=[REQUEST_STOP:true]
 	requestMapping[(RELOAD_PLC_PARAM)]=[REQUEST_RELOAD_PLC_PARAM:true]
+	requestMapping[(RELOAD_DATE_TIME)]=[REQUEST_RELOAD_DATE_TIME:true]
 
 	for ( e in plcMap ) {
 		String logic=e.key
