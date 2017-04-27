@@ -56,6 +56,8 @@ public class PlcUpdateDateTimeSender {
             plcAdaptor.write(updateDateTimeMinuteVar);
             plcAdaptor.write(updateDateTimeSecondVar);
             plcAdaptor.write(updateDateTimeMillisecondsVar);
+
+            plcAdaptor.executeRequest(PlcRequest.RELOAD_DATE_TIME);
         } catch (PlcAdaptorException e) {
             logger.error("Error sending update date time to PLC", e);
         }

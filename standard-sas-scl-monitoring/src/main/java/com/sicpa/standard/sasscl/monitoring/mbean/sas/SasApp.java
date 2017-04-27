@@ -330,10 +330,11 @@ public class SasApp extends NotificationBroadcasterSupport implements SasAppMBea
 	}
 
 	protected int convertDeviceStatus(DeviceStatus status) {
-		if (DeviceStatus.CONNECTED.equals(status) || DeviceStatus.CONNECTING.equals(status)
-				|| DeviceStatus.STARTED.equals(status) || DeviceStatus.STOPPED.equals(status)) {
+		if (DeviceStatus.CONNECTED.equals(status) || DeviceStatus.STARTED.equals(status)
+				|| DeviceStatus.STOPPED.equals(status)) {
 			return StandardMonitoringMBeanConstants.CONNECTED;
-		} else if (DeviceStatus.DISCONNECTED.equals(status) || DeviceStatus.DISCONNECTING.equals(status)) {
+		} else if (DeviceStatus.DISCONNECTED.equals(status) || DeviceStatus.DISCONNECTING.equals(status)
+				|| DeviceStatus.CONNECTING.equals(status)) {
 			return StandardMonitoringMBeanConstants.DISCONNECTED;
 		} else {
 			return StandardMonitoringMBeanConstants.UNKNOWN;

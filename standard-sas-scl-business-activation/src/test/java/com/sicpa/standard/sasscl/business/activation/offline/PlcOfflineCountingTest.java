@@ -5,6 +5,7 @@ import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.plc.value.IPlcVariable;
 import com.sicpa.standard.sasscl.business.activation.NewProductEvent;
 import com.sicpa.standard.sasscl.business.activation.offline.impl.PlcOfflineCounting;
+import com.sicpa.standard.sasscl.business.activation.offline.impl.PlcOfflineCountingValuesProvider;
 import com.sicpa.standard.sasscl.devices.plc.IPlcAdaptor;
 import com.sicpa.standard.sasscl.devices.plc.PlcAdaptorException;
 import com.sicpa.standard.sasscl.model.CodeType;
@@ -19,14 +20,17 @@ import org.junit.Test;
 import org.mockito.Mockito;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import static com.sicpa.standard.plc.value.PlcVariable.createBooleanVar;
-import static com.sicpa.standard.plc.value.PlcVariable.createInt32Var;
 import static com.sicpa.standard.sasscl.devices.plc.PlcLineHelper.addLineIndex;
 import static com.sicpa.standard.sasscl.devices.plc.PlcLineHelper.replaceLinePlaceholder;
 
 public class PlcOfflineCountingTest {
+
+	private final String RESET_COUNTERS_VAR_NAME = "com.stLine[#x].stOff_Counter.'bResetOffCounters";
 
 	private PlcOfflineCounting poc;
 
@@ -34,33 +38,26 @@ public class PlcOfflineCountingTest {
 
 	private IPlcAdaptor plc;
 
-	private final String QUANTITY_VAR_NAME = "com.stLine[#x].stOff_Counter.nProductsCounterOFF";
-	private final String LAST_STOP_TIME_VAR_NAME = "com.stLine[#x].stOff_Counter.'nSecondsWhenStopped";
-	private final String LAST_PRODUCT_TIME_VAR_NAME = "com.stLine[#x].stOff_Counter.'nSecondsLastOFFProduct";
-	private final String RESET_COUNTERS_VAR_NAME = "com.stLine[#x].stOff_Counter.'bResetOffCounters";
-
-	private IPlcVariable<Integer> qtyVar;
-	private IPlcVariable<Integer> lastStopVar;
-	private IPlcVariable<Integer> lastProductVar;
 	private IPlcVariable<Boolean> resetCountersVar;
 
 	private SKU sku;
 
 	private ProductionParameters productionParameters;
 
+	private PlcOfflineCountingValuesProvider plcOfflineCountingValuesProvider;
+
 	@Before
 	public void setup() throws Exception {
 		addLineIndex(1);
 
-		qtyVar = createInt32Var(replaceLinePlaceholder(QUANTITY_VAR_NAME, 1));
-		lastStopVar = createInt32Var(replaceLinePlaceholder(LAST_STOP_TIME_VAR_NAME, 1));
-		lastProductVar = createInt32Var(replaceLinePlaceholder(LAST_PRODUCT_TIME_VAR_NAME, 1));
 		resetCountersVar = createBooleanVar(replaceLinePlaceholder(RESET_COUNTERS_VAR_NAME, 1));
 
 		plc = Mockito.mock(IPlcAdaptor.class);
 
 		plcProvider = new PlcProvider();
 		plcProvider.set(plc);
+
+		plcOfflineCountingValuesProvider = Mockito.mock(PlcOfflineCountingValuesProvider.class);
 
 		productionParameters = Mockito.mock(ProductionParameters.class);
 		poc = getPlcOfflineCounting();
@@ -69,14 +66,22 @@ public class PlcOfflineCountingTest {
 
 	@Test
 	public void test() throws PlcAdaptorException {
-		int lastStop = (int) (System.currentTimeMillis() / 1000);
-		int lastProduct = lastStop + 3600 * 2;// 2 hours of down time
 		final int productsCount = 100;
-		int deltaProduct = ((lastProduct - lastStop) / productsCount) * 1000;
 
-		Mockito.when(plc.read(qtyVar)).thenReturn(productsCount);
-		Mockito.when(plc.read(lastStopVar)).thenReturn(lastStop);
-		Mockito.when(plc.read(lastProductVar)).thenReturn(lastProduct);
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(Calendar.MILLISECOND, 0);
+
+		Date lastStop = calendar.getTime();
+
+		calendar.add(Calendar.HOUR_OF_DAY, 2);
+
+		Date lastProduct = calendar.getTime();
+
+		long deltaProduct = ((lastProduct.getTime() - lastStop.getTime()) / productsCount);
+
+		Mockito.when(plcOfflineCountingValuesProvider.getQuantityProducts(1)).thenReturn(productsCount);
+		Mockito.when(plcOfflineCountingValuesProvider.getLastStopDateTime(1)).thenReturn(lastStop);
+		Mockito.when(plcOfflineCountingValuesProvider.getLastProductDateTime(1)).thenReturn(lastProduct);
 
 		Mockito.doNothing().when(plc).write(resetCountersVar);
 
@@ -100,7 +105,7 @@ public class PlcOfflineCountingTest {
 			Assert.assertEquals(sku.getId(), p.getSku().getId());
 			Assert.assertEquals(null, p.getCode());
 			Assert.assertEquals(sku.getCodeType(), p.getSku().getCodeType());
-			Assert.assertEquals((1000l * lastStop + i * deltaProduct), p.getActivationDate().getTime());
+			Assert.assertEquals((lastStop.getTime() + i * deltaProduct), p.getActivationDate().getTime());
 			i++;
 		}
 	}
@@ -118,9 +123,7 @@ public class PlcOfflineCountingTest {
 	private PlcOfflineCounting getPlcOfflineCounting() {
 		PlcOfflineCounting poc = new PlcOfflineCounting();
 
-		poc.setQuantityVarName(QUANTITY_VAR_NAME);
-		poc.setLastStopTimeVarName(LAST_STOP_TIME_VAR_NAME);
-		poc.setLastProductTimeVarName(LAST_PRODUCT_TIME_VAR_NAME);
+		poc.setPlcOfflineCountingValuesProvider(plcOfflineCountingValuesProvider);
 		poc.setResetCountersVarName(RESET_COUNTERS_VAR_NAME);
 		poc.setPlcProvider(plcProvider);
 		poc.setProductionParameters(productionParameters);

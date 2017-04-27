@@ -8,10 +8,10 @@ import com.sicpa.standard.sasscl.provider.impl.PlcProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Date;
 import java.util.List;
 
 import static com.sicpa.standard.plc.value.PlcVariable.createBooleanVar;
-import static com.sicpa.standard.plc.value.PlcVariable.createInt32Var;
 import static com.sicpa.standard.sasscl.devices.plc.PlcLineHelper.getLineIndexes;
 import static com.sicpa.standard.sasscl.devices.plc.PlcLineHelper.replaceLinePlaceholder;
 
@@ -23,9 +23,8 @@ public class PlcOfflineCounting extends AbstractOfflineCounting {
 
     private IPlcAdaptor plc;
 
-    private String quantityVarName;
-    private String lastStopTimeVarName;
-    private String lastProductTimeVarName;
+    private PlcOfflineCountingValuesProvider plcOfflineCountingValuesProvider;
+
     private String resetCountersVarName;
 
     @Override
@@ -40,13 +39,12 @@ public class PlcOfflineCounting extends AbstractOfflineCounting {
             List<Integer> lineIndexes = getLineIndexes();
 
             for (Integer lineIndex : lineIndexes) {
-                Integer quantity = readPlcOfflineVar(quantityVarName, lineIndex);
-                Integer lastStop = readPlcOfflineVar(lastStopTimeVarName, lineIndex);
-                Integer lastProduct = readPlcOfflineVar(lastProductTimeVarName, lineIndex);
+                Integer quantity = plcOfflineCountingValuesProvider.getQuantityProducts(lineIndex);
+                Date lastStop = plcOfflineCountingValuesProvider.getLastStopDateTime(lineIndex);
+                Date lastProduct = plcOfflineCountingValuesProvider.getLastProductDateTime(lineIndex);
 
-                if (quantity != null && lastProduct != null && lastStop != null && quantity > 0 && lastStop > 0
-                        && lastProduct > 0) {
-                    process(1000L * lastStop, 1000L * lastProduct, quantity);
+                if (quantity > 0) {
+                    process(lastStop, lastProduct, quantity);
                 }
 
                 resetPlcOfflineCounters(lineIndex);
@@ -54,10 +52,6 @@ public class PlcOfflineCounting extends AbstractOfflineCounting {
         } catch (Exception e) {
             logger.error("", e);
         }
-    }
-
-    private Integer readPlcOfflineVar(String varName, Integer lineIndex) throws PlcAdaptorException {
-        return plc.read(createInt32Var(replaceLinePlaceholder(varName, lineIndex)));
     }
 
     private void resetPlcOfflineCounters(Integer lineIndex) throws PlcAdaptorException {
@@ -68,24 +62,12 @@ public class PlcOfflineCounting extends AbstractOfflineCounting {
         plc.write(var);
     }
 
-    public PlcProvider getPlcProvider() {
-        return plcProvider;
-    }
-
     public void setPlcProvider(final PlcProvider plcProvider) {
         this.plcProvider = plcProvider;
     }
 
-    public void setQuantityVarName(String quantityVarName) {
-        this.quantityVarName = quantityVarName;
-    }
-
-    public void setLastStopTimeVarName(String lastStopTimeVarName) {
-        this.lastStopTimeVarName = lastStopTimeVarName;
-    }
-
-    public void setLastProductTimeVarName(String lastProductTimeVarName) {
-        this.lastProductTimeVarName = lastProductTimeVarName;
+    public void setPlcOfflineCountingValuesProvider(PlcOfflineCountingValuesProvider plcOfflineCountingValuesProvider) {
+        this.plcOfflineCountingValuesProvider = plcOfflineCountingValuesProvider;
     }
 
     public void setResetCountersVarName(String resetCountersVarName) {
