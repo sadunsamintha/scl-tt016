@@ -18,7 +18,13 @@
         <dependency>
             <groupId>com.sicpa.gssd.customization.server</groupId>
             <artifactId>tt065-common-server</artifactId>
-            <version>1.0.6</version>
+            <version>1.0.13-SIMAR-1149-modify-scl-hrc-2-lines-of-4-letters-20170509.175838-2</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-asm</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
 
