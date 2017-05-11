@@ -61,11 +61,11 @@ public class TT065ExtendedCodeFactory implements IExCodeBehavior {
 
         List<Object> compositeCode = new ArrayList<>();
 
-        compositeCode.add(getSicpadata(parsedCode));
         if(hrdEnable) {
             compositeCode.add(getTextLine1(parsedCode));
             compositeCode.add(getTextLine2(parsedCode));
         }
+        compositeCode.add(getSicpadata(parsedCode));
         if(isBlobEnable) {
             /*
                The blobFactory give us a default implementation of the blob pattern.
@@ -96,11 +96,11 @@ public class TT065ExtendedCodeFactory implements IExCodeBehavior {
     private List<BlockFactory> createBlockFactories(boolean isBlobEnable) {
         List<BlockFactory> blockFactories = new ArrayList<>();
 
-        blockFactories.add(createDatamatrixBlockFactory());
         if(hrdEnable) {
             blockFactories.add(createTextLine1BlockFactory());
             blockFactories.add(createTextLine2BlockFactory());
         }
+        blockFactories.add(createDatamatrixBlockFactory());
         if(isBlobEnable) {
             blockFactories.add(createBlobBlockFactory());
         }
