@@ -40,13 +40,13 @@ public class TT065ExtendedCodeBitmapTest {
             dataBlockList.add(blockList);
             counter++;
 
-            File outputfile = new File("image.jpg");
+/*            File outputfile = new File("image.jpg");
             try {
                 ImageIO.write(db.asImage(), "jpg", outputfile);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }
+*/        }
 
     }
 
