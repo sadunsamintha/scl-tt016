@@ -135,7 +135,6 @@ beans {
 	plcMap['NTF_LINE_TRILIGHT_RED']=[v:LINE_NTF+'nLineTrilightRed' ,t:I ]
 	plcMap['NTF_LINE_CPT_PRODUCTS_EJECTIONS']=[v:LINE_NTF+'nCptProductsEjections' ,t:I ]
 	plcMap['NTF_LINE_CPT_PRODUCER_EJECTIONS']=[v:LINE_NTF+'nCptProducerEjections' ,t:I ]
-	plcMap['NTF_LINE_JAVA_FIFO_BUFFER_SIZE']=[v:LINE_NTF+'nJavaFifoBufferSize' ,t:I ]
 	plcMap['NTF_LINE_JAVA_SICPA_FIFO_READ_IDX']=[v:LINE_NTF+'nJavaSicpaFifoReadIndex' ,t:I ]
 	plcMap['NTF_LINE_JAVA_SICPA_FIFO_WRITE_IDX']=[v:LINE_NTF+'nJavaSicpaFifoWriteIndex' ,t:I ]
 	plcMap['NTF_LINE_JAVA_PROD_FIFO_READ_IDX']=[v:LINE_NTF+'nJavaProdFifoReadIndex' ,t:I ]
@@ -155,6 +154,7 @@ beans {
 	plcMap['NTF_LINE_JAVA_CPT_NO_INK_DETECTED']=[v:LINE_NTF+'nJavaCpt_NoInkDetected' ,t:I ]
 	plcMap['NTF_LINE_JAVA_CPT_ACQ_ERRORS']=[v:LINE_NTF+'nJavaCpt_AcquisitionErrors' ,t:I ]
 	plcMap['NTF_LINE_JAVA_PRODUCT_STATUS']=[v:LINE_NTF+'nDRSValueForJava' ,t:I, lineNtf:'true']
+	plcMap['NTF_LINE_JAVA_PRODUCT_COUNTER']=[v:LINE_NTF+'nJavaProductCounter' ,t:I]
 
 
 	//CABINET PARAM
@@ -206,6 +206,7 @@ beans {
 	plcMap['REQUEST_LIFE_CHECK']=[v:CAB + 'stRequests.bLifeCheck' ,t:B]
 	plcMap['REQUEST_JAVA_WARNINGS_AND_ERRORS_REGISTER']=[v:'.com.nJavaWarningsAndErrorsRegister' ,t:I]
 	plcMap['REQUEST_RELOAD_DATE_TIME']=[v:CAB + 'stRequests.bUpdateDateTime' ,t:B]
+	plcMap['REQUEST_RESET_JAVA_PRODUCT_COUNTER']=[v:LINE + 'stRequests.bResetJavaProductCounter' ,t:B]
 
 	//OFFLINE
 	plcMap['OFFLINE_COUNTING_QTY']=[v:OFFLINE + 'nProductsCounterOFF' ,t:I]

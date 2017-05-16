@@ -53,4 +53,16 @@
 		<property name="bean" ref="legacyStatsMBean" />
 	</bean>
 
+	<bean id="selectProductionParametersViewController"
+		  class="com.sicpa.tt016.view.selection.TT016SelectProductionParametersViewController">
+		<property name="handPickingView" ref="selectProductionParametersHandPickingView" />
+		<property name="barcodeView" ref="selectProductionParametersBarcodeView" />
+		<property name="viewController" ref="mainFrameController" />
+		<property name="skuListProvider" ref="skuListProvider" />
+		<property name="useBarcodeReader" value="${useBarcodeReader}" />
+		<property name="screensFlow" ref="screensFlow" />
+		<property name="mainFrameController" ref="mainFrameController" />
+		<property name="plcPersistentProductCounterManager" ref="plcPersistentProductCounterManager" />
+	</bean>
+
 </beans>
