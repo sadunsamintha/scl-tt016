@@ -58,7 +58,8 @@ public class PlcPersistentProductCounterManager {
         sb.append(Messages.get(productionParameters.getProductionMode().getDescription()));
         sb.append(", NumProducts:");
 
-        IPlcVariable<Integer> javaProductCounterNtfVar = PlcVariable.createInt32Var(javaProductCounterNtfVarName);
+        IPlcVariable<Integer> javaProductCounterNtfVar = PlcVariable.createInt32Var(
+                replaceLinePlaceholder(javaProductCounterNtfVarName, lineIndex));
         sb.append(plcProvider.get().read(javaProductCounterNtfVar));
 
         logger.info(sb.toString());
