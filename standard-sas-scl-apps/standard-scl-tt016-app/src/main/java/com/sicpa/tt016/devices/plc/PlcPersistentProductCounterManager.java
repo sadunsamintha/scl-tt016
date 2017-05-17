@@ -33,7 +33,9 @@ public class PlcPersistentProductCounterManager {
     public void execute() {
         try {
             for (Integer lineIndex : PlcLineHelper.getLineIndexes()) {
-                log(lineIndex);
+                if (productionParameters.getSku() != null) {
+                    log(lineIndex);
+                }
                 reset(lineIndex);
             }
         } catch (Exception e) {

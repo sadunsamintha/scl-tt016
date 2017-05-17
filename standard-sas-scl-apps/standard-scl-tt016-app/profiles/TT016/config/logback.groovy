@@ -21,11 +21,11 @@ turboFilter(RepeatedMessageThreadFilter) {
 }
 
 repeatedMessageThreadFilters = [
-	"updateSysUsage",
-	"Camera Life Check Worker",
-	"SCD2 UDP",
-	"LifeCheckWorker of Scd2Connector",
-	"PrtConnStatus-Notifier",
+		"updateSysUsage",
+		"Camera Life Check Worker",
+		"SCD2 UDP",
+		"LifeCheckWorker of Scd2Connector",
+		"PrtConnStatus-Notifier",
 ]
 
 repeatedMessageThreadFilters.each { name ->
@@ -38,15 +38,16 @@ appender("CONSOLE", ConsoleAppender) {
 }
 
 rollingFileAppendersTime = [
-	[id: "SASSCL",       file:"log/day.%d{yyyy-MM-dd}-sasscl.log.zip"],
-	[id: "STDPLC",       file:"log/day.%d{yyyy-MM-dd}-plc.log.zip"]
+		[id: "SASSCL",       file:"log/day.%d{yyyy-MM-dd}-sasscl.log.zip"],
+		[id: "STDPLC",       file:"log/day.%d{yyyy-MM-dd}-plc.log.zip"]
 ]
 rollingFileAppendersSize = [
-	[id: "STDCAMERA",    file:"log/camera.log",    fileZip: "log/camera-.%i.log.zip"],
-	[id: "STDPRINTER",   file:"log/printer.log",   fileZip: "log/printer-.%i.log.zip"],
-	[id: "STDOPERATOR",  file:"log/operator.log",  fileZip: "log/operator-.%i.log.zip"],
-	[id: "BRS", 		 file:"log/brs.log",  fileZip: "log/brs-.%i.log.zip"],
-	[id: "PRINTERMONITORING",   file:"log/printer_monitoring.log",   fileZip: "log/printer_monitoring-.%i.log.zip"],
+		[id: "STDCAMERA",    file:"log/camera.log",    fileZip: "log/camera-.%i.log.zip"],
+		[id: "STDPRINTER",   file:"log/printer.log",   fileZip: "log/printer-.%i.log.zip"],
+		[id: "STDOPERATOR",  file:"log/operator.log",  fileZip: "log/operator-.%i.log.zip"],
+		[id: "BRS", 		 file:"log/brs.log",  fileZip: "log/brs-.%i.log.zip"],
+		[id: "PRINTERMONITORING",   file:"log/printer_monitoring.log",   fileZip: "log/printer_monitoring-.%i.log.zip"],
+		[id: "PLC_SKU_PRODUCT_COUNTER",   file:"log/plc_sku_product_counter.log",   fileZip: "log/plc_sku_product_counter-.%i.log.zip"],
 ]
 
 
@@ -81,6 +82,7 @@ logger("com.sicpa.standard.camera",                             INFO,   ["STDCAM
 logger("com.sicpa.standard.printer",                            WARN,   ["STDPRINTER"],  true)
 logger("com.sicpa.standard.plc",                                INFO,   ["STDPLC"],      true)
 logger("com.sicpa.standard.printer.leibinger.monitoring",       INFO,   ["PRINTERMONITORING"],      true)
+logger("com.sicpa.tt016.devices.plc.PlcPersistentProductCounterManager",       INFO,   ["PLC_SKU_PRODUCT_COUNTER"],      true)
 
 
 root(DEBUG, ["CONSOLE"])

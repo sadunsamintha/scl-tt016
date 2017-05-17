@@ -12,6 +12,8 @@ public class TT016SelectProductionParametersViewController extends SelectProduct
 
     @Override
     public void productionParametersSelected(ProductionParameters pp) {
+        plcPersistentProductCounterManager.execute();
+
         mainFrameController.setSku(pp.getSku());
         mainFrameController.setProductionMode(pp.getProductionMode());
         mainFrameController.setBarcode(pp.getBarcode());
@@ -24,8 +26,6 @@ public class TT016SelectProductionParametersViewController extends SelectProduct
         mainFrameController.productionParametersChanged();
 
         screensFlow.moveToNext(ScreensFlowTriggers.PRODUCTION_PARAMETER_SELECTED);
-
-        plcPersistentProductCounterManager.execute();
     }
 
     public void setPlcPersistentProductCounterManager(PlcPersistentProductCounterManager plcPersistentProductCounterManager) {
