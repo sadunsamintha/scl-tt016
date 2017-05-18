@@ -27,9 +27,9 @@ import static com.sicpa.standard.sasscl.model.ProductionMode.REFEED_NORMAL;
 
 public class SkuConverter implements ISkuConverter {
 
-	private static final Logger logger = LoggerFactory.getLogger(SkuConverter.class);
+	protected static final Logger logger = LoggerFactory.getLogger(SkuConverter.class);
 
-	private IProductionModeMapping productionModeMapping;
+	protected IProductionModeMapping productionModeMapping;
 
 	@Override
 	public ProductionParameterRootNode convert(AuthorizedProductsDto products) {
@@ -169,7 +169,7 @@ public class SkuConverter implements ISkuConverter {
 		}
 	}
 
-	private void copyTree(ProductionModeNode from, ProductionModeNode to,
+	protected void copyTree(ProductionModeNode from, ProductionModeNode to,
 			final AbstractProductionParametersNode<?> convertedParentRoot) {
 		convertedParentRoot.addChildren(to);
 		to.addChildren(from.getChildren());

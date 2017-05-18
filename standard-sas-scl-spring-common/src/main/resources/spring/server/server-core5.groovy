@@ -24,21 +24,7 @@ beans{
 		connector=ref('masterConnector')
 		packageSender=ref('packageSender')
 	}
-	remoteServices(RemoteServices){
-		userMachine=props['server.machine.user']
-		passwordMachine=props['server.machine.password']
-		properties=ref('allProperties')
-	}
-	dtoConverter(DtoConverter){
-		productStatusMapping= ref('remoteServerProductStatusMapping')
-		cryptoFieldsConfig=ref('cryptoFieldsConfig')
-		skuConverter=ref('skuConverter')
-	}
-	skuConverter(SkuConverter){ productionModeMapping=ref('productionModeMapping') }
-	packageSender(PackageSenderGlobal){
-		converter=ref('dtoConverter')
-		remoteServices=ref('remoteServices')
-	}
+
 	masterLifeCheckWorker(MasterLifeCheckWorker){b->
 		connector = ref('masterConnector')
 		lifecheckIntervalSec =props['server.lifecheck.delay.sec']
@@ -47,10 +33,6 @@ beans{
 		remoteServices=ref('remoteServices')
 		lifeCheckWorker=ref('masterLifeCheckWorker')
 	}
-
-	productionModeMapping(DefaultProductionModeMapping)
-	remoteServerProductStatusMapping(DefaultRemoteServerProductStatusMapping)
-
 
 	sicpaDataGeneratorStorage(SicpaDataGeneratorStorage){
 		cryptoFieldsConfig=ref('cryptoFieldsConfig')
