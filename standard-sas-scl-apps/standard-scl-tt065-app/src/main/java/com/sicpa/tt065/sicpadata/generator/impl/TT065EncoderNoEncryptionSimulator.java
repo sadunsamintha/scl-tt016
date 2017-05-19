@@ -21,7 +21,7 @@ public class TT065EncoderNoEncryptionSimulator extends EncoderNoEncryptionSimula
             throw new EncoderEmptyException();
         } else {
             updateDateOfUse();
-            return String.valueOf(this.sequence) + BLOCK_SEPARATOR + String.format("%09d", this.sequence++);
+            return String.valueOf(this.sequence) + BLOCK_SEPARATOR + String.format("%08d", this.sequence++);
         }
     }
 }

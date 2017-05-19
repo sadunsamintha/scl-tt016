@@ -1,6 +1,6 @@
-<ProductionConfig activationBehavior="refeedActivationBehaviorCodeTypeCheck" authenticatorMode="SCL">
+<ProductionConfig activationBehavior="refeedActivationBehaviorCodeTypeCheck" authenticatorMode="PCC_SAS">
 
-	<CameraConfig deviceType="COGNEX" id="qc_scl_1" />
+	<CameraConfig deviceType="COGNEX" id="qc_sas" />
 
 	<!-- to use the brs uncomment the following -->
 	<BrsConfig />
