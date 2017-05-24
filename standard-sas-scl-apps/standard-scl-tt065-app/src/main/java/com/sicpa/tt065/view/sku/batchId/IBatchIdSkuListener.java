@@ -8,6 +8,6 @@ package com.sicpa.tt065.view.sku.batchId;
  */
 public interface IBatchIdSkuListener {
 
-    void saveBatchId(String strBatchId);
+    void saveBatchId(String strBatchId, String strCreditNoteId);
 
 }

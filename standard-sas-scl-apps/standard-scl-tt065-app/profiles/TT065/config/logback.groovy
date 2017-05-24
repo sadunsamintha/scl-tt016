@@ -28,7 +28,8 @@ repeatedMessageThreadFilters = [
 	"PrtConnStatus-Notifier",
 	"RequestStatusTask",
 	"DataReader",
-	"RequestAuthenticationTask"
+	"RequestAuthenticationTask",
+	"StatusTask"
 ]
 
 repeatedMessageThreadFilters.each { name ->

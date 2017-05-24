@@ -9,6 +9,7 @@ import com.sicpa.standard.sasscl.model.ProductionParameters;
 import java.util.Date;
 
 import static com.sicpa.standard.sasscl.provider.ProductBatchIdProvider.productionBatchId;
+import static com.sicpa.standard.sasscl.provider.ProductBatchIdProvider.productionCreditNoteId;
 
 /**
  * Event to be fired when a manual intervention flow to the Selection Display View
@@ -23,6 +24,7 @@ public class BatchIdViewEvent {
 
     public BatchIdViewEvent(ProductionParameters productionParameters) {
         CustoBuilder.addPropertyToClass(ProductionParameters.class, productionBatchId);
+        CustoBuilder.addPropertyToClass(ProductionParameters.class, productionCreditNoteId);
         this.productionParameters = productionParameters;
         this.user = SecurityService.getCurrentUser();
         this.date = new Date();

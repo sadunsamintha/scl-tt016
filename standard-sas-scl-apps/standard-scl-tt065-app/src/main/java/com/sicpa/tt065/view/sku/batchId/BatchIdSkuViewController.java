@@ -100,7 +100,7 @@ public class BatchIdSkuViewController extends TT065AbstractViewFlowController im
 	}
 
 	@Override
-	public void saveBatchId(String strBatchId) {
+	public void saveBatchId(String strBatchId,String strCreditNoteId) {
 		if (StringUtils.isBlank(strBatchId)){
 			showMessageDialog(Messages.get("sku.batch.id.validation.blank"));
 			return;
@@ -118,6 +118,23 @@ public class BatchIdSkuViewController extends TT065AbstractViewFlowController im
 
 		pp.setProperty(productionBatchId, strBatchId);
 		logger.info(Messages.format("sku.batch.id.registered", strBatchId));
+
+		if (strCreditNoteId !=null) {
+			pp.setProperty(productionCreditNoteId, strCreditNoteId);
+			logger.info(Messages.format("sku.credit.note.registered", strCreditNoteId));
+
+			patt = Pattern.compile("-[%@!()*~^!#$%&+/ ]");//restrictions all symbols
+			matcher = patt.matcher(strCreditNoteId);
+			if (matcher.find()){
+				showMessageDialog(Messages.get("sku.credit.note.validation.format"));
+				return;
+			}
+
+			if (strCreditNoteId.length()==0 || strCreditNoteId.length() > 20){
+				showMessageDialog(Messages.get("sku.credit.note.validation.size"));
+				return;
+			}
+		}
 
 		batchIdButtonPressed.set(false);
 

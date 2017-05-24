@@ -7,6 +7,7 @@ import com.sicpa.standard.gui.plaf.SicpaColor;
 import com.sicpa.standard.sasscl.model.ProductionMode;
 import com.sicpa.standard.sasscl.model.ProductionParameters;
 import com.sicpa.standard.sasscl.provider.ProductBatchIdProvider;
+import com.sicpa.tt065.model.TT065ProductionMode;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
@@ -72,6 +73,8 @@ public class BatchIdSkuView extends AbstractView<IBatchIdSkuListener, BatchIdSku
 		private JPanel contentPanel;
 		private JLabel batchIdLabel;
 		private JTextField batchIdText;
+		private JLabel creditNoteLabel;
+		private JTextField creditNoteText;
 
 		public BatchIdSkuPanel() {
 			initGui();
@@ -92,7 +95,7 @@ public class BatchIdSkuView extends AbstractView<IBatchIdSkuListener, BatchIdSku
 		private JButton getSaveBatchIdButton() {
 			if (saveBatchIdButton==null) {
 				saveBatchIdButton = new JButton(Messages.get("sku.batch.id.button.save.label"));
-				saveBatchIdButton.addActionListener(e -> saveBatchIdSelected(batchIdText.getText()));
+				saveBatchIdButton.addActionListener(e -> saveBatchIdSelected(batchIdText.getText(),creditNoteText == null?null:creditNoteText.getText()));
 			}
 			return saveBatchIdButton;
 		}
@@ -104,6 +107,15 @@ public class BatchIdSkuView extends AbstractView<IBatchIdSkuListener, BatchIdSku
 				batchIdLabel.setForeground(SicpaColor.BLUE_DARK);
 			}
 			return batchIdLabel;
+		}
+
+		public JLabel getCreditNoteIdLabel() {
+			if (creditNoteLabel == null) {
+				creditNoteLabel = new JLabel(Messages.get("sku.credit.note.label"));
+				creditNoteLabel.setMinimumSize(new Dimension(70,40));
+				creditNoteLabel.setForeground(SicpaColor.BLUE_DARK);
+			}
+			return creditNoteLabel;
 		}
 
 		public JTextField getBatchIdText() {
@@ -122,6 +134,22 @@ public class BatchIdSkuView extends AbstractView<IBatchIdSkuListener, BatchIdSku
 			return batchIdText;
 		}
 
+		public JTextField getCreditNoteText() {
+			if (creditNoteText == null) {
+				creditNoteText = new JTextField(Integer.parseInt(Messages.get("sku.credit.note.id.maximum.length")));
+				creditNoteText.setMinimumSize(new Dimension(200,40));
+				creditNoteText.setMaximumSize(new Dimension(200,40));
+				creditNoteText.setBackground(SicpaColor.BLUE_ULTRA_LIGHT);
+				creditNoteText.setText(productionParameters.getProperty(productionCreditNoteId));
+				//to associate a virtual keyboard to the BatchId Text Field
+				VirtualKeyboardPanel virtualKeyboardPanel = VirtualKeyboardPanel.getDefaultKeyboard(creditNoteText);
+				String[] defaultLayout = new String[]{"1234567890", "-{del}"};
+				virtualKeyboardPanel.setDefaultLayout(defaultLayout);
+				VirtualKeyboardPanel.attachKeyboardDialog(creditNoteText, virtualKeyboardPanel);
+			}
+			return creditNoteText;
+		}
+
 		public JPanel getContentPanel() {
 			if (contentPanel == null) {
 				contentPanel = new JPanel();
@@ -129,14 +157,19 @@ public class BatchIdSkuView extends AbstractView<IBatchIdSkuListener, BatchIdSku
 				contentPanel.setForeground(SicpaColor.BLUE_DARK);
 				contentPanel.add(getBatchIdLabel(),"align right");
 				contentPanel.add(getBatchIdText(),"align left");
+				//Just for REFEED MODE
+				if (productionParameters.getProductionMode().equals(TT065ProductionMode.REFEED_STOCK)) {
+					contentPanel.add(getCreditNoteIdLabel(), "align right");
+					contentPanel.add(getCreditNoteText(), "align left");
+				}
 			}
 			return contentPanel;
 		}
 	}
 
-	private void saveBatchIdSelected(String strBatchId) {
+	private void saveBatchIdSelected(String strBatchId,String strCreditNoteId) {
 		for (IBatchIdSkuListener listener : listeners) {
-			listener.saveBatchId(strBatchId);
+			listener.saveBatchId(strBatchId,strCreditNoteId);
 		}
 	}
 }
