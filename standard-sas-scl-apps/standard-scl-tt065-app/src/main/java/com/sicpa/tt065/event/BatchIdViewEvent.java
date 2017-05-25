@@ -23,7 +23,6 @@ public class BatchIdViewEvent {
 
     public BatchIdViewEvent(ProductionParameters productionParameters) {
         CustoBuilder.addPropertyToClass(ProductionParameters.class, productionBatchId);
-//        CustoBuilder.addPropertyToClass(ProductionParameters.class, productionCreditNoteId);
         this.productionParameters = productionParameters;
         this.user = SecurityService.getCurrentUser();
         this.date = new Date();
