@@ -1,9 +1,8 @@
-<ProductionConfig activationBehavior="exportActivationBehavior">
+<ProductionConfig activationBehavior="exportActivationBehavior" authenticatorMode="PCC_12x26">
 
 	<CameraConfig deviceType="COGNEX" id="qc_sas" />
 
-	<!-- to use the brs uncomment the following -->
-	<!-- <BrsConfig /> -->
+	<BrsConfig />
 
 	<plcConfig>
 		<cabinet>

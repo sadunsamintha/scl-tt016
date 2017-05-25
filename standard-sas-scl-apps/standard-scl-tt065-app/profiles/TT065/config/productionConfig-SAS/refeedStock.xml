@@ -1,4 +1,4 @@
-<ProductionConfig activationBehavior="refeedActivationBehaviorCodeTypeCheck" authenticatorMode="PCC_SAS">
+<ProductionConfig activationBehavior="refeedActivationBehaviorCodeTypeCheck" authenticatorMode="PCC_12x26">
 
 	<CameraConfig deviceType="COGNEX" id="qc_sas" />
 
@@ -14,7 +14,7 @@
 			<property key="PARAM_LINE_IS_ACTIVE" value="true" />
 			<property key="PARAM_LINE_EXPORT_MODE_ENABLED" value="false" />
 			<property key="PARAM_LINE_MAINTENANCE_MODE_ENABLED" value="false" />
-			<property key="PARAM_LINE_REFEED_MODE_ENABLED" value="true" />
+			<property key="PARAM_LINE_REFEED_MODE_ENABLED" value="false" />
 		</line>
 		<line index="2">
 			<property key="PARAM_LINE_IS_ACTIVE" value="false" />

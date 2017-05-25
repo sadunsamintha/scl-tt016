@@ -1,6 +1,8 @@
-<ProductionConfig activationBehavior="countingActivationBehavior">
+<ProductionConfig activationBehavior="countingActivationBehavior" authenticatorMode="PCC_12x26">
 
 	<CameraConfig deviceType="COGNEX" id="qc_sas" />
+
+	<BrsConfig />
 
 	<plcConfig>
 		<cabinet>
