@@ -24,10 +24,10 @@ public class TT065ProductionBatchProvider extends ProductionBatchProvider implem
 		String strBatchId = pp.getProperty(productionBatchId);
 		set(strBatchId);
 
-		String strCreditNoteId = pp.getProperty(productionCreditNoteId);
-		set(strCreditNoteId);
+//		String strCreditNoteId = pp.getProperty(productionCreditNoteId);
+//		set(strCreditNoteId);
 
 		logger.info("TT065ProductionBatchProvider,user=" + evt.user.getLogin() + ",date=" + evt.date.toString()
-				+ ", batchId=" + strBatchId+ ", creditNoteId=" + strCreditNoteId);
+				+ ", batchId=" + strBatchId);
 	}
 }

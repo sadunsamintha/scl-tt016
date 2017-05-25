@@ -140,10 +140,10 @@ public class BatchIdSkuView extends AbstractView<IBatchIdSkuListener, BatchIdSku
 				creditNoteText.setMinimumSize(new Dimension(200,40));
 				creditNoteText.setMaximumSize(new Dimension(200,40));
 				creditNoteText.setBackground(SicpaColor.BLUE_ULTRA_LIGHT);
-				creditNoteText.setText(productionParameters.getProperty(productionCreditNoteId));
+//				creditNoteText.setText(productionParameters.getProperty(productionCreditNoteId));
 				//to associate a virtual keyboard to the BatchId Text Field
 				VirtualKeyboardPanel virtualKeyboardPanel = VirtualKeyboardPanel.getDefaultKeyboard(creditNoteText);
-				String[] defaultLayout = new String[]{"1234567890", "-{del}"};
+				String[] defaultLayout = new String[]{"1234567890", "QWERTYUIOP", "ASDFGHJKL", "ZXCVBNM", "-{del}"};
 				virtualKeyboardPanel.setDefaultLayout(defaultLayout);
 				VirtualKeyboardPanel.attachKeyboardDialog(creditNoteText, virtualKeyboardPanel);
 			}

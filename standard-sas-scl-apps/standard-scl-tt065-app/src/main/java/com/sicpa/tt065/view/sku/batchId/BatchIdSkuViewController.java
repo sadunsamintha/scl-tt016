@@ -116,11 +116,9 @@ public class BatchIdSkuViewController extends TT065AbstractViewFlowController im
 			return;
 		}
 
-		pp.setProperty(productionBatchId, strBatchId);
-		logger.info(Messages.format("sku.batch.id.registered", strBatchId));
+
 
 		if (strCreditNoteId !=null) {
-			pp.setProperty(productionCreditNoteId, strCreditNoteId);
 			logger.info(Messages.format("sku.credit.note.registered", strCreditNoteId));
 
 			patt = Pattern.compile("-[%@!()*~^!#$%&+/ ]");//restrictions all symbols
@@ -134,7 +132,16 @@ public class BatchIdSkuViewController extends TT065AbstractViewFlowController im
 				showMessageDialog(Messages.get("sku.credit.note.validation.size"));
 				return;
 			}
-		}
+            //pp.setProperty(productionCreditNoteId, strCreditNoteId);
+            pp.setProperty(productionBatchId, strBatchId+" | "+strCreditNoteId);
+            logger.info(Messages.format("sku.batch.id.registered", strBatchId+" - "+strCreditNoteId));
+		}else{
+            pp.setProperty(productionBatchId, strBatchId);
+            logger.info(Messages.format("sku.batch.id.registered", strBatchId));
+        }
+
+
+
 
 		batchIdButtonPressed.set(false);
 
