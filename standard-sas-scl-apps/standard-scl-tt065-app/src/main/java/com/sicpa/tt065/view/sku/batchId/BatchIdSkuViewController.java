@@ -133,7 +133,7 @@ public class BatchIdSkuViewController extends TT065AbstractViewFlowController im
 				return;
 			}
             //pp.setProperty(productionCreditNoteId, strCreditNoteId);
-            pp.setProperty(productionBatchId, strBatchId+" | "+strCreditNoteId);
+            pp.setProperty(productionBatchId, strBatchId+"!"+strCreditNoteId);
             logger.info(Messages.format("sku.batch.id.registered", strBatchId+" - "+strCreditNoteId));
 		}else{
             pp.setProperty(productionBatchId, strBatchId);

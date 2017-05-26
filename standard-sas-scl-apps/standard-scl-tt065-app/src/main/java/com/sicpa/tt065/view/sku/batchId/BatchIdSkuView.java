@@ -124,7 +124,7 @@ public class BatchIdSkuView extends AbstractView<IBatchIdSkuListener, BatchIdSku
 				batchIdText.setMinimumSize(new Dimension(200,40));
 				batchIdText.setMaximumSize(new Dimension(200,40));
 				batchIdText.setBackground(SicpaColor.BLUE_ULTRA_LIGHT);
-				batchIdText.setText(productionParameters.getProperty(productionBatchId));
+				//batchIdText.setText(productionParameters.getProperty(productionBatchId));
 				//to associate a virtual keyboard to the BatchId Text Field
 				VirtualKeyboardPanel virtualKeyboardPanel = VirtualKeyboardPanel.getDefaultKeyboard(batchIdText);
 				String[] defaultLayout = new String[]{"1234567890", "QWERTYUIOP", "ASDFGHJKL", "ZXCVBNM", "-{del}"};

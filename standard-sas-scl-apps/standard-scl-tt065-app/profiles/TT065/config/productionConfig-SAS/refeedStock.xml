@@ -1,4 +1,4 @@
-<ProductionConfig activationBehavior="refeedActivationBehaviorCodeTypeCheck" authenticatorMode="PCC_12x26">
+<ProductionConfig activationBehavior="TT065RefeedStockActivationBehavior" authenticatorMode="PCC_12x26">
 
 	<CameraConfig deviceType="COGNEX" id="qc_sas" />
 

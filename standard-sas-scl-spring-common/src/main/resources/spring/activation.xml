@@ -63,6 +63,17 @@
 		<property name="productionConfigProvider" ref="productionConfigProvider" />
 	</bean>
 
+	<bean id="TT065RefeedStockActivationBehavior"
+		  class="com.sicpa.tt065.activation.TT065RefeedStockActivationBehavior">
+		<property name="productionParameters" ref="productionParameters" />
+		<property name="authenticatorProvider" ref="authenticatorProvider" />
+		<property name="productValidator" ref="noProductValidator" />
+		<property name="invalidCodeHandler" ref="activationInvalidCodeHandler" />
+		<property name="productFinalizer" ref="productFinalizer" />
+		<property name="authenticatorModeProvider" ref="authenticatorModeProvider" />
+		<property name="productionConfigProvider" ref="productionConfigProvider" />
+	</bean>
+
 	<bean id="refeedActivationBehaviorCodeTypeCheck" parent="refeedActivationBehavior">
 		<property name="productValidator" ref="productValidatorCodeTypeCheck" />
 	</bean>

@@ -5,6 +5,10 @@
         <Permission name=".*"/>
     </User>
 
+    <User login="0" password="123">
+        <Permission name=".*"/>
+    </User>
+
     <!--   OPERATOR -->
     <User login="OPERATOR" password="123">
         <Permission name="PRODUCTION_CHANGE_PARAMETERS"/>

@@ -1,4 +1,4 @@
-<ProductionConfig activationBehavior="refeedActivationBehaviorCodeTypeCheck" authenticatorMode="SCL">
+<ProductionConfig activationBehavior="TT065RefeedStockActivationBehavior" authenticatorMode="SCL">
 
 	<PrinterConfig deviceType="LEIBINGER" id="leibinger_1" validatedBy="qc_scl_1" />
 
