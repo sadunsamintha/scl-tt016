@@ -26,6 +26,10 @@ repeatedMessageThreadFilters = [
 		"SCD2 UDP",
 		"LifeCheckWorker of Scd2Connector",
 		"PrtConnStatus-Notifier",
+		"RequestStatusTask",
+		"DataReader",
+		"RequestAuthenticationTask",
+		"StatusTask"
 ]
 
 repeatedMessageThreadFilters.each { name ->
