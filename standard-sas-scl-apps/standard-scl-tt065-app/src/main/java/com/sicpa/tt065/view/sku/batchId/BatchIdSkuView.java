@@ -153,7 +153,7 @@ public class BatchIdSkuView extends AbstractView<IBatchIdSkuListener, BatchIdSku
 		public JPanel getContentPanel() {
 			if (contentPanel == null) {
 				contentPanel = new JPanel();
-				contentPanel.setLayout(new MigLayout("ltr,fill"));
+				contentPanel.setLayout(new MigLayout("ltr,fill,wrap 2"));
 				contentPanel.setForeground(SicpaColor.BLUE_DARK);
 				contentPanel.add(getBatchIdLabel(),"align right");
 				contentPanel.add(getBatchIdText(),"align left");
