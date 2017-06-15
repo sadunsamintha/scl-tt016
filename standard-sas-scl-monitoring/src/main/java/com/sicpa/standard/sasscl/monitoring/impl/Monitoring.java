@@ -236,13 +236,13 @@ public class Monitoring implements IMonitoring {
 
 			if (event.getMessage().equals(ApplicationFlowState.STT_CONNECTED.getName())
 					|| event.getMessage().equals(ApplicationFlowState.STT_CONNECTING.getName())) {
-				saveIncrementalStatistics();
+				saveIncrementalStatistics(false);
 				saveIncrTimer.cancel();
 			}
 
 			else if (event.getMessage().equals(ApplicationFlowState.STT_STARTING.getName())) {
 				saveIncrTimer = new Timer("saveIncrTimer");
-				saveIncrTimer.scheduleAtFixedRate(createSaveIncrTask(), 1000L * saveIncrPeriod, 1000L * saveIncrPeriod);
+				saveIncrTimer.scheduleAtFixedRate(createSaveIncrTask(false), 1000L * saveIncrPeriod, 1000L * saveIncrPeriod);
 
 				/**
 				 * Production can last multiple days without interruption, it is necessary to schedule statistics saving
@@ -251,7 +251,7 @@ public class Monitoring implements IMonitoring {
 				Date firstSavingDate = DateUtils.truncate(new Date(), Calendar.DAY_OF_MONTH);
 				firstSavingDate = DateUtils.addDays(firstSavingDate, 1);
 				firstSavingDate = DateUtils.addSeconds(firstSavingDate, -1);
-				saveIncrTimer.schedule(createSaveIncrTask(), firstSavingDate, DateUtils.MILLIS_PER_DAY);
+				saveIncrTimer.schedule(createSaveIncrTask(true), firstSavingDate, DateUtils.MILLIS_PER_DAY);
 			}
 		} else if (event.getType().equals(SystemEventType.SELECT_PROD_PARAMETERS)) {
 			if (restoreStats) {
@@ -264,23 +264,23 @@ public class Monitoring implements IMonitoring {
 	}
 
 
-	public void saveIncrementalStatistics() {
+	public void saveIncrementalStatistics(boolean savingAtMidnight) {
 		synchronized (lockIncremental) {
 			if (incrementalStatistics != null && !incrementalStatistics.getProductsStatistics().getValues().isEmpty()) {
 				incrementalStatistics.setStopTime(new Date());
 				MonitorService.addEvent(MonitorType.INCREMENTAL_STATISTICS, incrementalStatistics);
 			}
-			createNewIncrementalStatistics();
+			createNewIncrementalStatistics(savingAtMidnight);
 		}
 	}
 
 
-	protected void createNewIncrementalStatistics() {
+	protected void createNewIncrementalStatistics(boolean savingAtMidnight) {
 		IncrementalStatistics previous = incrementalStatistics;
 		incrementalStatistics = new IncrementalStatistics();
 		incrementalStatistics.setSubsystemId(subsystemIdProvider.get());
 		incrementalStatistics.setProductionParameters(productionParameters);
-		incrementalStatistics.setStartTime(new Date());
+		incrementalStatistics.setStartTime(savingAtMidnight ? getMidnightNextDay(previous.getStartTime()) : new Date());
 
 		if (previous != null) {
 			Map<StatisticsKey, Integer> mapValues;
@@ -293,13 +293,18 @@ public class Monitoring implements IMonitoring {
 		}
 	}
 
-	protected TimerTask createSaveIncrTask() {
+	protected TimerTask createSaveIncrTask(final boolean savingAtMidnight) {
 		return new TimerTask() {
 			@Override
 			public void run() {
-				saveIncrementalStatistics();
+				saveIncrementalStatistics(savingAtMidnight);
 			}
 		};
+	}
+
+	private Date getMidnightNextDay(Date date) {
+		Date temp = DateUtils.truncate(date, Calendar.DAY_OF_MONTH);
+		return DateUtils.addDays(temp, 1);
 	}
 
 	protected void addSystemEventInternal(final BasicSystemEvent event) {
@@ -371,7 +376,7 @@ public class Monitoring implements IMonitoring {
 
 	private void initStats(){
 		synchronized(lockIncremental){
-			createNewIncrementalStatistics();
+			createNewIncrementalStatistics(false);
 		}
 	}
 }
