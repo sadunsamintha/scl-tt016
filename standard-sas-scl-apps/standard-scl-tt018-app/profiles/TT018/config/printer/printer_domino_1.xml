@@ -5,11 +5,13 @@
   <udpPort>4321</udpPort>
   <tcpTimeout>10000</tcpTimeout>
   <tcpPort>1234</tcpPort>
-  <requestFluidLevelsInterval>10</requestFluidLevelsInterval>
   <requestReservoirHoursLeftInterval>30</requestReservoirHoursLeftInterval>
   <mUsePrinterSimulator>false</mUsePrinterSimulator>
   <resetOnStop>true</resetOnStop>
   <mDebugMode>false</mDebugMode>
+  <monitoringSnmpPort>161</monitoringSnmpPort>
+  <monitoringFrequencyMediumInSec>300</monitoringFrequencyMediumInSec>
+  <monitoringFrequencyHighInSec>60</monitoringFrequencyHighInSec>
   <mPrinterParameters class="com.sicpa.standard.printer.driver.DominoParameter">
   		<mCodeType>DYNAMIC_DATAMATRIX</mCodeType>
   		<mDataMatrixFormat>DM_8x18</mDataMatrixFormat>

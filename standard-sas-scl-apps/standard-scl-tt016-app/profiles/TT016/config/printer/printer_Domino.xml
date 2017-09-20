@@ -1,15 +1,17 @@
 <DominoPrinterModel>
   <name>SCD2</name>
-  <ipAdress>192.168.1.207</ipAdress>
+  <ipAdress>192.168.1.4</ipAdress>
   <deviceId>1234567890123456789012345678901234567890</deviceId>
   <udpPort>4321</udpPort>
   <tcpTimeout>10000</tcpTimeout>
   <tcpPort>1234</tcpPort>
-  <requestFluidLevelsInterval>10</requestFluidLevelsInterval>
   <requestReservoirHoursLeftInterval>30</requestReservoirHoursLeftInterval>
   <mUsePrinterSimulator>false</mUsePrinterSimulator>
   <resetOnStop>true</resetOnStop>
   <mDebugMode>false</mDebugMode>
+  <monitoringSnmpPort>161</monitoringSnmpPort>
+  <monitoringFrequencyMediumInSec>300</monitoringFrequencyMediumInSec>
+  <monitoringFrequencyHighInSec>60</monitoringFrequencyHighInSec>
   <mPrinterParameters class="com.sicpa.standard.printer.driver.DominoParameter">
   		<mCodeType>DYNAMIC_DATAMATRIX</mCodeType>
   		<mDataMatrixFormat>DM_8x18</mDataMatrixFormat>
