@@ -51,6 +51,7 @@ rollingFileAppendersSize = [
 		[id: "STDOPERATOR",  file:"log/operator.log",  fileZip: "log/operator-.%i.log.zip"],
 		[id: "BRS", 		 file:"log/brs.log",  fileZip: "log/brs-.%i.log.zip"],
 		[id: "PRINTERMONITORING",   file:"log/printer_monitoring.log",   fileZip: "log/printer_monitoring-.%i.log.zip"],
+		[id: "PRINTER_MONITORING_DOMINO",   file:"log/printer_monitoring_domino.log",   fileZip: "log/printer_monitoring_domino-.%i.log.zip"],
 		[id: "PLC_SKU_PRODUCT_COUNTER",   file:"log/plc_sku_product_counter.log",   fileZip: "log/plc_sku_product_counter-.%i.log.zip"],
 ]
 
@@ -79,13 +80,14 @@ rollingFileAppendersSize.each { c ->
 	}
 }
 
-logger("com.sicpa.standard.sasscl",     	                    DEBUG,  ["SASSCL"],      true)
+logger("com.sicpa.standard.sasscl",     	                    INFO,  ["SASSCL"],      true)
 logger("com.sicpa.standard.sasscl.common.log",   				INFO,   ["STDOPERATOR"],  true)
-logger("com.sicpa.standard.sasscl.devices.brs",                 DEBUG,  ["BRS"],		  true)
+logger("com.sicpa.standard.sasscl.devices.brs",                 INFO,  ["BRS"],		  true)
 logger("com.sicpa.standard.camera",                             INFO,   ["STDCAMERA"],   true)
 logger("com.sicpa.standard.printer",                            WARN,   ["STDPRINTER"],  true)
 logger("com.sicpa.standard.plc",                                INFO,   ["STDPLC"],      true)
 logger("com.sicpa.standard.printer.leibinger.monitoring",       INFO,   ["PRINTERMONITORING"],      true)
+logger("com.sicpa.standard.printer.domino.monitoring",          INFO,   ["PRINTER_MONITORING_DOMINO"],      true)
 logger("com.sicpa.tt016.devices.plc.PlcPersistentProductCounterManager",       INFO,   ["PLC_SKU_PRODUCT_COUNTER"],      true)
 
 
