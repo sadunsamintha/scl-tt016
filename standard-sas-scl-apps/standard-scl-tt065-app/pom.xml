@@ -18,7 +18,7 @@
         <dependency>
             <groupId>com.sicpa.gssd.customization.server</groupId>
             <artifactId>tt065-common-server</artifactId>
-            <version>1.0.13-SIMAR-1155-scl-modify-hrc-encoding-library-SNAPSHOT</version>
+            <version>1.0.14</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.springframework</groupId>
