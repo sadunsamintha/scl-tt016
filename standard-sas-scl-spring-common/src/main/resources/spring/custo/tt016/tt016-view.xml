@@ -63,6 +63,7 @@
 		<property name="screensFlow" ref="screensFlow" />
 		<property name="mainFrameController" ref="mainFrameController" />
 		<property name="plcPersistentProductCounterManager" ref="plcPersistentProductCounterManager" />
+		<property name="productionParameters" ref="productionParameters" />
 	</bean>
 
 </beans>
