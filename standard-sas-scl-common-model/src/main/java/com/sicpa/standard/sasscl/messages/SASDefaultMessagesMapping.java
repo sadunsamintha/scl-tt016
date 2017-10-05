@@ -11,8 +11,6 @@ import java.util.Properties;
 
 import static com.sicpa.standard.sasscl.messages.ActionMessageType.*;
 
-;
-
 public class SASDefaultMessagesMapping extends DefaultMessagesMapping {
 	private static final Logger logger = LoggerFactory.getLogger(SASDefaultMessagesMapping.class);
 	public static final String PREFIX_OVERRIDING_PROPERTIES = "messages.mapping.custom.";

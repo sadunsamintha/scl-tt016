@@ -5,6 +5,7 @@ import com.sicpa.standard.client.common.ioc.BeanProvider;
 import com.sicpa.standard.client.common.view.screensflow.ScreenTransition;
 import com.sicpa.standard.sasscl.Bootstrap;
 import com.sicpa.standard.sasscl.controller.flow.statemachine.FlowTransition;
+import com.sicpa.standard.sasscl.devices.plc.PlcUtils;
 import com.sicpa.standard.sasscl.ioc.BeansName;
 import com.sicpa.standard.sasscl.messages.ActionEventWarning;
 import com.sicpa.standard.sasscl.model.CodeType;
@@ -22,6 +23,7 @@ import com.sicpa.tt016.view.selection.stop.StopReasonViewController;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
 import java.lang.management.ManagementFactory;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
 
@@ -67,6 +69,11 @@ public class TT016Bootstrap extends Bootstrap {
 		addWarningIfNoInkInRefeedMode();
 		convertLegacyEncodersIfAny();
 		addNoInkInRefeedStatistic();
+	}
+
+	public static void addPlcVariableJavaEjectionCounter() {
+		addPlcVariable("NTF_LINE_JAVA_EJECTION_COUNTER", ".com.stLine[#x].stNotifications.nJavaEjectionCounter", PlcUtils.PLC_TYPE.I,
+				new HashMap<>());
 	}
 
 	private void convertLegacyEncodersIfAny() {
