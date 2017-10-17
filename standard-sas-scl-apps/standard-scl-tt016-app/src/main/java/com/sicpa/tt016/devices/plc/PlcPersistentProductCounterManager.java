@@ -27,6 +27,7 @@ public class PlcPersistentProductCounterManager {
 
     private String javaProductCounterNtfVarName;
     private String resetJavaProductCounterVarName;
+    private String javaEjectionCounterNtfVarName;
 
     private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
 
@@ -64,6 +65,12 @@ public class PlcPersistentProductCounterManager {
                 replaceLinePlaceholder(javaProductCounterNtfVarName, lineIndex));
         sb.append(plcProvider.get().read(javaProductCounterNtfVar));
 
+        sb.append(", NumEjections:");
+
+        IPlcVariable<Integer> javaEjectionCounterNtfVar = PlcVariable.createInt32Var(
+                replaceLinePlaceholder(javaEjectionCounterNtfVarName, lineIndex));
+        sb.append(plcProvider.get().read(javaEjectionCounterNtfVar));
+
         logger.info(sb.toString());
     }
 
@@ -91,5 +98,9 @@ public class PlcPersistentProductCounterManager {
 
     public void setResetJavaProductCounterVarName(String resetJavaProductCounterVarName) {
         this.resetJavaProductCounterVarName = resetJavaProductCounterVarName;
+    }
+
+    public void setJavaEjectionCounterNtfVarName(String javaEjectionCounterNtfVarName) {
+        this.javaEjectionCounterNtfVarName = javaEjectionCounterNtfVarName;
     }
 }
