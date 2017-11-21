@@ -16,7 +16,7 @@ import static com.sicpa.tt016.common.model.EjectionReason.*;
 import static com.sicpa.tt016.common.model.ProductStatus.VALID_ACTIV_INT;
 import static com.sicpa.tt016.common.model.ProductStatus.VALID_TYPE_MISMATCH_INT;
 import static com.sicpa.tt016.scl.remote.remoteservices.ITT016RemoteServices.PRODUCTION_MODE_STANDARD;
-
+import static com.sicpa.tt016.scl.remote.remoteservices.ITT016RemoteServices.PRODUCTION_MODE_REFEED;
 public class ProductionDataConverter {
 
     private final int OFFLINE_PRODUCTION_NO_SKU_ID = -1;
@@ -88,6 +88,23 @@ public class ProductionDataConverter {
 
         return ejectionDTO;
     }
+    
+    //TODO
+    public IEjectionDTO convertRefeedEjection(PackagedProducts products, int subsystemId) {
+        int qty = products.getProducts().size();
+        CodeType ct = new CodeType(getCodeTypeId(products));
+        SKU sku = new SKU(getSkuId(products));
+        Subsystem subsystem = new Subsystem(subsystemId);
+
+        ActivationEjection ejection = new ActivationEjection(0L, qty,
+                new EjectionReason(getEjectionReasonId(products.getProductStatus())), new Date(), ct, sku, subsystem,
+                PRODUCTION_MODE_REFEED);
+
+        ActivationEjectionDTO ejectionDTO = new ActivationEjectionDTO(ejection);
+        ejectionDTO.setTimestamps(getDates(products));
+
+        return ejectionDTO;
+    }
 
     public ExportSessionDTO convertExport(PackagedProducts products, int subsystemId) {
         int qty = products.getProducts().size();
@@ -98,7 +115,23 @@ public class ProductionDataConverter {
 
         return session;
     }
+    
+    /** TODO
+     *  RAD
+     * @param products
+     * @param subsystemId
+     * @return
+     */
+    public RefeedSessionDTO convertRefeed(PackagedProducts products, int subsystemId) {
+        int qty = products.getProducts().size();
+        int skuId = getSkuId(products);
 
+        RefeedSessionDTO session = new RefeedSessionDTO(1L, REFEED_SESSION, qty, new Date(), skuId, subsystemId);
+        session.setTimestamps(getDates(products));
+
+        return session;
+    }
+    
     public MaintenanceSessionDTO convertMaintenance(PackagedProducts products, int subsystemId) {
         int qty = products.getProducts().size();
 

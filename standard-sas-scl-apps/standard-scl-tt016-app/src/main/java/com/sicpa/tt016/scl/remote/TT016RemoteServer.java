@@ -130,9 +130,13 @@ public class TT016RemoteServer extends AbstractRemoteServer implements IBisCrede
 				sendExportData(products);
 			} else if (products.getProductStatus().equals(ProductStatus.MAINTENANCE)) {
 				sendMaintenanceData(products);
-			} else if (products.getProductStatus().equals(ProductStatus.REFEED)
-					|| products.getProductStatus().equals(TT016ProductStatus.REFEED_NO_INK)) {
-				sendExportData(products);
+			} else if (products.getProductStatus().equals(ProductStatus.REFEED)) {
+				/**
+				 * TODO */
+				_sendRefeedtData(products);
+			} else if(products.getProductStatus().equals(TT016ProductStatus.REFEED_NO_INK)){
+				//TODO
+				sendRefeedEjectedData(products);
 			} else if (products.getProductStatus().equals(ProductStatus.OFFLINE)) {
 				sendOfflineCountingData(products);
 			} else {
@@ -159,6 +163,12 @@ public class TT016RemoteServer extends AbstractRemoteServer implements IBisCrede
 		IEjectionDTO data = productionDataConverter.convertEjection(products, remoteServices.getSubsystemId());
 		remoteServices.sendEjectedProduction(data);
 	}
+	
+	//TODO RAD
+	private void sendRefeedEjectedData(PackagedProducts products) throws InternalException {
+		IEjectionDTO data = productionDataConverter.convertRefeedEjection(products, remoteServices.getSubsystemId());
+		remoteServices.sendRefeedEjectedProduction(data);
+	}
 
 	private void sendMaintenanceData(PackagedProducts products) throws InternalException {
 		MaintenanceSessionDTO data = productionDataConverter.convertMaintenance(products,
@@ -169,6 +179,16 @@ public class TT016RemoteServer extends AbstractRemoteServer implements IBisCrede
 	private void sendExportData(PackagedProducts products) throws InternalException {
 		ExportSessionDTO data = productionDataConverter.convertExport(products, remoteServices.getSubsystemId());
 		remoteServices.sendExportProduction(data);
+	}
+	
+	/** TODO
+	 *  RAD
+	 * @param products
+	 * @throws InternalException
+	 */
+	private void _sendRefeedtData(PackagedProducts products) throws InternalException {
+		RefeedSessionDTO data = productionDataConverter.convertRefeed(products, remoteServices.getSubsystemId());
+		remoteServices.sendRefeedProduction(data);
 	}
 
 	private void sendOfflineCountingData(PackagedProducts products) throws InternalException {

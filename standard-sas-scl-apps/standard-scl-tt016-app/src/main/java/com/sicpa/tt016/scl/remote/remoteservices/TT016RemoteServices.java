@@ -121,6 +121,16 @@ public class TT016RemoteServices implements ITT016RemoteServices {
 		codingActivation.sendProductionQty(data, subsystemId);
 	}
 
+	/** TODO
+	 * RAD
+	 */
+	@Override
+	@Timeout
+	public void sendRefeedProduction(RefeedSessionDTO data) throws InternalException {
+		logger.info("Sending refeed data");
+		codingActivation.sendProductionQty(data, subsystemId);
+	}
+	
 	@Override
 	@Timeout
 	public void sendDomesticProduction(CodingActivationSessionDTO activSession) throws InternalException {
@@ -142,6 +152,16 @@ public class TT016RemoteServices implements ITT016RemoteServices {
 		CodingActivationSessionDTO emptySessionDto = new CodingActivationSessionDTO(emptyList());
 		codingActivation.sendProductionData(PRODUCTION_MODE_STANDARD_ID, emptySessionDto, asList(ejected), subsystemId);
 	}
+	
+	//TODO RAD
+	@Override
+	@Timeout
+	public void sendRefeedEjectedProduction(IEjectionDTO ejected) throws InternalException {
+		logger.info("Sending refeed ejection data");
+		CodingActivationSessionDTO emptySessionDto = new CodingActivationSessionDTO(emptyList());
+		codingActivation.sendProductionData(PRODUCTION_MODE_REFEED, emptySessionDto, asList(ejected), subsystemId);
+	}
+
 
 	@Override
 	@Timeout

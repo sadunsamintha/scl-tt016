@@ -1,5 +1,6 @@
 package com.sicpa.tt016.scl.remote.assembler;
 
+import com.sicpa.standard.client.common.i18n.Messages;
 import com.sicpa.standard.sasscl.model.CodeType;
 import com.sicpa.standard.sasscl.model.ProductionMode;
 import com.sicpa.standard.sasscl.model.SKU;
@@ -8,10 +9,12 @@ import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.Producti
 import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.SKUNode;
 import com.sicpa.tt016.common.dto.SkuDTO;
 import com.sicpa.tt016.provider.impl.TT016RefeedSkuProvider;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
+
 import java.awt.image.BufferedImage;
 import java.util.List;
 
@@ -22,7 +25,10 @@ public class SkuConverter {
 
     private long codeTypeId;
     private boolean refeedAvailable;
-    private TT016RefeedSkuProvider refeedSkuProvider;
+//    private TT016RefeedSkuProvider refeedSkuProvider;
+
+    private  String 	productionNormal;
+    private  String 	productionRefeedNormal;
 
 
     public ProductionParameterRootNode convert(List<SkuDTO> dtos) {
@@ -34,13 +40,30 @@ public class SkuConverter {
         ProductionModeNode exportMode = new ProductionModeNode(ProductionMode.EXPORT);
         ProductionModeNode maintenanceMode = new ProductionModeNode(ProductionMode.MAINTENANCE);
 
+       	productionNormal = Messages.messages.get("language/sasscl").getString("productionmode.standard");
+        productionRefeedNormal = Messages.messages.get("language/sasscl").getString("productionmode.refeed.normal");
+        
         for (SkuDTO dto : dtos) {
             SKU sku = convert(dto);
             SKUNode node = new SKUNode(sku);
-            if (refeedAvailable && refeedSkuProvider.get().contains(dto.getSkuId())) {
+            SKUNode nodeRefeed = null;
+          
+            /*
+             * Deprecated (the change is : all the refeed sku are domestic)
+             
+            if (refeedAvailable /*&& refeedSkuProvider.get().contains(dto.getSkuId())) {
                 refeedMode.addChildren(node);
-            } else if (dto.isLocalMarket()) {
+            } else 
+            */
+            
+            if (dto.isLocalMarket()) {
                 domesticMode.addChildren(node);
+                if(refeedAvailable){
+                	SKU skuRefeed = convert(dto);
+                	skuRefeed.setDescription(skuRefeed.getDescription().replace("- "+productionNormal, "- "+productionRefeedNormal));
+                	nodeRefeed = new SKUNode(skuRefeed);
+                	refeedMode.addChildren(nodeRefeed);
+                }
             } else if (dto.isExportMarket()) {
                 exportMode.addChildren(node);
             } else {
@@ -67,6 +90,7 @@ public class SkuConverter {
 
         sku.setCodeType(new CodeType(codeTypeId));
         sku.setDescription(dto.getDescription());
+        
         return sku;
     }
 
@@ -89,7 +113,17 @@ public class SkuConverter {
         this.refeedAvailable = refeedAvailable;
     }
 
-    public void setRefeedSkuProvider(TT016RefeedSkuProvider refeedSkuProvider) {
-        this.refeedSkuProvider = refeedSkuProvider;
-    }
+	public void setProductionNormal(String productionNormal) {
+		this.productionNormal = productionNormal;
+	}
+
+	public void setProductionRefeedNormal(String productionRefeedNormal) {
+		this.productionRefeedNormal = productionRefeedNormal;
+	}
+
+//    public void setRefeedSkuProvider(TT016RefeedSkuProvider refeedSkuProvider) {
+//        this.refeedSkuProvider = refeedSkuProvider;
+//    }
+    
+    
 }
