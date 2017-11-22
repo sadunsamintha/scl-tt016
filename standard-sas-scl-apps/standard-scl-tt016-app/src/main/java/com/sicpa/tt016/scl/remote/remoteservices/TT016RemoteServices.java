@@ -121,9 +121,7 @@ public class TT016RemoteServices implements ITT016RemoteServices {
 		codingActivation.sendProductionQty(data, subsystemId);
 	}
 
-	/** TODO
-	 * RAD
-	 */
+
 	@Override
 	@Timeout
 	public void sendRefeedProduction(RefeedSessionDTO data) throws InternalException {
@@ -153,7 +151,7 @@ public class TT016RemoteServices implements ITT016RemoteServices {
 		codingActivation.sendProductionData(PRODUCTION_MODE_STANDARD_ID, emptySessionDto, asList(ejected), subsystemId);
 	}
 	
-	//TODO RAD
+
 	@Override
 	@Timeout
 	public void sendRefeedEjectedProduction(IEjectionDTO ejected) throws InternalException {
