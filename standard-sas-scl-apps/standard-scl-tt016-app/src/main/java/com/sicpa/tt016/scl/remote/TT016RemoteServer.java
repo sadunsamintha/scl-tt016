@@ -131,11 +131,8 @@ public class TT016RemoteServer extends AbstractRemoteServer implements IBisCrede
 			} else if (products.getProductStatus().equals(ProductStatus.MAINTENANCE)) {
 				sendMaintenanceData(products);
 			} else if (products.getProductStatus().equals(ProductStatus.REFEED)) {
-				/**
-				 * TODO */
 				_sendRefeedtData(products);
 			} else if(products.getProductStatus().equals(TT016ProductStatus.REFEED_NO_INK)){
-				//TODO
 				sendRefeedEjectedData(products);
 			} else if (products.getProductStatus().equals(ProductStatus.OFFLINE)) {
 				sendOfflineCountingData(products);
@@ -164,7 +161,7 @@ public class TT016RemoteServer extends AbstractRemoteServer implements IBisCrede
 		remoteServices.sendEjectedProduction(data);
 	}
 	
-	//TODO RAD
+	
 	private void sendRefeedEjectedData(PackagedProducts products) throws InternalException {
 		IEjectionDTO data = productionDataConverter.convertRefeedEjection(products, remoteServices.getSubsystemId());
 		remoteServices.sendRefeedEjectedProduction(data);
@@ -181,8 +178,7 @@ public class TT016RemoteServer extends AbstractRemoteServer implements IBisCrede
 		remoteServices.sendExportProduction(data);
 	}
 	
-	/** TODO
-	 *  RAD
+	/** 
 	 * @param products
 	 * @throws InternalException
 	 */
