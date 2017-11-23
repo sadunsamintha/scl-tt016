@@ -89,7 +89,7 @@ public class ProductionDataConverter {
         return ejectionDTO;
     }
     
-    //TODO
+    
     public IEjectionDTO convertRefeedEjection(PackagedProducts products, int subsystemId) {
         int qty = products.getProducts().size();
         CodeType ct = new CodeType(getCodeTypeId(products));
@@ -116,8 +116,7 @@ public class ProductionDataConverter {
         return session;
     }
     
-    /** TODO
-     *  RAD
+    /** 
      * @param products
      * @param subsystemId
      * @return
