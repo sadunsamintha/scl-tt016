@@ -39,7 +39,7 @@ public interface ITT016RemoteServices {
 
 	int getSubsystemId();
 
-	/**TODO
+	/**
 	 * 
 	 * @param data
 	 * @throws InternalException
@@ -47,7 +47,7 @@ public interface ITT016RemoteServices {
 	void sendRefeedProduction(RefeedSessionDTO data) throws InternalException;
 
 	/**
-	 *  TODO
+	 * 
 	 * @param ejected
 	 * @throws InternalException
 	 */
