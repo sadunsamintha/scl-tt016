@@ -39,18 +39,8 @@ public interface ITT016RemoteServices {
 
 	int getSubsystemId();
 
-	/**
-	 * 
-	 * @param data
-	 * @throws InternalException
-	 */
 	void sendRefeedProduction(RefeedSessionDTO data) throws InternalException;
 
-	/**
-	 * 
-	 * @param ejected
-	 * @throws InternalException
-	 */
 	void sendRefeedEjectedProduction(IEjectionDTO ejected)
 			throws InternalException;
 }
