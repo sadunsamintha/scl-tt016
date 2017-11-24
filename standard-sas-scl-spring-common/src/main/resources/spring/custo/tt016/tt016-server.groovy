@@ -34,10 +34,6 @@ beans{
 	skuConverter(SkuConverter){
 		codeTypeId=props['codeTypeId']
 		refeedAvailable=props['refeedAvailable']
-		
-//		productionNormal = props['productionmode.standard']
-//		productionRefeedNormal = props['productionmode.refeed.normal']
-//		productionRefeedCorr =props['productionmode.refeed.correction']
-		//refeedSkuProvider=ref('refeedSkuProvider')
-	}
+
+    }
 }
