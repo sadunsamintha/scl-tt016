@@ -25,8 +25,6 @@ public class SkuConverter {
 
     private long codeTypeId;
     private boolean refeedAvailable;
-//    private TT016RefeedSkuProvider refeedSkuProvider;
-
     private  String 	productionNormal;
     private  String 	productionRefeedNormal;
 
@@ -47,15 +45,7 @@ public class SkuConverter {
             SKU sku = convert(dto);
             SKUNode node = new SKUNode(sku);
             SKUNode nodeRefeed = null;
-          
-            /*
-             * Deprecated (the change is : all the refeed sku are domestic)
-             
-            if (refeedAvailable /*&& refeedSkuProvider.get().contains(dto.getSkuId())) {
-                refeedMode.addChildren(node);
-            } else 
-            */
-            
+                  
             if (dto.isLocalMarket()) {
                 domesticMode.addChildren(node);
                 if(refeedAvailable){
@@ -120,10 +110,6 @@ public class SkuConverter {
 	public void setProductionRefeedNormal(String productionRefeedNormal) {
 		this.productionRefeedNormal = productionRefeedNormal;
 	}
-
-//    public void setRefeedSkuProvider(TT016RefeedSkuProvider refeedSkuProvider) {
-//        this.refeedSkuProvider = refeedSkuProvider;
-//    }
-    
+  
     
 }
