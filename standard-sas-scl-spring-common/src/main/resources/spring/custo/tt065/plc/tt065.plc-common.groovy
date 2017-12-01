@@ -7,6 +7,7 @@ import com.sicpa.standard.sasscl.devices.plc.PlcStateListener
 import com.sicpa.standard.sasscl.devices.plc.PlcValuesLoader;
 import com.sicpa.standard.sasscl.devices.plc.warningerror.PlcRegisterHandler
 import com.sicpa.standard.sasscl.devices.plc.impl.PlcAdaptor
+import com.sicpa.tt065.devices.plc.*;
 import com.sicpa.standard.sasscl.devices.plc.impl.PlcSpeedHandler;
 import com.sicpa.standard.sasscl.devices.plc.PlcJmxInfo
 
@@ -74,6 +75,13 @@ beans{
 		systemTypeVarName='PARAM_LINE_SYSTEM_TYPE'
 		lineSpeedVarName="#{plcVarMap['NTF_LINE_SPEED']}"
 		productFreqVarName="#{plcVarMap['NTF_LINE_PRODS_PER_SECOND']}"
+		loader=ref('plcValuesLoader')
+		plcProvider=ref('plcProvider')
+	}
+
+	plcPowerSupplyHandler(PlcPowerSupplyHandler){
+		systemTypeVarName='PARAM_LINE_SYSTEM_TYPE'
+		upsVarName="#{plcVarMap['NTF_CAB_UPS_STATUS']}"
 		loader=ref('plcValuesLoader')
 		plcProvider=ref('plcProvider')
 	}

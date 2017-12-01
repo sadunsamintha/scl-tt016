@@ -209,6 +209,7 @@ beans {
 	plcMap['NTF_CAB_AIR_PRESS_LVL']=[v:CAB_NTF+'nAir_pressure_level' ,t:I ]
 	plcMap['NTF_CAB_AIR_PRESS_VOLTAGE_LVL']=[v:CAB_NTF+'nAir_pressure_voltage_level' ,t:I ]
 	plcMap['NTF_CAB_WAR_ERR_REGISTER']=[v:CAB_NTF+'nWar_err_register' ,t:I  ,cabNtf:'true']
+	plcMap['NTF_CAB_UPS_STATUS']=[v:'.Hwi_b24V_supply_control_OK' ,t:B  ,cabNtf:'true']
 
 	//REQUEST
 	plcMap['REQUEST_START']=[v:'.com.stMultilineRequests.bStart' ,t:B]
