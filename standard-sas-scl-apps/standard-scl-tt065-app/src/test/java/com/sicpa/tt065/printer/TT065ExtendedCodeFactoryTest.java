@@ -28,23 +28,22 @@ public class TT065ExtendedCodeFactoryTest {
         ExtendedCode extendedCode = extendedCodes.get(0);
         Assert.assertEquals(4, extendedCode.getNumberOfBlock());
 
-
-        //verify the datamatrix block 0
+        //verify hrd block 0
         ExtendedCode.Block block0 = extendedCode.getBlock(0);
-        Assert.assertTrue(block0.isDatamatrix());
-        Assert.assertEquals("0996908468", block0.getData());
+        Assert.assertTrue(block0.isAsciiText());
+        Assert.assertEquals(RelativePosition.RIGHT, block0.getRelativePosition());
+        Assert.assertEquals("093", block0.getData());
 
         //verify hrd block 1
         ExtendedCode.Block block1 = extendedCode.getBlock(1);
         Assert.assertTrue(block1.isAsciiText());
-        Assert.assertEquals(RelativePosition.RIGHT, block1.getRelativePosition());
-        Assert.assertEquals("093", block1.getData());
+        Assert.assertEquals(RelativePosition.BELOW, block1.getRelativePosition());
+        Assert.assertEquals("G001YG", block1.getData());
 
-        //verify hrd block 2
+        //verify the datamatrix block 2
         ExtendedCode.Block block2 = extendedCode.getBlock(2);
-        Assert.assertTrue(block2.isAsciiText());
-        Assert.assertEquals(RelativePosition.BELOW, block2.getRelativePosition());
-        Assert.assertEquals("G001YG", block2.getData());
+        Assert.assertTrue(block2.isDatamatrix());
+        Assert.assertEquals("0996908468", block2.getData());
 
         //verify the blob block 3
         ExtendedCode.Block block3 = extendedCode.getBlock(3);

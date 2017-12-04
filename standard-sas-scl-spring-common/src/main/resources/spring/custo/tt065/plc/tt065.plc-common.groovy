@@ -84,6 +84,7 @@ beans{
 		upsVarName="#{plcVarMap['NTF_CAB_UPS_STATUS']}"
 		loader=ref('plcValuesLoader')
 		plcProvider=ref('plcProvider')
+		flowControl=ref('flowControl')
 	}
 
 

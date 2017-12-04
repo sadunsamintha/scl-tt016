@@ -46,11 +46,12 @@ rollingFileAppendersTime = [
 	[id: "STDPLC",       file:"log/day.%d{yyyy-MM-dd}-plc.log.zip"]
 ]
 rollingFileAppendersSize = [
-	[id: "STDCAMERA",    file:"log/camera.log",    fileZip: "log/camera-.%i.log.zip"],
-	[id: "STDPRINTER",   file:"log/printer.log",   fileZip: "log/printer-.%i.log.zip"],
-	[id: "STDOPERATOR",  file:"log/operator.log",  fileZip: "log/operator-.%i.log.zip"],
-	[id: "BRS", 		 file:"log/brs.log",  fileZip: "log/brs-.%i.log.zip"],
-	[id: "PRINTERMONITORING",   file:"log/printer_monitoring.log",   fileZip: "log/printer_monitoring-.%i.log.zip"],
+	[id: "STDCAMERA",    		file:"log/camera.log",    			fileZip: "log/camera-.%i.log.zip"],
+	[id: "STDPRINTER",   		file:"log/printer.log",   			fileZip: "log/printer-.%i.log.zip"],
+	[id: "STDOPERATOR",  		file:"log/operator.log",  			fileZip: "log/operator-.%i.log.zip"],
+	[id: "BRS", 		 		file:"log/brs.log",  				fileZip: "log/brs-.%i.log.zip"],
+	[id: "PRINTERMONITORING",   file:"log/printer_monitoring.log",  fileZip: "log/printer_monitoring-.%i.log.zip"],
+	[id: "TT065", 				file:"log/tt065.log", 				fileZip: "log/tt065-.%i.log.zip"]
 ]
 
 
@@ -78,14 +79,14 @@ rollingFileAppendersSize.each { c ->
 	}
 }
 
-logger("com.sicpa.standard.sasscl",     	                    DEBUG,  ["SASSCL"],      true)
-logger("com.sicpa.standard.sasscl.common.log",   				INFO,   ["STDOPERATOR"],  true)
-logger("com.sicpa.standard.sasscl.devices.brs",                 DEBUG,  ["BRS"],		  true)
-logger("com.sicpa.standard.camera",                             INFO,   ["STDCAMERA"],   true)
-logger("com.sicpa.standard.printer",                            WARN,   ["STDPRINTER"],  true)
-logger("com.sicpa.standard.plc",                                INFO,   ["STDPLC"],      true)
-logger("com.sicpa.standard.printer.leibinger.monitoring",   	INFO,   ["PRINTERMONITORING"],      true)
-
+logger("com.sicpa.standard.sasscl",     	                    DEBUG,  ["SASSCL"],      		true)
+logger("com.sicpa.standard.sasscl.common.log",   				INFO,   ["STDOPERATOR"],  		true)
+logger("com.sicpa.standard.sasscl.devices.brs",                 DEBUG,  ["BRS"],		  		true)
+logger("com.sicpa.standard.camera",                             INFO,   ["STDCAMERA"],  	 	true)
+logger("com.sicpa.standard.printer",                            WARN,   ["STDPRINTER"],  		true)
+logger("com.sicpa.standard.plc",                                INFO,   ["STDPLC"],      		true)
+logger("com.sicpa.standard.printer.leibinger.monitoring",   	INFO,   ["PRINTERMONITORING"],	true)
+logger("com.sicpa.tt065",										INFO, 	["TT065"],				true)
 
 
 root(DEBUG, ["CONSOLE"])
