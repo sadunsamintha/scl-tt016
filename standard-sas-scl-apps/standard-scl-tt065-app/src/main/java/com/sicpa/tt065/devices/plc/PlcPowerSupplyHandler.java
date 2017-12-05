@@ -20,8 +20,8 @@ import static com.sicpa.standard.sasscl.devices.plc.PlcLineHelper.getLinesVariab
 
 public class PlcPowerSupplyHandler {
 
-	private static final int FORCE_SHUTDOWN_DELAY = 10;
-	private static final int EXIT_APPLICATION_DELAY = 5;
+	private static final int FORCE_SHUTDOWN_DELAY_MIN = 1;
+	private static final int EXIT_APPLICATION_DELAY_SEC = 10;
 
 	private static final Logger logger = LoggerFactory.getLogger(PlcPowerSupplyHandler.class);
 
@@ -40,8 +40,8 @@ public class PlcPowerSupplyHandler {
     	if (!value){
 			logger.info("No power supply");
 			timer = new Timer();
-			timer.schedule(new ShutdownTask(), EXIT_APPLICATION_DELAY*1000);
-            timer.schedule(new ExitGentlyTask(), EXIT_APPLICATION_DELAY*1000);
+			timer.schedule(new ShutdownTask(), EXIT_APPLICATION_DELAY_SEC *1000);
+            timer.schedule(new ExitGentlyTask(), EXIT_APPLICATION_DELAY_SEC *1000);
         }else{
 			logger.info("Power supply Ok");
 			if (timer != null) {
@@ -67,10 +67,10 @@ public class PlcPowerSupplyHandler {
         public void run() {
 			Runtime runtime = Runtime.getRuntime();
 
-			logger.info("Preparing to shut down in " + FORCE_SHUTDOWN_DELAY + " seconds...");
+			logger.info("Preparing to shut down in " + FORCE_SHUTDOWN_DELAY_MIN + " seconds...");
 
 			try {
-				Process proc = runtime.exec("shutdown -r -t " + FORCE_SHUTDOWN_DELAY);
+				Process proc = runtime.exec("shutdown -r +" + FORCE_SHUTDOWN_DELAY_MIN);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
