@@ -38,4 +38,9 @@ public interface ITT016RemoteServices {
 	String getBisTrainerPassword(String user);
 
 	int getSubsystemId();
+
+	void sendRefeedProduction(RefeedSessionDTO data) throws InternalException;
+
+	void sendRefeedEjectedProduction(IEjectionDTO ejected)
+			throws InternalException;
 }

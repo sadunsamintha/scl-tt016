@@ -34,6 +34,6 @@ beans{
 	skuConverter(SkuConverter){
 		codeTypeId=props['codeTypeId']
 		refeedAvailable=props['refeedAvailable']
-		refeedSkuProvider=ref('refeedSkuProvider')
-	}
+
+    }
 }

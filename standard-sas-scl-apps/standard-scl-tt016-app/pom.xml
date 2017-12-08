@@ -16,7 +16,7 @@
 		<dependency>
 			<groupId>com.sicpa.tt016</groupId>
 			<artifactId>tt016-master-scl-ejb</artifactId>
-			<version>3.4.1</version>
+			<version>3.5.0</version>
 			<type>ejb-client</type>
 			<exclusions>
 				<exclusion>
@@ -37,7 +37,7 @@
 		<dependency>
 			<groupId>com.sicpa.tt016</groupId>
 			<artifactId>tt016-common-model</artifactId>
-			<version>2.5.9</version>
+			<version>3.1.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.jboss.client</groupId>

@@ -8,9 +8,7 @@
         <property name="productionParameters" ref="productionParameters" />
     </bean>
 
-    <bean id="refeedSkuProvider" class="com.sicpa.tt016.provider.impl.TT016RefeedSkuProvider" >
-        <constructor-arg value="${refeedSkuIds}" />
-    </bean>
+
 
 </beans>
 
