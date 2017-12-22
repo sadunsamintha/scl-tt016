@@ -12,6 +12,7 @@ import java.util.function.Predicate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.sicpa.standard.sasscl.model.ProductionMode;
 import com.sicpa.standard.sasscl.model.ProductionParameters;
 import com.sicpa.standard.sasscl.model.SKU;
 import com.sicpa.standard.sasscl.provider.impl.SkuListProvider;
@@ -23,6 +24,11 @@ public class SkuFinder implements ISkuFinder {
 	private SkuListProvider skuListProvider;
 	private ProductionParameters productionParameters;
 
+	@Override
+	public ProductionMode getCurrentProductionMode(){
+		return productionParameters.getProductionMode();
+	}
+	
 	@Override
 	public Optional<SKU> getSkuFromBarcode(String barcode) {
 		List<SKU> skus = filter(skuListProvider.getAvailableSKUsForProductionMode(productionParameters
@@ -99,4 +105,5 @@ public class SkuFinder implements ISkuFinder {
 	public void setProductionParameters(ProductionParameters productionParameters) {
 		this.productionParameters = productionParameters;
 	}
+	
 }

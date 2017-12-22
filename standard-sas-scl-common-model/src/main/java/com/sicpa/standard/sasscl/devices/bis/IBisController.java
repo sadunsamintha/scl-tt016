@@ -32,5 +32,7 @@ public interface IBisController {
 	void sendCredential(String user, String password);
 
 	void sendDomesticMode();
+	
+	void sendExportMode();
 
 }

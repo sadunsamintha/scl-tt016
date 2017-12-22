@@ -113,4 +113,9 @@ public class BisControllerSimulator implements IBisController {
 	public void sendDomesticMode() {
 		logger.info("send domestic mode");
 	}
+
+	@Override
+	public void sendExportMode() {
+		logger.info("send export mode");
+	}
 }

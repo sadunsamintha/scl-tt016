@@ -228,6 +228,11 @@ public class BisRemoteServer implements IBisController, IBisMessageHandlerListen
 	public void sendDomesticMode() {
 		sendMessage(Command.newBuilder().setCommand(CommandType.PRODUCTION_DOMESTIC).build());
 	}
+	
+	@Override
+	public void sendExportMode(){
+		sendMessage(Command.newBuilder().setCommand(CommandType.PRODUCTION_EXPORT).build());
+	}
 
 	@Override
 	public void addListener(IBisControllerListener listener) {
