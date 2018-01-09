@@ -159,35 +159,22 @@ public class BisAdapter extends AbstractStartableDevice implements IBisAdaptor, 
 	private void sendSkusToBis() {
 		ProductionMode vProdMode = skuFinder.getCurrentProductionMode();
 		
-		if(vProdMode != null && 
-				(ProductionMode.STANDARD.equals(vProdMode) 
-						|| ProductionMode.EXPORT.equals(vProdMode) 
-						|| ProductionMode.REFEED_NORMAL.equals(vProdMode)) 
-				){
-			if(ProductionMode.STANDARD.equals(vProdMode) || ProductionMode.REFEED_NORMAL.equals(vProdMode)){
-				controller.sendDomesticMode();
-				if(ProductionMode.REFEED_NORMAL.equals(vProdMode)){
-					vProdMode =  ProductionMode.STANDARD;
-				}
-			} else if (ProductionMode.EXPORT.equals(vProdMode)){
-				controller.sendExportMode();
-			}
-			Collection<SKU> skus = skuBisProvider.getSkusToSendToBIS(vProdMode);
-			if (skus.isEmpty()) {
-				return;
-			}
-			controller.sendSkuList(createSkusMessage(skus));	
-		} else {
-			// the old code
+		if(vProdMode!=null &&  ProductionMode.EXPORT.equals(vProdMode)){
+			controller.sendExportMode();
+		} else{
 			controller.sendDomesticMode();
-			
-			Collection<SKU> skus = skuBisProvider.getSkusToSendToBIS();
-			if (skus.isEmpty()) {
-				return;
+			if(vProdMode!=null && ProductionMode.REFEED_NORMAL.equals(vProdMode)){
+				vProdMode =  ProductionMode.STANDARD;
 			}
-			controller.sendSkuList(createSkusMessage(skus));	
 		}
-
+		
+		Collection<SKU> skus = skuBisProvider.getSkusToSendToBIS(vProdMode);
+		if (skus.isEmpty()) {
+			return;
+		}
+		
+		controller.sendSkuList(createSkusMessage(skus));
+		
 	}
 
 	private SkusMessage createSkusMessage(Collection<SKU> skus) {
@@ -243,3 +230,4 @@ public class BisAdapter extends AbstractStartableDevice implements IBisAdaptor, 
 		this.skuBisProvider = skuBisProvider;
 	}
 }
+
