@@ -8,6 +8,7 @@ import com.sicpa.standard.sasscl.devices.AbstractStartableDevice;
 import com.sicpa.standard.sasscl.devices.DeviceException;
 import com.sicpa.standard.sasscl.devices.DeviceStatus;
 import com.sicpa.standard.sasscl.messages.MessageEventKey;
+import com.sicpa.standard.sasscl.model.ProductionMode;
 import com.sicpa.standard.sasscl.model.SKU;
 import com.sicpa.standard.sasscl.skureader.ISkuFinder;
 import com.sicpa.standard.sasscl.skureader.SkuNotRecognizedEvent;
@@ -17,6 +18,7 @@ import com.sicpa.std.bis2.core.messages.RemoteMessages.Alert;
 import com.sicpa.std.bis2.core.messages.RemoteMessages.RecognitionResultMessage;
 import com.sicpa.std.bis2.core.messages.RemoteMessages.SkuMessage;
 import com.sicpa.std.bis2.core.messages.RemoteMessages.SkusMessage;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -155,25 +157,37 @@ public class BisAdapter extends AbstractStartableDevice implements IBisAdaptor, 
 	}
 
 	private void sendSkusToBis() {
-		controller.sendDomesticMode();
-
-		Collection<SKU> skus = skuBisProvider.getSkusToSendToBIS();
+		ProductionMode vProdMode = skuFinder.getCurrentProductionMode();
+		
+		if(vProdMode!=null &&  ProductionMode.EXPORT.equals(vProdMode)){
+			controller.sendExportMode();
+		} else{
+			controller.sendDomesticMode();
+			if(vProdMode!=null && ProductionMode.REFEED_NORMAL.equals(vProdMode)){
+				vProdMode =  ProductionMode.STANDARD;
+			}
+		}
+		
+		Collection<SKU> skus = skuBisProvider.getSkusToSendToBIS(vProdMode);
 		if (skus.isEmpty()) {
 			return;
 		}
+		
 		controller.sendSkuList(createSkusMessage(skus));
+		
 	}
 
 	private SkusMessage createSkusMessage(Collection<SKU> skus) {
 		List<SkuMessage> controllerSkus = new ArrayList<>();
 		for (SKU sku : skus) {
-			controllerSkus.add(toSkuMessage(sku));
+			SkuMessage vSkuMessage = toSkuMessage(sku);
+			controllerSkus.add(vSkuMessage);
 		}
 		return RemoteMessages.SkusMessage.newBuilder().addAllSku(controllerSkus).build();
 	}
 
 	private SkuMessage toSkuMessage(SKU sku) {
-		return RemoteMessages.SkuMessage.newBuilder().setId(sku.getId()).setDescription(sku.getDescription()).build();
+		return RemoteMessages.SkuMessage.newBuilder().setId(sku.getId()).setDescription(sku.getDescription()).setProductionType((ProductionMode.EXPORT.equals(skuFinder.getCurrentProductionMode()))?1:0).build();
 	}
 
 	@Subscribe
@@ -216,3 +230,4 @@ public class BisAdapter extends AbstractStartableDevice implements IBisAdaptor, 
 		this.skuBisProvider = skuBisProvider;
 	}
 }
+
