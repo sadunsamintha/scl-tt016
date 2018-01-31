@@ -382,7 +382,7 @@
 			<dependency>
 				<groupId>com.sicpa.standard.bis2</groupId>
 				<artifactId>bis2-remote</artifactId>
-				<version>1.0.8</version>
+				<version>1.0.10</version>
 			</dependency>
 			<dependency>
 				<groupId>com.sicpa.standard</groupId>
