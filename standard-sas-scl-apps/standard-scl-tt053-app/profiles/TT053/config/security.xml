@@ -1,0 +1,42 @@
+<SecurityModel loginDefaultUser="OPERATOR">
+
+<!-- FULL ADMIN -->
+  <User login="SERVICE" password="">
+    <Permission name=".*"/>
+  </User>
+  <User login="SICPA" password="">
+    <Permission name=".*"/>
+  </User>
+  <User login="OCS" password="">
+    <Permission name=".*"/>
+  </User>
+  <User login="ENGINEER" password="">
+    <Permission name=".*"/>
+  </User>
+  <User login="IJ" password="">
+    <Permission name=".*"/>
+  </User>
+  
+  <User login="ADMIN" password="">
+    <Permission name="PRODUCTION_CHANGE_PARAMETERS"/>
+    <Permission name="PRODUCTION_MODE_STANDARD"/>
+    <Permission name="PRODUCTION_START"/>
+    <Permission name="PRODUCTION_STOP"/>
+    <Permission name="PRODUCTION_VIEW_STATISTICS"/>
+    <Permission name="PRODUCTION_REPORT"/>
+    <Permission name="EDIT_PLC_VARIABLES"/>
+    <Permission name="EDIT_PLC_SECURE_VARIABLES"/>
+    <Permission name="EXIT"/>
+  </User>
+  
+<!--   OPERATOR -->
+  <User login="OPERATOR" password="">
+    <Permission name="PRODUCTION_CHANGE_PARAMETERS"/>
+    <Permission name="PRODUCTION_MODE_STANDARD"/>
+    <Permission name="PRODUCTION_START"/>
+    <Permission name="PRODUCTION_STOP"/>
+    <Permission name="PRODUCTION_VIEW_STATISTICS"/>
+    <Permission name="PRODUCTION_REPORT"/>
+    <Permission name="EXIT"/>
+  </User>
+</SecurityModel>
