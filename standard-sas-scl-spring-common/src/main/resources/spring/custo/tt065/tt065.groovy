@@ -22,6 +22,7 @@ beans{
     importBeans('spring/custo/tt065/tt065-view.xml')
     importBeans('spring/custo/tt065/tt065-provider.xml')
     importBeans('spring/custo/tt065/tt065-flowControl.xml')
+    importBeans('spring/custo/tt065/tt065-LineUnavailableControl.xml')
 
 
     def serverBehavior=props['remoteServer.behavior'].toUpperCase()

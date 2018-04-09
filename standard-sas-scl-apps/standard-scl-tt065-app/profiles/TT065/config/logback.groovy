@@ -86,7 +86,7 @@ logger("com.sicpa.standard.camera",                             INFO,   ["STDCAM
 logger("com.sicpa.standard.printer",                            WARN,   ["STDPRINTER"],  		true)
 logger("com.sicpa.standard.plc",                                INFO,   ["STDPLC"],      		true)
 logger("com.sicpa.standard.printer.leibinger.monitoring",   	INFO,   ["PRINTERMONITORING"],	true)
-logger("com.sicpa.tt065",										INFO, 	["TT065"],				true)
+logger("com.sicpa.tt065",										INFO, 	["SASSCL","TT065"],		true)
 
 
 root(DEBUG, ["CONSOLE"])
