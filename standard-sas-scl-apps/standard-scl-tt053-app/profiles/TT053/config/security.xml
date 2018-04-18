@@ -1,23 +1,23 @@
-<SecurityModel loginDefaultUser="OPERATOR">
+<SecurityModel loginDefaultUser="operator">
 
 <!-- FULL ADMIN -->
-  <User login="SERVICE" password="">
+  <User login="service" password="">
     <Permission name=".*"/>
   </User>
-  <User login="SICPA" password="">
+  <User login="sicpa" password="">
     <Permission name=".*"/>
   </User>
-  <User login="OCS" password="">
+  <User login="ocs" password="">
     <Permission name=".*"/>
   </User>
-  <User login="ENGINEER" password="">
+  <User login="engineer" password="">
     <Permission name=".*"/>
   </User>
-  <User login="IJ" password="">
+  <User login="ij" password="">
     <Permission name=".*"/>
   </User>
   
-  <User login="ADMIN" password="">
+  <User login="admin" password="">
     <Permission name="PRODUCTION_CHANGE_PARAMETERS"/>
     <Permission name="PRODUCTION_MODE_STANDARD"/>
     <Permission name="PRODUCTION_START"/>
@@ -30,7 +30,7 @@
   </User>
   
 <!--   OPERATOR -->
-  <User login="OPERATOR" password="">
+  <User login="operator" password="">
     <Permission name="PRODUCTION_CHANGE_PARAMETERS"/>
     <Permission name="PRODUCTION_MODE_STANDARD"/>
     <Permission name="PRODUCTION_START"/>
