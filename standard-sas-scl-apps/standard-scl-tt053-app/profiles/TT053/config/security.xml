@@ -1,25 +1,27 @@
-<SecurityModel loginDefaultUser="operator">
+<SecurityModel loginDefaultUser="OPERATOR">
 
 <!-- FULL ADMIN -->
-  <User login="service" password="">
+  <User login="SERVICE" password="">
     <Permission name=".*"/>
   </User>
-  <User login="sicpa" password="">
+  <User login="SICPA" password="">
     <Permission name=".*"/>
   </User>
-  <User login="ocs" password="">
+  <User login="OCS" password="">
     <Permission name=".*"/>
   </User>
-  <User login="engineer" password="">
+  <User login="ENGINEER" password="">
     <Permission name=".*"/>
   </User>
-  <User login="ij" password="">
+  <User login="IJ" password="">
     <Permission name=".*"/>
   </User>
   
-  <User login="admin" password="">
+  <User login="ADMIN" password="">
     <Permission name="PRODUCTION_CHANGE_PARAMETERS"/>
     <Permission name="PRODUCTION_MODE_STANDARD"/>
+    <Permission name="PRODUCTION_MODE_EXPORT"/>
+    <Permission name="PRODUCTION_MODE_MAINTENANCE"/>
     <Permission name="PRODUCTION_START"/>
     <Permission name="PRODUCTION_STOP"/>
     <Permission name="PRODUCTION_VIEW_STATISTICS"/>
@@ -30,9 +32,11 @@
   </User>
   
 <!--   OPERATOR -->
-  <User login="operator" password="">
+  <User login="OPERATOR" password="">
     <Permission name="PRODUCTION_CHANGE_PARAMETERS"/>
     <Permission name="PRODUCTION_MODE_STANDARD"/>
+    <Permission name="PRODUCTION_MODE_EXPORT"/>
+    <Permission name="PRODUCTION_MODE_MAINTENANCE"/>
     <Permission name="PRODUCTION_START"/>
     <Permission name="PRODUCTION_STOP"/>
     <Permission name="PRODUCTION_VIEW_STATISTICS"/>
