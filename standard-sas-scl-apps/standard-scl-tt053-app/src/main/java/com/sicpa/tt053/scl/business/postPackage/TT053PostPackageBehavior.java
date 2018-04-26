@@ -1,14 +1,12 @@
 package com.sicpa.tt053.scl.business.postPackage;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.sicpa.standard.sasscl.business.postPackage.PostPackageBehavior;
-import com.sicpa.standard.sasscl.devices.camera.blobDetection.BlobDetectionUtils;
 import com.sicpa.standard.sasscl.model.Code;
 import com.sicpa.standard.sasscl.model.DecodedCameraCode;
 import com.sicpa.standard.sasscl.model.Product;

@@ -30,7 +30,7 @@ public class TT053SicpaDataAndBlobExCodeBehavior implements IExCodeBehavior {
 	private RelativePosition blobPosition;
 	private Option blobType;
 	private static final Logger logger = LoggerFactory.getLogger(TT053SicpaDataAndBlobExCodeBehavior.class);
-	private static final int BITMAP_CODE_HRC_HEIGHT = 7;
+	private static final int BITMAP_CODE_HRC_HEIGHT = 9;
 
 	private BlobDetectionUtils blobUtils;
 	private ProductionParameters productionParameters;
