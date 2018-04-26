@@ -19,47 +19,11 @@ public class TT053PostPackageBehavior extends PostPackageBehavior {
 	
 	private static final Logger logger = LoggerFactory.getLogger(TT053PostPackageBehavior.class);
 	
-	@Override
-	public List<Product> handleBadCode(Code code) {
-		synchronized (codes) {
-			if (!codes.isEmpty()) {
-				List<Code> badCode = new ArrayList<Code>(1);
-				logger.debug("handling the current bad code {}. The code removes is {} " , code, codes.get(0));
-
-				badCode.add(codes.remove(0));
-				ProductStatus productStatus = blobDetectionUtils.isBlobDetected(code) ? ProductStatus.INK_DETECTED :
-						ProductStatus.SENT_TO_PRINTER_UNREAD;
-				return generateBadProducts(badCode, productStatus);
-			}
-		}
-		return Collections.emptyList();
-	}
-
-	@Override
-	public List<Product> handleGoodCode(Code code) {
-		synchronized (codes) {
-			if (!codes.isEmpty()) {
-				int index = indexOfCode(code.getStringCode());
-				if (index != -1) {
-					logger.debug("handeling the current good code {}. The code removes is {} " , code, codes.get(index));
-					codes.remove(index);
-					if (index != 0) {
-						List<Code> subList = codes.subList(0, index);
-						logger.warn("removing the following codes from the list {}. printer wasted " , codes.toString
-								());
-
-						List<Code> badCodes = new ArrayList<Code>(subList);
-						subList.clear();
-						return generateBadProducts(badCodes, ProductStatus.SENT_TO_PRINTER_WASTED);
-					}
-				} else {
-					logger.warn("Code not found in buffer {}", code.getStringCode());
-				}
-			}
-		}
-		return Collections.emptyList();
+	public TT053PostPackageBehavior(){
+		super();
 	}
 	
+	@Override
 	protected List<Product> generateBadProducts(final List<Code> badCodes, ProductStatus status) {
 
 		List<Product> products = new ArrayList<Product>();
