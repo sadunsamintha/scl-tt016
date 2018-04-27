@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +20,9 @@ public class TT053SicpaDataExCodeUtil {
 	private static Long[] exportImg = getImageSrcCode(STANDARD_EXPORT_FILE);
 
 	private static List<StringBuilder> resultList;
+	
+	private static final int HEX_DECIMAL_RADIX=16;
+	private static final int BINARY_DECIMAL_RADIX =2;
 
 	/**
 	 * This method for covert to bit map logo
@@ -77,12 +81,7 @@ public class TT053SicpaDataExCodeUtil {
 	 * @return list of values of type Long
 	 */
 	private static List<Long> convertResultListToLongArrayList() {
-		List<Long> outputList = new ArrayList<>();
-		for (StringBuilder builder : resultList) {
-			outputList.add(toHexa(builder.toString()));
-		}
-
-		return outputList;
+		return resultList.stream().map(sb -> toHexa(sb.toString())).collect(Collectors.toList());
 	}
 
 	/**
@@ -115,10 +114,10 @@ public class TT053SicpaDataExCodeUtil {
 	 * @return Long
 	 */
 	private static Long toHexa(String binary) {
-		int decimal = Integer.parseInt(binary, 2);
+		int decimal = Integer.parseInt(binary, BINARY_DECIMAL_RADIX);
 
-		String str = Long.toString(decimal, 16).toUpperCase();
+		String str = Long.toString(decimal, HEX_DECIMAL_RADIX).toUpperCase();
 
-		return Long.parseLong(str, 16);
+		return Long.parseLong(str, HEX_DECIMAL_RADIX);
 	}
 }
