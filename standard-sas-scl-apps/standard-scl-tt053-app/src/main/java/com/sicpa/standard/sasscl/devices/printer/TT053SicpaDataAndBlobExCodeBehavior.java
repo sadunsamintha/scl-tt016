@@ -56,5 +56,9 @@ public class TT053SicpaDataAndBlobExCodeBehavior extends SicpaDataAndBlobExCodeB
 		textBf.setHeight(BITMAP_CODE_HRC_HEIGHT);
 		return textBf;
 	}
+	
+	public void setProductionParameters(ProductionParameters productionParameters) {
+		this.productionParameters = productionParameters;
+	}
 
 }
