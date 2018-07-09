@@ -47,6 +47,8 @@ public class PlcNoCapProductStatisticsManager {
 
 	private final Map<Integer, Integer> previousPlcNoCapsCounterByLine = new HashMap<>();
 	private final Map<Integer, Integer> plcNoCapsCounterByLine = new HashMap<>();
+	private final String PRODUCT_ERROR_CODE = "000";
+	private final String QC_NAME="Cognex";
 
 	public void updateNoCapProductCount() {
 		synchronized (plcNoCapsCounterByLine) {
@@ -73,9 +75,9 @@ public class PlcNoCapProductStatisticsManager {
 	protected void generateBadProduct(int count, Integer lineIndex) {
 		for (int i = 0; i < count; i++) {
 			Product p = createProduct();
-			p.setCode(new Code("000"));
+			p.setCode(new Code(PRODUCT_ERROR_CODE));
 			p.setStatus(TT016ProductStatus.EJECTED_PRODUCER);
-			p.setQc("Cognex");
+			p.setQc(QC_NAME);
 			EventBusService.post(new NewProductEvent(p));
 		}
 	}
