@@ -21,5 +21,13 @@
         <property name="javaEjectionCounterNtfVarName" value="#{plcVarMap['NTF_LINE_JAVA_EJECTION_COUNTER']}" />
         <property name="resetJavaProductCounterVarName" value="#{plcVarMap['REQUEST_RESET_JAVA_PRODUCT_COUNTER']}" />
     </bean>
+    
+    <bean id="plcNoCapProductStatisticsManager" class="com.sicpa.tt016.devices.plc.PlcNoCapProductStatisticsManager">
+    	<property name="plcProvider" ref="plcProvider" />
+    	<property name="productionParameters" ref="productionParameters" />
+    	<property name="batchIdProvider" ref="productionBatchProvider" />
+    	<property name="subsystemIdProvider" ref="subsystemIdProvider" />
+    	<property name="plcNoCapProductNtfVarName" value="#{plcVarMap['NTF_LINE_NO_CAP_TRIGS']}" />
+    </bean>
 
 </beans>
