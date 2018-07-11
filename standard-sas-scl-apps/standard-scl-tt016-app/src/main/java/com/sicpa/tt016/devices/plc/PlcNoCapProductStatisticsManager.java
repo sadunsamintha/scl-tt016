@@ -46,19 +46,16 @@ public class PlcNoCapProductStatisticsManager {
 	protected ProductionConfigProvider productionConfigProvider;
 
 	private final Map<Integer, Integer> previousPlcNoCapsCounterByLine = new HashMap<>();
-	private final Map<Integer, Integer> plcNoCapsCounterByLine = new HashMap<>();
 	private final String PRODUCT_ERROR_CODE = "000";
-	private final String QC_NAME="Cognex";
+	private final String QC_NAME = "Cognex";
 
-	public void updateNoCapProductCount() {
-		synchronized (plcNoCapsCounterByLine) {
-			updateLocalPlcCounter();
-			generateProducts();
-			previousPlcNoCapsCounterByLine.putAll(plcNoCapsCounterByLine);
-		}
+	public synchronized void updateNoCapProductCount() {
+		Map<Integer, Integer> plcNoCapsCounterByLine = updateLocalPlcCounter();
+		generateProducts(plcNoCapsCounterByLine);
+		previousPlcNoCapsCounterByLine.putAll(plcNoCapsCounterByLine);
 	}
 
-	protected void generateProducts() {
+	protected void generateProducts(final Map<Integer, Integer> plcNoCapsCounterByLine) {
 
 		for (Entry<Integer, Integer> plcNoCapCount : plcNoCapsCounterByLine.entrySet()) {
 			int noCapProductCount = (previousPlcNoCapsCounterByLine != null
@@ -92,8 +89,9 @@ public class PlcNoCapProductStatisticsManager {
 		return p;
 	}
 
-	public void updateLocalPlcCounter() {
-
+	public Map<Integer, Integer> updateLocalPlcCounter() {
+		
+		Map<Integer, Integer> plcNoCapsCounterByLine = new HashMap<>();
 		List<String> noCapsCounterVars = PlcLineHelper.getLinesVariableName(plcNoCapProductNtfVarName);
 
 		for (String noCapsCounterVar : noCapsCounterVars) {
@@ -103,6 +101,7 @@ public class PlcNoCapProductStatisticsManager {
 				logger.error("Error reading PLC variable: {}", noCapsCounterVar);
 			}
 		}
+		return plcNoCapsCounterByLine;
 	}
 
 	private int readPlcVar(String var) throws PlcAdaptorException {
