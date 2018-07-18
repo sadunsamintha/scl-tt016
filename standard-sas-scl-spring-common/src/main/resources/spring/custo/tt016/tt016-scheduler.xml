@@ -2,50 +2,11 @@
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:task="http://www.springframework.org/schema/task"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.0.xsd">
-
-
-
-	<bean id="remoteServerSheduledJobs" class="com.sicpa.standard.sasscl.controller.scheduling.RemoteServerScheduledJobsSCL">
-		<property name="remoteServerMaxDownTime_day" value="${remoteServerMaxDownTime_day}" />
-		<property name="requestNumberEncoders" value="${requestNumberEncoders}" />
-		<property name="minEncodersThreshold" value="${minEncodersThreshold}" />
-		<property name="codeTypeFilterFactory" ref="codeTypeFilterFactory" />
-		<property name="screensFlow" ref="screensFlow" />
-		<property name="storage" ref="storage" />
-		<property name="remoteServer" ref="remoteServer" />
-		<property name="skuListProvider" ref="skuListProvider" />
-		<property name="authenticatorProvider" ref="authenticatorProvider" />
-	</bean>
-
-
-	<task:scheduled-tasks scheduler="SchedulerSasScl">
-		<task:scheduled ref="production" method="saveProductionData" fixed-delay="#{${productionSerializationTimer_sec}*1000}" />
-
-		<task:scheduled ref="production" method="packageProduction" fixed-delay="#{${packagedProductTimer_sec}*1000}" />
-
-		<task:scheduled ref="production" method="sendAllProductionData" fixed-delay="#{${productionSendTimer_sec}*1000}" />
-
-		<task:scheduled ref="storage" method="cleanUpOldSentProduction" fixed-delay="#{${storageProductionCleanUp_sec}*1000}" />
-
-		<task:scheduled ref="remoteServerSheduledJobs" method="getAuthenticatorFromRemoteServer" fixed-delay="#{${getAuthenticathorTimer_sec}*1000}" />
-
-		<task:scheduled ref="remoteServerSheduledJobs" method="getProductionParametersFromRemoteServer"
-			fixed-delay="#{${getProductionParametersTimer_sec}*1000}" />
-
-		<task:scheduled ref="remoteServerSheduledJobs" method="getLanguageFileFromRemoteServer" fixed-delay="#{${getLanguageFilesTimer_sec}*1000}" />
-
-		<task:scheduled ref="remoteServerSheduledJobs" method="checkRemoteServerMaxDownTime" fixed-delay="#{${maxRemoteServerDownTimeTimer_sec}*1000}" />
-
-		<task:scheduled ref="statistics" method="saveStatistics" fixed-delay="#{${saveStatisticsTimer_sec}*1000}" />
-
-		<task:scheduled ref="remoteServerSheduledJobs" method="sendGlobalMonitoringToolInfo"
-			fixed-delay="#{${globalMonitoringToolSendInfoTimer_sec}*1000}" />
-
-		<task:scheduled ref="remoteServerSheduledJobs" method="getEncodersFromRemoteServer" fixed-delay="#{${getEncodersTimer_sec}*1000}" />
+	
+	<task:scheduled-tasks scheduler="PlcNoCapProducerEjectionStatistics">
 		<task:scheduled ref="plcNoCapProductStatisticsManager" method="updateNoCapProductCount" fixed-delay="#{${getNoCapProducerCount_sec}*1000}" />
-
 	</task:scheduled-tasks>
-
-	<task:scheduler id="SchedulerSasScl" pool-size="10" />
+	
+	<task:scheduler id="PlcNoCapProducerEjectionStatistics" pool-size="1" />
 
 </beans>

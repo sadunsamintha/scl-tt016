@@ -1,5 +1,7 @@
 package com.sicpa.tt016.devices.plc;
 
+import static com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState.STT_STARTED;
+
 /**
  * This class will fetch the NoCapsProduct count from PLC and update the statistics of SCL production
  * 
@@ -15,13 +17,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.plc.value.PlcVariable;
 import com.sicpa.standard.sasscl.business.activation.NewProductEvent;
+import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowStateChangedEvent;
 import com.sicpa.standard.sasscl.devices.plc.PlcAdaptorException;
 import com.sicpa.standard.sasscl.devices.plc.PlcLineHelper;
 import com.sicpa.standard.sasscl.model.Code;
@@ -46,13 +51,18 @@ public class PlcNoCapProductStatisticsManager {
 	protected ProductionConfigProvider productionConfigProvider;
 
 	private final Map<Integer, Integer> previousPlcNoCapsCounterByLine = new HashMap<>();
+	private AtomicBoolean isProductionStarted = new AtomicBoolean(false);
+	private AtomicBoolean isfinalUpdateDoneAfterProductionStop = new AtomicBoolean(false);
+	
 	private final String PRODUCT_ERROR_CODE = "000";
 	private final String QC_NAME = "Cognex";
 
-	public synchronized void updateNoCapProductCount() {
-		Map<Integer, Integer> plcNoCapsCounterByLine = updateLocalPlcCounter();
-		generateProducts(plcNoCapsCounterByLine);
-		previousPlcNoCapsCounterByLine.putAll(plcNoCapsCounterByLine);
+	public void updateNoCapProductCount() {
+		if(isfinalUpdateDoneAfterProductionStop.get()){
+			Map<Integer, Integer> plcNoCapsCounterByLine = updateLocalPlcCounter();
+			generateProducts(plcNoCapsCounterByLine);
+			previousPlcNoCapsCounterByLine.putAll(plcNoCapsCounterByLine);
+		}
 	}
 
 	protected void generateProducts(final Map<Integer, Integer> plcNoCapsCounterByLine) {
@@ -88,10 +98,27 @@ public class PlcNoCapProductStatisticsManager {
 		p.setPrinted(false);
 		return p;
 	}
-
+	
+	@Subscribe
+	public void onProductionStarted(ApplicationFlowStateChangedEvent event) {
+		
+		if(event.getCurrentState().equals(STT_STARTED)){
+			isProductionStarted.set(Boolean.TRUE);
+			isfinalUpdateDoneAfterProductionStop.set(Boolean.TRUE);
+			previousPlcNoCapsCounterByLine.clear();
+		}else{
+			isProductionStarted.set(Boolean.FALSE);
+		}
+	}
+	
 	public Map<Integer, Integer> updateLocalPlcCounter() {
 		
 		Map<Integer, Integer> plcNoCapsCounterByLine = new HashMap<>();
+		
+		if(!isProductionStarted.get()){
+			isfinalUpdateDoneAfterProductionStop.set(Boolean.FALSE);
+		}
+			
 		List<String> noCapsCounterVars = PlcLineHelper.getLinesVariableName(plcNoCapProductNtfVarName);
 
 		for (String noCapsCounterVar : noCapsCounterVars) {
@@ -101,6 +128,7 @@ public class PlcNoCapProductStatisticsManager {
 				logger.error("Error reading PLC variable: {}", noCapsCounterVar);
 			}
 		}
+		
 		return plcNoCapsCounterByLine;
 	}
 
