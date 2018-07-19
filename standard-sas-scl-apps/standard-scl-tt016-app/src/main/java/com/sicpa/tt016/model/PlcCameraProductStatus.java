@@ -11,6 +11,7 @@ public class PlcCameraProductStatus {
 	public final static PlcCameraProductStatus GOOD = new PlcCameraProductStatus(1, "GOOD_CODE");
 	public final static PlcCameraProductStatus INK_DETECTED = new PlcCameraProductStatus(2, "INK_DETECTED");
 	public final static PlcCameraProductStatus NO_INK = new PlcCameraProductStatus(3, "NO_INK");
+	public final static PlcCameraProductStatus ACQUISITION_ERROR = new PlcCameraProductStatus(4, "ACQUISITION_ERROR");
 	public final static PlcCameraProductStatus EJECTED_PRODUCER = new PlcCameraProductStatus(5, "EJECTED_PRODUCER");
 
 	private int id;
@@ -29,6 +30,8 @@ public class PlcCameraProductStatus {
 				return INK_DETECTED;
 			case 3:
 				return NO_INK;
+			case 4:
+				return ACQUISITION_ERROR;
 			case 5:
 				return EJECTED_PRODUCER;
 			default:

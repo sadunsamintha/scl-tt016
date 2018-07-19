@@ -7,6 +7,7 @@ import com.sicpa.standard.sasscl.business.activation.impl.activationBehavior.sta
 import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowStateChangedEvent;
 import com.sicpa.standard.sasscl.model.Code;
 import com.sicpa.standard.sasscl.model.Product;
+import com.sicpa.standard.sasscl.model.ProductStatus;
 import com.sicpa.standard.sasscl.monitoring.MonitoringService;
 import com.sicpa.standard.sasscl.monitoring.system.event.BasicSystemEvent;
 import com.sicpa.standard.sasscl.provider.impl.ProductionBatchProvider;
@@ -111,12 +112,15 @@ public class ProductStatusMerger extends StandardActivationBehavior {
 	private void mergeProductStatuses() {
 		Product product = getProductFromCameraResult(cameraResults.poll());
 		PlcCameraResult plcCameraResult = plcCameraResults.poll();
+		logger.debug("Java App received status cameraStatus:{} , plcStatus:{}",product.getStatus() ,plcCameraResult.getPlcCameraProductStatus());
 		PlcCameraProductStatus plcCameraProductStatus = plcCameraResult.getPlcCameraProductStatus();
 
 		if (!isPlcCameraProductStatusNotDefined(plcCameraProductStatus)) {
 			if (isPlcCameraProductStatusEjected(plcCameraProductStatus)) {
 				setProductAsEjected(product);
-			} else {
+			} else if(isPlcCameraProductStatusAcquisitionError(plcCameraProductStatus)) {
+				setProductAsUnread(product);
+			}else {
 				ProductValidator.validate(product, plcCameraResult);
 			}
 		}
@@ -147,9 +151,17 @@ public class ProductStatusMerger extends StandardActivationBehavior {
 	private boolean isPlcCameraProductStatusNotDefined(PlcCameraProductStatus plcCameraProductStatus) {
 		return plcCameraProductStatus.equals(PlcCameraProductStatus.NOT_DEFINED);
 	}
+	
+	private boolean isPlcCameraProductStatusAcquisitionError(PlcCameraProductStatus plcCameraProductStatus) {
+		return plcCameraProductStatus.equals(PlcCameraProductStatus.ACQUISITION_ERROR);
+	}
 
 	private void setProductAsEjected(Product product) {
 		product.setStatus(TT016ProductStatus.EJECTED_PRODUCER);
+	}
+	
+	private void setProductAsUnread(Product product) {
+		product.setStatus(ProductStatus.SENT_TO_PRINTER_UNREAD);
 	}
 
 	private void insertMissingPlcCameraResultsIfNeeded(int index) {
