@@ -1,17 +1,19 @@
 package com.sicpa.tt016.devices.camera.alert;
 
-import com.google.common.eventbus.Subscribe;
-import com.sicpa.standard.plc.value.IPlcVariable;
-import com.sicpa.standard.sasscl.devices.plc.IPlcParamSender;
-import com.sicpa.standard.sasscl.devices.plc.PlcAdaptorException;
-import com.sicpa.standard.sasscl.messages.ActionEventError;
-import com.sicpa.standard.sasscl.messages.ActionEventWarning;
-import com.sicpa.standard.sasscl.messages.MessageEventKey;
-import com.sicpa.standard.sasscl.provider.impl.PlcProvider;
+import java.util.Arrays;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Arrays;
+import com.google.common.eventbus.Subscribe;
+import com.sicpa.standard.plc.value.IPlcVariable;
+import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState;
+import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowStateChangedEvent;
+import com.sicpa.standard.sasscl.devices.plc.IPlcParamSender;
+import com.sicpa.standard.sasscl.devices.plc.PlcAdaptorException;
+import com.sicpa.standard.sasscl.messages.ActionEventWarning;
+import com.sicpa.standard.sasscl.messages.MessageEventKey;
+import com.sicpa.standard.sasscl.provider.impl.PlcProvider;
 
 public class TT016TrilightWarningCameraAlert {
 
@@ -23,7 +25,7 @@ public class TT016TrilightWarningCameraAlert {
 
     private PlcProvider plcProvider;
 
-    private final int TRILIGHT_BLINKING_YELLOW = 2;
+    private final int TRILIGHT_BLINKING_YELLOW = 2, RESET_JAVA_WARNING = 0;
 
 
     @Subscribe
@@ -34,9 +36,25 @@ public class TT016TrilightWarningCameraAlert {
         }
     }
 
+    @Subscribe
+	public void handleActionEventWarningReset(ApplicationFlowStateChangedEvent event) {
+		if (event.getPreviousState().equals(ApplicationFlowState.STT_STARTING)) {
+			deActivateTrilightWarning();
+		}
+	}
+    
     private void activateTrilightWarning() {
         try {
             reqJavaErrorRegisterVar.setValue(TRILIGHT_BLINKING_YELLOW);
+            plcProvider.get().write(reqJavaErrorRegisterVar);
+        } catch (PlcAdaptorException ex) {
+            logger.error("Error sending plc variable value trilight warning ", ex.getMessage());
+        }
+    }
+    
+    private void deActivateTrilightWarning() {
+    	try {
+            reqJavaErrorRegisterVar.setValue(RESET_JAVA_WARNING);
             plcProvider.get().write(reqJavaErrorRegisterVar);
         } catch (PlcAdaptorException ex) {
             logger.error("Error sending plc variable value trilight warning ", ex.getMessage());
