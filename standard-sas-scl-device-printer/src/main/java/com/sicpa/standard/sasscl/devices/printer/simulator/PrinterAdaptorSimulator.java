@@ -19,7 +19,7 @@ public class PrinterAdaptorSimulator extends PrinterAdaptor implements ICodeProv
 
 	private static final Logger logger = LoggerFactory.getLogger(PrinterAdaptorSimulator.class);
 
-	private final List<String> codeBuffer = new LinkedList<>();
+	protected final List<String> codeBuffer = new LinkedList<>();
 	private ScheduledFuture<?> scheduledAskTaskFutur;
 	private long askCodeDelayMs = 1000;
 

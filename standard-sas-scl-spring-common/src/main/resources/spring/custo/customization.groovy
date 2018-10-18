@@ -17,6 +17,9 @@ beans{
 		case 'TT053SAS':
 			importBeans('spring/custo/tt053SAS/tt053SAS.groovy')
 			break
+		case 'TT077':
+			importBeans('spring/custo/tt077/tt077.groovy')
+			break;
 		case 'NONE':
 			break
 		default:
