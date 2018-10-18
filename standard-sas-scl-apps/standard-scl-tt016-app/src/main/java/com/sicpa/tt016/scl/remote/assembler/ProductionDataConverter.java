@@ -34,6 +34,29 @@ public class ProductionDataConverter {
         return res;
     }
 
+    public ActivationSessionDTO convertAuthenticatedSAS(PackagedProducts products, int subsystemId) {
+    	List<ActivationDTO> activated = new ArrayList<>();
+    	
+    	for (Product p : products.getProducts()) {
+            activated.add(convertProductSAS(p, subsystemId, products.getProductStatus()));
+        }
+    	
+    	ActivationSessionDTO res = new ActivationSessionDTO(activated);
+    	res.setQty(activated.size());
+    	return res;
+    }
+    
+    private ActivationDTO convertProductSAS(Product product, int subsystemId, ProductStatus status){
+    	int remoteStatus = getRemoteProductStatus(status);
+        int codeTypeId = getCodeTypeId(product);
+        long encoderId = product.getCode().getEncoderId();
+        long seq = product.getCode().getSequence();
+        int skuId = product.getSku().getId();
+    	
+    	return new ActivationDTO(encoderId, seq, product.getActivationDate(), remoteStatus, codeTypeId, skuId,
+                subsystemId);
+    }
+    
     private CodingActivationDTO convertProduct(Product product, int subsystemId, ProductStatus status) {
         int remoteStatus = getRemoteProductStatus(status);
         int codeTypeId = getCodeTypeId(product);
@@ -89,7 +112,7 @@ public class ProductionDataConverter {
         return ejectionDTO;
     }
     
-    
+
     public IEjectionDTO convertRefeedEjection(PackagedProducts products, int subsystemId) {
         int qty = products.getProducts().size();
         CodeType ct = new CodeType(getCodeTypeId(products));
@@ -116,7 +139,7 @@ public class ProductionDataConverter {
         return session;
     }
     
-    /** 
+    /**
      * @param products
      * @param subsystemId
      * @return
