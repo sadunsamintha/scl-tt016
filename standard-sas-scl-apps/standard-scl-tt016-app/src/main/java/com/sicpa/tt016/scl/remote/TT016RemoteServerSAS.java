@@ -75,25 +75,11 @@ public class TT016RemoteServerSAS extends AbstractRemoteServer implements IBisCr
 		/** No Encorder for SAS */
 	}
 
-	private void handleEncoderInfoResult(EncoderInfoResultDTO res) {
-		for (InfoResult ir : res.getInfoResult()) {
-			if (!ir.isInfoSavedOk()) {
-				storage.quarantineEncoder(ir.getBatchId());
-				logger.error("master failed to save encoder info for id={} , msg={}", ir.getBatchId() + "",
-						ir.getErrorMessage());
-			}
-		}
-	}
 
 	@Override
 	public void downloadEncoder(int batchesQuantity, com.sicpa.standard.sasscl.model.CodeType codeType, int year)
 			throws RemoteServerException {
 		/** No Encorder for SAS */
-	}
-
-	private void storeEncoder(IEncoder encoder, int year) {
-		storage.saveEncoders(year, encoder);
-		storage.confirmEncoder(encoder.getId());
 	}
 
 	@Override

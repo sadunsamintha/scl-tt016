@@ -18,12 +18,9 @@ import org.slf4j.LoggerFactory;
 
 import com.sicpa.standard.client.common.timeout.Timeout;
 import com.sicpa.standard.client.common.timeout.TimeoutLifeCheck;
+import com.sicpa.standard.crypto.exceptions.CryptoException;
 import com.sicpa.tt016.master.sas.business.interfaces.IActivationRemote;
 import com.sicpa.tt016.common.dto.ActivationSessionDTO;
-import com.sicpa.tt016.common.dto.CodingActivationSessionDTO;
-import com.sicpa.tt016.common.dto.EncoderInfoDTO;
-import com.sicpa.tt016.common.dto.EncoderInfoResultDTO;
-import com.sicpa.tt016.common.dto.EncoderSclDTO;
 import com.sicpa.tt016.common.dto.ExportSessionDTO;
 import com.sicpa.tt016.common.dto.IEjectionDTO;
 import com.sicpa.tt016.common.dto.MaintenanceSessionDTO;
@@ -43,6 +40,7 @@ public class TT016RemoteServicesMSASLegacy implements ITT016RemoteServicesMSASLe
 	private IActivationRemote activationRemote;
 	private IBisUserManagerRemote bisUserManagerRemote;
 
+	private String decoderPassword;
 	private String userMachine;
 	private String passwordMachine;
 	private int subsystemId;
@@ -93,8 +91,17 @@ public class TT016RemoteServicesMSASLegacy implements ITT016RemoteServicesMSASLe
 	@Override
 	@Timeout
 	public IMoroccoAuthenticator getDecoder() {
-			return activationRemote.getAuthenticator(subsystemId);
+		IMoroccoAuthenticator decoder = activationRemote.getAuthenticator(subsystemId);
+		if (decoder != null) {
+			try {
+				decoder.load(decoderPassword);
+			} catch (CryptoException e) {
+				logger.error("Problem while loading the password");
+			}
+		}
+		return decoder;
 	}
+	
 
 	@Override
 	@Timeout
@@ -203,4 +210,13 @@ public class TT016RemoteServicesMSASLegacy implements ITT016RemoteServicesMSASLe
 		this.subsystemId = subsystemId;
 	}
 
+	public void setDecoderPassword(String decoderPassword) {
+		this.decoderPassword = decoderPassword;
+	}
+
+
+	
+
+	
+	
 }
