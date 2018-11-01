@@ -1,0 +1,6 @@
+<BrsSimulatorConfig>
+
+    <sendWrongBarcode>false</sendWrongBarcode>
+    <reachUnreadBarcodesThresholds>false</reachUnreadBarcodesThresholds>
+
+</BrsSimulatorConfig>
