@@ -17,6 +17,8 @@ beans{
 			passwordMachine=props['server.machine.password']
 			subsystemId=props['server.machine.subsystemId']
 			url=props['server.url']
+			decoderPassword=props['decoderPassword']
+
 		}
 		
 		remoteServer(TT016RemoteServerSAS){
