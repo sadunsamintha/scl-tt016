@@ -16,18 +16,16 @@ beans {
         importBeans('spring/custo/tt077/tt077-server.groovy')
     }
     if(serverBehavior == "SIMULATOR") {
-        importBeans('spring/server/server-simulator.groovy')
+        importBeans('spring/custo/tt077/tt077-server-simulator.groovy')
     }
-
-
 
 	importBeans('spring/custo/tt077/tt077-hrd.xml')
 
     printerSimulatorAdaptor(TT077PrinterAdaptorSimulator,ref('printerSimulatorController')){b->
         b.scope='prototype'
     }
-    
-    
+
+
     if(printerBehavior == 'SIMULATOR') {
         addAlias('printerLeibinger','printerSimulatorAdaptor')
     }
