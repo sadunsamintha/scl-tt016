@@ -1,6 +1,7 @@
 package com.sicpa.standard.sasscl.devices.plc.variable.renderer;
 
 import javax.swing.JCheckBox;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import net.miginfocom.swing.MigLayout;
@@ -13,6 +14,7 @@ public class PlcBooleanVariableRenderer extends JPanel implements IPlcVariableDe
 	private static final long serialVersionUID = 1L;
 	private PlcBooleanVariableDescriptor desc;
 	private JCheckBox check;
+	private JLabel label;
 
 	public PlcBooleanVariableRenderer(final PlcBooleanVariableDescriptor desc) {
 		this.desc = desc;
@@ -26,14 +28,22 @@ public class PlcBooleanVariableRenderer extends JPanel implements IPlcVariableDe
 	protected void initGUI() {
 		setLayout(new MigLayout("ltr"));
 		add(getCheck(), "");
+		add(getLabel(), "");
 	}
 
 	public JCheckBox getCheck() {
 		if (check == null) {
-			check = new JCheckBox(desc.getVarName());
+			check = new JCheckBox();
 			check.addActionListener((e) -> checkActionPerformed());
 		}
 		return this.check;
+	}
+	
+	public JLabel getLabel() {
+		if (label == null) {
+			label = new JLabel(desc.getVarName());
+		}
+		return this.label;
 	}
 
 	protected void checkActionPerformed() {
