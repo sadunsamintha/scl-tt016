@@ -10,10 +10,12 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 
+import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.i18n.Messages;
 import net.miginfocom.swing.MigLayout;
 
 import com.sicpa.standard.client.common.view.mvc.AbstractView;
+import com.sicpa.standard.sasscl.view.LanguageSwitchEvent;
 import com.sicpa.standard.sasscl.view.advancedControl.component.IControlViewComponent;
 
 @SuppressWarnings("serial")
@@ -89,5 +91,10 @@ public class PrinterControlView extends AbstractView<IPrinterViewControlListener
 	@Override
 	public String getConstraints() {
 		return "pushx,growx";
+	}
+	
+	@Subscribe
+	public void handleLanguageSwitch(LanguageSwitchEvent evt) {
+		modelChanged();
 	}
 }
