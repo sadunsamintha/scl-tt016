@@ -278,4 +278,10 @@ public class PrinterSimulatorController implements IPrinterController, IPrinterC
 		
 	}
 
+	@Override
+	public String getDeviceId() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
