@@ -1,7 +1,9 @@
 package com.sicpa.standard.sasscl.view.advancedControl.component.leibinger;
 
+import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.i18n.Messages;
 import com.sicpa.standard.client.common.view.mvc.AbstractView;
+import com.sicpa.standard.sasscl.view.LanguageSwitchEvent;
 import com.sicpa.standard.sasscl.view.advancedControl.component.IControlViewComponent;
 import net.miginfocom.swing.MigLayout;
 
@@ -93,5 +95,10 @@ public class LeibingerPrinterControlView extends AbstractView<ILeibingerPrinterV
 	@Override
 	public String getConstraints() {
 		return "newline,growx";
+	}
+	
+	@Subscribe
+	public void handleLanguageSwitch(LanguageSwitchEvent evt) {
+		modelChanged();
 	}
 }
