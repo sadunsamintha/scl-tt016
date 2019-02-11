@@ -47,6 +47,8 @@ public class PlcAdaptor extends AbstractPlcAdaptor implements IPlcControllerList
 	private final AtomicBoolean notificationCreated = new AtomicBoolean(false);
 	private PlcConfig currentProdConfig;
 	private final Collection<Integer> activeLines = new ArrayList<>();
+	
+	private String plcVersion;
 
 	public PlcAdaptor() {
 	}
@@ -326,7 +328,9 @@ public class PlcAdaptor extends AbstractPlcAdaptor implements IPlcControllerList
 			return "";
 		}
 		try {
-			return read(plcVersionHVar) + "." + read(plcVersionMVar) + "." + read(plcVersionLVar);
+			plcVersion = read(plcVersionHVar) + "." + read(plcVersionMVar) + "." + read(plcVersionLVar);
+			logger.info("PLC Version: "+plcVersion);
+			return plcVersion;
 		} catch (PlcAdaptorException e) {
 			logger.error("", e);
 			return "error reading plc version";

@@ -1,5 +1,24 @@
 package com.sicpa.standard.sasscl.view;
 
+import static com.sicpa.standard.client.common.security.SecurityService.hasPermission;
+
+import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.swing.AbstractAction;
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JSeparator;
+import javax.swing.SwingUtilities;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.i18n.Messages;
@@ -15,22 +34,15 @@ import com.sicpa.standard.sasscl.security.SasSclPermission;
 import com.sicpa.standard.sasscl.view.licence.LicencePanel;
 import com.sicpa.standard.sasscl.view.lineid.LineIdWithAuthenticateButton;
 import com.sicpa.standard.sasscl.view.messages.I18nableLockingErrorModel;
+
 import net.miginfocom.swing.MigLayout;
-
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.sicpa.standard.client.common.security.SecurityService.hasPermission;
 
 @SuppressWarnings("serial")
 public class MainFrame extends AbstractMachineFrame {
 
 	private final static String PREFIX_NOT_MULTI_LANG = "#";
+	
+	private static final Logger logger = LoggerFactory.getLogger(MainFrame.class);
 
 	private JComponent startStopView;
 	private JComponent changeSelectionView;
@@ -100,6 +112,7 @@ public class MainFrame extends AbstractMachineFrame {
 
 	private void updateLineIDText() {
 		String lineId = Messages.get("lineId") + MainFrameController.LINE_LABEL_SEPARATOR + getMainFrameController().getLineId();
+		logger.info("Line Id:"+lineId);
 		((LineIdWithAuthenticateButton) getLineIdPanel()).getLabelLineId().setText(lineId);
 	}
 
