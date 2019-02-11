@@ -9,6 +9,8 @@ import javax.swing.JPanel;
 import com.sicpa.standard.client.common.utils.AppUtils;
 import com.sicpa.standard.client.common.view.IGUIComponentGetter;
 import com.sicpa.standard.client.common.view.mvc.IView;
+import com.sicpa.standard.sasscl.controller.flow.IFlowControl;
+import com.sicpa.standard.sasscl.provider.impl.SkuListProvider;
 
 public class MainFrameGetter implements IGUIComponentGetter {
 
@@ -24,6 +26,8 @@ public class MainFrameGetter implements IGUIComponentGetter {
 	protected JPanel messagesView;
 	protected IGUIComponentGetter mainPanelGetter;
 	protected IView<?> snapshotView;
+	protected SkuListProvider skuListProvider;
+	protected IFlowControl flowControl;
 
 	@Override
 	public Component getComponent() {
@@ -32,7 +36,7 @@ public class MainFrameGetter implements IGUIComponentGetter {
 				if (!AppUtils.isHeadless()) {
 					frame = new MainFrame(viewController, startStopView.getComponent(),
 							selectionChangeView.getComponent(), exitView.getComponent(), optionsView.getComponent(),
-							messagesView, (JComponent) mainPanelGetter.getComponent(), snapshotView.getComponent());
+							messagesView, (JComponent) mainPanelGetter.getComponent(), snapshotView.getComponent(), skuListProvider, flowControl);
 				}
 			} catch (HeadlessException e) {
 			}
@@ -71,4 +75,13 @@ public class MainFrameGetter implements IGUIComponentGetter {
 	public void setSnapshotView(IView<?> snapshotView) {
 		this.snapshotView = snapshotView;
 	}
+
+	public void setSkuListProvider(SkuListProvider skuListProvider) {
+		this.skuListProvider = skuListProvider;
+	}
+
+	public void setFlowControl(IFlowControl flowControl) {
+		this.flowControl = flowControl;
+	}
+	
 }

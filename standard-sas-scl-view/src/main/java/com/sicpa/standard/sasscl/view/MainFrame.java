@@ -22,7 +22,9 @@ import org.slf4j.LoggerFactory;
 import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.i18n.Messages;
+import com.sicpa.standard.client.common.messages.MessageEvent;
 import com.sicpa.standard.client.common.security.ILoginListener;
+import com.sicpa.standard.client.common.security.Permission;
 import com.sicpa.standard.client.common.security.SecurityService;
 import com.sicpa.standard.client.common.view.ISecuredComponentGetter;
 import com.sicpa.standard.gui.plaf.SicpaColor;
@@ -30,6 +32,10 @@ import com.sicpa.standard.gui.screen.machine.AbstractMachineFrame;
 import com.sicpa.standard.gui.screen.machine.component.SelectionFlow.flow.DefaultSelectionFlowView;
 import com.sicpa.standard.gui.screen.machine.component.lineId.AbstractLineIdPanel;
 import com.sicpa.standard.gui.utils.Pair;
+import com.sicpa.standard.sasscl.controller.flow.IFlowControl;
+import com.sicpa.standard.sasscl.messages.MessageEventKey;
+import com.sicpa.standard.sasscl.productionParameterSelection.selectionmodel.DefaultSelectionModel;
+import com.sicpa.standard.sasscl.provider.impl.SkuListProvider;
 import com.sicpa.standard.sasscl.security.SasSclPermission;
 import com.sicpa.standard.sasscl.view.licence.LicencePanel;
 import com.sicpa.standard.sasscl.view.lineid.LineIdWithAuthenticateButton;
@@ -50,14 +56,17 @@ public class MainFrame extends AbstractMachineFrame {
 	private JComponent optionsView;
 	private JComponent messagesView;
 	private JComponent snapshotView;
+	protected SkuListProvider skuListProvider;
+	protected IFlowControl flowControl;
 
 	private JPanel[] configs;
 	private String[] configsTitle;
 	private AbstractAction exitAction;
+	protected DefaultSelectionModel dataSelectionModel;
 
 	public MainFrame(MainFrameController controller, JComponent startStopView, JComponent changeSelectionView,
 			JComponent exitView, JComponent optionsView, JComponent messagesView, JComponent mainPanel,
-			JComponent snapshotView) {
+			JComponent snapshotView, SkuListProvider skuListProvider, IFlowControl flowControl) {
 		super(controller);
 		this.snapshotView = snapshotView;
 		this.startStopView = startStopView;
@@ -65,6 +74,8 @@ public class MainFrame extends AbstractMachineFrame {
 		this.exitView = exitView;
 		this.optionsView = optionsView;
 		this.messagesView = messagesView;
+		this.skuListProvider = skuListProvider;
+		this.flowControl = flowControl;
 
 		initGUI();
 		I18nableLockingErrorModel lockModel = new I18nableLockingErrorModel();
@@ -121,6 +132,16 @@ public class MainFrame extends AbstractMachineFrame {
 	}
 
 	protected void userChanged() {
+		
+		this.dataSelectionModel = new DefaultSelectionModel(skuListProvider.get());
+		Permission p = dataSelectionModel.getPermissions().get(getMainFrameController().getProductionMode());
+		if(!hasPermission(p)) {
+			if (skuListProvider.get() == null) {
+				EventBusService.post(new MessageEvent(MessageEventKey.ProductionParameters.NONE_AVAILABLE));
+			} else {
+				flowControl.notifyEnterSelectionScreen();
+			}
+		}
 
 		resetAndRebuildAccessiblePanel();
 

@@ -24,7 +24,7 @@ public class TT016MainFrameGetter extends MainFrameGetter {
                 if (!AppUtils.isHeadless()) {
                     frame = new TT016MainFrame(viewController, startStopView.getComponent(),
                             selectionChangeView.getComponent(), exitView.getComponent(), optionsView.getComponent(),
-                            messagesView, (JComponent) mainPanelGetter.getComponent(), snapshotView.getComponent(), resetView.getComponent());
+                            messagesView, (JComponent) mainPanelGetter.getComponent(), snapshotView.getComponent(), resetView.getComponent(), skuListProvider, flowControl);
                 }
             } catch (HeadlessException ex) {
                 logger.error("error creating the Main frame",ex);

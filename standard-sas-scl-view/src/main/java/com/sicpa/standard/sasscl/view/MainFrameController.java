@@ -90,6 +90,10 @@ public class MainFrameController extends MachineViewController {
 	public void setProductionMode(ProductionMode productionMode) {
 		productionParameters.setProductionMode(productionMode);
 	}
+	
+	public ProductionMode getProductionMode() {
+		return productionParameters.getProductionMode();
+	}
 
 	public void productionParametersChanged() {
 		productionParametersChanged(true);

@@ -38,6 +38,8 @@
 		<property name="messagesView" ref="messagesView" />
 		<property name="mainPanelGetter" ref="mainPanelGetter" />
 		<property name="snapshotView" ref="snapshotView" />
+		<property name="flowControl" ref="flowControl" />
+		<property name="skuListProvider" ref="skuListProvider" />
 	</bean>
 
 	<bean id="MBeanViewer" class="com.sicpa.standard.sasscl.view.monitoring.mbean.BeanViewer">

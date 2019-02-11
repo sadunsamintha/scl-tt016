@@ -1,5 +1,10 @@
 package com.sicpa.standard.sasscl.view.selection.select;
 
+import javax.swing.JComponent;
+import javax.swing.SwingUtilities;
+
+import com.sicpa.standard.client.common.security.ILoginListener;
+import com.sicpa.standard.client.common.security.SecurityService;
 import com.sicpa.standard.client.common.view.screensflow.IScreensFlow;
 import com.sicpa.standard.sasscl.common.log.OperatorLogger;
 import com.sicpa.standard.sasscl.model.ProductionParameters;
@@ -7,8 +12,6 @@ import com.sicpa.standard.sasscl.provider.impl.SkuListProvider;
 import com.sicpa.standard.sasscl.view.AbstractViewFlowController;
 import com.sicpa.standard.sasscl.view.MainFrameController;
 import com.sicpa.standard.sasscl.view.ScreensFlowTriggers;
-
-import javax.swing.*;
 
 public class SelectProductionParametersViewController extends AbstractViewFlowController implements
 		ISelectProductionParametersViewListener {
@@ -62,6 +65,7 @@ public class SelectProductionParametersViewController extends AbstractViewFlowCo
 
 	@Override
 	protected void displayView() {
+		addLoginListener();
 		super.displayView();
 		((ISelectProductionParametersView) getComponent()).displaySelectionScreen(skuListProvider.get());
 	}
@@ -80,4 +84,29 @@ public class SelectProductionParametersViewController extends AbstractViewFlowCo
 	public void setUseBarcodeReader(boolean useBarcodeReader) {
 		this.useBarcodeReader = useBarcodeReader;
 	}
+	
+	private void addLoginListener() {
+		SecurityService.addLoginListener(new ILoginListener() {
+			@Override
+			public void loginSucceeded(String login) {
+				fireUserChanged();
+			}
+
+			@Override
+			public void logoutCompleted(String login) {
+				fireUserChanged();
+			}
+		});
+	}
+	
+	private void fireUserChanged() {
+		SwingUtilities.invokeLater(() -> userChanged());
+	}
+	
+	protected void userChanged() {
+		super.displayView();
+		((ISelectProductionParametersView) getComponent()).displaySelectionScreen(skuListProvider.get());
+	}
+
+	
 }

@@ -5,6 +5,8 @@ import static com.sicpa.standard.client.common.security.SecurityService.hasPermi
 import javax.swing.JComponent;
 
 import com.sicpa.standard.client.common.security.Permission;
+import com.sicpa.standard.sasscl.controller.flow.IFlowControl;
+import com.sicpa.standard.sasscl.provider.impl.SkuListProvider;
 import com.sicpa.standard.sasscl.view.MainFrame;
 import com.sicpa.standard.sasscl.view.MainFrameController;
 
@@ -17,9 +19,9 @@ public class TT016MainFrame extends MainFrame {
 
 	public TT016MainFrame(MainFrameController controller, JComponent startStopView, JComponent changeSelectionView,
 			JComponent exitView, JComponent optionsView, JComponent messagesView, JComponent mainPanel,
-			JComponent snapshotView, JComponent resetStatsView) {
+			JComponent snapshotView, JComponent resetStatsView, SkuListProvider skuListProvider, IFlowControl flowControl) {
 		super(controller, startStopView, changeSelectionView, exitView, optionsView, messagesView, mainPanel,
-				snapshotView);
+				snapshotView, skuListProvider, flowControl);
 		this.resetStatsView = resetStatsView;
 		footer.add(resetStatsView, "h 80!", 4);
 		resetStatsView.setVisible(hasPermission(RESET_STATS));
