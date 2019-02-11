@@ -24,7 +24,7 @@ public class DefaultMessagesView extends JPanel implements IMessagesView {
 
 	public DefaultMessagesPanel getDelegate() {
 		if (delegate == null) {
-			delegate = new DefaultMessagesPanel();
+			delegate = new MessageViewPanel();
 		}
 		return delegate;
 	}
