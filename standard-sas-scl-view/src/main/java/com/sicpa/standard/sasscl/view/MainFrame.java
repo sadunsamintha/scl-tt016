@@ -135,7 +135,7 @@ public class MainFrame extends AbstractMachineFrame {
 		
 		this.dataSelectionModel = new DefaultSelectionModel(skuListProvider.get());
 		Permission p = dataSelectionModel.getPermissions().get(getMainFrameController().getProductionMode());
-		if(!hasPermission(p)) {
+		if(p!=null && !hasPermission(p)) {
 			if (skuListProvider.get() == null) {
 				EventBusService.post(new MessageEvent(MessageEventKey.ProductionParameters.NONE_AVAILABLE));
 			} else {
