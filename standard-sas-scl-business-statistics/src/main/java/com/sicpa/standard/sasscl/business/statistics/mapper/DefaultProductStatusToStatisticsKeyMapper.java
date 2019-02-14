@@ -12,6 +12,7 @@ import static com.sicpa.standard.sasscl.model.ProductStatus.INK_DETECTED;
 
 import static com.sicpa.standard.sasscl.model.statistics.StatisticsKey.BAD;
 import static com.sicpa.standard.sasscl.model.statistics.StatisticsKey.GOOD;
+import static com.sicpa.standard.sasscl.model.statistics.StatisticsKey.BLOB;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -49,7 +50,7 @@ public class DefaultProductStatusToStatisticsKeyMapper implements IProductStatus
 		add(REFEED, GOOD);
 		add(MAINTENANCE, GOOD);
 		add(INK_DETECTED, GOOD);
-
+	    add(INK_DETECTED, BLOB);
 	}
 
 	@Override

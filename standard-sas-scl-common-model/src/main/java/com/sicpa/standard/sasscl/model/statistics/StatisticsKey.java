@@ -9,6 +9,7 @@ public class StatisticsKey implements Serializable {
 	public final static StatisticsKey TOTAL = new ReadOnlyStatisticsKey("total");
 	public final static StatisticsKey GOOD = new ReadOnlyStatisticsKey("good");
 	public final static StatisticsKey BAD = new ReadOnlyStatisticsKey("bad");
+	public final static StatisticsKey BLOB = new ReadOnlyStatisticsKey("blobActivated"); 
 
 	private String description;
 	private String line;
