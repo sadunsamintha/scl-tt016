@@ -3,10 +3,13 @@ package com.sicpa.standard.sasscl.view.selection.select;
 import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
 
+import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.security.ILoginListener;
 import com.sicpa.standard.client.common.security.SecurityService;
 import com.sicpa.standard.client.common.view.screensflow.IScreensFlow;
 import com.sicpa.standard.sasscl.common.log.OperatorLogger;
+import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState;
+import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowStateChangedEvent;
 import com.sicpa.standard.sasscl.model.ProductionParameters;
 import com.sicpa.standard.sasscl.provider.impl.SkuListProvider;
 import com.sicpa.standard.sasscl.view.AbstractViewFlowController;
@@ -25,6 +28,8 @@ public class SelectProductionParametersViewController extends AbstractViewFlowCo
 	protected MainFrameController mainFrameController;
 
 	protected IScreensFlow screensFlow;
+	
+	protected boolean noSelectionState;
 
 	public SelectProductionParametersViewController() {
 	}
@@ -104,9 +109,27 @@ public class SelectProductionParametersViewController extends AbstractViewFlowCo
 	}
 	
 	protected void userChanged() {
-		super.displayView();
-		((ISelectProductionParametersView) getComponent()).displaySelectionScreen(skuListProvider.get());
+		if(isNoSelectionState()) {
+			super.displayView();
+			((ISelectProductionParametersView) getComponent()).displaySelectionScreen(skuListProvider.get());
+		}
+	}
+	
+	@Subscribe
+	public void handleApplicationFlowStateChangeEvent(ApplicationFlowStateChangedEvent event) {
+		if (event.getCurrentState().equals(ApplicationFlowState.STT_SELECT_NO_PREVIOUS) || event.getCurrentState().equals(ApplicationFlowState.STT_SELECT_WITH_PREVIOUS)) {
+			this.setNoSelectionState(true);
+		} else {
+			this.setNoSelectionState(false);
+		}
 	}
 
+	public boolean isNoSelectionState() {
+		return noSelectionState;
+	}
+
+	public void setNoSelectionState(boolean noSelectionState) {
+		this.noSelectionState = noSelectionState;
+	}
 	
 }

@@ -32,6 +32,8 @@ import com.sicpa.standard.gui.screen.machine.AbstractMachineFrame;
 import com.sicpa.standard.gui.screen.machine.component.SelectionFlow.flow.DefaultSelectionFlowView;
 import com.sicpa.standard.gui.screen.machine.component.lineId.AbstractLineIdPanel;
 import com.sicpa.standard.gui.utils.Pair;
+import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState;
+import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowStateChangedEvent;
 import com.sicpa.standard.sasscl.controller.flow.IFlowControl;
 import com.sicpa.standard.sasscl.messages.MessageEventKey;
 import com.sicpa.standard.sasscl.productionParameterSelection.selectionmodel.DefaultSelectionModel;
@@ -255,6 +257,19 @@ public class MainFrame extends AbstractMachineFrame {
 			}
 		}
 		return listConfigPanel;
+	}
+	
+	@Subscribe
+	public void handleProductionModePermission(ApplicationFlowStateChangedEvent event) {
+		if (event.getCurrentState().equals(ApplicationFlowState.STT_CONNECTED)) {
+			DefaultSelectionModel dataSelectionModel = new DefaultSelectionModel(this.skuListProvider.get());
+			Permission p = dataSelectionModel.getPermissions().get(getMainFrameController().getProductionMode());
+			if(p!=null && !hasPermission(p)) {
+				flowControl.notifyEnterSelectionScreen();
+				EventBusService.post(new MessageEvent(this, MessageEventKey.ProductionParameters.NO_PERMISSION_PRODUCTION_MODE, ""));
+			}
+		} 
+		
 	}
 
 	@Override
