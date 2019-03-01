@@ -127,6 +127,7 @@ public interface MessageEventKey {
 	public static interface ProductionParameters {
 		String NONE_AVAILABLE = "sku.none.available";
 		String NO_LONGER_AVAILABLE = "production.parameters.notAvailable";
+		String NO_PERMISSION_PRODUCTION_MODE = "production.mode.notAvailable";
 	}
 
 	public static interface Storage {
