@@ -414,12 +414,14 @@ public class MainFrame extends AbstractMachineFrame {
 	public JComponent getHeader() {
 		if (header == null) {
 			header = new JPanel(new MigLayout(",fill,inset 0 0 0 0, hidemode 3,gap 0 0 0 0"));
-			header.add(getLineIdPanel(), "growx");
-			header.add(new LicencePanel(), "growx, gapright 20, wrap");
-			header.add(getConfigPasswordPanel(), "wrap,growx");
-			header.add(getApplicationStatusPanel(), "grow");
-			getConfigPasswordPanel().setVisible(false);
 			header.add(getHeaderInfoPanel(), "south");
+			header.add(getLineIdPanel(), "growx, wrap");
+			header.add(getApplicationStatusPanel(), "grow");
+			header.add(new LicencePanel(), "east, growx, gapright 20");
+			header.add(getConfigPasswordPanel(), "wrap,growx");
+			
+			getConfigPasswordPanel().setVisible(false);
+			
 		}
 		return header;
 	}

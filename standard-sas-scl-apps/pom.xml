@@ -17,6 +17,7 @@
 		<module>standard-scl-tt053-app</module>
 		<module>standard-sas-tt053-app</module>
 		<module>standard-scl-tt077-app</module>
+		<module>standard-sasscl-tt079-app</module>
 	</modules>
 
 	<properties>
