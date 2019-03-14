@@ -64,14 +64,44 @@
 		</com.sicpa.standard.sasscl.devices.plc.simulator.PlcSimulatorNotificationConfig>
 		 -->
 				 
-		<!-- 		
+	 		
 		<com.sicpa.standard.sasscl.devices.plc.simulator.PlcSimulatorNotificationConfig>
 			<notificationInterval>1000</notificationInterval>
-			<varName>.com.stLine[1].stNotifications.nWar_err_register</varName>
-			<initialValue class="int">8</initialValue>
+			<varName>.com.stLine[1].stNotifications.nNoCapTrigs</varName>
+			<initialValue class="int">0</initialValue>
 			<valuePattern>STATIC</valuePattern>		
 		</com.sicpa.standard.sasscl.devices.plc.simulator.PlcSimulatorNotificationConfig>	
-		 -->
+		<com.sicpa.standard.sasscl.devices.plc.simulator.PlcSimulatorNotificationConfig>
+			<notificationInterval>1000</notificationInterval>
+			<varName>.com.stLine[2].stNotifications.nNoCapTrigs</varName>
+			<initialValue class="int">0</initialValue>
+			<valuePattern>STATIC</valuePattern>		
+		</com.sicpa.standard.sasscl.devices.plc.simulator.PlcSimulatorNotificationConfig>	
+		<com.sicpa.standard.sasscl.devices.plc.simulator.PlcSimulatorNotificationConfig>
+			<notificationInterval>1000</notificationInterval>
+			<varName>.com.stLine[3].stNotifications.nNoCapTrigs</varName>
+			<initialValue class="int">0</initialValue>
+			<valuePattern>STATIC</valuePattern>		
+		</com.sicpa.standard.sasscl.devices.plc.simulator.PlcSimulatorNotificationConfig>	
+		<com.sicpa.standard.sasscl.devices.plc.simulator.PlcSimulatorNotificationConfig>
+			<notificationInterval>1000</notificationInterval>
+			<varName>.com.stLine[1].stNotifications.nCounterTrigs</varName>
+			<initialValue class="int">0</initialValue>
+			<valuePattern>STATIC</valuePattern>		
+		</com.sicpa.standard.sasscl.devices.plc.simulator.PlcSimulatorNotificationConfig>	
+		<com.sicpa.standard.sasscl.devices.plc.simulator.PlcSimulatorNotificationConfig>
+			<notificationInterval>1000</notificationInterval>
+			<varName>.com.stLine[2].stNotifications.nCounterTrigs</varName>
+			<initialValue class="int">0</initialValue>
+			<valuePattern>STATIC</valuePattern>		
+		</com.sicpa.standard.sasscl.devices.plc.simulator.PlcSimulatorNotificationConfig>	
+		<com.sicpa.standard.sasscl.devices.plc.simulator.PlcSimulatorNotificationConfig>
+			<notificationInterval>1000</notificationInterval>
+			<varName>.com.stLine[3].stNotifications.nCounterTrigs</varName>
+			<initialValue class="int">0</initialValue>
+			<valuePattern>STATIC</valuePattern>		
+		</com.sicpa.standard.sasscl.devices.plc.simulator.PlcSimulatorNotificationConfig>	
+		
 		
 		<com.sicpa.standard.sasscl.devices.plc.simulator.PlcSimulatorNotificationConfig>
 			<notificationInterval>1000</notificationInterval>

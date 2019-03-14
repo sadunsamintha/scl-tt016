@@ -12,7 +12,7 @@
 <CameraSimulatorConfig>
 
   <!-- Code generation type (copy/paste method from header)-->
-  <codeGetMethod>requested</codeGetMethod>
+  <codeGetMethod>generated</codeGetMethod>
 
   <!-- Used for code generation method with file-->
   <!-- Launch from console file path -->
