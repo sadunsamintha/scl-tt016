@@ -60,7 +60,7 @@ public class Bootstrap implements IBootstrap {
 
     private IRemoteServer server;
     private IGroupDevicesController startupDevicesGroup;
-    private IStorage storage;
+    protected IStorage storage;
     private IPlcValuesLoader plcLoader;
     private SkuListProvider skuListProvider;
     private AuthenticatorProvider authenticatorProvider;
@@ -149,7 +149,7 @@ public class Bootstrap implements IBootstrap {
         startupDevicesGroup.start();
     }
 
-    private void restorePreviousSelectedProductionParams() {
+    protected void restorePreviousSelectedProductionParams() {
         ProductionParameters previous = storage.getSelectedProductionParameters();
         if (productionParametersValidator.validate(previous)) {
             productionParameters.setBarcode(previous.getBarcode());
