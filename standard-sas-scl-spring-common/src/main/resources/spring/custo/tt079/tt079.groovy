@@ -11,5 +11,10 @@ beans{
 	addAlias('bootstrapAlias','bootstrap')
 	bootstrap(TT079Bootstrap){b->
 		b.parent=ref('bootstrapAlias')
+		productionBatchProvider=ref('productionBatchProvider')
 	}
+	
+	importBeans('spring/custo/tt079/tt079-view.groovy')
+    importBeans('spring/custo/tt079/tt079-provider.groovy')
+    importBeans('spring/custo/tt079/tt079-flowControl.groovy')
 }

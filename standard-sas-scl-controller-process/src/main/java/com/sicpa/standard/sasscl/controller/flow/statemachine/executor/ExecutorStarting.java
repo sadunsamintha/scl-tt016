@@ -52,7 +52,7 @@ public class ExecutorStarting implements IStateAction {
 		}
 	}
 
-	private void updateNextProductionBatchTime() {
+	protected void updateNextProductionBatchTime() {
 		String sTime = System.currentTimeMillis() + "";
 		productionBatchProvider.set(sTime);
 	}
