@@ -13,6 +13,7 @@ beans{
 		controller=ref('batchIdExpDtSkuViewController') 
 		model="#{batchIdExpDtSkuViewController.model}"
 		batchIdSize=props['sku.batch.id.maximum.length']
+		expiryDateMaxBound=props['sku.exp.date.maxBound']
 		productionParameters=ref('productionParameters')
 	}
 	

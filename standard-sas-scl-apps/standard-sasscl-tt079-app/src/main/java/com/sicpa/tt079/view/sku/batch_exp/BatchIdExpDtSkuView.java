@@ -3,6 +3,7 @@ package com.sicpa.tt079.view.sku.batch_exp;
 import java.awt.Dimension;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 import javax.swing.JButton;
@@ -35,6 +36,9 @@ public class BatchIdExpDtSkuView extends AbstractView<IBatchIdExpDtSkuListener, 
 	protected BatchIdSkuPanel batchIdSkuPanel;
 	private ProductionParameters productionParameters;
 	private int batchIdSize;
+	private int expiryDateMaxBound;
+
+	private final int MAX_EXPIRY_DATE_BOUND = 12;
 
 	public BatchIdExpDtSkuView(){
 		refresh();
@@ -101,7 +105,11 @@ public class BatchIdExpDtSkuView extends AbstractView<IBatchIdExpDtSkuListener, 
 	public void handleLanguageSwitch(LanguageSwitchEvent evt) {
 		refresh();
 	}
-	
+
+	public void setExpiryDateMaxBound(int expiryDateMaxBound) {
+		this.expiryDateMaxBound = expiryDateMaxBound;
+	}
+
 	private class BatchIdSkuPanel extends JPanel{
 
 		private JButton saveButton;
@@ -172,6 +180,21 @@ public class BatchIdExpDtSkuView extends AbstractView<IBatchIdExpDtSkuListener, 
 				this.expDt.setMinimumSize(new Dimension(200,40));
 				this.expDt.setMaximumSize(new Dimension(200,40));
 				this.expDt.setBackground(SicpaColor.BLUE_DARK);
+
+				Calendar calendar = Calendar.getInstance();
+				this.expDt.getMonthView().setLowerBound(calendar.getTime());
+
+				calendar.add(Calendar.MONTH, 6);
+				this.expDt.setDate(calendar.getTime());
+
+				calendar.setTime(new Date());
+				if (expiryDateMaxBound <= MAX_EXPIRY_DATE_BOUND) {
+					calendar.add(Calendar.MONTH, expiryDateMaxBound);
+				} else {
+					calendar.add(Calendar.MONTH, MAX_EXPIRY_DATE_BOUND);
+				}
+
+				this.expDt.getMonthView().setUpperBound(calendar.getTime());
 			}
 			return this.expDt;
 		}

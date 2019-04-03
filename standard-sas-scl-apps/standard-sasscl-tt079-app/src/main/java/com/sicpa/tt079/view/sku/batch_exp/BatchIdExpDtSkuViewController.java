@@ -83,6 +83,13 @@ public class BatchIdExpDtSkuViewController extends AbstractViewFlowController im
 		//store the batchId and exp dt on ProductionBatchProvider to save later on database
 		EventBusService.post(new BatchIdExpViewEvent(pp));
 	}
+
+	@Override
+	protected void displayView() {
+		super.displayView();
+		BatchIdExpDtSkuView view = (BatchIdExpDtSkuView) this.view;
+		view.refresh();
+	}
 	
 	@Subscribe
 	public void notifyNewProduct(NewProductEvent evt) {
