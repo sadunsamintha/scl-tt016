@@ -9,4 +9,12 @@ beans{
 		skuConverter=ref('skuConverter')
 	}
 
+	remoteServerProductStatusMapping(DefaultRemoteServerProductStatusMapping)
+
+	skuConverter(SkuConverter){
+		productionModeMapping=ref('productionModeMapping')
+	}
+
+	productionModeMapping(DefaultProductionModeMapping)
+
 }
