@@ -41,7 +41,7 @@ public class BatchIdExpDtSkuView extends AbstractView<IBatchIdExpDtSkuListener, 
 	private final int MAX_EXPIRY_DATE_BOUND = 12;
 
 	public BatchIdExpDtSkuView(){
-		refresh();
+
 	}
 
 	public BatchIdExpDtSkuView(ProductionParameters productionParameters) {
