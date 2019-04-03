@@ -34,7 +34,7 @@ import com.sicpa.std.common.api.monitoring.dto.EventTypeDto;
 public class DtoConverter implements IDtoConverter {
 
 	private ISkuConverter skuConverter;
-	private IRemoteServerProductStatusMapping productStatusMapping;
+	protected IRemoteServerProductStatusMapping productStatusMapping;
 	private ICryptoFieldsConfig cryptoFieldsConfig;
 
 	@Override
@@ -117,7 +117,7 @@ public class DtoConverter implements IDtoConverter {
 		return authenticatedProductsResultDto;
 	}
 
-	private String getActivationServiceKey(PackagedProducts products) {
+	protected String getActivationServiceKey(PackagedProducts products) {
 
 		if (products.isPrinted()) {
 			// if SCL

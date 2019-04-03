@@ -26,7 +26,7 @@ public class TT079SelectProductionParametersViewController extends SelectProduct
 		}
 		screensFlow.moveToNext(ScreensFlowTriggers.PRODUCTION_PARAMETER_SELECTED);
 	}
-	
+
 	@Override
 	protected void userChanged() {
 		if(isNoSelectionState()) {

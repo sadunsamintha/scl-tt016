@@ -1,5 +1,6 @@
 import com.sicpa.standard.sasscl.*
 import com.sicpa.tt079.scl.TT079Bootstrap
+
 beans{
 
 	def serverBehavior=props['remoteServer.behavior'].toUpperCase()
@@ -11,10 +12,9 @@ beans{
 	addAlias('bootstrapAlias','bootstrap')
 	bootstrap(TT079Bootstrap){b->
 		b.parent=ref('bootstrapAlias')
-		productionBatchProvider=ref('productionBatchProvider')
 	}
 	
 	importBeans('spring/custo/tt079/tt079-view.groovy')
-    importBeans('spring/custo/tt079/tt079-provider.groovy')
-    importBeans('spring/custo/tt079/tt079-flowControl.groovy')
+	importBeans('spring/custo/tt079/tt079-production.groovy')
+    importBeans('spring/custo/tt079/tt079-server.groovy')
 }

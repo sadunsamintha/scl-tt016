@@ -42,7 +42,7 @@ public class Production implements IProduction {
 
 	private int productionSendBatchSize;
 	private int productionDataSerializationErrorThreshold;
-	private SubsystemIdProvider subsystemIdProvider;
+	protected SubsystemIdProvider subsystemIdProvider;
 	private IStorage storage;
 	private IRemoteServer remoteServer;
 	// use in case we cannot save to disk, product will be package on fly and
