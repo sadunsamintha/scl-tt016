@@ -7,6 +7,7 @@ import com.sicpa.standard.sasscl.controller.view.flow.DefaultScreensFlow;
 import static com.sicpa.standard.sasscl.custoBuilder.CustoBuilder.addScreen;
 import static com.sicpa.standard.sasscl.custoBuilder.CustoBuilder.addScreenTransitions;
 import static com.sicpa.standard.sasscl.view.ScreensFlowTriggers.*;
+import static com.sicpa.tt079.view.flow.TT079ScreenFlowTriggers.BACK_TO_SELECTION;
 import static com.sicpa.tt079.view.flow.TT079ScreenFlowTriggers.BATCH_ID_EXP_DT_REGISTERED;
 
 /**
@@ -37,6 +38,7 @@ public class TT079DefaultScreensFlow extends DefaultScreensFlow {
 		addScreenTransitions(selectionScreen, new ScreenTransition(PRODUCTION_PARAMETER_SELECTED, batchIdScreen));
 		addScreenTransitions(batchIdScreen, new ScreenTransition(BATCH_ID_EXP_DT_REGISTERED,
 				mainScreen));
+		addScreenTransitions(batchIdScreen, new ScreenTransition(BACK_TO_SELECTION, selectionScreen));
 	}
 
 	public void setBatchIdScreen(IScreenGetter batchIdScreen) {

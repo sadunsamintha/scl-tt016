@@ -7,6 +7,6 @@ import com.sicpa.standard.client.common.view.screensflow.ScreenTransitionTrigger
  *
  */
 public interface TT079ScreenFlowTriggers {
-	
 	ScreenTransitionTrigger BATCH_ID_EXP_DT_REGISTERED = new ScreenTransitionTrigger("BATCH_ID_EXP_DT_REGISTERED");
+	ScreenTransitionTrigger BACK_TO_SELECTION = new ScreenTransitionTrigger("BACK_TO_SELECTION");
 }

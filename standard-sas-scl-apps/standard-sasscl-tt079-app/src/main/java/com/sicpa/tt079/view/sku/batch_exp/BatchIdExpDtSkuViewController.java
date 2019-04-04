@@ -79,18 +79,13 @@ public class BatchIdExpDtSkuViewController extends AbstractViewFlowController im
 		viewController.setProductionParameters(pp);
 		viewController.productionParametersChanged();
 		screensFlow.moveToNext(BATCH_ID_EXP_DT_REGISTERED);
-
-		//store the batchId and exp dt on ProductionBatchProvider to save later on database
-		EventBusService.post(new BatchIdExpViewEvent(pp));
 	}
-	
-	@Subscribe
-	public void notifyNewProduct(NewProductEvent evt) {
-		Product product = evt.getProduct();
-		if (product != null) {
-			CustoBuilder.addPropertyToClass(Product.class, productionExpdt );
-			product.setProperty(productionExpdt,pp.getProperty(productionExpdt));
-		}
+
+	@Override
+	protected void displayView() {
+		super.displayView();
+		BatchIdExpDtSkuView view = (BatchIdExpDtSkuView) this.view;
+		view.refresh();
 	}
 
 	public void setPp(ProductionParameters pp) {
