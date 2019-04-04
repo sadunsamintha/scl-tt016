@@ -102,19 +102,21 @@ public class DtoConverter implements IDtoConverter {
 			// Product Code Type is null for marked products so get it from selected SKU
 			long codeTypeId = product.getCode().getCodeType() != null ? product.getCode()
 					.getCodeType().getId() : product.getSku().getCodeType().getId();
-
-			authenticatedProductsDto.add(new AuthenticatedProductDto((long) product.getSku().getId(), codeTypeId,
-					product.getCode().getEncoderId(), product.getCode().getSequence(), product.getActivationDate()));
+			authenticatedProductsDto.add(createAuthenticatedProductsDto(product, codeTypeId));
 		}
 
 		AuthenticatedProductsResultDto authenticatedProductsResultDto = new AuthenticatedProductsResultDto();
 		populateResultDtoInfo(authenticatedProductsResultDto, products);
 		authenticatedProductsResultDto.setProcessedProducts(authenticatedProductsDto);
-
 		authenticatedProductsResultDto.setProcessedProductsStatusDto(statusDto);
 		authenticatedProductsResultDto.setActivationType(getActivationServiceKey(products));
 
 		return authenticatedProductsResultDto;
+	}
+
+	protected AuthenticatedProductDto createAuthenticatedProductsDto(Product product, long codeTypeId) {
+		return new AuthenticatedProductDto((long) product.getSku().getId(), codeTypeId,
+				product.getCode().getEncoderId(), product.getCode().getSequence(), product.getActivationDate());
 	}
 
 	protected String getActivationServiceKey(PackagedProducts products) {

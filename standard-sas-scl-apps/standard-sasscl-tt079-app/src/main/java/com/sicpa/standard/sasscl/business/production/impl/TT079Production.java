@@ -12,12 +12,7 @@ public class TT079Production extends Production implements ProductBatchIdExpDtPr
 	
 	@Override
 	protected void prepareProduct(Product product) {
-		product.setSubsystem(subsystemIdProvider.get());
-
-		if (product.getSku() != null) {
-			SKU sku = product.getSku().copySkuForProductionData();
-			product.setSku(sku);
-		}
+		super.prepareProduct(product);
 		CustoBuilder.addPropertyToClass(Product.class, productionBatchId );
 		product.setProperty(productionBatchId,pp.getProperty(productionBatchId));
 		CustoBuilder.addPropertyToClass(Product.class, productionExpdt );
