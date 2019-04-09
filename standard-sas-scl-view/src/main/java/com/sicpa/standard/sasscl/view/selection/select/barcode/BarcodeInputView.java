@@ -235,7 +235,7 @@ public class BarcodeInputView extends DefaultIdInputView {
 
 	private void permissionFilterAndAdd(List<Entry> entries, Entry entry) {
 		Permission p = dataSelectionModel.getPermissions().get(entry.mode);
-		if (SecurityService.hasPermission(p)) {
+		if (p != null && SecurityService.hasPermission(p)) {
 			entries.add(entry);
 		}
 	}
