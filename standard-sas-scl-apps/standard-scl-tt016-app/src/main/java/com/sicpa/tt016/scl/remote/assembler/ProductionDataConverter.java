@@ -194,7 +194,7 @@ public class ProductionDataConverter {
     }
 
     private int getEjectionReasonId(ProductStatus productStatus) {
-        if (productStatus.equals(ProductStatus.SENT_TO_PRINTER_UNREAD)) {
+        if (productStatus.equals(ProductStatus.SENT_TO_PRINTER_UNREAD) || productStatus.equals(TT016ProductStatus.REFEED_NO_INK)) {
             return EjectionReason.UNREADABLE_WITHOUT_CODE_INT;
         }  else if (productStatus.equals(TT016ProductStatus.EJECTED_PRODUCER)) {
             return EjectionReason.QUALITY;
