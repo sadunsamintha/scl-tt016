@@ -23,7 +23,7 @@ public class SingleStatsPanel extends JPanel {
 
 		JLabel label = new JLabel(text);
 		label.setForeground(descriptor.getColor());
-		add(label, " w 250!");
+		add(label, " w 280!");
 
 		labelPercent = new JLabel("-");
 		labelCount = new JLabel("0");
