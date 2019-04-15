@@ -4,6 +4,7 @@ import com.sicpa.standard.sasscl.common.log.OperatorLogger;
 import com.sicpa.standard.sasscl.model.ProductionParameters;
 import com.sicpa.standard.sasscl.model.SKU;
 import com.sicpa.standard.sasscl.view.ScreensFlowTriggers;
+import com.sicpa.standard.sasscl.view.selection.select.ISelectProductionParametersView;
 import com.sicpa.standard.sasscl.view.selection.select.SelectProductionParametersViewController;
 import com.sicpa.tt016.devices.plc.PlcPersistentProductCounterManager;
 
@@ -31,6 +32,12 @@ public class TT016SelectProductionParametersViewController extends SelectProduct
         mainFrameController.productionParametersChanged();
 
         screensFlow.moveToNext(ScreensFlowTriggers.PRODUCTION_PARAMETER_SELECTED);
+    }
+
+    @Override
+    protected void displayView() {
+        super.displayView();
+        ((ISelectProductionParametersView) getComponent()).displaySelectionScreen(skuListProvider.get());
     }
 
     private boolean isSkuChanged(SKU sku) {

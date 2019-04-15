@@ -32,7 +32,7 @@ public class DefaultScreensFlow extends ScreensFlow {
 		addTransitions(selectionScreen,
 				new ScreenTransition(PRODUCTION_PARAMETER_SELECTED, mainScreen),
 				new ScreenTransition(EXIT, exitScreen));
-	
+
 		addTransitions(exitScreen);
 	}
 

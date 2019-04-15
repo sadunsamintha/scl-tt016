@@ -4,7 +4,6 @@ import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.security.ISecurityController;
 import com.sicpa.standard.client.common.security.SecurityService;
 import com.sicpa.standard.gui.utils.ThreadUtils;
-import com.sicpa.standard.sasscl.devices.barcode.BarcodeReaderEvent;
 import com.sicpa.standard.sasscl.event.UserLoginEvent;
 import com.sicpa.standard.sasscl.event.UserLogoutEvent;
 import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.ProductionParameterRootNode;
@@ -64,14 +63,6 @@ public class SelectProductionParametersBarcodeView extends JPanel implements ISe
 			delegate.reset(skuListProvider.get());
 		}
 		return delegate;
-	}
-
-	@Subscribe
-	public void barcodeRead(final BarcodeReaderEvent evt) {
-		if (isShowing()) {
-			getDelegate().getModel().setId(evt.getBarcode());
-			getDelegate().getModel().selectionComplete();
-		}
 	}
 
 	public void setCallback(ISelectProductionParametersViewListener callback) {
