@@ -64,4 +64,10 @@
 		<property name="controller" ref="systemInfoViewController" />
 		<property name="model" value="#{systemInfoViewController.model}" />
 	</bean>
+
+	<!-- RED LIGHT-->
+	<bean id="redLightController" class="com.sicpa.tt065.redlight.TT065RedLightController">
+		<property name="messageCodeMapper" ref="messagesMapping" />
+		<property name="flowControl" ref="flowControl" />
+	</bean>
 </beans>
