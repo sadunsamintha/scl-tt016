@@ -242,7 +242,7 @@ public class SASDefaultMessagesMapping extends DefaultMessagesMapping {
 		addEntry(Printer.SOLVENT_ACTIVATION_OK, "[PR_74]", WARNING);
 		addEntry(Printer.NOZZLE_NOT_OPENED, "[PR_75]", ERROR_DEVICE);
 		addEntry(Printer.PRINTER_STOPPED_DURING_PRODUCTION, "[PR_76]", ERROR);
-		addEntry(Printer.JOB_FILE_ERROR, "[PR_77]", WARNING);
+		addEntry(Printer.JOB_FILE_ERROR, "[PR_77]", ERROR);
 		addEntry(Printer.JOB_LIST_EMPTY, "[PR_78]", WARNING);
 		addEntry(Printer.PRINT_GO_DELAY_TOO_SHORT, "[PR_79]", WARNING);
 
