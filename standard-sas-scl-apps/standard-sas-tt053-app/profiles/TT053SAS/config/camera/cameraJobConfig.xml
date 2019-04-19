@@ -2,18 +2,18 @@
 <CameraJobFilesConfig setCameraJob="false" useDefaultCameraJobFile="false">
   <CameraJobConfigNode>
     <productCameraJob productId="0">
-      <cameraJobFile cameraJobFileName="cameraJobForMode0.job"/>
+      <cameraJobFile cameraJobFileName="StandardDMX.job"/>
     </productCameraJob>
     <children>
       <CameraJobConfigNode>
         <productCameraJob productId="1">
-          <cameraJobFile cameraJobFileName="cameraJobForSKU0_1.job"/>
+          <cameraJobFile cameraJobFileName="StandardDMX.job"/>
         </productCameraJob>
         <children/>
       </CameraJobConfigNode>
       <CameraJobConfigNode>
         <productCameraJob productId="2">
-          <cameraJobFile cameraJobFileName="cameraJobForSKU0_2.job"/>
+          <cameraJobFile cameraJobFileName="StandardDMX.job"/>
         </productCameraJob>
         <children/>
       </CameraJobConfigNode>
@@ -21,13 +21,13 @@
   </CameraJobConfigNode>
   <CameraJobConfigNode>
     <productCameraJob productId="1">
-      <cameraJobFile cameraJobFileName="cameraJobForMode1.job"/>
+      <cameraJobFile cameraJobFileName="StandardDMX.job"/>
     </productCameraJob>
     <children/>
   </CameraJobConfigNode>
   <CameraJobConfigNode>
     <productCameraJob productId="2">
-      <cameraJobFile cameraJobFileName="cameraJobForMode2.job"/>
+      <cameraJobFile cameraJobFileName="StandardDMX.job"/>
     </productCameraJob>
     <children/>
   </CameraJobConfigNode>

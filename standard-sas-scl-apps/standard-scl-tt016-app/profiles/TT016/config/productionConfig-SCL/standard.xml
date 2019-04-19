@@ -6,7 +6,7 @@
 
 	<!--<BisConfig /> -->
 
-	<!-- <BrsConfig /> -->
+	<BrsConfig />
 
 	<PlcConfig>
 		<cabinet>
