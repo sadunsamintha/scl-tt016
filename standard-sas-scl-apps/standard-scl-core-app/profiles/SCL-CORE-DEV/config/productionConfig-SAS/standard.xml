@@ -3,7 +3,7 @@
 	<CameraConfig deviceType="COGNEX" id="qc_sas" />
 
 	<!-- to use the brs uncomment the following -->
-	<!-- <BrsConfig /> -->
+	<BrsConfig />
 
 	<PlcConfig>
 		<cabinet>

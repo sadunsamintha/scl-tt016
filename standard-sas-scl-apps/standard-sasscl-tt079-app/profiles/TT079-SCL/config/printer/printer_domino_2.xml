@@ -1,6 +1,6 @@
 <DominoPrinterModel>
   <name>SCD2</name>
-  <ipAdress>192.168.1.7</ipAdress>
+  <ipAdress>192.168.1.12</ipAdress>
   <deviceId>1234567890123456789012345678901234567890</deviceId>
   <udpPort>4321</udpPort>
   <tcpTimeout>10000</tcpTimeout>
