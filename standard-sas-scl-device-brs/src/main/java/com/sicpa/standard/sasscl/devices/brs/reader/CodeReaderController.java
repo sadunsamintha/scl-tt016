@@ -50,6 +50,7 @@ public interface CodeReaderController extends CodeReceiver, DisconnectionListene
      * @return <code>true</code> if the code reader is connected otherwise returns <code>false</code>.
      */
     boolean isConnected();
-
+    
+    void onBrsConnected(boolean connected);
 
 }

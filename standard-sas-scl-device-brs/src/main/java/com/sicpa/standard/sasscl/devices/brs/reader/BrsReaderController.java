@@ -33,7 +33,7 @@ public class BrsReaderController implements CodeReaderController {
 
     @Override
     public void onCodeReceived(String code) {
-        codeReaderListener.onCodeReceived(code);
+        codeReaderListener.onCodeReceived(code, this);
     }
 
     @Override
@@ -123,7 +123,7 @@ public class BrsReaderController implements CodeReaderController {
     }
 
 
-    private void onBrsConnected(boolean connected) {
+    public void onBrsConnected(boolean connected) {
         logger.debug("onBrsConnected {} ", connected);
         isConnected.set(connected);
         codeReaderListener.onReaderConnected(connected, brsReaderModel.getAddress());

@@ -92,8 +92,12 @@ public class BrsAdaptor extends AbstractStartableDevice implements CodeReaderLis
     }
 
     @Override
-    public void onCodeReceived(String code) {
-        EventBusService.post(new BrsProductEvent(code));
+    public void onCodeReceived(String code, CodeReaderController brsReaderController) {
+    	if(brsReaderController!=null && this.status.equals(DeviceStatus.CONNECTING)) {
+    		brsReaderController.onBrsConnected(true);
+    	}else {
+    		EventBusService.post(new BrsProductEvent(code));
+    	}
     }
 
     private boolean areAllConnected() {

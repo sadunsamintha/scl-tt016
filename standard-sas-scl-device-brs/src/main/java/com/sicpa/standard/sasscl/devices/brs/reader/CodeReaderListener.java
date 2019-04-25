@@ -14,6 +14,6 @@ public interface CodeReaderListener {
      *
      * @param code The code recieved.
      */
-    void onCodeReceived(String code);
+    void onCodeReceived(String code, CodeReaderController brsReaderController);
 
 }
