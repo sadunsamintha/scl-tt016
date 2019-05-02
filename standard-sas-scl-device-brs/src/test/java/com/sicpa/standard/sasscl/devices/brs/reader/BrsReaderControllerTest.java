@@ -38,12 +38,12 @@ public class BrsReaderControllerTest {
     public void onCodeReceived() {
         String code = "123345";
         //stub
-        doNothing().when(codeReaderListener).onCodeReceived(code);
+        doNothing().when(codeReaderListener).onCodeReceived(code, brsReaderController);
 
         brsReaderController.onCodeReceived(code);
 
         //verify
-        verify(codeReaderListener, times(1)).onCodeReceived(code);
+        verify(codeReaderListener, times(1)).onCodeReceived(code, brsReaderController);
     }
 
     @Test
