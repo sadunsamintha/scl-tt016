@@ -52,6 +52,7 @@ rollingFileAppendersSize = [
 		[id: "BRS", 		 file:"log/brs.log",  fileZip: "log/brs-.%i.log.zip"],
 		[id: "PRINTERMONITORING",   file:"log/printer_monitoring.log",   fileZip: "log/printer_monitoring-.%i.log.zip"],
 		[id: "PRINTER_MONITORING_DOMINO",   file:"log/printer_monitoring_domino.log",   fileZip: "log/printer_monitoring_domino-.%i.log.zip"],
+	[id: "SPRING_ERRORS",    file:"log/spring.log",    fileZip: "log/spring-.%i.log.zip"],
 		[id: "PLC_SKU_PRODUCT_COUNTER",   file:"log/plc_sku_product_counter.log",   fileZip: "log/plc_sku_product_counter-.%i.log.zip"],
 ]
 
@@ -91,4 +92,4 @@ logger("com.sicpa.standard.printer.domino.monitoring",          INFO,   ["PRINTE
 logger("com.sicpa.tt016.devices.plc.PlcPersistentProductCounterManager",       INFO,   ["PLC_SKU_PRODUCT_COUNTER"],      true)
 
 
-root(DEBUG, ["CONSOLE"])
+root(ERROR, ["CONSOLE", "SPRING_ERRORS"])
