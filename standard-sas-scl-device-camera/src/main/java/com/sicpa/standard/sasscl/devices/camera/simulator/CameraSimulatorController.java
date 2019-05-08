@@ -1,5 +1,6 @@
 package com.sicpa.standard.sasscl.devices.camera.simulator;
 
+import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.camera.controller.CameraException;
 import com.sicpa.standard.camera.controller.ICameraControllerListener;
 import com.sicpa.standard.camera.controller.ICameraImageSaver;
@@ -68,6 +69,7 @@ public class CameraSimulatorController implements ICognexCameraController<Camera
 	private volatile boolean running;
 	private volatile boolean connected;
 	private volatile boolean initCodeProviderDone;
+	private volatile boolean appTimedOut;
 	private String currentActiveJob = "unset - use pre-defined camera job in camera";
 	private String deviceId;
 
@@ -392,7 +394,7 @@ public class CameraSimulatorController implements ICognexCameraController<Camera
 
 		running = true;
 		// check if the thread is started
-		if (codeThread == null || !codeThread.isAlive()) {
+		if ((codeThread == null || !codeThread.isAlive()) && !appTimedOut) {
 			codeThread = createCameraThread();
 			codeThread.start();
 		}
@@ -509,6 +511,15 @@ public class CameraSimulatorController implements ICognexCameraController<Camera
 		return cellsValue.get(alias);
 	}
 
+	@Subscribe
+	public void appTimeOutError(MessageEvent messageEvent) {
+		if(messageEvent.getKey().equals(MessageEventKey.FlowControl.START_TIMEOUT)) {
+			logger.debug("App Timeout error occured");
+			appTimedOut = true;
+		}
+			
+	}
+	
 	public void setCustoCodesGeneratedTransformer(CameraSimuCodeTransformer custoCodesGeneratedTransformer) {
 		this.custoCodesGeneratedTransformer = custoCodesGeneratedTransformer;
 	}
