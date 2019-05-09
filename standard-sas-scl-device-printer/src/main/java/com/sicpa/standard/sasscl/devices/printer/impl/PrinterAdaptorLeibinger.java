@@ -5,6 +5,7 @@ import com.sicpa.standard.printer.controller.IPrinterController;
 import com.sicpa.standard.printer.controller.PrinterException;
 import com.sicpa.standard.printer.controller.model.SequenceStatus;
 import com.sicpa.standard.printer.controller.model.command.PrinterMessageId;
+import com.sicpa.standard.printer.leibinger.controller.LeibingerPrinterController;
 import com.sicpa.standard.printer.leibinger.driver.leibinger.LeibingerUserLevel;
 import com.sicpa.standard.sasscl.devices.DeviceStatus;
 import com.sicpa.standard.sasscl.devices.printer.PrinterAdaptorException;
@@ -12,6 +13,7 @@ import com.sicpa.standard.sasscl.devices.printer.xcode.mapping.IMappingExtendedC
 import com.sicpa.standard.sasscl.event.ChangePrinterUserLevelEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.aop.framework.Advised;
 
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -148,4 +150,9 @@ public class PrinterAdaptorLeibinger extends PrinterAdaptor {
         this.mappingExtendedCodeBehavior = mappingExtendedCodeBehavior;
     }
 
+    public long getNozzleDelayMS() throws Exception {
+        LeibingerPrinterController printerController =
+                (LeibingerPrinterController) ((Advised)this.controller).getTargetSource().getTarget();
+        return printerController.getModel().getNozzleCloseDelayMs();
+    }
 }
