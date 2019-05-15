@@ -203,7 +203,7 @@ public class BatchIdExpDtSkuView extends AbstractView<IBatchIdExpDtSkuListener, 
 		public JLabel getInvalidDateLabel() {
 			if (this.invalidDateLabel == null) {
 				this.invalidDateLabel = new JLabel( Messages.get("sku.expdt.selection.invalid"));
-				this.invalidDateLabel.setForeground(Color.RED);
+				this.invalidDateLabel.setForeground(SicpaColor.RED);
 				this.invalidDateLabel.setVisible(false);
 			}
 			return this.invalidDateLabel;
