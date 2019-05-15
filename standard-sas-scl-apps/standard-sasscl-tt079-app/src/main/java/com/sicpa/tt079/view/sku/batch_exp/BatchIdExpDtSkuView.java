@@ -1,20 +1,5 @@
 package com.sicpa.tt079.view.sku.batch_exp;
 
-import java.awt.Dimension;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JSeparator;
-import javax.swing.JTextField;
-
-import org.jdesktop.swingx.JXDatePicker;
-
 import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.i18n.Messages;
 import com.sicpa.standard.client.common.view.mvc.AbstractView;
@@ -23,8 +8,15 @@ import com.sicpa.standard.gui.plaf.SicpaColor;
 import com.sicpa.standard.sasscl.model.ProductionMode;
 import com.sicpa.standard.sasscl.model.ProductionParameters;
 import com.sicpa.standard.sasscl.view.LanguageSwitchEvent;
-
 import net.miginfocom.swing.MigLayout;
+import org.jdesktop.swingx.JXDatePicker;
+
+import javax.swing.*;
+import java.awt.*;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * New view of the BatchId associated to the ProductionParameters variable
@@ -47,14 +39,14 @@ public class BatchIdExpDtSkuView extends AbstractView<IBatchIdExpDtSkuListener, 
 	public BatchIdExpDtSkuView(ProductionParameters productionParameters) {
 
 	}
-	
+
 	private void initGUI() {
 		setLayout(new MigLayout("ltr,fill"));
 		String strSKU = "";
 		if (productionParameters != null) {
-			if (productionParameters.getProductionMode() != null 
+			if (productionParameters.getProductionMode() != null
 					&& !(productionParameters.getProductionMode()
-							.equals(ProductionMode.MAINTENANCE) && productionParameters.getSku() == null)) {
+					.equals(ProductionMode.MAINTENANCE) && productionParameters.getSku() == null)) {
 				strSKU = productionParameters.getSku().getDescription();
 			}
 		}
@@ -87,7 +79,7 @@ public class BatchIdExpDtSkuView extends AbstractView<IBatchIdExpDtSkuListener, 
 		frame.setContentPane(new BatchIdExpDtSkuView(new ProductionParameters()));
 		frame.setVisible(true);
 	}
-	
+
 
 	public int getBatchIdSize() {
 		return batchIdSize;
@@ -118,6 +110,7 @@ public class BatchIdExpDtSkuView extends AbstractView<IBatchIdExpDtSkuListener, 
 		private JTextField batchIdText;
 		private JLabel expDtLabel;
 		private JXDatePicker expDt;
+		private JLabel invalidDateLabel;
 
 		public BatchIdSkuPanel() {
 			initGui();
@@ -195,10 +188,26 @@ public class BatchIdExpDtSkuView extends AbstractView<IBatchIdExpDtSkuListener, 
 				}
 
 				this.expDt.getMonthView().setUpperBound(calendar.getTime());
+
+				this.expDt.addActionListener(e -> {
+					if (expDt.getDate() == null) {
+						getInvalidDateLabel().setVisible(true);
+					} else {
+						getInvalidDateLabel().setVisible(false);
+					}
+				});
 			}
 			return this.expDt;
 		}
 
+		public JLabel getInvalidDateLabel() {
+			if (this.invalidDateLabel == null) {
+				this.invalidDateLabel = new JLabel( Messages.get("sku.expdt.selection.invalid"));
+				this.invalidDateLabel.setForeground(Color.RED);
+				this.invalidDateLabel.setVisible(false);
+			}
+			return this.invalidDateLabel;
+		}
 
 		public JPanel getContentPanel() {
 			if (contentPanel == null) {
@@ -209,6 +218,8 @@ public class BatchIdExpDtSkuView extends AbstractView<IBatchIdExpDtSkuListener, 
 				contentPanel.add(getBatchIdText(),"align left");
 				contentPanel.add(getExpDateLabel(), "align right");
 				contentPanel.add(getExpDate(), "align left");
+				contentPanel.add(Box.createRigidArea((new Dimension(2, 0))), "align right");
+				contentPanel.add(getInvalidDateLabel(), "align left");
 			}
 			return contentPanel;
 		}
