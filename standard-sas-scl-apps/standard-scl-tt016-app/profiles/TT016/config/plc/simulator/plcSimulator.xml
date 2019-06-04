@@ -93,6 +93,24 @@
 		</com.sicpa.standard.sasscl.devices.plc.simulator.PlcSimulatorNotificationConfig>
 		<com.sicpa.standard.sasscl.devices.plc.simulator.PlcSimulatorNotificationConfig>
 			<notificationInterval>1000</notificationInterval>
+			<varName>.com.stLine[1].stNotifications.nJavaProductCounter</varName>
+			<initialValue class="int">100</initialValue>
+			<valuePattern>STATIC</valuePattern>
+			<incrementalValue>0</incrementalValue>
+			<minValue>0</minValue>
+			<maxValue>0</maxValue>
+		</com.sicpa.standard.sasscl.devices.plc.simulator.PlcSimulatorNotificationConfig>
+		<com.sicpa.standard.sasscl.devices.plc.simulator.PlcSimulatorNotificationConfig>
+			<notificationInterval>1000</notificationInterval>
+			<varName>.com.stLine[1].stNotifications.nJavaEjectionCounter</varName>
+			<initialValue class="int">1</initialValue>
+			<valuePattern>RANDOM</valuePattern>
+			<incrementalValue>0</incrementalValue>
+			<minValue>0</minValue>
+			<maxValue>100</maxValue>
+		</com.sicpa.standard.sasscl.devices.plc.simulator.PlcSimulatorNotificationConfig>
+		<com.sicpa.standard.sasscl.devices.plc.simulator.PlcSimulatorNotificationConfig>
+			<notificationInterval>1000</notificationInterval>
 			<varName>.war.wrongStateRequest</varName>
 			<initialValue class="boolean">false</initialValue>
 			<valuePattern>UI</valuePattern>

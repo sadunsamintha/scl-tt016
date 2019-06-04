@@ -6,11 +6,13 @@ import com.sicpa.standard.sasscl.model.SKU;
 import com.sicpa.standard.sasscl.view.ScreensFlowTriggers;
 import com.sicpa.standard.sasscl.view.selection.select.ISelectProductionParametersView;
 import com.sicpa.standard.sasscl.view.selection.select.SelectProductionParametersViewController;
+import com.sicpa.tt016.devices.plc.PlcPersistentGrossNetProductCounterManager;
 import com.sicpa.tt016.devices.plc.PlcPersistentProductCounterManager;
 
 public class TT016SelectProductionParametersViewController extends SelectProductionParametersViewController {
 
     private PlcPersistentProductCounterManager plcPersistentProductCounterManager;
+    private PlcPersistentGrossNetProductCounterManager plcPersistentGrossNetProductCounterManager;
 
     private ProductionParameters productionParameters;
 
@@ -18,6 +20,7 @@ public class TT016SelectProductionParametersViewController extends SelectProduct
     public void productionParametersSelected(ProductionParameters pp) {
         if (isSkuChanged(pp.getSku())) {
             plcPersistentProductCounterManager.execute();
+            plcPersistentGrossNetProductCounterManager.updateProductParamAndCount();
         }
 
         mainFrameController.setSku(pp.getSku());
@@ -52,7 +55,12 @@ public class TT016SelectProductionParametersViewController extends SelectProduct
         this.plcPersistentProductCounterManager = plcPersistentProductCounterManager;
     }
 
-    public void setProductionParameters(ProductionParameters productionParameters) {
+    public void setPlcPersistentGrossNetProductCounterManager(
+			PlcPersistentGrossNetProductCounterManager plcPersistentGrossNetProductCounterManager) {
+		this.plcPersistentGrossNetProductCounterManager = plcPersistentGrossNetProductCounterManager;
+	}
+
+	public void setProductionParameters(ProductionParameters productionParameters) {
         this.productionParameters = productionParameters;
     }
 }
