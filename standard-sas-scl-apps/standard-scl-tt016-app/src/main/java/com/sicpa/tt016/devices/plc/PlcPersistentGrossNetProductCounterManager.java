@@ -25,7 +25,8 @@ public class PlcPersistentGrossNetProductCounterManager {
     private PlcProvider plcProvider;
     private ProductionParameters productionParameters;
     private SubsystemIdProvider subsystemIdProvider;
-
+    
+    private boolean getGrossNetProductCount_enabled;
     private String javaProductCounterNtfVarName;
     private String resetJavaProductCounterVarName;
     private String javaEjectionCounterNtfVarName;
@@ -43,6 +44,10 @@ public class PlcPersistentGrossNetProductCounterManager {
     }
     
     public void log() throws PlcAdaptorException {
+    	if (!getGrossNetProductCount_enabled) {
+    		return;
+    	}
+    	
     	for (Integer lineIndex : PlcLineHelper.getLineIndexes()) {
     		int currentProductCount = 0;
             int currentEjectionCount = 0;
@@ -105,6 +110,10 @@ public class PlcPersistentGrossNetProductCounterManager {
     public void setSubsystemIdProvider(SubsystemIdProvider subsystemIdProvider) {
         this.subsystemIdProvider = subsystemIdProvider;
     }
+    
+    public void setGetGrossNetProductCount_enabled(boolean getGrossNetProductCount_enabled) {
+		this.getGrossNetProductCount_enabled = getGrossNetProductCount_enabled;
+	}
 
     public void setJavaProductCounterNtfVarName(String javaProductCounterNtfVarName) {
         this.javaProductCounterNtfVarName = javaProductCounterNtfVarName;
@@ -117,4 +126,5 @@ public class PlcPersistentGrossNetProductCounterManager {
     public void setJavaEjectionCounterNtfVarName(String javaEjectionCounterNtfVarName) {
         this.javaEjectionCounterNtfVarName = javaEjectionCounterNtfVarName;
     }
+	
 }
