@@ -5,6 +5,7 @@ import static com.sicpa.standard.sasscl.devices.plc.PlcLineHelper.replaceLinePla
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +31,9 @@ public class PlcPersistentGrossNetProductCounterManager {
     private String javaProductCounterNtfVarName;
     private String resetJavaProductCounterVarName;
     private String javaEjectionCounterNtfVarName;
+    
+    private static HashMap<Integer, Integer> productCountLineMap = new HashMap<Integer, Integer>();
+    private static HashMap<Integer, Integer> ejectionCountLineMap = new HashMap<Integer, Integer>();
     
     private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
 
@@ -76,12 +80,24 @@ public class PlcPersistentGrossNetProductCounterManager {
             IPlcVariable<Integer> javaProductCounterNtfVar = PlcVariable.createInt32Var(
                     replaceLinePlaceholder(javaProductCounterNtfVarName, lineIndex));
             currentProductCount = plcProvider.get().read(javaProductCounterNtfVar);
+            
+            if (null != productCountLineMap.get(lineIndex)) {
+            	currentProductCount = currentProductCount - productCountLineMap.get(lineIndex);
+            }
+            
+            productCountLineMap.put(lineIndex, currentProductCount);
             sb.append(currentProductCount);
 
             sb.append(", NumEjections:");
             IPlcVariable<Integer> javaEjectionCounterNtfVar = PlcVariable.createInt32Var(
                     replaceLinePlaceholder(javaEjectionCounterNtfVarName, lineIndex));
             currentEjectionCount = plcProvider.get().read(javaEjectionCounterNtfVar);
+            
+            if (null != ejectionCountLineMap.get(lineIndex)) {
+            	currentEjectionCount = currentEjectionCount - ejectionCountLineMap.get(lineIndex);
+            }
+            
+            ejectionCountLineMap.put(lineIndex, currentEjectionCount);
             sb.append(currentEjectionCount);
             
             currentGrossNetCount = currentProductCount - currentEjectionCount;
@@ -97,6 +113,9 @@ public class PlcPersistentGrossNetProductCounterManager {
         IPlcVariable<Boolean> var = createBooleanVar(replaceLinePlaceholder(resetJavaProductCounterVarName, lineIndex));
         var.setValue(true);
         plcProvider.get().write(var);
+        
+        productCountLineMap.put(lineIndex, 0);
+        ejectionCountLineMap.put(lineIndex, 0);
     }
 
     public void setPlcProvider(PlcProvider plcProvider) {
