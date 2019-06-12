@@ -75,7 +75,7 @@ public class TT016Bootstrap extends Bootstrap {
 		addPlcVariable("NTF_LINE_JAVA_EJECTION_COUNTER", ".com.stLine[#x].stNotifications.nJavaEjectionCounter", PlcUtils.PLC_TYPE.I,
 				new HashMap<>());
 	}
-
+	
 	private void convertLegacyEncodersIfAny() {
 		legacyEncoderConverter.convertLegacyEncoders();
 	}

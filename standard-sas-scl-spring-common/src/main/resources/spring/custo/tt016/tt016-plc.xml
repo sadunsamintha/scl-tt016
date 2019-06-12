@@ -22,6 +22,16 @@
         <property name="resetJavaProductCounterVarName" value="#{plcVarMap['REQUEST_RESET_JAVA_PRODUCT_COUNTER']}" />
     </bean>
     
+    <bean id="plcPersistentGrossNetProductCounterManager" class="com.sicpa.tt016.devices.plc.PlcPersistentGrossNetProductCounterManager">
+        <property name="plcProvider" ref="plcProvider" />
+        <property name="productionParameters" ref="productionParameters" />
+        <property name="subsystemIdProvider" ref="subsystemIdProvider" />
+        <property name="getGrossNetProductCount_enabled" value="${getGrossNetProductCount_enabled}" />
+        <property name="javaProductCounterNtfVarName" value="#{plcVarMap['NTF_LINE_JAVA_PRODUCT_COUNTER']}" />
+        <property name="javaEjectionCounterNtfVarName" value="#{plcVarMap['NTF_LINE_JAVA_EJECTION_COUNTER']}" />
+        <property name="resetJavaProductCounterVarName" value="#{plcVarMap['REQUEST_RESET_JAVA_PRODUCT_COUNTER']}" />
+    </bean>
+    
     <bean id="plcNoCapProductStatisticsManager" class="com.sicpa.tt016.devices.plc.PlcNoCapProductStatisticsManager">
     	<property name="plcProvider" ref="plcProvider" />
     	<property name="productionParameters" ref="productionParameters" />
