@@ -83,9 +83,11 @@ public class PlcPersistentGrossNetProductCounterManager {
             
             if (null != productCountLineMap.get(lineIndex)) {
             	currentProductCount = currentProductCount - productCountLineMap.get(lineIndex);
+            	productCountLineMap.put(lineIndex, productCountLineMap.get(lineIndex) + currentProductCount);
+            } else {
+            	productCountLineMap.put(lineIndex, currentProductCount);
             }
             
-            productCountLineMap.put(lineIndex, currentProductCount);
             sb.append(currentProductCount);
 
             sb.append(", NumEjections:");
@@ -95,9 +97,11 @@ public class PlcPersistentGrossNetProductCounterManager {
             
             if (null != ejectionCountLineMap.get(lineIndex)) {
             	currentEjectionCount = currentEjectionCount - ejectionCountLineMap.get(lineIndex);
+            	ejectionCountLineMap.put(lineIndex, ejectionCountLineMap.get(lineIndex) + currentEjectionCount);
+            } else {
+            	ejectionCountLineMap.put(lineIndex, currentEjectionCount);
             }
             
-            ejectionCountLineMap.put(lineIndex, currentEjectionCount);
             sb.append(currentEjectionCount);
             
             currentGrossNetCount = currentProductCount - currentEjectionCount;
