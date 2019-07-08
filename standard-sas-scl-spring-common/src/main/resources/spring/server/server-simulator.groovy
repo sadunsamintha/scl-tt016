@@ -65,6 +65,7 @@ beans{
 		remoteServerSimulatorOutputFolder = profilePath+'/simulProductSend'
 		cryptoMode=props['server.simulator.cryptoMode']
 		cryptoModelPreset=props['server.simulator.cryptoModelPreset']
+		hrdEnable=props['hrd.enable']
 	}
 }
 

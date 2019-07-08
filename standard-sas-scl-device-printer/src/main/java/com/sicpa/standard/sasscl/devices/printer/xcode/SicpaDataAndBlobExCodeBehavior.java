@@ -12,12 +12,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SicpaDataAndBlobExCodeBehavior implements IExCodeBehavior {
+	public final static String BLOCK_SEPARATOR = ">-<" ;
+	private static final int NUMBER_OF_BLOCKS =  2;
 
 	private ModelDataMatrixFormat dmFormat;
 	private ModelDataMatrixEncoding dmEncoding;
 	private Option dmOrientation;
 	private RelativePosition blobPosition;
 	private Option blobType;
+
+	private int text1Length;
+	private int text2Length;
+	private RelativePosition text1Position;
+	private RelativePosition text2Position;
+	private boolean hrdEnable;
+
 	private static final Logger logger = LoggerFactory.getLogger(SicpaDataAndBlobExCodeBehavior.class);
 
 	private BlobDetectionUtils blobUtils;
@@ -43,7 +52,23 @@ public class SicpaDataAndBlobExCodeBehavior implements IExCodeBehavior {
 
 		List<Object> compositeCode = new ArrayList<>();
 
-		compositeCode.add(code);
+		if(hrdEnable) {
+			String[] parsedCode = code.split(BLOCK_SEPARATOR);
+
+			/* If the string code is not composed of 2 blocks with a block separator then
+	           we throw an exception  */
+
+			if(parsedCode.length != NUMBER_OF_BLOCKS) {
+				throw new IllegalArgumentException("code with value " + parsedCode + " is not composed of 2 blocks." );
+			}
+
+			compositeCode.add(getTextLine1(parsedCode));
+			compositeCode.add(getTextLine2(parsedCode));
+			compositeCode.add(getSicpadata(parsedCode));
+		} else {
+			compositeCode.add(code);
+		}
+
 		if (isBlobEnabled) {
 			/*
 			 * The blobFactory give us a default implementation of the blob pattern. Nevertheless we need to provide a
@@ -59,8 +84,25 @@ public class SicpaDataAndBlobExCodeBehavior implements IExCodeBehavior {
 		return "dummy";
 	}
 
+	private String getTextLine2(String[] parsedCode) {
+		return parsedCode[1].substring(text1Length, parsedCode[1].length());
+	}
+
+	private String getTextLine1(String[] parsedCode) {
+		return parsedCode[1].substring(0, text1Length);
+	}
+
+	private String getSicpadata(String[] parsedCode) {
+		return parsedCode[0];
+	}
+
 	private List<BlockFactory> createBlockFactories(boolean isBlobEnable) {
 		List<BlockFactory> blockFactories = new ArrayList<>();
+
+		if(hrdEnable) {
+			blockFactories.add(createTextLine1BlockFactory());
+			blockFactories.add(createTextLine2BlockFactory());
+		}
 
 		blockFactories.add(createDatamatrixBlockFactory());
 		if (isBlobEnable) {
@@ -70,6 +112,20 @@ public class SicpaDataAndBlobExCodeBehavior implements IExCodeBehavior {
 		return blockFactories;
 	}
 
+	private TextBlockFactory createTextLine2BlockFactory() {
+		TextBlockFactory text2Factory = new TextBlockFactory();
+		text2Factory.setRelativePosition(text2Position);
+		text2Factory.setLength(text2Length);
+		return text2Factory;
+	}
+
+	private TextBlockFactory createTextLine1BlockFactory() {
+		TextBlockFactory text1Factory = new TextBlockFactory();
+		text1Factory.setRelativePosition(text1Position);
+		text1Factory.setLength(text1Length);
+		return text1Factory;
+
+	}
 	private BlobBlockFactory createBlobBlockFactory() {
 		BlobBlockFactory blobFactory = new BlobBlockFactory();
 		blobFactory.setRelativePosition(blobPosition);
@@ -86,6 +142,22 @@ public class SicpaDataAndBlobExCodeBehavior implements IExCodeBehavior {
 			dmFactory.addOption(dmOrientation);
 		}
 		return dmFactory;
+	}
+
+	public void setText1Length(int text1Length) {
+		this.text1Length = text1Length;
+	}
+
+	public void setText1Position(RelativePosition text1Position) {
+		this.text1Position = text1Position;
+	}
+
+	public void setText2Length(int text2Length) {
+		this.text2Length = text2Length;
+	}
+
+	public void setText2Position(RelativePosition text2Position) {
+		this.text2Position = text2Position;
 	}
 
 	public void setDmFormat(ModelDataMatrixFormat dmFormat) {
@@ -111,5 +183,10 @@ public class SicpaDataAndBlobExCodeBehavior implements IExCodeBehavior {
 	public void setBlobUtils(BlobDetectionUtils blobUtils) {
 		this.blobUtils = blobUtils;
 	}
+
+	public void setHrdEnable(boolean hrdEnable) {
+		this.hrdEnable = hrdEnable;
+	}
+
 
 }

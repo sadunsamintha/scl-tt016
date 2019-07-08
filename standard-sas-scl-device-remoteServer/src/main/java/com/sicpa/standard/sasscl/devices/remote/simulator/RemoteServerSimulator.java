@@ -30,8 +30,10 @@ import com.sicpa.standard.sasscl.devices.remote.AbstractRemoteServer;
 import com.sicpa.standard.sasscl.devices.remote.GlobalMonitoringToolInfo;
 import com.sicpa.standard.sasscl.devices.remote.RemoteServerException;
 import com.sicpa.standard.sasscl.devices.remote.simulator.stdCrypto.bean.DescriptorBean;
+import com.sicpa.standard.sasscl.devices.remote.stdCrypto.EncoderHrdNoEncryptionSimulator;
 import com.sicpa.standard.sasscl.devices.remote.stdCrypto.StdCryptoAuthenticatorWrapperSimulator;
 import com.sicpa.standard.sasscl.devices.remote.stdCrypto.StdCryptoEncoderWrapperSimulator;
+import com.sicpa.standard.sasscl.devices.remote.stdCrypto.StdHrdCryptoEncoderWrapperSimulator;
 import com.sicpa.standard.sasscl.devices.simulator.gui.SimulatorControlView;
 import com.sicpa.standard.sasscl.messages.MessageEventKey;
 import com.sicpa.standard.sasscl.model.CodeType;
@@ -95,6 +97,8 @@ public class RemoteServerSimulator extends AbstractRemoteServer implements ISimu
   private volatile boolean setupBusinessCryptoDone = false;
   private IBSicpadataModule sicpadataModule;
 
+  private boolean hrdEnable;
+  
   public IServiceProviderManager getServiceProviderManager() {
     return serviceProviderManager;
   }
@@ -117,6 +121,10 @@ public class RemoteServerSimulator extends AbstractRemoteServer implements ISimu
 
   public void setCryptoStartYear(int cryptoStartYear) {
     this.cryptoStartYear = cryptoStartYear;
+  }
+  
+  public void setHrdEnable(boolean hrdEnable) {
+	  this.hrdEnable = hrdEnable;
   }
 
   // TODO fixme
@@ -287,13 +295,24 @@ public class RemoteServerSimulator extends AbstractRemoteServer implements ISimu
       SicpadataException {
     IBSicpadataGenerator bEncoder = generateEncoders(currentEncoderIndex, codeTypeId);
     int id = new Random().nextInt(Integer.MAX_VALUE);
-    return new StdCryptoEncoderWrapperSimulator(id, id, bEncoder, year, getSubsystemID(),
+    if(hrdEnable) {
+    return new StdHrdCryptoEncoderWrapperSimulator(id, id, bEncoder, year, getSubsystemID(),
         simulatorModel.getNumberOfCodesByEncoder(), cryptoFieldsConfig, codeTypeId);
+    } else {
+    	return new StdCryptoEncoderWrapperSimulator(id, id, bEncoder, year, getSubsystemID(),
+    	        simulatorModel.getNumberOfCodesByEncoder(), cryptoFieldsConfig, codeTypeId);
+    }
   }
 
   private IEncoder createNoEncryptionEncoder(int year, int codeTypeId) {
-    return new EncoderNoEncryptionSimulator(0, new Random().nextInt(Integer.MAX_VALUE), 0,
-        simulatorModel.getNumberOfCodesByEncoder(), year, getSubsystemID(), codeTypeId);
+	  if(hrdEnable) {
+		  return new EncoderHrdNoEncryptionSimulator(0, new Random().nextInt(Integer.MAX_VALUE), 0,
+			        simulatorModel.getNumberOfCodesByEncoder(), year, getSubsystemID(), codeTypeId);
+	  } else {
+		  return new EncoderNoEncryptionSimulator(0, new Random().nextInt(Integer.MAX_VALUE), 0,
+			        simulatorModel.getNumberOfCodesByEncoder(), year, getSubsystemID(), codeTypeId);
+	  }
+    
   }
 
   @Override
