@@ -25,7 +25,7 @@ public class StdHrdCryptoEncoderWrapperSimulator extends StdCryptoEncoderWrapper
         List<String> codes = new ArrayList<String>();
 
         for(String s : res) {
-        	codes.add(s + BLOCK_SEPARATOR + String.format("%09d", this.sequence++));
+        	codes.add(s + BLOCK_SEPARATOR + String.format("%08d", this.sequence++));
         }
 
         remainingCode -= res.size();
