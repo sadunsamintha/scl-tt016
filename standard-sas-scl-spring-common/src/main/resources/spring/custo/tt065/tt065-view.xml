@@ -69,5 +69,6 @@
 	<bean id="redLightController" class="com.sicpa.tt065.redlight.TT065RedLightController">
 		<property name="messageCodeMapper" ref="messagesMapping" />
 		<property name="flowControl" ref="flowControl" />
+		<property name="redLightService" ref="redLightService" />
 	</bean>
 </beans>

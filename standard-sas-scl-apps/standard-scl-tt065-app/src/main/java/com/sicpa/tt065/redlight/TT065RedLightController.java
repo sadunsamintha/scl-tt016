@@ -1,12 +1,9 @@
 package com.sicpa.tt065.redlight;
 
 import com.google.common.eventbus.Subscribe;
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.time.temporal.Temporal;
+import java.util.function.Supplier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import com.sicpa.standard.client.common.i18n.Messages;
 import com.sicpa.standard.client.common.messages.IMessageCodeMapper;
 import com.sicpa.standard.gui.utils.ThreadUtils;
@@ -25,11 +22,9 @@ import com.sicpa.standard.sasscl.controller.view.event.ErrorViewEvent;
 public class TT065RedLightController {
   private IMessageCodeMapper messageCodeMapper;
   private IFlowControl flowControl;
-  private Temporal errorTimePoint = null;
-  private volatile RedLightMode currentMode = RedLightMode.OFF;
+  private TT065RedLightService redLightService;
 
-  private final static Logger LOGGER = LoggerFactory.getLogger(TT065RedLightController.class);
-  private enum RedLightMode{ ON, OFF }
+  private static final Logger LOGGER = LoggerFactory.getLogger(TT065RedLightController.class);
 
   public void setMessageCodeMapper(final IMessageCodeMapper messageCodeMapper) {
     this.messageCodeMapper = messageCodeMapper;
@@ -39,11 +34,13 @@ public class TT065RedLightController {
     this.flowControl = flowControl;
   }
 
-  protected void initializeRedLight(final IEventHandler eventHandler){
-    currentMode = RedLightMode.ON;
-    errorTimePoint = LocalDateTime.now();
-    final String errorMessage = eventHandler.getEventReason();
-    logRedLight("System Halt. Reason: "+errorMessage);
+  public void setRedLightService(TT065RedLightService redLightService) {
+    this.redLightService = redLightService;
+  }
+
+  private void initializeRedLight(final Supplier<String> supplier){
+    final String errorMessage = supplier.get();
+    this.redLightService.startARedLight(errorMessage);
   }
 
 
@@ -56,7 +53,7 @@ public class TT065RedLightController {
   public void processHardwareEvent(final HardwareControllerStatusEvent evt) {
     ThreadUtils.invokeLater(() -> {
       try {
-        if(currentMode.equals(RedLightMode.OFF) && hardwareWithIssues(evt)) {
+        if(!this.redLightService.isInRedLightState() && hardwareWithIssues(evt)) {
           initializeRedLight(()->String.join(", ", evt.getErrors()));
         }
       } catch (Exception e) {
@@ -82,7 +79,7 @@ public class TT065RedLightController {
   public void processErrorEvent(final ErrorViewEvent evt) {
     ThreadUtils.invokeLater(() -> {
       try {
-        if(currentMode.equals(RedLightMode.OFF)){
+        if(!this.redLightService.isInRedLightState()){
           initializeRedLight(()->{
             final StringBuilder fullMessage = new StringBuilder();
             if(evt.getCodeExt() !=null){
@@ -111,21 +108,12 @@ public class TT065RedLightController {
     ThreadUtils.invokeLater(() -> {
       final ApplicationFlowState currentState = evt.getCurrentState();
       if(recoveredAfterARedLight(currentState)){
-        final LocalDateTime currentTimePoint = LocalDateTime.now();
-        final Duration between = Duration.between(errorTimePoint, currentTimePoint);
-
-        this.errorTimePoint = null;
-        this.currentMode = RedLightMode.OFF;
-        logRedLight("System Recovered. Red Light total time (in seconds): "+ between.getSeconds());
+        this.redLightService.stopARedLight();
       }
     });
   }
 
   private boolean recoveredAfterARedLight(final ApplicationFlowState currentState){
-    return currentState.equals(ApplicationFlowState.STT_CONNECTED) && currentMode.equals(RedLightMode.ON);
-  }
-
-  private void logRedLight(final String message) {
-    LOGGER.error("[RED LIGHT "+currentMode.toString()+"] "+message);
+    return currentState.equals(ApplicationFlowState.STT_CONNECTED) && this.redLightService.isInRedLightState();
   }
 }
