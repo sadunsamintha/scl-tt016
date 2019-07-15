@@ -30,10 +30,6 @@ public class TT065SkuConverter extends SkuConverter {
                 .getSkuBarcode()));
         sku.setProperty(TT065CustomProperties.skuCompliant, skuDto.isCompliant());
 
-        if (skuDto.getIcon() != null && skuDto.getIcon().length > 1) {
-//            sku.setImage(new ImageIcon(skuDto.getIcon()));
-        }
-
         CodeType codeType = this.getCodeTypeForSku(child);
 
         // skip if fail to get code type

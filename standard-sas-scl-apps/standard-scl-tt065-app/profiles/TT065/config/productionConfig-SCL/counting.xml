@@ -2,8 +2,6 @@
 
 	<CameraConfig deviceType="COGNEX" id="qc_scl_1" />
 
-	<PrinterConfig deviceType="LEIBINGER" id="leibinger_1" validatedBy="qc_scl_1" />
-
 	<BrsConfig />
 
 	<plcConfig>
