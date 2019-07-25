@@ -91,6 +91,7 @@ logger("com.sicpa.standard.plc",                                INFO,   ["STDPLC
 logger("com.sicpa.standard.printer.leibinger.monitoring",       INFO,   ["PRINTERMONITORING"],      true)
 logger("com.sicpa.standard.printer.domino.monitoring",          INFO,   ["PRINTER_MONITORING_DOMINO"],      true)
 logger("com.sicpa.tt016.devices.plc.PlcPersistentProductCounterManager",       INFO,   ["PLC_SKU_PRODUCT_COUNTER"],      true)
+logger("com.sicpa.tt016.devices.plc.PlcPersistentProductCounterManager",       INFO,   ["PLC_SKU_GROSS_NET_PRODUCT_COUNTER"],      true)
 logger("com.sicpa.tt016.devices.plc.PlcPersistentGrossNetProductCounterManager",       INFO,   ["PLC_SKU_GROSS_NET_PRODUCT_COUNTER"],      true)
 
 
