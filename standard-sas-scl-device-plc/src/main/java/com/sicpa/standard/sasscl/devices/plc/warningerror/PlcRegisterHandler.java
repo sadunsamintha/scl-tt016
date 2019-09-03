@@ -28,9 +28,12 @@ public class PlcRegisterHandler implements IPlcListener {
 	private PlcProvider plcProvider;
 	private String lineRegisterVarName;
 	private String cabRegisterVarName;
+	private String lineSecondaryRegisterVarName;
 
 	private final List<String> cabinetErrorsList = new ArrayList<>();
 	private final List<String> lineErrorsList = new ArrayList<>();
+	private final List<String> lineErrorsSecondaryList = new ArrayList<>();
+	
 
 	// previous register value, in order to fire issue solved event
 	private Integer previousCabinetRegisterValue = 0;
@@ -45,6 +48,10 @@ public class PlcRegisterHandler implements IPlcListener {
 
 	protected List<String> getLineErrorsInRegister(int registerValue) {
 		return getErrorsInRegister(lineErrorsList, registerValue);
+	}
+	
+	protected List<String> getLineErrorsInSecondaryRegister(int registerValue) {
+		return getErrorsInRegister(lineErrorsSecondaryList, registerValue);
 	}
 
 	protected List<String> getErrorsInRegister(List<String> errorAvailable, int registerValue) {
@@ -115,22 +122,40 @@ public class PlcRegisterHandler implements IPlcListener {
 			fireMessage(msgDescriptor, lineIndex);
 		}
 	}
+	
+	protected void handleSecondaryLineRegister(Integer previousRegister, Integer currentRegister, int lineIndex) {
+		List<String> previouses = getLineErrorsInSecondaryRegister(previousRegister);
+		List<String> currents = getLineErrorsInSecondaryRegister(currentRegister);
 
-	protected void onLineErrorRegister(Integer registerValue, String varName) {
-		synchronized (mapPreviousRegister) {
-			List<String> lineWarningErrorVariables = PlcLineHelper.getLinesVariableName(lineRegisterVarName);
-
-			if (lineWarningErrorVariables != null && lineWarningErrorVariables.contains(varName)) {
-
-				Integer previousRegister = mapPreviousRegister.get(varName);
-				if (previousRegister == null) {
-					previousRegister = 0;
-				}
-				handleLineRegister(previousRegister, registerValue, PlcLineHelper.getLineIndex(varName));
-				mapPreviousRegister.put(varName, registerValue);
+		for (String previousDesc : previouses) {
+			if (!currents.contains(previousDesc)) {
+				fireIssueSolved(previousDesc);
 			}
 		}
+
+		for (String msgDescriptor : currents) {
+			fireMessage(msgDescriptor, lineIndex);
+		}
 	}
+
+	protected void onLineErrorRegister(Integer registerValue, String varName) {
+		
+		synchronized (mapPreviousRegister) {
+			List<String> lineWarningErrorVariables = PlcLineHelper.getLinesVariableName(lineRegisterVarName);
+			Integer previousRegister = mapPreviousRegister.get(varName);
+			if (previousRegister == null) {
+				previousRegister = 0;
+			}
+			
+			if (lineWarningErrorVariables != null && lineWarningErrorVariables.contains(varName)){
+				handleLineRegister(previousRegister, registerValue, PlcLineHelper.getLineIndex(varName));
+			}else {
+				handleSecondaryLineRegister(previousRegister, registerValue, PlcLineHelper.getLineIndex(varName));
+			}
+			mapPreviousRegister.put(varName, registerValue);
+		}
+	}
+	
 
 	@Override
 	public void onPlcEvent(PlcEvent event) {
@@ -139,7 +164,7 @@ public class PlcRegisterHandler implements IPlcListener {
 
 		if (cabRegisterVarName.equals(event.getVarName())) {
 			onCabinetErrorRegister(registerValue);
-		} else {
+		} else { 
 			onLineErrorRegister(registerValue, event.getVarName());
 		}
 	}
@@ -150,6 +175,7 @@ public class PlcRegisterHandler implements IPlcListener {
 		List<String> vars = new ArrayList<String>();
 		vars.add(cabRegisterVarName);
 		vars.addAll(PlcLineHelper.getLinesVariableName(lineRegisterVarName));
+		vars.addAll(PlcLineHelper.getLinesVariableName(lineSecondaryRegisterVarName));
 		return vars;
 	}
 
@@ -179,6 +205,15 @@ public class PlcRegisterHandler implements IPlcListener {
 		this.lineErrorsList.addAll(linePlcWarningErrorMsgDescriptorList);
 	}
 
+	public List<String> getLineErrorsSecondaryList() {
+		return lineErrorsSecondaryList;
+	}
+	
+	public void setLineErrorsSecondaryList(List<String> lineSecondaryPlcWarningErrorMsgDescriptorList) {
+		this.lineErrorsSecondaryList.addAll(lineSecondaryPlcWarningErrorMsgDescriptorList);
+	}
+	
+
 	public void setCabRegisterVarName(String cabRegisterVarName) {
 		this.cabRegisterVarName = cabRegisterVarName;
 	}
@@ -186,4 +221,9 @@ public class PlcRegisterHandler implements IPlcListener {
 	public void setLineRegisterVarName(String lineRegisterVarName) {
 		this.lineRegisterVarName = lineRegisterVarName;
 	}
+
+	public void setLineSecondaryRegisterVarName(String lineSecondaryRegisterVarName) {
+		this.lineSecondaryRegisterVarName = lineSecondaryRegisterVarName;
+	}
+	
 }

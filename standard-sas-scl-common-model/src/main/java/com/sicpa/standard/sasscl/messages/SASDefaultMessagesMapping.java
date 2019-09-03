@@ -1,15 +1,39 @@
 package com.sicpa.standard.sasscl.messages;
 
-import com.sicpa.standard.client.common.messages.DefaultMessagesMapping;
-import com.sicpa.standard.client.common.utils.PropertiesUtils;
-import com.sicpa.standard.sasscl.messages.MessageEventKey.*;
+import static com.sicpa.standard.sasscl.messages.ActionMessageType.ERROR;
+import static com.sicpa.standard.sasscl.messages.ActionMessageType.ERROR_DEVICE;
+import static com.sicpa.standard.sasscl.messages.ActionMessageType.ERROR_DISPLAY;
+import static com.sicpa.standard.sasscl.messages.ActionMessageType.IGNORE;
+import static com.sicpa.standard.sasscl.messages.ActionMessageType.LOG;
+import static com.sicpa.standard.sasscl.messages.ActionMessageType.WARNING;
+
+import java.util.Properties;
+
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Properties;
-
-import static com.sicpa.standard.sasscl.messages.ActionMessageType.*;
+import com.sicpa.standard.client.common.messages.DefaultMessagesMapping;
+import com.sicpa.standard.client.common.utils.PropertiesUtils;
+import com.sicpa.standard.sasscl.messages.MessageEventKey.Activation;
+import com.sicpa.standard.sasscl.messages.MessageEventKey.Alert;
+import com.sicpa.standard.sasscl.messages.MessageEventKey.BIS;
+import com.sicpa.standard.sasscl.messages.MessageEventKey.BRS;
+import com.sicpa.standard.sasscl.messages.MessageEventKey.Camera;
+import com.sicpa.standard.sasscl.messages.MessageEventKey.Coding;
+import com.sicpa.standard.sasscl.messages.MessageEventKey.DevicesController;
+import com.sicpa.standard.sasscl.messages.MessageEventKey.FlowControl;
+import com.sicpa.standard.sasscl.messages.MessageEventKey.MAINTENACE;
+import com.sicpa.standard.sasscl.messages.MessageEventKey.ModelEditing;
+import com.sicpa.standard.sasscl.messages.MessageEventKey.PLC;
+import com.sicpa.standard.sasscl.messages.MessageEventKey.Printer;
+import com.sicpa.standard.sasscl.messages.MessageEventKey.Production;
+import com.sicpa.standard.sasscl.messages.MessageEventKey.ProductionParameters;
+import com.sicpa.standard.sasscl.messages.MessageEventKey.RemoteServer;
+import com.sicpa.standard.sasscl.messages.MessageEventKey.Simulator;
+import com.sicpa.standard.sasscl.messages.MessageEventKey.SkuCheck;
+import com.sicpa.standard.sasscl.messages.MessageEventKey.SkuRecognition;
+import com.sicpa.standard.sasscl.messages.MessageEventKey.Storage;
 
 public class SASDefaultMessagesMapping extends DefaultMessagesMapping {
 	private static final Logger logger = LoggerFactory.getLogger(SASDefaultMessagesMapping.class);
@@ -82,7 +106,25 @@ public class SASDefaultMessagesMapping extends DefaultMessagesMapping {
 		addEntry(PLC.PLC_ERR_TEMPERATURE_IJ_CABINET, "[PLC_61]", ERROR);
 		addEntry(PLC.PLC_ERR_TEMPERATURE_IJ_INK, "[PLC_62]", ERROR);
 		addEntry(PLC.PLC_ERR_DOOR_SWITCH_IJ_OPEN, "[PLC_63]", ERROR);
+		
+		addEntry(PLC.PLC_ERR_PRINTER_LOC_AFTER_CAM, "[PLC_63]", ERROR);
+		addEntry(PLC.PLC_ERR_INVALID_PROD_CTRL_EJ_DISTANCE, "[PLC_64]", ERROR);
+		addEntry(PLC.PLC_ERR_AUDIO_VISUAL_LOC_BEFORE_EJ, "[PLC_65]", ERROR);
+		addEntry(PLC.PLC_ERR_SECOND_LABEL_APP_NOT_READY, "[PLC_66]", ERROR);
+		addEntry(PLC.PLC_ERR_SECOND_LABEL_APP_FAULT, "[PLC_67]", ERROR);
+		addEntry(PLC.PLC_ERR_DOUBLE_LABEL_APP_ERROR, "[PLC_68]", ERROR);
+		addEntry(PLC.PLC_ERR_TWO_MODES_SET_AT_SAMETIME, "[PLC_69]", ERROR);
+		
+		addEntry(PLC.PLC_WAR_CAM_LOC_AFT_EJ, "[PLC_70]", WARNING);
+		addEntry(PLC.PLC_WAR_INCOHERENT_SMALL_REJ_LIMIT, "[PLC_71]", WARNING);
+		addEntry(PLC.PLC_WAR_INCOHERENT_LARGE_REJ_LIMIT, "[PLC_72]", WARNING);
+		addEntry(PLC.PLC_WAR_SECOND_LABEL_APP_OR_AIR_DRYER_WARNING, "[PLC_73]", WARNING);
+		addEntry(PLC.PLC_WAR_INVALIDTYP_FOR_PRDCTRL_EJ, "[PLC_74]", WARNING);
+		addEntry(PLC.PLC_WAR_INCOHERENT_LIFE_CHCK_TIMEOUT, "[PLC_75]", WARNING);
+		addEntry(PLC.PLC_WAR_PC_DISTANCE_LOC_AFTER_PC_EJ, "[PLC_76]", WARNING);
+		addEntry(PLC.PLC_WAR_INCOHERENT_JAVA_NOTIFICATION_DISTANCE, "[PLC_77]", WARNING);
 
+		
 		addEntry(Alert.TOO_MANY_CAMERA_ERROR, "[ALT_01]", ERROR);
 		addEntry(Alert.DUPLICATED_CODE, "[ALT_03]", ERROR);
 		addEntry(Alert.CAMERA_TRIGGER_TOO_FAST, "[ALT_04]", WARNING);

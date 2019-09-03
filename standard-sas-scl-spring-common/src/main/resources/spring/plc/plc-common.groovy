@@ -159,13 +159,50 @@ beans{
 		PLC_ERR_TEMPERATURE_IJ_INK,
 		PLC_ERR_DOOR_SWITCH_IJ_OPEN
 	]
+	
+	def line_msg_secondary=[
+		PLC_WAR_CAM_LOC_AFT_EJ,
+		PLC_WAR_INCOHERENT_SMALL_REJ_LIMIT,
+		PLC_WAR_INCOHERENT_LARGE_REJ_LIMIT,
+		PLC_WAR_SECOND_LABEL_APP_OR_AIR_DRYER_WARNING,
+		PLC_WAR_INVALIDTYP_FOR_PRDCTRL_EJ,
+		PLC_WAR_INCOHERENT_LIFE_CHCK_TIMEOUT,
+		PLC_WAR_PC_DISTANCE_LOC_AFTER_PC_EJ,
+		PLC_WAR_INCOHERENT_JAVA_NOTIFICATION_DISTANCE,
+		null,
+		null,
+		null,
+		null,
+		null,
+		null,
+		null,
+		null,
+		PLC_ERR_PRINTER_LOC_AFTER_CAM,
+		PLC_ERR_INVALID_PROD_CTRL_EJ_DISTANCE,
+		PLC_ERR_AUDIO_VISUAL_LOC_BEFORE_EJ,
+		PLC_ERR_SECOND_LABEL_APP_NOT_READY,
+		PLC_ERR_SECOND_LABEL_APP_FAULT,
+		PLC_ERR_DOUBLE_LABEL_APP_ERROR,
+		PLC_ERR_TWO_MODES_SET_AT_SAMETIME,
+		null,
+		null,
+		null,
+		null,
+		null,
+		null,
+		null,
+		null,
+		null
+	]
 
 	plcRegisterHandler(PlcRegisterHandler) {
 		plcProvider=ref('plcProvider')
 		cabRegisterVarName="#{plcVarMap['NTF_CAB_WAR_ERR_REGISTER']}"
 		lineRegisterVarName="#{plcVarMap['NTF_LINE_WAR_ERR_REGISTER']}"
+		lineSecondaryRegisterVarName="#{plcVarMap['NTF_LINE_WAR_ERR_SECONDARY_REGISTER']}"
 		lineErrorsList=line_msg
 		cabinetErrorsList=cab_msg
+		lineErrorsSecondaryList=line_msg_secondary
 	}
 }
 

@@ -155,6 +155,7 @@ beans {
 	plcMap['NTF_LINE_JAVA_CPT_ACQ_ERRORS']=[v:LINE_NTF+'nJavaCpt_AcquisitionErrors' ,t:I ]
 	plcMap['NTF_LINE_JAVA_PRODUCT_STATUS']=[v:LINE_NTF+'nDRSValueForJava' ,t:I, lineNtf:'true']
 	plcMap['NTF_LINE_JAVA_PRODUCT_COUNTER']=[v:LINE_NTF+'nJavaProductCounter' ,t:I]
+	plcMap['NTF_LINE_WAR_ERR_SECONDARY_REGISTER']=[v:LINE_NTF+'nWar_Err_Secondary_Register' ,t:I ,lineNtf:'true']
 
 
 	//CABINET PARAM
