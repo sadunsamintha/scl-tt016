@@ -1,5 +1,6 @@
 package custo.tt080
 
+import javax.swing.ImageIcon
 import com.sicpa.standard.gui.utils.ImageUtils
 import com.sicpa.standard.sasscl.devices.remote.simulator.RemoteServerSimulator
 import com.sicpa.standard.sasscl.devices.remote.simulator.RemoteServerSimulatorModel
@@ -8,9 +9,8 @@ import com.sicpa.standard.sasscl.model.SKU
 import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.ProductionModeNode
 import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.ProductionParameterRootNode
 import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.SKUNode
-
 import javax.swing.*
-
+import static com.sicpa.tt080.sasscl.model.TT080ProductionMode.*
 import static com.sicpa.standard.sasscl.model.ProductionMode.*
 
 beans{
@@ -21,6 +21,7 @@ beans{
 
     def productionModes = [
             [mode:STANDARD, ct:[1, 2]],
+            [mode:FREEZONE, ct:[2, 2]],
             [mode:EXPORT, ct:[4, 5]],
             [mode:COUNTING, ct:[7, 8]],
             [mode:REFEED_NORMAL, ct:[1, 2]],
@@ -69,6 +70,4 @@ beans{
         hrdEnable = props['hrd.enable']
     }
 }
-
-
 

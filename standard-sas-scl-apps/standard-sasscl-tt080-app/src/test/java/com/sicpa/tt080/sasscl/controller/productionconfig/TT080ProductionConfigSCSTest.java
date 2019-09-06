@@ -10,6 +10,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.sicpa.standard.sasscl.controller.productionconfig.validator.ProductionParametersValidator;
 import com.sicpa.standard.sasscl.model.ProductionMode;
 import com.sicpa.tt080.TT080TestSpringContextConfig;
+import com.sicpa.tt080.sasscl.model.TT080ProductionMode;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -19,89 +20,101 @@ import static org.junit.Assert.assertThat;
 @ContextConfiguration(classes = TT080TestSpringContextConfig.class)
 public class TT080ProductionConfigSCSTest {
 
-    @Autowired private ProductionParametersValidator productionParametersValidator;
+  @Autowired private ProductionParametersValidator productionParametersValidator;
 
-    @Test
-    public void productionConfig_ShouldHave_ValidExportMode(){
-        //Given
-        final ProductionMode exportMode = ProductionMode.EXPORT;
+  @Test
+  public void productionConfig_ShouldHave_ValidExportMode(){
+    //Given
+    final ProductionMode exportMode = ProductionMode.EXPORT;
 
-        //When
-        final boolean validate = productionParametersValidator.validate(exportMode);
+    //When
+    final boolean validate = productionParametersValidator.validate(exportMode);
 
-        //Then
-        assertThat(validate, is(true));
-    }
+    //Then
+    assertThat(validate, is(true));
+  }
 
-    @Test
-    public void productionConfig_ShouldHave_ValidStandardMode(){
-        //Give
-        final ProductionMode exportMode = ProductionMode.STANDARD;
+  @Test
+  public void productionConfig_ShouldHave_ValidStandardMode(){
+    //Give
+    final ProductionMode exportMode = ProductionMode.STANDARD;
 
-        //When
-        final boolean validate = productionParametersValidator.validate(exportMode);
+    //When
+    final boolean validate = productionParametersValidator.validate(exportMode);
 
-        //Then
-        assertThat(validate, is(true));
-    }
+    //Then
+    assertThat(validate, is(true));
+  }
 
-    @Test
-    public void productionConfig_ShouldHave_ValidMaintenanceMode(){
-        //Give
-        final ProductionMode exportMode = ProductionMode.MAINTENANCE;
+  @Test
+  public void productionConfig_ShouldHave_ValidMaintenanceMode(){
+    //Give
+    final ProductionMode exportMode = ProductionMode.MAINTENANCE;
 
-        //When
-        final boolean validate = productionParametersValidator.validate(exportMode);
+    //When
+    final boolean validate = productionParametersValidator.validate(exportMode);
 
-        //Then
-        assertThat(validate, is(true));
-    }
+    //Then
+    assertThat(validate, is(true));
+  }
 
-    @Test
-    public void productionConfig_ShouldHave_ValidExportCodingMode(){
-        //Give
-        final ProductionMode exportMode = ProductionMode.EXPORT_CODING;
+  @Test
+  public void productionConfig_ShouldHave_ValidExportCodingMode(){
+    //Give
+    final ProductionMode exportMode = ProductionMode.EXPORT_CODING;
 
-        //When
-        final boolean validate = productionParametersValidator.validate(exportMode);
+    //When
+    final boolean validate = productionParametersValidator.validate(exportMode);
 
-        //Then
-        assertThat(validate, is(true));
-    }
+    //Then
+    assertThat(validate, is(true));
+  }
 
-    @Test
-    public void productionConfig_ShouldHave_ValidRefeedNormalMode(){
-        //Give
-        final ProductionMode exportMode = ProductionMode.REFEED_NORMAL;
+  @Test
+  public void productionConfig_ShouldHave_ValidRefeedNormalMode(){
+    //Give
+    final ProductionMode exportMode = ProductionMode.REFEED_NORMAL;
 
-        //When
-        final boolean validate = productionParametersValidator.validate(exportMode);
+    //When
+    final boolean validate = productionParametersValidator.validate(exportMode);
 
-        //Then
-        assertThat(validate, is(true));
-    }
+    //Then
+    assertThat(validate, is(true));
+  }
 
-    @Test
-    public void productionConfig_ShouldHave_ValidRefeedCorrectionMode(){
-        //Give
-        final ProductionMode exportMode = ProductionMode.REFEED_CORRECTION;
+  @Test
+  public void productionConfig_ShouldHave_ValidRefeedCorrectionMode(){
+    //Give
+    final ProductionMode exportMode = ProductionMode.REFEED_CORRECTION;
 
-        //When
-        final boolean validate = productionParametersValidator.validate(exportMode);
+    //When
+    final boolean validate = productionParametersValidator.validate(exportMode);
 
-        //Then
-        assertThat(validate, is(true));
-    }
+    //Then
+    assertThat(validate, is(true));
+  }
 
-    @Test
-    public void productionConfig_ShouldHave_ValidCountingMode(){
-        //Given
-        final ProductionMode exportMode = ProductionMode.COUNTING;
+  @Test
+  public void productionConfig_ShouldHave_ValidCountingMode(){
+    //Given
+    final ProductionMode exportMode = ProductionMode.COUNTING;
 
-        //When
-        final boolean validate = productionParametersValidator.validate(exportMode);
+    //When
+    final boolean validate = productionParametersValidator.validate(exportMode);
 
-        //Then
-        assertThat(validate, is(true));
-    }
+    //Then
+    assertThat(validate, is(true));
+  }
+
+  @Test
+  public void productionConfig_ShouldNotHave_FreeZoneMode(){
+    //Given
+    final ProductionMode exportMode = TT080ProductionMode.FREEZONE;
+
+    //When
+    final boolean validate = productionParametersValidator.validate(exportMode);
+
+    //Then
+    assertThat(validate, is(false));
+  }
 }

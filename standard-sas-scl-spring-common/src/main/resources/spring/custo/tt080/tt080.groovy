@@ -11,6 +11,12 @@ beans {
 	def serverBehavior=props['remoteServer.behavior'].toUpperCase()
     def printerBehavior=props['printer.behavior'].toUpperCase()
 
+    addAlias('bootstrapAlias', 'bootstrap')
+    bootstrap(TT080Bootstrap) { b ->
+        b.parent = ref('bootstrapAlias')
+        productionBatchProvider = ref('productionBatchProvider')
+    }
+
     if(serverBehavior == "STANDARD") {
         importBeans('spring/server/server-core5.groovy')
         importBeans('spring/custo/tt080/tt080-server.groovy')
@@ -19,6 +25,8 @@ beans {
         importBeans('spring/custo/tt080/tt080-server-simulator.groovy')
     }
 
+    importBeans('spring/custo/tt080/tt080-production-config.groovy')
+    importBeans('spring/custo/tt080/tt080-production-mode.groovy')
 	importBeans('spring/custo/tt080/tt080-hrd.xml')
 
     printerSimulatorAdaptor(TT080PrinterAdaptorSimulator,ref('printerSimulatorController')){b->
@@ -29,14 +37,4 @@ beans {
         addAlias('printerLeibinger','printerSimulatorAdaptor')
     }
 
-	addAlias('bootstrapAlias','bootstrap')
-	bootstrap(TT080Bootstrap){b->
-		b.parent=ref('bootstrapAlias')
-		productionBatchProvider = ref('productionBatchProvider')
-	}
-
-//	coding(TT080Coding, ref('storage')) {
-//		productionParameters = ref("productionParameters")
-//		siteId = props["site.id"]
-//	}
 }
