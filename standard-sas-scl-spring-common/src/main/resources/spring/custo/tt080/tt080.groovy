@@ -4,14 +4,12 @@ import com.sicpa.tt080.printer.simulator.TT080PrinterAdaptorSimulator
 
 beans {
     importBeans('spring/custo/tt080/plc/tt080.plc-import.groovy')
+	importBeans('spring/custo/tt080/tt080-view.xml')
+	importBeans('spring/custo/tt080/tt080-provider.xml')
+	importBeans('spring/custo/tt080/tt080-flowControl.xml')
 
-    def serverBehavior=props['remoteServer.behavior'].toUpperCase()
+	def serverBehavior=props['remoteServer.behavior'].toUpperCase()
     def printerBehavior=props['printer.behavior'].toUpperCase()
-
-    addAlias('bootstrapAlias', 'bootstrap')
-    bootstrap(TT080Bootstrap) { b ->
-        b.parent = ref('bootstrapAlias')
-    }
 
     if(serverBehavior == "STANDARD") {
         importBeans('spring/server/server-core5.groovy')
@@ -27,9 +25,18 @@ beans {
         b.scope='prototype'
     }
 
-
     if(printerBehavior == 'SIMULATOR') {
         addAlias('printerLeibinger','printerSimulatorAdaptor')
     }
 
+	addAlias('bootstrapAlias','bootstrap')
+	bootstrap(TT080Bootstrap){b->
+		b.parent=ref('bootstrapAlias')
+		productionBatchProvider = ref('productionBatchProvider')
+	}
+
+//	coding(TT080Coding, ref('storage')) {
+//		productionParameters = ref("productionParameters")
+//		siteId = props["site.id"]
+//	}
 }
