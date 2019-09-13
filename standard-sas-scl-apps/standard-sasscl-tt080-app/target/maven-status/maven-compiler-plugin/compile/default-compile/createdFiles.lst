@@ -1,0 +1,11 @@
+com\sicpa\standard\sasscl\Main.class
+com\sicpa\tt080\remote\impl\sicpadata\TT080SicpaDataGeneratorWrapper.class
+com\sicpa\tt080\business\TT080PostPackage.class
+com\sicpa\tt080\scl\TT080Bootstrap.class
+com\sicpa\tt080\printer\simulator\TT080PrinterAdaptorSimulator.class
+com\sicpa\tt080\remote\stdCrypto\TT080EncoderNoEncryptionSimulator.class
+com\sicpa\tt080\printer\TT080ExtendedCodeFactory.class
+com\sicpa\tt080\remote\impl\sicpadata\TT080SicpaDataGeneratorStorage.class
+com\sicpa\tt080\remote\stdCrypto\TT080CryptoEncoderWrapperSimulator.class
+com\sicpa\tt080\remote\simulator\TT080RemoteServerSimulator.class
+com\sicpa\tt080\remote\server\TT080RemoteServer.class
