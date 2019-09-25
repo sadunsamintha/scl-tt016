@@ -76,14 +76,14 @@ rollingFileAppendersSize.each { c ->
 	}
 }
 
-logger("com.sicpa.standard.sasscl",     	                    ERROR,   ["SASSCL"],      true)
-logger("com.sicpa.standard.sasscl.common.log",   				ERROR,   ["STDOPERATOR"],  true)
-logger("com.sicpa.standard.sasscl.devices.brs",                 ERROR,   ["BRS"],		  true)
-logger("com.sicpa.standard.camera",                             ERROR,   ["STDCAMERA"],   true)
-logger("com.sicpa.standard.printer",                            ERROR,   ["STDPRINTER"],  true)
-logger("com.sicpa.standard.plc",                                ERROR,   ["STDPLC"],      true)
-logger("com.sicpa.standard.printer.leibinger.monitoring",       ERROR,   ["PRINTERMONITORING"], true)
-logger("com.sicpa.standard.printer.domino.monitoring",          ERROR,   ["PRINTER_MONITORING_DOMINO"],      true)
+logger("com.sicpa.standard.sasscl",     	                    DEBUG,  ["SASSCL"],      true)
+logger("com.sicpa.standard.sasscl.common.log",   				INFO,   ["STDOPERATOR"],  true)
+logger("com.sicpa.standard.sasscl.devices.brs",                 DEBUG,  ["BRS"],		  true)
+logger("com.sicpa.standard.camera",                             INFO,   ["STDCAMERA"],   true)
+logger("com.sicpa.standard.printer",                            WARN,   ["STDPRINTER"],  true)
+logger("com.sicpa.standard.plc",                                INFO,   ["STDPLC"],      true)
+logger("com.sicpa.standard.printer.leibinger.monitoring",       INFO,   ["PRINTERMONITORING"], true)
+logger("com.sicpa.standard.printer.domino.monitoring",          INFO,   ["PRINTER_MONITORING_DOMINO"],      true)
 
 
 root(ERROR, ["CONSOLE", "SPRING_ERRORS"])

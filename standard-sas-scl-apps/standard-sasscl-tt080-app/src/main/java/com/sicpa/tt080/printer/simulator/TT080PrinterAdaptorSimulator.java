@@ -1,22 +1,21 @@
 package com.sicpa.tt080.printer.simulator;
 
+import lombok.extern.slf4j.Slf4j;
+
 import com.sicpa.standard.printer.controller.IPrinterController;
 import com.sicpa.standard.sasscl.devices.printer.simulator.PrinterAdaptorSimulator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import static com.sicpa.tt080.remote.impl.sicpadata.TT080SicpaDataGeneratorWrapper.BLOCK_SEPARATOR;
+import static com.sicpa.standard.sasscl.devices.remote.stdCrypto.StdHrdCryptoEncoderWrapperSimulator.BLOCK_SEPARATOR;
 
 
+@Slf4j
 public class TT080PrinterAdaptorSimulator extends PrinterAdaptorSimulator {
-    private static final Logger logger = LoggerFactory.getLogger(TT080PrinterAdaptorSimulator.class);
-
 
     public TT080PrinterAdaptorSimulator() {
         super();
     }
 
-    public TT080PrinterAdaptorSimulator(IPrinterController controller) {
+    public TT080PrinterAdaptorSimulator(final IPrinterController controller) {
         super(controller);
     }
 
@@ -24,14 +23,16 @@ public class TT080PrinterAdaptorSimulator extends PrinterAdaptorSimulator {
     public String requestCode() {
         synchronized (codeBuffer) {
             if (codeBuffer.size() == 0) {
-                logger.warn("No codes received");
+                log.warn("No codes received");
                 return null;
             }
 
             final String code = codeBuffer.remove(0);
-            int i = code.lastIndexOf(BLOCK_SEPARATOR);
-            String qcCode = i > 0 ? code.substring(0, i) : code;
-            logger.info("Printed Code: {}", code);
+            final int i = code.lastIndexOf(BLOCK_SEPARATOR);
+            final String qcCode = i > 0 ? code.substring(0, i) : code;
+
+            log.info("Printed Code: {}", code);
+
             return qcCode;
         }
     }

@@ -1,25 +1,30 @@
 package com.sicpa.tt080.printer;
 
-import com.sicpa.standard.printer.controller.model.ModelDataMatrixEncoding;
-import com.sicpa.standard.printer.controller.model.ModelDataMatrixFormat;
-import com.sicpa.standard.printer.xcode.*;
-import com.sicpa.standard.sasscl.devices.camera.blobDetection.BlobDetectionUtils;
-import com.sicpa.standard.sasscl.devices.printer.xcode.IExCodeBehavior;
-import org.apache.commons.lang.Validate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.ArrayList;
 import java.util.List;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.Validate;
 
-import static com.sicpa.tt080.remote.impl.sicpadata.TT080SicpaDataGeneratorWrapper.BLOCK_SEPARATOR;
+import com.sicpa.standard.printer.controller.model.ModelDataMatrixEncoding;
+import com.sicpa.standard.printer.controller.model.ModelDataMatrixFormat;
+import com.sicpa.standard.printer.xcode.BlobBlockFactory;
+import com.sicpa.standard.printer.xcode.BlockFactory;
+import com.sicpa.standard.printer.xcode.DatamatrixBlockFactory;
+import com.sicpa.standard.printer.xcode.ExtendedCode;
+import com.sicpa.standard.printer.xcode.ExtendedCodeFactory;
+import com.sicpa.standard.printer.xcode.RelativePosition;
+import com.sicpa.standard.printer.xcode.TextBlockFactory;
+import com.sicpa.standard.sasscl.devices.camera.blobDetection.BlobDetectionUtils;
+import com.sicpa.standard.sasscl.devices.printer.xcode.IExCodeBehavior;
 
+import static com.sicpa.tt080.remote.impl.sicpadata.TT080SicpaDataGeneratorWrapper.NUMBER_OF_BLOCKS;
+import static com.sicpa.tt080.remote.impl.sicpadata.TT080SicpaDataGeneratorWrapper.PRINTER_SPACE_REPRESENTATION;
 
+@Slf4j
+@Setter
 public class TT080ExtendedCodeFactory implements IExCodeBehavior {
 
-    private static final Logger logger = LoggerFactory.getLogger(TT080ExtendedCodeFactory.class);
-    private static final int NUMBER_OF_BLOCKS =  2;
-    
     private ModelDataMatrixFormat dmFormat;
     private ModelDataMatrixEncoding dmEncoding;
     private RelativePosition blobPosition;
@@ -31,18 +36,18 @@ public class TT080ExtendedCodeFactory implements IExCodeBehavior {
     private BlobDetectionUtils blobUtils;
 
 
-
     @Override
-    public List<ExtendedCode> createExCodes(List<String> codes) {
+    public List<ExtendedCode> createExCodes(final List<String> codes) {
         Validate.notNull(codes);
 
         final boolean isBlobEnable = blobUtils.isBlobPatternPrinted();
-        logger.debug("Creating extended codes with isBlobEnable : {}", isBlobEnable);
-        List<ExtendedCode> res = new ArrayList<>();
+        log.debug("Creating extended codes with isBlobEnable : {}", isBlobEnable);
+
+        final List<ExtendedCode> res = new ArrayList<>();
         ExtendedCodeFactory ecf = new ExtendedCodeFactory();
         ecf.setBlockFactories(createBlockFactories(isBlobEnable));
 
-        for (String c : codes) {
+        for (final String c : codes) {
             res.add(ecf.create(createCompositeCode(c, isBlobEnable)));
         }
 
@@ -50,30 +55,24 @@ public class TT080ExtendedCodeFactory implements IExCodeBehavior {
     }
 
     private List<Object> createCompositeCode(final String code, final boolean isBlobEnable) {
-        String[] parsedCode = code.split(BLOCK_SEPARATOR);
-
-        /* If the string code is not composed of 2 blocks with a block separator then
-           we throw an exception  */
+        final String[] parsedCode = code.split(PRINTER_SPACE_REPRESENTATION);
 
         if(parsedCode.length != NUMBER_OF_BLOCKS) {
-            throw new IllegalArgumentException("code with value " + parsedCode + " is not composed of 2 blocks." );
+            throw new IllegalArgumentException("code with value " + parsedCode + " is not composed of "+NUMBER_OF_BLOCKS+" blocks.");
         }
 
-        List<Object> compositeCode = new ArrayList<>();
+        final List<Object> compositeCode = new ArrayList<>();
 
         if(hrdEnable) {
             compositeCode.add(getTextLine1(parsedCode));
             compositeCode.add(getTextLine2(parsedCode));
         }
+
         compositeCode.add(getSicpadata(parsedCode));
+
         if(isBlobEnable) {
-            /*
-               The blobFactory give us a default implementation of the blob pattern.
-               Nevertheless we need to provide a composite code due to xcode api design.
-             */
             compositeCode.add(getDummyBlobData());
         }
-
         return compositeCode;
     }
 
@@ -134,42 +133,5 @@ public class TT080ExtendedCodeFactory implements IExCodeBehavior {
         dmFactory.setModelDatamatrixEncoding(dmEncoding);
         dmFactory.setModelDatamatrixFormat(dmFormat);
         return dmFactory;
-    }
-
-    public void setDmFormat(ModelDataMatrixFormat dmFormat) {
-        this.dmFormat = dmFormat;
-    }
-
-    public void setDmEncoding(ModelDataMatrixEncoding dmEncoding) {
-        this.dmEncoding = dmEncoding;
-    }
-
-    public void setText1Length(int text1Length) {
-        this.text1Length = text1Length;
-    }
-
-    public void setText1Position(RelativePosition text1Position) {
-        this.text1Position = text1Position;
-    }
-
-    public void setText2Length(int text2Length) {
-        this.text2Length = text2Length;
-    }
-
-    public void setText2Position(RelativePosition text2Position) {
-        this.text2Position = text2Position;
-    }
-
-    public void setBlobPosition(RelativePosition blobPosition) {
-        this.blobPosition = blobPosition;
-    }
-
-
-    public void setBlobUtils(BlobDetectionUtils blobUtils) {
-        this.blobUtils = blobUtils;
-    }
-
-    public void setHrdEnable(boolean hrdEnable) {
-        this.hrdEnable = hrdEnable;
     }
 }

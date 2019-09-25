@@ -1,5 +1,10 @@
 package com.sicpa.tt080.remote.impl.sicpadata;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import lombok.extern.slf4j.Slf4j;
+
 import com.sicpa.standard.sasscl.devices.remote.impl.sicpadata.SicpaDataGeneratorWrapper;
 import com.sicpa.standard.sasscl.devices.remote.stdCrypto.ICryptoFieldsConfig;
 import com.sicpa.standard.sasscl.sicpadata.CryptographyException;
@@ -7,23 +12,14 @@ import com.sicpa.standard.sasscl.sicpadata.generator.EncoderEmptyException;
 import com.sicpa.standard.sicpadata.api.exception.SicpadataException;
 import com.sicpa.std.common.api.coding.dto.SicpadataGeneratorDto;
 import com.sicpa.std.common.core.coding.business.generator.scl.SCLCodesFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
-@SuppressWarnings("serial")
+@Slf4j
 public class TT080SicpaDataGeneratorWrapper extends SicpaDataGeneratorWrapper {
 
-	
-	public final static String BLOCK_SEPARATOR = ">-<" ;
+	public final static String PRINTER_SPACE_REPRESENTATION = ">-<" ;
+  public static final int NUMBER_OF_BLOCKS =  2;
 
-
-    private static final Logger logger = LoggerFactory.getLogger(TT080SicpaDataGeneratorWrapper.class);
-
-    public TT080SicpaDataGeneratorWrapper(SicpadataGeneratorDto sdgen, int year, long subsystemId, ICryptoFieldsConfig cryptoFieldsConfig) {
+    public TT080SicpaDataGeneratorWrapper(final SicpadataGeneratorDto sdgen, final int year, final long subsystemId, final ICryptoFieldsConfig cryptoFieldsConfig) {
         super(sdgen, year, subsystemId, cryptoFieldsConfig);
     }
 
@@ -31,7 +27,7 @@ public class TT080SicpaDataGeneratorWrapper extends SicpaDataGeneratorWrapper {
 	 *
 	 * Get a number of encrypted code and return it as a list of String composed like the following :
 	 * 
-	 * SERIAL_NUMBER>-<HRD_CODE
+	 * SEQUENCE>-<HRC
 	 *
 	 * If the encoder does not have enough code, all the available codes will be returned
 	 *
@@ -45,31 +41,31 @@ public class TT080SicpaDataGeneratorWrapper extends SicpaDataGeneratorWrapper {
 	 *             thrown exception if the encoder is empty
 	 */
     @Override
-    public synchronized List<String> getEncryptedCodes(long numberCodes) throws CryptographyException {
+    public synchronized List<String> getEncryptedCodes(final long numberCodes) throws CryptographyException {
         try {
-        	List<String> codes = new ArrayList<>();
-            updateDateOfUse();
 
-            long numberCodesToGenerate = Math.min(getRemainingCodes(), numberCodes);
-            if (numberCodesToGenerate == 0) {
-                throw new EncoderEmptyException();
-            }
+          final List<String> codes = new ArrayList<>();
+          updateDateOfUse();
 
-            List<SCLCodesFactory.SCLCode> sclCodes = SCLCodesFactory.generateSCLCodeForPrinting(getGenerator(),
-                    new Object[]{new HashMap<String, Long>()}, (int) numberCodesToGenerate);
+          long numberCodesToGenerate = Math.min(getRemainingCodes(), numberCodes);
+          if (numberCodesToGenerate == 0) {
+            throw new EncoderEmptyException();
+          }
+
+          final List<SCLCodesFactory.SCLCode> sclCodes = SCLCodesFactory.generateSCLCodeForPrinting(getGenerator(),
+              new Object[]{new HashMap<String, Long>()}, (int) numberCodesToGenerate);
             
 
-            for(SCLCodesFactory.SCLCode c : sclCodes) {
-                codes.add(c.getCodeForPrinting(SCLCodesFactory.SCLCode.SERIAL_NUMBER_KEY) + BLOCK_SEPARATOR + c.getCodeForPrinting(SCLCodesFactory.SCLCode.HRD_KEY));
-            }
+          for(SCLCodesFactory.SCLCode c : sclCodes) {
+              codes.add(c.getCodeForPrinting(SCLCodesFactory.SCLCode.SERIAL_NUMBER_KEY) + PRINTER_SPACE_REPRESENTATION + c.getCodeForPrinting(SCLCodesFactory.SCLCode.HRD_KEY));
+          }
 
-            setSequence(getSequence() + codes.size());
+          setSequence(getSequence() + codes.size());
+          return codes;
 
-            return codes;
-
-      } catch (SicpadataException e) {
-            logger.error("Failed to generate code.", e);
-            throw new CryptographyException(e, "Failed to generate encrypted code");
+        }catch (SicpadataException e) {
+          log.error("Failed to generate code.", e);
+          throw new CryptographyException(e, "Failed to generate encrypted code");
         }
     }
 }

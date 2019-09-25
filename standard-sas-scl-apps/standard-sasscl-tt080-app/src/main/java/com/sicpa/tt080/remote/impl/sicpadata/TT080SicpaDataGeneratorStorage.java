@@ -1,38 +1,36 @@
 package com.sicpa.tt080.remote.impl.sicpadata;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import lombok.extern.slf4j.Slf4j;
+
 import com.sicpa.standard.sasscl.devices.remote.impl.sicpadata.SicpaDataGeneratorStorage;
 import com.sicpa.standard.sasscl.sicpadata.generator.IEncoder;
 import com.sicpa.standard.sicpadata.spi.manager.ServiceProviderException;
 import com.sicpa.std.common.api.coding.dto.SicpadataGeneratorDto;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
+@Slf4j
 public class TT080SicpaDataGeneratorStorage extends SicpaDataGeneratorStorage  {
 
-	private static final Logger logger = LoggerFactory.getLogger(TT080SicpaDataGeneratorStorage.class);
-	
 	@Override
-    public void storePendingSDGen(SicpadataGeneratorDto generator) {
-        int year = generator.getYear();
-        IEncoder encoder = new TT080SicpaDataGeneratorWrapper(generator, year, subsystemIdProvider.get(), cryptoFieldsConfig);
+    public void storePendingSDGen(final SicpadataGeneratorDto generator) {
+        final int year = generator.getYear();
+        final IEncoder encoder = new TT080SicpaDataGeneratorWrapper(generator, year, subsystemIdProvider.get(), cryptoFieldsConfig);
         encoder.setOnClientDate(new Date());
         storage.saveEncoders(year, encoder);
 
         try {
             fileSequenceStorageProvider.storeSequence(generator.getId(), generator.getLastUsedSeq());
         } catch (ServiceProviderException e) {
-            logger.error("", e);
+            log.error("Unable to Store Sequence", e);
         }
     }
 
    @Override
    protected List<SicpadataGeneratorDto> convertEncoder(List<IEncoder> encoders) {
-       List<SicpadataGeneratorDto> list = new ArrayList<SicpadataGeneratorDto>();
-       for (IEncoder encoder : storage.getPendingEncoders()) {
+       final List<SicpadataGeneratorDto> list = new ArrayList<>();
+       for (final IEncoder encoder : storage.getPendingEncoders()) {
            if (encoder instanceof TT080SicpaDataGeneratorWrapper) {
                list.add(((TT080SicpaDataGeneratorWrapper) encoder).getGenerator());
            }

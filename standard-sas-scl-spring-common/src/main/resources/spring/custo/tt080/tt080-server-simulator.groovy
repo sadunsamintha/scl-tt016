@@ -1,11 +1,13 @@
+package custo.tt080
+
 import com.sicpa.standard.gui.utils.ImageUtils
+import com.sicpa.standard.sasscl.devices.remote.simulator.RemoteServerSimulator
 import com.sicpa.standard.sasscl.devices.remote.simulator.RemoteServerSimulatorModel
 import com.sicpa.standard.sasscl.model.CodeType
 import com.sicpa.standard.sasscl.model.SKU
 import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.ProductionModeNode
 import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.ProductionParameterRootNode
 import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.SKUNode
-import com.sicpa.tt080.remote.simulator.TT080RemoteServerSimulator
 
 import javax.swing.*
 
@@ -54,7 +56,7 @@ beans{
         productionParameters=root
     }
 
-    remoteServer(TT080RemoteServerSimulator, ref('simulatorRemoteModel')) {
+    remoteServer(RemoteServerSimulator, ref('simulatorRemoteModel')) {
         simulatorGui = ref('simulatorGui')
         cryptoFieldsConfig = ref('cryptoFieldsConfig')
         productionParameters = ref('productionParameters')
@@ -64,6 +66,7 @@ beans{
         remoteServerSimulatorOutputFolder = profilePath + '/simulProductSend'
         cryptoMode = props['server.simulator.cryptoMode']
         cryptoModelPreset = props['server.simulator.cryptoModelPreset']
+        hrdEnable = props['hrd.enable']
     }
 }
 

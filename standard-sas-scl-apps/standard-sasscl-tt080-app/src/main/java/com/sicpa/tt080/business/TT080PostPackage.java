@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.sicpa.tt080.remote.impl.sicpadata.TT080SicpaDataGeneratorWrapper.BLOCK_SEPARATOR;
+import static com.sicpa.tt080.remote.impl.sicpadata.TT080SicpaDataGeneratorWrapper.PRINTER_SPACE_REPRESENTATION;
 
 
 public class TT080PostPackage extends PostPackage {
@@ -31,10 +31,10 @@ public class TT080PostPackage extends PostPackage {
     }
 
     private List<String> pruneSCLCodes(List<String> codes) {
-        List<String> res = new ArrayList<String>();
+        List<String> res = new ArrayList<>();
 
         for(String c : codes) {
-            int i = c.lastIndexOf(BLOCK_SEPARATOR);
+            int i = c.lastIndexOf(PRINTER_SPACE_REPRESENTATION);
             if(i > 0) {
                 res.add(c.substring(0, i));
             } else {
