@@ -1,5 +1,6 @@
 import com.sicpa.standard.sasscl.*
 import com.sicpa.tt079.scl.TT079Bootstrap
+import com.sicpa.tt079.printer.simulator.TT079PrinterAdaptorSimulator
 
 beans{
 
