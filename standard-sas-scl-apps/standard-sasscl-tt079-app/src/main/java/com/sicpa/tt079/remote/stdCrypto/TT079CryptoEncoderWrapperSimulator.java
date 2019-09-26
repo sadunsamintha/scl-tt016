@@ -27,7 +27,7 @@ public class TT079CryptoEncoderWrapperSimulator extends StdCryptoEncoderWrapperS
         List<String> codes = new ArrayList<String>();
 
         for(String s : res) {
-            codes.add(s + BLOCK_SEPARATOR + String.format("%08d", String.valueOf(sequence++)));
+            codes.add(s + BLOCK_SEPARATOR + String.format("%08d", sequence++));
         }
 
         remainingCode -= res.size();
