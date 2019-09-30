@@ -19,13 +19,13 @@
       <dependency>
           <groupId>com.sicpa.gssd.customization.server.ext</groupId>
           <artifactId>tt079-common-api</artifactId>
-          <version>1.1.1-SCL-SAS</version>
+          <version>1.4.2</version>
       </dependency>
       
       <dependency>
             <groupId>com.sicpa.gssd.customization.server</groupId>
             <artifactId>tt079-common-server</artifactId>
-			<version>1.5.0-SNAPSHOT</version>
+			<version>1.4.2</version>
             
             <exclusions>
                 <exclusion>
