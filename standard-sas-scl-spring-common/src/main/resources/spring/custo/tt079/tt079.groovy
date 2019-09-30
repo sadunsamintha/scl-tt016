@@ -19,10 +19,6 @@ beans{
 		importBeans('spring/custo/tt079/tt079-server.groovy')
 	}
 	
-	if(serverBehavior == "SIMULATOR") {
-		importBeans('spring/custo/tt079/tt079-server-simulator.groovy')
-	}
-	
 	importBeans('spring/custo/tt079/tt079-hrd.xml')
 	
 	printerSimulatorAdaptor(TT079PrinterAdaptorSimulator,ref('printerSimulatorController')){b->
