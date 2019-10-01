@@ -5,9 +5,9 @@ import com.sicpa.standard.sasscl.business.postPackage.PostPackageBehavior;
 import com.sicpa.standard.sasscl.controller.productionconfig.IProductionConfig;
 import com.sicpa.standard.sasscl.controller.productionconfig.config.PrinterConfig;
 import com.sicpa.standard.sasscl.controller.productionconfig.config.PrinterType;
+import com.sicpa.standard.sasscl.devices.printer.simulator.PrinterAdaptorSimulator;
 import com.sicpa.standard.sasscl.model.Code;
 import com.sicpa.standard.sasscl.provider.impl.ProductionConfigProvider;
-import com.sicpa.tt079.printer.simulator.TT079PrinterAdaptorSimulator;
 import junit.framework.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,7 +38,7 @@ public class TT079PostPackageTest {
         when(config.getPrinterConfigs()).thenReturn(createPrinterConfigs());
 
         //prepare the test
-        TT079PrinterAdaptorSimulator requestor = new TT079PrinterAdaptorSimulator();
+        PrinterAdaptorSimulator requestor = new PrinterAdaptorSimulator();
         TestPostPackageBehavior postPackageBehavior = new TestPostPackageBehavior();
         postPackage.registerModule(postPackageBehavior, Arrays.asList(requestor));
         List<String> codes = Arrays.asList("0996908468>-<093G001YG");
@@ -62,7 +62,7 @@ public class TT079PostPackageTest {
         when(config.getPrinterConfigs()).thenReturn(null);
 
         //prepare the test
-        TT079PrinterAdaptorSimulator requestor = new TT079PrinterAdaptorSimulator();
+        PrinterAdaptorSimulator requestor = new PrinterAdaptorSimulator();
         TestPostPackageBehavior postPackageBehavior = new TestPostPackageBehavior();
         postPackage.registerModule(postPackageBehavior, Arrays.asList(requestor));
         List<String> codes = Arrays.asList("0996908468>-<093G001YG");

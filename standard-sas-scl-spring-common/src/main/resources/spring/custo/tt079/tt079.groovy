@@ -1,6 +1,5 @@
 import com.sicpa.standard.sasscl.*
 import com.sicpa.tt079.scl.TT079Bootstrap
-import com.sicpa.tt079.printer.simulator.TT079PrinterAdaptorSimulator
 
 beans{
 
@@ -20,8 +19,4 @@ beans{
 	}
 	
 	importBeans('spring/custo/tt079/tt079-hrd.xml')
-	
-	printerSimulatorAdaptor(TT079PrinterAdaptorSimulator,ref('printerSimulatorController')){b->
-		b.scope='prototype'
-	}
 }
