@@ -5,10 +5,6 @@ beans{
 
 	def serverBehavior=props['remoteServer.behavior'].toUpperCase()
 
-	if(serverBehavior == "STANDARD") {
-		importBeans('spring/server/server-core5.groovy')
-	}
-
 	addAlias('bootstrapAlias','bootstrap')
 	bootstrap(TT079Bootstrap){b->
 		b.parent=ref('bootstrapAlias')
@@ -16,5 +12,11 @@ beans{
 	
 	importBeans('spring/custo/tt079/tt079-view.groovy')
 	importBeans('spring/custo/tt079/tt079-production.groovy')
-    importBeans('spring/custo/tt079/tt079-server.groovy')
+	
+	if(serverBehavior == "STANDARD") {
+		importBeans('spring/server/server-core5.groovy')
+		importBeans('spring/custo/tt079/tt079-server.groovy')
+	}
+	
+	importBeans('spring/custo/tt079/tt079-hrd.xml')
 }
