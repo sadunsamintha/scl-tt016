@@ -30,7 +30,7 @@
 	<rotation>0</rotation>
 	<bitmapRotation>0</bitmapRotation>
 	<bitmapInverted>0</bitmapInverted>
-	<encoderSignal>3</encoderSignal>
+	<encoderSignal>1</encoderSignal>
 	<printGoSignal>1</printGoSignal>
 	<printHeight>90</printHeight>
 	<flightTimeCompensationMicrometers>4000</flightTimeCompensationMicrometers>
@@ -39,4 +39,6 @@
 	<printGoDelayMicrometers>6000</printGoDelayMicrometers>
 	<printGoDistance>0</printGoDistance>
 	<printGoRepetition>0</printGoRepetition>
+    <backwardLock>1</backwardLock>
+    <printGoHoldOff>60000</printGoHoldOff>
 </LeibingerPrinterModel>

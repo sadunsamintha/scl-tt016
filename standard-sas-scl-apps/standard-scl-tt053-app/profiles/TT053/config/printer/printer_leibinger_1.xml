@@ -47,7 +47,7 @@
 		2 = External, direction 2 (anticlockwise)
 		3 = External, both directions
 	-->
-	<encoderSignal>3</encoderSignal>
+	<encoderSignal>1</encoderSignal>
 	<!-- 
 		PrintGo Signal active
 		0 = internal PrintGo
@@ -82,4 +82,6 @@
 	<printGoDelayMicrometers>6000</printGoDelayMicrometers>
 	<printGoDistance>0</printGoDistance>
 	<printGoRepetition>0</printGoRepetition>
+    <backwardLock>1</backwardLock>
+    <printGoHoldOff>60000</printGoHoldOff>
 </LeibingerPrinterModel>

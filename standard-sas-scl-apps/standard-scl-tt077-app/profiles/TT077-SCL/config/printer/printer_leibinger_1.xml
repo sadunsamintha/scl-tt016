@@ -27,7 +27,7 @@
 	<encoderResolution>22000</encoderResolution>
 	<inverted>0</inverted>
 	<rotation>0</rotation>
-	<encoderSignal>3</encoderSignal>
+	<encoderSignal>1</encoderSignal>
 	<printGoSignal>1</printGoSignal>
 	<printHeight>95</printHeight>
 	<flightTimeCompensationMicrometers>0</flightTimeCompensationMicrometers>
@@ -36,4 +36,7 @@
 	<printGoDelayMicrometers>0</printGoDelayMicrometers>
 	<printGoDistance>0</printGoDistance>
 	<printGoRepetition>0</printGoRepetition>
+	<securePing>true</securePing>
+    <backwardLock>1</backwardLock>
+    <printGoHoldOff>60000</printGoHoldOff>
 </LeibingerPrinterModel>
