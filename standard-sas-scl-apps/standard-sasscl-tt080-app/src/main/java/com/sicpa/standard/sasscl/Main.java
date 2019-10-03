@@ -1,8 +1,10 @@
 package com.sicpa.standard.sasscl;
 
+import com.sicpa.tt080.scl.TT080MainAppWithProfile;
+
 public class Main {
 
 	public static void main(final String[] args) {
-		new MainAppWithProfile().selectProfile();
+		new TT080MainAppWithProfile().selectProfile();
 	}
 }

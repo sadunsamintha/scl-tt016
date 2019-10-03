@@ -3,6 +3,8 @@ import com.sicpa.tt080.scl.TT080Bootstrap
 import com.sicpa.tt080.printer.simulator.TT080PrinterAdaptorSimulator
 
 beans {
+    importBeans('spring/custo/tt080/plc/tt080.plc-import.groovy')
+
     def serverBehavior=props['remoteServer.behavior'].toUpperCase()
     def printerBehavior=props['printer.behavior'].toUpperCase()
 
