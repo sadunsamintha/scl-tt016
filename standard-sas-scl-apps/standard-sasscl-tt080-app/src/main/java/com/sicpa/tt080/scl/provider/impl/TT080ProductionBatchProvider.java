@@ -22,10 +22,9 @@ public class TT080ProductionBatchProvider extends ProductionBatchProvider implem
 	@Subscribe
 	public void handleSkuSelectionButtonPressed(BatchIdViewEvent evt){
 		ProductionParameters pp = evt.getProductionParameters();
-		String strBatchId = pp.getProperty(productionBatchId);
+		String strBatchId = pp.getProperty(productionBatchId).getProductionBatchId();
 		set(strBatchId);
 
-		logger.info("TT080ProductionBatchProvider,user=" + evt.user.getLogin() + ",date=" + evt.date.toString()
-				+ ", batchId=" + strBatchId);
+		logger.info("TT080ProductionBatchProvider,user={}, date={}, batchId={}", evt.user.getLogin(), evt.date.toString(), strBatchId);
 	}
 }

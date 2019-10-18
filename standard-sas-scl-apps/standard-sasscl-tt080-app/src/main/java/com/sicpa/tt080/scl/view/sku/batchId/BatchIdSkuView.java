@@ -7,6 +7,8 @@ import com.sicpa.standard.gui.plaf.SicpaColor;
 import com.sicpa.standard.sasscl.model.ProductionMode;
 import com.sicpa.standard.sasscl.model.ProductionParameters;
 import com.sicpa.standard.sasscl.provider.ProductBatchIdProvider;
+
+import lombok.NoArgsConstructor;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
@@ -15,19 +17,15 @@ import java.awt.*;
 /**
  * New view of the BatchId associated to the ProductionParameters variable
  *
- * @author mjimenez
- *
  */
 @SuppressWarnings("serial")
+@NoArgsConstructor
 public class BatchIdSkuView extends AbstractView<IBatchIdSkuListener, BatchIdSkuModel> implements ProductBatchIdProvider {
 
 	protected BatchIdSkuPanel batchIdSkuPanel;
 	private ProductionParameters productionParameters;
 	private VirtualKeyboardPanel keyboard;
 
-	public BatchIdSkuView(){
-
-	}
 
 	public BatchIdSkuView(ProductionParameters productionParameters) {
 		this.productionParameters = productionParameters;
@@ -81,11 +79,6 @@ public class BatchIdSkuView extends AbstractView<IBatchIdSkuListener, BatchIdSku
 
 		private void initGui() {
 			setLayout(new MigLayout("ltr,fill"));
-			/*add(getStopReasonButton(PRODUCT_CHANGE), "growx, growy");
-			add(getStopReasonButton(END_OF_PRODUCTION), "growx, growy, wrap");
-			add(getStopReasonButton(PURGE_PRODUCTION), "growx, growy");
-			add(getStopReasonButton(PREVENTIVE_MAINTENANCE), "growx, growy, wrap");
-			add(getStopReasonButton(CORRECTIVE_MAINTENANCE), "growx, growy");*/
 			add(getContentPanel(),"growx, align center, wrap");
 			add(getSaveBatchIdButton(),"align center");
 		}
@@ -94,7 +87,7 @@ public class BatchIdSkuView extends AbstractView<IBatchIdSkuListener, BatchIdSku
 		private JButton getSaveBatchIdButton() {
 			if (saveBatchIdButton==null) {
 				saveBatchIdButton = new JButton(Messages.get("sku.batch.id.button.save.label"));
-				saveBatchIdButton.addActionListener(e -> saveBatchIdSelected(batchIdText.getText(),creditNoteText == null?null:creditNoteText.getText()));
+				saveBatchIdButton.addActionListener(e -> saveBatchIdSelected(batchIdText.getText()));
 			}
 			return saveBatchIdButton;
 		}
@@ -123,8 +116,6 @@ public class BatchIdSkuView extends AbstractView<IBatchIdSkuListener, BatchIdSku
 				batchIdText.setMinimumSize(new Dimension(200,40));
 				batchIdText.setMaximumSize(new Dimension(200,40));
 				batchIdText.setBackground(SicpaColor.BLUE_ULTRA_LIGHT);
-				//batchIdText.setText(productionParameters.getProperty(productionBatchId));
-				//to associate a virtual keyboard to the BatchId Text Field
 				VirtualKeyboardPanel virtualKeyboardPanel = VirtualKeyboardPanel.getDefaultKeyboard(batchIdText);
 				String[] defaultLayout = new String[]{"1234567890", "QWERTYUIOP", "ASDFGHJKL", "ZXCVBNM", "-{del}"};
 				virtualKeyboardPanel.setDefaultLayout(defaultLayout);
@@ -139,8 +130,6 @@ public class BatchIdSkuView extends AbstractView<IBatchIdSkuListener, BatchIdSku
 				creditNoteText.setMinimumSize(new Dimension(200,40));
 				creditNoteText.setMaximumSize(new Dimension(200,40));
 				creditNoteText.setBackground(SicpaColor.BLUE_ULTRA_LIGHT);
-//				creditNoteText.setText(productionParameters.getProperty(productionCreditNoteId));
-				//to associate a virtual keyboard to the BatchId Text Field
 				VirtualKeyboardPanel virtualKeyboardPanel = VirtualKeyboardPanel.getDefaultKeyboard(creditNoteText);
 				String[] defaultLayout = new String[]{"1234567890", "QWERTYUIOP", "ASDFGHJKL", "ZXCVBNM", "-{del}"};
 				virtualKeyboardPanel.setDefaultLayout(defaultLayout);
@@ -156,19 +145,12 @@ public class BatchIdSkuView extends AbstractView<IBatchIdSkuListener, BatchIdSku
 				contentPanel.setForeground(SicpaColor.BLUE_DARK);
 				contentPanel.add(getBatchIdLabel(),"align right");
 				contentPanel.add(getBatchIdText(),"align left");
-				//Just for REFEED MODE
-				/*if (productionParameters.getProductionMode().equals(TT065ProductionMode.REFEED_STOCK)) {
-					contentPanel.add(getCreditNoteIdLabel(), "align right");
-					contentPanel.add(getCreditNoteText(), "align left");
-				}*/
 			}
 			return contentPanel;
 		}
 	}
 
-	private void saveBatchIdSelected(String strBatchId,String strCreditNoteId) {
-		for (IBatchIdSkuListener listener : listeners) {
-			listener.saveBatchId(strBatchId,strCreditNoteId);
-		}
+	private void saveBatchIdSelected(final String strBatchId) {
+		listeners.stream().forEach(listener -> listener.saveBatchId(strBatchId));
 	}
 }

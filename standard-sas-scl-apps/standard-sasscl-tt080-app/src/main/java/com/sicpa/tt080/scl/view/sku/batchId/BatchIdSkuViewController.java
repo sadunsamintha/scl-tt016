@@ -1,6 +1,17 @@
 package com.sicpa.tt080.scl.view.sku.batchId;
 
 import com.google.common.eventbus.Subscribe;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.i18n.Messages;
 import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowStateChangedEvent;
@@ -13,21 +24,14 @@ import com.sicpa.standard.sasscl.view.LanguageSwitchEvent;
 import com.sicpa.tt080.scl.event.BatchIdViewEvent;
 import com.sicpa.tt080.scl.view.TT080ViewFlowController;
 import com.sicpa.tt080.scl.view.flow.TT080ScreensFlow;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static com.sicpa.tt080.scl.view.TT080ScreenFlowTriggers.BATCH_ID_REGISTERED;
 
 /**
- * Controller of the new BatchId view
+ * Controller to handle BatchIds for Rep. Dominican Project
+ * batchIds will follow a custom format, where the timestamp will be appended to the final result:
  *
- * @author mjimenez
- *
+ * TIMESTAMP_SKUID_Batch
  */
 public class BatchIdSkuViewController extends TT080ViewFlowController implements IBatchIdSkuListener, ProductBatchIdProvider {
 
@@ -37,6 +41,9 @@ public class BatchIdSkuViewController extends TT080ViewFlowController implements
 	private FlowControl flowControl;
 	private ProductionParameters pp;
 	private BatchIdSkuModel model;
+
+	private static final int MAX_FIELD_SIZE = 100;
+	private static final Pattern ALL_SYMBOLS_RESTRICTION_PATTERN =  Pattern.compile("[%@!()*~^!#$%&+/ ]");
 
 
 	private volatile HardwareControllerStatus status;
@@ -60,21 +67,9 @@ public class BatchIdSkuViewController extends TT080ViewFlowController implements
 		this.setView(srv);
 	}
 
-
-	/*@Subscribe
-	public void handleStopProduction(ApplicationFlowStateChangedEvent event) {
-		if (event.getPreviousState().equals(ApplicationFlowState.STT_STARTED) && event.getCurrentState().equals(ApplicationFlowState.STT_STOPPING)) {
-			screensFlow.moveToNext(STOP_PRODUCTION);
-		}
-	}*/
-
 	@Subscribe
 	public void handleBatchIdSkuView(ApplicationFlowStateChangedEvent event) {
 		logger.info("CurrentState: " + event.getCurrentState().toString() + " PreviousState: " + event.getPreviousState().toString() + " View:" + screensFlow);
-		/*if (event.getPreviousState().equals(ApplicationFlowState.STT_RECOVERING) && event.getCurrentState().equals(ApplicationFlowState.STT_CONNECTED) && screensFlow!=null) {
-			logger.info("AQUI DEVERIA TROCAR DE PAINEL ANTES DE IR NO PAINEL PRINCIPAL");
-			screensFlow.moveToNext(PRODUCTION_PARAMETER_SELECTED); //TODO muda o Panel atual para o BatchIdSkuView desde o Panel de seleçao de SKU
-		}*/
 	}
 
 	@Override
@@ -100,48 +95,30 @@ public class BatchIdSkuViewController extends TT080ViewFlowController implements
 	}
 
 	@Override
-	public void saveBatchId(String strBatchId,String strCreditNoteId) {
+	public void saveBatchId(final String strBatchId) {
 		if (StringUtils.isBlank(strBatchId)){
 			showMessageDialog(Messages.get("sku.batch.id.validation.blank"));
 			return;
 		}
-		Pattern patt = Pattern.compile("[%@!()*~^!#$%&+/ ]");//restrictions all symbols
-		Matcher matcher = patt.matcher(strBatchId);
-		if (matcher.find()){
+
+		if (hasInvalidFormat(strBatchId)){
 			showMessageDialog(Messages.get("sku.batch.id.validation.format"));
 			return;
 		}
-		if (strBatchId.length()==0 || strBatchId.length() > 15){
+
+		if (hasInvalidBatchSize(strBatchId)){
 			showMessageDialog(Messages.get("sku.batch.id.validation.size"));
 			return;
 		}
 
+		final ProductionBatch productionBatch = new ProductionBatch(strBatchId, viewController.getProductionParameters().getSku().getId());
+		if (isInvalidProductionBatchSize(productionBatch.getProductionBatchId())){
+			showMessageDialog(Messages.get("sku.productionbatch.id.validation.size"));
+			return;
+		}
 
-
-		if (strCreditNoteId !=null) {
-			logger.info(Messages.format("sku.credit.note.registered", strCreditNoteId));
-
-			patt = Pattern.compile("-[%@!()*~^!#$%&+/ ]");//restrictions all symbols
-			matcher = patt.matcher(strCreditNoteId);
-			if (matcher.find()){
-				showMessageDialog(Messages.get("sku.credit.note.validation.format"));
-				return;
-			}
-
-			if (strCreditNoteId.length()==0 || strCreditNoteId.length() > 20){
-				showMessageDialog(Messages.get("sku.credit.note.validation.size"));
-				return;
-			}
-            //pp.setProperty(productionCreditNoteId, strCreditNoteId);
-            pp.setProperty(productionBatchId, strBatchId+"!"+strCreditNoteId);
-            logger.info(Messages.format("sku.batch.id.registered", strBatchId+" - "+strCreditNoteId));
-		}else{
-            pp.setProperty(productionBatchId, strBatchId);
-            logger.info(Messages.format("sku.batch.id.registered", strBatchId));
-        }
-
-
-
+		pp.setProperty(ProductBatchIdProvider.productionBatchId, productionBatch);
+		logger.info(Messages.format("sku.batch.id.registered", productionBatch.getProductionBatchId()));
 
 		batchIdButtonPressed.set(false);
 
@@ -151,6 +128,19 @@ public class BatchIdSkuViewController extends TT080ViewFlowController implements
 
 		//store the batchId on ProductionBatchProvider to save later on database
 		EventBusService.post(new BatchIdViewEvent(pp));
+	}
+
+	private static boolean hasInvalidFormat(String strBatchId) {
+		final Matcher matcher = ALL_SYMBOLS_RESTRICTION_PATTERN.matcher(strBatchId);
+		return matcher.find();
+	}
+
+	private static boolean isInvalidProductionBatchSize(String productionBatchId) {
+		return productionBatchId.length() > MAX_FIELD_SIZE;
+	}
+
+	private static boolean hasInvalidBatchSize(final String strBatchId) {
+		return strBatchId.length() == 0 || strBatchId.length() > 15;
 	}
 
 	public BatchIdSkuModel getModel() {

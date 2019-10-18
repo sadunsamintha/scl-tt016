@@ -35,7 +35,7 @@ public class TT080SelectionDisplayView extends SelectionDisplayView implements P
 		ProductionMode mode = pp.getProductionMode();
 		String strBatchId = null;
 		try {
-			strBatchId = pp.getProperty(productionBatchId);
+			strBatchId = pp.getProperty(productionBatchId).getBatchId();
 		}catch (IllegalArgumentException e){
 		}
 
@@ -54,7 +54,7 @@ public class TT080SelectionDisplayView extends SelectionDisplayView implements P
 			getMainPanel().add(new MultiLineLabel(sku.getDescription()), "grow, w 200, h 135 , spanx");
 		}
 		if (strBatchId != null && !strBatchId.equals("0")){
-			getMainPanel().add(new MultiLineLabel(Messages.get("sku.batch.id.label")+" "+strBatchId), "grow, w 200, h 45 , spanx");
+			getMainPanel().add(new MultiLineLabel(Messages.get("sku.batch.id.label")+" "+strBatchId), "grow, w 200, h 135 , spanx");
 		}
 
 		if (barcode != null) {

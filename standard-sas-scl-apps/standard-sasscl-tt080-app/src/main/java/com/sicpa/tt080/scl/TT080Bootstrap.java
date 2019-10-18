@@ -29,7 +29,7 @@ public class TT080Bootstrap extends Bootstrap{
       productionParameters.setProperty(productionBatchId, previous.getProperty(productionBatchId));
       EventBusService.post(new ProductionParametersEvent(previous));
 
-      productionBatchProvider.set(previous.getProperty(productionBatchId));
+      productionBatchProvider.set(previous.getProperty(productionBatchId).getProductionBatchId());
     }
   }
 
