@@ -1,0 +1,21 @@
+<SecurityModel loginDefaultUser="OPERATOR">
+
+<!-- FULL ADMIN -->
+  <User login="0" password="SICPA123">
+    <Permission name=".*"/>
+  </User>
+
+<!--   OPERATOR -->
+  <User login="OPERATOR" password="">
+    <Permission name="PRODUCTION_CHANGE_PARAMETERS"/>
+    <Permission name="PRODUCTION_MODE_STANDARD"/>
+    <Permission name="PRODUCTION_MODE_EXPORT"/>
+    <Permission name="PRODUCTION_MODE_REFEED_NORMAL"/>
+    <Permission name="PRODUCTION_MODE_MAINTENANCE"/>
+    <Permission name="PRODUCTION_START"/>
+    <Permission name="PRODUCTION_STOP"/>
+    <Permission name="PRODUCTION_VIEW_STATISTICS"/>
+    <Permission name="PRODUCTION_REPORT"/>
+    <Permission name="EXIT"/>
+  </User>
+</SecurityModel>

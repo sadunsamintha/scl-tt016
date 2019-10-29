@@ -1,0 +1,40 @@
+<DominoPrinterModel>
+  <name>SCD2</name>
+  <ipAdress>192.168.1.11</ipAdress>
+  <deviceId>1234567890123456789012345678901234567890</deviceId>
+  <udpPort>4321</udpPort>
+  <tcpTimeout>10000</tcpTimeout>
+  <tcpPort>1234</tcpPort>
+  <requestReservoirHoursLeftInterval>30</requestReservoirHoursLeftInterval>
+  <mUsePrinterSimulator>false</mUsePrinterSimulator>
+  <resetOnStop>true</resetOnStop>
+  <mDebugMode>false</mDebugMode>
+  <monitoringSnmpPort>161</monitoringSnmpPort>
+  <monitoringFrequencyMediumInSec>300</monitoringFrequencyMediumInSec>
+  <monitoringFrequencyHighInSec>60</monitoringFrequencyHighInSec>
+  <requestAlarmListFrequencyInSec>5</requestAlarmListFrequencyInSec>
+  <requestStatusFrequencyInSec>1</requestStatusFrequencyInSec>
+  <mPrinterParameters class="com.sicpa.standard.printer.driver.DominoParameter">
+  		<mCodeType>DYNAMIC_DATAMATRIX</mCodeType>
+  		<mDataMatrixFormat>DM_8x18</mDataMatrixFormat>
+  		<mDataMatrixEncoding>C40</mDataMatrixEncoding>
+  		<mPersistence class ="com.sicpa.standard.printer.controller.model.Persistence">
+  			<mType class="com.sicpa.standard.printer.controller.model.PersistenceType">STROKE_BASED</mType>
+  			<mValue>1</mValue>
+		</mPersistence>
+  		<mDelay>1</mDelay>
+  		<mRaster>R_4</mRaster>
+  		<mAperture>26</mAperture>
+  		<mFlightTime>35</mFlightTime>
+  		<mFlightTimeStroke>10</mFlightTimeStroke>
+  		<mExtStrokeDiv>7</mExtStrokeDiv>
+  		<mPrintMode>3</mPrintMode>
+  		<mBufferMethod>THREE_BUFFERS</mBufferMethod>
+  		<mPrintBlobs>false</mPrintBlobs>
+  		<mTextFormat>TF_1_LINE</mTextFormat>
+  		<isPrinterBufferSizeControlled>true</isPrinterBufferSizeControlled>
+  		<noFlushOnStop>false</noFlushOnStop>
+		<mCodeSizePerRequest>100</mCodeSizePerRequest>
+		<mCodeBufferLowThreshold>20</mCodeBufferLowThreshold>
+  </mPrinterParameters>
+</DominoPrinterModel>

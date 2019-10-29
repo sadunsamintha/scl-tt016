@@ -11,20 +11,23 @@
 
 <CameraSimulatorConfig>
 
-  <!-- Code generation type (copy/paste method from header)-->
-  <codeGetMethod>generated</codeGetMethod>
+	<!-- Code generation type (copy/paste method from header)-->
+	<codeGetMethod>requested</codeGetMethod>
 
-  <!-- Used for code generation method with file-->
-  <!-- Launch from console file path -->
-  <dataFilePath>internal/simulator/camera/codes.txt</dataFilePath>
-  <!-- Launch from IDE file path -->
-  <!--<dataFilePath>src/main/resources/internal/simulator/camera/codes.txt</dataFilePath>-->
+	<!-- Used for code generation method with file-->
+	<!-- Launch from console file path -->
+	<dataFilePath>internal/simulator/camera/codes.txt</dataFilePath>
+	<!-- Launch from IDE file path -->
+	<!--<dataFilePath>src/main/resources/internal/simulator/camera/codes.txt</dataFilePath>-->
 
-  <!-- Camera error code percentage -->
-  <percentageBadCode>1</percentageBadCode>
+	<!-- Camera error code percentage -->
+	<percentageBadCode>1</percentageBadCode>
 
-  <!-- Camera simulator code frequency -->
-  <readCodeInterval>5</readCodeInterval>
+	<!-- Camera blob code percentage -->
+	<percentageBlobCode>1</percentageBlobCode>
+
+	<!-- Camera simulator code frequency -->
+	<readCodeInterval>5</readCodeInterval>
 
 </CameraSimulatorConfig>
 
