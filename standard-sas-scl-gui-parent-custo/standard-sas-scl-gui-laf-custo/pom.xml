@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+	<artifactId>gui-laf-custo</artifactId>
+	<packaging>jar</packaging>
+
+	<parent>
+		<groupId>com.sicpa.standard.sasscl</groupId>
+		<artifactId>gui-parent-custo</artifactId>
+		<version>2.5.17-SNAPSHOT</version>
+	</parent>
+
+	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources/com/sicpa/standard/gui/plaf 
+				</directory>
+				<targetPath>com/sicpa/standard/gui/plaf 
+				</targetPath>
+				<includes>
+					<include>*</include>
+				</includes>
+			</resource>
+			<resource>
+				<directory>src/main/resources/com/sicpa/standard/gui/screen/machine 
+				</directory>
+				<targetPath>com/sicpa/standard/gui/screen/machine 
+				</targetPath>
+				<includes>
+					<include>*</include>
+				</includes>
+			</resource>
+			<resource>
+				<directory>src/main/resources/META-INF 
+				</directory>
+				<targetPath>META-INF </targetPath>
+				<includes>
+					<include>*.xml</include>
+				</includes>
+			</resource>
+		</resources>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>deploy</phase>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+</project>

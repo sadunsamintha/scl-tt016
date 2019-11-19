@@ -122,3 +122,6 @@ standard-sas-scl-device-common/target
 standard-sas-scl-device-context-console/target
 standard-sas-scl-project-wizard/target
 standard-sas-scl-remoteControl/target
+*.log
+/.metadata/
+/.settings/

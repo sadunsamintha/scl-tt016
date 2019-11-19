@@ -1,0 +1,336 @@
+SicpaSkin Enabled {
+    kind=Light
+#text field+ top check box + to radio + left/bottom scroll bar track
+    colorUltraLight=#001F37
+#tree cell renderer +/- icon , text field slight change
+    colorExtraLight=#001F37
+#radio button icon inner circle really slight change
+    colorLight=#b4dcff
+#scroll bar track top, radio/check bottom
+    colorMid=#00519A 
+#radio button inside circle slight
+    colorDark=#EAF6FD
+    colorUltraDark=#EAF6FD
+#label , textcomponent ,  text progress bar not filled
+    #colorForeground=#0098DB
+    
+    # SICPA Blue
+    colorForeground=#033B5A
+}
+SicpaSkin Active {
+    kind=Dark
+# progress bar determinate bar top+bottom 
+    colorUltraLight=#001f37
+#memory heap status background
+    colorExtraLight=#001f37
+#scrollbar determinate middle top 
+#not editable text field background
+    colorLight=#95b2fb
+#radio+check background rollover unselected
+#scroll bar thumb
+    colorMid=#a5cffa
+#editable combo border rollover unfocused
+    colorDark=#eaf6fd
+#nothing
+	colorUltraDark=#eaf6fd
+#text selected item menu/combo box
+    colorForeground=#ffffff
+}
+SicpaSkin Selected {
+    kind=Dark
+#determinate progress bar top+bottom , indeterminate progress bar small rectangle
+    colorUltraLight=#A5C4E7
+#nothing
+    colorExtraLight=#ffffff
+#determinate progress bar middle top, inderterminate progress bar top+bottom
+#radio+check selected background
+    colorLight=#81A9DC
+#determinate progress bar middle bottom, inderterminate progress bar middle
+#radio+check selected background rollover
+    colorMid=#78A4DB
+#progress bar border
+    colorDark=#719CD7
+#nothing
+    colorUltraDark=#ffffff
+#text on progress bar  filled
+#month view selected day number
+#combo box menu rollover
+    colorForeground=#ffffff
+ }
+ 
+SicpaSkin Pressed {
+    kind=Light
+#nothing
+    colorUltraLight=#ffffff
+#nothing
+    colorExtraLight=#ffffff
+#radio+check pressed background 2nd color of the pressed animation
+    colorLight=#7EA7CD
+#radio+check pressed background first color of the pressed animation
+#slider pressed background
+#scroll bar thumb pressed
+    colorMid=#79A4CB
+#nothing
+    colorDark=#ffffff
+#radio+check mark pressed
+    colorUltraDark=#618AC5
+#nothing
+    colorForeground=#ffffff
+}
+SicpaSkin Button Enabled {
+    kind=Dark
+#very top color jbutton
+#left/top color scroll bar button
+    colorUltraLight=#0519a
+#nothing
+    colorExtraLight=#ffffff
+# top shine
+    colorLight=#95b2fb
+#button background , not editable combo background
+#right/bottom scroll bar button
+    colorMid=#0519a
+#button top
+    colorDark=#0519a
+#nothing
+    colorUltraDark=#ffffff
+#button + not editable foreground
+    colorForeground=#ffffff
+}
+SicpaSkin Button Active {
+    kind=Dark
+#left/top scroll bar button rollover
+    colorUltraLight=#0519a
+#nothing
+    colorExtraLight=#ffffff
+#button+combo rollover background ligh , 2nd part of the animation , mixed with colorMid
+    colorLight=#95b2fb
+#button+combo rollover background, first part of the rollover animation
+#scrollbar button botton/right rollover
+    colorMid=#95b2fb
+#nothing
+    colorDark=#ffffff
+#nothing
+    colorUltraDark=#ffffff
+#text button+combo+scroll arrow mark
+    colorForeground=#001f37
+}
+SicpaSkin Button Pressed {
+    kind=Light
+    #left/top scroll bar button pressed
+    colorUltraLight=#AFDAF6
+#nothing
+    colorExtraLight=#ffffff
+#button backgroung, 2nd part of the pressed animation
+    colorLight=#7EA7CD
+#button backgroung, first part of the pressed animation
+    colorMid=#79A4CB
+#nothing
+    colorDark=#ffffff
+#scroll button arrow pressed
+    colorUltraDark=#618AC5
+#button text pressed
+    colorForeground=#000000
+}
+
+SicpaSkin Disabled {
+    kind=Light
+#text field , combo background mixed with extraLight disabled
+#radio + check not selected  top background 
+#slider track bottom
+    colorUltraLight=#DEE8F1
+#text field , combo background mixed with ultraLight disabled
+#jtree background +- icon
+#radio + check selected top background
+    colorExtraLight=#E3EAF3
+#slider thumb
+#text field not editable mixed with midColor
+    colorLight=#DBE4F0
+#button + combo background
+#text field not editable mixed with colorLight
+#slider track top
+#radio+check background bottom
+    colorMid=#D9E3EF
+    colorDark=#CADBF1
+#nothing
+    colorUltraDark=#C4D7EF
+#all text
+#jtree +- icon 
+    colorForeground=#989A9E
+}
+
+SicpaSkin Background {
+    kind=Dark
+    colorUltraLight=#ffffff
+    colorExtraLight=#ffffff
+    colorLight=#ffffff
+    colorMid=#ffffff
+#panel background
+    colorDark=#01524
+    colorUltraDark=#ffffff
+    colorForeground=#ffffff
+}
+
+SicpaSkin Table {
+    kind=Dark
+    colorUltraLight=#ffffff
+#jtree/jlist/jtable foreground selected
+    colorExtraLight=#EAF6FD
+#even row background
+    colorLight=#b4dcff
+#foreground unselected
+    colorMid=#001f37
+#odd row background
+    colorDark=#EAF6FD
+#nothing
+    colorUltraDark=#ffffff
+#table cell header
+    colorForeground=#ffffff
+}
+
+SicpaSkin Table Disabled{
+    kind=Dark
+    colorUltraLight=#ffffff
+#jtree/jlist/jtable foreground selected
+    colorExtraLight=#EAF6FD
+#even row background
+    colorLight=#c6dedd
+#foreground unselected
+    colorMid=#001f37
+#odd row background
+    colorDark=#d6e2e2
+#nothing
+    colorUltraDark=#ffffff
+#table cell header
+    colorForeground=#ffffff
+}
+
+SicpaSkin Background Header{
+    kind=Dark
+#nothing
+    colorUltraLight=#ffffff
+#nothing
+    colorExtraLight=#ffffff
+#window border
+    colorLight=#000000
+#panel background+title bar background
+    colorMid=#001f37
+#popup combo background
+    colorDark=#001f37
+#nothing
+    colorUltraDark=#ffffff
+#nothing
+    colorForeground=#ffffff
+}
+
+SicpaSkin Background Work{
+    kind=Light
+    colorUltraLight=#ffffff
+#datepicker background
+    colorExtraLight=#001F37
+    colorLight=#ffffff
+#panel flag as work with SicpalookAndFeel.FlagAsWork
+#month view day number panel
+    #colorMid=#e2f4fd
+    
+    # Cloud Grey
+    colorMid=#f6f6f7
+    colorDark=#ffffff
+    colorUltraDark=#ffffff
+    colorForeground=#ffffff
+}
+
+SicpaSkin Enabled Border {
+    kind=Dark
+    colorUltraLight=#ffffff
+    colorExtraLight=#ffffff
+    colorLight=#ffffff
+#jtable grid
+#jtree +- icon border
+    colorMid=#ffffff
+ #scrollpane
+#radio+check mark disabled
+#spinner
+#text field
+#editable combo not focused
+    colorDark=#0098db
+    colorUltraDark=#ffffff
+#arrow(combo+scroll+datepicker) not rollover
+    colorForeground=#ffffff
+}
+
+SicpaSkin Title Enabled Border {
+    kind=Dark
+#nothing
+    colorUltraLight=#000000
+#nothing
+    colorExtraLight=#000000
+#nothing
+    colorLight=#000000
+#nothing    
+    colorMid=#ffffff
+#frame left + top outter border
+    colorDark=#000000
+#frame right + bottom outter border
+    colorUltraDark=#000000
+#frame decoration button
+    colorForeground=#ffffff
+}
+
+SicpaSkin Disabled Border {
+    kind=Light
+#nothing
+    colorUltraLight=#001f37
+#nothing
+    colorExtraLight=#001f37
+#nothing
+    colorLight=#001f37
+#jtable grid
+    colorMid=#ffffff
+#text field    
+    colorDark=#001f37
+#radio+check mark
+#arrow
+    colorUltraDark=#afafaf
+#nothing
+    colorForeground=#001f37
+}
+
+SicpaSkin Separator {
+    kind=Dark
+    colorUltraLight=#ffffff
+#title border(bottom+right)
+    colorExtraLight=#c4d7ef
+    colorLight=#ffffff
+#background JSeparator
+    colorMid=#098db
+#title border(top+left)
+    colorDark=#001f37
+    colorUltraDark=#ffffff
+    colorForeground=#ffffff
+}
+
+SicpaSkin Mark {
+    kind=Dark
+    colorUltraLight=#ffffff
+    colorExtraLight=#ffffff
+    colorLight=#ffffff
+    colorMid=#ffffff
+    colorDark=#ffffff
+    colorUltraDark=#ffffff
+#radio+check mark selected
+    colorForeground=#000000
+}
+
+SicpaSkin Highlight Painter {
+    kind=Dark
+    colorUltraLight=#ffffff
+    colorExtraLight=#ffffff
+#midle gradient
+    colorLight=#0589e
+#bottom gradient
+    colorMid=#02c4e
+#top gradient
+    colorDark=#02c4e
+    colorUltraDark=#ffffff
+    colorForeground=#ffffff
+}
