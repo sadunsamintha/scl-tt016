@@ -19,8 +19,6 @@ import javax.swing.AbstractButton;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
-import net.miginfocom.swing.MigLayout;
-
 import org.jdesktop.swingx.graphics.GraphicsUtilities;
 
 import com.sicpa.standard.gui.plaf.SicpaColor;
@@ -28,6 +26,8 @@ import com.sicpa.standard.gui.plaf.SicpaLookAndFeelCusto;
 import com.sicpa.standard.gui.utils.ImageUtils;
 import com.sicpa.standard.gui.utils.PaintUtils;
 import com.sicpa.standard.gui.utils.TextUtils;
+
+import net.miginfocom.swing.MigLayout;
 
 public class ToggleImageAndTextButton extends ToggleImageButton {
 
@@ -52,12 +52,12 @@ public class ToggleImageAndTextButton extends ToggleImageButton {
 	private String text;
 
 	public ToggleImageAndTextButton(final String text) {
-		this(text, null, 0.7f, 0.7f, true);
+		this(text, null, 0.7f, 0.7f, false);
 		setText(text);
 	}
 
 	public ToggleImageAndTextButton(final String text, final Image image) {
-		this(text, image, 0.7f, 0.7f, true);
+		this(text, image, 0.7f, 0.7f, false);
 	}
 
 	private BufferedImage originalIcon;
@@ -146,8 +146,8 @@ public class ToggleImageAndTextButton extends ToggleImageButton {
 		final Point start = new Point(0, 0);
 		final Point end = new Point(0, img.getHeight());
 		final float[] fractions = new float[] { 0, 0.5f, 1 };
-		final Color[] colors = new Color[] { SicpaColor.BLUE_LIGHT, SicpaColor.BLUE_LIGHT.darker(),
-				SicpaColor.BLUE_LIGHT };
+		final Color[] colors = new Color[] { SicpaColor.MENTHOL_BLUE, SicpaColor.MENTHOL_BLUE,
+				SicpaColor.MENTHOL_BLUE };
 
 		final LinearGradientPaint lgp = new LinearGradientPaint(start, end, fractions, colors);
 		g2.setPaint(lgp);
@@ -177,12 +177,6 @@ public class ToggleImageAndTextButton extends ToggleImageButton {
 		} else {
 			g2.setColor(Color.BLACK);
 		}
-		g2.drawRoundRect(2, 2, img.getWidth() - getBlurRadius() / 2 - 2, img.getHeight() - getBlurRadius() / 2 - 2, 20,
-				20);
-
-		g2.drawRoundRect(getSelectionRingThickness() + getBlurRadius() - 2, getSelectionRingThickness()
-				+ getBlurRadius() - 2, img.getWidth() - getSelectionRingThickness() * 2 - getBlurRadius() * 2 + 4,
-				img.getHeight() - getSelectionRingThickness() * 2 - getBlurRadius() * 2 + 4, 7, 7);
 		return img;
 	}
 

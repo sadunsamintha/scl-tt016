@@ -9,10 +9,8 @@
 		<groupId>com.sicpa.standard.sasscl</groupId>
 		<version>2.5.17-SNAPSHOT</version>
 	</parent>
-
-
+	
 	<dependencies>
-
 		<dependency>
 			<groupId>com.sicpa.tt016</groupId>
 			<artifactId>tt016-master-scl-ejb</artifactId>
@@ -70,6 +68,5 @@
 			<version>2.5.17-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
-
 
 </project>
