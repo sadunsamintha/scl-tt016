@@ -3,7 +3,6 @@ package com.sicpa.standard.gui.components.buttons;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Insets;
 import java.awt.event.HierarchyEvent;
 import java.awt.event.HierarchyListener;
 
@@ -13,10 +12,10 @@ import javax.swing.JPanel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import net.miginfocom.swing.MigLayout;
-
 import com.sicpa.standard.gui.plaf.SicpaLookAndFeelConfig;
 import com.sicpa.standard.gui.utils.PaintUtils;
+
+import net.miginfocom.swing.MigLayout;
 
 public class PaddedButton extends JPanel {
 	protected static final long serialVersionUID = 1L;
@@ -75,7 +74,7 @@ public class PaddedButton extends JPanel {
 
 		add(Box.createVerticalStrut(this.vpadding), "north");
 		add(Box.createVerticalStrut(this.vpadding), "south");
-
+		
 		add(this.button, "grow");
 	}
 
@@ -84,16 +83,12 @@ public class PaddedButton extends JPanel {
 		Graphics2D g2 = (Graphics2D) g.create();
 		PaintUtils.turnOnAntialias(g2);
 
-		Insets inset = getInsets();
-		int w = getWidth() - inset.left - inset.right;
-		int h = getHeight() - inset.top - inset.bottom;
-
 		if (this.button.isEnabled()) {
 			g2.setColor(enabledColor);
 		} else {
 			g2.setColor(disabledColor);
 		}
-		g2.fillRoundRect(0, 0, w, h, this.cornerArc, this.cornerArc);
+		
 		g2.dispose();
 	}
 

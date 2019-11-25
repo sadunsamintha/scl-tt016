@@ -102,7 +102,7 @@ public class ToggleImageButton extends JToggleButton {
 	private boolean actionAfterAnimation;
 
 	public ToggleImageButton(final Image image) {
-		this(image, .5f, .5f, true);
+		this(image, .5f, .5f, false);
 	}
 
 	public ToggleImageButton(final Image image, final float alphaMin, final float ratioMin,

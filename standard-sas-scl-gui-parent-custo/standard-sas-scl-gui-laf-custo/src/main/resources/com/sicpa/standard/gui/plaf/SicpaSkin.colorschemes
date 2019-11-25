@@ -12,9 +12,6 @@ SicpaSkin Enabled {
     colorDark=#EAF6FD
     colorUltraDark=#EAF6FD
 #label , textcomponent ,  text progress bar not filled
-    #colorForeground=#0098DB
-    
-    # SICPA Blue
     colorForeground=#033B5A
 }
 SicpaSkin Active {
@@ -81,18 +78,18 @@ SicpaSkin Button Enabled {
     kind=Dark
 #very top color jbutton
 #left/top color scroll bar button
-    colorUltraLight=#0519a
+    colorUltraLight=#0087c8
 #nothing
-    colorExtraLight=#ffffff
+    colorExtraLight=#0087c8
 # top shine
-    colorLight=#95b2fb
+    colorLight=#0087c8
 #button background , not editable combo background
 #right/bottom scroll bar button
-    colorMid=#0519a
+    colorMid=#0087c8
 #button top
-    colorDark=#0519a
+    colorDark=#0087c8
 #nothing
-    colorUltraDark=#ffffff
+    colorUltraDark=#0087c8
 #button + not editable foreground
     colorForeground=#ffffff
 }
@@ -112,7 +109,7 @@ SicpaSkin Button Active {
 #nothing
     colorUltraDark=#ffffff
 #text button+combo+scroll arrow mark
-    colorForeground=#001f37
+    colorForeground=#0087c8
 }
 SicpaSkin Button Pressed {
     kind=Light

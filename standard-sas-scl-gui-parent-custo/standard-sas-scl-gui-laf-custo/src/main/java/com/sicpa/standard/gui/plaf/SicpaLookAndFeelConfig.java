@@ -145,7 +145,7 @@ public class SicpaLookAndFeelConfig {
 
 	public static Color getPaddedButtonEnabledColor() {
 		return SicpaLookAndFeelRessourceUtils.getColor(PADDED_BUTTON_ENABLED_COLOR,
-				SicpaLookAndFeelCusto.getExtProperties(), SicpaColor.BLUE_MEDIUM);
+				SicpaLookAndFeelCusto.getExtProperties(), SicpaColor.MENTHOL_BLUE);
 	}
 
 	public static Color getPaddedButtonDisabledColor() {

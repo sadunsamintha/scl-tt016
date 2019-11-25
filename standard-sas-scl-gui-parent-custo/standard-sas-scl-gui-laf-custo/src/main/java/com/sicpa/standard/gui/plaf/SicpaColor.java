@@ -32,6 +32,8 @@ public class SicpaColor {
 	public final static Color BLUE_LIGHT = getColor("BLUE_LIGHT", new Color(180, 220, 255));
 	public final static Color BLUE_ULTRA_LIGHT = getColor("BLUE_ULTRA_LIGHT", new Color(226, 244, 253));
 	public final static Color SICPA_BLUE = getColor("SICPA_BLUE", new Color(3, 59, 90));
+	public final static Color MENTHOL_BLUE = getColor("MENTHOL_BLUE", new Color(106, 159, 156));
+	public final static Color PRIMARY_BLUE = getColor("PRIMARY_BLUE", new Color(0, 135, 200));
 
 	public static final Color GREEN_DARK = getColor("GREEN_DARK", new Color(80, 143, 32));
 	public static final Color GREEN_LIGHT = getColor("GREEN_LIGHT", new Color(171, 195, 139));
