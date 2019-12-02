@@ -70,7 +70,7 @@ public class TT080SASSCLGlobalPropertiesTest {
         final Object o = propertiesFile.get("custo.id");
 
         //Then
-        assertThat(o, allOf(instanceOf(String.class), equalToIgnoringCase(this.custoId)));
+        assertThat((String) o, equalToIgnoringCase(this.custoId));
     }
 
     @Test
