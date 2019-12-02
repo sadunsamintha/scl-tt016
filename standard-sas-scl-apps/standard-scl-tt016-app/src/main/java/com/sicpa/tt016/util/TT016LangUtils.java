@@ -16,7 +16,6 @@ import org.slf4j.LoggerFactory;
 import com.sicpa.standard.client.common.i18n.Messages;
 import com.sicpa.standard.client.common.utils.AppUtils;
 import com.sicpa.standard.gui.I18n.GUIi18nManager;
-import com.sicpa.standard.gui.plaf.SicpaLookAndFeelCusto;
 
 public class TT016LangUtils {
 
@@ -30,8 +29,6 @@ public class TT016LangUtils {
 		try {
 			if (!AppUtils.isHeadless()) {
 				Locale.setDefault(new Locale(language));
-				// refresh the ui to use the new local
-				SicpaLookAndFeelCusto.install();
 				JOptionPane.setDefaultLocale(Locale.getDefault());
 				JXDatePicker.setDefaultLocale(Locale.getDefault());
 				JXLoginPane.setDefaultLocale(Locale.getDefault());

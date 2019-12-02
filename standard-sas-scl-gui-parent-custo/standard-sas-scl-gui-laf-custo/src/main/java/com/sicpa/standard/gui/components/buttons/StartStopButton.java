@@ -14,13 +14,15 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.net.URL;
 
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
-
-import net.miginfocom.swing.MigLayout;
 
 import org.jdesktop.swingx.graphics.GraphicsUtilities;
 import org.pushingpixels.trident.Timeline;
@@ -30,6 +32,8 @@ import com.sicpa.standard.gui.plaf.SicpaColor;
 import com.sicpa.standard.gui.utils.PaintUtils;
 import com.sicpa.standard.gui.utils.trident.triggers.MouseTrigger;
 import com.sicpa.standard.gui.utils.trident.triggers.MouseTriggerEvent;
+
+import net.miginfocom.swing.MigLayout;
 
 public class StartStopButton extends JButton {
 	private static final long serialVersionUID = 1L;
@@ -117,17 +121,35 @@ public class StartStopButton extends JButton {
 		final BufferedImage in = GraphicsUtilities.createCompatibleTranslucentImage(getWidth(), getHeight());
 		final Graphics2D g2 = (Graphics2D) in.getGraphics();
 		PaintUtils.turnOnAntialias(g2);
-
-		if (this.type == eStartStop.START) {
-			g2.setColor(SicpaColor.GREEN_DARK);
-		} else {
-			g2.setColor(SicpaColor.RED);
+		
+		URL url = null;
+		BufferedImage img = null;
+		
+		try {
+			if (this.type == eStartStop.START) {
+				g2.setColor(SicpaColor.GREEN_DARK);
+				url = Class.forName("com.sicpa.standard.gui.screen.machine.AbstractMachineFrame").getResource("Start.png");
+			} else {
+				g2.setColor(SicpaColor.RED);
+				url = Class.forName("com.sicpa.standard.gui.screen.machine.AbstractMachineFrame").getResource("Stop.png");
+			}
+			
+			img = GraphicsUtilities.loadCompatibleImage(url);
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+			img = GraphicsUtilities.createCompatibleTranslucentImage(1, 1);
 		}
+		
+		Icon icon = new ImageIcon(img);
+		setIcon(icon);
 
 		if (!isEnabled()) {
 			g2.setColor(Color.GRAY);
 		}
-		g2.fillOval(1, 1, w - 2, h - 2);
+		g2.fillRoundRect(1, 1, w, h, 70, 70);
+		
 		g2.dispose();
 		return in;
 	}
@@ -135,9 +157,6 @@ public class StartStopButton extends JButton {
 	public BufferedImage createOUTImage(final boolean armed) {
 		final int width = getWidth();
 		final int height = getHeight();
-
-		final int h = height - 5;
-		final int w = width - 5;
 
 		int blurradius = (int) (width / 3.5);
 		float outSize = width / 8;
@@ -164,7 +183,6 @@ public class StartStopButton extends JButton {
 
 		g2.setPaint(paint);
 		g2.setStroke(new BasicStroke(outSize));
-		g2.drawOval(0, 0, w, h);
 		g2.dispose();
 		new GaussianFilter(blurradius).filter(out, out);
 		return out;
@@ -205,7 +223,8 @@ public class StartStopButton extends JButton {
 		final BufferedImage shadow = GraphicsUtilities.createCompatibleTranslucentImage(getWidth(), getHeight());
 		final Graphics2D gshadow = (Graphics2D) shadow.getGraphics();
 		gshadow.setColor(Color.black);
-		gshadow.fillOval(1, 1, w, h);
+		gshadow.fillRoundRect(1, 1, w, h, 70, 70);
+		
 		gshadow.dispose();
 		new GaussianFilter(5).filter(shadow, shadow);
 		return shadow;

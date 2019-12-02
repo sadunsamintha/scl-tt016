@@ -1,16 +1,16 @@
 SicpaSkin Enabled {
     kind=Light
 #text field+ top check box + to radio + left/bottom scroll bar track
-    colorUltraLight=#001F37
+    colorUltraLight=#ffffff
 #tree cell renderer +/- icon , text field slight change
-    colorExtraLight=#001F37
+    colorExtraLight=#ffffff
 #radio button icon inner circle really slight change
-    colorLight=#b4dcff
+    colorLight=#ffffff
 #scroll bar track top, radio/check bottom
-    colorMid=#00519A 
+    colorMid=#ffffff
 #radio button inside circle slight
-    colorDark=#EAF6FD
-    colorUltraDark=#EAF6FD
+    colorDark=#cfd1d3
+    colorUltraDark=#cfd1d3
 #label , textcomponent ,  text progress bar not filled
     colorForeground=#033B5A
 }
@@ -96,20 +96,20 @@ SicpaSkin Button Enabled {
 SicpaSkin Button Active {
     kind=Dark
 #left/top scroll bar button rollover
-    colorUltraLight=#0519a
+    colorUltraLight=#0087c8
 #nothing
     colorExtraLight=#ffffff
 #button+combo rollover background ligh , 2nd part of the animation , mixed with colorMid
-    colorLight=#95b2fb
+    colorLight=#0087c8
 #button+combo rollover background, first part of the rollover animation
 #scrollbar button botton/right rollover
-    colorMid=#95b2fb
+    colorMid=#0087c8
 #nothing
     colorDark=#ffffff
 #nothing
     colorUltraDark=#ffffff
 #text button+combo+scroll arrow mark
-    colorForeground=#0087c8
+    colorForeground=#033b5a
 }
 SicpaSkin Button Pressed {
     kind=Light
@@ -157,14 +157,14 @@ SicpaSkin Disabled {
 
 SicpaSkin Background {
     kind=Dark
-    colorUltraLight=#ffffff
-    colorExtraLight=#ffffff
-    colorLight=#ffffff
-    colorMid=#ffffff
+    colorUltraLight=#f6f6f7
+    colorExtraLight=#f6f6f7
+    colorLight=#f6f6f7
+    colorMid=#f6f6f7
 #panel background
-    colorDark=#01524
-    colorUltraDark=#ffffff
-    colorForeground=#ffffff
+    colorDark=#f6f6f7
+    colorUltraDark=#f6f6f7
+    colorForeground=#f6f6f7
 }
 
 SicpaSkin Table {
@@ -212,7 +212,7 @@ SicpaSkin Background Header{
 #panel background+title bar background
     colorMid=#001f37
 #popup combo background
-    colorDark=#001f37
+    colorDark=#ffffff
 #nothing
     colorUltraDark=#ffffff
 #nothing
@@ -223,13 +223,10 @@ SicpaSkin Background Work{
     kind=Light
     colorUltraLight=#ffffff
 #datepicker background
-    colorExtraLight=#001F37
+    colorExtraLight=#001f37
     colorLight=#ffffff
 #panel flag as work with SicpalookAndFeel.FlagAsWork
 #month view day number panel
-    #colorMid=#e2f4fd
-    
-    # Cloud Grey
     colorMid=#f6f6f7
     colorDark=#ffffff
     colorUltraDark=#ffffff
@@ -249,7 +246,7 @@ SicpaSkin Enabled Border {
 #spinner
 #text field
 #editable combo not focused
-    colorDark=#0098db
+    colorDark=#0087c8
     colorUltraDark=#ffffff
 #arrow(combo+scroll+datepicker) not rollover
     colorForeground=#ffffff
@@ -299,7 +296,7 @@ SicpaSkin Separator {
     colorExtraLight=#c4d7ef
     colorLight=#ffffff
 #background JSeparator
-    colorMid=#098db
+    colorMid=#033b5a
 #title border(top+left)
     colorDark=#001f37
     colorUltraDark=#ffffff
@@ -322,12 +319,12 @@ SicpaSkin Highlight Painter {
     kind=Dark
     colorUltraLight=#ffffff
     colorExtraLight=#ffffff
-#midle gradient
-    colorLight=#0589e
+#middle gradient
+    colorLight=#0087c8
 #bottom gradient
-    colorMid=#02c4e
+    colorMid=#0087c8
 #top gradient
-    colorDark=#02c4e
+    colorDark=#0087c8
     colorUltraDark=#ffffff
     colorForeground=#ffffff
 }

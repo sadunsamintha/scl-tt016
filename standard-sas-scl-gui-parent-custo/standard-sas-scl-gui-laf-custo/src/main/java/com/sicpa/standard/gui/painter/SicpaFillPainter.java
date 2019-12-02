@@ -90,7 +90,7 @@ public class SicpaFillPainter extends StandardFillPainter {
 			Point end = new Point(0, height);
 
 			Color c = fillScheme.getMidColor();
-			Color[] colors = new Color[] { c, c, c.darker() };
+			Color[] colors = new Color[] { c, c, c };
 			float[] fractions = new float[] { 0, 0.6f, 1f };
 			LinearGradientPaint lgp = new LinearGradientPaint(start, end, fractions, colors);
 			graphics.setPaint(lgp);

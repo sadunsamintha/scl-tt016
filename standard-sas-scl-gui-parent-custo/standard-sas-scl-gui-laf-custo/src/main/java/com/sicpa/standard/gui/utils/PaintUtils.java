@@ -338,8 +338,8 @@ public class PaintUtils {
 		if (SubstanceLookAndFeel.isCurrentLookAndFeel()) {
 			SubstanceColorScheme cs = SubstanceColorSchemeUtilities.getColorScheme(null, SicpaSkin.HIGHLIGHT,
 					ComponentState.DEFAULT);
-			c0 = cs.getDarkColor();
-			c1 = cs.getLightColor();
+			c0 = cs.getMidColor();
+			c1 = cs.getMidColor();
 			c2 = cs.getMidColor();
 		}
 

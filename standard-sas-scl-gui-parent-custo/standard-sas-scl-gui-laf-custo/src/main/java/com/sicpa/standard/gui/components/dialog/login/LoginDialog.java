@@ -20,8 +20,6 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
-import net.miginfocom.swing.MigLayout;
-
 import org.jdesktop.swingx.JXLabel;
 import org.jdesktop.swingx.JXLoginPane;
 import org.jdesktop.swingx.auth.LoginAdapter;
@@ -35,6 +33,8 @@ import com.sicpa.standard.gui.plaf.SicpaColor;
 import com.sicpa.standard.gui.plaf.SicpaLookAndFeelCusto;
 import com.sicpa.standard.gui.utils.PaintUtils;
 import com.sicpa.standard.gui.utils.WindowsUtils;
+
+import net.miginfocom.swing.MigLayout;
 
 public class LoginDialog extends JDialog {
 
@@ -179,6 +179,8 @@ public class LoginDialog extends JDialog {
 	public JButton getButtonLogin() {
 		if (this.buttonLogin == null) {
 			this.buttonLogin = new JButton();
+			this.buttonLogin.setBorderPainted(false);
+			this.buttonLogin.setFocusPainted(false);
 			this.buttonLogin.setAction(this.loginPane.getActionMap().get(JXLoginPane.LOGIN_ACTION_COMMAND));
 			this.buttonLogin.setText(GUIi18nManager.get(I18N_LOGIN));
 			this.buttonLogin.setName(I18N_LOGIN);
@@ -189,6 +191,8 @@ public class LoginDialog extends JDialog {
 	public JButton getButtonCancel() {
 		if (this.buttonCancel == null) {
 			this.buttonCancel = new JButton(GUIi18nManager.get(I18N_CANCEL));
+			this.buttonCancel.setBorderPainted(false);
+			this.buttonCancel.setFocusPainted(false);
 			this.buttonCancel.setName(I18N_CANCEL);
 			this.buttonCancel.addActionListener(new ActionListener() {
 				@Override
@@ -222,8 +226,6 @@ public class LoginDialog extends JDialog {
 						bannerText = "LOGIN";
 					}
 					bannerText = bannerText.toUpperCase();
-//					PaintUtils.drawHighLightText(g2, bannerText, 10, 50, SicpaColor.BLUE_DARK,
-//							SicpaColor.BLUE_ULTRA_LIGHT);
 					PaintUtils.drawHighLightText(g2, bannerText, 10, 50, SicpaColor.BLUE_DARK,
 							SicpaColor.CLOUD_GREY);
 				}
@@ -245,8 +247,6 @@ public class LoginDialog extends JDialog {
 
 					Point start = new Point(0, 0);
 					Point end = new Point(0, getBanner().getHeight());
-//					Color c1 = SicpaColor.BLUE_LIGHT;
-//					Color c2 = SicpaColor.BLUE_ULTRA_LIGHT;
 					Color c1 = SicpaColor.CLOUD_GREY;
 					Color c2 = SicpaColor.CLOUD_GREY;
 					GradientPaint paint = new GradientPaint(start, c1, end, c2);
