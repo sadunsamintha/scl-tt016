@@ -175,7 +175,7 @@ public class VirtualKeyboardPanel extends JPanel {
 
 		addAction("{capsLock}", getTaskCapsLockONByDefault());
 
-		addAvailableSpecialButton(createSpecialButton("{clr}", I18N_CLEAR, true));
+		addAvailableSpecialButton(createSpecialButton("{clr}", "CLR", false));
 		addAvailableSpecialButton(createSpecialButton("{alt}", I18N_ALT, false));
 		addAvailableSpecialButton(createSpecialButton("{ctrl}", I18N_CTRL, false));
 		addAvailableSpecialButton(createSpecialButton("{del}", I18N_BACK, true));
