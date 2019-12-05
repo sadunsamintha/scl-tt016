@@ -137,6 +137,7 @@ public class StartStopButton extends JButton {
 			img = GraphicsUtilities.loadCompatibleImage(url);
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
+			img = GraphicsUtilities.createCompatibleTranslucentImage(1, 1);
 		} catch (IOException e) {
 			e.printStackTrace();
 			img = GraphicsUtilities.createCompatibleTranslucentImage(1, 1);
