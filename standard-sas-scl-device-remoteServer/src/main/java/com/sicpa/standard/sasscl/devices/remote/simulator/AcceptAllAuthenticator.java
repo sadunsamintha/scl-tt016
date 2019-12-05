@@ -1,5 +1,6 @@
 package com.sicpa.standard.sasscl.devices.remote.simulator;
 
+import com.sicpa.standard.sasscl.model.CodeType;
 import com.sicpa.standard.sasscl.model.DecodedCameraCode;
 import com.sicpa.standard.sasscl.model.ProductionParameters;
 import com.sicpa.standard.sasscl.sicpadata.CryptographyException;
@@ -16,12 +17,28 @@ public class AcceptAllAuthenticator implements IAuthenticator {
 
 	public AcceptAllAuthenticator() {
 	}
-
+	
 	@Override
 	public IDecodedResult decode(String mode, String encryptedCode) throws CryptographyException {
 
 		DecodedCameraCode res = new DecodedCameraCode();
 		res.setCodeType(productionParameters.getSku().getCodeType());
+		res.setBatchId(-1);
+		res.setAuthenticated(true);
+        try {
+            res.setSequence(Long.parseLong(encryptedCode.trim()));
+        } catch (Exception e) {
+            res.setSequence(counter++);
+        }
+
+		return res;
+	}
+	
+	@Override
+	public IDecodedResult decode(String mode, String encryptedCode, CodeType codeType) throws CryptographyException {
+
+		DecodedCameraCode res = new DecodedCameraCode();
+		res.setCodeType(codeType);
 		res.setBatchId(-1);
 		res.setAuthenticated(true);
         try {

@@ -82,7 +82,7 @@ public class RemoteServerSimulator extends AbstractRemoteServer implements ISimu
   protected final RemoteServerSimulatorModel simulatorModel;
   private SimulatorControlView simulatorGui;
   private String remoteServerSimulatorOutputFolder;
-  private ProductionParameters productionParameters;
+  protected ProductionParameters productionParameters;
   private IStorage storage;
   private IServiceProviderManager serviceProviderManager;
   private FileSequenceStorageProvider fileSequenceStorageProvider;

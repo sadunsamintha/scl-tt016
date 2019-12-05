@@ -2,6 +2,7 @@ package com.sicpa.standard.sasscl.sicpadata.reader;
 
 import java.io.Serializable;
 
+import com.sicpa.standard.sasscl.model.CodeType;
 import com.sicpa.standard.sasscl.sicpadata.CryptographyException;
 
 /**
@@ -26,5 +27,20 @@ public interface IAuthenticator extends Serializable {
 	 *             - exception thrown when authenticator failed to decode
 	 */
 	IDecodedResult decode(String mode, String encryptedCode) throws CryptographyException;
+	
+	/**
+	 * decode encrypted code
+	 * 
+	 * @param mode
+	 *            - pass in null if it is not needed
+	 * @param encryptedCode
+	 *            - encrypted code in String
+	 * @param codeType
+	 *            - Code Type
+	 * @return - instance of IDecodedResult
+	 * @throws CryptographyException
+	 *             - exception thrown when authenticator failed to decode
+	 */
+	IDecodedResult decode(String mode, String encryptedCode, CodeType codeType) throws CryptographyException;
 
 }
