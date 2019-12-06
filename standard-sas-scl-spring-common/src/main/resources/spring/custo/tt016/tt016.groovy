@@ -4,7 +4,6 @@ import com.sicpa.tt016.model.DisallowedConfiguration
 import com.sicpa.tt016.scl.TT016Bootstrap
 import com.sicpa.tt016.util.LegacyEncoderConverter
 import com.sicpa.tt016.printer.simulator.TT016PrinterAdaptorSimulator
-import com.sicpa.tt016.scl.business.activation.TT016ExportActivationBehavior
 
 beans{
 	tt016TrilightWarningCameraAlert(TT016TrilightWarningCameraAlert) {
@@ -99,10 +98,5 @@ beans{
 	legacyEncoderConverter(LegacyEncoderConverter) {
 		fileStorage=ref('storage')
 		codeTypeId=props['codeTypeId']
-	}
-	
-	addAlias('exportActivationBehaviorAlias','exportActivationBehavior')
-	exportActivationBehavior(TT016ExportActivationBehavior){b->
-		b.parent=ref('exportActivationBehaviorAlias')
 	}
 }

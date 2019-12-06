@@ -26,10 +26,6 @@ public class TT016SicpaDataGeneratorStorage extends SicpaDataGeneratorStorage  {
         encoder.setOnClientDate(new Date());
         storage.saveEncoders(year, encoder);
         
-        if (productionParameters.getProductionMode().equals(ProductionMode.EXPORT)) {
-        	
-        }
-
         try {
             fileSequenceStorageProvider.storeSequence(generator.getId(), generator.getLastUsedSeq());
         } catch (ServiceProviderException e) {
