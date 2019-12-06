@@ -6,7 +6,6 @@ import java.util.Random;
 import com.sicpa.standard.sasscl.devices.remote.RemoteServerException;
 import com.sicpa.standard.sasscl.devices.remote.simulator.RemoteServerSimulator;
 import com.sicpa.standard.sasscl.devices.remote.simulator.RemoteServerSimulatorModel;
-import com.sicpa.standard.sasscl.model.ProductionMode;
 import com.sicpa.standard.sasscl.model.ProductionParameters;
 import com.sicpa.standard.sasscl.sicpadata.generator.IEncoder;
 import com.sicpa.standard.sicpadata.api.business.IBSicpadataGenerator;
@@ -17,12 +16,10 @@ import com.sicpa.standard.sicpadata.api.exception.UnknownVersionException;
 import com.sicpa.standard.sicpadata.spi.password.NoSuchPasswordException;
 import com.sicpa.tt016.remote.stdCrypto.TT016CryptoEncoderWrapperSimulator;
 import com.sicpa.tt016.remote.stdCrypto.TT016EncoderNoEncryptionSimulator;
-import com.sicpa.tt016.remote.stdCrypto.TT016EncoderNoEncryptionSimulatorExport;
 
 public class TT016RemoteServerSimulator extends RemoteServerSimulator {
 
     private boolean refeedAvailable;
-    private ProductionParameters productionParameters;
 
 	public TT016RemoteServerSimulator(RemoteServerSimulatorModel model) {
         super(model);
@@ -50,19 +47,12 @@ public class TT016RemoteServerSimulator extends RemoteServerSimulator {
       IBSicpadataGenerator bEncoder = generateEncoders(currentEncoderIndex, codeTypeId);
       int id = new Random().nextInt(Integer.MAX_VALUE);
       return new TT016CryptoEncoderWrapperSimulator(id, id, bEncoder, year, getSubsystemID(),
-          simulatorModel.getNumberOfCodesByEncoder(), cryptoFieldsConfig, codeTypeId, productionParameters);
+          simulatorModel.getNumberOfCodesByEncoder(), cryptoFieldsConfig, codeTypeId);
     }
 
     private IEncoder createNoEncryptionEncoder(int year, int codeTypeId) {
-    	System.out.println("TEST!!!!!!! " + productionParameters);
-    	
-    	if (null != productionParameters && null != productionParameters.getProductionMode() && productionParameters.getProductionMode().equals(ProductionMode.EXPORT)) {
-    		return new TT016EncoderNoEncryptionSimulatorExport(0, new Random().nextInt(Integer.MAX_VALUE), 0,
-    		          simulatorModel.getNumberOfCodesByEncoder(), year, getSubsystemID(), codeTypeId, productionParameters);
-    	} else {
-    		return new TT016EncoderNoEncryptionSimulator(0, new Random().nextInt(Integer.MAX_VALUE), 0,
-    		          simulatorModel.getNumberOfCodesByEncoder(), year, getSubsystemID(), codeTypeId);
-    	}
+    	return new TT016EncoderNoEncryptionSimulator(0, new Random().nextInt(Integer.MAX_VALUE), 0, 
+    			simulatorModel.getNumberOfCodesByEncoder(), year, getSubsystemID(), codeTypeId);
     }
 
     public void setRefeedAvailable(boolean refeedAvailable) {

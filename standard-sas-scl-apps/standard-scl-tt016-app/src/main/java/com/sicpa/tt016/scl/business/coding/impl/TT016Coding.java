@@ -1,14 +1,14 @@
 package com.sicpa.tt016.scl.business.coding.impl;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import com.sicpa.standard.sasscl.business.coding.ICodeReceiver;
 import com.sicpa.standard.sasscl.business.coding.impl.Coding;
 import com.sicpa.standard.sasscl.common.storage.IStorage;
-import com.sicpa.standard.sasscl.model.CodeType;
-import com.sicpa.standard.sasscl.model.ProductionMode;
-import com.sicpa.standard.sasscl.model.SKU;
+import com.sicpa.standard.sasscl.monitoring.MonitoringService;
+import com.sicpa.standard.sasscl.monitoring.system.SystemEventType;
+import com.sicpa.standard.sasscl.monitoring.system.event.BasicSystemEvent;
+import com.sicpa.standard.sasscl.sicpadata.CryptographyException;
+import com.sicpa.standard.sasscl.sicpadata.generator.IEncoder;
 
 /**
  * <p>
@@ -31,25 +31,11 @@ public class TT016Coding extends Coding {
 	}
 	
 	@Override
-	public void askCodes(final int number, ICodeReceiver target) {
-		synchronized (askCodeLock) {
-//			if(productionParameters.getProductionMode().equals(ProductionMode.EXPORT)){
-//				askCodeExport(number, target);
-//			}else{
-				super.askCodes(number, target);
-//			}
-		}
-	}
-	
-	private void askCodeExport(final int number, ICodeReceiver target) {
-		SKU sku = productionParameters.getSku();
-		if (sku != null) {
-			CodeType codeType = sku.getCodeType();
-			List<String> codes = new ArrayList<String>();
-			for(int i=0; i<number; i++){
-				codes.add(new String("EXP"));
-			}
-			sendCodeToPrinter(codes, target, null, codeType);
-		}
+	protected void generateCodes(IEncoder encoder, final List<String> codes, final long numberCodes)
+			throws CryptographyException {
+		// Gets the codes from the current encoder and adds them to the
+		// container to be send to the printer.
+		codes.addAll(encoder.getEncryptedCodes(numberCodes - codes.size(), productionParameters));
+		MonitoringService.addSystemEvent(new BasicSystemEvent(SystemEventType.GET_CODE_FROM_ENCODER, encoder.getId() + ""));
 	}
 }

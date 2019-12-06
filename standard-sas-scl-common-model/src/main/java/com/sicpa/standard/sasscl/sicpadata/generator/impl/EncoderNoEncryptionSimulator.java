@@ -7,6 +7,7 @@
  */
 package com.sicpa.standard.sasscl.sicpadata.generator.impl;
 
+import com.sicpa.standard.sasscl.model.ProductionParameters;
 import com.sicpa.standard.sasscl.sicpadata.CryptographyException;
 import com.sicpa.standard.sasscl.sicpadata.generator.AbstractEncoder;
 import com.sicpa.standard.sasscl.sicpadata.generator.EncoderEmptyException;
@@ -35,6 +36,16 @@ public class EncoderNoEncryptionSimulator extends AbstractEncoder {
 
 	@Override
 	public String getEncryptedCode() throws CryptographyException {
+		if (this.sequence > this.max) {
+			throw new EncoderEmptyException();
+		} else {
+			updateDateOfUse();
+			return String.valueOf(this.sequence++);
+		}
+	}
+	
+	@Override
+	protected String getEncryptedCode(ProductionParameters productionParameters) throws CryptographyException {
 		if (this.sequence > this.max) {
 			throw new EncoderEmptyException();
 		} else {
