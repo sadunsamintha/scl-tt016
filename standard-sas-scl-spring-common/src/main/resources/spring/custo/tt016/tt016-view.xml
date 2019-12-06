@@ -16,8 +16,13 @@
 	<bean id="startStopViewController" class="com.sicpa.tt016.view.startstop.TT016StartStopViewController">
 		<property name="flowControl" ref="flowControl" />
 	</bean>
-
-
+	
+	<bean id="startStopView" class="com.sicpa.tt016.view.startstop.TT016StartStopView" init-method="initGUI">
+		<property name="controller" ref="startStopViewController" />
+		<property name="model" value="#{startStopViewController.model}" />
+		<property name="productionStatusView" ref="productionStatusView" />
+	</bean>
+	
 	<!--RESET STATISTICS -->
 
 	<bean id="resetStatsView" class="com.sicpa.tt016.view.resetProduction.ResetProductionStatsView">

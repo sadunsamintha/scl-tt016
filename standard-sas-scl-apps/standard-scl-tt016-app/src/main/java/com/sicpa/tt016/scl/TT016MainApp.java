@@ -28,8 +28,8 @@ import com.sicpa.standard.sasscl.monitoring.system.SystemEventType;
 import com.sicpa.standard.sasscl.monitoring.system.event.BasicSystemEvent;
 import com.sicpa.standard.sasscl.view.MainFrame;
 import com.sicpa.standard.sasscl.view.MainFrameController;
-import com.sicpa.standard.sasscl.view.lineid.LineIdWithAuthenticateButton;
 import com.sicpa.tt016.util.TT016LangUtils;
+import com.sicpa.tt016.view.lineid.TT016LineIdWithAuthenticateButton;
 
 public class TT016MainApp extends CommonMainApp<LoaderConfigWithProfile> {
 
@@ -53,7 +53,7 @@ public class TT016MainApp extends CommonMainApp<LoaderConfigWithProfile> {
 	}
 
 	private void initCustomGuiComponent() {
-		AbstractSplFrame.mapPanelClasses.put(AbstractSplFrame.KEY_LINE_ID, LineIdWithAuthenticateButton.class);
+		AbstractSplFrame.mapPanelClasses.put(AbstractSplFrame.KEY_LINE_ID, TT016LineIdWithAuthenticateButton.class);
 	}
 
 	@Override

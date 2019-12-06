@@ -77,7 +77,7 @@ public class VirtualKeyboardDemo {
 		final VirtualKeyboardPanel kb = new VirtualKeyboardPanel(null);
 
 		// custom button
-		SpecialVirtualKeyboardButton kbButton = new SpecialVirtualKeyboardButton("num", "{num}");
+		SpecialVirtualKeyboardButton kbButton = new SpecialVirtualKeyboardButton("num", "{num}", false);
 		kbButton.setBackground(Color.BLUE);
 		kbButton.setForeground(Color.WHITE);
 		kb.addAvailableSpecialButton(kbButton);

@@ -1,5 +1,6 @@
 package com.sicpa.standard.gui.screen.machine.component.lineId;
 
+import java.awt.Color;
 import java.beans.PropertyChangeEvent;
 
 import javax.swing.JFrame;
@@ -48,6 +49,7 @@ public class DefaultLineIdPanel extends AbstractLineIdPanel {
 		if (this.labelLineId == null) {
 			this.labelLineId = new JLabel();
 			this.labelLineId.setFont(SicpaFont.getFont(30));
+			this.labelLineId.setForeground(Color.WHITE);
 			this.labelLineId.setName("lineIDLabel");
 		}
 		return this.labelLineId;

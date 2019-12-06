@@ -36,7 +36,6 @@ public class FrameCameraImage extends DialogWithDropShadow {
 	private void initGUI() {
 		setAlwaysOnTop(true);
 		getContentPane().setLayout(new MigLayout("fill"));
-		getContentPane().setBackground(SicpaColor.BLUE_ULTRA_LIGHT);
 		setSize(300, 300);
 	}
 

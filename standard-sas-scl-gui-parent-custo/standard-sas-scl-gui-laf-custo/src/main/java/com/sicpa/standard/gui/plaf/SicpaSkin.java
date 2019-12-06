@@ -292,7 +292,7 @@ public class SicpaSkin extends SubstanceSkin {
 
 		SicpaLookAndFeelCusto.turnOffGhostingEffectOnButton();
 
-		SicpaLookAndFeelCusto.setDefaultVirtualKeyboard(VirtualKeyboardType.KEYBOARD_ALPHA);
+		SicpaLookAndFeelCusto.setDefaultVirtualKeyboard(VirtualKeyboardType.KEYBOARD_QWERTY);
 
 		UIManager.put("IMAGE_WITH_SHADOW", Boolean.TRUE);
 

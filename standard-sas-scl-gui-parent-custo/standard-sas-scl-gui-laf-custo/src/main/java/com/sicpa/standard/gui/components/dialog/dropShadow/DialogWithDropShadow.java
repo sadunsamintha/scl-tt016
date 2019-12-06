@@ -94,7 +94,7 @@ public class DialogWithDropShadow extends JDialog {
 				titleBarStateChanged();
 			}
 		});
-		getContentPane().setBackground(SicpaColor.BLUE_ULTRA_LIGHT);
+		getContentPane().setBackground(SicpaColor.CLOUD_GREY);
 	}
 
 	@Override

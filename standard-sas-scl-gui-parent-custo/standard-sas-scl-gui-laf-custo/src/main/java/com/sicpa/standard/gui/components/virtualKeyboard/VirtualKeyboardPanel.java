@@ -9,6 +9,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.EventListener;
 import java.util.HashMap;
@@ -17,6 +20,8 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -28,7 +33,7 @@ import javax.swing.UIManager;
 import javax.swing.border.LineBorder;
 import javax.swing.text.JTextComponent;
 
-import net.miginfocom.swing.MigLayout;
+import org.jdesktop.swingx.graphics.GraphicsUtilities;
 
 import com.sicpa.standard.gui.I18n.GUIi18nManager;
 import com.sicpa.standard.gui.components.buttons.shape.DirectionButton;
@@ -37,6 +42,8 @@ import com.sicpa.standard.gui.plaf.SicpaColor;
 import com.sicpa.standard.gui.plaf.SicpaLookAndFeelCusto;
 import com.sicpa.standard.gui.plaf.ui.SicpaButtonUI;
 import com.sicpa.standard.gui.utils.Pair;
+
+import net.miginfocom.swing.MigLayout;
 
 public class VirtualKeyboardPanel extends JPanel {
 	public static void main(final String[] args) {
@@ -58,8 +65,8 @@ public class VirtualKeyboardPanel extends JPanel {
 				capslocks.setDirection(Direction.DOWN);
 				k.addAction("{capsLock}", VirtualKeyboardPanel.getTaskCapsLockONByDefault());
 
-				k.addAvailableSpecialButton(new SpecialVirtualKeyboardButton("#", "{symbol}"));
-				k.addAvailableSpecialButton(new SpecialVirtualKeyboardButton("abc", "{alpha}"));
+				k.addAvailableSpecialButton(new SpecialVirtualKeyboardButton("#", "{symbol}", false));
+				k.addAvailableSpecialButton(new SpecialVirtualKeyboardButton("abc", "{alpha}", false));
 
 				k.addLayoutConstraint(" ", "span 7,grow,");
 				k.addLayoutConstraint("{del}", "span 2,grow");
@@ -161,18 +168,18 @@ public class VirtualKeyboardPanel extends JPanel {
 	}
 
 	private void init() {
-		this.tagColorMapping.put("{del}", new Pair<Color, Color>(Color.BLUE, Color.WHITE));
-		this.tagColorMapping.put("{clr}", new Pair<Color, Color>(Color.BLUE, Color.WHITE));
-		this.tagColorMapping.put("{alt}", new Pair<Color, Color>(Color.BLUE, Color.WHITE));
-		this.tagColorMapping.put("{ctrl}", new Pair<Color, Color>(Color.BLUE, Color.WHITE));
+		this.tagColorMapping.put("{del}", new Pair<Color, Color>(SicpaColor.BLUE_DARK, Color.WHITE));
+		this.tagColorMapping.put("{clr}", new Pair<Color, Color>(SicpaColor.BLUE_DARK, Color.WHITE));
+		this.tagColorMapping.put("{alt}", new Pair<Color, Color>(SicpaColor.BLUE_DARK, Color.WHITE));
+		this.tagColorMapping.put("{ctrl}", new Pair<Color, Color>(SicpaColor.BLUE_DARK, Color.WHITE));
 
 		addAction("{capsLock}", getTaskCapsLockONByDefault());
 
-		addAvailableSpecialButton(createSpecialButton("{clr}", I18N_CLEAR));
-		addAvailableSpecialButton(createSpecialButton("{alt}", I18N_ALT));
-		addAvailableSpecialButton(createSpecialButton("{ctrl}", I18N_CTRL));
-		addAvailableSpecialButton(createSpecialButton("{del}", I18N_BACK));
-		addAvailableSpecialButton(createSpecialButton("{-}", "-/+"));
+		addAvailableSpecialButton(createSpecialButton("{clr}", "CLR", false));
+		addAvailableSpecialButton(createSpecialButton("{alt}", I18N_ALT, false));
+		addAvailableSpecialButton(createSpecialButton("{ctrl}", I18N_CTRL, false));
+		addAvailableSpecialButton(createSpecialButton("{del}", I18N_BACK, true));
+		addAvailableSpecialButton(createSpecialButton("{-}", "-/+", false));
 		addAvailableSpecialButton(new CapsLockVirtualKeyboardButton("{capsLock}"));
 
 	}
@@ -198,7 +205,7 @@ public class VirtualKeyboardPanel extends JPanel {
 	}
 
 	public void addAvailableSpecialButton(String text, String name) {
-		addAvailableSpecialButton(new SpecialVirtualKeyboardButton(text, name));
+		addAvailableSpecialButton(new SpecialVirtualKeyboardButton(text, name, false));
 	}
 
 	public VirtualKeyboardButton getButton(String name) {
@@ -348,7 +355,7 @@ public class VirtualKeyboardPanel extends JPanel {
 	private VirtualKeyboardButton getKeyboardButton(final String text) {
 		VirtualKeyboardButton button = normalButtonCache.get(text);
 		if (button == null) {
-			button = new VirtualKeyboardButton(text, text, false);
+			button = new VirtualKeyboardButton(text, text, false, false);
 			if (button.getUI() instanceof SicpaButtonUI) {
 				((SicpaButtonUI) button.getUI()).setSmallButton(USING_SMALL_BUTTON);
 			}
@@ -420,8 +427,8 @@ public class VirtualKeyboardPanel extends JPanel {
 		}
 	}
 
-	private SpecialVirtualKeyboardButton createSpecialButton(final String name, final String langKey) {
-		final SpecialVirtualKeyboardButton button = new SpecialVirtualKeyboardButton(GUIi18nManager.get(langKey), name);
+	private SpecialVirtualKeyboardButton createSpecialButton(final String name, final String langKey, final boolean withIcon) {
+		final SpecialVirtualKeyboardButton button = new SpecialVirtualKeyboardButton(GUIi18nManager.get(langKey), name, withIcon);
 		if (button.getUI() instanceof SicpaButtonUI) {
 			((SicpaButtonUI) button.getUI()).setSmallButton(USING_SMALL_BUTTON);
 		}
@@ -645,8 +652,8 @@ public class VirtualKeyboardPanel extends JPanel {
 
 		private static final long serialVersionUID = 1L;
 
-		public SpecialVirtualKeyboardButton(String text, String name) {
-			super(text, name, true);
+		public SpecialVirtualKeyboardButton(String text, String name, boolean withIcon) {
+			super(text, name, true, withIcon);
 		}
 	}
 
@@ -656,15 +663,42 @@ public class VirtualKeyboardPanel extends JPanel {
 		boolean isSpecial;
 		FaddingBorder border;
 
-		 Color borderColor = SicpaColor.YELLOW;
+		Color borderColor = SicpaColor.YELLOW;
 
-		public VirtualKeyboardButton(final String text, final String name, final boolean isSpecial) {
+		public VirtualKeyboardButton(final String text, final String name, final boolean isSpecial, final boolean withIcon) {
 			super(text);
+			
+			if (withIcon) {
+				URL url = null;
+				BufferedImage img = null;
+				
+				try {
+					if ("{del}".equals(name)) {
+						url = Class.forName("com.sicpa.standard.gui.screen.machine.AbstractMachineFrame").getResource("Backspace.png");
+					} else if ("{clr}".equals(name)) {
+						url = Class.forName("com.sicpa.standard.gui.screen.machine.AbstractMachineFrame").getResource("Clear.png");
+					}
+					
+					img = GraphicsUtilities.loadCompatibleImage(url);
+				} catch (ClassNotFoundException e) {
+					e.printStackTrace();
+					img = GraphicsUtilities.createCompatibleTranslucentImage(1, 1);
+				} catch (IOException e) {
+					e.printStackTrace();
+					img = GraphicsUtilities.createCompatibleTranslucentImage(1, 1);
+				}
+				
+				setText(null);
+				
+				Icon icon = new ImageIcon(img);
+				setIcon(icon);
+			}
+			
 			this.buttonName = name;
 			this.isSpecial = isSpecial;
 			setFocusable(false);
 			if (isSpecial) {
-				setBackground(Color.BLUE);
+				setBackground(SicpaColor.BLUE_DARK);
 				setForeground(Color.WHITE);
 			}
 
@@ -714,7 +748,7 @@ public class VirtualKeyboardPanel extends JPanel {
 		DirectionButton delegate;
 
 		public CapsLockVirtualKeyboardButton(final String name) {
-			super("", name);
+			super("", name, false);
 			this.delegate = new DirectionButton(Direction.DOWN);
 			this.delegate.setWithShadow(false);
 		}

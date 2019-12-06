@@ -5,6 +5,12 @@
   <artifactId>gui-parent-custo</artifactId>
   <packaging>pom</packaging>
   <version>2.5.17-SNAPSHOT</version>
+  
+  <parent>
+	<artifactId>parent</artifactId>
+	<groupId>com.sicpa.standard.sasscl</groupId>
+	<version>2.5.17-SNAPSHOT</version>
+  </parent>
 
   <properties>
 	<maven.javadoc.skip>true</maven.javadoc.skip>
