@@ -13,12 +13,14 @@ import com.sicpa.standard.printer.controller.PrinterException;
 import com.sicpa.standard.printer.controller.model.command.PrinterMessage;
 import com.sicpa.standard.printer.controller.model.command.PrinterMessageId;
 import com.sicpa.standard.sasscl.devices.printer.PrinterAdaptorException;
+import com.sicpa.standard.sasscl.devices.printer.xcode.mapping.IMappingExtendedCodeBehavior;
 
 public class PrinterAdaptorDomino extends PrinterAdaptor {
 
 	private static final Logger logger = LoggerFactory.getLogger(PrinterAdaptorDomino.class);
 	private static final String PRINTER_MESSAGE_PREFIX = "PRINTER.";
-
+	private IMappingExtendedCodeBehavior mappingExtendedCodeBehavior;
+	
 	public PrinterAdaptorDomino() {
 		super();
 	}
@@ -52,15 +54,15 @@ public class PrinterAdaptorDomino extends PrinterAdaptor {
 	//@formatter:on
 
 	@Override
-	public void sendCodesToPrint(List<String> codes) throws PrinterAdaptorException {
-		logger.debug("Printer sending codes to print");
-		try {
-			controller.sendCodes(codes);
-			codeSent = true;
-		} catch (PrinterException e) {
-			throw new PrinterAdaptorException("sending codes to printer failed", e);
-		}
-	}
+    public void sendCodesToPrint(List<String> codes) throws PrinterAdaptorException {
+        logger.debug("Printer sending codes to print");
+        try {
+            controller.sendExtendedCodes(mappingExtendedCodeBehavior.get(getName()).createExCodes(codes));
+            codeSent = true;
+        } catch (PrinterException e) {
+            throw new PrinterAdaptorException("sending codes to printer failed", e);
+        }
+    }
 
 	@Override
 	protected void onMessageReceived(PrinterMessage msg) {
@@ -108,4 +110,8 @@ public class PrinterAdaptorDomino extends PrinterAdaptor {
 		// format: id/key
 		return msgDesc.substring(msgDesc.indexOf('/') + 1);
 	}
+	
+	public void setMappingExtendedCodeBehavior(IMappingExtendedCodeBehavior mappingExtendedCodeBehavior) {
+        this.mappingExtendedCodeBehavior = mappingExtendedCodeBehavior;
+    }
 }
