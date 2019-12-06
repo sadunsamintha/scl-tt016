@@ -26,6 +26,8 @@ import javax.swing.Timer;
 
 import org.jdesktop.swingx.graphics.GraphicsUtilities;
 import org.pushingpixels.trident.Timeline;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.jhlabs.image.GaussianFilter;
 import com.sicpa.standard.gui.plaf.SicpaColor;
@@ -37,6 +39,7 @@ import net.miginfocom.swing.MigLayout;
 
 public class StartStopButton extends JButton {
 	private static final long serialVersionUID = 1L;
+	private static final Logger logger = LoggerFactory.getLogger(StartStopButton.class);
 
 	public static enum eStartStop {
 		START, STOP
@@ -136,10 +139,10 @@ public class StartStopButton extends JButton {
 			
 			img = GraphicsUtilities.loadCompatibleImage(url);
 		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
+			logger.error("com.sicpa.standard.gui.screen.machine.AbstractMachineFrame not found. ", e);
 			img = GraphicsUtilities.createCompatibleTranslucentImage(1, 1);
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error("Image icon not found/cannot be read. ", e);
 			img = GraphicsUtilities.createCompatibleTranslucentImage(1, 1);
 		}
 		
