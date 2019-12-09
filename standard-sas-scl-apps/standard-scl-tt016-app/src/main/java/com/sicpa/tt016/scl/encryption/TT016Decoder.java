@@ -45,7 +45,17 @@ public class TT016Decoder implements IAuthenticator {
 			return decodeSAS(encryptedCode);
 		}
 		throw new IllegalArgumentException("illegal mode:" + mode);
-	};
+	}
+	
+	@Override
+	public IDecodedResult decode(String mode, String encryptedCode, CodeType codeType) throws CryptographyException {
+		if (mode.equals(SCL_MODE)) {
+			return decodeSCL(encryptedCode);
+		} else if (mode.equals(SAS_MODE)) {
+			return decodeSAS(encryptedCode);
+		}
+		throw new IllegalArgumentException("illegal mode:" + mode);
+	}
 
 	private IDecodedResult decodeSCL(String encryptedCode) {
 		DecodedCameraCode res = new DecodedCameraCode();

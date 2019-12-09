@@ -1,15 +1,18 @@
 package com.sicpa.tt016.business.postpackage;
 
-import com.sicpa.standard.client.common.eventbus.service.EventBusService;
-import com.sicpa.standard.sasscl.business.postPackage.PostPackageBehavior;
-import com.sicpa.standard.sasscl.model.Code;
-import com.sicpa.standard.sasscl.model.Product;
-import com.sicpa.tt016.model.event.TT016NewProductEvent;
+import java.util.Collections;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Collections;
-import java.util.List;
+import com.sicpa.standard.client.common.eventbus.service.EventBusService;
+import com.sicpa.standard.sasscl.business.postPackage.PostPackageBehavior;
+import com.sicpa.standard.sasscl.model.Code;
+import com.sicpa.standard.sasscl.model.DecodedCameraCode;
+import com.sicpa.standard.sasscl.model.Product;
+import com.sicpa.standard.sasscl.sicpadata.CryptographyException;
+import com.sicpa.tt016.model.event.TT016NewProductEvent;
 
 public class TT016PostPackageBehavior extends PostPackageBehavior {
 
@@ -38,5 +41,22 @@ public class TT016PostPackageBehavior extends PostPackageBehavior {
 		//We return an empty list because we don't want the SENT_TO_PRINTER_WASTED products to be sent to the
 		// ProductStatusMerger because it would result in the desynchronization of the queues of products
 		return Collections.emptyList();
+	}
+	
+	/**
+	 * decode encrypted code
+	 *
+	 * @param code
+	 * @return
+	 */
+	@Override
+	protected DecodedCameraCode decode(Code code) {
+		try {
+			return (DecodedCameraCode) authenticatorProvider.get().decode(authenticatorModeProvider.get(),
+					code.getStringCode(), code.getCodeType());
+		} catch (CryptographyException e) {
+			logger.error("Failed to decode : " + e.getMessage(), e);
+		}
+		return null;
 	}
 }

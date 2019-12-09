@@ -1,5 +1,6 @@
 package com.sicpa.standard.sasscl.devices.remote.stdCrypto;
 
+import com.sicpa.standard.sasscl.model.ProductionParameters;
 import com.sicpa.standard.sasscl.sicpadata.CryptographyException;
 import com.sicpa.standard.sasscl.sicpadata.generator.AbstractEncoder;
 import com.sicpa.standard.sasscl.sicpadata.generator.EncoderEmptyException;
@@ -37,6 +38,12 @@ public class StdCryptoEncoderWrapper extends AbstractEncoder {
 	public final String getEncryptedCode() throws CryptographyException {
 		throw new CryptographyException("Deprecated");
 	}
+	
+	@Override
+	@Deprecated
+	protected String getEncryptedCode(ProductionParameters productionParameters) throws CryptographyException {
+		throw new CryptographyException("Deprecated");
+	}
 
 	@Override
 	public synchronized List<String> getEncryptedCodes(long numberCodes) throws CryptographyException {
@@ -59,7 +66,7 @@ public class StdCryptoEncoderWrapper extends AbstractEncoder {
 			throw new CryptographyException(e, "Failed to generate encrypted code");
 		}
 	}
-
+	
 	@Override
 	public synchronized boolean isEncoderEmpty() {
 		return getRemainingCodes() <= 0;
