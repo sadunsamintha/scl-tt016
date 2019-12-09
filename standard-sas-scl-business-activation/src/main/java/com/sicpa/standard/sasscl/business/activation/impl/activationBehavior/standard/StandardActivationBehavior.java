@@ -51,7 +51,7 @@ public class StandardActivationBehavior extends AbstractActivationBehavior {
 	private static final Logger logger = LoggerFactory.getLogger(StandardActivationBehavior.class);
 
 	// to authenticate the code
-	private IProviderGetter<IAuthenticator> authenticatorProvider;
+	protected IProviderGetter<IAuthenticator> authenticatorProvider;
 
 	// how to validate a product
 	private IProductValidator productValidator;
@@ -62,7 +62,7 @@ public class StandardActivationBehavior extends AbstractActivationBehavior {
 	// last step of the activation process for a valid code
 	private IProductFinalizerBehavior productFinalizer;
 
-	private AuthenticatorModeProvider authenticatorModeProvider;
+	protected AuthenticatorModeProvider authenticatorModeProvider;
 
 	private ProductionConfigProvider productionConfigProvider;
 
@@ -123,7 +123,7 @@ public class StandardActivationBehavior extends AbstractActivationBehavior {
 		product.getCode().setVersion(code.getVersion());
 	}
 
-	private DecodedCameraCode getDecodedCameraCode(Code code) {
+	protected DecodedCameraCode getDecodedCameraCode(Code code) {
 		try {
 			return (DecodedCameraCode) authenticatorProvider.get().decode(authenticatorModeProvider.get(),
 					code.getStringCode());

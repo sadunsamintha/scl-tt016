@@ -3,6 +3,7 @@ import com.sicpa.tt016.devices.camera.alert.TT016TrilightWarningCameraAlert
 import com.sicpa.tt016.model.DisallowedConfiguration
 import com.sicpa.tt016.scl.TT016Bootstrap
 import com.sicpa.tt016.util.LegacyEncoderConverter
+import com.sicpa.tt016.printer.simulator.TT016PrinterAdaptorSimulator
 
 beans{
 	tt016TrilightWarningCameraAlert(TT016TrilightWarningCameraAlert) {
@@ -12,12 +13,23 @@ beans{
 	}
 
 	def serverBehavior=props['remoteServer.behavior'].toUpperCase()
+	def printerBehavior=props['printer.behavior'].toUpperCase()
 
 	if(serverBehavior == "STANDARD") {
 		importBeans('spring/custo/tt016/tt016-server.groovy')
 	} else {
 		importBeans('spring/custo/tt016/tt016-server-simulator.groovy')
 	}
+	
+	importBeans('spring/custo/tt016/tt016-hrd.xml')
+
+    printerSimulatorAdaptor(TT016PrinterAdaptorSimulator,ref('printerSimulatorController')){b->
+        b.scope='prototype'
+    }
+
+    if(printerBehavior == 'SIMULATOR') {
+        addAlias('printerLeibinger','printerSimulatorAdaptor')
+    }
 
 	//define disallowed configurations
 	def dcProps1 = [:]
@@ -59,6 +71,7 @@ beans{
 	importBeans('spring/custo/tt016/tt016-activation.xml')
 	importBeans('spring/custo/tt016/tt016-view.xml')
 	importBeans('spring/custo/tt016/tt016-postPackage.xml')
+	importBeans('spring/custo/tt016/tt016-coding.xml')
 	importBeans('spring/offlineCounting.xml')
 	importBeans('spring/custo/tt016/tt016-provider.xml')
 	importBeans('spring/custo/tt016/tt016-monitoring.xml')

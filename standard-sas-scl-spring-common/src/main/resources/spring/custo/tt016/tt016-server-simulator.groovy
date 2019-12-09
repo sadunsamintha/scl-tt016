@@ -6,6 +6,7 @@ import com.sicpa.standard.sasscl.model.SKU
 import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.ProductionModeNode
 import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.ProductionParameterRootNode
 import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.SKUNode
+import com.sicpa.tt016.scl.remote.simulator.TT016RemoteServerSimulator
 
 import javax.swing.*
 
@@ -61,7 +62,7 @@ beans {
         productionParameters = root
     }
 
-    remoteServer(RemoteServerSimulator, ref('simulatorRemoteModel')) {
+    remoteServer(TT016RemoteServerSimulator, ref('simulatorRemoteModel')) {
         simulatorGui = ref('simulatorGui')
         cryptoFieldsConfig = ref('cryptoFieldsConfig')
         productionParameters = ref('productionParameters')

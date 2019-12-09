@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import com.sicpa.standard.crypto.exceptions.CryptoException;
 import com.sicpa.standard.sasscl.devices.remote.stdCrypto.ICryptoFieldsConfig;
+import com.sicpa.standard.sasscl.model.ProductionParameters;
 import com.sicpa.standard.sasscl.sicpadata.CryptographyException;
 import com.sicpa.standard.sasscl.sicpadata.generator.AbstractEncoder;
 import com.sicpa.standard.sasscl.sicpadata.generator.EncoderEmptyException;
@@ -49,6 +50,22 @@ public class AlbaniaEncoderWrapper extends AbstractEncoder implements IEncoder {
 
 	@Override
 	public String getEncryptedCode() throws CryptographyException {
+		// load is needed after deserialized
+		loadPassword();
+		try {
+			if (currentIndex >= getAlbaniaEncoder().getCapacity()) {
+				throw new EncoderEmptyException();
+			}
+			// Generate next encoded code
+			return getAlbaniaEncoder().getCode(getNextSequenceValue());
+		} catch (final CryptoException e) {
+			logger.error("Error while loading password = {1} , Exception = {0}.", e);
+			throw new CryptographyException(e, AlbaniaEncoderMessages.EXCEPTION_ENCODERS_GETTING_ENCRYPTED_CODE);
+		}
+	}
+	
+	@Override
+	protected String getEncryptedCode(ProductionParameters productionParameters) throws CryptographyException {
 		// load is needed after deserialized
 		loadPassword();
 		try {
@@ -146,5 +163,4 @@ public class AlbaniaEncoderWrapper extends AbstractEncoder implements IEncoder {
 	public int getSubsystemID() {
 		return subsystemID;
 	}
-
 }

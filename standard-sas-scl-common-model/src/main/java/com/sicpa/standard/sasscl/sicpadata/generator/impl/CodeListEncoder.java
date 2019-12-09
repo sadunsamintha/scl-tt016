@@ -1,5 +1,6 @@
 package com.sicpa.standard.sasscl.sicpadata.generator.impl;
 
+import com.sicpa.standard.sasscl.model.ProductionParameters;
 import com.sicpa.standard.sasscl.sicpadata.CryptographyException;
 import com.sicpa.standard.sasscl.sicpadata.generator.AbstractEncoder;
 import com.sicpa.standard.sasscl.sicpadata.generator.EncoderEmptyException;
@@ -32,6 +33,15 @@ public class CodeListEncoder extends AbstractEncoder {
 
 	@Override
 	public String getEncryptedCode() throws CryptographyException {
+		if (isEncoderEmpty()) {
+			throw new EncoderEmptyException("Encoder is empty");
+		}
+		updateDateOfUse();
+		return this.encryptedCodes.remove(0);
+	}
+	
+	@Override
+	protected String getEncryptedCode(ProductionParameters productionParameters) throws CryptographyException {
 		if (isEncoderEmpty()) {
 			throw new EncoderEmptyException("Encoder is empty");
 		}

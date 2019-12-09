@@ -6,11 +6,13 @@ import com.sicpa.standard.sasscl.business.activation.NewProductEvent;
 import com.sicpa.standard.sasscl.business.activation.impl.activationBehavior.standard.StandardActivationBehavior;
 import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowStateChangedEvent;
 import com.sicpa.standard.sasscl.model.Code;
+import com.sicpa.standard.sasscl.model.DecodedCameraCode;
 import com.sicpa.standard.sasscl.model.Product;
 import com.sicpa.standard.sasscl.model.ProductStatus;
 import com.sicpa.standard.sasscl.monitoring.MonitoringService;
 import com.sicpa.standard.sasscl.monitoring.system.event.BasicSystemEvent;
 import com.sicpa.standard.sasscl.provider.impl.ProductionBatchProvider;
+import com.sicpa.standard.sasscl.sicpadata.CryptographyException;
 import com.sicpa.tt016.devices.plc.PlcCameraResultIndexManager;
 import com.sicpa.tt016.model.*;
 import com.sicpa.tt016.model.event.PlcCameraResultEvent;
@@ -41,6 +43,17 @@ public class ProductStatusMerger extends StandardActivationBehavior {
 	public Product receiveCode(Code code, boolean isValid) {
 		handleNewCameraProduct(new CameraResult(new TT016Code(code, isValid)));
 
+		return null;
+	}
+	
+	@Override
+	protected DecodedCameraCode getDecodedCameraCode(Code code) {
+		try {
+			return (DecodedCameraCode) authenticatorProvider.get().decode(authenticatorModeProvider.get(),
+					code.getStringCode(), code.getCodeType());
+		} catch (CryptographyException e) {
+			logger.error("", e);
+		}
 		return null;
 	}
 

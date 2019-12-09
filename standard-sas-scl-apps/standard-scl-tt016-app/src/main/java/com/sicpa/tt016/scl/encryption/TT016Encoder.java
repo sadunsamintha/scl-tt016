@@ -2,6 +2,7 @@ package com.sicpa.tt016.scl.encryption;
 
 import com.sicpa.standard.crypto.codes.StringBasedCode;
 import com.sicpa.standard.crypto.exceptions.CryptoException;
+import com.sicpa.standard.sasscl.model.ProductionParameters;
 import com.sicpa.standard.sasscl.sicpadata.CryptographyException;
 import com.sicpa.standard.sasscl.sicpadata.generator.EncoderEmptyException;
 import com.sicpa.standard.sasscl.sicpadata.generator.IEncoder;
@@ -116,6 +117,22 @@ public class TT016Encoder implements IEncoder {
 
 	@Override
 	public List<String> getEncryptedCodes(long numberOfCodes) throws CryptographyException {
+		updateDateOfUse();
+		long numberOfCodesToRequest = Math.min(numberOfCodes,getRemainingCodes());
+		try {
+			List<String> codes = new ArrayList<>();
+			for (long i = 0; i < numberOfCodesToRequest; i++) {
+				codes.add(getCode());
+			}
+			return codes;
+		} catch (Exception e) {
+			logger.error("Failed to generate code.", e);
+			throw new CryptographyException(e, "Failed to generate encrypted code");
+		}
+	}
+	
+	@Override
+	public List<String> getEncryptedCodes(long numberOfCodes, ProductionParameters productionParameters) throws CryptographyException {
 		updateDateOfUse();
 		long numberOfCodesToRequest = Math.min(numberOfCodes,getRemainingCodes());
 		try {

@@ -186,6 +186,13 @@ public class FileStorageTest {
 			result.setAuthenticated(true);
 			return result;
 		}
+		
+		@Override
+		public IDecodedResult decode(String mode, String encryptedCode, CodeType codeType) throws CryptographyException {
+			IDecodedResult result = new DummyResult();
+			result.setAuthenticated(true);
+			return result;
+		}
 
 		private class DummyResult implements IDecodedResult {
 

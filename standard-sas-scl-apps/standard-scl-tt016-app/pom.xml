@@ -12,6 +12,10 @@
 	
 	<dependencies>
 		<dependency>
+			<groupId>com.sicpa.standard.sasscl</groupId>
+			<artifactId>device-remoteServer-impl</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>com.sicpa.tt016</groupId>
 			<artifactId>tt016-master-scl-ejb</artifactId>
 			<version>3.5.0</version>
