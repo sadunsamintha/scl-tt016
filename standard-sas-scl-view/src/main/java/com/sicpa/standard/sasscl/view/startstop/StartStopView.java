@@ -16,10 +16,10 @@ import com.sicpa.standard.sasscl.view.productionStatus.ProductionStatusView;
 @SuppressWarnings("serial")
 public class StartStopView extends AbstractStartStopView {
 
-	private AbstractButton buttonStart;
-	private AbstractButton buttonStop;
+	protected AbstractButton buttonStart;
+	protected AbstractButton buttonStop;
 
-	private ProductionStatusView productionStatusView;
+	protected ProductionStatusView productionStatusView;
 
 	public StartStopView() {
 		setOpaque(false);
@@ -44,7 +44,7 @@ public class StartStopView extends AbstractStartStopView {
 		return buttonStart;
 	}
 
-	private void buttonStartActionPerformed() {
+	protected void buttonStartActionPerformed() {
 		getButtonStart().setEnabled(false);
 		fireStart();
 	}
@@ -59,7 +59,7 @@ public class StartStopView extends AbstractStartStopView {
 		return buttonStop;
 	}
 
-	private void buttonStopActionPerformed() {
+	protected void buttonStopActionPerformed() {
 		getButtonStop().setEnabled(false);
 		fireStop();
 	}

@@ -1,20 +1,21 @@
 package com.sicpa.standard.sasscl.common.utils;
 
-import com.sicpa.standard.client.common.i18n.Messages;
-import com.sicpa.standard.client.common.utils.AppUtils;
-import com.sicpa.standard.gui.I18n.GUIi18nManager;
-import com.sicpa.standard.gui.plaf.SicpaLookAndFeel;
+import java.awt.HeadlessException;
+import java.io.UnsupportedEncodingException;
+import java.util.Enumeration;
+import java.util.Locale;
+import java.util.ResourceBundle;
+
+import javax.swing.JOptionPane;
+
 import org.jdesktop.swingx.JXDatePicker;
 import org.jdesktop.swingx.JXLoginPane;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.swing.*;
-import java.awt.*;
-import java.io.UnsupportedEncodingException;
-import java.util.Enumeration;
-import java.util.Locale;
-import java.util.ResourceBundle;
+import com.sicpa.standard.client.common.i18n.Messages;
+import com.sicpa.standard.client.common.utils.AppUtils;
+import com.sicpa.standard.gui.I18n.GUIi18nManager;
 
 public class LangUtils {
 
@@ -28,8 +29,6 @@ public class LangUtils {
 		try {
 			if (!AppUtils.isHeadless()) {
 				Locale.setDefault(new Locale(language));
-				// refresh the ui to use the new local
-				SicpaLookAndFeel.install();
 				JOptionPane.setDefaultLocale(Locale.getDefault());
 				JXDatePicker.setDefaultLocale(Locale.getDefault());
 				JXLoginPane.setDefaultLocale(Locale.getDefault());
