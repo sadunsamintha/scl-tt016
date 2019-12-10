@@ -29,9 +29,9 @@ import com.sicpa.tt080.client.common.security.TT080SecurityModelWrapper;
 
 @Configuration
 @ImportResource({
-    "classpath:/spring/security.xml",
-    "classpath:/spring/productionConfig.xml",
-    "classpath:/spring/custo/tt080/tt080-production-config.groovy"
+    "classpath:spring/security.xml",
+    "classpath:spring/productionConfig.xml",
+    "classpath:spring/custo/tt080/tt080-production-config.groovy"
 })
 public class TT080TestSpringContextConfig {
 
