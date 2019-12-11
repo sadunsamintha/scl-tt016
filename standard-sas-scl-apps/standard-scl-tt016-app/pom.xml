@@ -17,6 +17,11 @@
 		</dependency>
 		<dependency>
 			<groupId>com.sicpa.tt016</groupId>
+			<artifactId>tt016-common-api</artifactId>
+			<version>3.1.8-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>com.sicpa.tt016</groupId>
 			<artifactId>tt016-master-scl-ejb</artifactId>
 			<version>3.5.0</version>
 			<type>ejb-client</type>
