@@ -9,8 +9,10 @@ import com.sicpa.tt016.scl.remote.assembler.SkuConverter
 
 
 beans{
+	
+	def msasLegacy = props['production.config.server.msaslegacy'].toUpperCase()
 
-	if(props['production.config.server.msaslegacy']){
+	if(msasLegacy == 'TRUE'){
 		
 		remoteServices(TT016RemoteServicesMSASLegacy){
 			userMachine=props['server.machine.user']
