@@ -1,5 +1,13 @@
+<!-- <ProductionConfig activationBehavior="productStatusMerger" authenticatorMode="SCL"> -->
+<!-- Uncomment Production Config above for Export mode that can print codes 
+     with HRC having "EX" as prefix (Export Coding - MA Renewal Phase 2) -->
 <ProductionConfig activationBehavior="exportActivationBehavior">
+<!-- Comment out Production Config above for Export Coding -->
 
+    <!-- <PrinterConfig deviceType="DOMINO" id="Domino" validatedBy="Cognex" /> -->
+	<!-- <PrinterConfig deviceType="LEIBINGER" id="Leibinger" validatedBy="Cognex" /> -->
+	<!-- Enable one Printer above for Export Coding -->
+	
 	<CameraConfig deviceType="COGNEX" id="Cognex" />
 
 	<!-- <BisConfig /> -->
@@ -12,5 +20,16 @@
 			<property key="PARAM_LINE_EXPORT_MODE_ENABLED" value="true" />
 		</line>
 	</plcConfig>
-
+	<!-- Comment out PLC Config above for Export Coding -->
+	
+	<!-- <plcConfig>
+	    <cabinet>
+			<property key="PARAM_CAB_MULTILINE_REQ_MODE_ENABLED" value="true" />
+		</cabinet>
+		<line index="1">
+			<property key="PARAM_LINE_IS_ACTIVE" value="true" />
+			<property key="PARAM_LINE_EXPORT_MODE_ENABLED" value="false" />
+		</line>
+	</plcConfig> -->
+	<!-- Uncomment PLC Config above for Export Coding -->
 </ProductionConfig>
