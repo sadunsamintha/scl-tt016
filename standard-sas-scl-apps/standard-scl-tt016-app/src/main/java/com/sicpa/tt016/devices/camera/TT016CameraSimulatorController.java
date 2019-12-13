@@ -47,15 +47,16 @@ public class TT016CameraSimulatorController extends CameraSimulatorController {
 		}
 	}
 	
-	@Override
+	// Comment out method below for Export Coding
+	/*@Override
 	public boolean isCounting() {
 		if (productionParameters.getProductionMode().equals(ProductionMode.EXPORT)) {
 			return false;
 		} else {
 			return !productionParameters.getProductionMode().isWithSicpaData();
 		}
-	}
-
+	}*/
+	
 	@Subscribe
 	public void resetPlcCameraResultIndex(ApplicationFlowStateChangedEvent event) {
 		if (event.getCurrentState().equals(STT_STARTING)) {
