@@ -139,7 +139,7 @@ public class LoginDialog extends JDialog {
 		getMainPanel().add(getButtonCancel(), "right,gap right 10 , gap bottom 5,split 2, sg 1 ");
 		getMainPanel().add(getButtonLogin(), "sg 1,gap right 10");
 
-		setSize(550, 420);
+		setSize(600, 420);
 
 		initActionOnTextField(this.loginPane);
 

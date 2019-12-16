@@ -52,10 +52,10 @@ public class MainFrame extends AbstractMachineFrame {
 	
 	private static final Logger logger = LoggerFactory.getLogger(MainFrame.class);
 
-	private JComponent startStopView;
-	private JComponent changeSelectionView;
-	private JComponent exitView;
-	private JComponent optionsView;
+	protected JComponent startStopView;
+	protected JComponent changeSelectionView;
+	protected JComponent exitView;
+	protected JComponent optionsView;
 	private JComponent messagesView;
 	private JComponent snapshotView;
 	protected SkuListProvider skuListProvider;
