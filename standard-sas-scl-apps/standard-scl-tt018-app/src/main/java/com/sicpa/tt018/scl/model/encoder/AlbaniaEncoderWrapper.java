@@ -65,7 +65,9 @@ public class AlbaniaEncoderWrapper extends AbstractEncoder implements IEncoder {
 	}
 	
 	/**
-	 * This is only used by Morocco SAS/SCL
+	 * Interface IEncoder.java has a new method signature with ProductionParameters 
+	 * as a new parameter which is not called here in Albania (TT018)
+	 * Its implementation is only used in Morocco (TT016)
 	 */
 	@Override
 	protected String getEncryptedCode(ProductionParameters productionParameters) throws CryptographyException {

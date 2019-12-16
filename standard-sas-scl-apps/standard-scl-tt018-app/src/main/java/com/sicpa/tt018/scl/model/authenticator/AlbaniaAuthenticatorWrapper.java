@@ -58,7 +58,9 @@ public class AlbaniaAuthenticatorWrapper implements IAuthenticator {
 	}
 	
 	/**
-	 * This is only used by Morocco SAS/SCL
+	 * Interface IAuthenticator.java has a new method signature with ProductionParameters 
+	 * as a new parameter which is not called here in Albania (TT018)
+	 * Its implementation is only used in Morocco (TT016)
 	 */
 	@Override
 	public IDecodedResult decode(String mode, String encryptedCode, CodeType codeType) throws CryptographyException {
