@@ -455,7 +455,7 @@ public abstract class AbstractMachineFrame extends JFrame {
 
 			SicpaLookAndFeelCusto.flagAsHeaderOrFooter(this.footer);
 			this.footer.add(new JSeparator(), "north , h 2!");
-			this.footer.add(getPowerByLabel(), "east, gapright 0.3cm,gap left 0.8cm");
+			this.footer.add(getPowerByLabel(), "east, gapright 0.3cm,gap left 0.8cm,gap bottom 10,gap top 10");
 		}
 		return this.footer;
 	}

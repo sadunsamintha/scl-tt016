@@ -85,7 +85,7 @@ public class DefaultApplicationStatusPanel extends AbstractApplicationStatusPane
 
 	private void initGUI() {
 		setLayout(new MigLayout("fill,inset 0 0 0 0"));
-		add(getLight(), "h 75! , w 75!,spanx,split 2");
+		add(getLight(), "h 65! , w 75!,spanx,split 2");
 		add(getLabelStatus(),"grow");
 	}
 

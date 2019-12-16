@@ -5,14 +5,12 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 
-import net.miginfocom.swing.MigLayout;
-
 import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.i18n.Messages;
-import com.sicpa.standard.gui.I18n.GUIi18nManager;
 import com.sicpa.standard.gui.components.buttons.PaddedButton;
 import com.sicpa.standard.sasscl.view.LanguageSwitchEvent;
-import com.sicpa.standard.sasscl.view.MainFrame;
+
+import net.miginfocom.swing.MigLayout;
 
 @SuppressWarnings("serial")
 public class SelectionChangeView extends AbstractSelectionChangeView {
@@ -54,6 +52,6 @@ public class SelectionChangeView extends AbstractSelectionChangeView {
 
 	@Subscribe
 	public void handleLanguageSwitch(LanguageSwitchEvent evt) {
-		getButtonChangeContext().getButton().setText((Messages.get(GUIi18nManager.get(MainFrame.I18N_CHANGE_TYPE))));
+		getButtonChangeContext().getButton().setText((Messages.get("selection.change.button")));
 	}
 }

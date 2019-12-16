@@ -32,5 +32,13 @@ public class TT016MainFrame extends MainFrame {
 		super.userChanged();
 		resetStatsView.setVisible(hasPermission(RESET_STATS));
 	}
-
+	
+	@Override
+	protected void buildFooter() {
+		getFooter().add(startStopView, "gap 0 0 0 0, gap top 10, gap bottom 10");
+		addFillerToFooter();
+		footer.add(changeSelectionView, "h 80!");
+		footer.add(optionsView, "h 80!");
+		footer.add(exitView, "grow, gap 0 0 0 0");
+	}
 }
