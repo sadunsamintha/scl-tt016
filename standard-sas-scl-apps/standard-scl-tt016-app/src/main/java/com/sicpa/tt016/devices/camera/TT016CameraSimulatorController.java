@@ -6,6 +6,7 @@ import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowStateChangedEven
 import com.sicpa.standard.sasscl.devices.camera.CameraConstants;
 import com.sicpa.standard.sasscl.devices.camera.simulator.CameraSimulatorConfig;
 import com.sicpa.standard.sasscl.devices.camera.simulator.CameraSimulatorController;
+import com.sicpa.standard.sasscl.model.ProductionMode;
 import com.sicpa.tt016.devices.plc.PlcCameraResultParser;
 import com.sicpa.tt016.model.PlcCameraResult;
 import com.sicpa.tt016.model.event.PlcCameraResultEvent;
@@ -45,7 +46,17 @@ public class TT016CameraSimulatorController extends CameraSimulatorController {
 			sendPlcCameraResult(code, false);
 		}
 	}
-
+	
+	// Comment out method below for Export Coding
+	/*@Override
+	public boolean isCounting() {
+		if (productionParameters.getProductionMode().equals(ProductionMode.EXPORT)) {
+			return false;
+		} else {
+			return !productionParameters.getProductionMode().isWithSicpaData();
+		}
+	}*/
+	
 	@Subscribe
 	public void resetPlcCameraResultIndex(ApplicationFlowStateChangedEvent event) {
 		if (event.getCurrentState().equals(STT_STARTING)) {

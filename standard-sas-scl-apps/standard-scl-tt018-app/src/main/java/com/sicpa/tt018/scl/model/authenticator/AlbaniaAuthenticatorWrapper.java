@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import com.sicpa.standard.client.common.exception.InitializationRuntimeException;
 import com.sicpa.standard.crypto.exceptions.CryptoException;
 import com.sicpa.standard.sasscl.devices.remote.stdCrypto.ICryptoFieldsConfig;
+import com.sicpa.standard.sasscl.model.CodeType;
 import com.sicpa.standard.sasscl.sicpadata.CryptographyException;
 import com.sicpa.standard.sasscl.sicpadata.reader.IAuthenticator;
 import com.sicpa.standard.sasscl.sicpadata.reader.IDecodedResult;
@@ -54,6 +55,16 @@ public class AlbaniaAuthenticatorWrapper implements IAuthenticator {
 			throw new CryptographyException(e, "Failed to decode encrypted code : {0}", encryptedCode);
 		}
 
+	}
+	
+	/**
+	 * Interface IAuthenticator.java has a new method signature with ProductionParameters 
+	 * as a new parameter which is not called here in Albania (TT018)
+	 * Its implementation is only used in Morocco (TT016)
+	 */
+	@Override
+	public IDecodedResult decode(String mode, String encryptedCode, CodeType codeType) throws CryptographyException {
+		return null;
 	}
 
 	protected synchronized void loadPassword() throws CryptoException {

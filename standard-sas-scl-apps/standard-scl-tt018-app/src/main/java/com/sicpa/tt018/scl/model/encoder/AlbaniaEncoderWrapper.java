@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import com.sicpa.standard.crypto.exceptions.CryptoException;
 import com.sicpa.standard.sasscl.devices.remote.stdCrypto.ICryptoFieldsConfig;
+import com.sicpa.standard.sasscl.model.ProductionParameters;
 import com.sicpa.standard.sasscl.sicpadata.CryptographyException;
 import com.sicpa.standard.sasscl.sicpadata.generator.AbstractEncoder;
 import com.sicpa.standard.sasscl.sicpadata.generator.EncoderEmptyException;
@@ -61,6 +62,16 @@ public class AlbaniaEncoderWrapper extends AbstractEncoder implements IEncoder {
 			logger.error("Error while loading password = {1} , Exception = {0}.", e);
 			throw new CryptographyException(e, AlbaniaEncoderMessages.EXCEPTION_ENCODERS_GETTING_ENCRYPTED_CODE);
 		}
+	}
+	
+	/**
+	 * Interface IEncoder.java has a new method signature with ProductionParameters 
+	 * as a new parameter which is not called here in Albania (TT018)
+	 * Its implementation is only used in Morocco (TT016)
+	 */
+	@Override
+	protected String getEncryptedCode(ProductionParameters productionParameters) throws CryptographyException {
+		return null;
 	}
 
 	private synchronized void loadPassword() throws CryptographyException {
@@ -146,5 +157,4 @@ public class AlbaniaEncoderWrapper extends AbstractEncoder implements IEncoder {
 	public int getSubsystemID() {
 		return subsystemID;
 	}
-
 }

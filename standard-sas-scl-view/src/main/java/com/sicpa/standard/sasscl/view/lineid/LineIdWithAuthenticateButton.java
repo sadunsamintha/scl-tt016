@@ -30,8 +30,8 @@ public class LineIdWithAuthenticateButton extends DefaultLineIdPanel {
 
 	private JButton buttonLogin;
 	private JButton buttonLogout;
-	private JLabel labelUserInfo;
-	private JLabel labelLogAs;
+	protected JLabel labelUserInfo;
+	protected JLabel labelLogAs;
 	private JPanel panelButton;
 	private LoginService loginService;
 	private JXLoginPane xloginPanel;

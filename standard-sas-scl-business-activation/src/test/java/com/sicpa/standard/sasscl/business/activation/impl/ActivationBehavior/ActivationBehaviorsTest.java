@@ -1,12 +1,5 @@
 package com.sicpa.standard.sasscl.business.activation.impl.ActivationBehavior;
 
-import com.sicpa.standard.sasscl.blobDetection.BlobDetectionMode;
-import com.sicpa.standard.sasscl.blobDetection.BlobDetectionState;
-import com.sicpa.standard.sasscl.devices.camera.blobDetection.BlobDetectionProvider;
-import com.sicpa.standard.sasscl.devices.camera.blobDetection.BlobDetectionSKUProvider;
-import com.sicpa.standard.sasscl.devices.camera.blobDetection.BlobDetectionUtils;
-import junit.framework.Assert;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -14,6 +7,7 @@ import org.mockito.Mockito;
 import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.messages.MessageEvent;
+import com.sicpa.standard.sasscl.blobDetection.BlobDetectionMode;
 import com.sicpa.standard.sasscl.business.activation.NewProductEvent;
 import com.sicpa.standard.sasscl.business.activation.impl.Activation;
 import com.sicpa.standard.sasscl.business.activation.impl.activationBehavior.ExportActivationBehavior;
@@ -29,6 +23,9 @@ import com.sicpa.standard.sasscl.devices.camera.CameraAdaptor;
 import com.sicpa.standard.sasscl.devices.camera.CameraBadCodeEvent;
 import com.sicpa.standard.sasscl.devices.camera.CameraGoodCodeEvent;
 import com.sicpa.standard.sasscl.devices.camera.ICameraAdaptor;
+import com.sicpa.standard.sasscl.devices.camera.blobDetection.BlobDetectionProvider;
+import com.sicpa.standard.sasscl.devices.camera.blobDetection.BlobDetectionSKUProvider;
+import com.sicpa.standard.sasscl.devices.camera.blobDetection.BlobDetectionUtils;
 import com.sicpa.standard.sasscl.messages.MessageEventKey;
 import com.sicpa.standard.sasscl.model.Code;
 import com.sicpa.standard.sasscl.model.CodeType;
@@ -45,6 +42,8 @@ import com.sicpa.standard.sasscl.provider.impl.ProductionConfigProvider;
 import com.sicpa.standard.sasscl.sicpadata.CryptographyException;
 import com.sicpa.standard.sasscl.sicpadata.reader.IAuthenticator;
 import com.sicpa.standard.sasscl.sicpadata.reader.IDecodedResult;
+
+import junit.framework.Assert;
 
 public class ActivationBehaviorsTest {
 
@@ -213,6 +212,16 @@ public class ActivationBehaviorsTest {
 
 		@Override
 		public IDecodedResult decode(String mode, String encryptedCode) throws CryptographyException {
+			DecodedCameraCode result = new DecodedCameraCode();
+			result.setAuthenticated(true);
+			result.setBatchId(100);
+			result.setCodeType(ActivationBehaviorsTest.codeType);
+			result.setSequence(1);
+			return result;
+		}
+
+		@Override
+		public IDecodedResult decode(String mode, String encryptedCode, CodeType codeType) throws CryptographyException {
 			DecodedCameraCode result = new DecodedCameraCode();
 			result.setAuthenticated(true);
 			result.setBatchId(100);

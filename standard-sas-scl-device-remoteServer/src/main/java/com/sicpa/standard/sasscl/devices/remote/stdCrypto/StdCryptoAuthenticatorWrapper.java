@@ -1,8 +1,10 @@
 package com.sicpa.standard.sasscl.devices.remote.stdCrypto;
 
+import com.sicpa.standard.sasscl.model.CodeType;
 import com.sicpa.standard.sasscl.model.DecodedCameraCode;
 import com.sicpa.standard.sasscl.sicpadata.CryptographyException;
 import com.sicpa.standard.sasscl.sicpadata.reader.IAuthenticator;
+import com.sicpa.standard.sasscl.sicpadata.reader.IDecodedResult;
 import com.sicpa.standard.sicpadata.api.business.IBSicpadataContent;
 import com.sicpa.standard.sicpadata.api.business.IBSicpadataReader;
 
@@ -56,6 +58,26 @@ public class StdCryptoAuthenticatorWrapper implements IAuthenticator {
 	@Override
 	public DecodedCameraCode decode(String mode, final String encryptedCode) throws CryptographyException {
 
+		try {
+
+			IBSicpadataContent authenResult = null;
+
+			if (mode == null || mode.trim().isEmpty()) {
+				authenResult = this.bAuthenticator.read(encryptedCode);
+			} else {
+				authenResult = this.bAuthenticator.read(mode, encryptedCode);
+			}
+
+			return this.convert(authenResult);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new CryptographyException(e, "Failed to decode encrypted code : {0}", encryptedCode);
+		}
+	}
+
+	@Override
+	public IDecodedResult decode(String mode, String encryptedCode, CodeType codeType) throws CryptographyException {
 		try {
 
 			IBSicpadataContent authenResult = null;

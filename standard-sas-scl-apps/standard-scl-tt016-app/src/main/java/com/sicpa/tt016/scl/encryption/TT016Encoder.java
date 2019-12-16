@@ -1,10 +1,14 @@
 package com.sicpa.tt016.scl.encryption;
 
+import static com.sicpa.tt016.remote.impl.sicpadata.TT016SicpaDataGeneratorWrapper.BLOCK_SEPARATOR;
+
 import com.sicpa.standard.crypto.codes.StringBasedCode;
 import com.sicpa.standard.crypto.exceptions.CryptoException;
+import com.sicpa.standard.sasscl.model.ProductionParameters;
 import com.sicpa.standard.sasscl.sicpadata.CryptographyException;
 import com.sicpa.standard.sasscl.sicpadata.generator.EncoderEmptyException;
 import com.sicpa.standard.sasscl.sicpadata.generator.IEncoder;
+import com.sicpa.tt016.common.api.activation.visiblecode.implementation.TT016SCLHRDGeneratorImpl;
 import com.sicpa.tt016.common.security.bean.SequenceBean;
 import com.sicpa.tt016.common.security.encoder.IMoroccoEncoder;
 import org.slf4j.Logger;
@@ -50,10 +54,16 @@ public class TT016Encoder implements IEncoder {
 		if (remainingCodes <= 0) {
 			throw new EncoderEmptyException();
 		}
-		StringBasedCode code = (StringBasedCode) tt016encoder.getCode(createCodeRequestOrder());
+		
+		TT016SCLHRDGeneratorImpl hrcGen = new TT016SCLHRDGeneratorImpl();
+		
+		SequenceBean sequenceBean = createCodeRequestOrder();
+		String hrc = hrcGen.generate(this.codeTypeId, tt016encoder.getBatchId(), sequenceBean.getSequence());
+		
+		StringBasedCode code = (StringBasedCode) tt016encoder.getCode(sequenceBean);
 		remainingCodes--;
 		currentIndex++;
-		return code.getCode();
+		return code.getCode() + BLOCK_SEPARATOR + hrc;
 	}
 
 	private SequenceBean createCodeRequestOrder() {
@@ -116,6 +126,22 @@ public class TT016Encoder implements IEncoder {
 
 	@Override
 	public List<String> getEncryptedCodes(long numberOfCodes) throws CryptographyException {
+		updateDateOfUse();
+		long numberOfCodesToRequest = Math.min(numberOfCodes,getRemainingCodes());
+		try {
+			List<String> codes = new ArrayList<>();
+			for (long i = 0; i < numberOfCodesToRequest; i++) {
+				codes.add(getCode());
+			}
+			return codes;
+		} catch (Exception e) {
+			logger.error("Failed to generate code.", e);
+			throw new CryptographyException(e, "Failed to generate encrypted code");
+		}
+	}
+	
+	@Override
+	public List<String> getEncryptedCodes(long numberOfCodes, ProductionParameters productionParameters) throws CryptographyException {
 		updateDateOfUse();
 		long numberOfCodesToRequest = Math.min(numberOfCodes,getRemainingCodes());
 		try {

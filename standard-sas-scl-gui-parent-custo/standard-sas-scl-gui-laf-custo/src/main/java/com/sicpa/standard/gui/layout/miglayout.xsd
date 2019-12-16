@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<xs:element name="miglayout" type="miglayoutType"></xs:element>
+	<xs:complexType name="componentType">
+		<xs:sequence></xs:sequence>
+		<xs:attribute name="name" type="xs:string"></xs:attribute>
+		<xs:attribute name="constraints" type="xs:string"></xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="miglayoutType">
+		<xs:sequence>
+			<xs:element name="component" type="componentType" maxOccurs="unbounded" minOccurs="0"></xs:element>
+		</xs:sequence>
+		<xs:attribute name="generalConstraints" type="xs:string"></xs:attribute>
+		<xs:attribute name="columnConstraints" type="xs:string"></xs:attribute>
+		<xs:attribute name="rowConstraints" type="xs:string"></xs:attribute>
+	</xs:complexType>
+</xs:schema>
