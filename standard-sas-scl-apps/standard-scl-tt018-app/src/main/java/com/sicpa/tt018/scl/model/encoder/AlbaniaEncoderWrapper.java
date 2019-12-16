@@ -64,20 +64,12 @@ public class AlbaniaEncoderWrapper extends AbstractEncoder implements IEncoder {
 		}
 	}
 	
+	/**
+	 * This is only used by Morocco SAS/SCL
+	 */
 	@Override
 	protected String getEncryptedCode(ProductionParameters productionParameters) throws CryptographyException {
-		// load is needed after deserialized
-		loadPassword();
-		try {
-			if (currentIndex >= getAlbaniaEncoder().getCapacity()) {
-				throw new EncoderEmptyException();
-			}
-			// Generate next encoded code
-			return getAlbaniaEncoder().getCode(getNextSequenceValue());
-		} catch (final CryptoException e) {
-			logger.error("Error while loading password = {1} , Exception = {0}.", e);
-			throw new CryptographyException(e, AlbaniaEncoderMessages.EXCEPTION_ENCODERS_GETTING_ENCRYPTED_CODE);
-		}
+		return null;
 	}
 
 	private synchronized void loadPassword() throws CryptographyException {

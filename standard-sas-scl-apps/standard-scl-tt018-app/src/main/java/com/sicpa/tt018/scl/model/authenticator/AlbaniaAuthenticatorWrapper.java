@@ -57,29 +57,12 @@ public class AlbaniaAuthenticatorWrapper implements IAuthenticator {
 
 	}
 	
+	/**
+	 * This is only used by Morocco SAS/SCL
+	 */
 	@Override
 	public IDecodedResult decode(String mode, String encryptedCode, CodeType codeType) throws CryptographyException {
-		if (encryptedCode == null) {
-			logger.warn("Code to authenticate is null");
-			return null;
-		}
-
-		try {
-
-			IAlbaniaAuthenResult authenResult = null;
-
-			// load is needed after deserialized
-			// only executed the first time
-			loadPassword();
-
-			authenResult = this.albanianAuthenticator.authenticate(encryptedCode);
-
-			return this.convert(authenResult);
-
-		} catch (Exception e) {
-			logger.error("Error while authenticating ", e);
-			throw new CryptographyException(e, "Failed to decode encrypted code : {0}", encryptedCode);
-		}
+		return null;
 	}
 
 	protected synchronized void loadPassword() throws CryptoException {
