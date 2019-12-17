@@ -1,10 +1,7 @@
 package com.sicpa.tt080.scl.view.sku.batchId;
 
 import com.google.common.eventbus.Subscribe;
-import java.time.Instant;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.util.Locale;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -36,6 +33,7 @@ import static com.sicpa.tt080.scl.view.TT080ScreenFlowTriggers.BATCH_ID_REGISTER
 public class BatchIdSkuViewController extends TT080ViewFlowController implements IBatchIdSkuListener, ProductBatchIdProvider {
 
 	private static final Logger logger = LoggerFactory.getLogger(BatchIdSkuViewController.class);
+	private static final int DEFAULT_SKU_ID = 0;
 
 	private TT080ScreensFlow screensFlow;
 	private FlowControl flowControl;
@@ -111,14 +109,17 @@ public class BatchIdSkuViewController extends TT080ViewFlowController implements
 			return;
 		}
 
-		final ProductionBatch productionBatch = new ProductionBatch(strBatchId, viewController.getProductionParameters().getSku().getId());
+		final Integer skuId = Optional.ofNullable(viewController.getProductionParameters().getSku())
+				.map(sku -> sku.getId()).orElse(getDefaultSKUId());
+		final ProductionBatch productionBatch = new ProductionBatch(strBatchId, skuId);
+
 		if (isInvalidProductionBatchSize(productionBatch.getProductionBatchId())){
 			showMessageDialog(Messages.get("sku.productionbatch.id.validation.size"));
 			return;
 		}
 
 		pp.setProperty(ProductBatchIdProvider.productionBatchId, productionBatch);
-		logger.info(Messages.format("sku.batch.id.registered", productionBatch.getProductionBatchId()));
+		logger.info(String.format("Production BatchId Registered: %s", productionBatch.getProductionBatchId()));
 
 		batchIdButtonPressed.set(false);
 
@@ -128,6 +129,11 @@ public class BatchIdSkuViewController extends TT080ViewFlowController implements
 
 		//store the batchId on ProductionBatchProvider to save later on database
 		EventBusService.post(new BatchIdViewEvent(pp));
+	}
+
+	private static int getDefaultSKUId() {
+		logger.warn("No SKU found. Default value setup for the selected production mode");
+		return DEFAULT_SKU_ID;
 	}
 
 	private static boolean hasInvalidFormat(String strBatchId) {
@@ -146,4 +152,5 @@ public class BatchIdSkuViewController extends TT080ViewFlowController implements
 	public BatchIdSkuModel getModel() {
 		return model;
 	}
+
 }
