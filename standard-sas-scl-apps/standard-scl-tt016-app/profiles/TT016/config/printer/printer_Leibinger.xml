@@ -8,6 +8,7 @@
 	<tcpPort>3000</tcpPort>
 	<nozzleMode>OPEN_MANUAL_CLOSE_AUTO</nozzleMode>
 	<nozzleCloseDelayMs>2000</nozzleCloseDelayMs>
+	<fontType>PIXEL_5x5</fontType>
 	<tcpMaxExpiredRequests>3</tcpMaxExpiredRequests>
 	<transitionMaxExpiredRequests>10</transitionMaxExpiredRequests>
 	<resetOnStop>true</resetOnStop>
