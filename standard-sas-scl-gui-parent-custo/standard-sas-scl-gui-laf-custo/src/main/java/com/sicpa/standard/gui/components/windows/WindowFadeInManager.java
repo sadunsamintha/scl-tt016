@@ -25,7 +25,7 @@ public class WindowFadeInManager {
 			public void onTimelinePulse(final float durationFraction, final float timelinePosition) {
 				SwingUtilities.invokeLater(new Runnable() {
 					public void run() {
-						WindowsUtils.setOpacity(window, timelinePosition);
+						WindowsUtils.setOpacity(window, 1.0f);
 					}
 				});
 			}
@@ -35,13 +35,13 @@ public class WindowFadeInManager {
 				SwingUtilities.invokeLater(new Runnable() {
 					public void run() {
 						if (newState == TimelineState.DONE) {
-							WindowsUtils.setOpacity(window, timelinePosition);
+							WindowsUtils.setOpacity(window, 1.0f);
 						}
 					}
 				});
 			}
 		};
-		WindowsUtils.setOpacity(window, 0);
+		WindowsUtils.setOpacity(window, 1.0f);
 		Timeline anim = new Timeline();
 		anim.setDuration(duration);
 		anim.addCallback(tt);
@@ -65,7 +65,7 @@ public class WindowFadeInManager {
 				SwingUtilities.invokeLater(new Runnable() {
 					@Override
 					public void run() {
-						WindowsUtils.setOpacity(window, 1 - timelinePosition);
+						WindowsUtils.setOpacity(window, 1.0f);
 					}
 				});
 			}
@@ -76,7 +76,7 @@ public class WindowFadeInManager {
 				SwingUtilities.invokeLater(new Runnable() {
 					public void run() {
 						if (newState == TimelineState.DONE) {
-							WindowsUtils.setOpacity(window, 0);
+							WindowsUtils.setOpacity(window, 1.0f);
 							window.setVisible(false);
 							window.dispose();
 						}
