@@ -190,14 +190,17 @@ public class FileStorage implements IStorage {
 
 			// load this encoder and save it as the current one
 			IEncoder encoder = (IEncoder) load(encoderFile);
-			saveCurrentEncoder(encoder);
-			// the encoder is now the current encoder, so remove the old
-			// file
-			if (!encoderFile.delete()) {
-				throw new ProductionRuntimeException("error removing encoder file {0}", "encoder:"
-						+ encoderFile.getAbsolutePath());
+			
+			if (encoder != null) {
+				saveCurrentEncoder(encoder);
+				// the encoder is now the current encoder, so remove the old
+				// file
+				if (!encoderFile.delete()) {
+					throw new ProductionRuntimeException("error removing encoder file {0}", "encoder:"
+							+ encoderFile.getAbsolutePath());
+				}
+				return encoder;
 			}
-			return encoder;
 		} catch (StorageException e) {
 			logger.error("", e);
 		}
@@ -372,12 +375,25 @@ public class FileStorage implements IStorage {
 
 	@Override
 	public void saveProduction(Product[] products) throws StorageException {
+		if (products == null || products.length == 0) {
+			return;
+		}
+		
 		String sFile = getPathProductionSaved() + "/" + DateUtils.format(timeStampFormat, new Date()) + ".data";
 		File file = new File(sFile);
 		logger.debug("Saving {} {}", "Production", sFile);
 		save(products, file);
-		file.renameTo(new File(file + ".ok"));
-
+		
+		File renamedFile = new File(file + ".ok");
+		boolean renameOk = file.renameTo(renamedFile);
+		
+		if (!renameOk) {
+			logger.error("Fail to rename production data file: " + renamedFile);
+		} else {
+			if (renamedFile.length() == 0) {
+				logger.debug("Renamed empty file {} {}", "Production", renamedFile);
+			}
+		}
 	}
 
 	private String getPathProductionSaved() {
@@ -453,7 +469,12 @@ public class FileStorage implements IStorage {
 
 	private final Object load(File file) throws StorageException {
 		try {
-			return storageBehavior.load(file);
+			if (file != null && file.length() > 0) {
+				return storageBehavior.load(file);
+			} else {
+				logger.error("Loading empty data file: " + file);
+				return null;
+			}
 		} catch (StorageException e) {
 			if (!(e.getCause() instanceof FileNotFoundException)) {
 				EventBusService.post(new MessageEvent(this, MessageEventKey.Storage.ERROR_CANNOT_LOAD, file));
@@ -564,9 +585,13 @@ public class FileStorage implements IStorage {
 	private Collection<Product> loadProduct(File aFile) {
 		ArrayList<Product> products = new ArrayList<>();
 		try {
-			for (Product p : (Product[]) load(aFile)) {
-				if (p != null) {
-					products.add(p);
+			Product[] productArray = (Product[]) load(aFile);
+			
+			if (productArray != null) {
+				for (Product p : productArray) {
+					if (p != null) {
+						products.add(p);
+					}
 				}
 			}
 		} catch (StorageException e) {
@@ -659,7 +684,14 @@ public class FileStorage implements IStorage {
 				if (files[cpt].getName().endsWith(".ok")) {
 					this.productionBatchBeingSend = files[cpt];
 					try {
-						return (PackagedProducts) load(productionBatchBeingSend);
+						PackagedProducts packagedProducts = (PackagedProducts) load(productionBatchBeingSend);
+						
+						if (packagedProducts != null) {
+							return packagedProducts;
+						} else {
+							logger.warn("Empty package file {}", productionBatchBeingSend);
+							moveToQuarantine(productionBatchBeingSend, QuarantineReason.LOAD_ERROR);
+						}
 					} catch (StorageException e) {
 						logger.warn("Cannot load {}", e);
 						moveToQuarantine(productionBatchBeingSend, QuarantineReason.LOAD_ERROR);
@@ -782,15 +814,18 @@ public class FileStorage implements IStorage {
 			if (fEncoders != null) {
 				for (File f : fEncoders) {
 					Object o = loadInternal(folder + "/" + f.getName());
-					boolean finished = o instanceof FinishedEncoder;
-					if (finished) {
-						o = ((FinishedEncoder) o).getEncoder();
+					
+					if (o != null) {
+						boolean finished = o instanceof FinishedEncoder;
+						if (finished) {
+							o = ((FinishedEncoder) o).getEncoder();
+						}
+						IEncoder encoder = (IEncoder) o;
+						EncoderInfo encoderInfo = new EncoderInfo(encoder, finished);
+						encoderInfo.setSequence(getSequenceOfEncoder(encoder));
+						encoderInfo.setFile(f);
+						infos.add(encoderInfo);
 					}
-					IEncoder encoder = (IEncoder) o;
-					EncoderInfo encoderInfo = new EncoderInfo(encoder, finished);
-					encoderInfo.setSequence(getSequenceOfEncoder(encoder));
-					encoderInfo.setFile(f);
-					infos.add(encoderInfo);
 				}
 			}
 		} catch (Exception e) {
@@ -840,7 +875,10 @@ public class FileStorage implements IStorage {
 			for (File encoderFile : pendingEncodersFile) {
 				try {
 					IEncoder encoder = (IEncoder) load(encoderFile);
-					res.add(new SimpleImmutableEntry<IEncoder, File>(encoder, encoderFile));
+					
+					if (encoder != null) {
+						res.add(new SimpleImmutableEntry<IEncoder, File>(encoder, encoderFile));
+					}
 				} catch (Exception e) {
 					logger.error("error loading encoder:" + encoderFile, e);
 					moveToQuarantine(encoderFile, QuarantineReason.LOAD_ERROR);
