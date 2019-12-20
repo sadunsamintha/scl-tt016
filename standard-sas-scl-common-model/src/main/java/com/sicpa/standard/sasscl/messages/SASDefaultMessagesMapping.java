@@ -162,7 +162,7 @@ public class SASDefaultMessagesMapping extends DefaultMessagesMapping {
 		addEntry(FlowControl.UNCAUGHT_EXCEPTION, "[EXC_GEN_001]", ERROR_DISPLAY);
 
 		addEntry(Storage.ERROR_CANNOT_SAVE, "[STOR_01]", ERROR);
-		addEntry(Storage.ERROR_CANNOT_LOAD, "[STOR_02]", ERROR);
+		addEntry(Storage.ERROR_CANNOT_LOAD, "[STOR_02]", WARNING);
 		addEntry(Storage.ERROR_PACKAGE_FAIL, "[STOR_03]", WARNING);
 		addEntry(Storage.ERROR_CLEANUP_FAIL, "[STOR_04]", WARNING);
 
