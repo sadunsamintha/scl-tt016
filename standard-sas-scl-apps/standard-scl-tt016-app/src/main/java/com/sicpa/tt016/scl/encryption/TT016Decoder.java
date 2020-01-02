@@ -1,5 +1,6 @@
 package com.sicpa.tt016.scl.encryption;
 
+import java.util.Map;
 import java.util.Properties;
 
 import org.slf4j.Logger;
@@ -15,6 +16,9 @@ import com.sicpa.standard.sasscl.model.DecodedCameraCode;
 import com.sicpa.standard.sasscl.sicpadata.CryptographyException;
 import com.sicpa.standard.sasscl.sicpadata.reader.IAuthenticator;
 import com.sicpa.standard.sasscl.sicpadata.reader.IDecodedResult;
+import com.sicpa.tt016.common.api.activation.visiblecode.implementation.TT016HRDGenerator;
+import com.sicpa.tt016.common.api.activation.visiblecode.implementation.TT016HRDGeneratorImpl;
+import com.sicpa.tt016.common.api.coding.business.hrd.IHRDContent;
 import com.sicpa.tt016.common.security.authenticator.IMoroccoAuthenResult;
 import com.sicpa.tt016.common.security.authenticator.IMoroccoAuthenticator;
 
@@ -27,8 +31,12 @@ public class TT016Decoder implements IAuthenticator {
 	private static final Logger logger = LoggerFactory.getLogger(TT016Decoder.class);
 
 	private IMoroccoAuthenticator codeAuthenticator;
+	
+	private static TT016HRDGeneratorImpl hrdEngine = new TT016HRDGeneratorImpl();
 
 	private static boolean isMsasLeg = "true".equals(((Properties) BeanProvider.getBean(BeansName.ALL_PROPERTIES)).getProperty("production.config.server.msaslegacy"))?true:false ;
+	
+	private static boolean isQRactivationtype = "true".equals(((Properties) BeanProvider.getBean(BeansName.ALL_PROPERTIES)).getProperty("sas.qrcode.type.activation"))?true:false ;
 	
 	public TT016Decoder(IMoroccoAuthenticator authenticator) {
 		setAuthenticator(authenticator);
@@ -52,7 +60,11 @@ public class TT016Decoder implements IAuthenticator {
 		if (mode.equals(SCL_MODE)) {
 			return decodeSCL(encryptedCode);
 		} else if (mode.equals(SAS_MODE)) {
-			return decodeSAS(encryptedCode);
+			if(isQRactivationtype) {
+				return decodeSasQrCode(encryptedCode);
+			} else {
+				return decodeSAS(encryptedCode);
+			}
 		}
 		throw new IllegalArgumentException("illegal mode:" + mode);
 	}
@@ -95,4 +107,23 @@ public class TT016Decoder implements IAuthenticator {
 			return null;
 		}
 	}
+	
+    private IDecodedResult decodeSasQrCode(String encryptedCode) {
+        DecodedCameraCode res = new DecodedCameraCode();
+        try {
+            IHRDContent decodeHrc = hrdEngine.readHrcFromQrCode(encryptedCode);
+            Map<String, String> fields = decodeHrc.getFields();
+            String codeType = fields.get(TT016HRDGenerator.FLD_NAME_CODETYPE);
+            String batchId = fields.get(TT016HRDGenerator.FLD_NAME_BATCHID);
+            String sequence = fields.get(TT016HRDGenerator.FLD_NAME_SEQUENCE);
+            res.setBatchId(Integer.valueOf(batchId) );
+            res.setSequence(Long.parseLong(sequence));
+            res.setCodeType(new CodeType(Long.parseLong(codeType)));
+            res.setAuthenticated(true);
+            return res;
+        } catch (Exception e) {
+            logger.error("DECODER.ERROR.DECODING " + encryptedCode);
+            return null;
+        }
+    }
 }
