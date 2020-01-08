@@ -22,6 +22,8 @@
 		<mDataMatrixEncoding>ASCII</mDataMatrixEncoding>
 		<mInverted>false</mInverted>
 		<mReversed>true</mReversed>
+		<mInvertedText>true</mInvertedText>
+		<mReversedText>true</mReversedText>
 		<mFontType>PIXEL_5x5</mFontType>
 		<mTextBlockSpacing>1</mTextBlockSpacing>
 		<mPersistence
