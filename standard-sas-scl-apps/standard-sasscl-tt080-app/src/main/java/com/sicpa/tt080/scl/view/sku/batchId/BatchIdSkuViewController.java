@@ -3,9 +3,7 @@ package com.sicpa.tt080.scl.view.sku.batchId;
 import com.google.common.eventbus.Subscribe;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,6 +19,7 @@ import com.sicpa.standard.sasscl.view.LanguageSwitchEvent;
 import com.sicpa.tt080.scl.event.BatchIdViewEvent;
 import com.sicpa.tt080.scl.view.TT080ViewFlowController;
 import com.sicpa.tt080.scl.view.flow.TT080ScreensFlow;
+import com.sicpa.tt080.scl.view.sku.batchId.BatchEvaluator.EvaluationStatus;
 
 import static com.sicpa.tt080.scl.view.TT080ScreenFlowTriggers.BATCH_ID_REGISTERED;
 
@@ -94,18 +93,9 @@ public class BatchIdSkuViewController extends TT080ViewFlowController implements
 
 	@Override
 	public void saveBatchId(final String strBatchId) {
-		if (StringUtils.isBlank(strBatchId)){
-			showMessageDialog(Messages.get("sku.batch.id.validation.blank"));
-			return;
-		}
-
-		if (hasInvalidFormat(strBatchId)){
-			showMessageDialog(Messages.get("sku.batch.id.validation.format"));
-			return;
-		}
-
-		if (hasInvalidBatchSize(strBatchId)){
-			showMessageDialog(Messages.get("sku.batch.id.validation.size"));
+		final EvaluationStatus evaluationStatus = BatchEvaluator.evaluate(strBatchId);
+		if(!evaluationStatus.isValid()){
+			showMessageDialog(evaluationStatus.getStatusCode());
 			return;
 		}
 
@@ -114,7 +104,7 @@ public class BatchIdSkuViewController extends TT080ViewFlowController implements
 		final ProductionBatch productionBatch = new ProductionBatch(strBatchId, skuId);
 
 		if (isInvalidProductionBatchSize(productionBatch.getProductionBatchId())){
-			showMessageDialog(Messages.get("sku.productionbatch.id.validation.size"));
+			showMessageDialog("sku.productionbatch.id.validation.size");
 			return;
 		}
 
@@ -131,22 +121,19 @@ public class BatchIdSkuViewController extends TT080ViewFlowController implements
 		EventBusService.post(new BatchIdViewEvent(pp));
 	}
 
+	@Override
+	public void showMessageDialog(final String messageCode) {
+		final String message = Messages.get(messageCode);
+		super.showMessageDialog(message);
+	}
+
 	private static int getDefaultSKUId() {
 		logger.warn("No SKU found. Default value setup for the selected production mode");
 		return DEFAULT_SKU_ID;
 	}
 
-	private static boolean hasInvalidFormat(String strBatchId) {
-		final Matcher matcher = ALL_SYMBOLS_RESTRICTION_PATTERN.matcher(strBatchId);
-		return matcher.find();
-	}
-
 	private static boolean isInvalidProductionBatchSize(String productionBatchId) {
 		return productionBatchId.length() > MAX_FIELD_SIZE;
-	}
-
-	private static boolean hasInvalidBatchSize(final String strBatchId) {
-		return strBatchId.length() == 0 || strBatchId.length() > 15;
 	}
 
 	public BatchIdSkuModel getModel() {
