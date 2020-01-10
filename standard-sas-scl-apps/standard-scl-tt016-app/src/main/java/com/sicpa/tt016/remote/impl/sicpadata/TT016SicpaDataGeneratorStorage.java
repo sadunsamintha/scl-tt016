@@ -1,17 +1,17 @@
 package com.sicpa.tt016.remote.impl.sicpadata;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.sicpa.standard.sasscl.devices.remote.impl.sicpadata.SicpaDataGeneratorStorage;
-import com.sicpa.standard.sasscl.model.ProductionMode;
 import com.sicpa.standard.sasscl.model.ProductionParameters;
 import com.sicpa.standard.sasscl.sicpadata.generator.IEncoder;
 import com.sicpa.standard.sicpadata.spi.manager.ServiceProviderException;
 import com.sicpa.std.common.api.coding.dto.SicpadataGeneratorDto;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 public class TT016SicpaDataGeneratorStorage extends SicpaDataGeneratorStorage  {
 

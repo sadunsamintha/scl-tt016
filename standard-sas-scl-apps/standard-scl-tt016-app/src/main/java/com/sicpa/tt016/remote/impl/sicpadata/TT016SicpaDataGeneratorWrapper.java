@@ -10,7 +10,6 @@ import com.sicpa.std.common.api.coding.dto.SicpadataGeneratorDto;
 @SuppressWarnings("serial")
 public class TT016SicpaDataGeneratorWrapper extends SicpaDataGeneratorWrapper {
 
-	public final static String BLOCK_SEPARATOR = ">-<" ;
 	public final static String EXPORT_PREFIX = "EX" ;
 
     private static final Logger logger = LoggerFactory.getLogger(TT016SicpaDataGeneratorWrapper.class);

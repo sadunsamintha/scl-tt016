@@ -1,5 +1,6 @@
 package com.sicpa.standard.sasscl.sicpadata.generator;
 
+import com.sicpa.standard.gui.utils.Pair;
 import com.sicpa.standard.sasscl.model.ProductionParameters;
 import com.sicpa.standard.sasscl.sicpadata.CryptographyException;
 
@@ -47,6 +48,23 @@ public interface IEncoder extends Serializable {
 	
 	/**
 	 *
+	 * Get a number of encrypted code and return it as a list of String pairs
+	 *
+	 * If the encoder does not have enough code, all the available codes will be returned
+	 *
+	 * @param numberCodes
+	 *            number of encrypted code to request
+	 *
+	 *
+	 * @return list of encrypted code in pair
+	 *
+	 * @throws CryptographyException
+	 *             thrown exception if the encoder is empty
+	 */
+	List<Pair<String, String>> getEncryptedCodesPair(long numberOfCodes) throws CryptographyException;
+	
+	/**
+	 *
 	 * Get a number of encrypted code and return it as a list of String
 	 *
 	 * If the encoder does not have enough code, all the available codes will be returned
@@ -62,6 +80,24 @@ public interface IEncoder extends Serializable {
 	 *             thrown exception if the encoder is empty
 	 */
 	List<String> getEncryptedCodes(long numberOfCodes, ProductionParameters productionParameters) throws CryptographyException;
+	
+	/**
+	 *
+	 * Get a number of encrypted code and return it as a list of String pairs
+	 *
+	 * If the encoder does not have enough code, all the available codes will be returned
+	 *
+	 * @param numberCodes
+	 *            number of encrypted code to request
+	 * @param productionParameters
+	 * 			  contains production mode
+	 *
+	 * @return list of encrypted code in pair
+	 *
+	 * @throws CryptographyException
+	 *             thrown exception if the encoder is empty
+	 */
+	List<Pair<String, String>> getEncryptedCodesPair(long numberOfCodes, ProductionParameters productionParameters) throws CryptographyException;
 
 	/**
 	 * Check if the encoder is empty. If the encoder is empty, the encoder cannot produce anymore encrypted code by

@@ -1,5 +1,6 @@
 package com.sicpa.standard.sasscl.sicpadata.generator.impl;
 
+import com.sicpa.standard.gui.utils.Pair;
 import com.sicpa.standard.sasscl.model.ProductionParameters;
 import com.sicpa.standard.sasscl.sicpadata.CryptographyException;
 import com.sicpa.standard.sasscl.sicpadata.generator.AbstractEncoder;
@@ -48,10 +49,37 @@ public class CodeListEncoder extends AbstractEncoder {
 		updateDateOfUse();
 		return this.encryptedCodes.remove(0);
 	}
+	
+	@Override
+	public List<Pair<String, String>> getEncryptedCodesPair(long numberOfCodes) throws CryptographyException {
+		List<Pair<String, String>> codes = new ArrayList<>();
+		codes.add(new Pair<String, String>("", ""));
+		return codes;
+	}
+
+	@Override
+	public List<Pair<String, String>> getEncryptedCodesPair(long numberOfCodes,
+			ProductionParameters productionParameters) throws CryptographyException {
+		List<Pair<String, String>> codes = new ArrayList<>();
+		codes.add(new Pair<String, String>("", ""));
+		return codes;
+	}
+	
+	@Override
+	@Deprecated
+	protected Pair<String, String> getEncryptedCodePair() throws CryptographyException {
+		throw new CryptographyException("Deprecated");
+	}
+
+	@Override
+	@Deprecated
+	protected Pair<String, String> getEncryptedCodePair(ProductionParameters productionParameters)
+			throws CryptographyException {
+		throw new CryptographyException("Deprecated");
+	}
 
 	@Override
 	public boolean isEncoderEmpty() {
 		return this.encryptedCodes.size() == 0;
 	}
-
 }

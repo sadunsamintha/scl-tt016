@@ -1,5 +1,6 @@
 package com.sicpa.tt016.printer;
 
+import com.sicpa.standard.gui.utils.Pair;
 import com.sicpa.standard.printer.controller.model.ModelDataMatrixEncoding;
 import com.sicpa.standard.printer.controller.model.ModelDataMatrixFormat;
 import com.sicpa.standard.printer.xcode.*;
@@ -16,8 +17,6 @@ import java.util.List;
 public class TT016ExtendedCodeFactory implements IExCodeBehavior {
 
     private static final Logger logger = LoggerFactory.getLogger(TT016ExtendedCodeFactory.class);
-    private static final int NUMBER_OF_BLOCKS =  2;
-    public final static String BLOCK_SEPARATOR = ">-<";
     
     private ModelDataMatrixFormat dmFormat;
     private ModelDataMatrixEncoding dmEncoding;
@@ -28,11 +27,17 @@ public class TT016ExtendedCodeFactory implements IExCodeBehavior {
     private RelativePosition text2Position;
     private boolean hrdEnable = true;
     private BlobDetectionUtils blobUtils;
-
-
+    
+    /**
+	 * This implementation is not anymore used in Morocco (TT016)
+	 */
+    @Override
+	public List<ExtendedCode> createExCodes(List<String> codes) {
+		return null;
+	}
 
     @Override
-    public List<ExtendedCode> createExCodes(List<String> codes) {
+    public List<ExtendedCode> createExCodesPair(List<Pair<String, String>> codes) {
         Validate.notNull(codes);
 
         final boolean isBlobEnable = blobUtils.isBlobPatternPrinted();
@@ -41,36 +46,36 @@ public class TT016ExtendedCodeFactory implements IExCodeBehavior {
         ExtendedCodeFactory ecf = new ExtendedCodeFactory();
         ecf.setBlockFactories(createBlockFactories(isBlobEnable));
 
-        for (String c : codes) {
+        for (Pair<String, String> c : codes) {
             res.add(ecf.create(createCompositeCode(c, isBlobEnable)));
         }
 
         return res;
     }
 
-    private List<Object> createCompositeCode(final String code, final boolean isBlobEnable) {
-        String[] parsedCode = code.split(BLOCK_SEPARATOR);
-
-        /* If the string code is not composed of 2 blocks with a block separator then
-           we throw an exception  */
-
-        if(parsedCode.length != NUMBER_OF_BLOCKS) {
-            throw new IllegalArgumentException("code with value " + parsedCode + " is not composed of 2 blocks." );
-        }
-
+    private List<Object> createCompositeCode(final Pair<String, String> code, final boolean isBlobEnable) {
         List<Object> compositeCode = new ArrayList<>();
 
-        if(hrdEnable) {
-            compositeCode.add(getTextLine1(parsedCode));
-            compositeCode.add(getTextLine2(parsedCode));
+        if (hrdEnable) {
+        	if (code.getValue2() == null || code.getValue2().equals("")) {
+        		throw new IllegalArgumentException("code does not have 2nd block." );
+        	}
+            compositeCode.add(getTextLine1(code.getValue2()));
+            compositeCode.add(getTextLine2(code.getValue2()));
         }
-        compositeCode.add(getSicpadata(parsedCode));
-        if(isBlobEnable) {
+        
+        if (code.getValue1() == null || code.getValue1().equals("")) {
+    		throw new IllegalArgumentException("code does not have 1st block." );
+    	}
+        
+        compositeCode.add(code.getValue1());
+        
+        if (isBlobEnable) {
             /*
                The blobFactory give us a default implementation of the blob pattern.
                Nevertheless we need to provide a composite code due to xcode api design.
              */
-            compositeCode.add(getDummyBlobData());
+           compositeCode.add(getDummyBlobData());
         }
 
         return compositeCode;
@@ -80,16 +85,12 @@ public class TT016ExtendedCodeFactory implements IExCodeBehavior {
         return "dummy";
     }
 
-    private String getTextLine2(String[] parsedCode) {
-        return parsedCode[1].substring(text1Length, parsedCode[1].length());
+    private String getTextLine2(String textCode) {
+        return textCode.substring(text1Length, textCode.length());
     }
 
-    private String getTextLine1(String[] parsedCode) {
-        return parsedCode[1].substring(0, text1Length);
-    }
-
-    private String getSicpadata(String[] parsedCode) {
-        return parsedCode[0];
+    private String getTextLine1(String textCode) {
+        return textCode.substring(0, text1Length);
     }
 
     private List<BlockFactory> createBlockFactories(boolean isBlobEnable) {

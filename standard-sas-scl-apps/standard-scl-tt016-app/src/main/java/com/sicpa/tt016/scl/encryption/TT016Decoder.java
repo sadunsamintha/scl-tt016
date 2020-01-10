@@ -50,7 +50,11 @@ public class TT016Decoder implements IAuthenticator {
 		if (mode.equals(SCL_MODE)) {
 			return decodeSCL(encryptedCode);
 		} else if (mode.equals(SAS_MODE)) {
-			return decodeSAS(encryptedCode);
+			if (isQRactivationtype) {
+				return decodeSasQrCode(encryptedCode);
+			} else {
+				return decodeSAS(encryptedCode);
+			}
 		}
 		throw new IllegalArgumentException("illegal mode:" + mode);
 	}
@@ -60,7 +64,7 @@ public class TT016Decoder implements IAuthenticator {
 		if (mode.equals(SCL_MODE)) {
 			return decodeSCL(encryptedCode);
 		} else if (mode.equals(SAS_MODE)) {
-			if(isQRactivationtype) {
+			if (isQRactivationtype) {
 				return decodeSasQrCode(encryptedCode);
 			} else {
 				return decodeSAS(encryptedCode);
@@ -89,7 +93,7 @@ public class TT016Decoder implements IAuthenticator {
 		DecodedCameraCode res = new DecodedCameraCode();
 		try {
 			StringBasedCode code = null;
-			if(isMsasLeg) {
+			if (isMsasLeg) {
 				 code = new AlphaNumCode(encryptedCode);
 			} else {
 				 code = new NumericCode(encryptedCode);
@@ -98,7 +102,7 @@ public class TT016Decoder implements IAuthenticator {
 			res.setBatchId((int) decodeResult.getBatchId());
 			res.setSequence(decodeResult.getSequence());
 			res.setCodeType(new CodeType(decodeResult.getType()));
-			if(decodeResult.isValid()) {
+			if (decodeResult.isValid()) {
 				res.setAuthenticated(true);
 			}
 			return res;

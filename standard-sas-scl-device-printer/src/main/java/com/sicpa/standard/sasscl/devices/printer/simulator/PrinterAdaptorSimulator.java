@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.sicpa.standard.client.common.utils.TaskExecutor;
+import com.sicpa.standard.gui.utils.Pair;
 import com.sicpa.standard.printer.controller.IPrinterController;
 import com.sicpa.standard.sasscl.devices.DeviceStatus;
 import com.sicpa.standard.sasscl.devices.camera.simulator.ICodeProvider;
@@ -20,8 +21,9 @@ public class PrinterAdaptorSimulator extends PrinterAdaptor implements ICodeProv
 	private static final Logger logger = LoggerFactory.getLogger(PrinterAdaptorSimulator.class);
 
 	protected final List<String> codeBuffer = new LinkedList<>();
-	private ScheduledFuture<?> scheduledAskTaskFutur;
-	private long askCodeDelayMs = 1000;
+	protected final List<Pair<String, String>> codePairBuffer = new LinkedList<>();
+	protected ScheduledFuture<?> scheduledAskTaskFutur;
+	protected long askCodeDelayMs = 1000;
 
 	public PrinterAdaptorSimulator() {
 		super();
@@ -47,6 +49,12 @@ public class PrinterAdaptorSimulator extends PrinterAdaptor implements ICodeProv
 	public void sendCodesToPrint(final List<String> codes) throws PrinterAdaptorException {
 		logger.debug("Printer sending codes to print");
 		codeBuffer.addAll(codes);
+	}
+	
+	@Override
+	public void sendPairCodesToPrint(final List<Pair<String, String>> codes) throws PrinterAdaptorException {
+		logger.debug("Printer sending codes in pair to print");
+		codePairBuffer.addAll(codes);
 	}
 
 	@Override
@@ -101,8 +109,8 @@ public class PrinterAdaptorSimulator extends PrinterAdaptor implements ICodeProv
 			return code;
 		}
 	}
-
-	private class AskCodesTask implements Runnable {
+	
+	protected class AskCodesTask implements Runnable {
 		@Override
 		public void run() {
 			if (codeBuffer.size() < 100)

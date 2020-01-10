@@ -11,6 +11,7 @@ import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.messages.MessageEvent;
 import com.sicpa.standard.client.common.utils.TaskExecutor;
 import com.sicpa.standard.client.common.i18n.Messages;
+import com.sicpa.standard.gui.utils.Pair;
 import com.sicpa.standard.gui.utils.ThreadUtils;
 import com.sicpa.standard.printer.controller.IPrinterController;
 import com.sicpa.standard.printer.controller.IPrinterControllerListener;
@@ -177,6 +178,15 @@ public abstract class PrinterAdaptor extends AbstractPrinterAdaptor implements I
 	public void provideCode(List<String> codes, Object requestor) throws CodeReceivedFailedException {
 		try {
 			sendCodesToPrint(codes);
+		} catch (PrinterAdaptorException e) {
+			throw new CodeReceivedFailedException(e);
+		}
+	}
+	
+	@Override
+	public void provideCodePair(List<Pair<String, String>> codes, Object requestor) throws CodeReceivedFailedException {
+		try {
+			sendPairCodesToPrint(codes);
 		} catch (PrinterAdaptorException e) {
 			throw new CodeReceivedFailedException(e);
 		}

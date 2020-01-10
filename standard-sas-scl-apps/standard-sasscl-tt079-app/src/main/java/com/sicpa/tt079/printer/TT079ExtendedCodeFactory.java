@@ -1,5 +1,6 @@
 package com.sicpa.tt079.printer;
 
+import com.sicpa.standard.gui.utils.Pair;
 import com.sicpa.standard.printer.controller.model.ModelDataMatrixEncoding;
 import com.sicpa.standard.printer.controller.model.ModelDataMatrixFormat;
 import com.sicpa.standard.printer.xcode.*;
@@ -47,6 +48,14 @@ public class TT079ExtendedCodeFactory implements IExCodeBehavior {
 
         return res;
     }
+    
+    /**
+   	 * This implementation is used in Morocco (TT016) and not in Uganda (TT079)
+   	 */
+    @Override
+	public List<ExtendedCode> createExCodesPair(List<Pair<String, String>> codes) {
+		return null;
+	}
 
     private List<Object> createCompositeCode(final String code, final boolean isBlobEnable) {
         String[] parsedCode = code.split(BLOCK_SEPARATOR);

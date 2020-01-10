@@ -1,6 +1,7 @@
 package com.sicpa.tt016.business;
 
 
+import com.sicpa.standard.gui.utils.Pair;
 import com.sicpa.standard.sasscl.business.postPackage.PostPackageBehavior;
 import com.sicpa.standard.sasscl.controller.productionconfig.IProductionConfig;
 import com.sicpa.standard.sasscl.controller.productionconfig.config.PrinterConfig;
@@ -16,6 +17,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -42,14 +44,16 @@ public class TT016PostPackageTest {
         TT016PrinterAdaptorSimulator requestor = new TT016PrinterAdaptorSimulator();
         TestPostPackageBehavior postPackageBehavior = new TestPostPackageBehavior();
         postPackage.registerModule(postPackageBehavior, Arrays.asList(requestor));
-        List<String> codes = Arrays.asList("0996908468>-<093G001YG");
-        postPackage.provideCode(codes, requestor);
+        
+        List<Pair<String, String>> codesPair = new ArrayList<>();
+        codesPair.add(new Pair<String, String>("099>-<8468", "093G001YG"));
+        postPackage.provideCodePair(codesPair, requestor);
 
         //assert & verify
         List<Code> sclCodes = postPackageBehavior.getCodes();
         String pruneSclCode = sclCodes.get(0).toString();
 
-        Assert.assertEquals("0996908468", pruneSclCode);
+        Assert.assertEquals("099>-<8468", pruneSclCode);
         verify(productionConfigProvider, times(2)).get();
         verify(config, times(2)).getPrinterConfigs();
 
@@ -66,8 +70,9 @@ public class TT016PostPackageTest {
         TT016PrinterAdaptorSimulator requestor = new TT016PrinterAdaptorSimulator();
         TestPostPackageBehavior postPackageBehavior = new TestPostPackageBehavior();
         postPackage.registerModule(postPackageBehavior, Arrays.asList(requestor));
-        List<String> codes = Arrays.asList("0996908468>-<093G001YG");
-        postPackage.provideCode(codes, requestor);
+        List<Pair<String, String>> codesPair = new ArrayList<>();
+        codesPair.add(new Pair<String, String>("099>-<8468", "093G001YG"));
+        postPackage.provideCodePair(codesPair, requestor);
 
         //assert & verify
         List<Code> sclCodes = postPackageBehavior.getCodes();

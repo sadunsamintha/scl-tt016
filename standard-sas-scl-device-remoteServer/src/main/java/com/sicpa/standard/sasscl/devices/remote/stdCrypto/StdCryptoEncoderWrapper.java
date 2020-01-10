@@ -1,17 +1,19 @@
 package com.sicpa.standard.sasscl.devices.remote.stdCrypto;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.sicpa.standard.gui.utils.Pair;
 import com.sicpa.standard.sasscl.model.ProductionParameters;
 import com.sicpa.standard.sasscl.sicpadata.CryptographyException;
 import com.sicpa.standard.sasscl.sicpadata.generator.AbstractEncoder;
 import com.sicpa.standard.sasscl.sicpadata.generator.EncoderEmptyException;
 import com.sicpa.standard.sicpadata.api.business.IBSicpadataGenerator;
 import com.sicpa.standard.sicpadata.api.exception.SicpadataException;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.HashMap;
-import java.util.List;
 
 public class StdCryptoEncoderWrapper extends AbstractEncoder {
 
@@ -44,11 +46,23 @@ public class StdCryptoEncoderWrapper extends AbstractEncoder {
 	protected String getEncryptedCode(ProductionParameters productionParameters) throws CryptographyException {
 		throw new CryptographyException("Deprecated");
 	}
+	
+	@Override
+	@Deprecated
+	protected Pair<String, String> getEncryptedCodePair() throws CryptographyException {
+		throw new CryptographyException("Deprecated");
+	}
+
+	@Override
+	@Deprecated
+	protected Pair<String, String> getEncryptedCodePair(ProductionParameters productionParameters)
+			throws CryptographyException {
+		throw new CryptographyException("Deprecated");
+	}
 
 	@Override
 	public synchronized List<String> getEncryptedCodes(long numberCodes) throws CryptographyException {
 		try {
-
 			updateDateOfUse();
 
 			long numberCodesToGenerate = Math.min(getRemainingCodes(), numberCodes);
@@ -60,7 +74,53 @@ public class StdCryptoEncoderWrapper extends AbstractEncoder {
 					new Object[] { new HashMap<String, Long>() });
 			setSequence(getSequence() + codes.size());
 			return codes;
+		} catch (SicpadataException e) {
+			logger.error("Failed to generate code.", e);
+			throw new CryptographyException(e, "Failed to generate encrypted code");
+		}
+	}
+	
+	@Override
+	public List<Pair<String, String>> getEncryptedCodesPair(long numberOfCodes) throws CryptographyException {
+		try {
+			updateDateOfUse();
 
+			long numberCodesToGenerate = Math.min(getRemainingCodes(), numberOfCodes);
+			if (numberCodesToGenerate == 0) {
+				throw new EncoderEmptyException();
+			}
+
+			List<String> codes = encoder.generate((int) numberCodesToGenerate,
+					new Object[] { new HashMap<String, Long>() });
+			setSequence(getSequence() + codes.size());
+			
+			List<Pair<String, String>> codesPair = buildCodesPair1stBlock(codes);
+			
+			return codesPair;
+		} catch (SicpadataException e) {
+			logger.error("Failed to generate code.", e);
+			throw new CryptographyException(e, "Failed to generate encrypted code");
+		}
+	}
+
+	@Override
+	public List<Pair<String, String>> getEncryptedCodesPair(long numberOfCodes,
+			ProductionParameters productionParameters) throws CryptographyException {
+		try {
+			updateDateOfUse();
+
+			long numberCodesToGenerate = Math.min(getRemainingCodes(), numberOfCodes);
+			if (numberCodesToGenerate == 0) {
+				throw new EncoderEmptyException();
+			}
+
+			List<String> codes = encoder.generate((int) numberCodesToGenerate,
+					new Object[] { new HashMap<String, Long>() });
+			setSequence(getSequence() + codes.size());
+			
+			List<Pair<String, String>> codesPair = buildCodesPair1stBlock(codes);
+			
+			return codesPair;
 		} catch (SicpadataException e) {
 			logger.error("Failed to generate code.", e);
 			throw new CryptographyException(e, "Failed to generate encrypted code");
@@ -79,6 +139,15 @@ public class StdCryptoEncoderWrapper extends AbstractEncoder {
 			logger.error("", e);
 			return -1;
 		}
+	}
+	
+	private List<Pair<String, String>> buildCodesPair1stBlock(List<String> codes) {
+		List<Pair<String, String>> codesPair = new ArrayList<>();
+				
+		for (String code : codes) {
+			codesPair.add(new Pair<String, String>(code, ""));
+		}
+		return codesPair;
 	}
 
 	@Override

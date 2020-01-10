@@ -8,6 +8,8 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.sicpa.standard.gui.utils.Pair;
+import com.sicpa.standard.sasscl.business.coding.CodeReceivedFailedException;
 import com.sicpa.standard.sasscl.devices.IStartableDevice;
 import com.sicpa.standard.sasscl.model.Code;
 import com.sicpa.standard.sasscl.model.Product;
@@ -47,6 +49,19 @@ public class PostPackage implements IPostPackage {
 		IPostPackageBehavior behavior = getModule(((IStartableDevice) requestor).getName());
 		if (behavior != null) {
 			behavior.addCodes(codes);
+		} else {
+			logger.error("no postpackage behavior found for {}", requestor);
+		}
+	}
+	
+	@Override
+	public void provideCodePair(List<Pair<String, String>> codes, Object requestor) throws CodeReceivedFailedException {
+		if (!isEnabled()) {
+			return;
+		}
+		IPostPackageBehavior behavior = getModule(((IStartableDevice) requestor).getName());
+		if (behavior != null) {
+			behavior.addCodesPair(codes);
 		} else {
 			logger.error("no postpackage behavior found for {}", requestor);
 		}

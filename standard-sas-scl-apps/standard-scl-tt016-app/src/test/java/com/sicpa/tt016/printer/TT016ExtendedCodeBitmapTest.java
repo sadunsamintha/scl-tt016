@@ -1,5 +1,11 @@
 package com.sicpa.tt016.printer;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.Test;
+
+import com.sicpa.standard.gui.utils.Pair;
 import com.sicpa.standard.printer.controller.PrinterException;
 import com.sicpa.standard.printer.controller.model.ModelDataMatrixEncoding;
 import com.sicpa.standard.printer.controller.model.ModelDataMatrixFormat;
@@ -11,14 +17,6 @@ import com.sicpa.standard.printer.xcode.TextFontType;
 import com.sicpa.standard.sasscl.blobDetection.BlobDetectionState;
 import com.sicpa.standard.sasscl.devices.camera.blobDetection.BlobDetectionProvider;
 import com.sicpa.standard.sasscl.devices.camera.blobDetection.BlobDetectionUtils;
-import org.junit.Test;
-
-import javax.imageio.ImageIO;
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class TT016ExtendedCodeBitmapTest {
 
@@ -39,22 +37,16 @@ public class TT016ExtendedCodeBitmapTest {
             String blockList = db.getHeight() + "." + db.getLength() + "." + bmAsString;
             dataBlockList.add(blockList);
             counter++;
-
-/*            File outputfile = new File("image.jpg");
-            try {
-                ImageIO.write(db.asImage(), "jpg", outputfile);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-*/        }
+        }
 
     }
 
     private List<ExtendedCode> createExtendedCode() {
         TT016ExtendedCodeFactory extendedCodeFactory = createExtendedCodeFactory();
-        List<String> codes = Arrays.asList("Ex8~p>-<00Z807AY");
+        List<Pair<String, String>> codesPair = new ArrayList<>();
+        codesPair.add(new Pair<String, String>("099>-<8468", "093G001YG"));
 
-        return extendedCodeFactory.createExCodes(codes);
+        return extendedCodeFactory.createExCodesPair(codesPair);
     }
 
     private TT016ExtendedCodeFactory createExtendedCodeFactory() {
