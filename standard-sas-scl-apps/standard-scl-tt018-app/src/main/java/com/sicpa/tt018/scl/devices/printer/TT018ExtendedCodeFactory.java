@@ -7,6 +7,7 @@ import org.apache.commons.lang.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.sicpa.standard.gui.utils.Pair;
 import com.sicpa.standard.printer.controller.model.ModelDataMatrixEncoding;
 import com.sicpa.standard.printer.controller.model.ModelDataMatrixFormat;
 import com.sicpa.standard.printer.xcode.BlobBlockFactory;
@@ -44,6 +45,16 @@ public class TT018ExtendedCodeFactory implements IExCodeBehavior {
 		}
 
 		return res;
+	}
+	
+	/**
+	 * Interface IExCodeBehavior.java has a new method signature using codes in pairs
+	 * as the parameter which is not called here in Albania (TT018)
+	 * Its implementation is only used in Morocco (TT016)
+	 */
+	@Override
+	public List<ExtendedCode> createExCodesPair(List<Pair<String, String>> codes) {
+		return null;
 	}
 
 	private List<Object> createCompositeCode(String code, boolean isBlobEnable) {

@@ -2,12 +2,14 @@ package com.sicpa.tt018.scl.model.encoder;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.sicpa.standard.crypto.exceptions.CryptoException;
+import com.sicpa.standard.gui.utils.Pair;
 import com.sicpa.standard.sasscl.devices.remote.stdCrypto.ICryptoFieldsConfig;
 import com.sicpa.standard.sasscl.model.ProductionParameters;
 import com.sicpa.standard.sasscl.sicpadata.CryptographyException;
@@ -73,7 +75,49 @@ public class AlbaniaEncoderWrapper extends AbstractEncoder implements IEncoder {
 	protected String getEncryptedCode(ProductionParameters productionParameters) throws CryptographyException {
 		return null;
 	}
-
+	
+	/**
+	 * Interface IEncoder.java has a new method signature using codes in pairs
+	 * as the new return type which is not called here in Albania (TT018)
+	 * Its implementation is only used in Morocco (TT016)
+	 */
+	@Override
+	public List<Pair<String, String>> getEncryptedCodesPair(long numberOfCodes) throws CryptographyException {
+		return null;
+	}
+	
+	/**
+	 * Interface IEncoder.java has a new method signature using codes in pairs
+	 * as the new return type which is not called here in Albania (TT018)
+	 * Its implementation is only used in Morocco (TT016)
+	 */
+	@Override
+	public List<Pair<String, String>> getEncryptedCodesPair(long numberOfCodes,
+			ProductionParameters productionParameters) throws CryptographyException {
+		return null;
+	}
+	
+	/**
+	 * Abstract AbstractEncoder.java has a new method signature using codes in pairs
+	 * as the new return type which is not called here in Albania (TT018)
+	 * Its implementation is only used in Morocco (TT016)
+	 */
+	@Override
+	protected Pair<String, String> getEncryptedCodePair() throws CryptographyException {
+		return null;
+	}
+	
+	/**
+	 * Abstract AbstractEncoder.java has a new method signature using codes in pairs
+	 * as the new return type which is not called here in Albania (TT018)
+	 * Its implementation is only used in Morocco (TT016)
+	 */
+	@Override
+	protected Pair<String, String> getEncryptedCodePair(ProductionParameters productionParameters)
+			throws CryptographyException {
+		return null;
+	}
+	
 	private synchronized void loadPassword() throws CryptographyException {
 		try {
 			if (isFirstCallToGetEncrypted()) {

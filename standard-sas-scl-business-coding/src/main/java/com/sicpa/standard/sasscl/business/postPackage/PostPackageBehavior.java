@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.sicpa.standard.client.common.provider.IProviderGetter;
+import com.sicpa.standard.gui.utils.Pair;
 import com.sicpa.standard.sasscl.model.Code;
 import com.sicpa.standard.sasscl.model.DecodedCameraCode;
 import com.sicpa.standard.sasscl.model.Product;
@@ -51,6 +52,14 @@ public class PostPackageBehavior implements IPostPackageBehavior {
 		for (String aCode : codes) {
 			this.codes.add(new Code(aCode, assosiatedCamera));
 		}
+	}
+	
+	/**
+	 * this is not used by the core solution
+	 */
+	@Override
+	public void addCodesPair(List<Pair<String, String>> codes) {
+		
 	}
 
 	/**

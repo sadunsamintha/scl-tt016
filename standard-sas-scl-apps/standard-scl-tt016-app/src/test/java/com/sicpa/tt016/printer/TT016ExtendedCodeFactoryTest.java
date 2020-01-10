@@ -1,6 +1,13 @@
 package com.sicpa.tt016.printer;
 
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.Assert;
+import org.junit.Test;
+
+import com.sicpa.standard.gui.utils.Pair;
 import com.sicpa.standard.printer.controller.model.ModelDataMatrixEncoding;
 import com.sicpa.standard.printer.controller.model.ModelDataMatrixFormat;
 import com.sicpa.standard.printer.xcode.ExtendedCode;
@@ -8,12 +15,6 @@ import com.sicpa.standard.printer.xcode.RelativePosition;
 import com.sicpa.standard.sasscl.blobDetection.BlobDetectionState;
 import com.sicpa.standard.sasscl.devices.camera.blobDetection.BlobDetectionProvider;
 import com.sicpa.standard.sasscl.devices.camera.blobDetection.BlobDetectionUtils;
-import com.sicpa.standard.sasscl.model.ProductionParameters;
-import org.junit.Assert;
-import org.junit.Test;
-
-import java.util.Arrays;
-import java.util.List;
 
 public class TT016ExtendedCodeFactoryTest {
 
@@ -21,8 +22,9 @@ public class TT016ExtendedCodeFactoryTest {
     @Test
     public void createExCodes() {
         TT016ExtendedCodeFactory extendedCodeFactory = createExtendedCodeFactory();
-        List<String> codes = Arrays.asList("0996908468>-<093G001YG");
-        List<ExtendedCode> extendedCodes = extendedCodeFactory.createExCodes(codes);
+        List<Pair<String, String>> codesPair = new ArrayList<>();
+        codesPair.add(new Pair<String, String>("099>-<8468", "093G001YG"));
+        List<ExtendedCode> extendedCodes = extendedCodeFactory.createExCodesPair(codesPair);
 
         // verify we have created 4 blocks
         ExtendedCode extendedCode = extendedCodes.get(0);
@@ -43,7 +45,7 @@ public class TT016ExtendedCodeFactoryTest {
         //verify the datamatrix block 2
         ExtendedCode.Block block2 = extendedCode.getBlock(2);
         Assert.assertTrue(block2.isDatamatrix());
-        Assert.assertEquals("0996908468", block2.getData());
+        Assert.assertEquals("099>-<8468", block2.getData());
 
         //verify the blob block 3
         ExtendedCode.Block block3 = extendedCode.getBlock(3);
@@ -51,15 +53,6 @@ public class TT016ExtendedCodeFactoryTest {
         Assert.assertEquals(RelativePosition.ABOVE, block3.getRelativePosition());
 
     }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void createWrongExCodes() {
-        TT016ExtendedCodeFactory extendedCodeFactory = createExtendedCodeFactory();
-        List<String> codes = Arrays.asList("0996908468-093G001YG");
-        extendedCodeFactory.createExCodes(codes);
-
-    }
-
 
     private TT016ExtendedCodeFactory createExtendedCodeFactory() {
         TT016ExtendedCodeFactory extendedCodeFactory = new TT016ExtendedCodeFactory();

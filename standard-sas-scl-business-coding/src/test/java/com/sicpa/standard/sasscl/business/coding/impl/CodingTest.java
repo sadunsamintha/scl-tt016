@@ -14,6 +14,7 @@ import org.junit.Test;
 import org.mockito.Mockito;
 
 import com.sicpa.standard.client.common.storage.StorageException;
+import com.sicpa.standard.gui.utils.Pair;
 import com.sicpa.standard.sasscl.business.coding.CodeReceivedFailedException;
 import com.sicpa.standard.sasscl.business.coding.ICodeReceiver;
 import com.sicpa.standard.sasscl.business.coding.RequestCodesEvent;
@@ -288,13 +289,18 @@ public class CodingTest {
 	private static class TestPrinter extends AbstractPrinterAdaptor {
 
 		List<String> codes;
+		List<Pair<String, String>> codesPair;
 
 		boolean crash = false;
 
 		@Override
 		public void sendCodesToPrint(final List<String> codes) {
-
 			this.codes = codes;
+		}
+		
+		@Override
+		public void sendPairCodesToPrint(List<Pair<String, String>> codesPair) {
+			this.codesPair = codesPair;
 		}
 
 		@Override
@@ -319,12 +325,20 @@ public class CodingTest {
 
 		@Override
 		public void provideCode(final List<String> codes, Object requestor) throws CodeReceivedFailedException {
-
 			if (crash) {
 				crash = false;
 				throw new CodeReceivedFailedException();
 			}
 			sendCodesToPrint(codes);
+		}
+		
+		@Override
+		public void provideCodePair(List<Pair<String, String>> codesPair, Object requestor) throws CodeReceivedFailedException {
+			if (crash) {
+				crash = false;
+				throw new CodeReceivedFailedException();
+			}
+			sendPairCodesToPrint(codesPair);
 		}
 
 		@Override

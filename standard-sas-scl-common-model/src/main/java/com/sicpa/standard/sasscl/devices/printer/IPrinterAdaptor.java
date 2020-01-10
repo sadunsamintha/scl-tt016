@@ -1,5 +1,6 @@
 package com.sicpa.standard.sasscl.devices.printer;
 
+import com.sicpa.standard.gui.utils.Pair;
 import com.sicpa.standard.sasscl.business.coding.ICodeReceiver;
 import com.sicpa.standard.sasscl.devices.IStartableDevice;
 
@@ -8,6 +9,7 @@ import java.util.List;
 public interface IPrinterAdaptor extends IStartableDevice, ICodeReceiver {
 
 	void sendCodesToPrint(List<String> codes) throws PrinterAdaptorException;
+	void sendPairCodesToPrint(List<Pair<String, String>> codes) throws PrinterAdaptorException;
 
 	/**
 	 * start printing

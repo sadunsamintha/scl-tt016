@@ -8,6 +8,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.sicpa.standard.gui.utils.Pair;
 import com.sicpa.standard.printer.controller.IPrinterController;
 import com.sicpa.standard.printer.controller.PrinterException;
 import com.sicpa.standard.printer.controller.model.command.PrinterMessage;
@@ -61,6 +62,17 @@ public class PrinterAdaptorDomino extends PrinterAdaptor {
             codeSent = true;
         } catch (PrinterException e) {
             throw new PrinterAdaptorException("sending codes to printer failed", e);
+        }
+    }
+	
+	@Override
+    public void sendPairCodesToPrint(List<Pair<String, String>> codes) throws PrinterAdaptorException {
+        logger.debug("Printer sending codes in pair to print");
+        try {
+            controller.sendExtendedCodes(mappingExtendedCodeBehavior.get(getName()).createExCodesPair(codes));
+            codeSent = true;
+        } catch (PrinterException e) {
+            throw new PrinterAdaptorException("sending codes in pair to printer failed", e);
         }
     }
 

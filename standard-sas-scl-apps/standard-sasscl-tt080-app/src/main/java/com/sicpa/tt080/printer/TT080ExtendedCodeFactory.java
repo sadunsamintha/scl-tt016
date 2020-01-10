@@ -6,6 +6,7 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.Validate;
 
+import com.sicpa.standard.gui.utils.Pair;
 import com.sicpa.standard.printer.controller.model.ModelDataMatrixEncoding;
 import com.sicpa.standard.printer.controller.model.ModelDataMatrixFormat;
 import com.sicpa.standard.printer.xcode.BlobBlockFactory;
@@ -53,6 +54,14 @@ public class TT080ExtendedCodeFactory implements IExCodeBehavior {
 
         return res;
     }
+    
+    /**
+   	 * This implementation is used in Morocco (TT016) and not in Dominican Republic (TT080)
+   	 */
+    @Override
+	public List<ExtendedCode> createExCodesPair(List<Pair<String, String>> codes) {
+		return null;
+	}
 
     private List<Object> createCompositeCode(final String code, final boolean isBlobEnable) {
         final String[] parsedCode = code.split(PRINTER_SPACE_REPRESENTATION);

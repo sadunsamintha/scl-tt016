@@ -1,8 +1,8 @@
 package com.sicpa.tt016.remote.stdCrypto;
 
-import static com.sicpa.tt016.remote.impl.sicpadata.TT016SicpaDataGeneratorWrapper.BLOCK_SEPARATOR;
 import static com.sicpa.tt016.remote.impl.sicpadata.TT016SicpaDataGeneratorWrapper.EXPORT_PREFIX;
 
+import com.sicpa.standard.gui.utils.Pair;
 import com.sicpa.standard.sasscl.model.ProductionMode;
 import com.sicpa.standard.sasscl.model.ProductionParameters;
 import com.sicpa.standard.sasscl.sicpadata.CryptographyException;
@@ -21,16 +21,16 @@ public class TT016EncoderNoEncryptionSimulator extends EncoderNoEncryptionSimula
     }
 
     @Override
-    public String getEncryptedCode(ProductionParameters productionParameters) throws CryptographyException {
+    public Pair<String, String> getEncryptedCodePair(ProductionParameters productionParameters) throws CryptographyException {
         if (this.sequence > this.max) {
             throw new EncoderEmptyException();
         } else {
             updateDateOfUse();
             
             if (productionParameters.getProductionMode().equals(ProductionMode.EXPORT)) {
-            	return String.valueOf(this.sequence) + BLOCK_SEPARATOR + EXPORT_PREFIX + String.format("%06d", this.sequence++);
+            	return new Pair<String, String>(String.valueOf(this.sequence), EXPORT_PREFIX + String.format("%06d", this.sequence++));
             } else {
-            	return String.valueOf(this.sequence) + BLOCK_SEPARATOR + String.format("%08d", this.sequence++);
+            	return new Pair<String, String>(String.valueOf(this.sequence), String.format("%08d", this.sequence++));
             }
         }
     }

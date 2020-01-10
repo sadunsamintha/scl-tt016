@@ -2,6 +2,7 @@ package com.sicpa.standard.sasscl.sicpadata.generator;
 
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.messages.MessageEvent;
+import com.sicpa.standard.gui.utils.Pair;
 import com.sicpa.standard.sasscl.messages.MessageEventKey;
 import com.sicpa.standard.sasscl.model.ProductionParameters;
 import com.sicpa.standard.sasscl.sicpadata.CryptographyException;
@@ -44,7 +45,9 @@ public abstract class AbstractEncoder implements IEncoder {
 	}
 
 	protected abstract String getEncryptedCode() throws CryptographyException;
+	protected abstract Pair<String, String> getEncryptedCodePair() throws CryptographyException;
 	protected abstract String getEncryptedCode(ProductionParameters productionParameters) throws CryptographyException;
+	protected abstract Pair<String, String> getEncryptedCodePair(ProductionParameters productionParameters) throws CryptographyException;
 
 	protected void updateDateOfUse() {
 		if (firstCodeDate == null) {
@@ -89,6 +92,62 @@ public abstract class AbstractEncoder implements IEncoder {
 
 			try {
 				code = getEncryptedCode(productionParameters);
+			} catch (EncoderEmptyException e) {
+				if (codes.isEmpty()) {
+					throw e;
+				} else {
+					return codes;
+				}
+			} catch (Exception e) {
+				logger.error("fail to get code from the encoder:" + id, e);
+				EventBusService.post(new MessageEvent(MessageEventKey.Coding.ERROR_GETTING_CODES_FROM_ENCODER));
+				break;
+			}
+			if (code == null) {
+				break;
+			}
+			codes.add(code);
+		}
+		sequence += codes.size();
+		return codes;
+	}
+	
+	@Override
+	public synchronized List<Pair<String, String>> getEncryptedCodesPair(long numberCodes) throws CryptographyException {
+		List<Pair<String, String>> codes = new ArrayList<>();
+		Pair<String, String> code = null;
+		for (int i = 0; i < numberCodes; i++) {
+
+			try {
+				code = getEncryptedCodePair();
+			} catch (EncoderEmptyException e) {
+				if (codes.isEmpty()) {
+					throw e;
+				} else {
+					return codes;
+				}
+			} catch (Exception e) {
+				logger.error("fail to get code pair from the encoder:" + id, e);
+				EventBusService.post(new MessageEvent(MessageEventKey.Coding.ERROR_GETTING_CODES_FROM_ENCODER));
+				break;
+			}
+			if (code == null) {
+				break;
+			}
+			codes.add(code);
+		}
+		sequence += codes.size();
+		return codes;
+	}
+	
+	@Override
+	public synchronized List<Pair<String, String>> getEncryptedCodesPair(long numberCodes, ProductionParameters productionParameters) throws CryptographyException {
+		List<Pair<String, String>> codes = new ArrayList<>();
+		Pair<String, String> code = null;
+		for (int i = 0; i < numberCodes; i++) {
+
+			try {
+				code = getEncryptedCodePair(productionParameters);
 			} catch (EncoderEmptyException e) {
 				if (codes.isEmpty()) {
 					throw e;
