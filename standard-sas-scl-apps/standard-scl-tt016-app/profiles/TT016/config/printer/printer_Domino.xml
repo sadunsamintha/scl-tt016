@@ -5,8 +5,7 @@
 	<udpPort>4321</udpPort>
 	<tcpTimeout>10000</tcpTimeout>
 	<tcpPort>1234</tcpPort>
-	<requestReservoirHoursLeftInterval>30
-	</requestReservoirHoursLeftInterval>
+	<requestReservoirHoursLeftInterval>30</requestReservoirHoursLeftInterval>
 	<mUsePrinterSimulator>false</mUsePrinterSimulator>
 	<resetOnStop>true</resetOnStop>
 	<mDebugMode>false</mDebugMode>
