@@ -18,6 +18,8 @@
 	<mNoCodeReceivedIteration>1000</mNoCodeReceivedIteration>
 	<mImagePollingInterval>1000</mImagePollingInterval>
 	<mSaveImage>false</mSaveImage>
+	<mLogTemperature>true</mLogTemperature>
+	<mTempLogInterval>300</mTempLogInterval>
 	<mImageRepositoryPath>c:\</mImageRepositoryPath>
 	<mNumberOfImageToKeep>0</mNumberOfImageToKeep>
 	<mSaveImageType>ALL</mSaveImageType>
