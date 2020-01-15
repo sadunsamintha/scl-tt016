@@ -26,6 +26,8 @@
 	<encoderResolution>10000</encoderResolution>
 	<inverted>1</inverted>
 	<rotation>180</rotation>
+	<invertedText>false</invertedText>	
+	<reversedText>true</reversedText>
 	<encoderSignal>1</encoderSignal>
 	<printGoSignal>1</printGoSignal>
 	<printHeight>95</printHeight>

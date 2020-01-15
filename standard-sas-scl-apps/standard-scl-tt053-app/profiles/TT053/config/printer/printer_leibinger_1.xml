@@ -40,6 +40,14 @@
 		# 0, 90, 180 or 270 (180 = reverse + inverted)
 	 -->
 	<rotation>0</rotation>
+	
+	<!--  
+		HRC - Mirror-inverted (Y-axis)
+		0 = no, 1 = yes
+	-->
+	<invertedText>false</invertedText>	
+	<!-- HRC - Reverse Text -->
+	<reversedText>true</reversedText>
 	<!--  
 		Encoder Signal
 		0 = Internal
