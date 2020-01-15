@@ -39,7 +39,9 @@ public class BatchIdSkuView extends AbstractView<IBatchIdSkuListener, BatchIdSku
 		if (!(productionParameters.getProductionMode().equals(ProductionMode.MAINTENANCE) && productionParameters.getSku()==null)) {
 			strSKU = productionParameters.getSku().getDescription();
 		}
-		add(new JLabel(Messages.get("sku.batch.id.title")+" "+strSKU));
+		final JLabel skuLabel = new JLabel(Messages.get("sku.batch.id.title") + " " + strSKU);
+		skuLabel.setMaximumSize(new Dimension(650, 40));
+		add(skuLabel);
 		add(new JSeparator(), "growx, pushx, wrap");
 		add(getBatchIdSkuPanel(), "span, split 2, pushy, growx, growy");
 	}
