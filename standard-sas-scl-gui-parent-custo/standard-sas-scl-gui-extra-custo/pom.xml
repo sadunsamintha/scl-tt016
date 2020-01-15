@@ -7,14 +7,14 @@
 	<parent>
 		<groupId>com.sicpa.standard.sasscl</groupId>
 		<artifactId>gui-parent-custo</artifactId>
-		<version>2.6.1-SNAPSHOT</version>
+		<version>2.6.2-SNAPSHOT</version>
 	</parent>
 
 	<dependencies>
 		<dependency>
 			<groupId>com.sicpa.standard.sasscl</groupId>
 			<artifactId>gui-laf-custo</artifactId>
-			<version>2.6.1-SNAPSHOT</version>
+			<version>2.6.2-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 </project>
