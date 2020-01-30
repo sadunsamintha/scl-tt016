@@ -396,7 +396,7 @@ public class FileStorage implements IStorage {
 		}
 	}
 
-	private String getPathProductionSaved() {
+	public String getPathProductionSaved() {
 		return this.dataFolder + "/" + FOLDER_PRODUCTION + "/" + FOLDER_PRODUCTION_SAVED;
 	}
 
@@ -432,7 +432,7 @@ public class FileStorage implements IStorage {
 		moveToQuarantine(productionBatchBeingSend, QuarantineReason.REMOTE_SERVER_BUSINESS_ERROR);
 	}
 
-	private String getPathSentToRemoteServer() {
+	public String getPathSentToRemoteServer() {
 		return this.dataFolder + "/" + FOLDER_PRODUCTION + File.separator + FOLDER_PRODUCTION_SEND_TO_REMOTE_SERVER;
 	}
 
@@ -467,7 +467,7 @@ public class FileStorage implements IStorage {
 		return load(new File(file));
 	}
 
-	private final Object load(File file) throws StorageException {
+	public final Object load(File file) throws StorageException {
 		try {
 			if (file != null && file.length() > 0) {
 				return storageBehavior.load(file);
@@ -498,7 +498,7 @@ public class FileStorage implements IStorage {
 		save(o, new File(file));
 	}
 
-	private final void save(Serializable o, File file) throws StorageException {
+	public final void save(Serializable o, File file) throws StorageException {
 		try {
 			storageBehavior.save(o, file);
 		} catch (StorageException e) {
@@ -546,7 +546,7 @@ public class FileStorage implements IStorage {
 		}
 	}
 
-	private Set<File> getProductionFilesSortedByDate() {
+	public Set<File> getProductionFilesSortedByDate() {
 		File folder = new File(getPathProductionSaved());
 		File[] files = folder.listFiles();
 		if (files != null && files.length > 0) {
@@ -605,7 +605,7 @@ public class FileStorage implements IStorage {
 		this.productsPackager = productsPackager;
 	}
 
-	private String getPathProductionPackaged() {
+	public String getPathProductionPackaged() {
 		return this.dataFolder + "/" + FOLDER_PRODUCTION + "/" + FOLDER_PRODUCTION_PACKAGED;
 	}
 
@@ -739,7 +739,7 @@ public class FileStorage implements IStorage {
 		}
 	}
 
-	private void moveToQuarantine(File source, QuarantineReason reason) {
+	public void moveToQuarantine(File source, QuarantineReason reason) {
 		File destination = new File(getFileForQuarantine(source.getName(), reason));
 		logger.info("move {} to error read folder", source);
 
@@ -749,7 +749,7 @@ public class FileStorage implements IStorage {
 		}
 	}
 
-	private String getFileForQuarantine(String fileName, QuarantineReason reason) {
+	public String getFileForQuarantine(String fileName, QuarantineReason reason) {
 		return quarantineFolder + "/" + reason.getSubFolder() + "/" + DateUtils.format(timeStampFormat, new Date())
 				+ "--" + reason.getFilePrefix() + "--" + fileName;
 	}

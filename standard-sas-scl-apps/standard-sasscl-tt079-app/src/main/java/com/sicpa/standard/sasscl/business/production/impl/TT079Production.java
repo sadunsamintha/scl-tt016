@@ -3,7 +3,6 @@ package com.sicpa.standard.sasscl.business.production.impl;
 import com.sicpa.standard.sasscl.custoBuilder.CustoBuilder;
 import com.sicpa.standard.sasscl.model.Product;
 import com.sicpa.standard.sasscl.model.ProductionParameters;
-import com.sicpa.standard.sasscl.model.SKU;
 import com.sicpa.standard.sasscl.provider.ProductBatchIdExpDtProvider;
 
 public class TT079Production extends Production implements ProductBatchIdExpDtProvider{
