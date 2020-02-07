@@ -8,6 +8,8 @@
     <bean id="productStatusMerger" class="com.sicpa.tt016.controller.flow.ProductStatusMerger" parent="standardActivationBehavior">
         <property name="plcCameraResultIndexManager" ref="plcCameraResultIndexManager"/>
         <property name="productionBatchProvider" ref="productionBatchProvider"/>
+        <property name="blobDetectionUtils" ref="blobDetectionUtils" />
+        <property name="qrCodeActivation" value="${sas.qrcode.type.activation}" />
     </bean>
 
     <bean id="TT016RefeedActivationBehavior" class="com.sicpa.tt016.activation.TT016RefeedActivationBehavior">

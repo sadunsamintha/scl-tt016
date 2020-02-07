@@ -1,10 +1,21 @@
 package com.sicpa.tt016.controller.flow;
 
+import static com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState.STT_STARTING;
+import static com.sicpa.standard.sasscl.model.ProductStatus.SENT_TO_PRINTER_WASTED;
+import static com.sicpa.standard.sasscl.monitoring.system.SystemEventType.PRODUCT_SCANNED;
+
+import java.util.LinkedList;
+import java.util.Queue;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.sasscl.business.activation.NewProductEvent;
 import com.sicpa.standard.sasscl.business.activation.impl.activationBehavior.standard.StandardActivationBehavior;
 import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowStateChangedEvent;
+import com.sicpa.standard.sasscl.devices.camera.blobDetection.BlobDetectionUtils;
 import com.sicpa.standard.sasscl.model.Code;
 import com.sicpa.standard.sasscl.model.DecodedCameraCode;
 import com.sicpa.standard.sasscl.model.Product;
@@ -14,18 +25,13 @@ import com.sicpa.standard.sasscl.monitoring.system.event.BasicSystemEvent;
 import com.sicpa.standard.sasscl.provider.impl.ProductionBatchProvider;
 import com.sicpa.standard.sasscl.sicpadata.CryptographyException;
 import com.sicpa.tt016.devices.plc.PlcCameraResultIndexManager;
-import com.sicpa.tt016.model.*;
+import com.sicpa.tt016.model.CameraResult;
+import com.sicpa.tt016.model.PlcCameraProductStatus;
+import com.sicpa.tt016.model.PlcCameraResult;
+import com.sicpa.tt016.model.TT016Code;
+import com.sicpa.tt016.model.TT016ProductStatus;
 import com.sicpa.tt016.model.event.PlcCameraResultEvent;
 import com.sicpa.tt016.model.event.TT016NewProductEvent;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.LinkedList;
-import java.util.Queue;
-
-import static com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState.STT_STARTING;
-import static com.sicpa.standard.sasscl.model.ProductStatus.SENT_TO_PRINTER_WASTED;
-import static com.sicpa.standard.sasscl.monitoring.system.SystemEventType.PRODUCT_SCANNED;
 
 public class ProductStatusMerger extends StandardActivationBehavior {
 
@@ -36,9 +42,12 @@ public class ProductStatusMerger extends StandardActivationBehavior {
 
 	private ProductionBatchProvider productionBatchProvider;
 	private PlcCameraResultIndexManager plcCameraResultIndexManager;
+	
+	protected BlobDetectionUtils blobDetectionUtils;
+	protected boolean qrCodeActivation;
 
 	private final Object lock = new Object();
-
+	
 	@Override
 	public Product receiveCode(Code code, boolean isValid) {
 		handleNewCameraProduct(new CameraResult(new TT016Code(code, isValid)));
@@ -124,6 +133,12 @@ public class ProductStatusMerger extends StandardActivationBehavior {
 
 	private void mergeProductStatuses() {
 		Product product = getProductFromCameraResult(cameraResults.poll());
+		
+		// Check if Blob is detected then set Product Status to Ink Detected
+		if (!qrCodeActivation && blobDetectionUtils.isBlobDetected(product.getCode())) {
+			product.setStatus(ProductStatus.INK_DETECTED);
+		}
+		
 		PlcCameraResult plcCameraResult = plcCameraResults.poll();
 		logger.debug("Java App received status cameraStatus:{} , plcStatus:{}",product.getStatus() ,plcCameraResult.getPlcCameraProductStatus());
 		PlcCameraProductStatus plcCameraProductStatus = plcCameraResult.getPlcCameraProductStatus();
@@ -131,9 +146,13 @@ public class ProductStatusMerger extends StandardActivationBehavior {
 		if (!isPlcCameraProductStatusNotDefined(plcCameraProductStatus)) {
 			if (isPlcCameraProductStatusEjected(plcCameraProductStatus)) {
 				setProductAsEjected(product);
-			} else if(isPlcCameraProductStatusAcquisitionError(plcCameraProductStatus)) {
+			} else if (isPlcCameraProductStatusAcquisitionError(plcCameraProductStatus)) {
 				setProductAsUnread(product);
-			}else {
+			} else if (!qrCodeActivation && isPlcCameraProductStatusInkDetected(plcCameraProductStatus)) {
+				setProductAsInkDetected(product);
+			} else if (isPlcCameraProductStatusNoInk(plcCameraProductStatus)) {
+				setProductAsUnread(product);
+			} else {
 				ProductValidator.validate(product, plcCameraResult);
 			}
 		}
@@ -168,6 +187,14 @@ public class ProductStatusMerger extends StandardActivationBehavior {
 	private boolean isPlcCameraProductStatusAcquisitionError(PlcCameraProductStatus plcCameraProductStatus) {
 		return plcCameraProductStatus.equals(PlcCameraProductStatus.ACQUISITION_ERROR);
 	}
+	
+	private boolean isPlcCameraProductStatusInkDetected(PlcCameraProductStatus plcCameraProductStatus) {
+		return plcCameraProductStatus.equals(PlcCameraProductStatus.INK_DETECTED);
+	}
+	
+	private boolean isPlcCameraProductStatusNoInk(PlcCameraProductStatus plcCameraProductStatus) {
+		return plcCameraProductStatus.equals(PlcCameraProductStatus.NO_INK);
+	}
 
 	private void setProductAsEjected(Product product) {
 		product.setStatus(TT016ProductStatus.EJECTED_PRODUCER);
@@ -175,6 +202,10 @@ public class ProductStatusMerger extends StandardActivationBehavior {
 	
 	private void setProductAsUnread(Product product) {
 		product.setStatus(ProductStatus.SENT_TO_PRINTER_UNREAD);
+	}
+	
+	private void setProductAsInkDetected(Product product) {
+		product.setStatus(ProductStatus.INK_DETECTED);
 	}
 
 	private void insertMissingPlcCameraResultsIfNeeded(int index) {
@@ -199,5 +230,13 @@ public class ProductStatusMerger extends StandardActivationBehavior {
 
 	private Product getActivationBehaviorProduct(TT016Code code) {
 		return super.receiveCode(code.getCode(), code.isValid());
+	}
+	
+	public void setBlobDetectionUtils(BlobDetectionUtils blobDetectionUtils) {
+		this.blobDetectionUtils = blobDetectionUtils;
+	}
+
+	public void setQrCodeActivation(boolean qrCodeActivation) {
+		this.qrCodeActivation = qrCodeActivation;
 	}
 }
