@@ -1,6 +1,8 @@
 <ProductionConfig activationBehavior="standardActivationBehavior" authenticatorMode="SAS">
 
 	<CameraConfig deviceType="COGNEX" id="Cognex" />
+	
+	<BrsConfig />
 
 	<PlcConfig>
 		<cabinet>
