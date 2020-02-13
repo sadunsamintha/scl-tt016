@@ -1,0 +1,34 @@
+<!-- ########################################################################### -->
+<!--  Camera simulator configuration file                                        -->
+<!--                                                                             -->
+<!-- VALUE codeGetMethod                                                         -->
+<!--      - generated : generate random codes                                    -->
+<!--      - requested : get camera code from encoder                             -->
+<!--      - file      : generate random from read in dataFilePath file           -->
+<!--      - none 	  : No code                                                  -->
+<!--                                                                             -->
+<!-- ########################################################################### -->
+
+<CameraSimulatorConfig>
+
+  <!-- Code generation type (copy/paste method from header)-->
+  <codeGetMethod>requested</codeGetMethod>
+
+  <!-- Used for code generation method with file-->
+  <!-- Launch from console file path -->
+  <dataFilePath>internal/simulator/camera/codes.txt</dataFilePath>
+  <!-- Launch from IDE file path -->
+  <!--<dataFilePath>src/main/resources/internal/simulator/camera/codes.txt</dataFilePath>-->
+
+  <!-- Camera error code percentage -->
+  <percentageBadCode>1</percentageBadCode>
+
+  <!-- Camera blob code percentage -->
+  <percentageBlobCode>1</percentageBlobCode>
+
+  <!-- Camera simulator code frequency -->
+  <readCodeInterval>5</readCodeInterval>
+
+</CameraSimulatorConfig>
+
+<!-- ########################################################################### -->
