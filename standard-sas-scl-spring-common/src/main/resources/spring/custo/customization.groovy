@@ -29,9 +29,6 @@ beans{
 		case 'TT080':
 			importBeans('spring/custo/tt080/tt080.groovy')
 			break;
-		case 'TT021':
-			importBeans('spring/custo/tt021/tt021.groovy')
-			break;
 		case 'NONE':
 			break
 		default:

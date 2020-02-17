@@ -86,9 +86,6 @@
 			<groupId>com.sicpa.standard.sasscl</groupId>
 			<artifactId>view</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>com.sicpa.standard.sasscl</groupId>
-			<artifactId>device-remoteServer-turkey</artifactId>
-		</dependency>
+
 	</dependencies>
 </project>
