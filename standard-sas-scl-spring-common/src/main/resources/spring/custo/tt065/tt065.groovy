@@ -23,7 +23,7 @@ beans{
     importBeans('spring/custo/tt065/tt065-view.xml')
     importBeans('spring/custo/tt065/tt065-provider.xml')
     importBeans('spring/custo/tt065/tt065-flowControl.xml')
-
+    importBeans('spring/custo/tt065/tt065-scheduler.xml')
 
     def serverBehavior=props['remoteServer.behavior'].toUpperCase()
     def printerBehavior=props['printer.behavior'].toUpperCase()
