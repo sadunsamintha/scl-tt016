@@ -1,20 +1,31 @@
 package com.sicpa.standard.sasscl.view.main.statistics;
 
+import static com.sicpa.standard.client.common.security.SecurityService.hasPermission;
+import static java.util.Collections.sort;
+
+import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.TreeMap;
+
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JSeparator;
+
 import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.i18n.Messages;
 import com.sicpa.standard.client.common.view.mvc.AbstractView;
 import com.sicpa.standard.gui.plaf.SicpaColor;
 import com.sicpa.standard.gui.utils.ThreadUtils;
 import com.sicpa.standard.sasscl.model.statistics.ViewStatisticsDescriptor;
+import com.sicpa.standard.sasscl.security.SasSclPermission;
 import com.sicpa.standard.sasscl.view.LanguageSwitchEvent;
+
 import net.miginfocom.swing.MigLayout;
-
-import javax.swing.*;
-import java.text.NumberFormat;
-import java.util.*;
-import java.util.Map.Entry;
-
-import static java.util.Collections.sort;
 
 @SuppressWarnings("serial")
 public class StatisticsView extends AbstractView<IStatisticsViewListener, StatisticsViewModel> {
@@ -29,6 +40,8 @@ public class StatisticsView extends AbstractView<IStatisticsViewListener, Statis
 
 	private JPanel panelLineStats;
 	private JPanel panelLineSpeed;
+	
+	private JSeparator panelSeparator;
 
 	private NumberFormat percentFormatter;
 
@@ -49,7 +62,7 @@ public class StatisticsView extends AbstractView<IStatisticsViewListener, Statis
 	private void initGUI() {
 		setLayout(new MigLayout(""));
 		add(getLabelTitle(), "pushx,spanx , split 2");
-		add(new JSeparator(), "growx");
+		add(getPanelSeparator(), "growx");
 		add(getPanelLineStats(), "pushx,grow,wrap");
 		add(getPanelTotal(), "spanx,pushx,growx");
 		add(getPanelLineSpeed(), "gap top 10, pushx,grow,wrap");
@@ -81,8 +94,10 @@ public class StatisticsView extends AbstractView<IStatisticsViewListener, Statis
 	}
 
 	private void updateElementVisibility() {
-		getPanelLineSpeed().setVisible(model.isLineSpeedVisible());
-		getPanelTotal().setVisible(model.isTotalVisible());
+		if (hasPermission(SasSclPermission.PRODUCTION_VIEW_STATISTICS)) {
+			getPanelLineSpeed().setVisible(model.isLineSpeedVisible());
+			getPanelTotal().setVisible(model.isTotalVisible());
+		}
 
 		for (Entry<String, Map<ViewStatisticsDescriptor, SingleStatsPanel>> e : statsPanelByDescriptorByLine.entrySet()) {
 			for (Entry<ViewStatisticsDescriptor, SingleStatsPanel> e2 : e.getValue().entrySet()) {
@@ -210,11 +225,11 @@ public class StatisticsView extends AbstractView<IStatisticsViewListener, Statis
 		getPanelTotal().setCount(model.getTotal());
 	}
 
-	public JLabel getLabelTitle() {
-		if (labelTitle == null) {
-			labelTitle = new JLabel();
+	public JSeparator getPanelSeparator() {
+		if (panelSeparator == null) {
+			panelSeparator = new JSeparator();
 		}
-		return labelTitle;
+		return panelSeparator;
 	}
 
 	public JPanel getPanelLineStats() {
@@ -229,6 +244,13 @@ public class StatisticsView extends AbstractView<IStatisticsViewListener, Statis
 			panelLineSpeed = new JPanel(new MigLayout("inset 0 0 0 0"));
 		}
 		return panelLineSpeed;
+	}
+	
+	public JLabel getLabelTitle() {
+		if (labelTitle == null) {
+			labelTitle = new JLabel();
+		}
+		return labelTitle;
 	}
 
 	@Subscribe
