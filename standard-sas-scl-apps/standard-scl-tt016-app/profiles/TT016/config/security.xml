@@ -12,7 +12,6 @@
     <Permission name="PRODUCTION_MODE_EXPORT"/>
     <Permission name="PRODUCTION_START"/>
     <Permission name="PRODUCTION_STOP"/>
-    <Permission name="PRODUCTION_REPORT"/>
     <Permission name="EXIT"/>
   </User>
 </SecurityModel>
