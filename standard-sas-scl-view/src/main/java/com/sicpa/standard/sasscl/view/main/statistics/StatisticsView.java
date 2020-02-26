@@ -94,8 +94,9 @@ public class StatisticsView extends AbstractView<IStatisticsViewListener, Statis
 	}
 
 	private void updateElementVisibility() {
+		getPanelLineSpeed().setVisible(model.isLineSpeedVisible());
+		
 		if (hasPermission(SasSclPermission.PRODUCTION_VIEW_STATISTICS)) {
-			getPanelLineSpeed().setVisible(model.isLineSpeedVisible());
 			getPanelTotal().setVisible(model.isTotalVisible());
 		}
 
