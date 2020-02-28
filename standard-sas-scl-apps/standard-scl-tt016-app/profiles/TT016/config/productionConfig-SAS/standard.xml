@@ -1,4 +1,4 @@
-<ProductionConfig activationBehavior="productStatusMerger" authenticatorMode="SAS">
+<ProductionConfig activationBehavior="productStatusMergerSAS" authenticatorMode="SAS">
 
 	<CameraConfig deviceType="COGNEX" id="Cognex" />
 	

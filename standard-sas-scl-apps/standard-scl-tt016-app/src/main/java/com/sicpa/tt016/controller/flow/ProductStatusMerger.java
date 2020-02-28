@@ -15,7 +15,6 @@ import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.sasscl.business.activation.NewProductEvent;
 import com.sicpa.standard.sasscl.business.activation.impl.activationBehavior.standard.StandardActivationBehavior;
 import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowStateChangedEvent;
-import com.sicpa.standard.sasscl.devices.camera.blobDetection.BlobDetectionUtils;
 import com.sicpa.standard.sasscl.model.Code;
 import com.sicpa.standard.sasscl.model.DecodedCameraCode;
 import com.sicpa.standard.sasscl.model.Product;
@@ -37,15 +36,12 @@ public class ProductStatusMerger extends StandardActivationBehavior {
 
 	private static final Logger logger = LoggerFactory.getLogger(ProductStatusMerger.class);
 
-	private Queue<PlcCameraResult> plcCameraResults = new LinkedList<>();
-	private Queue<CameraResult> cameraResults = new LinkedList<>();
+	protected Queue<PlcCameraResult> plcCameraResults = new LinkedList<>();
+	protected Queue<CameraResult> cameraResults = new LinkedList<>();
 
 	private ProductionBatchProvider productionBatchProvider;
 	private PlcCameraResultIndexManager plcCameraResultIndexManager;
 	
-	protected BlobDetectionUtils blobDetectionUtils;
-	protected boolean qrCodeActivation;
-
 	private final Object lock = new Object();
 	
 	@Override
@@ -113,7 +109,7 @@ public class ProductStatusMerger extends StandardActivationBehavior {
 		this.productionBatchProvider = productionBatchProvider;
 	}
 
-	private void handleNewCameraProduct(CameraResult cameraResult) {
+	protected void handleNewCameraProduct(CameraResult cameraResult) {
 		synchronized (lock) {
 			cameraResults.add(cameraResult);
 
@@ -123,7 +119,7 @@ public class ProductStatusMerger extends StandardActivationBehavior {
 		}
 	}
 
-	private boolean isCameraStatusAvailable() {
+	protected boolean isCameraStatusAvailable() {
 		return !cameraResults.isEmpty();
 	}
 
@@ -131,13 +127,8 @@ public class ProductStatusMerger extends StandardActivationBehavior {
 		return !plcCameraResults.isEmpty();
 	}
 
-	private void mergeProductStatuses() {
+	protected void mergeProductStatuses() {
 		Product product = getProductFromCameraResult(cameraResults.poll());
-		
-		// Check if Blob is detected then set Product Status to Ink Detected
-		if (!qrCodeActivation && blobDetectionUtils.isBlobDetected(product.getCode())) {
-			product.setStatus(ProductStatus.INK_DETECTED);
-		}
 		
 		PlcCameraResult plcCameraResult = plcCameraResults.poll();
 		logger.debug("Java App received status cameraStatus:{} , plcStatus:{}",product.getStatus() ,plcCameraResult.getPlcCameraProductStatus());
@@ -148,7 +139,7 @@ public class ProductStatusMerger extends StandardActivationBehavior {
 				setProductAsEjected(product);
 			} else if (isPlcCameraProductStatusAcquisitionError(plcCameraProductStatus)) {
 				setProductAsUnread(product);
-			} else if (!qrCodeActivation && isPlcCameraProductStatusInkDetected(plcCameraProductStatus)) {
+			} else if (isPlcCameraProductStatusInkDetected(plcCameraProductStatus)) {
 				setProductAsInkDetected(product);
 			} else if (isPlcCameraProductStatusNoInk(plcCameraProductStatus)) {
 				setProductAsUnread(product);
@@ -162,7 +153,7 @@ public class ProductStatusMerger extends StandardActivationBehavior {
 		fireNewProduct(product);
 	}
 
-	private void fireNewProduct(Product product) {
+	protected void fireNewProduct(Product product) {
 		if (!product.getStatus().equals(SENT_TO_PRINTER_WASTED)) {
 			logger.debug("New product = {}", product);
 		}
@@ -171,44 +162,44 @@ public class ProductStatusMerger extends StandardActivationBehavior {
 		EventBusService.post(new NewProductEvent(product));
 	}
 
-	private void setProductProperties(Product product) {
+	protected void setProductProperties(Product product) {
 		product.setProductionBatchId(productionBatchProvider.get());
 		product.setQc(product.getCode().getSource());
 	}
 
-	private boolean isPlcCameraProductStatusEjected(PlcCameraProductStatus plcCameraProductStatus) {
+	protected boolean isPlcCameraProductStatusEjected(PlcCameraProductStatus plcCameraProductStatus) {
 		return plcCameraProductStatus.equals(PlcCameraProductStatus.EJECTED_PRODUCER);
 	}
 
-	private boolean isPlcCameraProductStatusNotDefined(PlcCameraProductStatus plcCameraProductStatus) {
+	protected boolean isPlcCameraProductStatusNotDefined(PlcCameraProductStatus plcCameraProductStatus) {
 		return plcCameraProductStatus.equals(PlcCameraProductStatus.NOT_DEFINED);
 	}
 	
-	private boolean isPlcCameraProductStatusAcquisitionError(PlcCameraProductStatus plcCameraProductStatus) {
+	protected boolean isPlcCameraProductStatusAcquisitionError(PlcCameraProductStatus plcCameraProductStatus) {
 		return plcCameraProductStatus.equals(PlcCameraProductStatus.ACQUISITION_ERROR);
 	}
 	
-	private boolean isPlcCameraProductStatusInkDetected(PlcCameraProductStatus plcCameraProductStatus) {
+	protected boolean isPlcCameraProductStatusInkDetected(PlcCameraProductStatus plcCameraProductStatus) {
 		return plcCameraProductStatus.equals(PlcCameraProductStatus.INK_DETECTED);
 	}
 	
-	private boolean isPlcCameraProductStatusNoInk(PlcCameraProductStatus plcCameraProductStatus) {
+	protected boolean isPlcCameraProductStatusNoInk(PlcCameraProductStatus plcCameraProductStatus) {
 		return plcCameraProductStatus.equals(PlcCameraProductStatus.NO_INK);
 	}
 
-	private void setProductAsEjected(Product product) {
+	protected void setProductAsEjected(Product product) {
 		product.setStatus(TT016ProductStatus.EJECTED_PRODUCER);
 	}
 	
-	private void setProductAsUnread(Product product) {
+	protected void setProductAsUnread(Product product) {
 		product.setStatus(ProductStatus.SENT_TO_PRINTER_UNREAD);
 	}
 	
-	private void setProductAsInkDetected(Product product) {
+	protected void setProductAsInkDetected(Product product) {
 		product.setStatus(ProductStatus.INK_DETECTED);
 	}
 
-	private void insertMissingPlcCameraResultsIfNeeded(int index) {
+	protected void insertMissingPlcCameraResultsIfNeeded(int index) {
 		int indexDifference = plcCameraResultIndexManager.getIndexDifference(index);
 
 		if (indexDifference > 1) {
@@ -222,7 +213,7 @@ public class ProductStatusMerger extends StandardActivationBehavior {
 		}
 	}
 
-	private Product getProductFromCameraResult(CameraResult cameraResult) {
+	protected Product getProductFromCameraResult(CameraResult cameraResult) {
 		Product product = cameraResult.getProduct();
 
 		return product != null ? product : getActivationBehaviorProduct(cameraResult.getCode());
@@ -230,13 +221,5 @@ public class ProductStatusMerger extends StandardActivationBehavior {
 
 	private Product getActivationBehaviorProduct(TT016Code code) {
 		return super.receiveCode(code.getCode(), code.isValid());
-	}
-	
-	public void setBlobDetectionUtils(BlobDetectionUtils blobDetectionUtils) {
-		this.blobDetectionUtils = blobDetectionUtils;
-	}
-
-	public void setQrCodeActivation(boolean qrCodeActivation) {
-		this.qrCodeActivation = qrCodeActivation;
 	}
 }

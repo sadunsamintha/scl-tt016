@@ -14,6 +14,7 @@ beans{
 
 	def serverBehavior=props['remoteServer.behavior'].toUpperCase()
 	def printerBehavior=props['printer.behavior'].toUpperCase()
+	def productionBehavior=props['production.config.folder'].toUpperCase()
 
 	if(serverBehavior == "STANDARD") {
 		importBeans('spring/custo/tt016/tt016-server.groovy')
@@ -68,7 +69,13 @@ beans{
 	}
 
 	importBeans('spring/custo/tt016/tt016-plc.xml')
-	importBeans('spring/custo/tt016/tt016-activation.xml')
+	
+	if (productionBehavior == "PRODUCTIONCONFIG-SAS") {
+		importBeans('spring/custo/tt016/tt016-activation-sas.xml')
+	} else {
+		importBeans('spring/custo/tt016/tt016-activation.xml')
+	}
+	
 	importBeans('spring/custo/tt016/tt016-view.xml')
 	importBeans('spring/custo/tt016/tt016-postPackage.xml')
 	importBeans('spring/custo/tt016/tt016-coding.xml')
