@@ -24,6 +24,7 @@ public class PrinterAdaptorSimulator extends PrinterAdaptor implements ICodeProv
 	protected final List<Pair<String, String>> codePairBuffer = new LinkedList<>();
 	protected ScheduledFuture<?> scheduledAskTaskFutur;
 	protected long askCodeDelayMs = 1000;
+	public final static String BLOCK_SEPARATOR = ">-<" ;
 
 	public PrinterAdaptorSimulator() {
 		super();
@@ -96,19 +97,20 @@ public class PrinterAdaptorSimulator extends PrinterAdaptor implements ICodeProv
 	}
 
 	@Override
-	public String requestCode() {
-		synchronized (codeBuffer) {
+    public String requestCode() {
+        synchronized (codeBuffer) {
+            if (codeBuffer.size() == 0) {
+                logger.warn("No codes received");
+                return null;
+            }
 
-			if (codeBuffer.size() == 0) {
-				logger.warn("No codes received");
-				return null;
-			}
-
-			String code = codeBuffer.remove(0);
-			logger.debug("Printed Code: {}", code);
-			return code;
-		}
-	}
+            final String code = codeBuffer.remove(0);
+            int i = code.lastIndexOf(BLOCK_SEPARATOR);
+            String qcCode = i > 0 ? code.substring(0, i) : code;
+            logger.info("Printed Code: {}", code);
+            return qcCode;
+        }
+    }
 	
 	protected class AskCodesTask implements Runnable {
 		@Override

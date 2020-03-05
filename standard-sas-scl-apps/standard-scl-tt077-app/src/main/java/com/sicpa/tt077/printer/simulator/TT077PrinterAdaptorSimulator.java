@@ -1,11 +1,10 @@
 package com.sicpa.tt077.printer.simulator;
 
-import com.sicpa.standard.printer.controller.IPrinterController;
-import com.sicpa.standard.sasscl.devices.printer.simulator.PrinterAdaptorSimulator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static com.sicpa.tt077.remote.impl.sicpadata.TT077SicpaDataGeneratorWrapper.BLOCK_SEPARATOR;
+import com.sicpa.standard.printer.controller.IPrinterController;
+import com.sicpa.standard.sasscl.devices.printer.simulator.PrinterAdaptorSimulator;
 
 
 public class TT077PrinterAdaptorSimulator extends PrinterAdaptorSimulator {

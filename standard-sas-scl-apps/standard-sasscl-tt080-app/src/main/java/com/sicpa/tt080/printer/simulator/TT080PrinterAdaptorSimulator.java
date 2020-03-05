@@ -5,8 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import com.sicpa.standard.printer.controller.IPrinterController;
 import com.sicpa.standard.sasscl.devices.printer.simulator.PrinterAdaptorSimulator;
 
-import static com.sicpa.standard.sasscl.devices.remote.stdCrypto.StdHrdCryptoEncoderWrapperSimulator.BLOCK_SEPARATOR;
-
 
 @Slf4j
 public class TT080PrinterAdaptorSimulator extends PrinterAdaptorSimulator {
