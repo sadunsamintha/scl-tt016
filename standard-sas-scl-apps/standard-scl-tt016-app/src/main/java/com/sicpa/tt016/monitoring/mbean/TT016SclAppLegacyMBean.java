@@ -247,7 +247,31 @@ public interface TT016SclAppLegacyMBean {
      * @return String
      */
     String getStopTime();
-
+    
+    /**
+     * Return the size in byte of the packaged folder. This folder contains the
+     * packaged production for sending
+     *
+     * @return String
+     */
+    String getSizeOfPackagedFolder();
+    
+    /**
+     * Return the size in byte of the sent folder. This folder contains the
+     * sent production
+     *
+     * @return String
+     */
+    String getSizeOfSentFolder();
+    
+    /**
+     * Return the size in byte of the buffer folder. This folder contains the
+     * production in buffer for packaging and sending
+     *
+     * @return String
+     */
+    String getSizeOfBufferFolder();
+    
     /**
      * Return the size in byte of the release folder. This folder contains the
      * not-sent production

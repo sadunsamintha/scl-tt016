@@ -182,6 +182,21 @@ public class TT016SclAppLegacy implements TT016SclAppLegacyMBean {
     public String getStopTime() {
         return tt016SclApp.getApplicationLastRunningStopDate();
     }
+    
+    @Override
+    public String getSizeOfPackagedFolder() {
+        return tt016SclApp.getSizeOfPackagedFolder();
+    }
+    
+    @Override
+    public String getSizeOfSentFolder() {
+        return tt016SclApp.getSizeOfSentFolder();
+    }
+    
+    @Override
+    public String getSizeOfBufferFolder() {
+        return tt016SclApp.getSizeOfBufferFolder();
+    }
 
     @Override
     public String getSizeOfReleasedFolder() {
