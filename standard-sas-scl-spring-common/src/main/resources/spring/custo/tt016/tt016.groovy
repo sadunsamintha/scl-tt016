@@ -83,6 +83,7 @@ beans{
 	importBeans('spring/custo/tt016/tt016-provider.xml')
 	importBeans('spring/custo/tt016/tt016-monitoring.xml')
 	importBeans('spring/custo/tt016/tt016-scheduler.xml')
+	importBeans('spring/custo/tt016/tt016-alertPlcActivationCrossCheckTask.xml')
 
 	addAlias('bisCredentialProvider','remoteServer')
 

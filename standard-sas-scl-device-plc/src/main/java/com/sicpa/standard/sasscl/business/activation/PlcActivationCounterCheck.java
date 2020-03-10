@@ -28,9 +28,9 @@ public class PlcActivationCounterCheck extends AbstractScheduledAlertTask {
 	private PlcProvider plcProvider;
 	private String productFreqVarName;
 	private int executionDelay;
-	private PlcActivationCounterCheckModel model;
+	protected PlcActivationCounterCheckModel model;
 
-	private final AtomicInteger counterFromActivation = new AtomicInteger();
+	protected final AtomicInteger counterFromActivation = new AtomicInteger();
 
 	private int getProductCountFromPlc() throws PlcAdaptorException {
 		List<String> productCounterVariables = PlcLineHelper.getLinesVariableName(productFreqVarName);

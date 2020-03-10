@@ -110,8 +110,12 @@ public class ProductStatusMerger extends StandardActivationBehavior {
 	}
 
 	protected void handleNewCameraProduct(CameraResult cameraResult) {
+		logger.debug("Camera code received: [code={}, isValid={}]", cameraResult.getCode().getCode().getStringCode(), 
+				cameraResult.getCode().isValid());
+		
 		synchronized (lock) {
 			cameraResults.add(cameraResult);
+			EventBusService.post(cameraResult);
 
 			if (isPlcCameraStatusAvailable()) {
 				mergeProductStatuses();
