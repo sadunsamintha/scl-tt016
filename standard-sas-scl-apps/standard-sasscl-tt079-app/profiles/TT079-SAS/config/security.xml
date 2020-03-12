@@ -15,7 +15,10 @@
     <Permission name="PRODUCTION_MODE_STANDARD"/>
     <Permission name="PRODUCTION_MODE_EXPORT"/>
     <Permission name="PRODUCTION_MODE_REFEED_NORMAL"/>
-    <!--Permission name="PRODUCTION_MODE_COUNTING"/> -->
+    <!-- Permission name="PRODUCTION_MODE_COUNTING"/> -->
+    <!-- Need to add Import Production Mode in the Permission and Config Mapping if will be required in the future
+		 For now, only the Production Parameters are required to be loaded for use by KE SAS (EGMS-DTS integration) -->
+    <!-- <Permission name="PRODUCTION_MODE_IMPORT"/> -->
     <Permission name="PRODUCTION_START"/>
     <Permission name="PRODUCTION_STOP"/>
     <Permission name="PRODUCTION_VIEW_STATISTICS"/>
@@ -33,6 +36,9 @@
     <Permission name="PRODUCTION_MODE_STANDARD"/>
     <Permission name="PRODUCTION_MODE_EXPORT"/>
     <Permission name="PRODUCTION_MODE_MAINTENANCE"/>
+    <!-- Need to add Import Production Mode in the Permission and Config Mapping if will be required in the future
+		 For now, only the Production Parameters are required to be loaded for use by KE SAS (EGMS-DTS integration) -->
+    <!-- <Permission name="PRODUCTION_MODE_IMPORT"/> -->
     <Permission name="PRODUCTION_START"/>
     <Permission name="PRODUCTION_STOP"/>
     <Permission name="PRODUCTION_VIEW_STATISTICS"/>
@@ -48,6 +54,9 @@
     <Permission name="PRODUCTION_MODE_STANDARD"/>
     <Permission name="PRODUCTION_MODE_EXPORT"/>
     <Permission name="PRODUCTION_MODE_MAINTENANCE"/>
+    <!-- Need to add Import Production Mode in the Permission and Config Mapping if will be required in the future
+		 For now, only the Production Parameters are required to be loaded for use by KE SAS (EGMS-DTS integration) -->
+    <!-- <Permission name="PRODUCTION_MODE_IMPORT"/> -->
     <Permission name="PRODUCTION_START"/>
     <Permission name="PRODUCTION_STOP"/>
     <Permission name="PRODUCTION_VIEW_STATISTICS"/>

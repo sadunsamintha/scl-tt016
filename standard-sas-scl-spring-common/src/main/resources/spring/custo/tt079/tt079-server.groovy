@@ -1,5 +1,6 @@
 import com.sicpa.standard.sasscl.devices.remote.impl.dtoConverter.*
 import com.sicpa.standard.sasscl.devices.remote.impl.*
+import com.sicpa.tt079.remote.mapping.TT079ProductionModeMapping
 
 beans{
 
@@ -15,6 +16,6 @@ beans{
 		productionModeMapping=ref('productionModeMapping')
 	}
 
-	productionModeMapping(DefaultProductionModeMapping)
+	productionModeMapping(TT079ProductionModeMapping)
 
 }
