@@ -56,7 +56,7 @@ public class PlcActivationCounterCheck extends AbstractScheduledAlertTask {
 		}
 	}
 
-	private boolean acceptProduct(Product p) {
+	protected boolean acceptProduct(Product p) {
 		return !asList(SENT_TO_PRINTER_WASTED, OFFLINE).contains(p.getStatus());
 	}
 

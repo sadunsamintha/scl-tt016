@@ -12,6 +12,7 @@
 				<property name="enabled" value="#{ ${alert.plcActivationCrossCheck.enabled} and '${plc.behavior}'!='simulator' }" />
 			</bean>
 		</property>
+		<property name="productionParameters" ref="productionParameters" />
 		<property name="plcProvider" ref="plcProvider" />
 		<property name="productFreqVarName" value="#{plcVarMap['NTF_LINE_PRODUCT_DETECTOR_TRIGS']}" />
 		<property name="executionDelay" value="${alert.plcActivationCrossCheck.delay.sec}" />

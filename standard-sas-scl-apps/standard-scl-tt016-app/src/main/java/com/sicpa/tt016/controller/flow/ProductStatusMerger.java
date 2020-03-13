@@ -110,8 +110,10 @@ public class ProductStatusMerger extends StandardActivationBehavior {
 	}
 
 	protected void handleNewCameraProduct(CameraResult cameraResult) {
-		logger.debug("Camera code received: [code={}, isValid={}]", cameraResult.getCode().getCode().getStringCode(), 
-				cameraResult.getCode().isValid());
+		if (cameraResult != null && cameraResult.getCode() != null && cameraResult.getCode().getCode() != null) {
+			logger.debug("Camera code received: [code={}, isValid={}]", cameraResult.getCode().getCode().getStringCode(), 
+					cameraResult.getCode().isValid());
+		}
 		
 		synchronized (lock) {
 			cameraResults.add(cameraResult);
