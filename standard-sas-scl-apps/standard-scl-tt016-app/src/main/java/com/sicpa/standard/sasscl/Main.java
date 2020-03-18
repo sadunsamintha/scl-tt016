@@ -7,6 +7,7 @@ public class Main {
 
 	public static void main(final String[] args) {
 		TT016Bootstrap.addPlcVariableJavaEjectionCounter();
+		TT016Bootstrap.addWiperPlcVariable();
 		new TT016MainAppWithProfile().selectProfile();
 	}
 }

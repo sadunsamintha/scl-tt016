@@ -119,12 +119,6 @@ beans {
 	plcMap['PARAM_LINE_LABEL_APPLICATOR_2_DISTANCE_TYPE']=[v:LINE_PRM+'b2ndLabelApplicatorDistanceType' ,t:B]
 	plcMap['PARAM_LINE_LABEL_APPLICATOR_2_LENGTH']=[v:LINE_PRM+'n2ndLabelApplicatorLength' ,t:D, lineGrp:'lblapp']
 	plcMap['PARAM_LINE_LABEL_APPLICATOR_2_LENGTH_TYPE']=[v:LINE_PRM+'b2ndLabelApplicatorLengthType' ,t:B]
-	plcMap['PARAM_LINE_INHIBIT_WIPER']=[v:LINE_PRM+'bInhibitWiper', t:B ,lineGrp:'wiper']
-	plcMap['PARAM_LINE_WIPER_DISTANCE']=[v:LINE_PRM+'nWiperDistance', t:D, lineGrp:'wiper']
-	plcMap['PARAM_LINE_WIPER_DISTANCE_TYPE']=[v:LINE_PRM+'bWiperDistanceType', t:B]
-	plcMap['PARAM_LINE_WIPER_LENGTH']=[v:LINE_PRM+'nWiperLength', t:D, lineGrp:'wiper']
-	plcMap['PARAM_LINE_WIPER_LENGTH_TYPE']=[v:LINE_PRM+'bWiperLengthType', t:B]
-	plcMap['PARAM_LINE_WIPER_RATIOENCODERMOTOR']=[v:LINE_PRM+'nRatioEncoderMotor', t:I, lineGrp:'wiper']
 
 	//LINE NOTIF
 	plcMap['NTF_LINE_SPEED']=[v:LINE_NTF+'nLineSpeed' ,t:I ,lineNtf:'true']

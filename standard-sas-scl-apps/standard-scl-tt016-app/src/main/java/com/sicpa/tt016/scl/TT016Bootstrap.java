@@ -76,6 +76,32 @@ public class TT016Bootstrap extends Bootstrap {
 				new HashMap<>());
 	}
 	
+	public static void addWiperPlcVariable() {
+		addPlcVariable("PARAM_LINE_INHIBIT_WIPER", PlcUtils.LINE_PRM+"bInhibitWiper", PlcUtils.PLC_TYPE.B,
+				new HashMap<String, String>() {{
+				put("lineGrp", "wiper");
+				}});
+		addPlcVariable("PARAM_LINE_WIPER_DISTANCE", PlcUtils.LINE_PRM+"nWiperDistance", PlcUtils.PLC_TYPE.D,
+				new HashMap<String, String>() {{
+				put("lineGrp", "wiper");
+				}});
+		addPlcVariable("PARAM_LINE_WIPER_DISTANCE_TYPE", PlcUtils.LINE_PRM+"bWiperDistanceType", PlcUtils.PLC_TYPE.B,
+				new HashMap<String, String>());
+		
+		addPlcVariable("PARAM_LINE_WIPER_LENGTH", PlcUtils.LINE_PRM+"nWiperLength", PlcUtils.PLC_TYPE.D,
+				new HashMap<String, String>() {{
+				put("lineGrp", "wiper");
+				}});
+		addPlcVariable("PARAM_LINE_WIPER_LENGTH_TYPE", PlcUtils.LINE_PRM+"bWiperLengthType", PlcUtils.PLC_TYPE.B,
+				new HashMap<String, String>());
+		
+		addPlcVariable("PARAM_LINE_WIPER_RATIOENCODERMOTOR", PlcUtils.LINE_PRM+"nRatioEncoderMotor", PlcUtils.PLC_TYPE.I,
+				new HashMap<String, String>() {{
+				put("lineGrp", "wiper");
+				}});
+	}
+	
+	
 	private void convertLegacyEncodersIfAny() {
 		legacyEncoderConverter.convertLegacyEncoders();
 	}
