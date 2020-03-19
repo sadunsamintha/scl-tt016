@@ -34,6 +34,14 @@
 		<property name="statistics" ref="statistics" />
 	</bean>
 
+	<!--RESET BEAM -->
+	<bean id="resetBeamView" class="com.sicpa.tt016.view.resetBeam.ResetBeamView">
+		<property name="controller" ref="resetBeamViewController" />
+		<property name="model" value="#{resetBeamViewController.model}" />
+	</bean>
+
+	<bean id="resetBeamViewController" class="com.sicpa.tt016.view.resetBeam.ResetBeamViewController"/>
+
 	<bean id="mainFrame" class="com.sicpa.tt016.view.TT016MainFrameGetter">
 		<property name="viewController" ref="mainFrameController" />
 		<property name="startStopView" ref="startStopView" />
@@ -41,6 +49,7 @@
 		<property name="optionsView" ref="optionsView" />
 		<property name="selectionChangeView" ref="selectionChangeView" />
 		<property name="resetView" ref="resetStatsView" />
+		<property name="resetBeamView" ref="resetBeamView" />
 		<property name="messagesView" ref="messagesView" />
 		<property name="mainPanelGetter" ref="mainPanelGetter" />
 		<property name="snapshotView" ref="snapshotView" />
@@ -72,6 +81,11 @@
 		<property name="plcPersistentProductCounterManager" ref="plcPersistentProductCounterManager" />
 		<property name="plcPersistentGrossNetProductCounterManager" ref="plcPersistentGrossNetProductCounterManager" />
 		<property name="productionParameters" ref="productionParameters" />
+	</bean>
+
+	<bean id="selectionDisplayView" class="com.sicpa.tt016.view.selection.display.TT016SelectionDisplayView">
+		<property name="controller" ref="selectionDisplayViewController" />
+		<property name="model" value="#{selectionDisplayViewController.model}" />
 	</bean>
 
 </beans>

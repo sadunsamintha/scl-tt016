@@ -14,6 +14,8 @@ public class TT016MainFrameGetter extends MainFrameGetter {
 
     private IView<?> resetView;
 
+    private IView<?> resetBeamView;
+
     public final static Logger logger = LoggerFactory.getLogger(TT016MainFrameGetter.class);
 
 
@@ -24,7 +26,8 @@ public class TT016MainFrameGetter extends MainFrameGetter {
                 if (!AppUtils.isHeadless()) {
                     frame = new TT016MainFrame(viewController, startStopView.getComponent(),
                             selectionChangeView.getComponent(), exitView.getComponent(), optionsView.getComponent(),
-                            messagesView, (JComponent) mainPanelGetter.getComponent(), snapshotView.getComponent(), resetView.getComponent(), skuListProvider, flowControl);
+                            messagesView, (JComponent) mainPanelGetter.getComponent(), snapshotView.getComponent(),
+                        resetBeamView.getComponent(), resetView.getComponent(), skuListProvider, flowControl);
                 }
             } catch (HeadlessException ex) {
                 logger.error("error creating the Main frame",ex);
@@ -37,4 +40,7 @@ public class TT016MainFrameGetter extends MainFrameGetter {
         this.resetView = resetView;
     }
 
+    public void setResetBeamView(IView<?> resetBeamView) {
+        this.resetBeamView = resetBeamView;
+    }
 }

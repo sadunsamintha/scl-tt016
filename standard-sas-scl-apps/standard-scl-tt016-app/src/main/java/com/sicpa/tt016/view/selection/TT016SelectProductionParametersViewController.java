@@ -1,5 +1,7 @@
 package com.sicpa.tt016.view.selection;
 
+import com.sicpa.standard.client.common.eventbus.service.EventBusService;
+import com.sicpa.standard.client.common.messages.MessageEvent;
 import com.sicpa.standard.sasscl.common.log.OperatorLogger;
 import com.sicpa.standard.sasscl.model.ProductionParameters;
 import com.sicpa.standard.sasscl.model.SKU;
@@ -8,6 +10,8 @@ import com.sicpa.standard.sasscl.view.selection.select.ISelectProductionParamete
 import com.sicpa.standard.sasscl.view.selection.select.SelectProductionParametersViewController;
 import com.sicpa.tt016.devices.plc.PlcPersistentGrossNetProductCounterManager;
 import com.sicpa.tt016.devices.plc.PlcPersistentProductCounterManager;
+
+import static com.sicpa.tt016.messages.TT016MessageEventKey.AUTOMATEDBEAM.SKU_SELECTION_VIEW_ACTIVE;
 
 public class TT016SelectProductionParametersViewController extends SelectProductionParametersViewController {
 
@@ -41,6 +45,7 @@ public class TT016SelectProductionParametersViewController extends SelectProduct
     protected void displayView() {
         super.displayView();
         ((ISelectProductionParametersView) getComponent()).displaySelectionScreen(skuListProvider.get());
+        EventBusService.post(new MessageEvent(SKU_SELECTION_VIEW_ACTIVE));
     }
 
     private boolean isSkuChanged(SKU sku) {

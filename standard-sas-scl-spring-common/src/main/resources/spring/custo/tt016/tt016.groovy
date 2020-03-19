@@ -62,6 +62,8 @@ beans{
 		codeTypeId=props['codeTypeId']
 		unknownSkuProvider=ref('unknownSkuProvider')
 		ejectionTypeSender=ref('ejectionTypeSender')
+		automatedBeamHeightManager=ref('automatedBeamHeightManager')
+		automatedBeamNtfHandler=ref('automatedBeamNtfHandler')
 		disallowedConfigurations=disallowedConf
 		defaultLang=props['language']
 		legacyEncoderConverter=ref('legacyEncoderConverter')

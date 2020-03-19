@@ -40,4 +40,18 @@
     	<property name="plcNoCapProductNtfVarName" value="#{plcVarMap['NTF_LINE_NO_CAP_TRIGS']}" />
     </bean>
 
+    <bean id="automatedBeamHeightManager" class="com.sicpa.standard.sasscl.devices.plc.AutomatedBeamHeightManager">
+        <property name="plcParamSender" ref="plcParamSender" />
+        <property name="plcProvider" ref="plcProvider" />
+        <property name="productionParameters" ref="productionParameters"/>
+        <property name="enabled" value="#{${automated.beam.enabled}}"/>
+    </bean>
+
+    <!--TODO: Alarm Listener for beam-->
+    <bean id="automatedBeamNtfHandler" class="com.sicpa.standard.sasscl.devices.plc.AutomatedBeamNtfHandler">
+        <property name="plcProvider" ref="plcProvider" />
+        <property name="enabled" value="#{${automated.beam.enabled}}"/>
+        <property name="plcVariableMap" ref="plcVarMap" />
+    </bean>
+
 </beans>

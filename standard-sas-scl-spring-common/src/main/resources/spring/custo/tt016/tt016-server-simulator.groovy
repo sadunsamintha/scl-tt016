@@ -7,6 +7,7 @@ import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.Producti
 import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.ProductionParameterRootNode
 import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.SKUNode
 import com.sicpa.tt016.scl.remote.simulator.TT016RemoteServerSimulator
+import com.sicpa.tt016.scl.model.MoroccoSKU
 
 import javax.swing.*
 
@@ -32,9 +33,11 @@ beans {
             for (int i = 0; i < SKU_BY_CODE_TYPE; i++) {
                 def barcode = '000' + skuId
                 def description = 'ct:' + ctid + ' - skuid:' + skuId
-                def sku = new SKU(skuId, description, [barcode])
+                def height = 440 + (i * 15)
+                def sku = new MoroccoSKU(skuId, description, [barcode])
                 def ct = new CodeType(ctid)
                 sku.setCodeType(ct)
+                sku.setProductHeight(height)
                 sku.setImage(new ImageIcon(ImageUtils.createRandomStrippedImage(60, 30)))
                 sku.setAppearanceCode(description)
                 def skuNode = new SKUNode(sku)

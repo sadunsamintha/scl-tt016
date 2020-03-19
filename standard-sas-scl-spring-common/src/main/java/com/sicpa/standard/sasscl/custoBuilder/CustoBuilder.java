@@ -208,6 +208,13 @@ public class CustoBuilder {
 	}
 
 	/**
+	 * add a task that will be executed in the exiting state
+	 */
+	public static void addActionOnExitApplicationState(Runnable task) {
+		addAction(task, ApplicationFlowState.STT_EXIT);
+	}
+
+	/**
 	 * add a task that will be executed in the STARTING state
 	 */
 	private static void addAction(Runnable task, ApplicationFlowState applicationFlowState) {

@@ -70,6 +70,6 @@ beans{
 	skuConverter(SkuConverter){
 		codeTypeId=props['codeTypeId']
 		refeedAvailable=props['refeedAvailable']
-		
+		heightAvailable=props['automated.beam.enabled']
 	}
 }

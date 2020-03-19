@@ -1,5 +1,11 @@
 package com.sicpa.tt016.scl.remote.assembler;
 
+import java.awt.image.BufferedImage;
+import java.util.List;
+import javax.swing.ImageIcon;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.sicpa.standard.client.common.i18n.Messages;
 import com.sicpa.standard.sasscl.model.CodeType;
 import com.sicpa.standard.sasscl.model.ProductionMode;
@@ -8,15 +14,7 @@ import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.Producti
 import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.ProductionParameterRootNode;
 import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.SKUNode;
 import com.sicpa.tt016.common.dto.SkuDTO;
-import com.sicpa.tt016.provider.impl.TT016RefeedSkuProvider;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.swing.*;
-
-import java.awt.image.BufferedImage;
-import java.util.List;
+import com.sicpa.tt016.scl.model.MoroccoSKU;
 
 import static com.sicpa.standard.gui.utils.ImageUtils.convertToBufferedImage;
 
@@ -25,6 +23,7 @@ public class SkuConverter {
 
     private long codeTypeId;
     private boolean refeedAvailable;
+    private boolean heightAvailable;
     private  String 	productionNormal;
     private  String 	productionRefeedNormal;
 
@@ -44,7 +43,7 @@ public class SkuConverter {
         for (SkuDTO dto : dtos) {
             SKU sku = convert(dto);
             SKUNode node = new SKUNode(sku);
-            SKUNode nodeRefeed = null;
+            SKUNode nodeRefeed;
                   
             if (dto.isLocalMarket()) {
                 domesticMode.addChildren(node);
@@ -70,7 +69,17 @@ public class SkuConverter {
     }
 
     private SKU convert(SkuDTO dto) {
-        SKU sku = new SKU();
+        SKU sku;
+        if (heightAvailable) {
+            sku = new MoroccoSKU();
+            try {
+                ((MoroccoSKU)sku).setProductHeight(dto.getHeight());
+            } catch (Exception e) {
+                logger.error("Unable to retrieve product height from SKU. ", e);
+            }
+        } else {
+            sku = new SKU();
+        }
         sku.setAppearanceCode(createPhysicalId(dto));
         sku.setId(dto.getSkuId());
         sku.addBarcode(dto.getBarcode());
@@ -82,7 +91,7 @@ public class SkuConverter {
         
         sku.setCodeType(new CodeType(codeTypeId));
         sku.setDescription(dto.getDescription());
-        
+
         return sku;
     }
 
@@ -105,7 +114,11 @@ public class SkuConverter {
         this.refeedAvailable = refeedAvailable;
     }
 
-	public void setProductionNormal(String productionNormal) {
+    public void setHeightAvailable(boolean heightAvailable) {
+        this.heightAvailable = heightAvailable;
+    }
+
+    public void setProductionNormal(String productionNormal) {
 		this.productionNormal = productionNormal;
 	}
 
