@@ -4,6 +4,7 @@ import com.sicpa.tt016.model.DisallowedConfiguration
 import com.sicpa.tt016.scl.TT016Bootstrap
 import com.sicpa.tt016.util.LegacyEncoderConverter
 import com.sicpa.tt016.printer.simulator.TT016PrinterAdaptorSimulator
+import com.sicpa.tt016.devices.plc.impl.TT016PlcLoader
 
 beans{
 	tt016TrilightWarningCameraAlert(TT016TrilightWarningCameraAlert) {
@@ -68,6 +69,13 @@ beans{
 		defaultLang=props['language']
 		legacyEncoderConverter=ref('legacyEncoderConverter')
 		sclAppLegacyMBean=ref('legacyStatsMBean')
+	}
+
+	addAlias('plcValuesLoaderAlias','plcValuesLoader')
+	plcValuesLoader(TT016PlcLoader){b->
+		b.parent=ref('plcValuesLoaderAlias')
+		wiperEnabled=props['wiper.enabled']
+		automatedBeamEnabled=props['automated.beam.enabled']
 	}
 
 	importBeans('spring/custo/tt016/tt016-plc.xml')

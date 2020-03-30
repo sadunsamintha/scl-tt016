@@ -47,7 +47,7 @@ public class PlcValuesLoader implements IPlcValuesLoader {
 		return loadProperties(cabinetConfigFile);
 	}
 
-	private StringMap loadLineProperties(int lineIndex) throws IOException {
+	protected StringMap loadLineProperties(int lineIndex) throws IOException {
 		String file = getLinePropertiesFileName(lineIndex);
 		StringMap res = loadProperties(file);
 		res = replaceLinePlaceholderInProperties(lineIndex, res);
@@ -63,7 +63,7 @@ public class PlcValuesLoader implements IPlcValuesLoader {
 		return res;
 	}
 
-	private String getLinePropertiesFileName(int lineIndex) {
+	protected String getLinePropertiesFileName(int lineIndex) {
 		return lineConfigFile.replace(LINE_INDEX_PLACEHOLDER, lineIndex + "");
 	}
 
