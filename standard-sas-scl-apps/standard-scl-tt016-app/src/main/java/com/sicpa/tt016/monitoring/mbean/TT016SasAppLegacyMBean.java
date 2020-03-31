@@ -1,6 +1,6 @@
 package com.sicpa.tt016.monitoring.mbean;
 
-public interface TT016SclAppLegacyMBean {
+public interface TT016SasAppLegacyMBean {
 
     /**
      * Return the current Application status.
@@ -295,11 +295,11 @@ public interface TT016SclAppLegacyMBean {
     int getNumberOfQuarantineProductionFile();
 
     /**
-     * Return the SCL Software version
+     * Return the SAS Software version
      *
      * @return String
      */
-    String getSCLSoftVersion();
+    String getSASSoftVersion();
 
     /**
      * Return the PLC Software version

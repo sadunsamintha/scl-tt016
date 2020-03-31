@@ -7,58 +7,58 @@ import com.sicpa.tt016.monitoring.mbean.mapping.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class TT016SclAppLegacy implements TT016SclAppLegacyMBean {
+public class TT016SasAppLegacy implements TT016SasAppLegacyMBean {
 
-    private TT016SclApp tt016SclApp;
+    private TT016SasApp tt016SasApp;
 
     @Override
     public int getIsInProduction() {
-        return tt016SclApp.getIsInProduction();
+        return tt016SasApp.getIsInProduction();
     }
 
     @Override
     public int getLineId() {
-        return Math.toIntExact(tt016SclApp.getSubsystem());
+        return Math.toIntExact(tt016SasApp.getSubsystem());
     }
 
     @Override
     public int getNbValidProducts() {
-        return tt016SclApp.getNbValidProducts();
+        return tt016SasApp.getNbValidProducts();
     }
 
     @Override
     public int getNbInvalidProducts() {
-        return tt016SclApp.getNbInkDetectedProducts();
+        return tt016SasApp.getNbInkDetectedProducts();
     }
 
     @Override
     public int getNbInvalidProductsProducer() {
-        return tt016SclApp.getNbProducerEjectedProducts();
+        return tt016SasApp.getNbProducerEjectedProducts();
     }
 
     @Override
     public int getNbInvalidProductsSicpa() {
-        return tt016SclApp.getNbInvalidProducts();
+        return tt016SasApp.getNbInvalidProducts();
     }
 
     @Override
     public String getStartTime() {
-        return tt016SclApp.getApplicationLastRunningStartDate();
+        return tt016SasApp.getApplicationLastRunningStartDate();
     }
 
     @Override
     public String getBatchIds() {
-        return tt016SclApp.getEncoderID();
+        return tt016SasApp.getEncoderID();
     }
 
     @Override
     public String getSku() {
-        return tt016SclApp.getSKU();
+        return tt016SasApp.getSKU();
     }
 
     @Override
     public int getProductionMode() {
-        ProductionMode productionMode = tt016SclApp.getStats().getProductionParameters().getProductionMode();
+        ProductionMode productionMode = tt016SasApp.getStats().getProductionParameters().getProductionMode();
 
         return productionMode != null
                 ? LegacyToProductionModeIdProvider.getProductionModeId(productionMode.getId())
@@ -67,38 +67,38 @@ public class TT016SclAppLegacy implements TT016SclAppLegacyMBean {
 
     @Override
     public String getWarnings() {
-        return tt016SclApp.getWarnings();
+        return tt016SasApp.getWarnings();
     }
 
     @Override
     public String getErrors() {
-        return tt016SclApp.getErrors();
+        return tt016SasApp.getErrors();
     }
 
     @Override
     public String getDevicePrinterStatus() {
-        String devicePrinterStatuses = tt016SclApp.getDevicePrinterStatus();
+        String devicePrinterStatuses = tt016SasApp.getDevicePrinterStatus();
 
         return devicePrinterStatuses != null & !devicePrinterStatuses.isEmpty()
-                ? convertDeviceStatusesToLegacy(tt016SclApp.getDevicePrinterStatus()) : "";
+                ? convertDeviceStatusesToLegacy(tt016SasApp.getDevicePrinterStatus()) : "";
     }
 
     @Override
     public String getDeviceCameraStatus() {
-        String deviceCameraStatuses = tt016SclApp.getDeviceCameraStatus();
+        String deviceCameraStatuses = tt016SasApp.getDeviceCameraStatus();
 
         return deviceCameraStatuses != null && !deviceCameraStatuses.isEmpty()
-                ? convertDeviceStatusesToLegacy(tt016SclApp.getDeviceCameraStatus()) : "";
+                ? convertDeviceStatusesToLegacy(tt016SasApp.getDeviceCameraStatus()) : "";
     }
 
     @Override
     public byte getDevicePlcStatus() {
-        return (byte) LegacyDevicesStatusIdProvider.getDeviceStatusId(tt016SclApp.getDevicePlcStatus());
+        return (byte) LegacyDevicesStatusIdProvider.getDeviceStatusId(tt016SasApp.getDevicePlcStatus());
     }
 
     @Override
     public byte getDeviceMasterStatus() {
-        return (byte) LegacyDevicesStatusIdProvider.getDeviceStatusId(tt016SclApp.getDeviceMasterStatus());
+        return (byte) LegacyDevicesStatusIdProvider.getDeviceStatusId(tt016SasApp.getDeviceMasterStatus());
     }
 
     @Override
@@ -138,89 +138,89 @@ public class TT016SclAppLegacy implements TT016SclAppLegacyMBean {
 
     @Override
     public String getLastSuccessfulSendingDate() {
-        return tt016SclApp.getLastSucessfullSynchronisationWithRemoteServerDate();
+        return tt016SasApp.getLastSucessfullSynchronisationWithRemoteServerDate();
     }
 
     @Override
     public Integer getLastSuccessfulSendingNumberOfProducts() {
-        String lastSuccessfulSendingNumberOfProducts = tt016SclApp.getLastSucessfullSynchronisationWithRemoteServerProduct();
+        String lastSuccessfulSendingNumberOfProducts = tt016SasApp.getLastSucessfullSynchronisationWithRemoteServerProduct();
 
         return !lastSuccessfulSendingNumberOfProducts.isEmpty()
-                ? Integer.valueOf(tt016SclApp.getLastSucessfullSynchronisationWithRemoteServerProduct().trim()) : 0;
+                ? Integer.valueOf(tt016SasApp.getLastSucessfullSynchronisationWithRemoteServerProduct().trim()) : 0;
     }
 
     @Override
     public String getLastSendingDate() {
-        return tt016SclApp.getLastSynchronisationWithRemoteServerDate();
+        return tt016SasApp.getLastSynchronisationWithRemoteServerDate();
     }
 
     @Override
     public Integer getLastSendingNumberOfProducts() {
-        String lastSendingNumberOfProducts = tt016SclApp.getLastSendingNumberOfProducts();
+        String lastSendingNumberOfProducts = tt016SasApp.getLastSendingNumberOfProducts();
 
         return !lastSendingNumberOfProducts.isEmpty()
-                ? Integer.valueOf(tt016SclApp.getLastSendingNumberOfProducts().trim()) : 0;
+                ? Integer.valueOf(tt016SasApp.getLastSendingNumberOfProducts().trim()) : 0;
     }
 
     @Override
     public int getLastSendingStatus() {
         return LegacyRemoteServerSendingStatusIdProvider.getSendingStatusId(
-                tt016SclApp.getLastSynchronisationWithRemoteServerStatus());
+                tt016SasApp.getLastSynchronisationWithRemoteServerStatus());
     }
 
     @Override
     public byte getApplicationStatus() {
-        return (byte) LegacyApplicationStatusIdProvider.getApplicationStatusId(tt016SclApp.getApplicationStatus());
+        return (byte) LegacyApplicationStatusIdProvider.getApplicationStatusId(tt016SasApp.getApplicationStatus());
     }
 
     @Override
     public long getLastProductScanned() {
-        return tt016SclApp.getLastProductScanned();
+        return tt016SasApp.getLastProductScanned();
     }
 
     @Override
     public String getStopTime() {
-        return tt016SclApp.getApplicationLastRunningStopDate();
+        return tt016SasApp.getApplicationLastRunningStopDate();
     }
     
     @Override
     public String getSizeOfPackagedFolder() {
-        return tt016SclApp.getSizeOfPackagedFolder();
+        return tt016SasApp.getSizeOfPackagedFolder();
     }
     
     @Override
     public String getSizeOfSentFolder() {
-        return tt016SclApp.getSizeOfSentFolder();
+        return tt016SasApp.getSizeOfSentFolder();
     }
     
     @Override
     public String getSizeOfBufferFolder() {
-        return tt016SclApp.getSizeOfBufferFolder();
+        return tt016SasApp.getSizeOfBufferFolder();
     }
 
     @Override
     public String getSizeOfReleasedFolder() {
-        return tt016SclApp.getSizeOfPackagedFolder();
+        return tt016SasApp.getSizeOfPackagedFolder();
     }
 
     @Override
     public String getReleasedFolderOldestFile() {
-        return tt016SclApp.getPackagedFolderOldestFileDate();
+        return tt016SasApp.getPackagedFolderOldestFileDate();
     }
 
     @Override
     public int getNumberOfQuarantineProductionFile() {
-        return tt016SclApp.getNumberOfQuarantineProductionFile();
+        return tt016SasApp.getNumberOfQuarantineProductionFile();
     }
 
     @Override
-    public String getSCLSoftVersion() {
-        return tt016SclApp.getAppVersion();
+    public String getSASSoftVersion() {
+        return tt016SasApp.getAppVersion();
     }
 
     @Override
     public String getPLCSoftVersion() {
-        return tt016SclApp.getPlcVersion();
+        return tt016SasApp.getPlcVersion();
     }
 
     @Override
@@ -230,19 +230,19 @@ public class TT016SclAppLegacy implements TT016SclAppLegacyMBean {
 
     @Override
     public String getTrilightStatus() {
-        String trilightStatuses = tt016SclApp.getTrilightStatus();
+        String trilightStatuses = tt016SasApp.getTrilightStatus();
 
         return trilightStatuses != null && !trilightStatuses.isEmpty()
                 && !trilightStatuses.equals(PlcJmxInfo.PLC_NOT_CONNECTED)
-                ? convertTrilightStatusesToLegacy(tt016SclApp.getTrilightStatus()) : "";
+                ? convertTrilightStatusesToLegacy(tt016SasApp.getTrilightStatus()) : "";
     }
 
-    public void setTt016SclApp(TT016SclApp tt016SclApp) {
-        this.tt016SclApp = tt016SclApp;
-    }
+    public void setTt016SasApp(TT016SasApp tt016SasApp) {
+		this.tt016SasApp = tt016SasApp;
+	}
 
-    private boolean isApplicationInMaintenanceMode() {
-        ProductionMode productionMode = tt016SclApp.getStats().getProductionParameters().getProductionMode();
+	private boolean isApplicationInMaintenanceMode() {
+        ProductionMode productionMode = tt016SasApp.getStats().getProductionParameters().getProductionMode();
 
         return productionMode != null && productionMode.getId() == ProductionMode.MAINTENANCE.getId();
     }
@@ -264,7 +264,7 @@ public class TT016SclAppLegacy implements TT016SclAppLegacyMBean {
 
     private String convertDeviceStatusesToLegacy(String deviceStatuses) {
         return Stream.of(deviceStatuses.split("\\|"))
-                .map(TT016SclAppLegacy::replaceDeviceStatusWithLegacyDeviceStatus)
+                .map(TT016SasAppLegacy::replaceDeviceStatusWithLegacyDeviceStatus)
                 .collect(Collectors.joining("|"));
     }
 

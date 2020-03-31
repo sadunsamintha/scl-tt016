@@ -68,7 +68,12 @@ beans{
 		disallowedConfigurations=disallowedConf
 		defaultLang=props['language']
 		legacyEncoderConverter=ref('legacyEncoderConverter')
-		sclAppLegacyMBean=ref('legacyStatsMBean')
+		productionBehaviorVar=props['production.config.folder'].toUpperCase()
+		if (productionBehaviorVar == "PRODUCTIONCONFIG-SAS") {
+			sasAppLegacyMBean=ref('legacyStatsMBean')
+		} else {
+			sclAppLegacyMBean=ref('legacyStatsMBean')
+		}
 	}
 
 	addAlias('plcValuesLoaderAlias','plcValuesLoader')
@@ -82,8 +87,10 @@ beans{
 	
 	if (productionBehavior == "PRODUCTIONCONFIG-SAS") {
 		importBeans('spring/custo/tt016/tt016-activation-sas.xml')
+		importBeans('spring/custo/tt016/tt016-monitoring-sas.xml')
 	} else {
 		importBeans('spring/custo/tt016/tt016-activation.xml')
+		importBeans('spring/custo/tt016/tt016-monitoring-scl.xml')
 	}
 	
 	importBeans('spring/custo/tt016/tt016-view.xml')
@@ -91,7 +98,6 @@ beans{
 	importBeans('spring/custo/tt016/tt016-coding.xml')
 	importBeans('spring/offlineCounting.xml')
 	importBeans('spring/custo/tt016/tt016-provider.xml')
-	importBeans('spring/custo/tt016/tt016-monitoring.xml')
 	importBeans('spring/custo/tt016/tt016-scheduler.xml')
 	importBeans('spring/custo/tt016/tt016-alertPlcActivationCrossCheckTask.xml')
 

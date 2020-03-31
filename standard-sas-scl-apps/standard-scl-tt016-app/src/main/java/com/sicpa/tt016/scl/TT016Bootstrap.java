@@ -26,6 +26,7 @@ import com.sicpa.standard.sasscl.view.main.MainPanelGetter;
 import com.sicpa.tt016.business.ejection.EjectionTypeSender;
 import com.sicpa.tt016.model.DisallowedConfiguration;
 import com.sicpa.tt016.model.TT016ProductStatus;
+import com.sicpa.tt016.monitoring.mbean.TT016SasAppLegacyMBean;
 import com.sicpa.tt016.monitoring.mbean.TT016SclAppLegacyMBean;
 import com.sicpa.tt016.provider.impl.TT016UnknownSkuProvider;
 import com.sicpa.tt016.util.LegacyEncoderConverter;
@@ -86,7 +87,12 @@ public class TT016Bootstrap extends Bootstrap {
 	private int codeTypeId;
 	private List<DisallowedConfiguration> disallowedConfigurations;
 	private LegacyEncoderConverter legacyEncoderConverter;
+	private TT016SasAppLegacyMBean sasAppLegacyMBean;
 	private TT016SclAppLegacyMBean sclAppLegacyMBean;
+	private String productionBehaviorVar;
+	
+	private static final String SAS_MODE = "PRODUCTIONCONFIG-SAS";
+	private static final String SCL_MODE = "PRODUCTIONCONFIG-SCL";
 
 	@Override
 	public void executeSpringInitTasks() {
@@ -204,7 +210,11 @@ public class TT016Bootstrap extends Bootstrap {
 	protected void installJMXBeans() {
 		MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
 		try {
-			mbs.registerMBean(sclAppLegacyMBean, new ObjectName("SPLApplication:type=Statistics"));
+			if (productionBehaviorVar.equals(SAS_MODE)) {
+				mbs.registerMBean(sasAppLegacyMBean, new ObjectName("SPLApplication:type=Monitoring"));
+			} else {
+				mbs.registerMBean(sclAppLegacyMBean, new ObjectName("SPLApplication:type=Statistics"));
+			}
 		} catch (Exception e) {
 			logger.error("", e);
 		}
@@ -271,7 +281,15 @@ public class TT016Bootstrap extends Bootstrap {
 		this.legacyEncoderConverter = legacyEncoderConverter;
 	}
 
+	public void setSasAppLegacyMBean(TT016SasAppLegacyMBean sasAppLegacyMBean) {
+		this.sasAppLegacyMBean = sasAppLegacyMBean;
+	}
+
 	public void setSclAppLegacyMBean(TT016SclAppLegacyMBean sclAppLegacyMBean) {
 		this.sclAppLegacyMBean = sclAppLegacyMBean;
+	}
+
+	public void setProductionBehaviorVar(String productionBehaviorVar) {
+		this.productionBehaviorVar = productionBehaviorVar;
 	}
 }
