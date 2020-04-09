@@ -6,10 +6,10 @@ import com.sicpa.standard.client.common.messages.MessageEvent;
 import com.sicpa.standard.sasscl.devices.DeviceException;
 import com.sicpa.standard.sasscl.devices.DeviceStatus;
 import com.sicpa.standard.sasscl.devices.brs.BrsAdaptor;
-import com.sicpa.standard.sasscl.devices.brs.reader.CodeReaderController;
 import com.sicpa.standard.sasscl.devices.camera.CameraBadCodeEvent;
 import com.sicpa.standard.sasscl.devices.camera.CameraGoodCodeEvent;
 import com.sicpa.standard.sasscl.messages.MessageEventKey;
+import com.sicpa.standard.sasscl.model.ProductionMode;
 import com.sicpa.standard.sasscl.model.ProductionParameters;
 import org.apache.commons.lang.RandomStringUtils;
 import org.slf4j.Logger;
@@ -71,15 +71,17 @@ public class BrsAdaptorSimulator extends BrsAdaptor {
     }
 
     private void simulateReceiveBarcode() {
-        if (config.isSendWrongBarcode()) {
-            onCodeReceived(generateWrongBarcode(), null);
-            return;
+        if (productionParameters.getProductionMode() != ProductionMode.MAINTENANCE) {
+            if (config.isSendWrongBarcode()) {
+                onCodeReceived(generateWrongBarcode(), null);
+                return;
+            }
+            if (config.isReachUnreadBarcodesThresholds()) {
+                // simulate unread barcodes
+                return;
+            }
+            onCodeReceived(getGoodBarcode(),null);
         }
-        if (config.isReachUnreadBarcodesThresholds()) {
-            // simulate unread barcodes
-            return;
-        }
-        onCodeReceived(getGoodBarcode(),null);
     }
 
     private String generateWrongBarcode() {
