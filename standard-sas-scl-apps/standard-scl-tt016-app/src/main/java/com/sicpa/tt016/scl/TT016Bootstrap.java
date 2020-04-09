@@ -182,7 +182,7 @@ public class TT016Bootstrap extends Bootstrap {
 
 	private void sendSKUHeightToBeam() {
 		addActionOnConnectedApplicationState(() -> automatedBeamHeightManager.setBeamHeight());
-		addActionOnExitApplicationState(() -> automatedBeamHeightManager.setBeamHeight(0));
+		addActionOnExitApplicationState(() -> automatedBeamHeightManager.setBeamHeight());
 	}
 
 	private void initializeAlarmListenersForBeam() { automatedBeamNtfHandler.init(); }

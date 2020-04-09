@@ -86,6 +86,7 @@
 	<bean id="selectionDisplayView" class="com.sicpa.tt016.view.selection.display.TT016SelectionDisplayView">
 		<property name="controller" ref="selectionDisplayViewController" />
 		<property name="model" value="#{selectionDisplayViewController.model}" />
+		<property name="beamEnabled" value="#{${automated.beam.enabled}}"/>
 	</bean>
 
 </beans>

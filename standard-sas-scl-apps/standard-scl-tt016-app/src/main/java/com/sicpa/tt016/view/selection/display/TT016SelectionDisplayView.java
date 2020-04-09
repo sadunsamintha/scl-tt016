@@ -15,8 +15,15 @@ public class TT016SelectionDisplayView extends SelectionDisplayView {
 
     private static final Logger logger = LoggerFactory.getLogger(TT016SelectionDisplayView.class);
 
+    private boolean isBeamEnabled;
+
     @Override
     protected void buildSelectionPanel(ProductionParameters pp) {
+        if (!isBeamEnabled) {
+            super.buildSelectionPanel(pp);
+            return;
+        }
+
         getMainPanel().removeAll();
 
         MoroccoSKU sku = (MoroccoSKU) pp.getSku();
@@ -46,5 +53,8 @@ public class TT016SelectionDisplayView extends SelectionDisplayView {
         getMainPanel().repaint();
     }
 
+    public void setBeamEnabled(boolean beamEnabled) {
+        isBeamEnabled = beamEnabled;
+    }
 
 }
