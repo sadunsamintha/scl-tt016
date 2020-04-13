@@ -14,6 +14,7 @@ import com.sicpa.tt016.scl.model.MoroccoSKU;
 
 import static com.sicpa.standard.sasscl.devices.plc.AutomatedBeamPlcEnums.PARAM_PRODUCT_HEIGHT_MM;
 import static com.sicpa.standard.sasscl.devices.plc.AutomatedBeamPlcEnums.REQUEST_BEAM_HEAD_TO_HEIGHT;
+import static com.sicpa.standard.sasscl.devices.plc.AutomatedBeamPlcEnums.REQUEST_ERROR_STATE_EXE_TRIG;
 import static com.sicpa.tt016.messages.TT016MessageEventKey.AUTOMATEDBEAM.AUTOMATED_BEAM_HEAD_TO_HOME;
 import static com.sicpa.tt016.messages.TT016MessageEventKey.AUTOMATEDBEAM.AUTOMATED_BEAM_HEIGHT_SET;
 import static com.sicpa.tt016.messages.TT016MessageEventKey.AUTOMATEDBEAM.AUTOMATED_BEAM_SAFETY_SENSOR_TRIG;
@@ -74,9 +75,22 @@ public class AutomatedBeamHeightManager {
     @Subscribe
     public void handleBeamReset(AutomatedBeamResetEvent evt) {
         logger.info(evt.message);
-        EventBusService.post(new IssueSolvedMessage(AUTOMATED_BEAM_HEAD_TO_HOME, plcProvider.get()));
-        isSafetySensorTriggered = false;
-        setBeamHeight();
+        if (isSafetySensorTriggered) {
+            EventBusService.post(new IssueSolvedMessage(AUTOMATED_BEAM_HEAD_TO_HOME, plcProvider.get()));
+            isSafetySensorTriggered = false;
+            setBeamHeight();
+        } else {
+            for (Integer lineIndex : PlcLineHelper.getLineIndexes()) {
+                try {
+                    plcParamSender.sendToPlc(REQUEST_ERROR_STATE_EXE_TRIG.toString(),
+                        String.valueOf(true), lineIndex);
+                } catch (PlcAdaptorException e) {
+                    logger.error("Failed to write to PlcVariable {} >> {}",
+                        REQUEST_ERROR_STATE_EXE_TRIG.toString(),
+                        true);
+                }
+            }
+        }
     }
 
     //Send the beam back to SKU height if at home and SKU is selected

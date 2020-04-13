@@ -1,7 +1,9 @@
 package com.sicpa.tt016.view;
 
 import static com.sicpa.standard.client.common.security.SecurityService.hasPermission;
-import static com.sicpa.tt016.messages.TT016MessageEventKey.AUTOMATEDBEAM.*;
+import static com.sicpa.tt016.messages.TT016MessageEventKey.AUTOMATEDBEAM.AUTOMATED_BEAM_AWAITING_RESET;
+import static com.sicpa.tt016.messages.TT016MessageEventKey.AUTOMATEDBEAM.AUTOMATED_BEAM_ERROR_STATE;
+import static com.sicpa.tt016.messages.TT016MessageEventKey.AUTOMATEDBEAM.SKU_SELECTION_VIEW_ACTIVE;
 
 import com.google.common.eventbus.Subscribe;
 import javax.swing.JComponent;
@@ -23,9 +25,12 @@ public class TT016MainFrame extends MainFrame {
 
 	private static final Permission RESET_STATS = new Permission("RESET_STATS");
 
+	private static final Permission RESET_BEAM_ERROR = new Permission("RESET_BEAM_ERROR");
+
 	private JComponent resetStatsView;
 
 	private JComponent resetBeamView;
+	private boolean isBeamErrorState = false;
 
 	public TT016MainFrame(MainFrameController controller, JComponent startStopView, JComponent changeSelectionView,
 			JComponent exitView, JComponent optionsView, JComponent messagesView, JComponent mainPanel,
@@ -44,8 +49,11 @@ public class TT016MainFrame extends MainFrame {
 	protected void userChanged() {
 		super.userChanged();
 		resetStatsView.setVisible(hasPermission(RESET_STATS));
+		if (isBeamErrorState) {
+            resetBeamView.setVisible(hasPermission(RESET_BEAM_ERROR));
+        }
 	}
-	
+
 	@Override
 	protected void buildFooter() {
 		getFooter().add(startStopView, "gap 0 0 0 0, gap top 10, gap bottom 10");
@@ -68,9 +76,17 @@ public class TT016MainFrame extends MainFrame {
 		}
 	}
 
-	@Subscribe
+    @Subscribe
+    public void handleBeamErrorState(MessageEvent evt) {
+        if (evt.getKey().equals(AUTOMATED_BEAM_ERROR_STATE))
+            isBeamErrorState = true;
+            resetBeamView.setVisible(hasPermission(RESET_BEAM_ERROR));
+    }
+
+    @Subscribe
 	public void handleBeamReset(AutomatedBeamResetEvent evt) {
 		logger.info(evt.message);
+		isBeamErrorState = false;
 		resetBeamView.setVisible(false);
 	}
 }

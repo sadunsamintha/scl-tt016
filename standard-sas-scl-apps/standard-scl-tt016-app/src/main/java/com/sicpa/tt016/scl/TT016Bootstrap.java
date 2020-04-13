@@ -53,6 +53,7 @@ import static com.sicpa.standard.sasscl.custoBuilder.CustoBuilder.setStateNextPo
 import static com.sicpa.standard.sasscl.messages.ActionMessageType.ERROR;
 import static com.sicpa.standard.sasscl.messages.ActionMessageType.ERROR_DEVICE;
 import static com.sicpa.standard.sasscl.messages.ActionMessageType.ERROR_DISPLAY;
+import static com.sicpa.standard.sasscl.messages.ActionMessageType.LOG;
 import static com.sicpa.standard.sasscl.messages.ActionMessageType.WARNING;
 import static com.sicpa.standard.sasscl.messages.MessageEventKey.Activation.EXCEPTION_CODE_IN_EXPORT;
 import static com.sicpa.standard.sasscl.messages.MessageEventKey.BRS.BRS_WRONG_SKU;
@@ -63,14 +64,18 @@ import static com.sicpa.tt016.messages.TT016MessageEventKey.AUTOMATEDBEAM.AUTOMA
 import static com.sicpa.tt016.messages.TT016MessageEventKey.AUTOMATEDBEAM.AUTOMATED_BEAM_ADJUST_HEIGHT_MSG_CODE;
 import static com.sicpa.tt016.messages.TT016MessageEventKey.AUTOMATEDBEAM.AUTOMATED_BEAM_AWAITING_RESET;
 import static com.sicpa.tt016.messages.TT016MessageEventKey.AUTOMATEDBEAM.AUTOMATED_BEAM_AWAITING_RESET_MSG_CODE;
+import static com.sicpa.tt016.messages.TT016MessageEventKey.AUTOMATEDBEAM.AUTOMATED_BEAM_ERROR_STATE;
+import static com.sicpa.tt016.messages.TT016MessageEventKey.AUTOMATEDBEAM.AUTOMATED_BEAM_ERROR_STATE_MSG_CODE;
 import static com.sicpa.tt016.messages.TT016MessageEventKey.AUTOMATEDBEAM.AUTOMATED_BEAM_HEAD_TO_HOME;
 import static com.sicpa.tt016.messages.TT016MessageEventKey.AUTOMATEDBEAM.AUTOMATED_BEAM_HEAD_TO_HOME_MSG_CODE;
 import static com.sicpa.tt016.messages.TT016MessageEventKey.AUTOMATEDBEAM.AUTOMATED_BEAM_HEIGHT_SET;
 import static com.sicpa.tt016.messages.TT016MessageEventKey.AUTOMATEDBEAM.AUTOMATED_BEAM_HEIGHT_SET_MSG_CODE;
-import static com.sicpa.tt016.messages.TT016MessageEventKey.AUTOMATEDBEAM.AUTOMATED_BEAM_SAFETY_SENSOR_TRIG;
-import static com.sicpa.tt016.messages.TT016MessageEventKey.AUTOMATEDBEAM.AUTOMATED_BEAM_SAFETY_SENSOR_TRIG_MSG_CODE;
 import static com.sicpa.tt016.messages.TT016MessageEventKey.AUTOMATEDBEAM.AUTOMATED_BEAM_INVALID_HEIGHT_DETECTED;
 import static com.sicpa.tt016.messages.TT016MessageEventKey.AUTOMATEDBEAM.AUTOMATED_BEAM_INVALID_HEIGHT_DETECTED_MSG_CODE;
+import static com.sicpa.tt016.messages.TT016MessageEventKey.AUTOMATEDBEAM.AUTOMATED_BEAM_SAFETY_SENSOR_TRIG;
+import static com.sicpa.tt016.messages.TT016MessageEventKey.AUTOMATEDBEAM.AUTOMATED_BEAM_SAFETY_SENSOR_TRIG_MSG_CODE;
+import static com.sicpa.tt016.messages.TT016MessageEventKey.AUTOMATEDBEAM.SKU_SELECTION_VIEW_ACTIVE;
+import static com.sicpa.tt016.messages.TT016MessageEventKey.AUTOMATEDBEAM.SKU_SELECTION_VIEW_ACTIVE_MSG_CODE;
 import static com.sicpa.tt016.model.statistics.TT016StatisticsKey.EJECTED_PRODUCER;
 import static com.sicpa.tt016.model.statistics.TT016StatisticsKey.INK_DETECTED;
 import static com.sicpa.tt016.view.TT016ScreenFlowTriggers.STOP_PRODUCTION;
@@ -149,6 +154,10 @@ public class TT016Bootstrap extends Bootstrap {
 				CustoBuilder.addPlcVariable(var.toString(), var.getNameOnPlc(), var.getPlc_type(), new HashMap<String, String>() {{
 					put("lineGrp", "misc");
 				}});
+			} else if (var == AutomatedBeamPlcEnums.PARAM_PRODUCT_TO_CAMERA_HEIGHT_MM) {
+				CustoBuilder.addPlcVariable(var.toString(), var.getNameOnPlc(), var.getPlc_type(), new HashMap<String, String>() {{
+					put("lineGrp", "misc");
+				}});
 			} else {
 				CustoBuilder.addPlcVariable(var.toString(), var.getNameOnPlc(), var.getPlc_type(), new HashMap<>());
 			}
@@ -170,6 +179,8 @@ public class TT016Bootstrap extends Bootstrap {
 		CustoBuilder.addMessage(AUTOMATED_BEAM_INVALID_HEIGHT_DETECTED, AUTOMATED_BEAM_INVALID_HEIGHT_DETECTED_MSG_CODE, ERROR);
 		CustoBuilder.addMessage(AUTOMATED_BEAM_AWAITING_RESET, AUTOMATED_BEAM_AWAITING_RESET_MSG_CODE, ERROR_DISPLAY);
 		CustoBuilder.addMessage(AUTOMATED_BEAM_HEIGHT_SET, AUTOMATED_BEAM_HEIGHT_SET_MSG_CODE, WARNING);
+		CustoBuilder.addMessage(AUTOMATED_BEAM_ERROR_STATE, AUTOMATED_BEAM_ERROR_STATE_MSG_CODE, ERROR_DEVICE);
+		CustoBuilder.addMessage(SKU_SELECTION_VIEW_ACTIVE, SKU_SELECTION_VIEW_ACTIVE_MSG_CODE, LOG);
 	}
 
 	private void noStopIfBrsWrongCodeDetected() {
