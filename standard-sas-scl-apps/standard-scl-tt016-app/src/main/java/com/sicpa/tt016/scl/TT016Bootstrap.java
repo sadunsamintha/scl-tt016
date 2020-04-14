@@ -74,8 +74,6 @@ import static com.sicpa.tt016.messages.TT016MessageEventKey.AUTOMATEDBEAM.AUTOMA
 import static com.sicpa.tt016.messages.TT016MessageEventKey.AUTOMATEDBEAM.AUTOMATED_BEAM_INVALID_HEIGHT_DETECTED_MSG_CODE;
 import static com.sicpa.tt016.messages.TT016MessageEventKey.AUTOMATEDBEAM.AUTOMATED_BEAM_SAFETY_SENSOR_TRIG;
 import static com.sicpa.tt016.messages.TT016MessageEventKey.AUTOMATEDBEAM.AUTOMATED_BEAM_SAFETY_SENSOR_TRIG_MSG_CODE;
-import static com.sicpa.tt016.messages.TT016MessageEventKey.AUTOMATEDBEAM.SKU_SELECTION_VIEW_ACTIVE;
-import static com.sicpa.tt016.messages.TT016MessageEventKey.AUTOMATEDBEAM.SKU_SELECTION_VIEW_ACTIVE_MSG_CODE;
 import static com.sicpa.tt016.model.statistics.TT016StatisticsKey.EJECTED_PRODUCER;
 import static com.sicpa.tt016.model.statistics.TT016StatisticsKey.INK_DETECTED;
 import static com.sicpa.tt016.view.TT016ScreenFlowTriggers.STOP_PRODUCTION;
@@ -90,6 +88,7 @@ public class TT016Bootstrap extends Bootstrap {
 	private AutomatedBeamHeightManager automatedBeamHeightManager;
 	private AutomatedBeamNtfHandler automatedBeamNtfHandler;
 	private int codeTypeId;
+	private boolean isBeamEnabled;
 	private List<DisallowedConfiguration> disallowedConfigurations;
 	private LegacyEncoderConverter legacyEncoderConverter;
 	private TT016SasAppLegacyMBean sasAppLegacyMBean;
@@ -108,14 +107,16 @@ public class TT016Bootstrap extends Bootstrap {
 		addProducerEjectionStatistic();
 		addInkDetectedStatistic();
 		sendEjectionTypeForProductionMode();
-		sendSKUHeightToBeam();
 		addDisallowedConfigurations(BeanProvider.getBean(BeansName.ALL_PROPERTIES));
 		noStopIfBrsWrongCodeDetected();
 		addWarningIfNoInkInRefeedMode();
 		convertLegacyEncodersIfAny();
 		addNoInkInRefeedStatistic();
-		addErrorMessagesForAutomatedBeam();
-		initializeAlarmListenersForBeam();
+		if (isBeamEnabled) {
+			addErrorMessagesForAutomatedBeam();
+			initializeAlarmListenersForBeam();
+			sendSKUHeightToBeam();
+		}
 	}
 
 	public static void addPlcVariableJavaEjectionCounter() {
@@ -150,11 +151,8 @@ public class TT016Bootstrap extends Bootstrap {
 
 	public static void addMotorizedBeamPlcVariables() {
 		for (AutomatedBeamPlcEnums var : AutomatedBeamPlcEnums.values()) {
-			if (var == AutomatedBeamPlcEnums.PARAM_CONVEYOR_HEIGHT_FROM_FLOOR_MM) {
-				CustoBuilder.addPlcVariable(var.toString(), var.getNameOnPlc(), var.getPlc_type(), new HashMap<String, String>() {{
-					put("lineGrp", "misc");
-				}});
-			} else if (var == AutomatedBeamPlcEnums.PARAM_PRODUCT_TO_CAMERA_HEIGHT_MM) {
+			if (var == AutomatedBeamPlcEnums.PARAM_CONVEYOR_HEIGHT_FROM_FLOOR_MM ||
+				var == AutomatedBeamPlcEnums.PARAM_PRODUCT_TO_CAMERA_HEIGHT_MM) {
 				CustoBuilder.addPlcVariable(var.toString(), var.getNameOnPlc(), var.getPlc_type(), new HashMap<String, String>() {{
 					put("lineGrp", "misc");
 				}});
@@ -180,7 +178,6 @@ public class TT016Bootstrap extends Bootstrap {
 		CustoBuilder.addMessage(AUTOMATED_BEAM_AWAITING_RESET, AUTOMATED_BEAM_AWAITING_RESET_MSG_CODE, ERROR_DISPLAY);
 		CustoBuilder.addMessage(AUTOMATED_BEAM_HEIGHT_SET, AUTOMATED_BEAM_HEIGHT_SET_MSG_CODE, WARNING);
 		CustoBuilder.addMessage(AUTOMATED_BEAM_ERROR_STATE, AUTOMATED_BEAM_ERROR_STATE_MSG_CODE, ERROR_DEVICE);
-		CustoBuilder.addMessage(SKU_SELECTION_VIEW_ACTIVE, SKU_SELECTION_VIEW_ACTIVE_MSG_CODE, LOG);
 	}
 
 	private void noStopIfBrsWrongCodeDetected() {
@@ -193,7 +190,7 @@ public class TT016Bootstrap extends Bootstrap {
 
 	private void sendSKUHeightToBeam() {
 		addActionOnConnectedApplicationState(() -> automatedBeamHeightManager.setBeamHeight());
-		addActionOnExitApplicationState(() -> automatedBeamHeightManager.setBeamHeight());
+		addActionOnExitApplicationState(() -> automatedBeamHeightManager.setBeamHeight(0));
 	}
 
 	private void initializeAlarmListenersForBeam() { automatedBeamNtfHandler.init(); }
@@ -270,6 +267,10 @@ public class TT016Bootstrap extends Bootstrap {
 
 	public void setCodeTypeId(int codeTypeId) {
 		this.codeTypeId = codeTypeId;
+	}
+
+	public void setBeamEnabled(boolean beamEnabled) {
+		isBeamEnabled = beamEnabled;
 	}
 
 	public void setEjectionTypeSender(EjectionTypeSender ejectionTypeSender) {

@@ -61,6 +61,7 @@ beans{
 		mainPanelGetter=ref('mainPanelGetter')
 		stopReasonViewController=ref('stopReasonViewController')
 		codeTypeId=props['codeTypeId']
+		beamEnabled=props['automated.beam.enabled']
 		unknownSkuProvider=ref('unknownSkuProvider')
 		ejectionTypeSender=ref('ejectionTypeSender')
 		automatedBeamHeightManager=ref('automatedBeamHeightManager')

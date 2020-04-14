@@ -26,7 +26,6 @@ public class AutomatedBeamNtfHandler {
 
     private PlcProvider plcProvider;
     private IPLCVariableMappping plcVariableMap;
-    private boolean isEnabled;
 
     private PlcBeamAlertDetectedNotificationListener alertDetectedNotificationListener = new PlcBeamAlertDetectedNotificationListener();
 
@@ -40,35 +39,29 @@ public class AutomatedBeamNtfHandler {
         this.plcVariableMap = plcVariableMap;
     }
 
-    public void setEnabled(boolean enabled) {
-        isEnabled = enabled;
-    }
-
     public void init() {
-        if (isEnabled) {
-            logger.info("Initializing...");
+        logger.info("Initializing...");
 
-            plcProvider.addChangeListener(evt -> {
-                List<IPlcVariable<Boolean>> beamResetDetectedNtfVars =
-                    createNotificationVars(plcVariableMap
-                        .getPhysicalVariableName(AutomatedBeamPlcEnums.REQUEST_SAFETY_SENSOR_TRIG.toString()));
+        plcProvider.addChangeListener(evt -> {
+            List<IPlcVariable<Boolean>> beamResetDetectedNtfVars =
+                createNotificationVars(plcVariableMap
+                    .getPhysicalVariableName(AutomatedBeamPlcEnums.REQUEST_SAFETY_SENSOR_TRIG.toString()));
 
-                List<IPlcVariable<Boolean>> beamAdjustingHeightNtfVars =
-                    createNotificationVars(plcVariableMap
-                        .getPhysicalVariableName(AutomatedBeamPlcEnums.REQUEST_BEAM_ADJUSTING_HEIGHT.toString()));
+            List<IPlcVariable<Boolean>> beamAdjustingHeightNtfVars =
+                createNotificationVars(plcVariableMap
+                    .getPhysicalVariableName(AutomatedBeamPlcEnums.REQUEST_BEAM_ADJUSTING_HEIGHT.toString()));
 
-                List<IPlcVariable<Boolean>> beamErrorStateNtfVars =
-                    createNotificationVars(plcVariableMap
-                        .getPhysicalVariableName(AutomatedBeamPlcEnums.REQUEST_ERROR_STATE_TRIG.toString()));
+            List<IPlcVariable<Boolean>> beamErrorStateNtfVars =
+                createNotificationVars(plcVariableMap
+                    .getPhysicalVariableName(AutomatedBeamPlcEnums.REQUEST_ERROR_STATE_TRIG.toString()));
 
-                registerNtfVarsToListeners(beamResetDetectedNtfVars, alertDetectedNotificationListener);
-                registerNtfVarsToListeners(beamAdjustingHeightNtfVars, alertDetectedNotificationListener);
-                registerNtfVarsToListeners(beamErrorStateNtfVars, alertDetectedNotificationListener);
+            registerNtfVarsToListeners(beamResetDetectedNtfVars, alertDetectedNotificationListener);
+            registerNtfVarsToListeners(beamAdjustingHeightNtfVars, alertDetectedNotificationListener);
+            registerNtfVarsToListeners(beamErrorStateNtfVars, alertDetectedNotificationListener);
 
-                logger.info("Successfully registered >>>> " + alertDetectedNotificationListener);
+            logger.info("Successfully registered >>>> " + alertDetectedNotificationListener);
 
-            });
-        }
+        });
     }
 
     private List<IPlcVariable<Boolean>> createNotificationVars(String plcNtfVars) {

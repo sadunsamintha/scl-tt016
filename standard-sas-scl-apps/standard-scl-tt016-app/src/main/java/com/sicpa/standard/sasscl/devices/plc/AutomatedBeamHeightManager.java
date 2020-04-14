@@ -28,8 +28,6 @@ public class AutomatedBeamHeightManager {
     private ProductionParameters productionParameters;
     private PlcParamSender plcParamSender;
 
-    private boolean isEnabled;
-
     private volatile boolean isSafetySensorTriggered = false;
 
     public void setPlcProvider(PlcProvider plcProvider) {
@@ -44,12 +42,8 @@ public class AutomatedBeamHeightManager {
         this.plcParamSender = plcParamSender;
     }
 
-    public void setEnabled(Boolean enabled) {
-        this.isEnabled = enabled;
-    }
-
     public void setBeamHeight() {
-        if (productionParameters.getSku() != null && isEnabled && !isSafetySensorTriggered) {
+        if (productionParameters.getSku() != null && !isSafetySensorTriggered) {
             MoroccoSKU sku = (MoroccoSKU) productionParameters.getSku();
             setBeamHeight(sku.getProductHeight());
         }
