@@ -4,7 +4,7 @@ import com.sicpa.standard.sasscl.model.custom.CustomProperty;
 import com.sicpa.standard.sasscl.model.custom.ICustomProperty;
 
 public interface ProductShipmentIdProvider {
-
+    // KEN-UG integration
     ICustomProperty<String> productionShipmentId = new CustomProperty<>("productionShipmentId",String.class,"");
     
 }
