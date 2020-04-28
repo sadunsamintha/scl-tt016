@@ -23,6 +23,7 @@ public class TT016PlcLoader extends PlcValuesLoader {
         if (!isAutomatedBeamEnabled) {
             res.remove("PARAM_CONVEYOR_HEIGHT_FROM_FLOOR_MM");
             res.remove("PARAM_PRODUCT_TO_CAMERA_HEIGHT_MM");
+            res.remove("REQUEST_BEAM_MANUAL_MODE");
         }
         if (!isWiperEnabled) {
             res.remove("PARAM_LINE_INHIBIT_WIPER");

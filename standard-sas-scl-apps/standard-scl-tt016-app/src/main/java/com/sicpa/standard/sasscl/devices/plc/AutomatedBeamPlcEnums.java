@@ -8,8 +8,14 @@ public enum AutomatedBeamPlcEnums {
 	//This is used to set the conveyor height variable for the beam
 	PARAM_CONVEYOR_HEIGHT_FROM_FLOOR_MM(".com.stLine[#x].stParameters.nConveyor_Height", PlcUtils.PLC_TYPE.I),
 
+	//This is used to toggle the beam to be in manual mode
+	REQUEST_BEAM_MANUAL_MODE(".com.stLine[#x].stRequests.diFlag_BeamState", PlcUtils.PLC_TYPE.B),
+
 	//This is used to set the product to camera height variable for the beam
 	PARAM_PRODUCT_TO_CAMERA_HEIGHT_MM(".com.stLine[#x].stParameters.ProductToCamera", PlcUtils.PLC_TYPE.I),
+
+	//This is used to monitor the current position of the beam
+	REQUEST_BEAM_CURRENT_POSITION_MM(".com.stLine[#x].stParameters.nBeam_Position", PlcUtils.PLC_TYPE.I),
 
 	//This is used to tell the beam to adjust to set height
 	REQUEST_BEAM_HEAD_TO_HEIGHT(".com.stLine[#x].stRequests.diFlag_Head_To_Position", PlcUtils.PLC_TYPE.B),
