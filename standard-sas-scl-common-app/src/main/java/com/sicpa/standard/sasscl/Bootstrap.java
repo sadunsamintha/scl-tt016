@@ -1,11 +1,19 @@
 package com.sicpa.standard.sasscl;
 
+import java.io.FileInputStream;
+import java.util.Properties;
+
+import org.apache.commons.lang.StringUtils;
+
 import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
+import com.sicpa.standard.client.common.i18n.Messages;
+import com.sicpa.standard.client.common.ioc.BeanProvider;
 import com.sicpa.standard.client.common.security.ILoginListener;
 import com.sicpa.standard.client.common.security.SecurityService;
 import com.sicpa.standard.client.common.utils.PropertiesUtils;
 import com.sicpa.standard.client.common.utils.StringMap;
+import com.sicpa.standard.client.common.view.IGUIComponentGetter;
 import com.sicpa.standard.gui.components.virtualKeyboard.SpinnerNumericVirtualKeyboard;
 import com.sicpa.standard.sasscl.business.statistics.StatisticsRestoredEvent;
 import com.sicpa.standard.sasscl.business.statistics.impl.Statistics;
@@ -26,6 +34,7 @@ import com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcVariableDesc
 import com.sicpa.standard.sasscl.devices.remote.IRemoteServer;
 import com.sicpa.standard.sasscl.event.UserLoginEvent;
 import com.sicpa.standard.sasscl.event.UserLogoutEvent;
+import com.sicpa.standard.sasscl.ioc.BeansName;
 import com.sicpa.standard.sasscl.model.ProductionParameters;
 import com.sicpa.standard.sasscl.model.statistics.StatisticsValues;
 import com.sicpa.standard.sasscl.monitoring.MonitoringService;
@@ -38,6 +47,9 @@ import com.sicpa.standard.sasscl.provider.impl.SubsystemIdProvider;
 import com.sicpa.standard.sasscl.sicpadata.generator.validator.IEncoderSequenceValidator;
 import com.sicpa.standard.sasscl.utils.ConfigUtilEx;
 import com.sicpa.standard.sasscl.view.LanguageSwitchEvent;
+import com.sicpa.standard.sasscl.view.MainFrame;
+import com.sicpa.standard.sasscl.view.MainFrameController;
+import com.sicpa.standard.sasscl.view.lineid.LineIdWithAuthenticateButton;
 import com.sicpa.standard.sicpadata.spi.manager.IServiceProviderManager;
 import com.sicpa.standard.sicpadata.spi.manager.StaticServiceProviderManager;
 import org.slf4j.Logger;
@@ -190,15 +202,30 @@ public class Bootstrap implements IBootstrap {
 
     private void saveSubsystemId(long id) {
         try {
+        	Properties properties = new Properties();
             File globalPropertiesFile = new ClassPathResource(ConfigUtilEx.GLOBAL_PROPERTIES_PATH).getFile();
-
+            properties.load(new FileInputStream(globalPropertiesFile));
+            
             PropertiesUtils.savePropertiesKeepOrderAndComment(globalPropertiesFile, "subsystemId", Long.toString(id));
-            PropertiesUtils.savePropertiesKeepOrderAndComment(globalPropertiesFile, "lineId", Long.toString(id));
-
+            
+            if (StringUtils.isBlank(properties.getProperty("lineId"))) {
+            	PropertiesUtils.savePropertiesKeepOrderAndComment(globalPropertiesFile, "lineId", Long.toString(id));
+            	updateLineIdText(Long.toString(id));
+            }
         } catch (Exception ex) {
             logger.error("Failed to save subsystem Id, line Id", ex);
         }
     }
+    
+    private void updateLineIdText(String id) {
+    	String lineId = Messages.get("lineId") + MainFrameController.LINE_LABEL_SEPARATOR + id;
+    	((LineIdWithAuthenticateButton) getMainFrame().getLineIdPanel()).getLabelLineId().setText(lineId);
+	}
+    
+    private MainFrame getMainFrame() {
+		IGUIComponentGetter compGetter = BeanProvider.getBean(BeansName.MAIN_FRAME);
+		return (MainFrame) compGetter.getComponent();
+	}
 
     private long getSubsystemIdFromRemoteServer() {
         return server.getSubsystemID();
