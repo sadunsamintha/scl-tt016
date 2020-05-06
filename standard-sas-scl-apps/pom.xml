@@ -20,6 +20,7 @@
 		<module>standard-sasscl-tt079-app</module>
 		<module>standard-sasscl-tt080-app</module>
 		<module>standard-scl-tt017-app</module>
+		<module>standard-scl-ttth-app</module>
 	</modules>
 
 	<properties>
