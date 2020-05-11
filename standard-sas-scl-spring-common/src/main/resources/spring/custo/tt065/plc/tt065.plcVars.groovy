@@ -166,6 +166,7 @@ beans {
 	plcMap['NTF_LINE_JAVA_CPT_NO_INK_DETECTED']=[v:LINE_NTF+'nJavaCpt_NoInkDetected' ,t:I ]
 	plcMap['NTF_LINE_JAVA_CPT_ACQ_ERRORS']=[v:LINE_NTF+'nJavaCpt_AcquisitionErrors' ,t:I ]
 	plcMap['NTF_LINE_JAVA_PRODUCT_STATUS']=[v:LINE_NTF+'nDRSValueForJava' ,t:I, lineNtf:'true']
+	plcMap['NTF_LINE_WAR_ERR_SECONDARY_REGISTER']=[v:LINE_NTF+'nWar_Err_Secondary_Register' ,t:I ,lineNtf:'true']
 
 
 	//CABINET PARAM
@@ -217,13 +218,23 @@ beans {
 	plcMap['REQUEST_STOP']=[v:'.com.stMultilineRequests.bStop' ,t:B]
 	plcMap['REQUEST_RELOAD_PLC_PARAM']=[v:'.com.stMultilineRequests.bReloadConfig' ,t:B]
 	plcMap['REQUEST_LIFE_CHECK']=[v:CAB+'stRequests.bLifeCheck' ,t:B]
+	plcMap['REQUEST_RELOAD_DATE_TIME']=[v:CAB + 'stRequests.bUpdateDateTime' ,t:B]
 	plcMap['REQUEST_JAVA_WARNINGS_AND_ERRORS_REGISTER']=[v:'.com.nJavaWarningsAndErrorsRegister' ,t:I]
 
 	//OFFLINE
 	plcMap['OFFLINE_COUNTING_QTY']=[v:OFFLINE + 'nProductsCounterOFF' ,t:I]
 	plcMap['OFFLINE_COUNTING_LAST_STOP']=[v:OFFLINE +'nSecondsWhenStopped' ,t:I]
 	plcMap['OFFLINE_COUNTING_LAST_PRODUCT']=[v:OFFLINE + 'nSecondsLastOFFProduct' ,t:I]
-	//plcMap['OFFLINE_RESET_COUNTERS']=[v:OFFLINE + 'bResetOffCounters' ,t:B]
+
+	//UPDATE DATE TIME
+	plcMap['UPDATE_DATE_TIME_YEAR']=[v:UPDATE_DATE_TIME + 'wYear', t:S]
+	plcMap['UPDATE_DATE_TIME_MONTH']=[v:UPDATE_DATE_TIME + 'wMonth', t:S]
+	plcMap['UPDATE_DATE_TIME_DAY_OF_WEEK']=[v:UPDATE_DATE_TIME + 'wDayOfWeek', t:S]
+	plcMap['UPDATE_DATE_TIME_DAY']=[v:UPDATE_DATE_TIME + 'wDay', t:S]
+	plcMap['UPDATE_DATE_TIME_HOUR']=[v:UPDATE_DATE_TIME + 'wHour', t:S]
+	plcMap['UPDATE_DATE_TIME_MINUTE']=[v:UPDATE_DATE_TIME + 'wMinute', t:S]
+	plcMap['UPDATE_DATE_TIME_SECOND']=[v:UPDATE_DATE_TIME + 'wSecond', t:S]
+	plcMap['UPDATE_DATE_TIME_MILLISECONDS']=[v:UPDATE_DATE_TIME + 'wMilliseconds', t:S]
 
 	injectCustoVar();
 
@@ -232,6 +243,7 @@ beans {
 	requestMapping[(RUN)]=[REQUEST_RUN:true]
 	requestMapping[(STOP)]=[REQUEST_STOP:true]
 	requestMapping[(RELOAD_PLC_PARAM)]=[REQUEST_RELOAD_PLC_PARAM:true]
+	requestMapping[(RELOAD_DATE_TIME)]=[REQUEST_RELOAD_DATE_TIME:true]
 
 	for ( e in plcMap ) {
 		String logic=e.key

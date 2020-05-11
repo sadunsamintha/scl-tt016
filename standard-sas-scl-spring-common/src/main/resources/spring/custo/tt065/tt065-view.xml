@@ -44,7 +44,7 @@
 
 	<!-- SELECT PARAMETER -->
 	<bean id="selectProductionParametersViewController" class="com.sicpa.tt065.view.selection.select.productionparameters.TT065SelectProductionParametersViewController">
-		<property name="handPickingview" ref="selectProductionParametersHandPickingView" />
+		<property name="handPickingView" ref="selectProductionParametersHandPickingView" />
 		<property name="barcodeView" ref="selectProductionParametersBarcodeView" />
 		<property name="viewController" ref="mainFrameController" />
 		<property name="skuListProvider" ref="skuListProvider" />

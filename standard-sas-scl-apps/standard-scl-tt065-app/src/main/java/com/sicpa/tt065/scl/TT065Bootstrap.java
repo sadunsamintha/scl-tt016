@@ -1,9 +1,12 @@
 package com.sicpa.tt065.scl;
 
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
+import com.sicpa.standard.client.common.ioc.BeanProvider;
 import com.sicpa.standard.sasscl.Bootstrap;
 import com.sicpa.standard.sasscl.common.storage.IStorage;
 import com.sicpa.standard.sasscl.controller.ProductionParametersEvent;
+import com.sicpa.standard.sasscl.devices.remote.datasender.IPackageSenderGlobal;
+import com.sicpa.standard.sasscl.ioc.BeansName;
 import com.sicpa.standard.sasscl.model.ProductStatus;
 import com.sicpa.standard.sasscl.model.ProductionParameters;
 import com.sicpa.standard.sasscl.model.SKU;
@@ -55,6 +58,15 @@ public class TT065Bootstrap extends Bootstrap {
 
     private void addRefeedStockProductStatusToPackageSender() {
         setPackagerType(TT065ProductStatus.REFEED_STOCK, true);
+    }
+
+    public static void setPackagerType(ProductStatus status, boolean isProductActivated) {
+        IPackageSenderGlobal sender = BeanProvider.getBean(BeansName.PACKAGE_SENDER);
+        if (isProductActivated) {
+            sender.addToActivatedPackager(status);
+        } else {
+            sender.addToCounterPackager(status);
+        }
     }
 
     private void mapProductStatusCountingToStatisticGood() {

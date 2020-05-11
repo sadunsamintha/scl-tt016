@@ -16,11 +16,15 @@ import com.sicpa.tt065.model.TT065ProductionMode;
 
 import javax.swing.*;
 import java.util.Arrays;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static com.sicpa.standard.sasscl.model.ProductionMode.REFEED_CORRECTION;
 import static com.sicpa.standard.sasscl.model.ProductionMode.REFEED_NORMAL;
 
 public class TT065SkuConverter extends SkuConverter {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(TT065SkuConverter.class);
 
     @Override
     protected void convertSkuProductDto(ComponentBehaviorDto<? extends BaseDto<Long>> child,
@@ -50,7 +54,7 @@ public class TT065SkuConverter extends SkuConverter {
                 .intValue());
 
         if (productionMode == null) {
-            logger.error("no production mode for {}", marketDto.toString());
+            LOGGER.error("no production mode for {}", marketDto.toString());
             return;
         }
 

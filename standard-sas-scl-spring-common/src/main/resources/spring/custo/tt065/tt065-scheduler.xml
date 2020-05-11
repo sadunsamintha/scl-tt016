@@ -7,7 +7,7 @@
         <property name="plcProvider" ref="plcProvider" />
     </bean>
 
-    <bean id="blobDetectionEnableLog" class="com.sicpa.standard.sasscl.devices.camera.blobDetection.BlobDetectionEnableLogger">
+    <bean id="blobDetectionEnableLog" class="com.sicpa.tt065.devices.camera.TT065BlobDetectionEnableLogger">
         <property name="blobDetectionProvider" ref="blobDetectionProvider" />
     </bean>
 

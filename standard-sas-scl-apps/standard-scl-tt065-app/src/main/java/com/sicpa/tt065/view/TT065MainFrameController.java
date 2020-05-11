@@ -72,6 +72,11 @@ public class TT065MainFrameController extends MainFrameController {
 		return productionParameters;
 	}
 
+	@Override
+	public ProductionMode getProductionMode() {
+		return productionParameters.getProductionMode();
+	}
+
 	@Subscribe
 	public void processStateChanged(ApplicationFlowStateChangedEvent evt) {
 		ThreadUtils.invokeLater(new Runnable() {

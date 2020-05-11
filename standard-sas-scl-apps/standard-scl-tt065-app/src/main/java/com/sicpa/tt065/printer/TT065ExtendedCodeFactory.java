@@ -1,16 +1,23 @@
 package com.sicpa.tt065.printer;
 
-import com.sicpa.standard.printer.controller.model.ModelDataMatrixEncoding;
-import com.sicpa.standard.printer.controller.model.ModelDataMatrixFormat;
-import com.sicpa.standard.printer.xcode.*;
-import com.sicpa.standard.sasscl.devices.camera.blobDetection.BlobDetectionUtils;
-import com.sicpa.standard.sasscl.devices.printer.xcode.IExCodeBehavior;
+import java.util.ArrayList;
+import java.util.List;
 import org.apache.commons.lang.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.sicpa.standard.gui.utils.Pair;
+import com.sicpa.standard.printer.controller.model.ModelDataMatrixEncoding;
+import com.sicpa.standard.printer.controller.model.ModelDataMatrixFormat;
+import com.sicpa.standard.printer.xcode.BlobBlockFactory;
+import com.sicpa.standard.printer.xcode.BlockFactory;
+import com.sicpa.standard.printer.xcode.DatamatrixBlockFactory;
+import com.sicpa.standard.printer.xcode.ExtendedCode;
+import com.sicpa.standard.printer.xcode.ExtendedCodeFactory;
+import com.sicpa.standard.printer.xcode.RelativePosition;
+import com.sicpa.standard.printer.xcode.TextBlockFactory;
+import com.sicpa.standard.sasscl.devices.camera.blobDetection.BlobDetectionUtils;
+import com.sicpa.standard.sasscl.devices.printer.xcode.IExCodeBehavior;
 
 import static com.sicpa.tt065.remote.impl.sicpadata.TT065SicpaDataGeneratorWrapper.BLOCK_SEPARATOR;
 
@@ -26,7 +33,7 @@ public class TT065ExtendedCodeFactory implements IExCodeBehavior {
     private RelativePosition text2Position;
 
     private boolean hrdEnable = true;
-    private static final Logger logger = LoggerFactory.getLogger(TT065ExtendedCodeFactory.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TT065ExtendedCodeFactory.class);
 
     private BlobDetectionUtils blobUtils;
 
@@ -37,7 +44,7 @@ public class TT065ExtendedCodeFactory implements IExCodeBehavior {
         Validate.notNull(codes);
 
         final boolean isBlobEnable = blobUtils.isBlobPatternPrinted();
-        logger.debug("Creating extended codes with isBlobEnable : {}", isBlobEnable);
+        LOGGER.debug("Creating extended codes with isBlobEnable : {}", isBlobEnable);
         List<ExtendedCode> res = new ArrayList<>();
         ExtendedCodeFactory ecf = new ExtendedCodeFactory();
         ecf.setBlockFactories(createBlockFactories(isBlobEnable));
@@ -47,6 +54,12 @@ public class TT065ExtendedCodeFactory implements IExCodeBehavior {
         }
 
         return res;
+    }
+
+    @Override
+    public List<ExtendedCode> createExCodesPair(List<Pair<String, String>> codes) {
+        LOGGER.warn("This action is not yet supported for this class");
+        throw new UnsupportedOperationException("This action is not yet supported for this class");
     }
 
     private List<Object> createCompositeCode(final String code, final boolean isBlobEnable) {
