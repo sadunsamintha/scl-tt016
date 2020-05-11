@@ -1,12 +1,28 @@
 package com.sicpa.standard.sasscl.devices.remote.impl.dtoConverter;
 
+import static com.sicpa.standard.sasscl.model.ProductionMode.REFEED_CORRECTION;
+import static com.sicpa.standard.sasscl.model.ProductionMode.REFEED_NORMAL;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import javax.swing.ImageIcon;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.sicpa.standard.sasscl.devices.remote.mapping.IProductionModeMapping;
 import com.sicpa.standard.sasscl.model.CodeType;
 import com.sicpa.standard.sasscl.model.ProductionMode;
 import com.sicpa.standard.sasscl.model.SKU;
 import com.sicpa.standard.sasscl.productionParameterSelection.node.AbstractProductionParametersNode;
 import com.sicpa.standard.sasscl.productionParameterSelection.node.IProductionParametersNode;
-import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.*;
+import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.CodeTypeNode;
+import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.NavigationNode;
+import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.ProductionModeNode;
+import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.ProductionParameterRootNode;
+import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.SKUNode;
 import com.sicpa.std.common.api.activation.dto.AuthorizedProductsDto;
 import com.sicpa.std.common.api.base.dto.BaseDto;
 import com.sicpa.std.common.api.base.dto.ComponentBehaviorDto;
@@ -14,22 +30,12 @@ import com.sicpa.std.common.api.sku.dto.MarketTypeDto;
 import com.sicpa.std.common.api.sku.dto.PackagingTypeSkuDto;
 import com.sicpa.std.common.api.staticdata.codetype.dto.CodeTypeDto;
 import com.sicpa.std.common.api.staticdata.sku.dto.SkuProductDto;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.swing.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import static com.sicpa.standard.sasscl.model.ProductionMode.REFEED_CORRECTION;
-import static com.sicpa.standard.sasscl.model.ProductionMode.REFEED_NORMAL;
 
 public class SkuConverter implements ISkuConverter {
 
-	protected static final Logger logger = LoggerFactory.getLogger(SkuConverter.class);
+	private static final Logger logger = LoggerFactory.getLogger(SkuConverter.class);
 
-	protected IProductionModeMapping productionModeMapping;
+	private IProductionModeMapping productionModeMapping;
 
 	@Override
 	public ProductionParameterRootNode convert(AuthorizedProductsDto products) {
@@ -64,7 +70,7 @@ public class SkuConverter implements ISkuConverter {
 	 * @param parentDTO
 	 * @param convertedParentRoot
 	 */
-	protected void convertDMSProductionParameter(final ComponentBehaviorDto<? extends BaseDto<Long>> parentDTO,
+	private void convertDMSProductionParameter(final ComponentBehaviorDto<? extends BaseDto<Long>> parentDTO,
 			final AbstractProductionParametersNode<?> convertedParentRoot) {
 
 		if (parentDTO.getChildren() == null)
@@ -74,7 +80,7 @@ public class SkuConverter implements ISkuConverter {
 			convert(convertedParentRoot, child);
 	}
 
-	protected void convert(AbstractProductionParametersNode<?> convertedParentRoot,
+	private void convert(AbstractProductionParametersNode<?> convertedParentRoot,
 			ComponentBehaviorDto<? extends BaseDto<Long>> child) {
 
 		if (child.getNodeValue() instanceof MarketTypeDto) {
@@ -96,7 +102,7 @@ public class SkuConverter implements ISkuConverter {
 		convertNavigationDto(child, convertedParentRoot);
 	}
 
-	protected void convertPackagingTypeSkuDto(ComponentBehaviorDto<? extends BaseDto<Long>> child,
+	private void convertPackagingTypeSkuDto(ComponentBehaviorDto<? extends BaseDto<Long>> child,
 			final AbstractProductionParametersNode<?> convertedParentRoot) {
 		PackagingTypeSkuDto packagingTypeSkuDto = (PackagingTypeSkuDto) child.getNodeValue();
 
@@ -106,7 +112,7 @@ public class SkuConverter implements ISkuConverter {
 		convertDMSProductionParameter(child, navigationNode);
 	}
 
-	protected void convertNavigationDto(ComponentBehaviorDto<? extends BaseDto<Long>> child,
+	private void convertNavigationDto(ComponentBehaviorDto<? extends BaseDto<Long>> child,
 			final AbstractProductionParametersNode<?> convertedParentRoot) {
 		// navigation node only
 		NavigationNode navigationNode = new NavigationNode(child.getNodeValue().getId() + "");
@@ -114,7 +120,7 @@ public class SkuConverter implements ISkuConverter {
 		convertDMSProductionParameter(child, navigationNode);
 	}
 
-	protected void convertCodeTypeDto(ComponentBehaviorDto<? extends BaseDto<Long>> child,
+	private void convertCodeTypeDto(ComponentBehaviorDto<? extends BaseDto<Long>> child,
 			final AbstractProductionParametersNode<?> convertedParentRoot) {
 		CodeTypeDto codeDto = (CodeTypeDto) child.getNodeValue();
 		CodeType codeType = new CodeType(codeDto.getId().intValue());
@@ -124,7 +130,7 @@ public class SkuConverter implements ISkuConverter {
 		convertDMSProductionParameter(child, codeTypeConverted);
 	}
 
-	protected void convertSkuProductDto(ComponentBehaviorDto<? extends BaseDto<Long>> child,
+	private void convertSkuProductDto(ComponentBehaviorDto<? extends BaseDto<Long>> child,
 			final AbstractProductionParametersNode<?> convertedParentRoot) {
 		SkuProductDto skuDto = (SkuProductDto) child.getNodeValue();
 		SKU sku = new SKU(skuDto.getId().intValue(), skuDto.getInternalDescription(), Arrays.asList(skuDto
@@ -147,7 +153,7 @@ public class SkuConverter implements ISkuConverter {
 		convertDMSProductionParameter(child, skuConverted);
 	}
 
-	protected void convertMarketTypeDto(ComponentBehaviorDto<? extends BaseDto<Long>> child,
+	private void convertMarketTypeDto(ComponentBehaviorDto<? extends BaseDto<Long>> child,
 			final AbstractProductionParametersNode<?> convertedParentRoot) {
 
 		MarketTypeDto marketDto = (MarketTypeDto) child.getNodeValue();
@@ -169,13 +175,13 @@ public class SkuConverter implements ISkuConverter {
 		}
 	}
 
-	protected void copyTree(ProductionModeNode from, ProductionModeNode to,
+	private void copyTree(ProductionModeNode from, ProductionModeNode to,
 			final AbstractProductionParametersNode<?> convertedParentRoot) {
 		convertedParentRoot.addChildren(to);
 		to.addChildren(from.getChildren());
 	}
 
-	protected CodeType getCodeTypeForSku(final ComponentBehaviorDto<? extends BaseDto<Long>> skuDto) {
+	private CodeType getCodeTypeForSku(final ComponentBehaviorDto<? extends BaseDto<Long>> skuDto) {
 
 		if (skuDto == null)
 			return null;
