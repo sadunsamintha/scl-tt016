@@ -41,6 +41,8 @@ public class TT016MainAppWithProfile extends TT016MainApp implements IProfileSel
 	private static final String PROFILE_ALL_PROPERTIES_KEY_GROOVY = "props";
 
 	private static final String CUSTO_FILE = "context-override.groovy";
+	
+	public static String profilePath;
 
 	public TT016MainAppWithProfile() {
 		makeSureLogFolderExist();
@@ -134,6 +136,8 @@ public class TT016MainAppWithProfile extends TT016MainApp implements IProfileSel
 
 		addPropertyPlaceholder(context);
 		loadApplicationAndStart(new LoaderConfigWithProfile(context, profile.getName()));
+		
+		profilePath = profile.getPath();
 	}
 
 	@Override

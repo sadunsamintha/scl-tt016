@@ -185,17 +185,17 @@ public class TT016SclAppLegacy implements TT016SclAppLegacyMBean {
     
     @Override
     public String getSizeOfPackagedFolder() {
-        return tt016SclApp.getSizeOfPackagedFolder();
+    	return tt016SclApp.getSizeOfFolderInByte(TT016SclApp.PROFILE_FOLDER + TT016SclApp.PACKAGED_FOLDER);
     }
     
     @Override
     public String getSizeOfSentFolder() {
-        return tt016SclApp.getSizeOfSentFolder();
+    	return tt016SclApp.getSizeOfFolderInByte(TT016SclApp.PROFILE_FOLDER + TT016SclApp.SENT_FOLDER);
     }
     
     @Override
     public String getSizeOfBufferFolder() {
-        return tt016SclApp.getSizeOfBufferFolder();
+    	return tt016SclApp.getSizeOfFolderInByte(TT016SclApp.PROFILE_FOLDER + TT016SclApp.BUFFER_FOLDER);
     }
 
     @Override
