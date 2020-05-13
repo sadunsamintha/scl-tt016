@@ -33,7 +33,7 @@ public enum AutomatedBeamPlcEnums {
 	REQUEST_ERROR_STATE_EXE_TRIG(".com.stLine[#x].stRequests.diFLag_ExcuReset", PlcUtils.PLC_TYPE.B),
 
 	//This used for invalid height flag if conveyor and product height exceeds beam's threshold.
-	BEAM_INVALID_HEIGHT_DETECTED_FLAG(".com.stLine[#x].stRequests.diFlag_Invalid_Height", PlcUtils.PLC_TYPE.B);
+	REQUEST_INVALID_HEIGHT_DETECTED(".com.stLine[#x].stRequests.diFlag_InvalidHeight", PlcUtils.PLC_TYPE.B);
 
 	private String nameOnPlc;
 	private PlcUtils.PLC_TYPE plc_type;

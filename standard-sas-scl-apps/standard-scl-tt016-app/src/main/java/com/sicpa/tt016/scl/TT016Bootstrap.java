@@ -19,6 +19,7 @@ import com.sicpa.standard.sasscl.devices.plc.AutomatedBeamPlcEnums;
 import com.sicpa.standard.sasscl.devices.plc.PlcUtils;
 import com.sicpa.standard.sasscl.ioc.BeansName;
 import com.sicpa.standard.sasscl.messages.ActionEventWarning;
+import com.sicpa.standard.sasscl.messages.ActionMessageType;
 import com.sicpa.standard.sasscl.model.CodeType;
 import com.sicpa.standard.sasscl.model.ProductStatus;
 import com.sicpa.standard.sasscl.model.statistics.StatisticsKey;
@@ -50,10 +51,8 @@ import static com.sicpa.standard.sasscl.custoBuilder.CustoBuilder.addToStatistic
 import static com.sicpa.standard.sasscl.custoBuilder.CustoBuilder.handleNewStatistic;
 import static com.sicpa.standard.sasscl.custoBuilder.CustoBuilder.setMessageType;
 import static com.sicpa.standard.sasscl.custoBuilder.CustoBuilder.setStateNextPossibleStates;
-import static com.sicpa.standard.sasscl.messages.ActionMessageType.ERROR;
 import static com.sicpa.standard.sasscl.messages.ActionMessageType.ERROR_DEVICE;
 import static com.sicpa.standard.sasscl.messages.ActionMessageType.ERROR_DISPLAY;
-import static com.sicpa.standard.sasscl.messages.ActionMessageType.LOG;
 import static com.sicpa.standard.sasscl.messages.ActionMessageType.WARNING;
 import static com.sicpa.standard.sasscl.messages.MessageEventKey.Activation.EXCEPTION_CODE_IN_EXPORT;
 import static com.sicpa.standard.sasscl.messages.MessageEventKey.BRS.BRS_WRONG_SKU;
@@ -89,6 +88,7 @@ public class TT016Bootstrap extends Bootstrap {
 	private AutomatedBeamNtfHandler automatedBeamNtfHandler;
 	private int codeTypeId;
 	private boolean isBeamEnabled;
+	private boolean isBeamInvalidHeightError;
 	private List<DisallowedConfiguration> disallowedConfigurations;
 	private LegacyEncoderConverter legacyEncoderConverter;
 	private TT016SasAppLegacyMBean sasAppLegacyMBean;
@@ -175,10 +175,15 @@ public class TT016Bootstrap extends Bootstrap {
 		CustoBuilder.addMessage(AUTOMATED_BEAM_HEAD_TO_HOME, AUTOMATED_BEAM_HEAD_TO_HOME_MSG_CODE, ERROR_DEVICE);
 		CustoBuilder.addMessage(AUTOMATED_BEAM_ADJUST_HEIGHT, AUTOMATED_BEAM_ADJUST_HEIGHT_MSG_CODE, ERROR_DEVICE);
 		CustoBuilder.addMessage(AUTOMATED_BEAM_SAFETY_SENSOR_TRIG, AUTOMATED_BEAM_SAFETY_SENSOR_TRIG_MSG_CODE, ERROR_DEVICE);
-		CustoBuilder.addMessage(AUTOMATED_BEAM_INVALID_HEIGHT_DETECTED, AUTOMATED_BEAM_INVALID_HEIGHT_DETECTED_MSG_CODE, ERROR);
 		CustoBuilder.addMessage(AUTOMATED_BEAM_AWAITING_RESET, AUTOMATED_BEAM_AWAITING_RESET_MSG_CODE, ERROR_DISPLAY);
 		CustoBuilder.addMessage(AUTOMATED_BEAM_HEIGHT_SET, AUTOMATED_BEAM_HEIGHT_SET_MSG_CODE, WARNING);
 		CustoBuilder.addMessage(AUTOMATED_BEAM_ERROR_STATE, AUTOMATED_BEAM_ERROR_STATE_MSG_CODE, ERROR_DEVICE);
+
+		ActionMessageType invalidHeightMessageType = WARNING;
+		if (isBeamInvalidHeightError) {
+			invalidHeightMessageType = ERROR_DEVICE;
+		}
+		CustoBuilder.addMessage(AUTOMATED_BEAM_INVALID_HEIGHT_DETECTED, AUTOMATED_BEAM_INVALID_HEIGHT_DETECTED_MSG_CODE, invalidHeightMessageType);
 	}
 
 	private void noStopIfBrsWrongCodeDetected() {
@@ -272,6 +277,10 @@ public class TT016Bootstrap extends Bootstrap {
 
 	public void setBeamEnabled(boolean beamEnabled) {
 		isBeamEnabled = beamEnabled;
+	}
+
+	public void setBeamInvalidHeightError(boolean beamInvalidHeightError) {
+		isBeamInvalidHeightError = beamInvalidHeightError;
 	}
 
 	public void setEjectionTypeSender(EjectionTypeSender ejectionTypeSender) {

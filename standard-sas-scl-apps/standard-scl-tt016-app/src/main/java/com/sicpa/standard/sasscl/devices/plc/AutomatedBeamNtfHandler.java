@@ -19,6 +19,7 @@ import static com.sicpa.tt016.messages.TT016MessageEventKey.AUTOMATEDBEAM.AUTOMA
 import static com.sicpa.tt016.messages.TT016MessageEventKey.AUTOMATEDBEAM.AUTOMATED_BEAM_AWAITING_RESET;
 import static com.sicpa.tt016.messages.TT016MessageEventKey.AUTOMATEDBEAM.AUTOMATED_BEAM_ERROR_STATE;
 import static com.sicpa.tt016.messages.TT016MessageEventKey.AUTOMATEDBEAM.AUTOMATED_BEAM_HEAD_TO_HOME;
+import static com.sicpa.tt016.messages.TT016MessageEventKey.AUTOMATEDBEAM.AUTOMATED_BEAM_INVALID_HEIGHT_DETECTED;
 import static com.sicpa.tt016.messages.TT016MessageEventKey.AUTOMATEDBEAM.AUTOMATED_BEAM_SAFETY_SENSOR_TRIG;
 
 public class AutomatedBeamNtfHandler {
@@ -55,9 +56,14 @@ public class AutomatedBeamNtfHandler {
                 createNotificationVars(plcVariableMap
                     .getPhysicalVariableName(AutomatedBeamPlcEnums.REQUEST_ERROR_STATE_TRIG.toString()));
 
+            List<IPlcVariable<Boolean>> beamInvalidHeightNtfVars =
+                createNotificationVars(plcVariableMap
+                    .getPhysicalVariableName(AutomatedBeamPlcEnums.REQUEST_INVALID_HEIGHT_DETECTED.toString()));
+
             registerNtfVarsToListeners(beamResetDetectedNtfVars, alertDetectedNotificationListener);
             registerNtfVarsToListeners(beamAdjustingHeightNtfVars, alertDetectedNotificationListener);
             registerNtfVarsToListeners(beamErrorStateNtfVars, alertDetectedNotificationListener);
+            registerNtfVarsToListeners(beamInvalidHeightNtfVars, alertDetectedNotificationListener);
 
             logger.info("Successfully registered >>>> " + alertDetectedNotificationListener);
 
@@ -98,6 +104,8 @@ public class AutomatedBeamNtfHandler {
                     .getNameOnPlc().replace(LINE_INDEX_PLACEHOLDER, lineIndex.toString());
                 String errorStateTrig = AutomatedBeamPlcEnums.REQUEST_ERROR_STATE_TRIG
                     .getNameOnPlc().replace(LINE_INDEX_PLACEHOLDER, lineIndex.toString());
+                String invalidHeightTrig = AutomatedBeamPlcEnums.REQUEST_INVALID_HEIGHT_DETECTED
+                    .getNameOnPlc().replace(LINE_INDEX_PLACEHOLDER, lineIndex.toString());
 
                 if (adjustingHeight.equals(event.getVarName())) {
                     handleHeightAdjustmentNtf((Boolean) event.getValue());
@@ -105,6 +113,8 @@ public class AutomatedBeamNtfHandler {
                     handleSafetySensorTrigNtf((Boolean) event.getValue());
                 } else if (errorStateTrig.equals(event.getVarName())) {
                     handleErrorStateNtf((Boolean) event.getValue());
+                } else if (invalidHeightTrig.equals(event.getVarName())) {
+                    handleInvalidHeightNtf((Boolean) event.getValue());
                 }
             }
         }
@@ -160,6 +170,17 @@ public class AutomatedBeamNtfHandler {
             }
         }
 
+        private synchronized void handleInvalidHeightNtf(boolean isInvalidHeight) {
+            if (isInvalidHeight) {
+                if (!eventContainer.contains(this)) {
+                    eventContainer.add(this);
+                    EventBusService.post(new MessageEvent(plcProvider.get(), AUTOMATED_BEAM_INVALID_HEIGHT_DETECTED));
+                }
+            } else {
+                EventBusService.post(new IssueSolvedMessage(AUTOMATED_BEAM_INVALID_HEIGHT_DETECTED, plcProvider.get()));
+            }
+        }
+
         @Override
         public List<String> getListeningVariables() {
             List<String> listVars = new ArrayList<>();
@@ -167,6 +188,10 @@ public class AutomatedBeamNtfHandler {
                 listVars.add(AutomatedBeamPlcEnums.REQUEST_BEAM_ADJUSTING_HEIGHT
                     .getNameOnPlc().replace(LINE_INDEX_PLACEHOLDER, lineIndex.toString()));
                 listVars.add(AutomatedBeamPlcEnums.REQUEST_SAFETY_SENSOR_TRIG
+                    .getNameOnPlc().replace(LINE_INDEX_PLACEHOLDER, lineIndex.toString()));
+                listVars.add(AutomatedBeamPlcEnums.REQUEST_ERROR_STATE_TRIG
+                    .getNameOnPlc().replace(LINE_INDEX_PLACEHOLDER, lineIndex.toString()));
+                listVars.add(AutomatedBeamPlcEnums.REQUEST_INVALID_HEIGHT_DETECTED
                     .getNameOnPlc().replace(LINE_INDEX_PLACEHOLDER, lineIndex.toString()));
             }
 

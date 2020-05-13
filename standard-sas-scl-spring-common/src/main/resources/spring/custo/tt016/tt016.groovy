@@ -62,6 +62,7 @@ beans{
 		stopReasonViewController=ref('stopReasonViewController')
 		codeTypeId=props['codeTypeId']
 		beamEnabled=props['automated.beam.enabled']
+		beamInvalidHeightError=props['alert.invalid.height.error']
 		unknownSkuProvider=ref('unknownSkuProvider')
 		ejectionTypeSender=ref('ejectionTypeSender')
 		automatedBeamHeightManager=ref('automatedBeamHeightManager')
