@@ -1,6 +1,9 @@
 package com.sicpa.tt016.monitoring.mbean;
 
 import java.io.File;
+import java.io.IOException;
+
+import org.apache.commons.io.FileUtils;
 
 import com.sicpa.standard.sasscl.monitoring.mbean.scl.SclApp;
 import com.sicpa.tt016.scl.TT016MainAppWithProfile;
@@ -33,20 +36,9 @@ public class TT016SclApp extends SclApp implements TT016SclAppMBean {
     }
     
     public String getSizeOfFolderInByte(String folderPath) {
-    	
-		File errors = new File(folderPath);
-		if (!errors.exists() || !errors.isDirectory()) {
-			return "";
-		}
-		File[] files = errors.listFiles();
-		if (files == null || files.length == 0) {
-			return "";
-		}
-		long total = 0;
-		for (File file2 : files) {
-			total += file2.length();
-		}
-		return "" + total;
+    	File file = new File(folderPath);
+		
+		return file.exists() ? Long.toString(FileUtils.sizeOfDirectory(file)) : "";
 	}
     
 }
