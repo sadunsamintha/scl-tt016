@@ -13,6 +13,7 @@ public class PlcPulseUnitRenderer extends AbstractPlcNumberVariableRenderer<Floa
 	private static final Logger logger = LoggerFactory.getLogger(PlcPulseUnitRenderer.class);
 
 	private static final long serialVersionUID = 1L;
+	private static final long UDINT_MAX_VALUE = 4294967295L;
 	private JComboBox<PlcUnit> comboUnit;
 
 	public PlcPulseUnitRenderer(PlcPulseVariableDescriptor desc) {
@@ -78,7 +79,7 @@ public class PlcPulseUnitRenderer extends AbstractPlcNumberVariableRenderer<Floa
 
 	@Override
 	protected SpinnerNumberModel createSpinnerNumberModel() {
-		return new SpinnerNumberModel(new Float(0), new Float(0f), new Float(Short.MAX_VALUE), new Float(0.1f));
+		return new SpinnerNumberModel(new Float(0), new Float(0f), new Float(UDINT_MAX_VALUE), new Float(0.1f));
 	}
 
 	@Override
