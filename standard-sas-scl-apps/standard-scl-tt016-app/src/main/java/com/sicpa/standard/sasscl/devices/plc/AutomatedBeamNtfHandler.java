@@ -176,8 +176,6 @@ public class AutomatedBeamNtfHandler {
                     eventContainer.add(this);
                     EventBusService.post(new MessageEvent(plcProvider.get(), AUTOMATED_BEAM_INVALID_HEIGHT_DETECTED));
                 }
-            } else {
-                EventBusService.post(new IssueSolvedMessage(AUTOMATED_BEAM_INVALID_HEIGHT_DETECTED, plcProvider.get()));
             }
         }
 

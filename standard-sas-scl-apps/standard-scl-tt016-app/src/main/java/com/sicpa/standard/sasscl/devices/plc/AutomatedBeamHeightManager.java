@@ -15,8 +15,10 @@ import com.sicpa.tt016.scl.model.MoroccoSKU;
 import static com.sicpa.standard.sasscl.devices.plc.AutomatedBeamPlcEnums.PARAM_PRODUCT_HEIGHT_MM;
 import static com.sicpa.standard.sasscl.devices.plc.AutomatedBeamPlcEnums.REQUEST_BEAM_HEAD_TO_HEIGHT;
 import static com.sicpa.standard.sasscl.devices.plc.AutomatedBeamPlcEnums.REQUEST_ERROR_STATE_EXE_TRIG;
+import static com.sicpa.standard.sasscl.devices.plc.AutomatedBeamPlcEnums.REQUEST_INVALID_HEIGHT_DETECTED;
 import static com.sicpa.tt016.messages.TT016MessageEventKey.AUTOMATEDBEAM.AUTOMATED_BEAM_HEAD_TO_HOME;
 import static com.sicpa.tt016.messages.TT016MessageEventKey.AUTOMATEDBEAM.AUTOMATED_BEAM_HEIGHT_SET;
+import static com.sicpa.tt016.messages.TT016MessageEventKey.AUTOMATEDBEAM.AUTOMATED_BEAM_INVALID_HEIGHT_DETECTED;
 import static com.sicpa.tt016.messages.TT016MessageEventKey.AUTOMATEDBEAM.AUTOMATED_BEAM_SAFETY_SENSOR_TRIG;
 import static com.sicpa.tt016.messages.TT016MessageEventKey.AUTOMATEDBEAM.SKU_SELECTION_VIEW_ACTIVE;
 
@@ -65,6 +67,18 @@ public class AutomatedBeamHeightManager {
         }
     }
 
+    private void resetBeamInvalidHeightError() {
+        for (Integer lineIndex : PlcLineHelper.getLineIndexes()) {
+            try {
+                plcParamSender.sendToPlc(REQUEST_INVALID_HEIGHT_DETECTED.toString(), String.valueOf(false), lineIndex);
+            } catch (PlcAdaptorException e) {
+                logger.error("Failed to write to PlcVariable {} >> {}",
+                    REQUEST_INVALID_HEIGHT_DETECTED.toString(),
+                    false);            }
+        }
+        EventBusService.post(new IssueSolvedMessage(AUTOMATED_BEAM_INVALID_HEIGHT_DETECTED, plcProvider.get()));
+    }
+
     //Send the beam back to SKU height upon operator reset
     @Subscribe
     public void handleBeamReset(AutomatedBeamResetEvent evt) {
@@ -88,10 +102,12 @@ public class AutomatedBeamHeightManager {
     }
 
     //Send the beam back to SKU height if at home and SKU is selected
+    //Reset the invalid height error upon SKU reselection.
     @Subscribe
     public void handleSkuReselection(MessageEvent evt) {
         if (evt.getKey().equals(SKU_SELECTION_VIEW_ACTIVE)) {
             isSafetySensorTriggered = false;
+            resetBeamInvalidHeightError();
         }
     }
 
