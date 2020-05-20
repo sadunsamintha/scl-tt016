@@ -185,17 +185,17 @@ public class TT016SasAppLegacy implements TT016SasAppLegacyMBean {
     
     @Override
     public String getSizeOfPackagedFolder() {
-        return tt016SasApp.getSizeOfPackagedFolder();
+    	return tt016SasApp.getSizeOfFolderInByte(TT016SasApp.PROFILE_FOLDER + TT016SasApp.PACKAGED_FOLDER);
     }
     
     @Override
     public String getSizeOfSentFolder() {
-        return tt016SasApp.getSizeOfSentFolder();
+    	return tt016SasApp.getSizeOfFolderInByte(TT016SasApp.PROFILE_FOLDER + TT016SasApp.SENT_FOLDER);
     }
     
     @Override
     public String getSizeOfBufferFolder() {
-        return tt016SasApp.getSizeOfBufferFolder();
+    	return tt016SasApp.getSizeOfFolderInByte(TT016SasApp.PROFILE_FOLDER + TT016SasApp.BUFFER_FOLDER);
     }
 
     @Override
