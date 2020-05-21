@@ -72,6 +72,8 @@ public class TTTHExtendedCodeFactory implements IExCodeBehavior {
     DatamatrixBlockFactory dmFactory = new DatamatrixBlockFactory();
     dmFactory.setModelDatamatrixEncoding(dmEncoding);
     dmFactory.setModelDatamatrixFormat(dmFormat);
+    dmFactory.addOption(Option.INVERSE);
+    dmFactory.addOption(Option.REVERSE);
     return dmFactory;
   }
 
