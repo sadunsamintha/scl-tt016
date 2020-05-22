@@ -7,7 +7,7 @@ import com.sicpa.standard.sasscl.model.custom.ICustomProperty;
 
 public interface ProductBatchIdExpDtProvider {
 
-    ICustomProperty<String> productionBatchId = new CustomProperty<>("productBatchId",String.class,"");
-    ICustomProperty<Date> productionExpdt = new CustomProperty<>("productionExpdt",Date.class);
-    
+    ICustomProperty<String> productionBatchId = new CustomProperty<String>("productBatchId",String.class,null);
+    ICustomProperty<Date> productionExpdt = new CustomProperty<Date>("productionExpdt",Date.class,null);
+
 }
