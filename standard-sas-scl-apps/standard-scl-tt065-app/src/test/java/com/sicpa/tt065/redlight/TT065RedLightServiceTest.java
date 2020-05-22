@@ -11,7 +11,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
 
 public class TT065RedLightServiceTest {
@@ -53,7 +53,7 @@ public class TT065RedLightServiceTest {
     this.redLightService.startARedLight("Mock Error");
     boolean ended = finished.await(10, TimeUnit.SECONDS);
     assertThat(ended).isTrue();
-    verify(redLightMonitor, times(1)).sendRedLightInfoToGlobalMonitoringTool(isA(RedLight.class));
+    verify(redLightMonitor, timeout(5000).times(1)).sendRedLightInfoToGlobalMonitoringTool(isA(RedLight.class));
   }
 
   @Test(expected = IllegalStateException.class)
@@ -74,6 +74,6 @@ public class TT065RedLightServiceTest {
     this.redLightService.stopARedLight();
     boolean ended = finished.await(10, TimeUnit.SECONDS);
     assertThat(ended).isTrue();
-    verify(redLightMonitor, times(2)).sendRedLightInfoToGlobalMonitoringTool(isA(RedLight.class));
+    verify(redLightMonitor, timeout(5000).times(2)).sendRedLightInfoToGlobalMonitoringTool(isA(RedLight.class));
   }
 }
