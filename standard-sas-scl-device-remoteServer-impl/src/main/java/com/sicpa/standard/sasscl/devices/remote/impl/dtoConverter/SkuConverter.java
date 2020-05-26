@@ -35,7 +35,7 @@ public class SkuConverter implements ISkuConverter {
 
 	private static final Logger logger = LoggerFactory.getLogger(SkuConverter.class);
 
-	private IProductionModeMapping productionModeMapping;
+	protected IProductionModeMapping productionModeMapping;
 
 	@Override
 	public ProductionParameterRootNode convert(AuthorizedProductsDto products) {
@@ -70,7 +70,7 @@ public class SkuConverter implements ISkuConverter {
 	 * @param parentDTO
 	 * @param convertedParentRoot
 	 */
-	private void convertDMSProductionParameter(final ComponentBehaviorDto<? extends BaseDto<Long>> parentDTO,
+	protected void convertDMSProductionParameter(final ComponentBehaviorDto<? extends BaseDto<Long>> parentDTO,
 			final AbstractProductionParametersNode<?> convertedParentRoot) {
 
 		if (parentDTO.getChildren() == null)
@@ -130,7 +130,7 @@ public class SkuConverter implements ISkuConverter {
 		convertDMSProductionParameter(child, codeTypeConverted);
 	}
 
-	private void convertSkuProductDto(ComponentBehaviorDto<? extends BaseDto<Long>> child,
+	protected void convertSkuProductDto(ComponentBehaviorDto<? extends BaseDto<Long>> child,
 			final AbstractProductionParametersNode<?> convertedParentRoot) {
 		SkuProductDto skuDto = (SkuProductDto) child.getNodeValue();
 		SKU sku = new SKU(skuDto.getId().intValue(), skuDto.getInternalDescription(), Arrays.asList(skuDto
@@ -153,7 +153,7 @@ public class SkuConverter implements ISkuConverter {
 		convertDMSProductionParameter(child, skuConverted);
 	}
 
-	private void convertMarketTypeDto(ComponentBehaviorDto<? extends BaseDto<Long>> child,
+	protected void convertMarketTypeDto(ComponentBehaviorDto<? extends BaseDto<Long>> child,
 			final AbstractProductionParametersNode<?> convertedParentRoot) {
 
 		MarketTypeDto marketDto = (MarketTypeDto) child.getNodeValue();
@@ -175,13 +175,13 @@ public class SkuConverter implements ISkuConverter {
 		}
 	}
 
-	private void copyTree(ProductionModeNode from, ProductionModeNode to,
+	protected void copyTree(ProductionModeNode from, ProductionModeNode to,
 			final AbstractProductionParametersNode<?> convertedParentRoot) {
 		convertedParentRoot.addChildren(to);
 		to.addChildren(from.getChildren());
 	}
 
-	private CodeType getCodeTypeForSku(final ComponentBehaviorDto<? extends BaseDto<Long>> skuDto) {
+	protected CodeType getCodeTypeForSku(final ComponentBehaviorDto<? extends BaseDto<Long>> skuDto) {
 
 		if (skuDto == null)
 			return null;
