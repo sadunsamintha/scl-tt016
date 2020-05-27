@@ -11,6 +11,8 @@ import com.sicpa.standard.sasscl.devices.plc.impl.PlcAdaptor
 import com.sicpa.tt065.devices.plc.*;
 import com.sicpa.standard.sasscl.devices.plc.impl.PlcSpeedHandler;
 import com.sicpa.standard.sasscl.devices.plc.PlcJmxInfo
+import com.sicpa.tt065.devices.plc.TT065PLCGroupVarsBuilder
+import com.sicpa.tt065.devices.plc.variable.PlcMultiVarValueChangeHandler
 
 import static com.sicpa.standard.sasscl.messages.MessageEventKey.PLC.*
 
@@ -36,7 +38,7 @@ beans{
 		paramSender= ref('plcParamSender')
 	}
 
-	plcVarValueChangeHandler(PlcVarValueChangeHandler){
+	plcVarValueChangeHandler(PlcMultiVarValueChangeHandler){
 		plcProvider=ref('plcProvider')
 		paramSender= ref('plcParamSender')
 		loader=ref('plcValuesLoader')
@@ -218,6 +220,13 @@ beans{
 		lineErrorsList=line_msg
 		cabinetErrorsList=cab_msg
 		lineErrorsSecondaryList=line_msg_secondary
+	}
+
+	//Temporary solution, until CORE implements a similar approach. Them this can be removed, substituted
+	plcEditableVarsBuilder(TT065PLCGroupVarsBuilder){
+		plcLoader=ref('plcValuesLoader')
+		linePlcVarGroup=ref('linePlcVarGroup')
+		cabPlcVarGroups=ref('cabPlcVarGroups')
 	}
 }
 
