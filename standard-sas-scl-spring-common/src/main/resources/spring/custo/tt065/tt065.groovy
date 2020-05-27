@@ -7,6 +7,7 @@ import com.sicpa.tt065.remote.impl.dtoconverter.TT065SkuConverter
 import com.sicpa.tt065.remote.simulator.TT065RemoteServerSimulator
 import com.sicpa.tt065.scl.TT065Bootstrap
 import com.sicpa.tt065.redlight.TT065RedLightService
+import com.sicpa.tt065.devices.brs.TT065BrsBarcodeCheck
 
 /**
  * Created by mjimenez on 15/09/2016.
@@ -70,5 +71,5 @@ beans{
     if(printerBehavior == 'SIMULATOR') {
         addAlias('printerLeibinger','printerSimulatorAdaptor')
     }
-
+    brsBarcodeCheck(TT065BrsBarcodeCheck){ compliantProductResolver=ref('compliantProduct') }
 }
