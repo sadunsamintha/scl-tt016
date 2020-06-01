@@ -17,7 +17,6 @@ import com.sicpa.standard.client.common.app.profile.IProfileSelectorListener;
 import com.sicpa.standard.client.common.app.profile.LoaderConfigWithProfile;
 import com.sicpa.standard.client.common.app.profile.Profile;
 import com.sicpa.standard.client.common.app.profile.ProfileSelectedEvent;
-import com.sicpa.standard.client.common.app.profile.ProfileSelectorView;
 import com.sicpa.standard.client.common.groovy.GroovyLoggerConfigurator;
 import com.sicpa.standard.client.common.groovy.SwingEnabledGroovyApplicationContext;
 import com.sicpa.standard.client.common.utils.AppUtils;
@@ -28,6 +27,8 @@ import com.sicpa.standard.gui.screen.loader.AbstractApplicationLoader;
 import com.sicpa.standard.gui.screen.loader.LoadApplicationScreen;
 import com.sicpa.standard.gui.utils.WindowsUtils;
 import com.sicpa.standard.sasscl.ioc.PropertyPlaceholderResourcesSASSCL;
+import com.sicpa.standard.sasscl.profile.SasSclProfile;
+import com.sicpa.standard.sasscl.profile.SasSclProfileSelectorView;
 
 public class MainAppWithProfile extends MainApp implements IProfileSelectorListener {
 	private static final Logger logger = LoggerFactory.getLogger(MainAppWithProfile.class);
@@ -72,7 +73,7 @@ public class MainAppWithProfile extends MainApp implements IProfileSelectorListe
 
 	public void selectProfile(String profileToRun) {
 
-		List<Profile> profiles = Profile.getAllAvailableProfiles();
+		List<Profile> profiles = SasSclProfile.getAllAvailableProfiles();
 		if (profiles.isEmpty()) {
 			logger.error("no profile available");
 			System.exit(-1);
@@ -101,7 +102,7 @@ public class MainAppWithProfile extends MainApp implements IProfileSelectorListe
 
 	private void displayProfileSelectionScreen() {
 		SwingUtilities.invokeLater(() -> {
-			ProfileSelectorView ps = new ProfileSelectorView();
+			SasSclProfileSelectorView ps = new SasSclProfileSelectorView();
 			ps.setLocationRelativeTo(null);
 			ps.setVisible(true);
 			ps.addProfileSelectorListener(MainAppWithProfile.this);
