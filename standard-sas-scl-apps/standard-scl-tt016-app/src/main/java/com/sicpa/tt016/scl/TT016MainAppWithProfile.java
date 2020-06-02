@@ -28,6 +28,7 @@ import com.sicpa.standard.gui.screen.loader.AbstractApplicationLoader;
 import com.sicpa.standard.gui.screen.loader.LoadApplicationScreen;
 import com.sicpa.standard.gui.utils.WindowsUtils;
 import com.sicpa.standard.sasscl.ioc.PropertyPlaceholderResourcesSASSCL;
+import com.sicpa.standard.sasscl.profile.SasSclProfile;
 
 public class TT016MainAppWithProfile extends TT016MainApp implements IProfileSelectorListener {
 	private static final Logger logger = LoggerFactory.getLogger(TT016MainAppWithProfile.class);
@@ -74,7 +75,7 @@ public class TT016MainAppWithProfile extends TT016MainApp implements IProfileSel
 
 	public void selectProfile(String profileToRun) {
 
-		List<Profile> profiles = Profile.getAllAvailableProfiles();
+		List<Profile> profiles = SasSclProfile.getAllAvailableProfiles();
 		if (profiles.isEmpty()) {
 			logger.error("no profile available");
 			System.exit(-1);
