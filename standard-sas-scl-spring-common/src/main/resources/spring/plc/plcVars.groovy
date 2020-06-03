@@ -119,6 +119,8 @@ beans {
 	plcMap['PARAM_LINE_LABEL_APPLICATOR_2_DISTANCE_TYPE']=[v:LINE_PRM+'b2ndLabelApplicatorDistanceType' ,t:B]
 	plcMap['PARAM_LINE_LABEL_APPLICATOR_2_LENGTH']=[v:LINE_PRM+'n2ndLabelApplicatorLength' ,t:D, lineGrp:'lblapp']
 	plcMap['PARAM_LINE_LABEL_APPLICATOR_2_LENGTH_TYPE']=[v:LINE_PRM+'b2ndLabelApplicatorLengthType' ,t:B]
+	plcMap['PARAM_LINE_ENCODER_CHECK_WARNING_THRESHOLD']=[v:LINE_PRM+'nEncoderCheckWarningThreshold' ,t:I ,lineGrp:'encoder']
+	plcMap['PARAM_LINE_ENCODER_CHECK_ERROR_THRESHOLD']=[v:LINE_PRM+'nEncoderCheckErrorThreshold' ,t:I ,lineGrp:'encoder']
 
 	//LINE NOTIF
 	plcMap['NTF_LINE_SPEED']=[v:LINE_NTF+'nLineSpeed' ,t:I ,lineNtf:'true']
