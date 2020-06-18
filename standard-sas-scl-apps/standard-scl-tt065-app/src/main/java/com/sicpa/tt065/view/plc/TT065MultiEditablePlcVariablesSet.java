@@ -1,4 +1,4 @@
-package com.sicpa.tt065.view.config.plc;
+package com.sicpa.tt065.view.plc;
 
 import com.google.common.eventbus.Subscribe;
 import javax.swing.JButton;

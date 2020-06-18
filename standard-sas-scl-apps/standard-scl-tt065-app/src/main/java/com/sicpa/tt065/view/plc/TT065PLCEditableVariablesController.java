@@ -1,4 +1,4 @@
-package com.sicpa.tt065.view.config.plc;
+package com.sicpa.tt065.view.plc;
 
 /**
  * An object that controls the requests from a view to interact with a PLC device

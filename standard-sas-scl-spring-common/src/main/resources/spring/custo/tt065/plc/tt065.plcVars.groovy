@@ -121,6 +121,9 @@ beans {
 	plcMap['PARAM_LINE_INK_VORTEX_OFF_DELTA_HYSTERESIS']=[v:LINE_PRM+'nInk_Vortex_OFF_delta_hysteresis' ,t:S ,lineGrp:'misc']
 	plcMap['PARAM_LINE_PRODUCT_DETECTOR_ACTIVE_LOW']=[v:LINE_PRM+'bProductDetectorIsActiveLow' ,t:B, lineGrp:'misc']
 	plcMap['PARAM_LINE_INHIBIT_STOP_LINE_IF_CODE_IN_EXPORT_MODE']=[v:LINE_PRM+'bInhibitStopLineIfCodeInExportMode' ,t:B, lineGrp:'misc']
+	plcMap['PARAM_LINE_ENCODER_CHECK_WARNING_THRESHOLD']=[v:LINE_PRM+'nEncoderCheckWarningThreshold' ,t:I ,lineGrp:'encoder']
+	plcMap['PARAM_LINE_ENCODER_CHECK_ERROR_THRESHOLD']=[v:LINE_PRM+'nEncoderCheckErrorThreshold' ,t:I ,lineGrp:'encoder']
+
 
 	if(productionConfigFolder == "PRODUCTIONCONFIG-SAS") {
 		plcMap['PARAM_LINE_VALVE_DISTANCE'] = [v: LINE_PRM + 'nValveDistance', t: I, lineGrp: 'wipper']

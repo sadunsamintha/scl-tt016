@@ -73,8 +73,8 @@
 	</bean>
 
 	<!--ADMIN PLC CONFIG -->
-	<bean id="plcVariablesPanelController" class="com.sicpa.tt065.view.config.plc.TT065MultiEditablePlcVariablesController" />
-	<bean id="plcVariablesPanel" class="com.sicpa.tt065.view.config.plc.TT065MultiEditablePlcVariablesSet">
+	<bean id="plcVariablesPanelController" class="com.sicpa.tt065.view.plc.TT065MultiEditablePlcVariablesController" />
+	<bean id="plcVariablesPanel" class="com.sicpa.tt065.view.plc.TT065MultiEditablePlcVariablesSet">
 		<property name="editablePlcVariablesController" ref="plcVariablesPanelController" />
 	</bean>
 </beans>
