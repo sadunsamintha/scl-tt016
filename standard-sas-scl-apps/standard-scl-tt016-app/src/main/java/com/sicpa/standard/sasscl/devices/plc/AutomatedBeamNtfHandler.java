@@ -121,20 +121,18 @@ public class AutomatedBeamNtfHandler {
 
         private synchronized void handleHeightAdjustmentNtf(boolean isAdjusting) {
             if (isAdjusting) {
-                if (!eventContainer.contains(this)) {
-                    eventContainer.add(this);
-
-                    if (isSafetySensorAlertTriggered) {
-                        isSafetySensorAlertTriggered = false;
-                    } else {
-                        EventBusService.post(new MessageEvent(plcProvider.get(), AUTOMATED_BEAM_ADJUST_HEIGHT));
-                    }
+                if (isSafetySensorAlertTriggered) {
+                    isSafetySensorAlertTriggered = false;
+                    EventBusService.post(new MessageEvent(plcProvider.get(), AUTOMATED_BEAM_ADJUST_HEIGHT));
+                } else {
+                    EventBusService.post(new MessageEvent(plcProvider.get(), AUTOMATED_BEAM_ADJUST_HEIGHT));
                 }
             } else {
                 if (isHeadingHome) {
                     isHeadingHome = false;
                     isResetNeeded = true;
                     EventBusService.post(new MessageEvent(plcProvider.get(), AUTOMATED_BEAM_AWAITING_RESET));
+                    EventBusService.post(new IssueSolvedMessage(AUTOMATED_BEAM_ADJUST_HEIGHT, plcProvider.get()));
                 } else {
                     isResetNeeded = false;
                     EventBusService.post(new IssueSolvedMessage(AUTOMATED_BEAM_SAFETY_SENSOR_TRIG, plcProvider.get()));
@@ -145,26 +143,18 @@ public class AutomatedBeamNtfHandler {
 
         private synchronized void handleSafetySensorTrigNtf(boolean isTriggered) {
             if (isTriggered) {
-                if (!eventContainer.contains(this)) {
-                    eventContainer.add(this);
-                    if (!isSafetySensorAlertTriggered && !isResetNeeded) {
-                        isSafetySensorAlertTriggered = true;
-                        isHeadingHome = true;
-                        EventBusService.post(new MessageEvent(plcProvider.get(), AUTOMATED_BEAM_SAFETY_SENSOR_TRIG));
-                        EventBusService.post(new MessageEvent(plcProvider.get(), AUTOMATED_BEAM_HEAD_TO_HOME));
-                    }
+                if (!isSafetySensorAlertTriggered && !isResetNeeded) {
+                    isSafetySensorAlertTriggered = true;
+                    isHeadingHome = true;
+                    EventBusService.post(new MessageEvent(plcProvider.get(), AUTOMATED_BEAM_SAFETY_SENSOR_TRIG));
+                    EventBusService.post(new MessageEvent(plcProvider.get(), AUTOMATED_BEAM_HEAD_TO_HOME));
                 }
-            } else {
-                eventContainer.remove(this);
             }
         }
 
         private synchronized void handleErrorStateNtf(boolean isErrorState) {
             if (isErrorState) {
-                if (!eventContainer.contains(this)) {
-                    eventContainer.add(this);
-                    EventBusService.post(new MessageEvent(plcProvider.get(), AUTOMATED_BEAM_ERROR_STATE));
-                }
+                EventBusService.post(new MessageEvent(plcProvider.get(), AUTOMATED_BEAM_ERROR_STATE));
             } else {
                 EventBusService.post(new IssueSolvedMessage(AUTOMATED_BEAM_ERROR_STATE, plcProvider.get()));
             }
@@ -172,10 +162,7 @@ public class AutomatedBeamNtfHandler {
 
         private synchronized void handleInvalidHeightNtf(boolean isInvalidHeight) {
             if (isInvalidHeight) {
-                if (!eventContainer.contains(this)) {
-                    eventContainer.add(this);
-                    EventBusService.post(new MessageEvent(plcProvider.get(), AUTOMATED_BEAM_INVALID_HEIGHT_DETECTED));
-                }
+                EventBusService.post(new MessageEvent(plcProvider.get(), AUTOMATED_BEAM_INVALID_HEIGHT_DETECTED));
             }
         }
 

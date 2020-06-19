@@ -77,14 +77,6 @@ public class TT016MainFrame extends MainFrame {
 	}
 
     @Subscribe
-    public void handleBeamErrorState(MessageEvent evt) {
-        if (evt.getKey().equals(AUTOMATED_BEAM_ERROR_STATE)) {
-			isBeamErrorState = true;
-			resetBeamView.setVisible(hasPermission(RESET_BEAM_ERROR));
-		}
-    }
-
-    @Subscribe
 	public void handleBeamReset(AutomatedBeamResetEvent evt) {
 		logger.info(evt.message);
 		isBeamErrorState = false;

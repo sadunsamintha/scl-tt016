@@ -87,17 +87,6 @@ public class AutomatedBeamHeightManager {
             EventBusService.post(new IssueSolvedMessage(AUTOMATED_BEAM_HEAD_TO_HOME, plcProvider.get()));
             isSafetySensorTriggered = false;
             setBeamHeight();
-        } else {
-            for (Integer lineIndex : PlcLineHelper.getLineIndexes()) {
-                try {
-                    plcParamSender.sendToPlc(REQUEST_ERROR_STATE_EXE_TRIG.toString(),
-                        String.valueOf(true), lineIndex);
-                } catch (PlcAdaptorException e) {
-                    logger.error("Failed to write to PlcVariable {} >> {}",
-                        REQUEST_ERROR_STATE_EXE_TRIG.toString(),
-                        true);
-                }
-            }
         }
     }
 
