@@ -61,9 +61,4 @@
 		<property name="model" value="#{selectionDisplayViewController.model}" />
 	</bean>
 
-	<!-- SYSTEM INFO -->
-	<bean id="systemInfoView" class="com.sicpa.tt080.scl.view.main.systemInfo.TT080SystemInfoView">
-		<property name="controller" ref="systemInfoViewController" />
-		<property name="model" value="#{systemInfoViewController.model}" />
-	</bean>
 </beans>
