@@ -106,9 +106,7 @@ beans {
 	plcMap['PARAM_LINE_WAR_FANS_PRINTER_CAB_MIN_FREQ']=[v:LINE_PRM+'nWar_Fans_Printer_cabinet_MIN_freq' ,t:S ,lineGrp:'fan']
 	plcMap['PARAM_LINE_WAR_FANS_PRINTER_CAB_MAX_FREQ']=[v:LINE_PRM+'nWar_Fans_Printer_cabinet_MAX_freq' ,t:S ,lineGrp:'fan']
 	plcMap['PARAM_LINE_FANS_TEMP_ON_THRESHOLD_PRINTER']=[v:LINE_PRM+'nFans_Temp_ON_threshold_Printer' ,t:S ,lineGrp:'temp']
-	//plcMap['PARAM_LINE_FANS_TEMP_OFF_DELTA_HYST_PRINTER']=[v:LINE_PRM+'nFans_Temp_OFF_delta_hyst_Printer' ,t:S ,lineGrp:'temp']
 	plcMap['PARAM_LINE_INK_VORTEX_ON_THRESHOLD']=[v:LINE_PRM+'nInk_Vortex_ON_threshold' ,t:S ,lineGrp:'misc']
-	//plcMap['PARAM_LINE_INK_VORTEX_OFF_DELTA_HYSTERESIS']=[v:LINE_PRM+'nInk_Vortex_OFF_delta_hysteresis' ,t:S ,lineGrp:'misc']
 	plcMap['PARAM_LINE_PRODUCT_DETECTOR_ACTIVE_LOW']=[v:LINE_PRM+'bProductDetectorIsActiveLow' ,t:B, lineGrp:'misc']
 	plcMap['PARAM_LINE_INHIBIT_STOP_LINE_IF_CODE_IN_EXPORT_MODE']=[v:LINE_PRM+'bInhibitStopLineIfCodeInExportMode' ,t:B, lineGrp:'misc']
 	plcMap['PARAM_LINE_LABEL_APPLICATOR_DISTANCE']=[v:LINE_PRM+'nLabelApplicatorDistance' ,t:D]
@@ -119,6 +117,8 @@ beans {
 	plcMap['PARAM_LINE_LABEL_APPLICATOR_2_DISTANCE_TYPE']=[v:LINE_PRM+'b2ndLabelApplicatorDistanceType' ,t:B]
 	plcMap['PARAM_LINE_LABEL_APPLICATOR_2_LENGTH']=[v:LINE_PRM+'n2ndLabelApplicatorLength' ,t:D]
 	plcMap['PARAM_LINE_LABEL_APPLICATOR_2_LENGTH_TYPE']=[v:LINE_PRM+'b2ndLabelApplicatorLengthType' ,t:B]
+	plcMap['PARAM_LINE_ENCODER_CHECK_WARNING_THRESHOLD']=[v:LINE_PRM+'nEncoderCheckWarningThreshold' ,t:I ,lineGrp:'encoder']
+	plcMap['PARAM_LINE_ENCODER_CHECK_ERROR_THRESHOLD']=[v:LINE_PRM+'nEncoderCheckErrorThreshold' ,t:I ,lineGrp:'encoder']
 
 	def productionConfigFolder=props['production.config.folder'].toUpperCase()
 	if(productionConfigFolder == "PRODUCTIONCONFIG-SAS") {
@@ -181,9 +181,7 @@ beans {
 	plcMap['PARAM_CAB_WAR_FANS_BYPASS_CAB_MIN_FREQ']=[v:CAB_PRM+'nWar_Fans_Bypass_cabinet_MIN_freq' ,t:S ,cabGrp:'fan']
 	plcMap['PARAM_CAB_WAR_FANS_BYPASS_CAB_MAX_FREQ']=[v:CAB_PRM+'nWar_Fans_Bypass_cabinet_MAX_freq' ,t:S ,cabGrp:'fan']
 	plcMap['PARAM_CAB_FANS_TEMP_ON_THRESHOLD_EE']=[v:CAB_PRM+'nFans_Temp_ON_threshold_EE' ,t:S ,cabGrp:'fan']
-	//plcMap['PARAM_CAB_FANS_TEMP_OFF_DELTA_HYST_EE']=[v:CAB_PRM+'nFans_Temp_OFF_delta_hyst_EE' ,t:S ,cabGrp:'fan']
 	plcMap['PARAM_CAB_FANS_TEMP_ON_THRESHOLD_BYPASS']=[v:CAB_PRM+'nFans_Temp_ON_threshold_Bypass' ,t:S ,cabGrp:'fan']
-	//plcMap['PARAM_CAB_FANS_TEMP_OFF_DELTA_HYST_BYPASS']=[v:CAB_PRM+'nFans_Temp_OFF_delta_hyst_Bypass' ,t:S ,cabGrp:'fan']
 	plcMap['PARAM_CAB_FANS_TEMP_OFF_DELTA_HYST_BYPASS']=[v:CAB_PRM+'nTemp_OFF_delta_hysteresis' ,t:S ,cabGrp:'fan']
 	
 
