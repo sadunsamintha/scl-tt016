@@ -19,13 +19,13 @@
       <dependency>
           <groupId>com.sicpa.gssd.customization.server.ext</groupId>
           <artifactId>tt079-common-api</artifactId>
-          <version>1.7.1</version>
+          <version>1.7.4</version>
       </dependency>
       
       <dependency>
             <groupId>com.sicpa.gssd.customization.server</groupId>
             <artifactId>tt079-common-server</artifactId>
-			<version>1.4.2</version>
+			<version>1.7.4</version>
             
             <exclusions>
                 <exclusion>
