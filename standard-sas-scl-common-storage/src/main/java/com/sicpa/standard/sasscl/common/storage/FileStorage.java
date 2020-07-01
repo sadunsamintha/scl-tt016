@@ -472,7 +472,7 @@ public class FileStorage implements IStorage {
 			if (file != null && file.length() > 0) {
 				return storageBehavior.load(file);
 			} else {
-				logger.error("Loading empty data file: " + file);
+				logger.info("Loading empty data file: " + file);
 				return null;
 			}
 		} catch (StorageException e) {
