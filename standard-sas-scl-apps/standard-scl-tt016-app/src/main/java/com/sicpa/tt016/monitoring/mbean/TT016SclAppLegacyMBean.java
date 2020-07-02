@@ -271,21 +271,20 @@ public interface TT016SclAppLegacyMBean {
      * @return String
      */
     String getSizeOfBufferFolder();
-    
-    /**
-     * Return the size in byte of the release folder. This folder contains the
-     * not-sent production
-     *
-     * @return String
-     */
-    String getSizeOfReleasedFolder();
 
     /**
-     * Return the modification date of the oldest file from release folder.
+     * Return the modification date of the oldest file from buffer folder.
      *
      * @return String
      */
-    String getReleasedFolderOldestFile();
+    String getBufferFolderOldestFile();
+    
+    /**
+     * Return the modification date of the oldest file from packaged folder.
+     * 
+     * @return String
+     */
+    String getPackagedFolderOldestFile();
 
     /**
      * Return the number of files contained in the Quarantine folder.

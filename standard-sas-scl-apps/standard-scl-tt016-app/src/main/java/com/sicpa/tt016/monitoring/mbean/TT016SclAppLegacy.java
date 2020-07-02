@@ -199,13 +199,13 @@ public class TT016SclAppLegacy implements TT016SclAppLegacyMBean {
     }
 
     @Override
-    public String getSizeOfReleasedFolder() {
-        return tt016SclApp.getSizeOfPackagedFolder();
+    public String getBufferFolderOldestFile() {
+        return tt016SclApp.getOldestFileDateOfAFolder(TT016SasApp.PROFILE_FOLDER + TT016SasApp.BUFFER_FOLDER);
     }
-
+    
     @Override
-    public String getReleasedFolderOldestFile() {
-        return tt016SclApp.getPackagedFolderOldestFileDate();
+    public String getPackagedFolderOldestFile() {
+        return tt016SclApp.getOldestFileDateOfAFolder(TT016SasApp.PROFILE_FOLDER + TT016SasApp.PACKAGED_FOLDER);
     }
 
     @Override

@@ -11,6 +11,8 @@ import com.sicpa.standard.sasscl.devices.remote.connector.AbstractMasterConnecto
 import com.sicpa.standard.sasscl.model.EncoderInfo;
 import com.sicpa.standard.sasscl.model.PackagedProducts;
 import com.sicpa.standard.sasscl.model.ProductStatus;
+import com.sicpa.standard.sasscl.monitoring.MonitoringService;
+import com.sicpa.standard.sasscl.monitoring.system.event.BasicSystemEvent;
 import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.ProductionParameterRootNode;
 import com.sicpa.standard.sasscl.sicpadata.generator.IEncoder;
 import com.sicpa.standard.sasscl.sicpadata.reader.IAuthenticator;
@@ -25,6 +27,8 @@ import com.sicpa.tt016.scl.remote.remoteservices.ITT016RemoteServicesMSASLegacy;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static com.sicpa.standard.sasscl.monitoring.system.SystemEventType.LAST_SENT_TO_REMOTE_SERVER;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -106,9 +110,16 @@ public class TT016RemoteServerSAS extends AbstractRemoteServer implements IBisCr
 			} else {
 				logger.warn("package not handled:" + products.getProductStatus());
 			}
+			registerSendDataSystemEvent(products);
 		} catch (Exception e) {
 			throw new RemoteServerException("", e);
 		}
+	}
+	
+	private void registerSendDataSystemEvent(PackagedProducts products) {
+		int productCount = products.getProducts().size();
+		MonitoringService
+				.addSystemEvent(new BasicSystemEvent(LAST_SENT_TO_REMOTE_SERVER, String.valueOf(productCount)));
 	}
 
 	private void sendAuthenticatedData(PackagedProducts products) throws InternalException {
