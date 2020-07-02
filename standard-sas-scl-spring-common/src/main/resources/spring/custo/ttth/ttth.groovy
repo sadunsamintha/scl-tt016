@@ -16,5 +16,6 @@ beans {
         importBeans('spring/server/server-simulator.groovy')
     }
 
+    importBeans('spring/custo/ttth/ttth-view.groovy')
     importBeans('spring/custo/ttth/ttth-printer-common.groovy')
 }
