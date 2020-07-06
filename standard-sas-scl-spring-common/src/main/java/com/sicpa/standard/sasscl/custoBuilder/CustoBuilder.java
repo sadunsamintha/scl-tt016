@@ -180,7 +180,7 @@ public class CustoBuilder {
 		map.putAll(options);
 		PlcUtils.custoInfo.put(logicalName, map);
 	}
-
+	
 	/**
 	 * add a new available property to a class without extending it.<br/>
 	 * It is working only for class implementing ICustomizable: <li>SKU <li>Code <li>CodeType <li>Product <li>

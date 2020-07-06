@@ -99,6 +99,8 @@ public class TT016RemoteServerSAS extends AbstractRemoteServer implements IBisCr
 				sendEjectedData(products);
 			} else if (products.getProductStatus().equals(ProductStatus.EXPORT)) {
 				sendExportData(products);
+			} else if (products.getProductStatus().equals(TT016ProductStatus.AGING)) {
+				sendExportAgingData(products);
 			} else if (products.getProductStatus().equals(ProductStatus.MAINTENANCE)) {
 				sendMaintenanceData(products);
 			} else if (products.getProductStatus().equals(ProductStatus.REFEED)) {
@@ -147,6 +149,11 @@ public class TT016RemoteServerSAS extends AbstractRemoteServer implements IBisCr
 	private void sendExportData(PackagedProducts products) throws InternalException {
 		ExportSessionDTO data = productionDataConverter.convertExport(products, remoteServices.getSubsystemId());
 		remoteServices.sendExportProduction(data);
+	}
+	
+	private void sendExportAgingData(PackagedProducts products) throws InternalException {
+		ExportSessionDTO data = productionDataConverter.convertExportAging(products, remoteServices.getSubsystemId());
+		remoteServices.sendExportAgingProduction(data);
 	}
 	
 	private void sendOfflineCountingData(PackagedProducts products) throws InternalException {

@@ -12,40 +12,72 @@ import com.sicpa.tt016.scl.model.MoroccoSKU
 import javax.swing.*
 
 import static com.sicpa.standard.sasscl.model.ProductionMode.*
+import static com.sicpa.tt016.model.TT016ProductionMode.AGING
+
 
 beans {
+	def productionBehavior=props['production.config.folder'].toUpperCase()
 
     int SKU_BY_CODE_TYPE = 2
 
     def root = new ProductionParameterRootNode()
-
+	
+	def productionModesSAS = [
+        [mode: STANDARD, ct: [1, 2]],
+        [mode: EXPORT, ct: [4, 5]],
+        [mode: AGING, ct:[6, 7]]
+    ]
+	
     def productionModes = [
-            [mode: STANDARD, ct: [1, 2]],
-            [mode: EXPORT, ct: [4, 5]]
+        [mode: STANDARD, ct: [1, 2]],
+        [mode: EXPORT, ct: [4, 5]]
     ]
 
     int skuId = 0
-
-    for (e in productionModes) {
-        def pmn = new ProductionModeNode(e['mode'])
-        root.getChildren().add(pmn)
-        for (ctid in e['ct']) {
-            for (int i = 0; i < SKU_BY_CODE_TYPE; i++) {
-                def barcode = '000' + skuId
-                def description = 'ct:' + ctid + ' - skuid:' + skuId
-                def height = 440 + (i * 15)
-                def sku = new MoroccoSKU(skuId, description, [barcode])
-                def ct = new CodeType(ctid)
-                sku.setCodeType(ct)
-                sku.setProductHeight(height)
-                sku.setImage(new ImageIcon(ImageUtils.createRandomStrippedImage(60, 30)))
-                sku.setAppearanceCode(description)
-                def skuNode = new SKUNode(sku)
-                pmn.getChildren().add(skuNode)
-                skuId++
+    
+    if (productionBehavior == "PRODUCTIONCONFIG-SAS") {
+    	for (e in productionModesSAS) {
+            def pmn = new ProductionModeNode(e['mode'])
+            root.getChildren().add(pmn)
+            for (ctid in e['ct']) {
+                for (int i = 0; i < SKU_BY_CODE_TYPE; i++) {
+                    def barcode = '000' + skuId
+                    def description = 'ct:' + ctid + ' - skuid:' + skuId
+                    def height = 440 + (i * 15)
+                    def sku = new MoroccoSKU(skuId, description, [barcode])
+                    def ct = new CodeType(ctid)
+                    sku.setCodeType(ct)
+                    sku.setProductHeight(height)
+                    sku.setImage(new ImageIcon(ImageUtils.createRandomStrippedImage(60, 30)))
+                    sku.setAppearanceCode(description)
+                    def skuNode = new SKUNode(sku)
+                    pmn.getChildren().add(skuNode)
+                    skuId++
+                }
             }
         }
-    }
+	} else {
+		for (e in productionModes) {
+	        def pmn = new ProductionModeNode(e['mode'])
+	        root.getChildren().add(pmn)
+	        for (ctid in e['ct']) {
+	            for (int i = 0; i < SKU_BY_CODE_TYPE; i++) {
+	                def barcode = '000' + skuId
+	                def description = 'ct:' + ctid + ' - skuid:' + skuId
+	                def height = 440 + (i * 15)
+	                def sku = new MoroccoSKU(skuId, description, [barcode])
+	                def ct = new CodeType(ctid)
+	                sku.setCodeType(ct)
+	                sku.setProductHeight(height)
+	                sku.setImage(new ImageIcon(ImageUtils.createRandomStrippedImage(60, 30)))
+	                sku.setAppearanceCode(description)
+	                def skuNode = new SKUNode(sku)
+	                pmn.getChildren().add(skuNode)
+	                skuId++
+	            }
+	        }
+	    }
+	}
 
     def refeedAvailable = props['refeedAvailable'].toUpperCase()
 

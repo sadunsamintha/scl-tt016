@@ -139,6 +139,16 @@ public class ProductionDataConverter {
         return session;
     }
     
+    public ExportSessionDTO convertExportAging(PackagedProducts products, int subsystemId) {
+        int qty = products.getProducts().size();
+        int skuId = getSkuId(products);
+
+        ExportSessionDTO session = new ExportSessionDTO(1L, AGED_WINE_SESSION, qty, new Date(), skuId, subsystemId);
+        session.setTimestamps(getDates(products));
+
+        return session;
+    }
+    
     /**
      * @param products
      * @param subsystemId

@@ -135,6 +135,17 @@ public class TT016RemoteServicesMSASLegacy implements ITT016RemoteServicesMSASLe
 			logger.error("Problem while sending Export data to master SAS");
 		}
 	}
+	
+	@Override
+	@Timeout
+	public void sendExportAgingProduction(ExportSessionDTO data) throws InternalException {
+		logger.info("Sending export aging data");
+		try {
+			activationRemote.sendProductionQty(data, subsystemId);
+		} catch (Exception e) {
+			logger.error("Problem while sending Export Aging data to master SAS");
+		}
+	}
 
 	@Override
 	@Timeout

@@ -5,6 +5,8 @@ public interface TT016MessageEventKey {
     interface ACTIVATION {
         String NO_INK_IN_REFEED_MODE_MSG_CODE = "[ACT_100]";
         String NO_INK_IN_REFEED_MODE = "business.activation.refeed.noink";
+        String EXCEPTION_CODE_IN_AGING_MSG_CODE = "[ACT_101]";
+        String EXCEPTION_CODE_IN_AGING = "activation.err.aging.code";
     }
 
     interface AUTOMATEDBEAM {

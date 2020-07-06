@@ -16,5 +16,10 @@
         <property name="productionParameters" ref="productionParameters" />
         <property name="blobDetectionUtils" ref="blobDetectionUtils" />
     </bean>
+    
+    <bean id="agingActivationBehavior" class="com.sicpa.tt016.activation.AgingActivationBehavior">
+        <property name="productionParameters" ref="productionParameters" />
+        <property name="blobDetectionUtils" ref="blobDetectionUtils" />
+    </bean>
 
 </beans>

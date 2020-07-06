@@ -1,4 +1,5 @@
 import com.sicpa.standard.sasscl.devices.remote.lifecheck.MasterLifeCheckWorker
+import com.sicpa.tt016.remote.mapping.TT016ProductionModeMapping
 import com.sicpa.tt016.scl.remote.TT016RemoteServer
 import com.sicpa.tt016.scl.remote.TT016RemoteServerSAS
 import com.sicpa.tt016.scl.remote.remoteservices.TT016RemoteServices
@@ -72,4 +73,6 @@ beans{
 		refeedAvailable=props['refeedAvailable']
 		heightAvailable=props['automated.beam.enabled']
 	}
+	
+	productionModeMapping(TT016ProductionModeMapping)
 }
