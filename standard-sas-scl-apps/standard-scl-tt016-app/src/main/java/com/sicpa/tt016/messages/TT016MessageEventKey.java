@@ -24,6 +24,12 @@ public interface TT016MessageEventKey {
         String AUTOMATED_BEAM_INVALID_HEIGHT_DETECTED = "plc.motor.invalid.height";
         String AUTOMATED_BEAM_ERROR_STATE_MSG_CODE = "[PLC_85]";
         String AUTOMATED_BEAM_ERROR_STATE = "plc.motor.error.state";
+        String AUTOMATED_BEAM_ESTOP_STATE_MSG_CODE = "[PLC_86]";
+        String AUTOMATED_BEAM_ESTOP_STATE = "plc.motor.estop.state";
+        String AUTOMATED_BEAM_ESTOP_SWITCH_STATE_MSG_CODE = "[PLC_87]";
+        String AUTOMATED_BEAM_ESTOP_SWITCH_STATE_ENGAGED = "plc.motor.estop.switch.state.engaged";
+        String AUTOMATED_BEAM_ESTOP_SWITCH_STATE_RELEASED_MSG_CODE = "[PLC_88]";
+        String AUTOMATED_BEAM_ESTOP_SWITCH_STATE_RELEASED = "plc.motor.estop.switch.state.released";
         String SKU_SELECTION_VIEW_ACTIVE = "sku.selection.view.active";
     }
 }

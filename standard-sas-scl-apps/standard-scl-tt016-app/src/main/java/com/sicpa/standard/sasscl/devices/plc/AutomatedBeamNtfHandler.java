@@ -18,6 +18,9 @@ import static com.sicpa.standard.sasscl.devices.plc.PlcLineHelper.LINE_INDEX_PLA
 import static com.sicpa.tt016.messages.TT016MessageEventKey.AUTOMATEDBEAM.AUTOMATED_BEAM_ADJUST_HEIGHT;
 import static com.sicpa.tt016.messages.TT016MessageEventKey.AUTOMATEDBEAM.AUTOMATED_BEAM_AWAITING_RESET;
 import static com.sicpa.tt016.messages.TT016MessageEventKey.AUTOMATEDBEAM.AUTOMATED_BEAM_ERROR_STATE;
+import static com.sicpa.tt016.messages.TT016MessageEventKey.AUTOMATEDBEAM.AUTOMATED_BEAM_ESTOP_STATE;
+import static com.sicpa.tt016.messages.TT016MessageEventKey.AUTOMATEDBEAM.AUTOMATED_BEAM_ESTOP_SWITCH_STATE_ENGAGED;
+import static com.sicpa.tt016.messages.TT016MessageEventKey.AUTOMATEDBEAM.AUTOMATED_BEAM_ESTOP_SWITCH_STATE_RELEASED;
 import static com.sicpa.tt016.messages.TT016MessageEventKey.AUTOMATEDBEAM.AUTOMATED_BEAM_HEAD_TO_HOME;
 import static com.sicpa.tt016.messages.TT016MessageEventKey.AUTOMATEDBEAM.AUTOMATED_BEAM_INVALID_HEIGHT_DETECTED;
 import static com.sicpa.tt016.messages.TT016MessageEventKey.AUTOMATEDBEAM.AUTOMATED_BEAM_SAFETY_SENSOR_TRIG;
@@ -29,8 +32,6 @@ public class AutomatedBeamNtfHandler {
     private IPLCVariableMappping plcVariableMap;
 
     private PlcBeamAlertDetectedNotificationListener alertDetectedNotificationListener = new PlcBeamAlertDetectedNotificationListener();
-
-    private final static List<IPlcListener> eventContainer = new ArrayList<>();
 
     public void setPlcProvider(PlcProvider plcProvider) {
         this.plcProvider = plcProvider;
@@ -60,10 +61,15 @@ public class AutomatedBeamNtfHandler {
                 createNotificationVars(plcVariableMap
                     .getPhysicalVariableName(AutomatedBeamPlcEnums.REQUEST_INVALID_HEIGHT_DETECTED.toString()));
 
+            List<IPlcVariable<Boolean>> beamEStateSwitchNtfVars =
+                createNotificationVars(plcVariableMap
+                    .getPhysicalVariableName(AutomatedBeamPlcEnums.REQUEST_EMERGENCY_SWITCH_STATE.toString()));
+
             registerNtfVarsToListeners(beamResetDetectedNtfVars, alertDetectedNotificationListener);
             registerNtfVarsToListeners(beamAdjustingHeightNtfVars, alertDetectedNotificationListener);
             registerNtfVarsToListeners(beamErrorStateNtfVars, alertDetectedNotificationListener);
             registerNtfVarsToListeners(beamInvalidHeightNtfVars, alertDetectedNotificationListener);
+            registerNtfVarsToListeners(beamEStateSwitchNtfVars, alertDetectedNotificationListener);
 
             logger.info("Successfully registered >>>> " + alertDetectedNotificationListener);
 
@@ -94,6 +100,7 @@ public class AutomatedBeamNtfHandler {
         private boolean isHeadingHome = false;
         private boolean isSafetySensorAlertTriggered = false;
         private boolean isResetNeeded = false;
+        private boolean isESButtonEngaged = false;
 
         @Override
         public synchronized void onPlcEvent(PlcEvent event) {
@@ -106,6 +113,8 @@ public class AutomatedBeamNtfHandler {
                     .getNameOnPlc().replace(LINE_INDEX_PLACEHOLDER, lineIndex.toString());
                 String invalidHeightTrig = AutomatedBeamPlcEnums.REQUEST_INVALID_HEIGHT_DETECTED
                     .getNameOnPlc().replace(LINE_INDEX_PLACEHOLDER, lineIndex.toString());
+                String eStopSwitchTrig = AutomatedBeamPlcEnums.REQUEST_EMERGENCY_SWITCH_STATE
+                    .getNameOnPlc().replace(LINE_INDEX_PLACEHOLDER, lineIndex.toString());
 
                 if (adjustingHeight.equals(event.getVarName())) {
                     handleHeightAdjustmentNtf((Boolean) event.getValue());
@@ -115,6 +124,8 @@ public class AutomatedBeamNtfHandler {
                     handleErrorStateNtf((Boolean) event.getValue());
                 } else if (invalidHeightTrig.equals(event.getVarName())) {
                     handleInvalidHeightNtf((Boolean) event.getValue());
+                } else if (eStopSwitchTrig.equals(event.getVarName())) {
+                    handleEStopSwitchNtf((Boolean) event.getValue());
                 }
             }
         }
@@ -137,6 +148,7 @@ public class AutomatedBeamNtfHandler {
                     isResetNeeded = false;
                     EventBusService.post(new IssueSolvedMessage(AUTOMATED_BEAM_SAFETY_SENSOR_TRIG, plcProvider.get()));
                     EventBusService.post(new IssueSolvedMessage(AUTOMATED_BEAM_ADJUST_HEIGHT, plcProvider.get()));
+                    EventBusService.post(new IssueSolvedMessage(AUTOMATED_BEAM_ESTOP_STATE, plcProvider.get()));
                 }
             }
         }
@@ -166,6 +178,20 @@ public class AutomatedBeamNtfHandler {
             }
         }
 
+        private synchronized void handleEStopSwitchNtf(boolean isEStopSwitchTrig) {
+            if (isEStopSwitchTrig) {
+                isESButtonEngaged = true;
+                EventBusService.post(new MessageEvent(plcProvider.get(), AUTOMATED_BEAM_ESTOP_SWITCH_STATE_ENGAGED));
+                EventBusService.post(new MessageEvent(plcProvider.get(), AUTOMATED_BEAM_ESTOP_STATE));
+            } else {
+                if (isESButtonEngaged) {
+                    isESButtonEngaged = false;
+                    EventBusService.post(new MessageEvent(plcProvider.get(), AUTOMATED_BEAM_ESTOP_SWITCH_STATE_RELEASED));
+                    EventBusService.post(new IssueSolvedMessage(AUTOMATED_BEAM_ESTOP_SWITCH_STATE_ENGAGED, plcProvider.get()));
+                }
+            }
+        }
+
         @Override
         public List<String> getListeningVariables() {
             List<String> listVars = new ArrayList<>();
@@ -177,6 +203,8 @@ public class AutomatedBeamNtfHandler {
                 listVars.add(AutomatedBeamPlcEnums.REQUEST_ERROR_STATE_TRIG
                     .getNameOnPlc().replace(LINE_INDEX_PLACEHOLDER, lineIndex.toString()));
                 listVars.add(AutomatedBeamPlcEnums.REQUEST_INVALID_HEIGHT_DETECTED
+                    .getNameOnPlc().replace(LINE_INDEX_PLACEHOLDER, lineIndex.toString()));
+                listVars.add(AutomatedBeamPlcEnums.REQUEST_EMERGENCY_SWITCH_STATE
                     .getNameOnPlc().replace(LINE_INDEX_PLACEHOLDER, lineIndex.toString()));
             }
 

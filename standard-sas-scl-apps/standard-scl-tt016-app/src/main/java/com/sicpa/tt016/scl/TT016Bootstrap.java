@@ -1,5 +1,41 @@
 package com.sicpa.tt016.scl;
 
+import java.lang.management.ManagementFactory;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Properties;
+import javax.management.MBeanServer;
+import javax.management.ObjectName;
+
+import com.sicpa.standard.client.common.eventbus.service.EventBusService;
+import com.sicpa.standard.client.common.ioc.BeanProvider;
+import com.sicpa.standard.client.common.view.screensflow.ScreenTransition;
+import com.sicpa.standard.sasscl.Bootstrap;
+import com.sicpa.standard.sasscl.controller.flow.statemachine.FlowTransition;
+import com.sicpa.standard.sasscl.controller.productionconfig.mapping.IProductionConfigMapping;
+import com.sicpa.standard.sasscl.custoBuilder.CustoBuilder;
+import com.sicpa.standard.sasscl.devices.plc.AutomatedBeamHeightManager;
+import com.sicpa.standard.sasscl.devices.plc.AutomatedBeamNtfHandler;
+import com.sicpa.standard.sasscl.devices.plc.AutomatedBeamPlcEnums;
+import com.sicpa.standard.sasscl.devices.plc.PlcUtils;
+import com.sicpa.standard.sasscl.ioc.BeansName;
+import com.sicpa.standard.sasscl.messages.ActionEventWarning;
+import com.sicpa.standard.sasscl.messages.ActionMessageType;
+import com.sicpa.standard.sasscl.model.CodeType;
+import com.sicpa.standard.sasscl.model.ProductStatus;
+import com.sicpa.standard.sasscl.model.statistics.StatisticsKey;
+import com.sicpa.standard.sasscl.view.main.MainPanelGetter;
+import com.sicpa.tt016.business.ejection.EjectionTypeSender;
+import com.sicpa.tt016.model.DisallowedConfiguration;
+import com.sicpa.tt016.model.TT016Permission;
+import com.sicpa.tt016.model.TT016ProductStatus;
+import com.sicpa.tt016.model.TT016ProductionMode;
+import com.sicpa.tt016.monitoring.mbean.TT016SasAppLegacyMBean;
+import com.sicpa.tt016.monitoring.mbean.TT016SclAppLegacyMBean;
+import com.sicpa.tt016.provider.impl.TT016UnknownSkuProvider;
+import com.sicpa.tt016.util.LegacyEncoderConverter;
+import com.sicpa.tt016.view.selection.stop.StopReasonViewController;
+
 import static com.sicpa.standard.gui.plaf.SicpaColor.GREEN_DARK;
 import static com.sicpa.standard.gui.plaf.SicpaColor.RED;
 import static com.sicpa.standard.sasscl.controller.flow.ActivityTrigger.TRG_EXIT_APPLICATION;
@@ -36,6 +72,12 @@ import static com.sicpa.tt016.messages.TT016MessageEventKey.AUTOMATEDBEAM.AUTOMA
 import static com.sicpa.tt016.messages.TT016MessageEventKey.AUTOMATEDBEAM.AUTOMATED_BEAM_AWAITING_RESET_MSG_CODE;
 import static com.sicpa.tt016.messages.TT016MessageEventKey.AUTOMATEDBEAM.AUTOMATED_BEAM_ERROR_STATE;
 import static com.sicpa.tt016.messages.TT016MessageEventKey.AUTOMATEDBEAM.AUTOMATED_BEAM_ERROR_STATE_MSG_CODE;
+import static com.sicpa.tt016.messages.TT016MessageEventKey.AUTOMATEDBEAM.AUTOMATED_BEAM_ESTOP_STATE;
+import static com.sicpa.tt016.messages.TT016MessageEventKey.AUTOMATEDBEAM.AUTOMATED_BEAM_ESTOP_STATE_MSG_CODE;
+import static com.sicpa.tt016.messages.TT016MessageEventKey.AUTOMATEDBEAM.AUTOMATED_BEAM_ESTOP_SWITCH_STATE_ENGAGED;
+import static com.sicpa.tt016.messages.TT016MessageEventKey.AUTOMATEDBEAM.AUTOMATED_BEAM_ESTOP_SWITCH_STATE_MSG_CODE;
+import static com.sicpa.tt016.messages.TT016MessageEventKey.AUTOMATEDBEAM.AUTOMATED_BEAM_ESTOP_SWITCH_STATE_RELEASED;
+import static com.sicpa.tt016.messages.TT016MessageEventKey.AUTOMATEDBEAM.AUTOMATED_BEAM_ESTOP_SWITCH_STATE_RELEASED_MSG_CODE;
 import static com.sicpa.tt016.messages.TT016MessageEventKey.AUTOMATEDBEAM.AUTOMATED_BEAM_HEAD_TO_HOME;
 import static com.sicpa.tt016.messages.TT016MessageEventKey.AUTOMATEDBEAM.AUTOMATED_BEAM_HEAD_TO_HOME_MSG_CODE;
 import static com.sicpa.tt016.messages.TT016MessageEventKey.AUTOMATEDBEAM.AUTOMATED_BEAM_HEIGHT_SET;
@@ -48,46 +90,6 @@ import static com.sicpa.tt016.model.statistics.TT016StatisticsKey.EJECTED_PRODUC
 import static com.sicpa.tt016.model.statistics.TT016StatisticsKey.INK_DETECTED;
 import static com.sicpa.tt016.view.TT016ScreenFlowTriggers.STOP_PRODUCTION;
 import static com.sicpa.tt016.view.TT016ScreenFlowTriggers.STOP_PRODUCTION_REASON_SELECTED;
-
-import java.lang.management.ManagementFactory;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Properties;
-
-import javax.management.MBeanServer;
-import javax.management.ObjectName;
-
-import com.sicpa.standard.client.common.eventbus.service.EventBusService;
-import com.sicpa.standard.client.common.ioc.BeanProvider;
-import com.sicpa.standard.client.common.view.screensflow.ScreenTransition;
-import com.sicpa.standard.sasscl.Bootstrap;
-import com.sicpa.standard.sasscl.controller.flow.statemachine.FlowTransition;
-import com.sicpa.standard.sasscl.controller.productionconfig.mapping.IProductionConfigMapping;
-import com.sicpa.standard.sasscl.custoBuilder.CustoBuilder;
-import com.sicpa.standard.sasscl.devices.plc.AutomatedBeamHeightManager;
-import com.sicpa.standard.sasscl.devices.plc.AutomatedBeamNtfHandler;
-import com.sicpa.standard.sasscl.devices.plc.AutomatedBeamPlcEnums;
-import com.sicpa.standard.sasscl.devices.plc.IPlcParamSender;
-import com.sicpa.standard.sasscl.devices.plc.IPlcValuesLoader;
-import com.sicpa.standard.sasscl.devices.plc.PlcUtils;
-import com.sicpa.standard.sasscl.ioc.BeansName;
-import com.sicpa.standard.sasscl.messages.ActionEventWarning;
-import com.sicpa.standard.sasscl.messages.ActionMessageType;
-import com.sicpa.standard.sasscl.model.CodeType;
-import com.sicpa.standard.sasscl.model.ProductStatus;
-import com.sicpa.standard.sasscl.model.statistics.StatisticsKey;
-import com.sicpa.standard.sasscl.provider.impl.PlcProvider;
-import com.sicpa.standard.sasscl.view.main.MainPanelGetter;
-import com.sicpa.tt016.business.ejection.EjectionTypeSender;
-import com.sicpa.tt016.model.DisallowedConfiguration;
-import com.sicpa.tt016.model.TT016Permission;
-import com.sicpa.tt016.model.TT016ProductStatus;
-import com.sicpa.tt016.model.TT016ProductionMode;
-import com.sicpa.tt016.monitoring.mbean.TT016SasAppLegacyMBean;
-import com.sicpa.tt016.monitoring.mbean.TT016SclAppLegacyMBean;
-import com.sicpa.tt016.provider.impl.TT016UnknownSkuProvider;
-import com.sicpa.tt016.util.LegacyEncoderConverter;
-import com.sicpa.tt016.view.selection.stop.StopReasonViewController;
 
 public class TT016Bootstrap extends Bootstrap {
 
@@ -113,6 +115,11 @@ public class TT016Bootstrap extends Bootstrap {
 	public void executeSpringInitTasks() {
 		addAgingProductionMode();
 		super.executeSpringInitTasks();
+		if (isBeamEnabled) {
+			addErrorMessagesForAutomatedBeam();
+			initializeAlarmListenersForBeam();
+			sendSKUHeightToBeam();
+		}
 		noStopIfDmxDetectedInExport();
 		selectStopReasonWhenProductionStop();
 		setUnknownSkuCodeType();
@@ -127,11 +134,6 @@ public class TT016Bootstrap extends Bootstrap {
 		addNoInkInRefeedStatistic();
 		addAgingProductionModePermission();
 		addExportAgingStatistic();
-		if (isBeamEnabled) {
-			addErrorMessagesForAutomatedBeam();
-			initializeAlarmListenersForBeam();
-			sendSKUHeightToBeam();
-		}
 	}
 
 	public static void addPlcVariableJavaEjectionCounter() {
@@ -185,7 +187,7 @@ public class TT016Bootstrap extends Bootstrap {
 	private void addWarningIfNoInkInRefeedMode() {
 		addMessage(NO_INK_IN_REFEED_MODE, NO_INK_IN_REFEED_MODE_MSG_CODE, WARNING);
 	}
-	
+
 	private void addWarningCodeFoundInAgingMode() {
 		addMessage(EXCEPTION_CODE_IN_AGING, EXCEPTION_CODE_IN_AGING_MSG_CODE, WARNING);
 	}
@@ -197,6 +199,9 @@ public class TT016Bootstrap extends Bootstrap {
 		CustoBuilder.addMessage(AUTOMATED_BEAM_AWAITING_RESET, AUTOMATED_BEAM_AWAITING_RESET_MSG_CODE, ERROR_DISPLAY);
 		CustoBuilder.addMessage(AUTOMATED_BEAM_HEIGHT_SET, AUTOMATED_BEAM_HEIGHT_SET_MSG_CODE, WARNING);
 		CustoBuilder.addMessage(AUTOMATED_BEAM_ERROR_STATE, AUTOMATED_BEAM_ERROR_STATE_MSG_CODE, ERROR_DEVICE);
+		CustoBuilder.addMessage(AUTOMATED_BEAM_ESTOP_STATE, AUTOMATED_BEAM_ESTOP_STATE_MSG_CODE, ERROR_DEVICE);
+		CustoBuilder.addMessage(AUTOMATED_BEAM_ESTOP_SWITCH_STATE_ENGAGED, AUTOMATED_BEAM_ESTOP_SWITCH_STATE_MSG_CODE, ERROR_DEVICE);
+		CustoBuilder.addMessage(AUTOMATED_BEAM_ESTOP_SWITCH_STATE_RELEASED, AUTOMATED_BEAM_ESTOP_SWITCH_STATE_RELEASED_MSG_CODE, WARNING);
 
 		ActionMessageType invalidHeightMessageType = WARNING;
 		if (isBeamInvalidHeightError) {
@@ -232,16 +237,16 @@ public class TT016Bootstrap extends Bootstrap {
 	private void addNoInkInRefeedStatistic() {
 		addToStatisticsMapper(TT016ProductStatus.REFEED_NO_INK, StatisticsKey.BAD);
 	}
-	
+
     private void addAgingProductionMode() {
 		IProductionConfigMapping mapping = BeanProvider.getBean(PRODUCTION_CONFIG_MAPPING);
 		mapping.put(TT016ProductionMode.AGING, "aging");
 	}
-	
+
 	private void addAgingProductionModePermission() {
 		setProductionModePermission(TT016ProductionMode.AGING, TT016Permission.PRODUCTION_MODE_AGING);
 	}
-	
+
 	private void addExportAgingStatistic() {
 		addToStatisticsMapper(TT016ProductStatus.AGING, StatisticsKey.GOOD);
 	}
@@ -290,8 +295,6 @@ public class TT016Bootstrap extends Bootstrap {
 		disallowedConfigurations.forEach(
 				d -> d.validate(configuration, (k,p) -> EventBusService.post(new ActionEventWarning(k,null,p))));
 	}
-	
-	
 
 	public void setMainPanelGetter(MainPanelGetter mainPanelGetter) {
 		this.mainPanelGetter = mainPanelGetter;

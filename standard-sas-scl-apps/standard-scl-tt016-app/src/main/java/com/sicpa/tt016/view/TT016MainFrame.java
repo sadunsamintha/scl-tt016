@@ -2,7 +2,7 @@ package com.sicpa.tt016.view;
 
 import static com.sicpa.standard.client.common.security.SecurityService.hasPermission;
 import static com.sicpa.tt016.messages.TT016MessageEventKey.AUTOMATEDBEAM.AUTOMATED_BEAM_AWAITING_RESET;
-import static com.sicpa.tt016.messages.TT016MessageEventKey.AUTOMATEDBEAM.AUTOMATED_BEAM_ERROR_STATE;
+import static com.sicpa.tt016.messages.TT016MessageEventKey.AUTOMATEDBEAM.AUTOMATED_BEAM_ESTOP_SWITCH_STATE_RELEASED;
 import static com.sicpa.tt016.messages.TT016MessageEventKey.AUTOMATEDBEAM.SKU_SELECTION_VIEW_ACTIVE;
 
 import com.google.common.eventbus.Subscribe;
@@ -65,7 +65,8 @@ public class TT016MainFrame extends MainFrame {
 
 	@Subscribe
 	public void handleBeamResetToHome(MessageEvent evt) {
-		if (evt.getKey().equals(AUTOMATED_BEAM_AWAITING_RESET))
+		if (evt.getKey().equals(AUTOMATED_BEAM_AWAITING_RESET) ||
+		evt.getKey().equals(AUTOMATED_BEAM_ESTOP_SWITCH_STATE_RELEASED))
 		resetBeamView.setVisible(true);
 	}
 
