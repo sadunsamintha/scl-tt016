@@ -14,6 +14,7 @@ import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.Producti
 import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.ProductionParameterRootNode;
 import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.SKUNode;
 import com.sicpa.tt016.common.dto.SkuDTO;
+import com.sicpa.tt016.model.TT016ProductionMode;
 import com.sicpa.tt016.scl.model.MoroccoSKU;
 
 import static com.sicpa.standard.gui.utils.ImageUtils.convertToBufferedImage;
@@ -35,6 +36,7 @@ public class SkuConverter {
         ProductionModeNode domesticMode = new ProductionModeNode(ProductionMode.STANDARD);
         ProductionModeNode refeedMode = new ProductionModeNode(ProductionMode.REFEED_NORMAL);
         ProductionModeNode exportMode = new ProductionModeNode(ProductionMode.EXPORT);
+        ProductionModeNode agingMode = new ProductionModeNode(TT016ProductionMode.AGING);
         ProductionModeNode maintenanceMode = new ProductionModeNode(ProductionMode.MAINTENANCE);
 
        	productionNormal = Messages.messages.get("language/sasscl").getString("productionmode.standard");
@@ -55,15 +57,17 @@ public class SkuConverter {
                 }
             } else if (dto.isExportMarket()) {
                 exportMode.addChildren(node);
+            } else if (dto.isAgedWineMarket()) {
+            	agingMode.addChildren(node);
             } else {
                 logger.error("unsupported market type id:" + dto.getMarketType());
             }
         }
 
         if (refeedAvailable && !refeedMode.getChildren().isEmpty()) {
-            root.addChildren(domesticMode, exportMode, refeedMode, maintenanceMode);
+            root.addChildren(domesticMode, exportMode, agingMode, refeedMode, maintenanceMode);
         } else {
-            root.addChildren(domesticMode, exportMode, maintenanceMode);
+            root.addChildren(domesticMode, exportMode, agingMode, maintenanceMode);
         }
         return root;
     }

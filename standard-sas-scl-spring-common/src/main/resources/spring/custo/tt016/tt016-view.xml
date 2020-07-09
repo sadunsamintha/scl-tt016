@@ -88,5 +88,14 @@
 		<property name="model" value="#{selectionDisplayViewController.model}" />
 		<property name="beamEnabled" value="#{${automated.beam.enabled}}"/>
 	</bean>
+	
+	<bean id="plcVariablesPanelController" class="com.sicpa.tt016.view.plc.TT016MultiEditablePlcVariablesController" />
+	<bean id="plcVariablesPanel" class="com.sicpa.tt016.view.plc.TT016MultiEditablePlcVariablesSet">
+		<property name="editablePlcVariablesController" ref="plcVariablesPanelController" />
+		<property name="productionBehaviorVar" value="${production.config.folder}" />
+		<property name="plcParamSender" ref="plcParamSender" />
+        <property name="plcProvider" ref="plcProvider" />
+        <property name="plcValuesLoader" ref="plcValuesLoader" />
+	</bean>
 
 </beans>

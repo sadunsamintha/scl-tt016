@@ -22,7 +22,7 @@ public class PlcVariablePanel extends JPanel {
 		initGUI();
 	}
 
-	private void initGUI() {
+	protected void initGUI() {
 		setLayout(new MigLayout());
 		for (PlcVariableGroup grp : groups) {
 			add(new PanelGroup(grp), "growx,pushx,wrap");

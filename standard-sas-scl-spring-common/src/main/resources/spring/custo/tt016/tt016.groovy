@@ -7,6 +7,8 @@ import com.sicpa.tt016.printer.simulator.TT016PrinterAdaptorSimulator
 import com.sicpa.tt016.devices.plc.impl.TT016PlcLoader
 
 beans{
+	importBeans('spring/custo/tt016/plc/tt016.plc-import.groovy')
+	
 	tt016TrilightWarningCameraAlert(TT016TrilightWarningCameraAlert) {
 		plcParamSender=ref('plcParamSender')
 		reqJavaErrorRegisterVar= ref('REQUEST_JAVA_WARNINGS_AND_ERRORS_REGISTER_var')

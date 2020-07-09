@@ -1,41 +1,5 @@
 package com.sicpa.tt016.scl;
 
-import java.lang.management.ManagementFactory;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Properties;
-import javax.management.MBeanServer;
-import javax.management.ObjectName;
-
-import com.sicpa.standard.client.common.eventbus.service.EventBusService;
-import com.sicpa.standard.client.common.ioc.BeanProvider;
-import com.sicpa.standard.client.common.view.screensflow.ScreenTransition;
-import com.sicpa.standard.sasscl.Bootstrap;
-import com.sicpa.standard.sasscl.controller.flow.statemachine.FlowTransition;
-import com.sicpa.standard.sasscl.controller.productionconfig.mapping.IProductionConfigMapping;
-import com.sicpa.standard.sasscl.custoBuilder.CustoBuilder;
-import com.sicpa.standard.sasscl.devices.plc.AutomatedBeamHeightManager;
-import com.sicpa.standard.sasscl.devices.plc.AutomatedBeamNtfHandler;
-import com.sicpa.standard.sasscl.devices.plc.AutomatedBeamPlcEnums;
-import com.sicpa.standard.sasscl.devices.plc.PlcUtils;
-import com.sicpa.standard.sasscl.ioc.BeansName;
-import com.sicpa.standard.sasscl.messages.ActionEventWarning;
-import com.sicpa.standard.sasscl.messages.ActionMessageType;
-import com.sicpa.standard.sasscl.model.CodeType;
-import com.sicpa.standard.sasscl.model.ProductStatus;
-import com.sicpa.standard.sasscl.model.statistics.StatisticsKey;
-import com.sicpa.standard.sasscl.view.main.MainPanelGetter;
-import com.sicpa.tt016.business.ejection.EjectionTypeSender;
-import com.sicpa.tt016.model.DisallowedConfiguration;
-import com.sicpa.tt016.model.TT016Permission;
-import com.sicpa.tt016.model.TT016ProductStatus;
-import com.sicpa.tt016.model.TT016ProductionMode;
-import com.sicpa.tt016.monitoring.mbean.TT016SasAppLegacyMBean;
-import com.sicpa.tt016.monitoring.mbean.TT016SclAppLegacyMBean;
-import com.sicpa.tt016.provider.impl.TT016UnknownSkuProvider;
-import com.sicpa.tt016.util.LegacyEncoderConverter;
-import com.sicpa.tt016.view.selection.stop.StopReasonViewController;
-
 import static com.sicpa.standard.gui.plaf.SicpaColor.GREEN_DARK;
 import static com.sicpa.standard.gui.plaf.SicpaColor.RED;
 import static com.sicpa.standard.sasscl.controller.flow.ActivityTrigger.TRG_EXIT_APPLICATION;
@@ -90,6 +54,43 @@ import static com.sicpa.tt016.model.statistics.TT016StatisticsKey.EJECTED_PRODUC
 import static com.sicpa.tt016.model.statistics.TT016StatisticsKey.INK_DETECTED;
 import static com.sicpa.tt016.view.TT016ScreenFlowTriggers.STOP_PRODUCTION;
 import static com.sicpa.tt016.view.TT016ScreenFlowTriggers.STOP_PRODUCTION_REASON_SELECTED;
+
+import java.lang.management.ManagementFactory;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Properties;
+
+import javax.management.MBeanServer;
+import javax.management.ObjectName;
+
+import com.sicpa.standard.client.common.eventbus.service.EventBusService;
+import com.sicpa.standard.client.common.ioc.BeanProvider;
+import com.sicpa.standard.client.common.view.screensflow.ScreenTransition;
+import com.sicpa.standard.sasscl.Bootstrap;
+import com.sicpa.standard.sasscl.controller.flow.statemachine.FlowTransition;
+import com.sicpa.standard.sasscl.controller.productionconfig.mapping.IProductionConfigMapping;
+import com.sicpa.standard.sasscl.custoBuilder.CustoBuilder;
+import com.sicpa.standard.sasscl.devices.plc.AutomatedBeamHeightManager;
+import com.sicpa.standard.sasscl.devices.plc.AutomatedBeamNtfHandler;
+import com.sicpa.standard.sasscl.devices.plc.AutomatedBeamPlcEnums;
+import com.sicpa.standard.sasscl.devices.plc.PlcUtils;
+import com.sicpa.standard.sasscl.ioc.BeansName;
+import com.sicpa.standard.sasscl.messages.ActionEventWarning;
+import com.sicpa.standard.sasscl.messages.ActionMessageType;
+import com.sicpa.standard.sasscl.model.CodeType;
+import com.sicpa.standard.sasscl.model.ProductStatus;
+import com.sicpa.standard.sasscl.model.statistics.StatisticsKey;
+import com.sicpa.standard.sasscl.view.main.MainPanelGetter;
+import com.sicpa.tt016.business.ejection.EjectionTypeSender;
+import com.sicpa.tt016.model.DisallowedConfiguration;
+import com.sicpa.tt016.model.TT016Permission;
+import com.sicpa.tt016.model.TT016ProductStatus;
+import com.sicpa.tt016.model.TT016ProductionMode;
+import com.sicpa.tt016.monitoring.mbean.TT016SasAppLegacyMBean;
+import com.sicpa.tt016.monitoring.mbean.TT016SclAppLegacyMBean;
+import com.sicpa.tt016.provider.impl.TT016UnknownSkuProvider;
+import com.sicpa.tt016.util.LegacyEncoderConverter;
+import com.sicpa.tt016.view.selection.stop.StopReasonViewController;
 
 public class TT016Bootstrap extends Bootstrap {
 
@@ -295,7 +296,7 @@ public class TT016Bootstrap extends Bootstrap {
 		disallowedConfigurations.forEach(
 				d -> d.validate(configuration, (k,p) -> EventBusService.post(new ActionEventWarning(k,null,p))));
 	}
-
+	
 	public void setMainPanelGetter(MainPanelGetter mainPanelGetter) {
 		this.mainPanelGetter = mainPanelGetter;
 	}
