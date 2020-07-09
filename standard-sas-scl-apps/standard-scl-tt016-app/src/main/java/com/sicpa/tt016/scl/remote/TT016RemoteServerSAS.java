@@ -152,7 +152,7 @@ public class TT016RemoteServerSAS extends AbstractRemoteServer implements IBisCr
 	}
 	
 	private void sendExportAgingData(PackagedProducts products) throws InternalException {
-		ExportSessionDTO data = productionDataConverter.convertExportAging(products, remoteServices.getSubsystemId());
+		AgedWineSessionDTO data = productionDataConverter.convertExportAging(products, remoteServices.getSubsystemId());
 		remoteServices.sendExportAgingProduction(data);
 	}
 	

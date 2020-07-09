@@ -21,6 +21,7 @@ import com.sicpa.standard.client.common.timeout.TimeoutLifeCheck;
 import com.sicpa.standard.crypto.exceptions.CryptoException;
 import com.sicpa.tt016.master.sas.business.interfaces.IActivationRemote;
 import com.sicpa.tt016.common.dto.ActivationSessionDTO;
+import com.sicpa.tt016.common.dto.AgedWineSessionDTO;
 import com.sicpa.tt016.common.dto.ExportSessionDTO;
 import com.sicpa.tt016.common.dto.IEjectionDTO;
 import com.sicpa.tt016.common.dto.MaintenanceSessionDTO;
@@ -138,7 +139,7 @@ public class TT016RemoteServicesMSASLegacy implements ITT016RemoteServicesMSASLe
 	
 	@Override
 	@Timeout
-	public void sendExportAgingProduction(ExportSessionDTO data) throws InternalException {
+	public void sendExportAgingProduction(AgedWineSessionDTO data) throws InternalException {
 		logger.info("Sending export aging data");
 		try {
 			activationRemote.sendProductionQty(data, subsystemId);

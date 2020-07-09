@@ -23,7 +23,7 @@ public interface ITT016RemoteServicesMSASLegacy {
 
 	void sendExportProduction(ExportSessionDTO data) throws InternalException;
 	
-	void sendExportAgingProduction(ExportSessionDTO data) throws InternalException;
+	void sendExportAgingProduction(AgedWineSessionDTO data) throws InternalException;
 
 	void sendMaintenanceProduction(MaintenanceSessionDTO data) throws InternalException;
 
