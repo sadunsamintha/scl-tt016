@@ -25,7 +25,6 @@ import static com.sicpa.standard.sasscl.messages.ActionMessageType.ERROR_DISPLAY
 import static com.sicpa.standard.sasscl.messages.ActionMessageType.WARNING;
 import static com.sicpa.standard.sasscl.messages.MessageEventKey.Activation.EXCEPTION_CODE_IN_EXPORT;
 import static com.sicpa.standard.sasscl.messages.MessageEventKey.BRS.BRS_WRONG_SKU;
-import static com.sicpa.standard.sasscl.messages.MessageEventKey.PLC.PLC_ERR_DOUBLE_LABEL_APP_ERROR;
 import static com.sicpa.tt016.controller.flow.TT016ActivityTrigger.TRG_STOP_REASON_SELECTED;
 import static com.sicpa.tt016.messages.TT016MessageEventKey.ACTIVATION.EXCEPTION_CODE_IN_AGING;
 import static com.sicpa.tt016.messages.TT016MessageEventKey.ACTIVATION.EXCEPTION_CODE_IN_AGING_MSG_CODE;
@@ -130,7 +129,6 @@ public class TT016Bootstrap extends Bootstrap {
 		sendEjectionTypeForProductionMode();
 		addDisallowedConfigurations(BeanProvider.getBean(BeansName.ALL_PROPERTIES));
 		noStopIfBrsWrongCodeDetected();
-		noStopIfDoubleLabelApplicator();
 		addWarningIfNoInkInRefeedMode();
 		addWarningCodeFoundInAgingMode();
 		convertLegacyEncodersIfAny();
@@ -215,10 +213,6 @@ public class TT016Bootstrap extends Bootstrap {
 
 	private void noStopIfBrsWrongCodeDetected() {
 		setMessageType(BRS_WRONG_SKU, WARNING);
-	}
-	
-	private void noStopIfDoubleLabelApplicator() {
-		setMessageType(PLC_ERR_DOUBLE_LABEL_APP_ERROR, WARNING);
 	}
 
 	private void sendEjectionTypeForProductionMode() {
