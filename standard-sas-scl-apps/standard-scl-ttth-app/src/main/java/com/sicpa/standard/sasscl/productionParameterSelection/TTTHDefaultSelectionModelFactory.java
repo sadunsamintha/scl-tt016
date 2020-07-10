@@ -5,9 +5,12 @@ import java.util.List;
 
 import com.sicpa.standard.gui.screen.machine.component.SelectionFlow.flow.AbstractSelectionFlowModel;
 import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.ProductionParameterRootNode;
+import com.sicpa.standard.sasscl.productionParameterSelection.selectionmodel.DefaultSelectionModel;
 import com.sicpa.standard.sasscl.productionParameterSelection.selectionmodel.ProductionModeSelectionOnlyModel;
 
 public class TTTHDefaultSelectionModelFactory implements ISelectionModelFactory {
+
+	private final String markingType = "Beer Marking";
 
 	private final List<IConfigFlowModel> configTasks = new ArrayList<>();
 
@@ -23,7 +26,11 @@ public class TTTHDefaultSelectionModelFactory implements ISelectionModelFactory 
 	}
 
 	private AbstractSelectionFlowModel createModel(ProductionParameterRootNode root) {
-		return new ProductionModeSelectionOnlyModel(root);
+		if (root.getChildren().stream().anyMatch(node -> node.getText().equals(markingType))) {
+			return new DefaultSelectionModel(root);
+		} else {
+			return new ProductionModeSelectionOnlyModel(root);
+		}
 	}
 
 	private void configModel(AbstractSelectionFlowModel model) {
