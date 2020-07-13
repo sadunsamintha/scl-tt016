@@ -19,6 +19,11 @@
 			<artifactId>standard-gui-laf</artifactId>
 			<version>1.2.11-TH</version>
 		</dependency>
+		<dependency>
+			<groupId>com.sicpa.standard.gui</groupId>
+			<artifactId>standard-gui-screen</artifactId>
+			<version>1.2.11-TH</version>
+		</dependency>
 	</dependencies>
 
 </project>
