@@ -359,6 +359,12 @@
 			</dependency>
 
 			<dependency>
+				<groupId>com.thoughtworks.xstream</groupId>
+				<artifactId>xstream</artifactId>
+				<version>1.4.11.1</version>
+			</dependency>
+
+			<dependency>
 				<groupId>com.sicpa.standard.sasscl</groupId>
 				<artifactId>business-sku-recognition</artifactId>
 				<version>2.6.7-SNAPSHOT</version>
