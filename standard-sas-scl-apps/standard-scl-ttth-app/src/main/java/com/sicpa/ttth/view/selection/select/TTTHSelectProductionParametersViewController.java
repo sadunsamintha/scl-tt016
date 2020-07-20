@@ -29,35 +29,32 @@ public class TTTHSelectProductionParametersViewController extends SelectProducti
 	@Override
 	public void productionParametersSelected(ProductionParameters pp) {
 		if (pp.getSku() == null) {
-			if (pp.getProductionMode() == ProductionMode.STANDARD) {
+			if (pp.getProductionMode() == ProductionMode.EXPORT) {
+				mainFrameController.setProductionMode(pp.getProductionMode());
+				showExportSKUList();
+			} else if (pp.getProductionMode() != ProductionMode.MAINTENANCE) {
 				mainFrameController.setProductionMode(pp.getProductionMode());
 				screensFlow.moveToNext(TTTHScreenFlowTriggers.STANDARD_MODE_TRANSITION);
 				CustoBuilder.addPropertyToClass(ProductionParameters.class, productionBatchId);
-			} else if (pp.getProductionMode() == ProductionMode.EXPORT) {
-				mainFrameController.setProductionMode(pp.getProductionMode());
-				showExportSKUList();
 			} else {
-				//Maintenance/Counting mode
 				addSkuDetailsToMainFrame(pp);
 				mainFrameController.productionParametersChanged();
 				screensFlow.moveToNext(ScreensFlowTriggers.PRODUCTION_PARAMETER_SELECTED);
 			}
 		} else {
-			//Workaround for single leaf selection view.
-			if (mainFrameController.getProductionMode() == ProductionMode.STANDARD) {
-				EventBusService.post(new BarcodeSkuModel(pp.getSku().getBarCodes()));
-				pp.setProductionMode(mainFrameController.getProductionMode());
-				pp.setProperty(productionBatchId, strBatchId);
-				isBatchIDSet = false;
-				addSkuDetailsToMainFrame(pp);
-				screensFlow.moveToNext(TTTHScreenFlowTriggers.BARCODE_TRANSITION);
-			}
 			if (mainFrameController.getProductionMode() == ProductionMode.EXPORT) {
 				pp.setProductionMode(mainFrameController.getProductionMode());
 				addSkuDetailsToMainFrame(pp);
 				mainFrameController.productionParametersChanged();
 				screensFlow.moveToNext(ScreensFlowTriggers.PRODUCTION_PARAMETER_SELECTED);
-			}
+			} else {
+                EventBusService.post(new BarcodeSkuModel(pp.getSku().getBarCodes()));
+                pp.setProductionMode(mainFrameController.getProductionMode());
+                pp.setProperty(productionBatchId, strBatchId);
+                isBatchIDSet = false;
+                addSkuDetailsToMainFrame(pp);
+                screensFlow.moveToNext(TTTHScreenFlowTriggers.BARCODE_TRANSITION);
+            }
 		}
 	}
 
