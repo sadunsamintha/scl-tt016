@@ -42,6 +42,7 @@ rollingFileAppendersTime = [
 	[id: "STDPLC",       file:"log/day.%d{yyyy-MM-dd}-plc.log.zip"]
 ]
 rollingFileAppendersSize = [
+	[id: "TT077", 		 file:"log/tt077.log", 	   fileZip: "log/tt077-.%i.log.zip"],
 	[id: "STDCAMERA",    file:"log/camera.log",    fileZip: "log/camera-.%i.log.zip"],
 	[id: "STDPRINTER",   file:"log/printer.log",   fileZip: "log/printer-.%i.log.zip"],
 	[id: "STDOPERATOR",  file:"log/operator.log",  fileZip: "log/operator-.%i.log.zip"],
@@ -76,6 +77,7 @@ rollingFileAppendersSize.each { c ->
 	}
 }
 
+logger("com.sicpa.tt077",     	                                DEBUG,  ["SASSCL","TT077"],      true)
 logger("com.sicpa.standard.sasscl",     	                    ERROR,  ["SASSCL"],      true)
 logger("com.sicpa.standard.sasscl.common.log",   				ERROR,   ["STDOPERATOR"],  true)
 logger("com.sicpa.standard.sasscl.devices.brs",                 ERROR,  ["BRS"],		  true)
