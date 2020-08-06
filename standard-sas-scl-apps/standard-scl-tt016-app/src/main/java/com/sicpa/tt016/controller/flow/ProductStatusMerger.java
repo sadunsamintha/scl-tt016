@@ -117,9 +117,10 @@ public class ProductStatusMerger extends StandardActivationBehavior {
 		
 		synchronized (lock) {
 			cameraResults.add(cameraResult);
-			EventBusService.post(cameraResult);
+
 
 			if (isPlcCameraStatusAvailable()) {
+				EventBusService.post(cameraResult);
 				mergeProductStatuses();
 			}
 		}

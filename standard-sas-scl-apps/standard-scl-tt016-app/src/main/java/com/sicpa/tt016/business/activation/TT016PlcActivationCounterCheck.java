@@ -21,22 +21,11 @@ public class TT016PlcActivationCounterCheck extends PlcActivationCounterCheck {
 	private static Logger logger = LoggerFactory.getLogger(TT016PlcActivationCounterCheck.class);
 	
 	protected ProductionParameters productionParameters;
-	
-	@Subscribe
-	public void receiveNewCameraProduct(CameraResult event) {
-		// Increment counterFromActivation here for Standard/Domestic Production Mode only
-		
-		if (model.isEnabled() && productionParameters.getProductionMode().equals(ProductionMode.STANDARD)) {
-			counterFromActivation.incrementAndGet();
-		}
-	}
-	
+
 	@Override
 	@Subscribe
 	public void notifyNewProduct(NewProductEvent evt) {
-		// Don't increment counterFromActivation here for Standard/Domestic Production Mode
-		
-		if (model.isEnabled() && !productionParameters.getProductionMode().equals(ProductionMode.STANDARD)) {
+		if (model.isEnabled()) {
 			if (acceptProduct(evt.getProduct())) {
 				counterFromActivation.incrementAndGet();
 			}
