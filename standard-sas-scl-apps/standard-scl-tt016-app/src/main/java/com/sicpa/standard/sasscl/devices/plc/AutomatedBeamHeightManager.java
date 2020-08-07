@@ -66,6 +66,7 @@ public class AutomatedBeamHeightManager {
             if (plcParamSender != null) {
                 try {
                     plcParamSender.sendToPlc(REQUEST_EMERGENCY_LINK_STATE.toString(), String.valueOf(true), lineIndex);
+                    plcParamSender.sendToPlc(REQUEST_BEAM_PWR_RESET.toString(), String.valueOf(true), lineIndex);
                     plcParamSender.sendToPlc(PARAM_PRODUCT_HEIGHT_MM.toString(), String.valueOf(value), lineIndex);
                     EventBusService.post(new MessageEvent(AUTOMATED_BEAM_HEIGHT_SET));
                     plcParamSender.sendToPlc(REQUEST_BEAM_HEAD_TO_HEIGHT.toString(), String.valueOf(true), lineIndex);
@@ -121,7 +122,9 @@ public class AutomatedBeamHeightManager {
     public void handleSkuReselection(MessageEvent evt) {
         if (evt.getKey().equals(SKU_SELECTION_VIEW_ACTIVE) && isResetHandlerActive) {
             isSafetySensorTriggered = false;
-            isEStopState = false;
+            if (isEStopState) {
+                resetEStopstate();
+            }
             resetBeamInvalidHeightError();
         }
     }
