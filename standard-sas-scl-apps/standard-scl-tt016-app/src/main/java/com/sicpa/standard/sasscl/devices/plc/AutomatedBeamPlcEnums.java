@@ -39,7 +39,10 @@ public enum AutomatedBeamPlcEnums {
 	REQUEST_EMERGENCY_SWITCH_STATE(".com.stLine[#x].stRequests.diFlag_EmergencySwitch", PlcUtils.PLC_TYPE.B),
 
 	//This is used for starting up the relay link.
-	REQUEST_EMERGENCY_LINK_STATE(".com.stLine[#x].stRequests.doFlag_bEmergencyLink", PlcUtils.PLC_TYPE.B);
+	REQUEST_EMERGENCY_LINK_STATE(".com.stLine[#x].stRequests.doFlag_bEmergencyLink", PlcUtils.PLC_TYPE.B),
+
+	//This is used to reset the beam power.
+	REQUEST_BEAM_PWR_RESET(".com.stLine[#x].stRequests.diFlag_BeamReset", PlcUtils.PLC_TYPE.B);
 
 	private String nameOnPlc;
 	private PlcUtils.PLC_TYPE plc_type;

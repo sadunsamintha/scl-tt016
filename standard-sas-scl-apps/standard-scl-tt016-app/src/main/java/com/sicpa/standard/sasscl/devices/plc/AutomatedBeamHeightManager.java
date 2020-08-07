@@ -14,6 +14,7 @@ import com.sicpa.tt016.scl.model.MoroccoSKU;
 
 import static com.sicpa.standard.sasscl.devices.plc.AutomatedBeamPlcEnums.PARAM_PRODUCT_HEIGHT_MM;
 import static com.sicpa.standard.sasscl.devices.plc.AutomatedBeamPlcEnums.REQUEST_BEAM_HEAD_TO_HEIGHT;
+import static com.sicpa.standard.sasscl.devices.plc.AutomatedBeamPlcEnums.REQUEST_BEAM_PWR_RESET;
 import static com.sicpa.standard.sasscl.devices.plc.AutomatedBeamPlcEnums.REQUEST_EMERGENCY_LINK_STATE;
 import static com.sicpa.standard.sasscl.devices.plc.AutomatedBeamPlcEnums.REQUEST_INVALID_HEIGHT_DETECTED;
 import static com.sicpa.tt016.messages.TT016MessageEventKey.AUTOMATEDBEAM.AUTOMATED_BEAM_ESTOP_STATE;
@@ -77,16 +78,26 @@ public class AutomatedBeamHeightManager {
         }
     }
 
-    private void resetBeamInvalidHeightError() {
+    private void setBeamPlcBFlags(AutomatedBeamPlcEnums flag, boolean value) {
         for (Integer lineIndex : PlcLineHelper.getLineIndexes()) {
             try {
-                plcParamSender.sendToPlc(REQUEST_INVALID_HEIGHT_DETECTED.toString(), String.valueOf(false), lineIndex);
+                plcParamSender.sendToPlc(flag.toString(), String.valueOf(value), lineIndex);
             } catch (PlcAdaptorException e) {
                 logger.error("Failed to write to PlcVariable {} >> {}",
-                    REQUEST_INVALID_HEIGHT_DETECTED.toString(),
+                    flag.toString(),
                     false);            }
         }
+    }
+
+    private void resetBeamInvalidHeightError() {
+        setBeamPlcBFlags(REQUEST_INVALID_HEIGHT_DETECTED, false);
         EventBusService.post(new IssueSolvedMessage(AUTOMATED_BEAM_INVALID_HEIGHT_DETECTED, plcProvider.get()));
+    }
+
+    private void resetEStopstate() {
+        setBeamPlcBFlags(REQUEST_BEAM_PWR_RESET, true);
+        EventBusService.post(new IssueSolvedMessage(AUTOMATED_BEAM_ESTOP_STATE, plcProvider.get()));
+        isEStopState = false;
     }
 
     //Disable EStop state upon operator reset
@@ -95,8 +106,7 @@ public class AutomatedBeamHeightManager {
     public void handleBeamReset(AutomatedBeamResetEvent evt) {
         logger.info(evt.message);
         if (isEStopState) {
-            EventBusService.post(new IssueSolvedMessage(AUTOMATED_BEAM_ESTOP_STATE, plcProvider.get()));
-            isEStopState = false;
+            resetEStopstate();
         }
         if (isSafetySensorTriggered) {
             EventBusService.post(new IssueSolvedMessage(AUTOMATED_BEAM_HEAD_TO_HOME, plcProvider.get()));
