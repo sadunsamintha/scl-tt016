@@ -31,8 +31,12 @@
 	<rotation>0</rotation>
 	<bitmapRotation>0</bitmapRotation>
 	<bitmapInverted>0</bitmapInverted>
-	<invertedText>false</invertedText>	
-	<reversedText>true</reversedText>	
+	<invertedDataMatrix>false</invertedDataMatrix>
+	<reversedDataMatrix>false</reversedDataMatrix>
+	<invertedText>false</invertedText>
+	<reversedText>true</reversedText>
+	<invertedBitmapLogo>false</invertedBitmapLogo>
+	<reversedBitmapLogo>false</reversedBitmapLogo>
 	<encoderSignal>1</encoderSignal>
 	<printGoSignal>1</printGoSignal>
 	<printHeight>90</printHeight>

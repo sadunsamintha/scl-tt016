@@ -20,7 +20,6 @@
 	<bean id="tt018ExtendedCodeBehavior" class="com.sicpa.tt018.scl.devices.printer.TT018ExtendedCodeFactory">
 		<property name="dmFormat" value="${dm.format}" />
 		<property name="dmEncoding" value="${dm.encoding}" />
-		<property name="dmOrientation" value="${dm.orientation}" />
 		<property name="blobPosition" value="${blob.position}" />
 		<property name="blobType" value="${blob.type}" />
 		<property name="blobUtils" ref="blobUtils" />

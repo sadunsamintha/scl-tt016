@@ -40,15 +40,18 @@
 		# 0, 90, 180 or 270 (180 = reverse + inverted)
 	 -->
 	<rotation>0</rotation>
-	
-	<!--  
+
+	<!--
 		HRC - Mirror-inverted (Y-axis)
 		0 = no, 1 = yes
 	-->
-	<invertedText>false</invertedText>	
-	<!-- HRC - Reverse Text -->
+	<invertedDataMatrix>false</invertedDataMatrix>
+	<reversedDataMatrix>false</reversedDataMatrix>
+	<invertedText>false</invertedText>
 	<reversedText>true</reversedText>
-	<!--  
+	<invertedBitmapLogo>false</invertedBitmapLogo>
+	<reversedBitmapLogo>false</reversedBitmapLogo>
+	<!--
 		Encoder Signal
 		0 = Internal
 		1 = External, direction 1 (clockwise)
