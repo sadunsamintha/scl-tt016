@@ -5,6 +5,7 @@
 	<mIp>192.168.1.22</mIp>
 	<mConnectionTimeout>2000</mConnectionTimeout>
 	<mLifeCheckInterval>1000</mLifeCheckInterval>
+	<mLifeCheckFailThreshold>2</mLifeCheckFailThreshold>
 	<mTelnetPort>23</mTelnetPort>
 	<mTelnetUser>admin</mTelnetUser>
 	<mTelnetPassword>admin</mTelnetPassword>
