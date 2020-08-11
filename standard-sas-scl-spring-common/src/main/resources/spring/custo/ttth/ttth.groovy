@@ -8,9 +8,11 @@ beans {
         b.parent = ref('bootstrapAlias')
     }
 
-    //TODO: Replace with thailand server implementation.
+    importBeans('spring/custo/ttth/ttth-production.groovy')
+
     if (serverBehavior == "STANDARD") {
         importBeans('spring/server/server-core5.groovy')
+        importBeans('spring/custo/ttth/ttth-server.groovy')
     }
     if (serverBehavior == "SIMULATOR") {
         importBeans('spring/server/server-simulator.groovy')
@@ -18,4 +20,6 @@ beans {
 
     importBeans('spring/custo/ttth/ttth-view.groovy')
     importBeans('spring/custo/ttth/ttth-printer-common.groovy')
+
+    importBeans('spring/custo/ttth/ttth-storage-import.groovy')
 }

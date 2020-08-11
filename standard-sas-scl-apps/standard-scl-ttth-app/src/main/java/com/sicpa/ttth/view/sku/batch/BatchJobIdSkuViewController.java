@@ -12,19 +12,19 @@ import com.sicpa.ttth.view.flow.TTTHDefaultScreensFlow;
 
 import static com.sicpa.ttth.view.flow.TTTHScreenFlowTriggers.BATCH_ID_TRANSITION;
 
-public class BatchIdSkuViewController extends AbstractViewFlowController implements IBatchIdSkuListener {
+public class BatchJobIdSkuViewController extends AbstractViewFlowController implements IBatchJobIdSkuListener {
 
-	private static final Logger logger = LoggerFactory.getLogger(BatchIdSkuViewController.class);
+	private static final Logger logger = LoggerFactory.getLogger(BatchJobIdSkuViewController.class);
 
 	private TTTHDefaultScreensFlow screensFlow;
-	private BatchIdSKUModel model;
-	private int batchIdSize;
+	private BatchJobIdSKUModel model;
+	private int batchJobIdSize;
 
-	public BatchIdSkuViewController(){
-		this(new BatchIdSKUModel());
+	public BatchJobIdSkuViewController(){
+		this(new BatchJobIdSKUModel());
 	}
 
-	public BatchIdSkuViewController(BatchIdSKUModel model){
+	public BatchJobIdSkuViewController(BatchJobIdSKUModel model){
 		this.model = model;
 	}
 
@@ -33,24 +33,24 @@ public class BatchIdSkuViewController extends AbstractViewFlowController impleme
 	}
 
 	@Override
-	public void saveBatchId(String strBatchId) {
+	public void saveBatchJobId(String strBatchJobId) {
 
-		if (StringUtils.isBlank(strBatchId)){
+		if (StringUtils.isBlank(strBatchJobId)){
 			JOptionPane.showMessageDialog(null, Messages.get("sku.batch.id.validation.blank"));
 			return;
 		}
 
-		if (!StringUtils.isNumeric(strBatchId)){
+		if (!StringUtils.isNumeric(strBatchJobId)){
 			JOptionPane.showMessageDialog(null,Messages.get("sku.batch.id.validation.format"));
 			return;
 		}
 		
-		if (strBatchId.length() > this.getBatchIdSize()){
-			JOptionPane.showMessageDialog(null, Messages.format("sku.batch.id.validation.size",this.getBatchIdSize()));
+		if (strBatchJobId.length() > this.getBatchJobIdSize()){
+			JOptionPane.showMessageDialog(null, Messages.format("sku.batch.id.validation.size",this.getBatchJobIdSize()));
 			return;
 		}
 
-		model.setStrBatchId(strBatchId);
+		model.setStrBatchJobId(strBatchJobId);
 		EventBusService.post(getModel());
 		screensFlow.moveToNext(BATCH_ID_TRANSITION);
 	}
@@ -63,20 +63,20 @@ public class BatchIdSkuViewController extends AbstractViewFlowController impleme
 	@Override
 	protected void displayView() {
 		super.displayView();
-		BatchIdSkuView view = (BatchIdSkuView) this.view;
+		BatchJobIdSkuView view = (BatchJobIdSkuView) this.view;
 		view.refresh();
 	}
 
-	public BatchIdSKUModel getModel() {
+	public BatchJobIdSKUModel getModel() {
 		return model;
 	}
 
-	public int getBatchIdSize() {
-		return batchIdSize;
+	public int getBatchJobIdSize() {
+		return batchJobIdSize;
 	}
 
-	public void setBatchIdSize(int batchIdSize) {
-		this.batchIdSize = batchIdSize;
+	public void setBatchJobIdSize(int batchJobIdSize) {
+		this.batchJobIdSize = batchJobIdSize;
 	}
 
 }

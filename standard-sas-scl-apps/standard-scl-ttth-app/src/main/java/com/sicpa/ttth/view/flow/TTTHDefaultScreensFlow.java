@@ -19,7 +19,7 @@ import static com.sicpa.ttth.view.flow.TTTHScreenFlowTriggers.STANDARD_MODE_TRAN
  */
 public class TTTHDefaultScreensFlow extends DefaultScreensFlow {
 
-	protected IScreenGetter batchIdScreen;
+	protected IScreenGetter batchJobIdScreen;
 	protected IScreenGetter barcodeScreen;
 
 	public TTTHDefaultScreensFlow() {
@@ -38,20 +38,20 @@ public class TTTHDefaultScreensFlow extends DefaultScreensFlow {
 
 		addTransitions(exitScreen);
 
-		addScreen(batchIdScreen);
+		addScreen(batchJobIdScreen);
 		addScreen(barcodeScreen);
-		addScreenTransitions(batchIdScreen, new ScreenTransition(BATCH_ID_TRANSITION, selectionScreen));
+		addScreenTransitions(batchJobIdScreen, new ScreenTransition(BATCH_ID_TRANSITION, selectionScreen));
 		addScreenTransitions(barcodeScreen, new ScreenTransition(BATCH_ID_TRANSITION, selectionScreen));
 		addScreenTransitions(barcodeScreen, new ScreenTransition(PRODUCTION_PARAMETER_SELECTED, mainScreen));
 		addScreenTransitions(barcodeScreen, new ScreenTransition(BARCODE_TRANSITION, selectionScreen));
-		addScreenTransitions(selectionScreen, new ScreenTransition(STANDARD_MODE_TRANSITION, batchIdScreen));
+		addScreenTransitions(selectionScreen, new ScreenTransition(STANDARD_MODE_TRANSITION, batchJobIdScreen));
 		addScreenTransitions(selectionScreen, new ScreenTransition(BARCODE_TRANSITION, barcodeScreen));
 		addScreenTransitions(selectionScreen, new ScreenTransition(PRODUCTION_PARAMETER_SELECTED, mainScreen));
 
 	}
 
-	public void setBatchIdScreen(IScreenGetter batchIdScreen) {
-		this.batchIdScreen = batchIdScreen;
+	public void setBatchJobIdScreen(IScreenGetter batchJobIdScreen) {
+		this.batchJobIdScreen = batchJobIdScreen;
 	}
 
 	public void setBarcodeScreen(IScreenGetter barcodeScreen) {

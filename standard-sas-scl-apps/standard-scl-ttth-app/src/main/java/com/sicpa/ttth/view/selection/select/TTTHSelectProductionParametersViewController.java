@@ -10,58 +10,66 @@ import com.sicpa.standard.sasscl.custoBuilder.CustoBuilder;
 import com.sicpa.standard.sasscl.model.ProductionMode;
 import com.sicpa.standard.sasscl.model.ProductionParameters;
 import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.ProductionParameterRootNode;
-import com.sicpa.standard.sasscl.provider.ProductBatchIdProvider;
+import com.sicpa.standard.sasscl.provider.ProductBatchJobIdProvider;
 import com.sicpa.standard.sasscl.view.ScreensFlowTriggers;
 import com.sicpa.standard.sasscl.view.selection.select.ISelectProductionParametersView;
 import com.sicpa.standard.sasscl.view.selection.select.SelectProductionParametersViewController;
 import com.sicpa.ttth.view.flow.TTTHScreenFlowTriggers;
 import com.sicpa.ttth.view.sku.barcode.BarcodeSkuModel;
-import com.sicpa.ttth.view.sku.batch.BatchIdSKUModel;
+import com.sicpa.ttth.view.sku.batch.BatchJobIdSKUModel;
 
 import static com.sicpa.ttth.messages.TTTHMessageEventKey.SKUSELECTION.BARCODE_VERIFIED;
 
 public class TTTHSelectProductionParametersViewController extends SelectProductionParametersViewController
-	implements ProductBatchIdProvider {
+	implements ProductBatchJobIdProvider {
 
 	private boolean isBatchIDSet = false;
-	private String strBatchId = "";
+	private String strBatchJobId = "";
+
+	private ProductionParameters pp;
+
+	public TTTHSelectProductionParametersViewController() {
+		CustoBuilder.addPropertyToClass(ProductionParameters.class, productionBatchJobId);
+	}
 
 	@Override
 	public void productionParametersSelected(ProductionParameters pp) {
 		if (pp.getSku() == null) {
 			if (pp.getProductionMode() == ProductionMode.EXPORT) {
-				mainFrameController.setProductionMode(pp.getProductionMode());
+				this.pp.setProductionMode(pp.getProductionMode());
 				showExportSKUList();
 			} else if (pp.getProductionMode() != ProductionMode.MAINTENANCE) {
-				mainFrameController.setProductionMode(pp.getProductionMode());
+				this.pp.setProductionMode(pp.getProductionMode());
 				screensFlow.moveToNext(TTTHScreenFlowTriggers.STANDARD_MODE_TRANSITION);
-				CustoBuilder.addPropertyToClass(ProductionParameters.class, productionBatchId);
 			} else {
-				addSkuDetailsToMainFrame(pp);
+				this.pp = pp;
+				addSkuDetailsToMainFrame();
 				mainFrameController.productionParametersChanged();
 				screensFlow.moveToNext(ScreensFlowTriggers.PRODUCTION_PARAMETER_SELECTED);
 			}
 		} else {
 			if (mainFrameController.getProductionMode() == ProductionMode.EXPORT) {
-				pp.setProductionMode(mainFrameController.getProductionMode());
-				addSkuDetailsToMainFrame(pp);
+				this.pp.setSku(pp.getSku());
+				this.pp.setBarcode(pp.getBarcode());
+				addSkuDetailsToMainFrame();
 				mainFrameController.productionParametersChanged();
 				screensFlow.moveToNext(ScreensFlowTriggers.PRODUCTION_PARAMETER_SELECTED);
 			} else {
-                EventBusService.post(new BarcodeSkuModel(pp.getSku().getBarCodes()));
-                pp.setProductionMode(mainFrameController.getProductionMode());
-                pp.setProperty(productionBatchId, strBatchId);
-                isBatchIDSet = false;
-                addSkuDetailsToMainFrame(pp);
+				this.pp.setSku(pp.getSku());
+				this.pp.setBarcode(pp.getBarcode());
+				this.pp.setProperty(productionBatchJobId, strBatchJobId);
+				EventBusService.post(new BarcodeSkuModel(this.pp.getSku().getBarCodes()));
+				isBatchIDSet = false;
+                addSkuDetailsToMainFrame();
                 screensFlow.moveToNext(TTTHScreenFlowTriggers.BARCODE_TRANSITION);
             }
 		}
 	}
 
-	private void addSkuDetailsToMainFrame(ProductionParameters productionParameters) {
-		mainFrameController.setSku(productionParameters.getSku());
-		mainFrameController.setProductionMode(productionParameters.getProductionMode());
-		mainFrameController.setBarcode(productionParameters.getBarcode());
+	private void addSkuDetailsToMainFrame() {
+		mainFrameController.setSku(this.pp.getSku());
+		mainFrameController.setProductionMode(this.pp.getProductionMode());
+		mainFrameController.setBarcode(this.pp.getBarcode());
 	}
 
 	@Override
@@ -94,14 +102,15 @@ public class TTTHSelectProductionParametersViewController extends SelectProducti
 	}
 
 	@Subscribe
-	public void handleBatchIDSet(BatchIdSKUModel evt) {
+	public void handleBatchIDSet(BatchJobIdSKUModel evt) {
 		isBatchIDSet = true;
-		strBatchId = evt.getStrBatchId();
+		strBatchJobId = evt.getStrBatchJobId();
 	}
 
 	@Subscribe
 	public void handleBarcodeVerified(MessageEvent evt) {
 		if (evt.getKey().equals(BARCODE_VERIFIED)) {
+			mainFrameController.setProductionParameters(this.pp);
 			mainFrameController.productionParametersChanged();
 			screensFlow.moveToNext(ScreensFlowTriggers.PRODUCTION_PARAMETER_SELECTED);
 		}
@@ -116,4 +125,7 @@ public class TTTHSelectProductionParametersViewController extends SelectProducti
 		}
 	}
 
+	public void setPp(ProductionParameters pp) {
+		this.pp = pp;
+	}
 }

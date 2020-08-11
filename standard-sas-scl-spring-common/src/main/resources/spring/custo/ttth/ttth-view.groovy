@@ -1,8 +1,8 @@
 import com.sicpa.ttth.view.main.systemInfo.TTTHSystemInfoView
 import com.sicpa.ttth.view.report.TTTHReportScreen
 import com.sicpa.ttth.view.flow.TTTHDefaultScreensFlow
-import com.sicpa.ttth.view.sku.batch.BatchIdSkuView
-import com.sicpa.ttth.view.sku.batch.BatchIdSkuViewController
+import com.sicpa.ttth.view.sku.batch.BatchJobIdSkuView
+import com.sicpa.ttth.view.sku.batch.BatchJobIdSkuViewController
 import com.sicpa.ttth.view.sku.barcode.BarcodeSkuView
 import com.sicpa.ttth.view.sku.barcode.BarcodeSkuViewController
 import com.sicpa.standard.sasscl.productionParameterSelection.TTTHDefaultSelectionModelFactory
@@ -18,17 +18,17 @@ beans {
         productionStatisticsAggregatorFactory = ref('productionStatisticsAggregatorFactory')
     }
 
-    batchIdSkuView(BatchIdSkuView) {
-        controller = ref('batchIdSkuViewController')
-        model = "#{batchIdSkuViewController.model}"
-        batchIdSize = props['sku.batch.id.maximum.length']
+    batchJobIdSkuView(BatchJobIdSkuView) {
+        controller = ref('batchJobIdSkuViewController')
+        model = "#{batchJobIdSkuViewController.model}"
+        batchJobIdSize = props['sku.batch.job.id.maximum.length']
     }
 
-    batchIdSkuViewController(BatchIdSkuViewController) {
-        view = ref('batchIdSkuView')
+    batchJobIdSkuViewController(BatchJobIdSkuViewController) {
+        view = ref('batchJobIdSkuView')
         viewController = ref('mainFrameController')
         screensFlow = ref('screensFlow')
-        batchIdSize = props['sku.batch.id.maximum.length']
+        batchJobIdSize = props['sku.batch.job.id.maximum.length']
     }
 
     barcodeSkuView(BarcodeSkuView) {
@@ -48,7 +48,7 @@ beans {
         b.initMethod = 'buildScreensFlow'
         initialScreen = ref('mainPanelGetter')
         selectionScreen = ref('selectProductionParametersViewController')
-        batchIdScreen = ref('batchIdSkuViewController')
+        batchJobIdScreen = ref('batchJobIdSkuViewController')
         barcodeScreen = ref('barcodeSkuViewController')
         mainScreen = ref('mainPanelGetter')
         exitScreen = ref('productionSendingViewController')
@@ -65,6 +65,7 @@ beans {
         useBarcodeReader = '${useBarcodeReader}'
         screensFlow = ref('screensFlow')
         mainFrameController = ref('mainFrameController')
+        pp = ref('productionParameters')
     }
 
 }

@@ -2,17 +2,17 @@ package com.sicpa.ttth.view.sku.batch;
 
 import com.sicpa.standard.client.common.view.mvc.AbstractObservableModel;
 
-public class BatchIdSKUModel extends AbstractObservableModel {
+public class BatchJobIdSKUModel extends AbstractObservableModel {
 
     private String strBatchId;
 
-    public BatchIdSKUModel() { }
+    public BatchJobIdSKUModel() { }
 
-    public String getStrBatchId() {
+    public String getStrBatchJobId() {
         return strBatchId;
     }
 
-    public void setStrBatchId(String strBatchId) {
+    public void setStrBatchJobId(String strBatchId) {
         this.strBatchId = strBatchId;
     }
 }
