@@ -1,5 +1,5 @@
 <!-- PRODUCTION MODES: STANDARD = 1, EXPORT = 2, MAINTENANCE = 3, REFEED NORMAL = 5 -->
-<CameraJobFilesConfig setCameraJob="true" useDefaultCameraJobFile="false">
+<CameraJobFilesConfig setCameraJob="false" useDefaultCameraJobFile="false">
     <CameraJobConfigNode>
         <productCameraJob productId="1">
             <cameraJobFile cameraJobFileName="StandardDMX.job"/>
