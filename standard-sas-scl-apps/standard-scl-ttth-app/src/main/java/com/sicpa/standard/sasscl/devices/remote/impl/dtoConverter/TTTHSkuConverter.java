@@ -11,6 +11,8 @@ import com.sicpa.std.common.api.staticdata.codetype.dto.CodeTypeDto;
 
 public class TTTHSkuConverter extends SkuConverter {
 
+    private DailyBatchRequestRepository dailyBatchRequestRepository;
+
     protected void convert(AbstractProductionParametersNode<?> convertedParentRoot,
                            ComponentBehaviorDto<? extends BaseDto<Long>> child) {
         super.convert(convertedParentRoot, child);
@@ -22,7 +24,7 @@ public class TTTHSkuConverter extends SkuConverter {
     private void convertDailyBatchRequestDto(ComponentBehaviorDto<? extends BaseDto<Long>> child) {
         DailyBatchRequestDto dailyBatchRequestDto = (DailyBatchRequestDto) child.getNodeValue();
         //Save daily batch jobs to daily batch request manager
-        EventBusService.post(dailyBatchRequestDto);
+        dailyBatchRequestRepository.addDailyBatchRequest(dailyBatchRequestDto);
     }
 
     @Override
@@ -32,13 +34,18 @@ public class TTTHSkuConverter extends SkuConverter {
         CodeType codeType = new CodeType(codeDto.getId().intValue());
         codeType.setDescription(codeDto.getInternalDescription());
 
+        //Clear out the existing list.
+        dailyBatchRequestRepository.clearDailyBatchRequest();
         //Save code type to daily batch request manager.
-        EventBusService.post(codeType);
+        dailyBatchRequestRepository.setCodeType(codeType);
 
         CodeTypeNode codeTypeConverted = new CodeTypeNode(codeType);
         convertedParentRoot.addChildren(codeTypeConverted);
         convertDMSProductionParameter(child, codeTypeConverted);
     }
 
+    public void setDailyBatchRequestRepository(DailyBatchRequestRepository dailyBatchRequestRepository) {
+        this.dailyBatchRequestRepository = dailyBatchRequestRepository;
+    }
 }
 

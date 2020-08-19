@@ -152,18 +152,24 @@ public class BatchJobIdSkuView extends AbstractView<IBatchJobIdSkuListener, Batc
         private JButton getAutoBatchJobIdButton() {
             if (autoBatchJobIdButton == null) {
                 autoBatchJobIdButton = new JButton(Messages.get("sku.button.batch.auto.mode"));
-                ArrayList<String> choices = new ArrayList<>();
-                dailyBatchRequestRepository.getDailyBatchRequests().forEach(e -> {
-                    choices.add(e.getBatchJobId());
-                });
-                autoBatchJobIdButton.addActionListener(e -> {
-                    batchJobId = (String) JOptionPane.showInputDialog(this,
-                        Messages.get("sku.button.batch.auto.mode"), Messages.get("sku.button.batch.auto.mode.prompt"),
-                        JOptionPane.PLAIN_MESSAGE, null, choices.toArray(), choices.get(0));
-                    if (batchJobId != null) {
-                        saveSelected(batchJobId);
-                    }
-                });
+                if (!dailyBatchRequestRepository.getDailyBatchRequests().isEmpty()) {
+                    ArrayList<String> choices = new ArrayList<>();
+                    dailyBatchRequestRepository
+                        .getDailyBatchRequests()
+                        .forEach(e -> choices.add(e.getBatchJobId()));
+                    autoBatchJobIdButton.addActionListener(e -> {
+                        batchJobId = (String) JOptionPane.showInputDialog(this,
+                            Messages.get("sku.button.batch.auto.mode"), Messages.get("sku.button.batch.auto.mode.prompt"),
+                            JOptionPane.PLAIN_MESSAGE, null, choices.toArray(), choices.get(0));
+                        if (batchJobId != null) {
+                            saveSelected(batchJobId);
+                        }
+                    });
+                } else {
+                    autoBatchJobIdButton.addActionListener(e -> {
+                        JOptionPane.showMessageDialog(this, Messages.get("sku.batch.job.unavailable"));
+                    });
+                }
                 autoBatchJobIdButton.setPreferredSize(new Dimension(180, 50));
             }
             return autoBatchJobIdButton;

@@ -10,6 +10,7 @@ beans{
 
 	skuConverter(TTTHSkuConverter) {
 		productionModeMapping=ref('productionModeMapping')
+		dailyBatchRequestRepository=ref('dailyBatchRequestRepository')
 	}
 
 }

@@ -1,6 +1,5 @@
 package com.sicpa.standard.sasscl.devices.remote.impl.dtoConverter;
 
-import com.google.common.eventbus.Subscribe;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -38,13 +37,15 @@ public class DailyBatchRequestRepository {
         productsCount = 0;
     }
 
-    @Subscribe
     public void addDailyBatchRequest(DailyBatchRequestDto dailyBatchRequest) {
         this.dailyBatchRequests.add(dailyBatchRequest);
     }
 
-    @Subscribe
-    public void handleCodetype (CodeType codeType) {
+    public void clearDailyBatchRequest() {
+        dailyBatchRequests.clear();
+    }
+
+    public void setCodeType (CodeType codeType) {
         this.codeType = codeType;
     }
 

@@ -6,6 +6,7 @@ import java.util.Calendar;
 import com.sicpa.gssd.ttth.server.common.dto.DailyBatchRequestDto;
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.sasscl.devices.remote.RemoteServerException;
+import com.sicpa.standard.sasscl.devices.remote.impl.dtoConverter.DailyBatchRequestRepository;
 import com.sicpa.standard.sasscl.devices.remote.simulator.RemoteServerSimulator;
 import com.sicpa.standard.sasscl.devices.remote.simulator.RemoteServerSimulatorModel;
 import com.sicpa.standard.sasscl.model.CodeType;
@@ -13,6 +14,8 @@ import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.Producti
 import com.sicpa.std.common.api.staticdata.sku.dto.SkuProductDto;
 
 public class TTTHRemoteServerSimulator extends RemoteServerSimulator {
+
+    private DailyBatchRequestRepository dailyBatchRequestRepository;
 
     private String lineID;
 
@@ -32,7 +35,7 @@ public class TTTHRemoteServerSimulator extends RemoteServerSimulator {
 
         CodeType codeType = new CodeType(1);
         codeType.setDescription("ct: " + codeType.getId() + " - ");
-        EventBusService.post(new CodeType(1));
+        dailyBatchRequestRepository.setCodeType(codeType);
 
         for (int i = 0; i < 3; i++) {
             DailyBatchRequestDto dailyBatchRequestDto = new DailyBatchRequestDto();
@@ -55,10 +58,14 @@ public class TTTHRemoteServerSimulator extends RemoteServerSimulator {
             skuProductDto.setSkuBarcode("000" + i);
             dailyBatchRequestDto.setSkuProductDto(skuProductDto);
 
-            EventBusService.post(dailyBatchRequestDto);
+            dailyBatchRequestRepository.addDailyBatchRequest(dailyBatchRequestDto);
         }
 
         return simulatorModel.getProductionParameters();
+    }
+
+    public void setDailyBatchRequestRepository(DailyBatchRequestRepository dailyBatchRequestRepository) {
+        this.dailyBatchRequestRepository = dailyBatchRequestRepository;
     }
 
     public void setLineID(String lineID) {
