@@ -5,23 +5,18 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
-import javax.swing.table.TableModel;
-import javax.swing.table.TableRowSorter;
 import org.slf4j.LoggerFactory;
 
-import com.sicpa.standard.client.common.i18n.Messages;
-import com.sicpa.standard.gui.components.table.BeanReaderJTable;
-import com.sicpa.standard.sasscl.business.activation.offline.impl.PlcOfflineCounting;
 import com.sicpa.standard.sasscl.view.report.ReportData;
 import com.sicpa.standard.sasscl.view.report.ReportDataWrapper;
 import com.sicpa.standard.sasscl.view.report.ReportKey;
 import com.sicpa.standard.sasscl.view.report.ReportTable;
 
+import static com.sicpa.ttth.scl.utils.TTTHCalendarUtils.TH_YEAR_DIFF;
+
 public class TTTHReportTable extends ReportTable {
 
     private static final org.slf4j.Logger logger = LoggerFactory.getLogger(TTTHReportTable.class);
-    private static final int TH_YEAR_DIFF = 543;
 
     @Override
     protected void setReportDataWrapperData(Map<ReportKey, ReportData> map, List<ReportDataWrapper> data) {

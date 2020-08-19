@@ -21,6 +21,7 @@ beans {
     batchJobIdSkuView(BatchJobIdSkuView) {
         controller = ref('batchJobIdSkuViewController')
         model = "#{batchJobIdSkuViewController.model}"
+        dailyBatchRequestRepository = ref('dailyBatchRequestRepository')
         batchJobIdSize = props['sku.batch.job.id.maximum.length']
     }
 
@@ -28,20 +29,22 @@ beans {
         view = ref('batchJobIdSkuView')
         viewController = ref('mainFrameController')
         screensFlow = ref('screensFlow')
+        batchJobIdSkuView = ref('batchJobIdSkuView')
+        dailyBatchRequestRepository = ref('dailyBatchRequestRepository')
         batchJobIdSize = props['sku.batch.job.id.maximum.length']
+        batchJobSiteSize = props['sku.batch.job.site.maximum.length']
+        batchJobSeqSize = props['sku.batch.job.seq.maximum.length']
     }
 
     barcodeSkuView(BarcodeSkuView) {
         controller = ref('barcodeSkuViewController')
         model = "#{barcodeSkuViewController.model}"
-        barcodeSize = props['sku.barcode.length']
     }
 
     barcodeSkuViewController(BarcodeSkuViewController) {
         view = ref('barcodeSkuView')
         viewController = ref('mainFrameController')
         screensFlow = ref('screensFlow')
-        barcodeSize = props['sku.barcode.length']
     }
 
     screensFlow(TTTHDefaultScreensFlow) { b ->

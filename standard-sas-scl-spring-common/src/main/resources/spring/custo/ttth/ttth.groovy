@@ -1,4 +1,6 @@
 import com.sicpa.ttth.scl.TTTHBootstrap
+import com.sicpa.standard.sasscl.model.statistics.DailyBatchJobStatistics
+import com.sicpa.standard.sasscl.devices.remote.impl.dtoConverter.DailyBatchRequestRepository
 
 beans {
     def serverBehavior = props['remoteServer.behavior'].toUpperCase()
@@ -6,6 +8,12 @@ beans {
     addAlias('bootstrapAlias', 'bootstrap')
     bootstrap(TTTHBootstrap) { b ->
         b.parent = ref('bootstrapAlias')
+        dailyBatchRequestRepository = ref('dailyBatchRequestRepository')
+    }
+
+    batchJobStatistics(DailyBatchJobStatistics) {}
+    dailyBatchRequestRepository(DailyBatchRequestRepository) {
+        batchJobStatistics = ref ('batchJobStatistics')
     }
 
     importBeans('spring/custo/ttth/ttth-production.groovy')
@@ -16,6 +24,7 @@ beans {
     }
     if (serverBehavior == "SIMULATOR") {
         importBeans('spring/server/server-simulator.groovy')
+        importBeans('spring/custo/ttth/ttth-server-simulator.groovy')
     }
 
     importBeans('spring/custo/ttth/ttth-view.groovy')

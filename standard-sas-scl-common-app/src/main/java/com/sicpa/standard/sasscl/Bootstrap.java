@@ -77,7 +77,7 @@ public class Bootstrap implements IBootstrap {
     private SkuListProvider skuListProvider;
     private AuthenticatorProvider authenticatorProvider;
     private SubsystemIdProvider subsystemIdProvider;
-    private Statistics statistics;
+    protected Statistics statistics;
     private IServiceProviderManager cryptoProviderManager;
     private List<PlcVariableGroup> linePlcVarGroup;
     private List<PlcVariableGroup> cabPlcVarGroups;
@@ -100,7 +100,6 @@ public class Bootstrap implements IBootstrap {
         connectStartupDevices();
 
         if (skuSelectionBehavior.isLoadPreviousSelection()) {
-            restoreStatistics();
             restorePreviousSelectedProductionParams();
         }
 
@@ -168,6 +167,7 @@ public class Bootstrap implements IBootstrap {
             productionParameters.setSku(previous.getSku());
             productionParameters.setProductionMode(previous.getProductionMode());
             EventBusService.post(new ProductionParametersEvent(previous));
+            restoreStatistics();
         }
     }
 
@@ -231,7 +231,7 @@ public class Bootstrap implements IBootstrap {
         return server.getSubsystemID();
     }
 
-    private void restoreStatistics() {
+    protected void restoreStatistics() {
         StatisticsValues statsValues = storage.getStatistics();
         boolean restored = false;
         if (statsValues != null) {

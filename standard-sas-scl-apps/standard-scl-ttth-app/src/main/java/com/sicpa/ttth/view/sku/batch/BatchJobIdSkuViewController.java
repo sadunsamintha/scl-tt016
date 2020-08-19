@@ -1,5 +1,10 @@
 package com.sicpa.ttth.view.sku.batch;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Properties;
 import javax.swing.JOptionPane;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -7,18 +12,27 @@ import org.slf4j.LoggerFactory;
 
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.i18n.Messages;
+import com.sicpa.standard.sasscl.devices.remote.impl.dtoConverter.DailyBatchRequestRepository;
 import com.sicpa.standard.sasscl.view.AbstractViewFlowController;
 import com.sicpa.ttth.view.flow.TTTHDefaultScreensFlow;
 
+import static com.sicpa.ttth.scl.utils.TTTHCalendarUtils.TH_YEAR_DIFF;
 import static com.sicpa.ttth.view.flow.TTTHScreenFlowTriggers.BATCH_ID_TRANSITION;
 
 public class BatchJobIdSkuViewController extends AbstractViewFlowController implements IBatchJobIdSkuListener {
 
 	private static final Logger logger = LoggerFactory.getLogger(BatchJobIdSkuViewController.class);
 
+	private static final String GLOBAL_PROPERTIES_PATH = "profiles/TTTH-SCL/config/global.properties";
+
 	private TTTHDefaultScreensFlow screensFlow;
 	private BatchJobIdSKUModel model;
+	private BatchJobIdSkuView batchJobIdSkuView;
+	private DailyBatchRequestRepository dailyBatchRequestRepository;
+
 	private int batchJobIdSize;
+	private int batchJobSiteSize;
+	private int batchJobSeqSize;
 
 	public BatchJobIdSkuViewController(){
 		this(new BatchJobIdSKUModel());
@@ -28,30 +42,63 @@ public class BatchJobIdSkuViewController extends AbstractViewFlowController impl
 		this.model = model;
 	}
 
-	public void setScreensFlow(TTTHDefaultScreensFlow screensFlow) {
-		this.screensFlow = screensFlow;
+	@Override
+	public void saveBatchJobId(String strBatchJobId) {
+		model.setStrBatchJobId(strBatchJobId);
+		EventBusService.post(getModel());
+		EventBusService.post(dailyBatchRequestRepository.getDailyBatchSKU(strBatchJobId));
 	}
 
 	@Override
-	public void saveBatchJobId(String strBatchJobId) {
+	public void generateBatchJobId(String batchJobSite, String batchJobSeq) {
+		String lineID;
 
-		if (StringUtils.isBlank(strBatchJobId)){
-			JOptionPane.showMessageDialog(null, Messages.get("sku.batch.id.validation.blank"));
+		try {
+			lineID = getLineIDFromProp();
+		} catch (IOException e) {
+			JOptionPane.showMessageDialog(batchJobIdSkuView, Messages.get("sku.batch.job.line.id.blank"));
 			return;
 		}
 
-		if (!StringUtils.isNumeric(strBatchJobId)){
-			JOptionPane.showMessageDialog(null,Messages.get("sku.batch.id.validation.format"));
-			return;
-		}
-		
-		if (strBatchJobId.length() > this.getBatchJobIdSize()){
-			JOptionPane.showMessageDialog(null, Messages.format("sku.batch.id.validation.size",this.getBatchJobIdSize()));
+		String dateStr = getCurrentDateStr();
+
+		if (StringUtils.isBlank(batchJobSite) || StringUtils.isBlank(batchJobSeq)) {
+			JOptionPane.showMessageDialog(batchJobIdSkuView, Messages.get("sku.batch.id.validation.blank"));
 			return;
 		}
 
-		model.setStrBatchJobId(strBatchJobId);
+		if (batchJobSite.length() > getBatchJobSiteSize()) {
+			JOptionPane.showMessageDialog(batchJobIdSkuView, Messages.format("sku.batch.site.validation.size", getBatchJobSiteSize()));
+			return;
+		}
+
+		if (batchJobSeq.length() > getBatchJobSeqSize()) {
+			JOptionPane.showMessageDialog(batchJobIdSkuView, Messages.format("sku.batch.seq.validation.size", getBatchJobSeqSize()));
+			return;
+		}
+
+		if (!StringUtils.isNumeric(batchJobSeq)) {
+			JOptionPane.showMessageDialog(batchJobIdSkuView,Messages.get("sku.batch.id.validation.format"));
+			return;
+		}
+
+		StringBuilder batchJobId = new StringBuilder();
+		batchJobId.append(batchJobSite)
+			.append("-")
+			.append(lineID)
+			.append("-")
+			.append(dateStr)
+			.append("–")
+			.append(batchJobSeq)
+			//TODO: Update this to be based on Standard flow and Manual flow.
+			.append("A");
+
+		model.setStrBatchJobId(batchJobId.toString());
 		EventBusService.post(getModel());
+
+		//TODO:: To change upon requirement confirmation for offline mode.
+		dailyBatchRequestRepository.updateStatistics(batchJobId.toString(), 9999999);
+
 		screensFlow.moveToNext(BATCH_ID_TRANSITION);
 	}
 
@@ -67,6 +114,23 @@ public class BatchJobIdSkuViewController extends AbstractViewFlowController impl
 		view.refresh();
 	}
 
+	private String getLineIDFromProp() throws IOException  {
+		//Get the line id during run time as it may change depending on line id service.
+		Properties prop = new Properties();
+		String lineID;
+
+		prop.load(new FileInputStream(GLOBAL_PROPERTIES_PATH));
+		lineID = prop.getProperty("subsystemId");
+
+		return lineID;
+	}
+
+	private String getCurrentDateStr() {
+		Calendar now = Calendar.getInstance();
+		now.add(Calendar.YEAR, TH_YEAR_DIFF);
+		return new SimpleDateFormat("ddMMyy").format(now.getTime());
+	}
+
 	public BatchJobIdSKUModel getModel() {
 		return model;
 	}
@@ -75,8 +139,36 @@ public class BatchJobIdSkuViewController extends AbstractViewFlowController impl
 		return batchJobIdSize;
 	}
 
+	public int getBatchJobSiteSize() {
+		return batchJobSiteSize;
+	}
+
+	public int getBatchJobSeqSize() {
+		return batchJobSeqSize;
+	}
+
+	public void setScreensFlow(TTTHDefaultScreensFlow screensFlow) {
+		this.screensFlow = screensFlow;
+	}
+
+	public void setBatchJobIdSkuView(BatchJobIdSkuView batchJobIdSkuView) {
+		this.batchJobIdSkuView = batchJobIdSkuView;
+	}
+
+	public void setDailyBatchRequestRepository(DailyBatchRequestRepository dailyBatchRequestRepository) {
+		this.dailyBatchRequestRepository = dailyBatchRequestRepository;
+	}
+
 	public void setBatchJobIdSize(int batchJobIdSize) {
 		this.batchJobIdSize = batchJobIdSize;
+	}
+
+	public void setBatchJobSiteSize(int batchJobSiteSize) {
+		this.batchJobSiteSize = batchJobSiteSize;
+	}
+
+	public void setBatchJobSeqSize(int batchJobSeqSize) {
+		this.batchJobSeqSize = batchJobSeqSize;
 	}
 
 }

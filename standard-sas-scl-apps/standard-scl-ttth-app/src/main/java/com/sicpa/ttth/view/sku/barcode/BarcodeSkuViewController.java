@@ -21,7 +21,6 @@ public class BarcodeSkuViewController extends AbstractViewFlowController impleme
 
 	private TTTHDefaultScreensFlow screensFlow;
 	private BarcodeSkuModel model;
-	private int barcodeSize;
 
 	public BarcodeSkuViewController(){
 		this(new BarcodeSkuModel());
@@ -48,13 +47,14 @@ public class BarcodeSkuViewController extends AbstractViewFlowController impleme
 			return;
 		}
 		
-		if (strBarcode.length() != this.getBarcodeSize()){
-			JOptionPane.showMessageDialog(null, Messages.format("sku.barcode.validation.size",this.getBarcodeSize()));
+		if (strBarcode.length() != model.getSkuBarcodes().get(0).length()){
+			JOptionPane.showMessageDialog(null, Messages.format("sku.barcode.validation.size",
+				model.getSkuBarcodes().get(0).length()));
 			return;
 		}
 
 		if (!model.getSkuBarcodes().contains(strBarcode)) {
-			JOptionPane.showMessageDialog(null, Messages.format("sku.barcode.validation.mismatch",this.getBarcodeSize()));
+			JOptionPane.showMessageDialog(null, Messages.format("sku.barcode.validation.mismatch"));
 			return;
 		}
 
@@ -80,14 +80,6 @@ public class BarcodeSkuViewController extends AbstractViewFlowController impleme
 
 	public BarcodeSkuModel getModel() {
 		return model;
-	}
-
-	public int getBarcodeSize() {
-		return barcodeSize;
-	}
-
-	public void setBarcodeSize(int barcodeSize) {
-		this.barcodeSize = barcodeSize;
 	}
 
 }

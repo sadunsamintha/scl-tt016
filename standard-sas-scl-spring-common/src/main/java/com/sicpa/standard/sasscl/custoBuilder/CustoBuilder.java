@@ -201,6 +201,20 @@ public class CustoBuilder {
 	}
 
 	/**
+	 * add a task that will be executed in the STARTED state
+	 */
+	public static void addActionOnStartedProduction(Runnable task) {
+		addAction(task, ApplicationFlowState.STT_STARTED);
+	}
+
+	/**
+	 * add a task that will be executed in the STOPPING state
+	 */
+	public static void addActionOnStoppingProduction(Runnable task) {
+		addAction(task, ApplicationFlowState.STT_STOPPING);
+	}
+
+	/**
 	 * add a task that will be executed in the connected state
 	 */
 	public static void addActionOnConnectedApplicationState(Runnable task) {

@@ -20,7 +20,6 @@ import com.sicpa.standard.sasscl.view.LanguageSwitchEvent;
 public class BarcodeSkuView extends AbstractView<IBarcodeSkuListener, BarcodeSkuModel> {
 
     protected BarcodeSkuPanel barcodeSkuPanel;
-    private int barcodeSize;
 
     public BarcodeSkuView() { }
 
@@ -46,14 +45,6 @@ public class BarcodeSkuView extends AbstractView<IBarcodeSkuListener, BarcodeSku
 
     @Override
     public void modelChanged() { }
-
-    public int getBarcodeSize() {
-        return barcodeSize;
-    }
-
-    public void setBarcodeSize(int barcodeSize) {
-        this.barcodeSize = barcodeSize;
-    }
 
     @Subscribe
     public void handleLanguageSwitch(LanguageSwitchEvent evt) {
@@ -112,7 +103,7 @@ public class BarcodeSkuView extends AbstractView<IBarcodeSkuListener, BarcodeSku
 
         public JTextField getBarcodeText() {
             if (barcodeIdText == null) {
-                barcodeIdText = new JTextField(getBarcodeSize());
+                barcodeIdText = new JTextField();
                 barcodeIdText.setMinimumSize(new Dimension(400, 60));
                 barcodeIdText.setMaximumSize(new Dimension(400, 60));
                 barcodeIdText.setBackground(SicpaColor.BLUE_DARK);

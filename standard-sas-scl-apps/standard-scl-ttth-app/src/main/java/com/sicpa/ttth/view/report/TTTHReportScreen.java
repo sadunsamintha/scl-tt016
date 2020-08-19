@@ -11,10 +11,10 @@ import com.sicpa.standard.sasscl.view.monitoring.IProductionStatisticsAggregator
 import com.sicpa.standard.sasscl.view.report.IReportTable;
 import com.sicpa.standard.sasscl.view.report.ReportScreen;
 
+import static com.sicpa.ttth.scl.utils.TTTHCalendarUtils.TH_YEAR_DIFF;
+
 
 public class TTTHReportScreen extends ReportScreen {
-
-    private static final int TH_YEAR_DIFF = 543;
 
     @Override
     public IReportTable getTable() {

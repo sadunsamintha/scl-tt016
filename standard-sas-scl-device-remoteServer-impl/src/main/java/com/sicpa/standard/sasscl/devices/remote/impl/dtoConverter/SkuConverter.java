@@ -80,30 +80,24 @@ public class SkuConverter implements ISkuConverter {
 			convert(convertedParentRoot, child);
 	}
 
-	private void convert(AbstractProductionParametersNode<?> convertedParentRoot,
+	protected void convert(AbstractProductionParametersNode<?> convertedParentRoot,
 			ComponentBehaviorDto<? extends BaseDto<Long>> child) {
 
 		if (child.getNodeValue() instanceof MarketTypeDto) {
 			convertMarketTypeDto(child, convertedParentRoot);
-			return;
-		}
-		if (child.getNodeValue() instanceof SkuProductDto) {
+		} else if (child.getNodeValue() instanceof SkuProductDto) {
 			convertSkuProductDto(child, convertedParentRoot);
-			return;
-		}
-		if (child.getNodeValue() instanceof CodeTypeDto) {
+		} else if (child.getNodeValue() instanceof CodeTypeDto) {
 			convertCodeTypeDto(child, convertedParentRoot);
-			return;
-		}
-		if (child.getNodeValue() instanceof PackagingTypeSkuDto) {
+		} else if (child.getNodeValue() instanceof PackagingTypeSkuDto) {
 			convertPackagingTypeSkuDto(child, convertedParentRoot);
-			return;
+		} else {
+			convertNavigationDto(child, convertedParentRoot);
 		}
-		convertNavigationDto(child, convertedParentRoot);
 	}
 
 	private void convertPackagingTypeSkuDto(ComponentBehaviorDto<? extends BaseDto<Long>> child,
-			final AbstractProductionParametersNode<?> convertedParentRoot) {
+											final AbstractProductionParametersNode<?> convertedParentRoot) {
 		PackagingTypeSkuDto packagingTypeSkuDto = (PackagingTypeSkuDto) child.getNodeValue();
 
 		// For Packaging Type we need to get the business code, not the ID
@@ -113,14 +107,14 @@ public class SkuConverter implements ISkuConverter {
 	}
 
 	private void convertNavigationDto(ComponentBehaviorDto<? extends BaseDto<Long>> child,
-			final AbstractProductionParametersNode<?> convertedParentRoot) {
+									  final AbstractProductionParametersNode<?> convertedParentRoot) {
 		// navigation node only
 		NavigationNode navigationNode = new NavigationNode(child.getNodeValue().getId() + "");
 		convertedParentRoot.addChildren(navigationNode);
 		convertDMSProductionParameter(child, navigationNode);
 	}
 
-	private void convertCodeTypeDto(ComponentBehaviorDto<? extends BaseDto<Long>> child,
+	protected void convertCodeTypeDto(ComponentBehaviorDto<? extends BaseDto<Long>> child,
 			final AbstractProductionParametersNode<?> convertedParentRoot) {
 		CodeTypeDto codeDto = (CodeTypeDto) child.getNodeValue();
 		CodeType codeType = new CodeType(codeDto.getId().intValue());

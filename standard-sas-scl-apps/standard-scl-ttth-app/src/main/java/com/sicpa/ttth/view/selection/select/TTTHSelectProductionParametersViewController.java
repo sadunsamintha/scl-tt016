@@ -9,6 +9,7 @@ import com.sicpa.standard.client.common.messages.MessageEvent;
 import com.sicpa.standard.sasscl.custoBuilder.CustoBuilder;
 import com.sicpa.standard.sasscl.model.ProductionMode;
 import com.sicpa.standard.sasscl.model.ProductionParameters;
+import com.sicpa.standard.sasscl.model.SKU;
 import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.ProductionParameterRootNode;
 import com.sicpa.standard.sasscl.provider.ProductBatchJobIdProvider;
 import com.sicpa.standard.sasscl.view.ScreensFlowTriggers;
@@ -114,6 +115,13 @@ public class TTTHSelectProductionParametersViewController extends SelectProducti
 			mainFrameController.productionParametersChanged();
 			screensFlow.moveToNext(ScreensFlowTriggers.PRODUCTION_PARAMETER_SELECTED);
 		}
+	}
+
+	@Subscribe
+	public void handleAutoSKUSelection(SKU evt) {
+		ProductionParameters pp = new ProductionParameters();
+		pp.setSku(evt);
+		productionParametersSelected(pp);
 	}
 
 	@Override

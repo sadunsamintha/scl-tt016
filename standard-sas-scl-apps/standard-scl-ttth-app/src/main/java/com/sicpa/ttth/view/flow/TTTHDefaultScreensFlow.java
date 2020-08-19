@@ -44,6 +44,7 @@ public class TTTHDefaultScreensFlow extends DefaultScreensFlow {
 		addScreenTransitions(barcodeScreen, new ScreenTransition(BATCH_ID_TRANSITION, selectionScreen));
 		addScreenTransitions(barcodeScreen, new ScreenTransition(PRODUCTION_PARAMETER_SELECTED, mainScreen));
 		addScreenTransitions(barcodeScreen, new ScreenTransition(BARCODE_TRANSITION, selectionScreen));
+		addScreenTransitions(batchJobIdScreen, new ScreenTransition(BARCODE_TRANSITION, barcodeScreen));
 		addScreenTransitions(selectionScreen, new ScreenTransition(STANDARD_MODE_TRANSITION, batchJobIdScreen));
 		addScreenTransitions(selectionScreen, new ScreenTransition(BARCODE_TRANSITION, barcodeScreen));
 		addScreenTransitions(selectionScreen, new ScreenTransition(PRODUCTION_PARAMETER_SELECTED, mainScreen));
