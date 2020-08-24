@@ -4,13 +4,13 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import com.sicpa.gssd.ttth.server.common.dto.DailyBatchRequestDto;
-import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.sasscl.devices.remote.RemoteServerException;
 import com.sicpa.standard.sasscl.devices.remote.impl.dtoConverter.DailyBatchRequestRepository;
 import com.sicpa.standard.sasscl.devices.remote.simulator.RemoteServerSimulator;
 import com.sicpa.standard.sasscl.devices.remote.simulator.RemoteServerSimulatorModel;
-import com.sicpa.standard.sasscl.model.CodeType;
+import com.sicpa.standard.sasscl.productionParameterSelection.node.IProductionParametersNode;
 import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.ProductionParameterRootNode;
+import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.SKUNode;
 import com.sicpa.std.common.api.staticdata.sku.dto.SkuProductDto;
 
 public class TTTHRemoteServerSimulator extends RemoteServerSimulator {
@@ -33,9 +33,16 @@ public class TTTHRemoteServerSimulator extends RemoteServerSimulator {
             throw new RemoteServerException("Remote server model is not set");
         }
 
-        CodeType codeType = new CodeType(1);
-        codeType.setDescription("ct: " + codeType.getId() + " - ");
-        dailyBatchRequestRepository.setCodeType(codeType);
+        for (IProductionParametersNode node :
+             simulatorModel
+                 .getProductionParameters()
+                 .getChildren()
+                 .get(0)
+                 .getChildren()) {
+            if (node instanceof SKUNode) {
+                dailyBatchRequestRepository.addSKU(((SKUNode) node).getValue());
+            }
+        }
 
         for (int i = 0; i < 3; i++) {
             DailyBatchRequestDto dailyBatchRequestDto = new DailyBatchRequestDto();
@@ -54,7 +61,6 @@ public class TTTHRemoteServerSimulator extends RemoteServerSimulator {
 
             SkuProductDto skuProductDto = new SkuProductDto();
             skuProductDto.setId(Long.valueOf(("000" + i)));
-            skuProductDto.setInternalDescription(codeType.getDescription() + "skuid: 000" + i);
             skuProductDto.setSkuBarcode("000" + i);
             dailyBatchRequestDto.setSkuProductDto(skuProductDto);
 

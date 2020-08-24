@@ -6,6 +6,7 @@ beans{
 		productStatusMapping=ref('remoteServerProductStatusMapping')
 		cryptoFieldsConfig=ref('cryptoFieldsConfig')
 		skuConverter=ref('skuConverter')
+		dailyBatchRequestRepository=ref('dailyBatchRequestRepository')
 	}
 
 	skuConverter(TTTHSkuConverter) {

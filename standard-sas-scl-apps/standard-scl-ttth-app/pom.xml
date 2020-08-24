@@ -28,12 +28,12 @@
 		<dependency>
 			<groupId>com.sicpa.gssd.customization.server.ext</groupId>
 			<artifactId>ttth-common-api</artifactId>
-			<version>1.2.0</version>
+			<version>1.2.1</version>
 		</dependency>
 		<dependency>
 			<groupId>com.sicpa.gssd.customization.server</groupId>
 			<artifactId>ttth-common-server</artifactId>
-			<version>1.2.0</version>
+			<version>1.2.1</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.springframework</groupId>

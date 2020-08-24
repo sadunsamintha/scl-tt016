@@ -1,11 +1,9 @@
 package com.sicpa.standard.sasscl.devices.remote.impl.dtoConverter;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import com.sicpa.gssd.ttth.server.common.dto.DailyBatchRequestDto;
-import com.sicpa.standard.sasscl.model.CodeType;
 import com.sicpa.standard.sasscl.model.SKU;
 import com.sicpa.standard.sasscl.model.statistics.DailyBatchJobStatistics;
 import com.sicpa.std.common.api.staticdata.sku.dto.SkuProductDto;
@@ -13,7 +11,7 @@ import com.sicpa.std.common.api.staticdata.sku.dto.SkuProductDto;
 public class DailyBatchRequestRepository {
 
     private List<DailyBatchRequestDto> dailyBatchRequests;
-    private CodeType codeType;
+    private List<SKU> skuList;
 
     private DailyBatchJobStatistics batchJobStatistics;
 
@@ -22,6 +20,7 @@ public class DailyBatchRequestRepository {
     public DailyBatchRequestRepository() {
         productsCount = 0;
         dailyBatchRequests = new ArrayList<>();
+        skuList = new ArrayList<>();
     }
 
     public void updateStatistics(int value) {
@@ -41,12 +40,16 @@ public class DailyBatchRequestRepository {
         this.dailyBatchRequests.add(dailyBatchRequest);
     }
 
+    public void addSKU(SKU sku) {
+        this.skuList.add(sku);
+    }
+
     public void clearDailyBatchRequest() {
         dailyBatchRequests.clear();
     }
 
-    public void setCodeType (CodeType codeType) {
-        this.codeType = codeType;
+    public void clearSkuList() {
+        skuList.clear();
     }
 
     public List<DailyBatchRequestDto> getDailyBatchRequests() {
@@ -62,15 +65,13 @@ public class DailyBatchRequestRepository {
             .get();
         //Update statistics.
         updateStatistics(batchRequestDto.getBatchJobId(), batchRequestDto.getQuantity().intValue());
-
         //Generate SKU.
         SkuProductDto skuProductDto = batchRequestDto.getSkuProductDto();
-        SKU sku = new SKU((skuProductDto.getId().intValue()), skuProductDto.getInternalDescription(),
-            Collections.singletonList(skuProductDto.getSkuBarcode()));
-        //TODO:: Implement Assignment of SKU image.
-        sku.setCodeType(codeType);
-
-        return sku;
+        return skuList
+            .stream()
+            .filter(e -> e.getId() == skuProductDto.getId())
+            .findAny()
+            .get();
     }
 
     public DailyBatchJobStatistics getBatchJobStatistics() {
