@@ -7,11 +7,19 @@ import com.sicpa.standard.gui.plaf.SicpaColor;
 import com.sicpa.standard.sasscl.model.ProductionMode;
 import com.sicpa.standard.sasscl.model.ProductionParameters;
 import com.sicpa.standard.sasscl.provider.ProductBatchIdProvider;
+import com.sicpa.standard.sasscl.utils.ConfigUtilEx;
 import com.sicpa.tt065.model.TT065ProductionMode;
 import net.miginfocom.swing.MigLayout;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.core.io.ClassPathResource;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.Properties;
 
 /**
  * New view of the BatchId associated to the ProductionParameters variable
@@ -25,6 +33,7 @@ public class BatchIdSkuView extends AbstractView<IBatchIdSkuListener, BatchIdSku
 	protected BatchIdSkuPanel batchIdSkuPanel;
 	private ProductionParameters productionParameters;
 	private VirtualKeyboardPanel keyboard;
+	public final static Logger logger = LoggerFactory.getLogger(BatchIdSkuView.class);
 
 	public BatchIdSkuView(){
 
@@ -120,7 +129,29 @@ public class BatchIdSkuView extends AbstractView<IBatchIdSkuListener, BatchIdSku
 
 		public JTextField getBatchIdText() {
 			if (batchIdText == null) {
-				batchIdText = new JTextField(Integer.parseInt(Messages.get("sku.batch.job.id.maximum.length")));
+
+				Properties properties = new Properties();
+				FileInputStream fin = null;
+				String messageSize = "";
+				try {
+					File globalPropertiesFile = new ClassPathResource(ConfigUtilEx.GLOBAL_PROPERTIES_PATH).getFile();
+					fin = new FileInputStream(globalPropertiesFile);
+					properties.load(fin);
+					messageSize = properties.getProperty("sku.batch.job.id.maximum.length");
+				} catch (IOException e) {
+
+					logger.error("Could not open global.proprieties file %s", e);
+
+				} finally {
+
+					if (fin != null) {
+						try {
+							fin.close();
+						} catch (IOException e) {
+						}
+					}
+				}
+				batchIdText = new JTextField(Integer.parseInt(messageSize));
 				batchIdText.setMinimumSize(new Dimension(200,40));
 				batchIdText.setMaximumSize(new Dimension(200,40));
 				batchIdText.setBackground(SicpaColor.BLUE_ULTRA_LIGHT);
