@@ -1,4 +1,4 @@
-<ProductionConfig activationBehavior="standardActivationBehavior" authenticatorMode="SCL">
+<ProductionConfig activationBehavior="standardActivationBehavior" authenticatorMode="DM_12X26">
 
 	<!-- <PrinterConfig deviceType="DOMINO" id="domino_1" validatedBy="qc_scl_1" /> -->
 	<PrinterConfig deviceType="LEIBINGER" id="leibinger_1" validatedBy="qc_scl_1" />

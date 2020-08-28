@@ -1,4 +1,4 @@
-<ProductionConfig activationBehavior="standardActivationBehaviorCodeTypeCheck" authenticatorMode="PCC_SAS">
+<ProductionConfig activationBehavior="standardActivationBehaviorCodeTypeCheck" authenticatorMode="DM_12X26">
 
 	<CameraConfig deviceType="COGNEX" id="qc_sas" />
 
