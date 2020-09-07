@@ -1,6 +1,7 @@
 import com.sicpa.ttth.scl.TTTHBootstrap
 import com.sicpa.standard.sasscl.model.statistics.DailyBatchJobStatistics
 import com.sicpa.standard.sasscl.devices.remote.impl.dtoConverter.DailyBatchRequestRepository
+import com.sicpa.standard.sasscl.model.BatchJobHistory
 
 beans {
     def serverBehavior = props['remoteServer.behavior'].toUpperCase()
@@ -12,8 +13,12 @@ beans {
     }
 
     batchJobStatistics(DailyBatchJobStatistics) {}
+
+    batchJobHistory(BatchJobHistory) {}
+
     dailyBatchRequestRepository(DailyBatchRequestRepository) {
         batchJobStatistics = ref ('batchJobStatistics')
+        batchJobHistory = ref ('batchJobHistory')
     }
 
     importBeans('spring/custo/ttth/ttth-production.groovy')

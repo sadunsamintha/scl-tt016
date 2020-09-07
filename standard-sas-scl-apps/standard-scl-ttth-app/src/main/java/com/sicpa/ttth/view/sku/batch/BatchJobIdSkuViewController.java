@@ -14,6 +14,7 @@ import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.i18n.Messages;
 import com.sicpa.standard.sasscl.devices.remote.impl.dtoConverter.DailyBatchRequestRepository;
 import com.sicpa.standard.sasscl.view.AbstractViewFlowController;
+import com.sicpa.ttth.storage.TTTHFileStorage;
 import com.sicpa.ttth.view.flow.TTTHDefaultScreensFlow;
 
 import static com.sicpa.ttth.scl.utils.TTTHCalendarUtils.TH_YEAR_DIFF;
@@ -22,8 +23,6 @@ import static com.sicpa.ttth.view.flow.TTTHScreenFlowTriggers.BATCH_ID_TRANSITIO
 public class BatchJobIdSkuViewController extends AbstractViewFlowController implements IBatchJobIdSkuListener {
 
 	private static final Logger logger = LoggerFactory.getLogger(BatchJobIdSkuViewController.class);
-
-	private static final String GLOBAL_PROPERTIES_PATH = "profiles/TTTH-SCL/config/global.properties";
 
 	private TTTHDefaultScreensFlow screensFlow;
 	private BatchJobIdSKUModel model;
@@ -47,6 +46,13 @@ public class BatchJobIdSkuViewController extends AbstractViewFlowController impl
 		model.setStrBatchJobId(strBatchJobId);
 		EventBusService.post(getModel());
 		EventBusService.post(dailyBatchRequestRepository.getDailyBatchSKU(strBatchJobId));
+	}
+
+	@Override
+	public void saveBatchJobHist(String strBatchJobId) {
+		model.setStrBatchJobId(strBatchJobId);
+		EventBusService.post(getModel());
+		screensFlow.moveToNext(BATCH_ID_TRANSITION);
 	}
 
 	@Override
@@ -119,7 +125,7 @@ public class BatchJobIdSkuViewController extends AbstractViewFlowController impl
 		Properties prop = new Properties();
 		String lineID;
 
-		prop.load(new FileInputStream(GLOBAL_PROPERTIES_PATH));
+		prop.load(new FileInputStream(TTTHFileStorage.GLOBAL_PROPERTIES_PATH));
 		lineID = prop.getProperty("subsystemId");
 
 		return lineID;

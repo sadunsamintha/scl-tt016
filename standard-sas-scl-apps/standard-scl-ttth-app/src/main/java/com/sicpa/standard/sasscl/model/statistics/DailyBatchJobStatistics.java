@@ -1,6 +1,7 @@
 package com.sicpa.standard.sasscl.model.statistics;
 
 import java.io.Serializable;
+import java.util.Date;
 
 public class DailyBatchJobStatistics implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -8,11 +9,15 @@ public class DailyBatchJobStatistics implements Serializable {
     private String batchJobId;
     private int batchQuantity;
     private int productCount;
+    private Date batchJobStartDate;
+    private Date batchJobStopDate;
 
     public DailyBatchJobStatistics() {
         batchJobId = "";
         batchQuantity = 0;
         productCount = 0;
+        batchJobStartDate = new Date();
+        batchJobStopDate = new Date();
     }
 
     @Override
@@ -48,6 +53,14 @@ public class DailyBatchJobStatistics implements Serializable {
         this.productCount = productCount;
     }
 
+    public void setBatchJobStartDate(Date batchJobStartDate) {
+        this.batchJobStartDate = batchJobStartDate;
+    }
+
+    public void setBatchJobStopDate(Date batchJobStopDate) {
+        this.batchJobStopDate = batchJobStopDate;
+    }
+
     public String getBatchJobId() {
         return batchJobId;
     }
@@ -58,5 +71,13 @@ public class DailyBatchJobStatistics implements Serializable {
 
     public int getProductCount() {
         return productCount;
+    }
+
+    public Date getBatchJobStartDate() {
+        return batchJobStartDate;
+    }
+
+    public Date getBatchJobStopDate() {
+        return batchJobStopDate;
     }
 }

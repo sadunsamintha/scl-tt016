@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 
 import com.sicpa.standard.client.common.storage.ISimpleFileStorage;
 import com.sicpa.standard.sasscl.common.storage.FileStorage;
+import com.sicpa.standard.sasscl.model.BatchJobHistory;
 import com.sicpa.standard.sasscl.model.statistics.DailyBatchJobStatistics;
 
 
@@ -13,11 +14,14 @@ public class TTTHFileStorage extends FileStorage {
 
 	private final static Logger logger = LoggerFactory.getLogger(TTTHFileStorage.class);
 
+	public static final String GLOBAL_PROPERTIES_PATH = "profiles/TTTH-SCL/config/global.properties";
+
 	private final String dataFolder;
 	private final String internalFolder;
 	private final String quarantineFolder;
 
-	public static final String FILE_DAILY_BATCH_JOB = "dailyBatchJob.data";
+	public static final String FILE_DAILY_BATCH_JOB_STATS = "dailyBatchJobStats.data";
+	public static final String FILE_BATCH_JOB_HISTORY = "batchJobHistory.data";
 
 	private String timeStampFormat = "yyyy-MM-dd--HH-mm-ss-SSS";
 
@@ -33,20 +37,44 @@ public class TTTHFileStorage extends FileStorage {
 		this.storageBehavior = storageBehavior;
 	}
 
-	public void saveDailyBatchJobStats(final DailyBatchJobStatistics stats) {
-		logger.debug("Saving {} {}", "Batch Job Statistics " + stats.getBatchJobId(), FILE_DAILY_BATCH_JOB);
+	public void saveBatchJobHistory(final BatchJobHistory batchJobHistory) {
+		logger.debug("Saving {} {}", "Batch Job History " + batchJobHistory.getClass(), FILE_BATCH_JOB_HISTORY);
 		try {
-			saveData(stats, stats.getBatchJobId() + "-" + FILE_DAILY_BATCH_JOB);
+			saveData(batchJobHistory, FILE_BATCH_JOB_HISTORY);
+		} catch (Exception e) {
+			logger.error("Cannot save daily batch job history", e);
+		}
+	}
+
+	public void saveDailyBatchJobStats(final DailyBatchJobStatistics stats) {
+		logger.debug("Saving {} {}", "Batch Job Statistics " + stats.getBatchJobId(), FILE_DAILY_BATCH_JOB_STATS);
+		try {
+			saveData(stats, stats.getBatchJobId() + "-" + FILE_DAILY_BATCH_JOB_STATS);
 		} catch (Exception e) {
 			logger.error("Cannot save daily batch job", e);
 		}
 	}
 
-	public DailyBatchJobStatistics getDailyBatchJobStats(String dailyBatchJobId) {
-		logger.debug("Loading {} {}", "Batch Job Statistics", FILE_STATISTICS);
+	public BatchJobHistory getBatchJobHistory() {
+		logger.debug("Loading {} {}", "Batch Job History ", FILE_BATCH_JOB_HISTORY);
 
 		try {
-			return (DailyBatchJobStatistics) loadData(dailyBatchJobId + "-" + FILE_DAILY_BATCH_JOB);
+			return (BatchJobHistory) loadData(FILE_BATCH_JOB_HISTORY);
+		} catch (Exception e) {
+			if (e.getCause() instanceof FileNotFoundException) {
+				logger.warn("Cannot load batch job history (" + e.getCause().getMessage() + ")");
+			} else {
+				logger.error("Cannot load load batch job history", e);
+			}
+			return null;
+		}
+	}
+
+	public DailyBatchJobStatistics getDailyBatchJobStats(String dailyBatchJobId) {
+		logger.debug("Loading {} {}", "Batch Job Statistics", FILE_DAILY_BATCH_JOB_STATS);
+
+		try {
+			return (DailyBatchJobStatistics) loadData(dailyBatchJobId + "-" + FILE_DAILY_BATCH_JOB_STATS);
 		} catch (Exception e) {
 			if (e.getCause() instanceof FileNotFoundException) {
 				logger.warn("Cannot load batch job statistics (" + e.getCause().getMessage() + ")");
@@ -56,4 +84,5 @@ public class TTTHFileStorage extends FileStorage {
 			return null;
 		}
 	}
+
 }

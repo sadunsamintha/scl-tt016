@@ -22,6 +22,7 @@ beans {
         controller = ref('batchJobIdSkuViewController')
         model = "#{batchJobIdSkuViewController.model}"
         dailyBatchRequestRepository = ref('dailyBatchRequestRepository')
+        productionParameters = ref('productionParameters')
         batchJobIdSize = props['sku.batch.job.id.maximum.length']
     }
 
