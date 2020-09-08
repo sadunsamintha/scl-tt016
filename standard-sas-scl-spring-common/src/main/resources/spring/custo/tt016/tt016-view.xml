@@ -96,6 +96,7 @@
 		<property name="plcParamSender" ref="plcParamSender" />
         <property name="plcProvider" ref="plcProvider" />
         <property name="plcValuesLoader" ref="plcValuesLoader" />
+        <property name="lineCount" value="${line.count}" />  
 	</bean>
 
 </beans>
