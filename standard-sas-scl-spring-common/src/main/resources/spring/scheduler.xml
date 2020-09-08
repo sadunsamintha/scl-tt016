@@ -42,9 +42,11 @@
 			fixed-delay="#{${globalMonitoringToolSendInfoTimer_sec}*1000}" />
 
 		<task:scheduled ref="remoteServerSheduledJobs" method="getEncodersFromRemoteServer" fixed-delay="#{${getEncodersTimer_sec}*1000}" />
+		
+		<task:scheduled ref="plcScheduledNotification" method="log" fixed-delay="#{${logTemperatureTimer_sec}*1000}" />
 
 	</task:scheduled-tasks>
 
-	<task:scheduler id="SchedulerSasScl" pool-size="10" />
+	<task:scheduler id="SchedulerSasScl" pool-size="11" />
 
 </beans>

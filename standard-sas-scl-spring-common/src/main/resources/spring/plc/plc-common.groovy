@@ -9,6 +9,7 @@ import com.sicpa.standard.sasscl.devices.plc.remoteserver.PlcRemoteServerConnect
 import com.sicpa.standard.sasscl.devices.plc.variable.PlcVarValueChangeHandler
 import com.sicpa.standard.sasscl.devices.plc.variable.descriptor.converter.PlcPulseToMMConverterHandler
 import com.sicpa.standard.sasscl.devices.plc.warningerror.PlcRegisterHandler
+import com.sicpa.standard.sasscl.devices.plc.impl.PlcScheduledNotification
 
 import static com.sicpa.standard.sasscl.messages.MessageEventKey.PLC.*
 
@@ -93,6 +94,14 @@ beans{
 		updateDateTimeMinuteVarName="#{plcVarMap['UPDATE_DATE_TIME_MINUTE']}"
 		updateDateTimeSecondVarName="#{plcVarMap['UPDATE_DATE_TIME_SECOND']}"
 		updateDateTimeMillisecondsVarName="#{plcVarMap['UPDATE_DATE_TIME_MILLISECONDS']}"
+	}
+	
+	plcScheduledNotification(PlcScheduledNotification){
+		plcProvider=ref('plcProvider')
+		boardTemp="#{plcVarMap['NTF_CAB_CX_BOARD_TEMPERATURE']}"
+		cpuTemp="#{plcVarMap['NTF_CAB_CX_CPU_TEMPERATURE']}"
+		eeCabinetTemp="#{plcVarMap['NTF_CAB_TEMPERATURE_EE_CAB']}"
+		ambiantTemp="#{plcVarMap['NTF_CAB_TEMPERATURE_AMBIANT']}"
 	}
 
 	def cab_msg=[
