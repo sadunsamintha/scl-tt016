@@ -3,11 +3,13 @@ package com.sicpa.tt016.controller.flow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.sasscl.devices.camera.blobDetection.BlobDetectionUtils;
 import com.sicpa.standard.sasscl.model.Product;
 import com.sicpa.standard.sasscl.model.ProductStatus;
 import com.sicpa.tt016.model.PlcCameraProductStatus;
 import com.sicpa.tt016.model.PlcCameraResult;
+import com.sicpa.tt016.model.event.TT016ProductPlcCameraEvent;
 
 public class ProductStatusMergerSAS extends ProductStatusMerger {
 
@@ -44,6 +46,8 @@ public class ProductStatusMergerSAS extends ProductStatusMerger {
 		}
 
 		setProductProperties(product);
+		
+		EventBusService.post(new TT016ProductPlcCameraEvent(product, plcCameraProductStatus));
 
 		fireNewProduct(product);
 	}

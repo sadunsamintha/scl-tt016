@@ -31,6 +31,7 @@ import com.sicpa.tt016.model.TT016Code;
 import com.sicpa.tt016.model.TT016ProductStatus;
 import com.sicpa.tt016.model.event.PlcCameraResultEvent;
 import com.sicpa.tt016.model.event.TT016NewProductEvent;
+import com.sicpa.tt016.model.event.TT016ProductPlcCameraEvent;
 
 public class ProductStatusMerger extends StandardActivationBehavior {
 
@@ -118,9 +119,7 @@ public class ProductStatusMerger extends StandardActivationBehavior {
 		synchronized (lock) {
 			cameraResults.add(cameraResult);
 
-
 			if (isPlcCameraStatusAvailable()) {
-				EventBusService.post(cameraResult);
 				mergeProductStatuses();
 			}
 		}
@@ -156,6 +155,8 @@ public class ProductStatusMerger extends StandardActivationBehavior {
 		}
 
 		setProductProperties(product);
+		
+		EventBusService.post(new TT016ProductPlcCameraEvent(product, plcCameraProductStatus));
 
 		fireNewProduct(product);
 	}
