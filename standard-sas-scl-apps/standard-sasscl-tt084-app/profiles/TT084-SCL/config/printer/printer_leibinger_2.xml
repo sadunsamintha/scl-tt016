@@ -17,8 +17,8 @@
 	<allowedSolventTags>77001-*</allowedSolventTags>
 	<printerParameters class="com.sicpa.standard.printer.leibinger.model.LeibingerParameter">
 		<codeType>DYNAMIC_DATAMATRIX</codeType>
-		<dataMatrixFormat>DM_12x26</dataMatrixFormat>
-		<dataMatrixEncoding>ASCII</dataMatrixEncoding>
+		<dataMatrixFormat>DM12x26</dataMatrixFormat>
+		<dataMatrixEncoding>C40</dataMatrixEncoding>
 	</printerParameters>
 	<invertedDataMatrix>false</invertedDataMatrix>
 	<reversedDataMatrix>false</reversedDataMatrix>
