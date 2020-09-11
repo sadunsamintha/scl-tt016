@@ -218,8 +218,10 @@ public class Production implements IProduction {
 			AtomicInteger currentIndex = new AtomicInteger();
 			PackagedProducts batch;
 
-			while ((batch = storage.getABatchOfProducts()) != null && !cancelSending) {
+			int i=1;  
+			while (i<=totalBatchCount && (batch = storage.getABatchOfProducts()) != null && !cancelSending) {
 				sendABatchOfProducts(batch, totalBatchCount, currentIndex, totalProductsCount);
+				i++;
 			}
 
 			// Reset cancelSending flag
