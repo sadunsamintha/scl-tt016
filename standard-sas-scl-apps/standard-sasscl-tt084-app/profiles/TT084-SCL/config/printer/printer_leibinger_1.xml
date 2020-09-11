@@ -20,8 +20,8 @@
 	<nozzleCloseDelayMs>1000</nozzleCloseDelayMs>
 	<printerParameters class="com.sicpa.standard.printer.leibinger.model.LeibingerParameter">
 		<codeType>DYNAMIC_DATAMATRIX</codeType>
-		<dataMatrixFormat>DM_12x26</dataMatrixFormat>
-		<dataMatrixEncoding>ASCII</dataMatrixEncoding>
+		<dataMatrixFormat>DM12x26</dataMatrixFormat>
+		<dataMatrixEncoding>C40</dataMatrixEncoding>
 	</printerParameters>
 	<invertedBitmapLogo>false</invertedBitmapLogo>
 	<reversedBitmapLogo>false</reversedBitmapLogo>
