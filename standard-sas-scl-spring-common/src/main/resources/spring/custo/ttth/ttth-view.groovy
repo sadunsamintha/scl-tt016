@@ -32,6 +32,7 @@ beans {
         screensFlow = ref('screensFlow')
         batchJobIdSkuView = ref('batchJobIdSkuView')
         dailyBatchRequestRepository = ref('dailyBatchRequestRepository')
+        siteCode = props['site.code']
         batchJobIdSize = props['sku.batch.job.id.maximum.length']
         batchJobSiteSize = props['sku.batch.job.site.maximum.length']
         batchJobSeqSize = props['sku.batch.job.seq.maximum.length']

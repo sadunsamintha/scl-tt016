@@ -18,11 +18,12 @@ public class TTTHProductionStatisticsAggregator extends ProductionStatisticsAggr
         super.setReportData(reportData, incrStats);
 
         String batchJobId = "N/A";
+        String productionModeDesc = incrStats.getProductionParameters()
+            .getProductionMode().getDescription();
 
-        if (incrStats.getProductionParameters()
-            .getProductionMode()
-            .getDescription()
-            .equals(ProductionMode.STANDARD.getDescription())) {
+        if (productionModeDesc.equals(ProductionMode.STANDARD.getDescription())
+            || productionModeDesc.equals(ProductionMode.REFEED_NORMAL.getDescription())
+            || productionModeDesc.equals(ProductionMode.REFEED_CORRECTION.getDescription())) {
             batchJobId = incrStats.getBatch();
         }
 

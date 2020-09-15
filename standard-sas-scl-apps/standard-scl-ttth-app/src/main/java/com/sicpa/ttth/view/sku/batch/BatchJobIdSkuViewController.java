@@ -29,6 +29,8 @@ public class BatchJobIdSkuViewController extends AbstractViewFlowController impl
 	private BatchJobIdSkuView batchJobIdSkuView;
 	private DailyBatchRequestRepository dailyBatchRequestRepository;
 
+	private String siteCode;
+
 	private int batchJobIdSize;
 	private int batchJobSiteSize;
 	private int batchJobSeqSize;
@@ -56,7 +58,7 @@ public class BatchJobIdSkuViewController extends AbstractViewFlowController impl
 	}
 
 	@Override
-	public void generateBatchJobId(String batchJobSite, String batchJobSeq) {
+	public void generateBatchJobId(String batchJobSeq) {
 		String lineID;
 
 		try {
@@ -68,13 +70,8 @@ public class BatchJobIdSkuViewController extends AbstractViewFlowController impl
 
 		String dateStr = getCurrentDateStr();
 
-		if (StringUtils.isBlank(batchJobSite) || StringUtils.isBlank(batchJobSeq)) {
+		if (StringUtils.isBlank(batchJobSeq)) {
 			JOptionPane.showMessageDialog(batchJobIdSkuView, Messages.get("sku.batch.id.validation.blank"));
-			return;
-		}
-
-		if (batchJobSite.length() > getBatchJobSiteSize()) {
-			JOptionPane.showMessageDialog(batchJobIdSkuView, Messages.format("sku.batch.site.validation.size", getBatchJobSiteSize()));
 			return;
 		}
 
@@ -89,7 +86,7 @@ public class BatchJobIdSkuViewController extends AbstractViewFlowController impl
 		}
 
 		StringBuilder batchJobId = new StringBuilder();
-		batchJobId.append(batchJobSite)
+		batchJobId.append(siteCode)
 			.append("-")
 			.append(lineID)
 			.append("-")
@@ -163,6 +160,10 @@ public class BatchJobIdSkuViewController extends AbstractViewFlowController impl
 
 	public void setDailyBatchRequestRepository(DailyBatchRequestRepository dailyBatchRequestRepository) {
 		this.dailyBatchRequestRepository = dailyBatchRequestRepository;
+	}
+
+	public void setSiteCode(String siteCode) {
+		this.siteCode = siteCode;
 	}
 
 	public void setBatchJobIdSize(int batchJobIdSize) {
