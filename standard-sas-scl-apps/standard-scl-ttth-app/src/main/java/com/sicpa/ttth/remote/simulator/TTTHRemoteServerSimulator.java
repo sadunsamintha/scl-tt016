@@ -57,7 +57,7 @@ public class TTTHRemoteServerSimulator extends RemoteServerSimulator {
             now.add(Calendar.HOUR, -24);
             dailyBatchRequestDto.setBatchJobId("SIM-" + lineID+ "-"
                 + new SimpleDateFormat("ddMMyy").format(now.getTime())
-            + "-" + "000" + i + "A" );
+            + "-" + "000" + i + "-" + "A" );
 
             SkuProductDto skuProductDto = new SkuProductDto();
             skuProductDto.setId(Long.valueOf(("000" + i)));

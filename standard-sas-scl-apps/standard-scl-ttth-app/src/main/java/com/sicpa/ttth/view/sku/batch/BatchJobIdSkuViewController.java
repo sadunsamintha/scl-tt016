@@ -94,6 +94,7 @@ public class BatchJobIdSkuViewController extends AbstractViewFlowController impl
 			.append("–")
 			.append(batchJobSeq)
 			//TODO: Update this to be based on Standard flow and Manual flow.
+			.append("–")
 			.append("A");
 
 		model.setStrBatchJobId(batchJobId.toString());
