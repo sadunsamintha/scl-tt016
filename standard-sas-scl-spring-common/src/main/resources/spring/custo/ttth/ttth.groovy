@@ -21,6 +21,8 @@ beans {
         batchJobHistory = ref ('batchJobHistory')
     }
 
+    importBeans('spring/custo/ttth/ttth-monitoring.groovy')
+
     importBeans('spring/custo/ttth/ttth-production.groovy')
 
     if (serverBehavior == "STANDARD") {

@@ -302,7 +302,7 @@ public class Monitoring implements IMonitoring {
 		};
 	}
 
-	private Date getMidnightNextDay(Date date) {
+	protected Date getMidnightNextDay(Date date) {
 		Date temp = DateUtils.truncate(date, Calendar.DAY_OF_MONTH);
 		return DateUtils.addDays(temp, 1);
 	}
