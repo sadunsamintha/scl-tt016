@@ -11,6 +11,8 @@ import org.slf4j.LoggerFactory;
 import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.sasscl.business.activation.NewProductEvent;
 import com.sicpa.standard.sasscl.business.activation.PlcActivationCounterCheck;
+import com.sicpa.standard.sasscl.model.Product;
+import com.sicpa.standard.sasscl.model.ProductionMode;
 import com.sicpa.standard.sasscl.model.ProductionParameters;
 import com.sicpa.tt016.model.event.TT016ProductPlcCameraEvent;
 
@@ -23,24 +25,36 @@ public class TT016PlcActivationCounterCheck extends PlcActivationCounterCheck {
 	@Override
 	@Subscribe
 	public void notifyNewProduct(NewProductEvent evt) {
-		// To be handled by notifyNewTT016Product
-	}
-	
-	@Subscribe
-	public void notifyNewTT016Product(TT016ProductPlcCameraEvent evt) {
-		if (model.isEnabled()) {
-			if (acceptTT016Product(evt)) {
+		// Production Mode that is not Standard/Domestic will be here
+		
+		if (model.isEnabled() && !productionParameters.getProductionMode().equals(ProductionMode.STANDARD)) {
+			if (acceptTT016ProductNotStandard(evt.getProduct())) {
 				counterFromActivation.incrementAndGet();
 			}
 		}
 	}
 	
-	protected boolean acceptTT016Product(TT016ProductPlcCameraEvent evt) {
+	@Subscribe
+	public void notifyNewTT016Product(TT016ProductPlcCameraEvent evt) {
+		// Production Mode that is Standard/Domestic will be here (triggered by ProductStatusMerger and ProductStatusMergerSAS)
+		
+		if (model.isEnabled() && productionParameters.getProductionMode().equals(ProductionMode.STANDARD)) {
+			if (acceptTT016ProductStandard(evt)) {
+				counterFromActivation.incrementAndGet();
+			}
+		}
+	}
+	
+	protected boolean acceptTT016ProductStandard(TT016ProductPlcCameraEvent evt) {
 		if (evt.getPlcCameraProductStatus() != null && !evt.getPlcCameraProductStatus().equals(EJECTED_PRODUCER)) {
 			return !asList(SENT_TO_PRINTER_WASTED, OFFLINE).contains(evt.getProduct().getStatus());
 		}
 		
 		return false;
+	}
+	
+	protected boolean acceptTT016ProductNotStandard(Product p) {
+		return !asList(SENT_TO_PRINTER_WASTED, OFFLINE, EJECTED_PRODUCER).contains(p.getStatus());
 	}
 	
 	public ProductionParameters getProductionParameters() {
