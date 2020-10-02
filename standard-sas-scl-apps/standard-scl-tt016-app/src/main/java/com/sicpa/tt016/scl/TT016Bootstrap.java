@@ -114,13 +114,13 @@ public class TT016Bootstrap extends Bootstrap {
 
 	@Override
 	public void executeSpringInitTasks() {
-		addAgingProductionMode();
-		super.executeSpringInitTasks();
 		if (isBeamEnabled) {
 			addErrorMessagesForAutomatedBeam();
 			initializeAlarmListenersForBeam();
 			sendSKUHeightToBeam();
 		}
+		addAgingProductionMode();
+		super.executeSpringInitTasks();
 		noStopIfDmxDetectedInExport();
 		selectStopReasonWhenProductionStop();
 		setUnknownSkuCodeType();

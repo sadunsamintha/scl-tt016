@@ -40,6 +40,12 @@
 		<property name="model" value="#{resetBeamViewController.model}" />
 	</bean>
 
+	<bean id="systemInfoView" class="com.sicpa.tt016.view.main.systemInfo.TT016SystemInfoView">
+		<property name="controller" ref="systemInfoViewController" />
+		<property name="model" value="#{systemInfoViewController.model}" />
+		<property name="beamEnabled" value="#{${automated.beam.enabled}}" />
+	</bean>
+
 	<bean id="resetBeamViewController" class="com.sicpa.tt016.view.resetBeam.ResetBeamViewController"/>
 
 	<bean id="mainFrame" class="com.sicpa.tt016.view.TT016MainFrameGetter">

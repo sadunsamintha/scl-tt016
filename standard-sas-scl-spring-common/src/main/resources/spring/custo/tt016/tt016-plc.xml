@@ -46,7 +46,6 @@
         <property name="productionParameters" ref="productionParameters"/>
     </bean>
 
-    <!--TODO: Alarm Listener for beam-->
     <bean id="automatedBeamNtfHandler" class="com.sicpa.standard.sasscl.devices.plc.AutomatedBeamNtfHandler">
         <property name="plcProvider" ref="plcProvider" />
         <property name="plcVariableMap" ref="plcVarMap" />
