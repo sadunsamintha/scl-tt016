@@ -67,7 +67,7 @@ public class LegacyEncoderConverter {
 
     private IEncoder convertLegacy2New(EncoderDTO legacyEncoder) {
         TT016Encoder newEncoder = new TT016Encoder(legacyEncoder.getEncoder(), legacyEncoder.getSubSystemId(),
-                codeTypeId);
+                codeTypeId, legacyEncoder.getCurrentIndex());
         newEncoder.setCurrentIndex(legacyEncoder.getCurrentIndex());
         newEncoder.setEncoderDownloadedDate(legacyEncoder.getEncoderDownloadedDate());
         newEncoder.setEncoderSubsystemId(legacyEncoder.getSubSystemId());

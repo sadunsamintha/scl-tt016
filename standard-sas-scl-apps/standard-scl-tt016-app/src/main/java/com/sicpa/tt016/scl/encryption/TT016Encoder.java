@@ -7,6 +7,9 @@ import com.sicpa.standard.sasscl.model.ProductionParameters;
 import com.sicpa.standard.sasscl.sicpadata.CryptographyException;
 import com.sicpa.standard.sasscl.sicpadata.generator.EncoderEmptyException;
 import com.sicpa.standard.sasscl.sicpadata.generator.IEncoder;
+import com.sicpa.standard.sicpadata.spi.manager.ServiceProviderException;
+import com.sicpa.standard.sicpadata.spi.manager.StaticServiceProviderManager;
+import com.sicpa.standard.sicpadata.spi.sequencestorage.ISequenceStorageSpi;
 import com.sicpa.tt016.common.api.activation.visiblecode.implementation.TT016SCLHRDGeneratorImpl;
 import com.sicpa.tt016.common.security.bean.SequenceBean;
 import com.sicpa.tt016.common.security.encoder.IMoroccoEncoder;
@@ -33,12 +36,13 @@ public class TT016Encoder implements IEncoder {
 	private Date onClientDate;
 	private int codeTypeId;
 
-	public TT016Encoder(IMoroccoEncoder encoder, int subsystemId, int codeTypeId) {
+	public TT016Encoder(IMoroccoEncoder encoder, int subsystemId, int codeTypeId, long currentIndex) {
 		tt016encoder = encoder;
 		remainingCodes = tt016encoder.getCapacity();
 		setEncoderSubsystemId(subsystemId);
-		currentIndex = 0;
+		this.currentIndex = currentIndex;
 		this.codeTypeId = codeTypeId;
+		this.onClientDate = new Date();
 	}
 
 	public void setEncoderSubsystemId(int subsystemId) {
@@ -158,6 +162,7 @@ public class TT016Encoder implements IEncoder {
 			for (long i = 0; i < numberOfCodesToRequest; i++) {
 				codes.add(getCodePair());
 			}
+			updateSequence();
 			return codes;
 		} catch (Exception e) {
 			logger.error("Failed to generate code.", e);
@@ -174,6 +179,7 @@ public class TT016Encoder implements IEncoder {
 			for (long i = 0; i < numberOfCodesToRequest; i++) {
 				codes.add(getCode());
 			}
+			updateSequence();
 			return codes;
 		} catch (Exception e) {
 			logger.error("Failed to generate code.", e);
@@ -196,7 +202,16 @@ public class TT016Encoder implements IEncoder {
 			throw new CryptographyException(e, "Failed to generate encrypted code");
 		}
 	}
-
+	
+	private void updateSequence() {
+		try {
+			ISequenceStorageSpi fileSequenceStorageProvider = getStorage();
+			fileSequenceStorageProvider.storeSequence(getBatchId(), getCurrentIndex());
+		} catch (ServiceProviderException e) {
+			logger.error("Failed to update sequence.", e);
+		}
+	}
+	
 	@Override
 	public int getYear() {
 		return 0;
@@ -239,4 +254,10 @@ public class TT016Encoder implements IEncoder {
 	public void setLastCodeDate(Date lastCodeDate) {
 		this.lastCodeDate = lastCodeDate;
 	}
+	
+	private ISequenceStorageSpi getStorage() throws ServiceProviderException {
+		return StaticServiceProviderManager.getInstance().getServiceProvider("provider.service.storage.sequence",
+				ISequenceStorageSpi.class);
+	}
+	
 }

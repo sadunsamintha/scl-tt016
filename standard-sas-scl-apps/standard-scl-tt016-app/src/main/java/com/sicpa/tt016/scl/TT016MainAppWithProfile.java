@@ -210,7 +210,7 @@ public class TT016MainAppWithProfile extends TT016MainApp implements IProfileSel
 		config.add("spring/monitoring.xml");
 		config.add("spring/security.xml");
 
-		config.add("spring/crypto.xml");
+		config.add("spring/crypto/crypto-import.groovy");
 		config.add("spring/errorsRepository.xml");
 
 		config.add("spring/productionConfig.xml");

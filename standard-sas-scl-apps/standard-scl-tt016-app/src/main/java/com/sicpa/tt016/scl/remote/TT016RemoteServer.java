@@ -14,8 +14,10 @@ import com.sicpa.standard.sasscl.model.ProductStatus;
 import com.sicpa.standard.sasscl.monitoring.MonitoringService;
 import com.sicpa.standard.sasscl.monitoring.system.event.BasicSystemEvent;
 import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.ProductionParameterRootNode;
+import com.sicpa.standard.sasscl.sicpadata.generator.FileSequenceStorageProvider;
 import com.sicpa.standard.sasscl.sicpadata.generator.IEncoder;
 import com.sicpa.standard.sasscl.sicpadata.reader.IAuthenticator;
+import com.sicpa.standard.sicpadata.spi.manager.ServiceProviderException;
 import com.sicpa.tt016.common.dto.*;
 import com.sicpa.tt016.common.dto.EncoderInfoResultDTO.InfoResult;
 import com.sicpa.tt016.master.scl.exceptions.InternalException;
@@ -48,6 +50,8 @@ public class TT016RemoteServer extends AbstractRemoteServer implements IBisCrede
 	private SkuConverter skuConverter;
 	private final EncryptionConverter encryptionConverter = new EncryptionConverter();
 	private final ProductionDataConverter productionDataConverter = new ProductionDataConverter();
+	
+	protected FileSequenceStorageProvider fileSequenceStorageProvider;
 
 	@Override
 	public boolean isConnected() {
@@ -108,6 +112,7 @@ public class TT016RemoteServer extends AbstractRemoteServer implements IBisCrede
 				IEncoder encoder = encryptionConverter.convert(dto, remoteServices.getSubsystemId(),
 						(int) codeType.getId());
 				storeEncoder(encoder, year);
+				storeSequence(encoder, dto);
 			}
 		} catch (InternalException e) {
 			throw new RemoteServerException(e);
@@ -117,6 +122,14 @@ public class TT016RemoteServer extends AbstractRemoteServer implements IBisCrede
 	private void storeEncoder(IEncoder encoder, int year) {
 		storage.saveEncoders(year, encoder);
 		storage.confirmEncoder(encoder.getId());
+	}
+	
+	private void storeSequence(IEncoder encoder, EncoderSclDTO dto) {
+		try {
+			fileSequenceStorageProvider.storeSequence(encoder.getBatchId(), dto.getLastUsedSequence());
+		} catch (ServiceProviderException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -263,4 +276,9 @@ public class TT016RemoteServer extends AbstractRemoteServer implements IBisCrede
 	public String getPassword() {
 		return remoteServices.getBisTrainerPassword(getUserName());
 	}
+	
+	public void setFileSequenceStorageProvider(FileSequenceStorageProvider fileSequenceStorageProvider) {
+		this.fileSequenceStorageProvider = fileSequenceStorageProvider;
+	}
+
 }

@@ -206,7 +206,7 @@ public class MainAppWithProfile extends MainApp implements IProfileSelectorListe
 		config.add("spring/monitoring.xml");
 		config.add("spring/security.xml");
 
-		config.add("spring/crypto.xml");
+		config.add("spring/crypto/crypto-import.groovy");
 		config.add("spring/errorsRepository.xml");
 
 		config.add("spring/productionConfig.xml");

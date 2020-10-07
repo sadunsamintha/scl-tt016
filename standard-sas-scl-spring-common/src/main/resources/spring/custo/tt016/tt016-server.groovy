@@ -51,6 +51,7 @@ beans{
 			connector=ref('masterConnector')
 			skuConverter=ref('skuConverter')
 			storage=ref('storage')
+			fileSequenceStorageProvider=ref('fileSequenceStorageProvider')
 		}
 
 		masterConnector(TT016MasterConnector){

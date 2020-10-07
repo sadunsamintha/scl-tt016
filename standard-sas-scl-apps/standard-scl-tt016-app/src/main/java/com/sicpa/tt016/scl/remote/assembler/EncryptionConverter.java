@@ -28,7 +28,7 @@ public class EncryptionConverter {
 	}
 
 	public IEncoder convert(EncoderSclDTO dto, int subsystemId, int codeTypeId) {
-		return new TT016Encoder(dto.getMoroccoEncoder(), subsystemId, codeTypeId);
+		return new TT016Encoder(dto.getMoroccoEncoder(), subsystemId, codeTypeId, dto.getLastUsedSequence());
 	}
 
 }
