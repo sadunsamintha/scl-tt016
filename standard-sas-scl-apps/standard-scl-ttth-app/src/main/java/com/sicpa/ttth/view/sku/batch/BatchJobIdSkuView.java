@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import javax.swing.Box;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -86,6 +87,7 @@ public class BatchJobIdSkuView extends AbstractView<IBatchJobIdSkuListener, Batc
         private JPanel buttonPanel;
         private JButton manualBatchJobIdButton;
         private JTextField batchJobIdSeqTextField;
+        private JTextField batchJobIdSkuTextField;
         private JButton autoBatchJobIdButton;
         private DirectionButton buttonBack;
 
@@ -117,15 +119,17 @@ public class BatchJobIdSkuView extends AbstractView<IBatchJobIdSkuListener, Batc
                 manualBatchJobIdButton = new JButton(Messages.get("sku.button.batch.offline.mode"));
                 manualBatchJobIdButton.setPreferredSize(new Dimension(180, 50));
                 Object[] fields = {
-                    Messages.get("sku.batch.job.seq.label"), getBatchJobSeqTextField()
+                    Messages.get("sku.batch.job.seq.label"), getBatchJobSeqTextField(),
+                    Messages.get("sku.id.label"), getBatchJobSkuTextField()
                 };
                 manualBatchJobIdButton.addActionListener(e -> {
                     getBatchJobSeqTextField().setText("");
+                    getBatchJobSkuTextField().setText("");
                    int option = JOptionPane.showConfirmDialog(this, fields,
                        Messages.get("sku.button.batch.offline.mode"),
                        JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null);
                    if (option == JOptionPane.YES_OPTION) {
-                       generateBatchJobId(getBatchJobSeqTextField().getText());
+                       generateBatchJobId(getBatchJobSeqTextField().getText(), getBatchJobSkuTextField().getText());
                    }
                 });
             }
@@ -143,6 +147,17 @@ public class BatchJobIdSkuView extends AbstractView<IBatchJobIdSkuListener, Batc
             return batchJobIdSeqTextField;
         }
 
+        public JTextField getBatchJobSkuTextField() {
+            if (batchJobIdSkuTextField == null) {
+                batchJobIdSkuTextField = new JTextField(getBatchJobIdSize());
+                batchJobIdSkuTextField.setPreferredSize(new Dimension(120, 40));
+                batchJobIdSkuTextField.setBackground(SicpaColor.BLUE_ULTRA_LIGHT);
+                VirtualKeyboardPanel virtualKeyboardPanel = VirtualKeyboardPanel.getNumericKeyboard(batchJobIdSkuTextField);
+                VirtualKeyboardPanel.attachKeyboardDialog(batchJobIdSkuTextField, virtualKeyboardPanel);
+            }
+            return batchJobIdSkuTextField;
+        }
+
         private JButton getAutoBatchJobIdButton() {
             if (autoBatchJobIdButton == null) {
                 autoBatchJobIdButton = new JButton(Messages.get("sku.button.batch.auto.mode"));
@@ -153,17 +168,19 @@ public class BatchJobIdSkuView extends AbstractView<IBatchJobIdSkuListener, Batc
                             .getDailyBatchRequests()
                             .forEach(e -> choices.add(e.getBatchJobId()));
                         autoBatchJobIdButton.addActionListener(e -> {
-                            batchJobId = (String) JOptionPane.showInputDialog(this,
-                                Messages.get("sku.button.batch.auto.mode"), Messages.get("sku.button.batch.auto.mode.prompt"),
-                                JOptionPane.PLAIN_MESSAGE, null, choices.toArray(), choices.get(0));
-                            if (batchJobId != null) {
+                            JOptionPane pane = getBatchSelectionPane(Messages.get("sku.button.batch.auto.mode"), choices.toArray());
+                            JDialog dialog = pane.createDialog(this, Messages.get("sku.button.batch.auto.mode"));
+                            dialog.setSize(350, 180);
+                            dialog.setVisible(true);
+                            dialog.dispose();
+                            batchJobId = (String) pane.getInputValue();
+                            if (batchJobId != null && !batchJobId.equals("uninitializedValue")) {
                                 saveSelected(batchJobId);
                             }
                         });
                     } else {
-                        autoBatchJobIdButton.addActionListener(e -> {
-                            JOptionPane.showMessageDialog(this, Messages.get("sku.batch.job.unavailable"));
-                        });
+                        autoBatchJobIdButton.addActionListener(e ->
+                            JOptionPane.showMessageDialog(this, Messages.get("sku.batch.job.unavailable")));
                     }
                 } else {
                     if (!dailyBatchRequestRepository.getBatchJobHistory().getDailyBatchHistory().isEmpty()) {
@@ -174,17 +191,25 @@ public class BatchJobIdSkuView extends AbstractView<IBatchJobIdSkuListener, Batc
                             .keySet());
                         Collections.reverse(choices);
                         autoBatchJobIdButton.addActionListener(e -> {
-                            batchJobId = (String) JOptionPane.showInputDialog(this,
-                                Messages.get("sku.button.batch.auto.mode"), Messages.get("sku.button.batch.auto.mode.prompt"),
-                                JOptionPane.PLAIN_MESSAGE, null, choices.toArray(), choices.get(0));
-                            if (batchJobId != null) {
-                                saveSelectedHist(batchJobId);
+                            JOptionPane pane = getBatchSelectionPane(Messages.get("sku.button.batch.auto.mode"), choices.toArray());
+                            JDialog dialog = pane.createDialog(this, Messages.get("sku.button.batch.auto.mode.prompt"));
+                            dialog.setSize(350, 180);
+                            dialog.setVisible(true);
+                            dialog.dispose();
+                            batchJobId = (String) pane.getInputValue();
+                            if (batchJobId != null && !batchJobId.equals("uninitializedValue")) {
+                                if (productionParameters.getProductionMode().equals(ProductionMode.REFEED_CORRECTION)){
+                                    //Manual flow for correction refeed.
+                                    saveSelectedHist(batchJobId);
+                                } else {
+                                    //Normal flow for normal refeed.
+                                    saveSelected(batchJobId);
+                                }
                             }
                         });
                     } else {
-                        autoBatchJobIdButton.addActionListener(e -> {
-                            JOptionPane.showMessageDialog(this, Messages.get("sku.batch.history.unavailable"));
-                        });
+                        autoBatchJobIdButton.addActionListener(e ->
+                            JOptionPane.showMessageDialog(this, Messages.get("sku.batch.history.unavailable")));
                     }
                 }
 
@@ -215,6 +240,18 @@ public class BatchJobIdSkuView extends AbstractView<IBatchJobIdSkuListener, Batc
             }
             return buttonPanel;
         }
+
+        public JOptionPane getBatchSelectionPane(String title, Object[] choices) {
+            JOptionPane pane = new JOptionPane(title, JOptionPane.PLAIN_MESSAGE,
+                JOptionPane.OK_CANCEL_OPTION, null,
+                null, null);
+            pane.setWantsInput(true);
+            pane.setSelectionValues(choices);
+            pane.setInitialSelectionValue(choices[0]);
+            pane.selectInitialValue();
+
+            return pane;
+        }
     }
 
     private void saveSelected(String strBatchJobId) {
@@ -229,9 +266,9 @@ public class BatchJobIdSkuView extends AbstractView<IBatchJobIdSkuListener, Batc
         }
     }
 
-    private void generateBatchJobId(String batchJobSeq) {
+    private void generateBatchJobId(String batchJobSeq, String batchJobSkuId) {
         for (IBatchJobIdSkuListener listener : listeners) {
-            listener.generateBatchJobId(batchJobSeq);
+            listener.generateBatchJobId(batchJobSeq, batchJobSkuId);
         }
     }
 

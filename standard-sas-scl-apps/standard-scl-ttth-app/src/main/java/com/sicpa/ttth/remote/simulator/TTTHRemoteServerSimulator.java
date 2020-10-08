@@ -8,9 +8,7 @@ import com.sicpa.standard.sasscl.devices.remote.RemoteServerException;
 import com.sicpa.standard.sasscl.devices.remote.impl.dtoConverter.DailyBatchRequestRepository;
 import com.sicpa.standard.sasscl.devices.remote.simulator.RemoteServerSimulator;
 import com.sicpa.standard.sasscl.devices.remote.simulator.RemoteServerSimulatorModel;
-import com.sicpa.standard.sasscl.productionParameterSelection.node.IProductionParametersNode;
 import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.ProductionParameterRootNode;
-import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.SKUNode;
 import com.sicpa.std.common.api.staticdata.sku.dto.SkuProductDto;
 
 public class TTTHRemoteServerSimulator extends RemoteServerSimulator {
@@ -33,21 +31,14 @@ public class TTTHRemoteServerSimulator extends RemoteServerSimulator {
             throw new RemoteServerException("Remote server model is not set");
         }
 
-        for (IProductionParametersNode node :
-             simulatorModel
-                 .getProductionParameters()
-                 .getChildren()
-                 .get(0)
-                 .getChildren()) {
-            if (node instanceof SKUNode) {
-                dailyBatchRequestRepository.addSKU(((SKUNode) node).getValue());
-            }
-        }
-
         for (int i = 0; i < 3; i++) {
             DailyBatchRequestDto dailyBatchRequestDto = new DailyBatchRequestDto();
             dailyBatchRequestDto.setId((long) i);
             dailyBatchRequestDto.setQuantity((long) 1000);
+
+            SkuProductDto skuProductDto = new SkuProductDto();
+            skuProductDto.setId(Long.valueOf(("000" + i)));
+            skuProductDto.setSkuBarcode("000" + i);
 
             Calendar now = Calendar.getInstance();
             dailyBatchRequestDto.setProductionStartDate(now.getTime());
@@ -57,11 +48,7 @@ public class TTTHRemoteServerSimulator extends RemoteServerSimulator {
             now.add(Calendar.HOUR, -24);
             dailyBatchRequestDto.setBatchJobId("SIM-" + lineID+ "-"
                 + new SimpleDateFormat("ddMMyy").format(now.getTime())
-            + "-" + "000" + i + "-" + "A" );
-
-            SkuProductDto skuProductDto = new SkuProductDto();
-            skuProductDto.setId(Long.valueOf(("000" + i)));
-            skuProductDto.setSkuBarcode("000" + i);
+            + "-" + "000" + i + skuProductDto.getId() + "-" + "A" );
             dailyBatchRequestDto.setSkuProductDto(skuProductDto);
 
             dailyBatchRequestRepository.addDailyBatchRequest(dailyBatchRequestDto);

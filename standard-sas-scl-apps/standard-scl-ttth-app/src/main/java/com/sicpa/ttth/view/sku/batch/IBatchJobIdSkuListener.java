@@ -6,7 +6,7 @@ public interface IBatchJobIdSkuListener {
 
     void saveBatchJobHist(String strBatchJobId);
 
-    void generateBatchJobId(String batchJobSeq);
+    void generateBatchJobId(String batchJobSeq, String batchJobSkuId);
 
     void returnToSelection();
 

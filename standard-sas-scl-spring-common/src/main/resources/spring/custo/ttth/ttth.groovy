@@ -17,6 +17,7 @@ beans {
     batchJobHistory(BatchJobHistory) {}
 
     dailyBatchRequestRepository(DailyBatchRequestRepository) {
+        skuListProvider = ref ('skuListProvider')
         batchJobStatistics = ref ('batchJobStatistics')
         batchJobHistory = ref ('batchJobHistory')
     }

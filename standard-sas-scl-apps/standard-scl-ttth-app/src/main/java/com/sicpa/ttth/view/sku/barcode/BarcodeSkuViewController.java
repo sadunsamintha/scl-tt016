@@ -75,7 +75,9 @@ public class BarcodeSkuViewController extends AbstractViewFlowController impleme
 
 	@Subscribe
 	public void getBarcodeFromSKU(BarcodeSkuModel evt) {
-		this.model = evt;
+		this.model.setSkuBarcodes(evt.getSkuBarcodes());
+		this.model.setSkuName(evt.getSkuName());
+		model.notifyModelChanged();
 	}
 
 	public BarcodeSkuModel getModel() {

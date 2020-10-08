@@ -10,11 +10,13 @@ import com.sicpa.standard.client.common.view.mvc.AbstractObservableModel;
 public class BarcodeSkuModel extends AbstractObservableModel {
 
     private List<String>  skuBarcodes;
+    private String skuName;
 
     public BarcodeSkuModel() {
     }
 
-    public BarcodeSkuModel(List<String>  skuBarcodes) {
+    public BarcodeSkuModel(String skuName, List<String>  skuBarcodes) {
+        this.skuName = skuName;
         this.skuBarcodes = skuBarcodes;
     }
 
@@ -22,7 +24,15 @@ public class BarcodeSkuModel extends AbstractObservableModel {
         return skuBarcodes;
     }
 
+    public String getSkuName() {
+        return skuName;
+    }
+
     public void setSkuBarcodes(List<String> skuBarcodes) {
         this.skuBarcodes = skuBarcodes;
+    }
+
+    public void setSkuName(String skuName) {
+        this.skuName = skuName;
     }
 }

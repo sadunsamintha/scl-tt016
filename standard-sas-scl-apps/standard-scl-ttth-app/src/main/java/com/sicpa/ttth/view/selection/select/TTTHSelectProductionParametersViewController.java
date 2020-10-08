@@ -59,7 +59,7 @@ public class TTTHSelectProductionParametersViewController extends SelectProducti
 				this.pp.setSku(pp.getSku());
 				this.pp.setBarcode(pp.getBarcode());
 				this.pp.setProperty(productionBatchJobId, strBatchJobId);
-				EventBusService.post(new BarcodeSkuModel(this.pp.getSku().getBarCodes()));
+				EventBusService.post(new BarcodeSkuModel(this.pp.getSku().getDescription(), this.pp.getSku().getBarCodes()));
 				isBatchIDSet = false;
                 addSkuDetailsToMainFrame();
                 screensFlow.moveToNext(TTTHScreenFlowTriggers.BARCODE_TRANSITION);

@@ -25,7 +25,7 @@ public class BarcodeSkuView extends AbstractView<IBarcodeSkuListener, BarcodeSku
 
     private void initGUI() {
         setLayout(new MigLayout("ltr,fill"));
-        add(new JLabel(Messages.get("sku.barcode.title") + " "));
+        add(new JLabel(Messages.get("sku.barcode.title") + " | SKU: " + model.getSkuName()));
         add(new JSeparator(), "growx, pushx, wrap");
         add(getBarcodeSkuPanel(), "span, split 2, pushy, growx, growy");
     }
@@ -44,7 +44,9 @@ public class BarcodeSkuView extends AbstractView<IBarcodeSkuListener, BarcodeSku
     }
 
     @Override
-    public void modelChanged() { }
+    public void modelChanged() {
+        refresh();
+    }
 
     @Subscribe
     public void handleLanguageSwitch(LanguageSwitchEvent evt) {

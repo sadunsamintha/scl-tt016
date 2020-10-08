@@ -4,6 +4,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.NoSuchElementException;
 import java.util.Properties;
 import javax.swing.JOptionPane;
 import org.apache.commons.lang.StringUtils;
@@ -13,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.i18n.Messages;
 import com.sicpa.standard.sasscl.devices.remote.impl.dtoConverter.DailyBatchRequestRepository;
+import com.sicpa.standard.sasscl.model.SKU;
 import com.sicpa.standard.sasscl.view.AbstractViewFlowController;
 import com.sicpa.ttth.storage.TTTHFileStorage;
 import com.sicpa.ttth.view.flow.TTTHDefaultScreensFlow;
@@ -45,9 +47,15 @@ public class BatchJobIdSkuViewController extends AbstractViewFlowController impl
 
 	@Override
 	public void saveBatchJobId(String strBatchJobId) {
-		model.setStrBatchJobId(strBatchJobId);
-		EventBusService.post(getModel());
-		EventBusService.post(dailyBatchRequestRepository.getDailyBatchSKU(strBatchJobId));
+		try {
+			SKU sku = dailyBatchRequestRepository.getDailyBatchSKU(strBatchJobId);
+			model.setStrBatchJobId(strBatchJobId);
+			EventBusService.post(getModel());
+			EventBusService.post(sku);
+		} catch (NoSuchElementException e) {
+			logger.error("Sku not available for " + strBatchJobId, e);
+			JOptionPane.showMessageDialog(batchJobIdSkuView, Messages.get("sku.batch.sku.mismatch"));
+		}
 	}
 
 	@Override
@@ -58,7 +66,7 @@ public class BatchJobIdSkuViewController extends AbstractViewFlowController impl
 	}
 
 	@Override
-	public void generateBatchJobId(String batchJobSeq) {
+	public void generateBatchJobId(String batchJobSeq, String batchJobSkuId) {
 		String lineID;
 
 		try {
@@ -70,7 +78,7 @@ public class BatchJobIdSkuViewController extends AbstractViewFlowController impl
 
 		String dateStr = getCurrentDateStr();
 
-		if (StringUtils.isBlank(batchJobSeq)) {
+		if (StringUtils.isBlank(batchJobSeq) || StringUtils.isBlank(batchJobSkuId)) {
 			JOptionPane.showMessageDialog(batchJobIdSkuView, Messages.get("sku.batch.id.validation.blank"));
 			return;
 		}
@@ -91,19 +99,14 @@ public class BatchJobIdSkuViewController extends AbstractViewFlowController impl
 			.append(lineID)
 			.append("-")
 			.append(dateStr)
-			.append("–")
+			.append("-")
 			.append(batchJobSeq)
-			//TODO: Update this to be based on Standard flow and Manual flow.
-			.append("–")
+			.append(batchJobSkuId)
+			.append("-")
 			.append("A");
 
-		model.setStrBatchJobId(batchJobId.toString());
-		EventBusService.post(getModel());
+		saveBatchJobId(batchJobId.toString());
 
-		//TODO:: To change upon requirement confirmation for offline mode.
-		dailyBatchRequestRepository.updateStatistics(batchJobId.toString(), 9999999);
-
-		screensFlow.moveToNext(BATCH_ID_TRANSITION);
 	}
 
 	@Override

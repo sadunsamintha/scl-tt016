@@ -15,7 +15,6 @@ public class TTTHDtoConverter extends DtoConverter implements ProductBatchJobIdP
 	@Override
 	public ProductionParameterRootNode convert(AuthorizedProductsDto products) {
 		//Clear out the existing list.
-		dailyBatchRequestRepository.clearSkuList();
 		dailyBatchRequestRepository.clearDailyBatchRequest();
 		return super.convert(products);
 	}
