@@ -5,6 +5,7 @@ import com.sicpa.ttth.view.sku.batch.BatchJobIdSkuView
 import com.sicpa.ttth.view.sku.batch.BatchJobIdSkuViewController
 import com.sicpa.ttth.view.sku.barcode.BarcodeSkuView
 import com.sicpa.ttth.view.sku.barcode.BarcodeSkuViewController
+import com.sicpa.ttth.view.startstop.TTTHStartStopView
 import com.sicpa.standard.sasscl.productionParameterSelection.TTTHDefaultSelectionModelFactory
 import com.sicpa.ttth.view.selection.select.TTTHSelectProductionParametersViewController
 
@@ -73,4 +74,12 @@ beans {
         pp = ref('productionParameters')
     }
 
+    startStopView(TTTHStartStopView) { b ->
+        b.initMethod = 'initGUI'
+        controller = ref('startStopViewController')
+        model = '#{startStopViewController.model}'
+        productionStatusView = ref('productionStatusView')
+        productionListener = ref('production')
+    }
+    
 }

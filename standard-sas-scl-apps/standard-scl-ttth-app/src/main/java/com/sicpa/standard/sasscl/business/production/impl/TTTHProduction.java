@@ -4,8 +4,9 @@ import com.sicpa.standard.sasscl.custoBuilder.CustoBuilder;
 import com.sicpa.standard.sasscl.model.Product;
 import com.sicpa.standard.sasscl.model.ProductionParameters;
 import com.sicpa.standard.sasscl.provider.ProductBatchJobIdProvider;
+import com.sicpa.standard.sasscl.view.startstop.IStartStopViewListener;
 
-public class TTTHProduction extends Production implements ProductBatchJobIdProvider {
+public class TTTHProduction extends Production implements ProductBatchJobIdProvider, IStartStopViewListener {
 
     private ProductionParameters pp;
 
@@ -19,4 +20,15 @@ public class TTTHProduction extends Production implements ProductBatchJobIdProvi
     public void setPp(ProductionParameters pp) {
         this.pp = pp;
     }
+
+    @Override
+    public void start() {
+
+    }
+
+    @Override
+    public void stop() {
+        sendAllProductionData();
+    }
+
 }
