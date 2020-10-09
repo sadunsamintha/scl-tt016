@@ -45,6 +45,7 @@ import com.sicpa.standard.sasscl.provider.impl.AuthenticatorProvider;
 import com.sicpa.standard.sasscl.provider.impl.SkuListProvider;
 import com.sicpa.standard.sasscl.provider.impl.SubsystemIdProvider;
 import com.sicpa.standard.sasscl.sicpadata.generator.validator.IEncoderSequenceValidator;
+import com.sicpa.standard.sasscl.sicpadata.reader.IAuthenticator;
 import com.sicpa.standard.sasscl.utils.ConfigUtilEx;
 import com.sicpa.standard.sasscl.view.LanguageSwitchEvent;
 import com.sicpa.standard.sasscl.view.MainFrame;
@@ -180,7 +181,14 @@ public class Bootstrap implements IBootstrap {
     }
 
     private void initAuthenticator() {
-        authenticatorProvider.set(storage.getAuthenticator());
+    	IAuthenticator authLocal = storage.getAuthenticator();
+    	
+    	if (authLocal != null) {
+    		authenticatorProvider.set(authLocal);
+    		logger.info("Authenticator set from decoder.data stored in local");
+    	} else {
+    		logger.info("decoder.data is not yet existing in local");
+    	}
     }
 
     protected void initRemoteServerConnected() {

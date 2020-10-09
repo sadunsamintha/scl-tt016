@@ -64,17 +64,26 @@ public class RemoteServerScheduledJobs {
 		logger.info("Executing job: Trying to download authenticator");
 		if (remoteServer.isConnected()) {
 			try {
-				IAuthenticator auth = remoteServer.getAuthenticator();
-				if (auth != null) {
-					storage.saveAuthenticator(auth);
-					authenticatorProvider.set(auth);
+				IAuthenticator authRemote = remoteServer.getAuthenticator();
+				if (authRemote != null) {
+					authenticatorProvider.set(authRemote);
+					logger.info("Authenticator saved in memory");
+					
+					storage.saveAuthenticator(authRemote);
+					
+					IAuthenticator authLocal = storage.getAuthenticator();
+					if (authLocal == null) {
+						logger.info("Authenticator is not stored locally. The storage is full hence decoder.data is empty or the file is corrupted.");
+					} else {
+						logger.info("Authenticator locally stored");
+					}
 				}
 			} catch (Exception e) {
 				logger.error("Failed to get new authenticator", e);
 			}
 		}
 	}
-
+	
 	/**
 	 * Download production parameters from the remote server and save them in the local storage and assign them to the
 	 * production parameters provider.
