@@ -44,6 +44,7 @@ public class StatisticsView extends AbstractView<IStatisticsViewListener, Statis
 	private JSeparator panelSeparator;
 
 	private NumberFormat percentFormatter;
+	private NumberFormat numberFormatter;
 
 	private final String UPTIME_FORMATTER_PATTERN = "HH'h'mm'm'ss's'";
 	private UptimeFormatter uptimeFormatter = new UptimeFormatter(UPTIME_FORMATTER_PATTERN);
@@ -55,6 +56,7 @@ public class StatisticsView extends AbstractView<IStatisticsViewListener, Statis
 		percentFormatter = NumberFormat.getNumberInstance();
 		percentFormatter.setMinimumFractionDigits(2);
 		percentFormatter.setMaximumFractionDigits(2);
+		numberFormatter = NumberFormat.getIntegerInstance();
 		initGUI();
 		handleLanguageSwitch(null);
 	}
@@ -185,7 +187,7 @@ public class StatisticsView extends AbstractView<IStatisticsViewListener, Statis
 
 	private void updateSingleStatsForALine(ViewStatisticsDescriptor desc, String lineIndex, int qty, int total) {
 		SingleStatsPanel panel = getOrCreateSingleStatsPanel(lineIndex, desc);
-		panel.setCount(qty);
+		panel.setCount(numberFormatter.format(qty));
 		updateTotalPercentage(panel, qty, total);
 	}
 
@@ -223,7 +225,7 @@ public class StatisticsView extends AbstractView<IStatisticsViewListener, Statis
 	}
 
 	private void updateTotal() {
-		getPanelTotal().setCount(model.getTotal());
+		getPanelTotal().setCount(numberFormatter.format(model.getTotal()));
 	}
 
 	public JSeparator getPanelSeparator() {
@@ -267,5 +269,9 @@ public class StatisticsView extends AbstractView<IStatisticsViewListener, Statis
 		getPanelLineStats().removeAll();
 		getPanelLineSpeed().removeAll();
 		uptimeFormatter = new UptimeFormatter(UPTIME_FORMATTER_PATTERN);
+		percentFormatter = NumberFormat.getNumberInstance();
+		percentFormatter.setMinimumFractionDigits(2);
+		percentFormatter.setMaximumFractionDigits(2);
+		numberFormatter = NumberFormat.getIntegerInstance();
 	}
 }
