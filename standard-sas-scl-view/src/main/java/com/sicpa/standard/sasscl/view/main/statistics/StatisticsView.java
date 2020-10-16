@@ -46,8 +46,7 @@ public class StatisticsView extends AbstractView<IStatisticsViewListener, Statis
 	private NumberFormat percentFormatter;
 	private NumberFormat numberFormatter;
 
-	private final String UPTIME_FORMATTER_PATTERN = "HH'h'mm'm'ss's'";
-	private UptimeFormatter uptimeFormatter = new UptimeFormatter(UPTIME_FORMATTER_PATTERN);
+	private UptimeFormatter uptimeFormatter = new UptimeFormatter();
 
 	private int statDescriptorCounter = 0;
 	private SingleStatsPanel panelTotal;
@@ -268,7 +267,7 @@ public class StatisticsView extends AbstractView<IStatisticsViewListener, Statis
 		panelSpeedByLineIndex.clear();
 		getPanelLineStats().removeAll();
 		getPanelLineSpeed().removeAll();
-		uptimeFormatter = new UptimeFormatter(UPTIME_FORMATTER_PATTERN);
+		uptimeFormatter = new UptimeFormatter();
 		percentFormatter = NumberFormat.getNumberInstance();
 		percentFormatter.setMinimumFractionDigits(2);
 		percentFormatter.setMaximumFractionDigits(2);

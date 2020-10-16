@@ -2,32 +2,21 @@ package com.sicpa.standard.sasscl.view.main.statistics;
 
 import com.sicpa.standard.client.common.i18n.Messages;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-
 public class UptimeFormatter {
 
-	private final Calendar calendar;
-	private final SimpleDateFormat formatter;
 	private String prefix;
+	
+	private String UPTIME_FORMATTER_PATTERN = "%02dh %02dm %02ds";
 
-	public UptimeFormatter(String dateFormat) {
-		formatter = new SimpleDateFormat(dateFormat);
-		calendar = Calendar.getInstance();
+	public UptimeFormatter() {
 		prefix = Messages.get("statistics.uptime");
 	}
 
-	private void initCalendar() {
-		calendar.set(Calendar.HOUR_OF_DAY, 0);
-		calendar.set(Calendar.MINUTE, 0);
-		calendar.set(Calendar.SECOND, 0);
-	}
-
 	public String format(int seconds) {
-		synchronized (calendar) {
-			initCalendar();
-			calendar.set(Calendar.SECOND, seconds);
-			return prefix + " " + formatter.format(calendar.getTime());
-		}
+		long diffHours = seconds / 3600;
+		long diffMinutes = (seconds % 3600) / 60;
+		long diffSeconds = seconds % 60;
+		
+		return prefix + " " + String.format(UPTIME_FORMATTER_PATTERN, diffHours, diffMinutes, diffSeconds);
 	}
 }
