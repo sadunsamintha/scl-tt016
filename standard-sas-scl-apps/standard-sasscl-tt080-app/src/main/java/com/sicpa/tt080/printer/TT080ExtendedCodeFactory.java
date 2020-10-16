@@ -66,7 +66,7 @@ public class TT080ExtendedCodeFactory implements IExCodeBehavior {
     private List<Object> createCompositeCode(final String code, final boolean isBlobEnable) {
         final String[] parsedCode = code.split(PRINTER_SPACE_REPRESENTATION);
 
-        if(parsedCode.length != NUMBER_OF_BLOCKS) {
+        if(hrdEnable && parsedCode.length != NUMBER_OF_BLOCKS) {
             throw new IllegalArgumentException("code with value " + parsedCode + " is not composed of "+NUMBER_OF_BLOCKS+" blocks.");
         }
 

@@ -68,7 +68,7 @@ public class TT065ExtendedCodeFactory implements IExCodeBehavior {
         /* If the string code is not composed of 2 blocks with a block separator then
            we throw an exception  */
 
-        if(parsedCode.length != NUMBER_OF_BLOCKS) {
+        if(hrdEnable && parsedCode.length != NUMBER_OF_BLOCKS) {
             throw new IllegalArgumentException("code with value " + parsedCode + " is not composed of 2 blocks." );
         }
 
