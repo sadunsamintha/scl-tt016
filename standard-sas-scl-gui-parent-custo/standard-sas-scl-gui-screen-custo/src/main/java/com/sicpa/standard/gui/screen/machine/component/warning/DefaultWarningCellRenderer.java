@@ -80,24 +80,16 @@ public class DefaultWarningCellRenderer implements WarningCellRendererPainter {
 	protected void fillBackground(final Graphics2D g2, final Shape clip, final int index, final JList list,
 			final float animProgress, final Message message) {
 		Color color;
-		//Changing the fill color based on code
-		String code = message.getCode();
 		// if the last item
 		if (isLastCell(index, list)) {
 			if (message instanceof Error) {
 				color = SicpaColor.RED;
-			} else if (code != null
-				&& code.contains(beam_info_code)) {
-				color = SicpaColor.GREEN_DARK;
 			} else {
 				color = getLastCellColor();
 			}
 		} else {
 			if (message instanceof Error) {
 				color = SicpaColor.RED;
-			} else if (code != null
-				&& code.contains(beam_info_code)) {
-				color = SicpaColor.GREEN_DARK;
 			} else {
 				color = getCellColor();
 			}
@@ -114,6 +106,14 @@ public class DefaultWarningCellRenderer implements WarningCellRendererPainter {
 			// }
 			// }
 		}
+
+		//Changing the fill color based on code
+		String code = message.getCode();
+		if (code != null
+			&& code.contains(beam_info_code)) {
+			color = SicpaColor.GREEN_DARK;
+		}
+
 		g2.setColor(color);
 		g2.fill(clip);
 	}

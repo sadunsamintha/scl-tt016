@@ -1,18 +1,31 @@
 package com.sicpa.tt016.view.main.systemInfo;
 
 import com.google.common.eventbus.Subscribe;
-import javax.swing.*;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import javax.swing.JLabel;
+import javax.swing.JSeparator;
 import net.miginfocom.swing.MigLayout;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.sicpa.standard.client.common.i18n.Messages;
-import com.sicpa.standard.gui.screen.machine.component.warning.Message;
+import com.sicpa.standard.plc.value.IPlcVariable;
+import com.sicpa.standard.plc.value.PlcVariable;
 import com.sicpa.standard.sasscl.controller.ProductionParametersEvent;
 import com.sicpa.standard.sasscl.devices.plc.AutomatedBeamStatus;
+import com.sicpa.standard.sasscl.devices.plc.PlcAdaptorException;
+import com.sicpa.standard.sasscl.provider.impl.PlcProvider;
 import com.sicpa.standard.sasscl.view.LanguageSwitchEvent;
 import com.sicpa.standard.sasscl.view.main.systemInfo.SystemInfoView;
 import com.sicpa.tt016.scl.model.MoroccoSKU;
 
+import static com.sicpa.standard.sasscl.devices.plc.AutomatedBeamPlcEnums.REQUEST_BEAM_CURRENT_POSITION_MM;
+import static com.sicpa.standard.sasscl.devices.plc.PlcLineHelper.replaceLinePlaceholder;
+
 public class TT016SystemInfoView extends SystemInfoView {
+
+	private static final Logger logger = LoggerFactory.getLogger(TT016SystemInfoView.class);
 
 	private JLabel labelBeamStatusText;
 	private JLabel labelBeamStatusValue;
@@ -24,6 +37,8 @@ public class TT016SystemInfoView extends SystemInfoView {
 
 	private int conveyorHeight = 0;
 	private int skuHeight = 0;
+
+	private PlcProvider plcProvider;
 
 	public TT016SystemInfoView() {
 		super();
@@ -67,18 +82,20 @@ public class TT016SystemInfoView extends SystemInfoView {
 		if (isBeamEnabled) {
 			getLabelBeamStatusValue().setVisible(true);
 			getLabelBeamStatusText().setVisible(true);
+			getLabelBeamHeightValue().setVisible(true);
+			getLabelBeamHeightText().setVisible(true);
 
 			if (evt.isManualMode()) {
-				getLabelBeamHeightValue().setVisible(false);
-				getLabelBeamHeightText().setVisible(false);
 				getLabelBeamStatusValue().setText(Messages.get("automated.beam.manual"));
 			} else {
 				getLabelBeamStatusValue().setText(Messages.get("automated.beam.motorized"));
-				getLabelBeamHeightValue().setVisible(true);
-				getLabelBeamHeightText().setVisible(true);
 				conveyorHeight = evt.getBeamConveyorHeight();
 				updateBeamHeightValue();
 			}
+
+			ScheduledThreadPoolExecutor scheduledThreadPoolExecutor = new ScheduledThreadPoolExecutor(2);
+			scheduledThreadPoolExecutor.scheduleAtFixedRate(this::updateBeamHeightValue,
+				0 ,5, TimeUnit.SECONDS);
 		}
 	}
 
@@ -122,12 +139,28 @@ public class TT016SystemInfoView extends SystemInfoView {
 		return labelBeamHeightValue;
 	}
 
-	public void updateBeamHeightValue() {
-		getLabelBeamHeightValue().setText(String.valueOf(skuHeight + conveyorHeight) + "mm");
+	private int getBeamActualHeight() throws PlcAdaptorException {
+		IPlcVariable<Integer> beamCurrentPosition = PlcVariable.createInt32Var(
+			replaceLinePlaceholder(REQUEST_BEAM_CURRENT_POSITION_MM.getNameOnPlc(), 1));
+
+		return plcProvider.get().read(beamCurrentPosition);
+	}
+
+	private synchronized void updateBeamHeightValue() {
+		try {
+			int actualHeight = getBeamActualHeight();
+			getLabelBeamHeightValue().setText((skuHeight + conveyorHeight) + "mm|" + actualHeight + "mm" );
+		} catch (PlcAdaptorException | NullPointerException e) {
+			logger.error("Failed to get beam height from PLC.", e);
+			getLabelBeamHeightValue().setText((skuHeight + conveyorHeight) + "mm|NA");
+		}
 	}
 
 	public void setBeamEnabled(boolean beamEnabled) {
 		isBeamEnabled = beamEnabled;
 	}
 
+	public void setPlcProvider(PlcProvider plcProvider) {
+		this.plcProvider = plcProvider;
+	}
 }
