@@ -1,8 +1,27 @@
 package com.sicpa.standard.sasscl.view.report;
 
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
+import javax.swing.ButtonGroup;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JToggleButton;
+import javax.swing.SwingUtilities;
+
+import org.apache.commons.lang.time.DateUtils;
+import org.divxdede.swing.busy.JBusyComponent;
+import org.jdesktop.swingx.JXDatePicker;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.i18n.Messages;
-import com.sicpa.standard.client.common.ioc.BeanProvider;
 import com.sicpa.standard.client.common.security.Permission;
 import com.sicpa.standard.client.common.utils.TaskExecutor;
 import com.sicpa.standard.client.common.view.ISecuredComponentGetter;
@@ -14,22 +33,8 @@ import com.sicpa.standard.sasscl.security.SasSclPermission;
 import com.sicpa.standard.sasscl.view.LanguageSwitchEvent;
 import com.sicpa.standard.sasscl.view.monitoring.IProductionStatisticsAggregator;
 import com.sicpa.standard.sasscl.view.monitoring.IProductionStatisticsAggregatorFactory;
-import com.sicpa.standard.sasscl.view.monitoring.ProductionStatisticsAggregator;
-import net.miginfocom.swing.MigLayout;
-import org.apache.commons.lang.LocaleUtils;
-import org.apache.commons.lang.time.DateUtils;
-import org.divxdede.swing.busy.JBusyComponent;
-import org.jdesktop.swingx.JXDatePicker;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import javax.swing.*;
-import java.awt.*;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
+import net.miginfocom.swing.MigLayout;
 
 public class ReportScreen extends JPanel implements ISecuredComponentGetter {
 
@@ -73,7 +78,7 @@ public class ReportScreen extends JPanel implements ISecuredComponentGetter {
 		initGUI();
 		revalidate();
 	}
-
+    
 	public JXDatePicker getDateFrom() {
 		if (this.dateFrom == null) {
 			this.dateFrom = new JXDatePicker();
@@ -148,6 +153,7 @@ public class ReportScreen extends JPanel implements ISecuredComponentGetter {
 				getButtonDailyDetailed().isSelected(), from, to);
 		getTable().setData(aggre.getMapData(), getButtonGroupByProduct().isSelected(),
 				getButtonDailyDetailed().isSelected());
+		getTable().getComponent().setVisible(true);
 	}
 
 	protected List<IncrementalStatistics> getProductionStatistics(final Date from, final Date to) {

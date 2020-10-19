@@ -5,6 +5,8 @@ import com.sicpa.tt079.view.sku.batch_exp.BatchIdExpDtSkuViewController
 import com.sicpa.tt079.view.flow.TT079DefaultScreensFlow
 import com.sicpa.tt079.view.selection.select.productionparameters.TT079SelectProductionParametersViewController
 import com.sicpa.tt079.view.selection.display.TT079SelectionDisplayView
+import com.sicpa.tt079.monitoring.TT079ProductionStatisticsAggregatorFactory
+import com.sicpa.tt079.view.report.TT079ReportScreen
 
 
 beans{
@@ -49,6 +51,16 @@ beans{
 	selectionDisplayView(TT079SelectionDisplayView){
 		controller=ref('selectionDisplayViewController')
 		model="#{selectionDisplayViewController.model}"
+	}
+	
+	//PRODUCTION STATISTICS AGGREGATOR
+	productionStatisticsAggregatorFactory(TT079ProductionStatisticsAggregatorFactory){
+		language=props['language']
+	}
+	
+	//REPORT SCREEN
+	reportScreen(TT079ReportScreen){
+		productionStatisticsAggregatorFactory=ref('productionStatisticsAggregatorFactory')
 	}
 
 }

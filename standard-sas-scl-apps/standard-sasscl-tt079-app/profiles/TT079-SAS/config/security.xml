@@ -23,6 +23,7 @@
     <Permission name="PRODUCTION_STOP"/>
     <Permission name="PRODUCTION_VIEW_STATISTICS"/>
     <Permission name="PRODUCTION_REPORT"/>
+    <Permission name="PRODUCTION_REPORT_BLOB_RATE"/>
     <Permission name="EDIT_PLC_VARIABLES"/>
     <Permission name="EDIT_PLC_SECURE_VARIABLES"/>
     <Permission name="EXIT"/>
@@ -43,6 +44,7 @@
     <Permission name="PRODUCTION_STOP"/>
     <Permission name="PRODUCTION_VIEW_STATISTICS"/>
     <Permission name="PRODUCTION_REPORT"/>
+    <Permission name="PRODUCTION_REPORT_BLOB_RATE"/>
     <Permission name="EDIT_PLC_VARIABLES"/>
     <Permission name="EDIT_PLC_SECURE_VARIABLES"/>
     <Permission name="EXIT"/>

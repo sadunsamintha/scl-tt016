@@ -1,16 +1,19 @@
 package com.sicpa.tt079.scl;
 
+import static com.sicpa.standard.sasscl.custoBuilder.CustoBuilder.addToStatisticsMapper;
 import static com.sicpa.standard.sasscl.custoBuilder.CustoBuilder.setProductionModePermission;
 import static com.sicpa.standard.sasscl.ioc.BeansName.PRODUCTION_CONFIG_MAPPING;
 import static com.sicpa.standard.sasscl.provider.ProductBatchIdExpDtProvider.productionBatchId;
 import static com.sicpa.standard.sasscl.provider.ProductBatchIdExpDtProvider.productionExpdt;
 import static com.sicpa.tt079.model.TT079ProductionMode.IMPORT;
+import static com.sicpa.tt079.model.statistics.TT079StatisticsKey.INK_DETECTED;
 
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.ioc.BeanProvider;
 import com.sicpa.standard.sasscl.Bootstrap;
 import com.sicpa.standard.sasscl.controller.ProductionParametersEvent;
 import com.sicpa.standard.sasscl.controller.productionconfig.mapping.IProductionConfigMapping;
+import com.sicpa.standard.sasscl.model.ProductStatus;
 import com.sicpa.standard.sasscl.model.ProductionParameters;
 import com.sicpa.tt079.model.productionParameters.TT079Permission;
 
@@ -24,6 +27,7 @@ public class TT079Bootstrap extends Bootstrap {
 //		addImportProductionMode();
 		super.executeSpringInitTasks();
 //		productionModePermission();
+		addInkDetectedStatistic();
 	}
 	
 	@Override
@@ -47,4 +51,9 @@ public class TT079Bootstrap extends Bootstrap {
 	private void productionModePermission() {
 		setProductionModePermission(IMPORT, TT079Permission.PRODUCTION_MODE_IMPORT);
 	}
+	
+	private void addInkDetectedStatistic() {
+		addToStatisticsMapper(ProductStatus.INK_DETECTED, INK_DETECTED);
+	}
+	
 }
