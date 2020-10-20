@@ -67,7 +67,8 @@ public class BrsBarcodeCheck {
     		logger.debug("BRS Code Received:" + brsReceivedBarcode);
     		
     		String selectedSkuBarcode = "";
-    		if (null != selectedSKU.getBarCodes() && selectedSKU.getBarCodes().size() > 0) {
+    		if (null != selectedSKU.getBarCodes() && selectedSKU.getBarCodes().size() > 0 && 
+    				null != selectedSKU.getBarCodes().get(0)) {
     			selectedSkuBarcode = selectedSKU.getBarCodes().get(0).trim();
     		}
     		logger.debug("Selected SKU Barcode:" + selectedSkuBarcode);
