@@ -32,7 +32,7 @@ public class SingleStatsPanel extends JPanel {
 		labelCount.setForeground(descriptor.getColor());
 
 		add(labelCount, "w 150!,left");
-		add(labelPercent, "w 75!, left,pushx");
+		add(labelPercent, "w 85!, left,pushx");
 	}
 
 	public void setCount(String count) {
