@@ -25,7 +25,7 @@ public class PlcScheduledNotification {
     private String ambiantTemp;
 
     public void log() throws PlcAdaptorException {
-    	if(plcProvider.get().isConnected()) {
+    	if(null != plcProvider && null != plcProvider.get() && plcProvider.get().isConnected()) {
 	    	List<IPlcVariable> plcTemperatureVars = new ArrayList<IPlcVariable>();
 	    	plcTemperatureVars.add(PlcVariable.createByteVar(boardTemp));
 	    	plcTemperatureVars.add(PlcVariable.createByteVar(cpuTemp));
