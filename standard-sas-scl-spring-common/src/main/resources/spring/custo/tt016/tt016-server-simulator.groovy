@@ -43,7 +43,7 @@ beans {
                 for (int i = 0; i < SKU_BY_CODE_TYPE; i++) {
                     def barcode = '000' + skuId
                     def description = 'ct:' + ctid + ' - skuid:' + skuId
-                    def height = 440 + (i * 15)
+                    def height = 200 + (i * 15)
                     def sku = new MoroccoSKU(skuId, description, [barcode])
                     def ct = new CodeType(ctid)
                     sku.setCodeType(ct)
@@ -64,7 +64,7 @@ beans {
 	            for (int i = 0; i < SKU_BY_CODE_TYPE; i++) {
 	                def barcode = '000' + skuId
 	                def description = 'ct:' + ctid + ' - skuid:' + skuId
-	                def height = 440 + (i * 15)
+	                def height = 200 + (i * 15)
 	                def sku = new MoroccoSKU(skuId, description, [barcode])
 	                def ct = new CodeType(ctid)
 	                sku.setCodeType(ct)
