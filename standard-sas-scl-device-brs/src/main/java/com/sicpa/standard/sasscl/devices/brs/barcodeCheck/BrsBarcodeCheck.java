@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,7 +51,9 @@ public class BrsBarcodeCheck {
             logger.info("Setting BRS Valid Barcodes:" + this.selectedSKU.getBarCodes());
             
             for (String barcode : this.selectedSKU.getBarCodes()) {
-            	this.validBarcodes.add(barcode.trim());
+            	if (!StringUtils.isBlank(barcode)) {
+            		this.validBarcodes.add(barcode.trim());
+            	}
 			}
             
             isSkuSelectedCompliantProduct = compliantProductResolver.isCompliant(this.selectedSKU);
