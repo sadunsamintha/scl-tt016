@@ -4,6 +4,8 @@ import com.sicpa.standard.sasscl.devices.remote.impl.dtoConverter.DailyBatchRequ
 import com.sicpa.standard.sasscl.model.BatchJobHistory
 
 beans {
+    importBeans('spring/custo/ttth/plc/ttth.plc-import.groovy')
+
     def serverBehavior = props['remoteServer.behavior'].toUpperCase()
 
     addAlias('bootstrapAlias', 'bootstrap')

@@ -1,10 +1,13 @@
 package com.sicpa.ttth.scl;
 
+import java.util.HashMap;
+
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.messages.MessageEvent;
 import com.sicpa.standard.sasscl.Bootstrap;
 import com.sicpa.standard.sasscl.controller.ProductionParametersEvent;
 import com.sicpa.standard.sasscl.custoBuilder.CustoBuilder;
+import com.sicpa.standard.sasscl.devices.plc.EjectorPlcEnums;
 import com.sicpa.standard.sasscl.devices.remote.impl.dtoConverter.DailyBatchRequestRepository;
 import com.sicpa.standard.sasscl.model.BatchJobHistory;
 import com.sicpa.standard.sasscl.model.ProductionMode;
@@ -17,6 +20,12 @@ import com.sicpa.ttth.storage.TTTHFileStorage;
 
 import static com.sicpa.standard.sasscl.messages.ActionMessageType.ERROR;
 import static com.sicpa.standard.sasscl.messages.ActionMessageType.WARNING;
+import static com.sicpa.ttth.messages.TTTHMessageEventKey.EJECTOR.PLC_EJECTOR_CAPACITY_ERROR;
+import static com.sicpa.ttth.messages.TTTHMessageEventKey.EJECTOR.PLC_EJECTOR_CAPACITY_ERROR_MSG_CODE;
+import static com.sicpa.ttth.messages.TTTHMessageEventKey.EJECTOR.PLC_EJECTOR_CAPACITY_WARNING;
+import static com.sicpa.ttth.messages.TTTHMessageEventKey.EJECTOR.PLC_EJECTOR_CAPACITY_WARNING_MSG_CODE;
+import static com.sicpa.ttth.messages.TTTHMessageEventKey.EJECTOR.PLC_EJECTOR_CONFIRMATION_ERROR;
+import static com.sicpa.ttth.messages.TTTHMessageEventKey.EJECTOR.PLC_EJECTOR_CONFIRMATION_ERROR_MSG_CODE;
 import static com.sicpa.ttth.messages.TTTHMessageEventKey.SKUSELECTION.BARCODE_VERIFIED;
 import static com.sicpa.ttth.messages.TTTHMessageEventKey.SKUSELECTION.BARCODE_VERIFIED_MSG_CODE;
 import static com.sicpa.ttth.messages.TTTHMessageEventKey.SKUSELECTION.DAILY_BATCH_DATED;
@@ -30,6 +39,7 @@ public class TTTHBootstrap extends Bootstrap implements ProductBatchJobIdProvide
 
 	@Override
 	public void executeSpringInitTasks(){
+		addMessagesForEjector();
 		loadDailyBatchJobStats();
 		loadPreviousBatchJobHistory();
 		super.executeSpringInitTasks();
@@ -135,6 +145,20 @@ public class TTTHBootstrap extends Bootstrap implements ProductBatchJobIdProvide
 	private void addErrorMessagesForDailyBatchJobs() {
 		CustoBuilder.addMessage(DAILY_BATCH_DATED, DAILY_BATCH_DATED_MSG_CODE, ERROR);
 		CustoBuilder.addMessage(DAILY_BATCH_EXCEEDED, DAILY_BATCH_EXCEEDED_MSG_CODE, ERROR);
+	}
+
+	public static void addEjectorPlcVariables() {
+		for (EjectorPlcEnums var : EjectorPlcEnums.values()) {
+			CustoBuilder.addPlcVariable(var.toString(), var.getNameOnPlc(), var.getPlc_type(), new HashMap<String, String>() {{
+				put("lineGrp", "ejection");
+			}});
+		}
+	}
+
+	private void addMessagesForEjector() {
+		CustoBuilder.addMessage(PLC_EJECTOR_CAPACITY_WARNING, PLC_EJECTOR_CAPACITY_WARNING_MSG_CODE, WARNING);
+		CustoBuilder.addMessage(PLC_EJECTOR_CAPACITY_ERROR, PLC_EJECTOR_CAPACITY_ERROR_MSG_CODE, ERROR);
+		CustoBuilder.addMessage(PLC_EJECTOR_CONFIRMATION_ERROR, PLC_EJECTOR_CONFIRMATION_ERROR_MSG_CODE, ERROR);
 	}
 
 	public void setDailyBatchRequestRepository(DailyBatchRequestRepository dailyBatchRequestRepository) {
