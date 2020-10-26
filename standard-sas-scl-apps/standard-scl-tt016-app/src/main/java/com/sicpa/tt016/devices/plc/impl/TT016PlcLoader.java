@@ -23,8 +23,8 @@ public class TT016PlcLoader extends PlcValuesLoader {
         res = replaceLinePlaceholderInProperties(lineIndex, res);
 
         if (!isAutomatedBeamEnabled) {
-            res.remove("PARAM_CONVEYOR_HEIGHT_FROM_FLOOR_MM");
-            res.remove("PARAM_PRODUCT_TO_CAMERA_HEIGHT_MM");
+            res.remove("PARAM_HOME_TO_CONVEYOR_HEIGHT_MM");
+            res.remove("PARAM_PRODUCT_TO_PRINTER_HEIGHT_MM");
             res.remove("REQUEST_BEAM_MANUAL_MODE");
         } else {
             try {
@@ -61,7 +61,7 @@ public class TT016PlcLoader extends PlcValuesLoader {
         String file = getLinePropertiesFileName(lineIndex);
         StringMap res = loadProperties(file);
         return new AutomatedBeamStatus(Boolean.valueOf(res.get("REQUEST_BEAM_MANUAL_MODE")),
-            Integer.valueOf(res.get("PARAM_CONVEYOR_HEIGHT_FROM_FLOOR_MM")));
+            Integer.valueOf(res.get("PARAM_PRODUCT_TO_PRINTER_HEIGHT_MM")));
     }
 
     public void setWiperEnabled(boolean wiperEnabled) {

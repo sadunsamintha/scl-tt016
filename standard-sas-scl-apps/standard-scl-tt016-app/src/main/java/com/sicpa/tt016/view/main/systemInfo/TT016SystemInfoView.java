@@ -35,7 +35,7 @@ public class TT016SystemInfoView extends SystemInfoView {
 
 	private boolean isBeamEnabled;
 
-	private int conveyorHeight = 0;
+	private int toleranceHeight = 0;
 	private int skuHeight = 0;
 
 	private PlcProvider plcProvider;
@@ -73,8 +73,10 @@ public class TT016SystemInfoView extends SystemInfoView {
 
 	@Subscribe
 	public void handleSkuSelection(ProductionParametersEvent evt) {
-		skuHeight = ((MoroccoSKU) evt.getProductionParameters().getSku()).getProductHeight();
-		updateBeamHeightValue();
+		if (isBeamEnabled) {
+			skuHeight = ((MoroccoSKU) evt.getProductionParameters().getSku()).getProductHeight();
+			updateBeamHeightValue();
+		}
 	}
 
 	@Subscribe
@@ -89,7 +91,7 @@ public class TT016SystemInfoView extends SystemInfoView {
 				getLabelBeamStatusValue().setText(Messages.get("automated.beam.manual"));
 			} else {
 				getLabelBeamStatusValue().setText(Messages.get("automated.beam.motorized"));
-				conveyorHeight = evt.getBeamConveyorHeight();
+				toleranceHeight = evt.getBeamToleranceHeight();
 				updateBeamHeightValue();
 			}
 
@@ -149,10 +151,10 @@ public class TT016SystemInfoView extends SystemInfoView {
 	private synchronized void updateBeamHeightValue() {
 		try {
 			int actualHeight = getBeamActualHeight();
-			getLabelBeamHeightValue().setText((skuHeight + conveyorHeight) + "mm|" + actualHeight + "mm" );
+			getLabelBeamHeightValue().setText((skuHeight + toleranceHeight) + "mm|" + actualHeight + "mm" );
 		} catch (PlcAdaptorException | NullPointerException e) {
 			logger.error("Failed to get beam height from PLC.", e);
-			getLabelBeamHeightValue().setText((skuHeight + conveyorHeight) + "mm|NA");
+			getLabelBeamHeightValue().setText((skuHeight + toleranceHeight) + "mm|NA");
 		}
 	}
 

@@ -169,8 +169,8 @@ public class TT016Bootstrap extends Bootstrap {
 
 	public static void addMotorizedBeamPlcVariables() {
 		for (AutomatedBeamPlcEnums var : AutomatedBeamPlcEnums.values()) {
-			if (var == AutomatedBeamPlcEnums.PARAM_CONVEYOR_HEIGHT_FROM_FLOOR_MM ||
-				var == AutomatedBeamPlcEnums.PARAM_PRODUCT_TO_CAMERA_HEIGHT_MM ||
+			if (var == AutomatedBeamPlcEnums.PARAM_HOME_TO_CONVEYOR_HEIGHT_MM ||
+				var == AutomatedBeamPlcEnums.PARAM_PRODUCT_TO_PRINTER_HEIGHT_MM ||
 				var == AutomatedBeamPlcEnums.REQUEST_BEAM_MANUAL_MODE) {
 				CustoBuilder.addPlcVariable(var.toString(), var.getNameOnPlc(), var.getPlc_type(), new HashMap<String, String>() {{
 					put("lineGrp", "misc");

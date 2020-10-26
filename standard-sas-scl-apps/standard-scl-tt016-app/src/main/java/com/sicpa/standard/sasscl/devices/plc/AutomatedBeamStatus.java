@@ -2,26 +2,26 @@ package com.sicpa.standard.sasscl.devices.plc;
 
 public class AutomatedBeamStatus {
     private boolean isManualMode;
-    private int beamConveyorHeight;
+    private int beamToleranceHeight;
 
-    public AutomatedBeamStatus(boolean isManualMode, int beamConveyorHeight) {
+    public AutomatedBeamStatus(boolean isManualMode, int beamToleranceHeight) {
         this.isManualMode = isManualMode;
-        this.beamConveyorHeight = beamConveyorHeight;
+        this.beamToleranceHeight = beamToleranceHeight;
     }
 
     public boolean isManualMode() {
         return isManualMode;
     }
 
-    public int getBeamConveyorHeight() {
-        return beamConveyorHeight;
+    public int getBeamToleranceHeight() {
+        return beamToleranceHeight;
     }
 
     public void setManualMode(boolean manualMode) {
         this.isManualMode = manualMode;
     }
 
-    public void setBeamConveyorHeight(int beamConveyorHeight) {
-        this.beamConveyorHeight = beamConveyorHeight;
+    public void setBeamToleranceHeight(int beamToleranceHeight) {
+        this.beamToleranceHeight = beamToleranceHeight;
     }
 }
