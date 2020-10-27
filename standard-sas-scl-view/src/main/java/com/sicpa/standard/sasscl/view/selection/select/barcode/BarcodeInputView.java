@@ -52,6 +52,7 @@ public class BarcodeInputView extends DefaultIdInputView {
 	protected JLabel invalidBarcode;
 
 	private JButton buttonBack;
+	private JButton buttonSelectSku;
 
 	private static final Logger logger = LoggerFactory.getLogger(BarcodeInputView.class);
 
@@ -77,9 +78,9 @@ public class BarcodeInputView extends DefaultIdInputView {
 			removeAll();
 
 			setLayout(new MigLayout("fill, inset 0 0 0 0"));
-			add(getPanelBarcode(), "span, split 2, pushy, growx, growy");
+			add(getPanelBarcode(), "span, split 2, pushy, growx, growy, gaptop 208");
 
-			add(getTextId(), "growx ,w 50%,h 50 ");
+			add(getTextId(), "growx ,w 50%, h 50, gaptop 208");
 			JPanel buttonPanel = new JPanel();
 			add(buttonPanel);
 			buttonPanel.add(getPaddedOk(), "h 75!, w 100");
@@ -90,7 +91,8 @@ public class BarcodeInputView extends DefaultIdInputView {
 			getButtonOk().setVisible(true);
 			getTextId().setText("");
 			getTextId().requestFocusInWindow();
-
+			
+			add(getButtonSelectSku(), "newline, align left, w 120, h 40!, gapleft 10, gaptop 172");
 			revalidate();
 			repaint();
 		});
@@ -354,4 +356,26 @@ public class BarcodeInputView extends DefaultIdInputView {
 	private void buttonBackActionPerformed() {
 		reset(this.rootNode);
 	}
+	
+	public JButton getButtonSelectSku() {
+		if (this.buttonSelectSku == null) {
+			this.buttonSelectSku = new JButton(Messages.get("label.select.sku"));
+			this.buttonSelectSku.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(final ActionEvent e) {
+					buttonSelectSkuActionPerformed();
+				}
+			});
+
+			this.buttonSelectSku.setName("buttonSelectSku");
+		}
+		return this.buttonSelectSku;
+	}
+	
+	private void buttonSelectSkuActionPerformed() {
+		getMainFrame().resetMainPanel();
+		getPanelSelect().setVisible(false);
+		callback.goToProductionMode();
+	}
+	
 }
