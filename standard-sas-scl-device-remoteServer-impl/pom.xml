@@ -23,7 +23,7 @@
         <dependency>
             <groupId>com.sicpa.standard.standard-serverside-util</groupId>
             <artifactId>standard-serverside-util</artifactId>
-            <version>5.0.1</version>
+            <version>5.9.0</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.slf4j</groupId>
@@ -43,7 +43,7 @@
         <dependency>
             <groupId>com.sicpa.standard.standard-serverside-api</groupId>
             <artifactId>standard-common-server-api</artifactId>
-            <version>5.0.1</version>
+            <version>5.9.0</version>
             <exclusions>
                 <exclusion>
                     <artifactId>validation-api</artifactId>
@@ -149,6 +149,10 @@
                     <artifactId>slf4j-log4j12</artifactId>
                     <groupId>org.slf4j</groupId>
                 </exclusion>
+                <exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-simple</artifactId>
+				</exclusion>
             </exclusions>
         </dependency>
         <dependency>
