@@ -131,5 +131,15 @@ public class SelectProductionParametersViewController extends AbstractViewFlowCo
 	public void setNoSelectionState(boolean noSelectionState) {
 		this.noSelectionState = noSelectionState;
 	}
+
+	@Override
+	public void goToProductionMode() {
+		setUseBarcodeReader(false);
+		getComponent();
+		displayView();
+		//set back to original value
+		//after select SKU view
+		setUseBarcodeReader(true);
+	}
 	
 }
