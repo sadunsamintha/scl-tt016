@@ -27,7 +27,9 @@ import com.sicpa.standard.client.common.security.ILoginListener;
 import com.sicpa.standard.client.common.security.Permission;
 import com.sicpa.standard.client.common.security.SecurityService;
 import com.sicpa.standard.client.common.view.ISecuredComponentGetter;
+import com.sicpa.standard.gui.components.virtualKeyboard.VirtualKeyboardType;
 import com.sicpa.standard.gui.plaf.SicpaColor;
+import com.sicpa.standard.gui.plaf.SicpaLookAndFeel;
 import com.sicpa.standard.gui.screen.machine.AbstractMachineFrame;
 import com.sicpa.standard.gui.screen.machine.component.SelectionFlow.flow.DefaultSelectionFlowView;
 import com.sicpa.standard.gui.screen.machine.component.lineId.AbstractLineIdPanel;
@@ -199,6 +201,7 @@ public class MainFrame extends AbstractMachineFrame {
 	@Override
 	protected void initGUI() {
 		super.initGUI();
+		SicpaLookAndFeel.setDefaultVirtualKeyboard(VirtualKeyboardType.KEYBOARD_QWERTY);
 		getController().setApplicationStatus(new STDSASSCLApplicationStatus(SicpaColor.RED, "view.status.stopped"));
 		setupScreenShotTaker();
 
