@@ -15,9 +15,9 @@ beans{
 
 	brsBarcodeCheck(BrsBarcodeCheck){ compliantProductResolver=ref('compliantProduct') }
 
-	brsWrongBarcodeThreshold(BrsWrongBarcodeThreshold,props['alert.wrongBarcode.enable'],props['alert.wrongBarcode.error.threshold'],ref('brsTimeWindow'))
+	brsWrongBarcodeThreshold(BrsWrongBarcodeThreshold,props['alert.wrongBarcode.enable'].trim(),props['alert.wrongBarcode.error.threshold'].trim(),ref('brsTimeWindow'))
 
-	brsTimeWindow(BrsTimeWindow,props['alert.wrongBarcode.window.time'])
+	brsTimeWindow(BrsTimeWindow,props['alert.wrongBarcode.window.time'].trim())
 
 	brsWrongBarcodeThresholdAddTask(InjectByMethodBean){
 		target=ref('alert')
@@ -26,15 +26,15 @@ beans{
 	}
 
 	alertBrsProductWarningCount(ProductWarningCountAlertTask){
-		unreadBarcodesThreshold=props['alert.unreadbarcodes.warning.threshold']
-		isUnreadBarcodesEnable=props['alert.unreadbarcodes.warning.enable']
+		unreadBarcodesThreshold=props['alert.unreadbarcodes.warning.threshold'].trim()
+		isUnreadBarcodesEnable=props['alert.unreadbarcodes.warning.enable'].trim()
 		productionConfigProvider=ref('productionConfigProvider')
 		compliantProductResolver=ref('compliantProduct')
 	}
 
 	alertBrsProductErrorCount(ProductErrorCountAlertTask){
-		unreadBarcodesThreshold=props['alert.unreadbarcodes.error.threshold']
-		isUnreadBarcodesEnable=props['alert.unreadbarcodes.error.enable']
+		unreadBarcodesThreshold=props['alert.unreadbarcodes.error.threshold'].trim()
+		isUnreadBarcodesEnable=props['alert.unreadbarcodes.error.enable'].trim()
 		productionConfigProvider=ref('productionConfigProvider')
 		compliantProductResolver=ref('compliantProduct')
 	}

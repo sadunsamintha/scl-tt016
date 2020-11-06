@@ -9,10 +9,10 @@ beans{
 	def model= createSimulatorModel()
 	
 	remoteServer(AlbaniaRemoteServerSimulator){
-		subSystemId = props['master.subsystemId']
+		subSystemId = props['master.subsystemId'].trim()
 		lifeChecker = ref('lifeChecker')
 		storage = ref('storage')
-		cryptoPassword = props['crypto.password']
+		cryptoPassword = props['crypto.password'].trim()
 		cryptoFieldsConfig = ref('cryptoFieldsConfig')
 		simulatorModel = model
 		remoteServerAdapter = ref('remoteServerAdaptor')

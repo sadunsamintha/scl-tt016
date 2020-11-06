@@ -120,7 +120,7 @@ beans {
 	plcMap['PARAM_LINE_ENCODER_CHECK_WARNING_THRESHOLD']=[v:LINE_PRM+'nEncoderCheckWarningThreshold' ,t:I ,lineGrp:'encoder']
 	plcMap['PARAM_LINE_ENCODER_CHECK_ERROR_THRESHOLD']=[v:LINE_PRM+'nEncoderCheckErrorThreshold' ,t:I ,lineGrp:'encoder']
 
-	def productionConfigFolder=props['production.config.folder'].toUpperCase()
+	def productionConfigFolder=props['production.config.folder'].trim().toUpperCase()
 	if(productionConfigFolder == "PRODUCTIONCONFIG-SAS") {
 		plcMap['PARAM_LINE_VALVE_DISTANCE'] = [v: LINE_PRM + 'nValveDistance', t: I, lineGrp: 'wipper']
 		plcMap['PARAM_LINE_VALVE_LENGTH'] = [v: LINE_PRM + 'nValveLength', t: I, lineGrp: 'wipper']

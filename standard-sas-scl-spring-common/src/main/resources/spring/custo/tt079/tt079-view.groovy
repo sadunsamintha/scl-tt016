@@ -14,8 +14,8 @@ beans{
 	batchIdExpDtSkuView(BatchIdExpDtSkuView){
 		controller=ref('batchIdExpDtSkuViewController') 
 		model="#{batchIdExpDtSkuViewController.model}"
-		batchIdSize=props['sku.batch.id.maximum.length']
-		expiryDateMaxBound=props['sku.exp.date.maxBound']
+		batchIdSize=props['sku.batch.id.maximum.length'].trim()
+		expiryDateMaxBound=props['sku.exp.date.maxBound'].trim()
 		productionParameters=ref('productionParameters')
 	}
 	
@@ -23,7 +23,7 @@ beans{
 		view=ref('batchIdExpDtSkuView')
 		viewController=ref('mainFrameController')
 		screensFlow=ref('screensFlow')
-		batchIdSize=props['sku.batch.id.maximum.length']
+		batchIdSize=props['sku.batch.id.maximum.length'].trim()
 		pp=ref('productionParameters')
 	}
 	
@@ -42,7 +42,7 @@ beans{
 		barcodeView=ref('selectProductionParametersBarcodeView')
 		viewController=ref('mainFrameController')
 		skuListProvider=ref('skuListProvider')
-		useBarcodeReader=props['useBarcodeReader']
+		useBarcodeReader=props['useBarcodeReader'].trim()
 		screensFlow=ref('screensFlow')
 		mainFrameController=ref('mainFrameController')
 	}
@@ -55,7 +55,7 @@ beans{
 	
 	//PRODUCTION STATISTICS AGGREGATOR
 	productionStatisticsAggregatorFactory(TT079ProductionStatisticsAggregatorFactory){
-		language=props['language']
+		language=props['language'].trim()
 	}
 	
 	//REPORT SCREEN

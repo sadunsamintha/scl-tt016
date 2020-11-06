@@ -27,7 +27,7 @@ beans{
 	}
 
 	plcValuesLoader(PlcValuesLoader){
-		lineCount=props['line.count']
+		lineCount=props['line.count'].trim()
 		configFolder=profilePath+'/config/plc'
 		paramSender= ref('plcParamSender')
 	}
@@ -82,7 +82,7 @@ beans{
 		plcProvider=ref('plcProvider')
 		plcCabinetVars=ref('plcCabJmxReport')
 		plcLineVars=ref('plcLineJmxReport')
-		lineCount=props['line.count']
+		lineCount=props['line.count'].trim()
 		trilightGreenVarName="#{plcVarMap['NTF_LINE_TRILIGHT_GREEN']}"
 		trilightYellowVarName="#{plcVarMap['NTF_LINE_TRILIGHT_YELLOW']}"
 		trilightRedVarName="#{plcVarMap['NTF_LINE_TRILIGHT_RED']}"

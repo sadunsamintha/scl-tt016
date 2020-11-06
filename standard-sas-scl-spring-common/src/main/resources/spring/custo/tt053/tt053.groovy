@@ -4,7 +4,7 @@ import com.sicpa.tt053.scl.business.activation.TT053ExportActivationBehavior
 
 beans{
 
-	def serverBehavior=props['remoteServer.behavior'].toUpperCase()
+	def serverBehavior=props['remoteServer.behavior'].trim().toUpperCase()
 	
 	if(serverBehavior == "STANDARD") {
 		importBeans('spring/server/server-core5.groovy')

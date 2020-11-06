@@ -15,9 +15,9 @@ beans{
 		plcProvider=ref('plcProvider')
 	}
 
-	def serverBehavior=props['remoteServer.behavior'].toUpperCase()
-	def printerBehavior=props['printer.behavior'].toUpperCase()
-	def productionBehavior=props['production.config.folder'].toUpperCase()
+	def serverBehavior=props['remoteServer.behavior'].trim().toUpperCase()
+	def printerBehavior=props['printer.behavior'].trim().toUpperCase()
+	def productionBehavior=props['production.config.folder'].trim().toUpperCase()
 
 	if(serverBehavior == "STANDARD") {
 		importBeans('spring/custo/tt016/tt016-server.groovy')
@@ -62,17 +62,17 @@ beans{
 		b.parent=ref('bootstrapAlias')
 		mainPanelGetter=ref('mainPanelGetter')
 		stopReasonViewController=ref('stopReasonViewController')
-		codeTypeId=props['codeTypeId']
-		beamEnabled=props['automated.beam.enabled']
-		beamInvalidHeightError=props['alert.invalid.height.error']
+		codeTypeId=props['codeTypeId'].trim()
+		beamEnabled=props['automated.beam.enabled'].trim()
+		beamInvalidHeightError=props['alert.invalid.height.error'].trim()
 		unknownSkuProvider=ref('unknownSkuProvider')
 		ejectionTypeSender=ref('ejectionTypeSender')
 		automatedBeamHeightManager=ref('automatedBeamHeightManager')
 		automatedBeamNtfHandler=ref('automatedBeamNtfHandler')
 		disallowedConfigurations=disallowedConf
-		defaultLang=props['language']
+		defaultLang=props['language'].trim()
 		legacyEncoderConverter=ref('legacyEncoderConverter')
-		productionBehaviorVar=props['production.config.folder'].toUpperCase()
+		productionBehaviorVar=props['production.config.folder'].trim().toUpperCase()
 		if (productionBehaviorVar == "PRODUCTIONCONFIG-SAS") {
 			sasAppLegacyMBean=ref('legacyStatsMBean')
 		} else {
@@ -83,8 +83,8 @@ beans{
 	addAlias('plcValuesLoaderAlias','plcValuesLoader')
 	plcValuesLoader(TT016PlcLoader){b->
 		b.parent=ref('plcValuesLoaderAlias')
-		wiperEnabled=props['wiper.enabled']
-		automatedBeamEnabled=props['automated.beam.enabled']
+		wiperEnabled=props['wiper.enabled'].trim()
+		automatedBeamEnabled=props['automated.beam.enabled'].trim()
 	}
 
 	importBeans('spring/custo/tt016/tt016-plc.xml')
@@ -111,11 +111,11 @@ beans{
 
     //values may or may not be present but all available production modes plus default are specified for full config support
 	def ejectionTypeProductionModeOverride = [:]
-	ejectionTypeProductionModeOverride.put("productionmode.DEFAULT",props['ejection.type.default'])
-	ejectionTypeProductionModeOverride.put("productionmode.standard",props['ejection.type.productionmode.standard'])
-	ejectionTypeProductionModeOverride.put("productionmode.export",props['ejection.type.productionmode.export'])
-	ejectionTypeProductionModeOverride.put("productionmode.refeed.normal",props['ejection.type.productionmode.refeed.normal'])
-	ejectionTypeProductionModeOverride.put("productionmode.maintenance",props['ejection.type.productionmode.maintenance'])
+	ejectionTypeProductionModeOverride.put("productionmode.DEFAULT",props['ejection.type.default'].trim())
+	ejectionTypeProductionModeOverride.put("productionmode.standard",props['ejection.type.productionmode.standard'].trim())
+	ejectionTypeProductionModeOverride.put("productionmode.export",props['ejection.type.productionmode.export'].trim())
+	ejectionTypeProductionModeOverride.put("productionmode.refeed.normal",props['ejection.type.productionmode.refeed.normal'].trim())
+	ejectionTypeProductionModeOverride.put("productionmode.maintenance",props['ejection.type.productionmode.maintenance'].trim())
 
 
 	ejectionTypeSender(EjectionTypeSender){
@@ -125,6 +125,6 @@ beans{
 
 	legacyEncoderConverter(LegacyEncoderConverter) {
 		fileStorage=ref('storage')
-		codeTypeId=props['codeTypeId']
+		codeTypeId=props['codeTypeId'].trim()
 	}
 }

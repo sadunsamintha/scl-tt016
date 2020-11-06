@@ -12,7 +12,7 @@ beans{
 		littleEndian=true
 		useSimulator=false
 		executionMode=PlcExecutionMode.MULTITHREADED
-		ip=props['plc.ip']
+		ip=props['plc.ip'].trim()
 		lifeCheckRequest=ref('REQUEST_LIFE_CHECK_var')
 	}
 

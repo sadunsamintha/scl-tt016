@@ -25,8 +25,8 @@ beans{
 		packageSender=ref('packageSender')
 	}
 	remoteServices(RemoteServices){
-		userMachine=props['server.machine.user']
-		passwordMachine=props['server.machine.password']
+		userMachine=props['server.machine.user'].trim()
+		passwordMachine=props['server.machine.password'].trim()
 		properties=ref('allProperties')
 	}
 	dtoConverter(DtoConverter){
@@ -41,7 +41,7 @@ beans{
 	}
 	masterLifeCheckWorker(MasterLifeCheckWorker){b->
 		connector = ref('masterConnector')
-		lifecheckIntervalSec =props['server.lifecheck.delay.sec']
+		lifecheckIntervalSec =props['server.lifecheck.delay.sec'].trim()
 	}
 	masterConnector(MasterConnector){
 		remoteServices=ref('remoteServices')
@@ -62,8 +62,8 @@ beans{
 	sicpaDataGeneratorRequestor(SicpaDataGeneratorRequestor){ incomingStorageProvider=ref('sicpaDataGeneratorStorage') }
 
 	timeoutAspect(TimeoutAspect){
-		timeoutSec =props['remoteServerTimeoutCall_sec']
-		timeoutSecLifeCheck= props['remoteServerLifeCheckTimeoutCall_sec']
+		timeoutSec =props['remoteServerTimeoutCall_sec'].trim()
+		timeoutSecLifeCheck= props['remoteServerLifeCheckTimeoutCall_sec'].trim()
 	}
 }
 

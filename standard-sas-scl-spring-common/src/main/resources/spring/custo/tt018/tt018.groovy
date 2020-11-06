@@ -11,7 +11,7 @@ beans{
 	importBeans('spring/custo/tt018/server/tt018-remoteserver-import.groovy')
 
 
-	def cameraBehavior=props['camera.behavior'].toUpperCase()
+	def cameraBehavior=props['camera.behavior'].trim().toUpperCase()
 	if(cameraBehavior == "SIMULATOR") {
 		addAlias('cameraSimulatorControllerAlias','cameraSimulatorController')
 		cameraSimulatorController(AlbaniaCameraSimulatorController){b->
@@ -42,7 +42,7 @@ beans{
 	}
 	
 	fileByPackageType(FileByPackageTypeMapping){
-		allowedProductPackage= Integer.parseInt(props['remoteServerAdapter.allowedProductType'])
+		allowedProductPackage= Integer.parseInt(props['remoteServerAdapter.allowedProductType'].trim())
 	}
 
 	addAlias('selectProductionParametersHandPickingViewAlias','selectProductionParametersHandPickingView')

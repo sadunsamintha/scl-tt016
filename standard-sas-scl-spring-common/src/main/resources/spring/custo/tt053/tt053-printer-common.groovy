@@ -3,11 +3,10 @@ import com.sicpa.standard.sasscl.devices.printer.xcode.mapping.MappingExtendedCo
 beans{
 
 	extendedCodeBehavior(TT053SicpaDataAndBlobExCodeBehavior) {
-		dmFormat=props['dm.format']
-		dmEncoding=props['dm.encoding']
-		dmOrientation=props['dm.orientation']
-		blobPosition=props['blob.position']
-		blobType=props['blob.type']
+		dmFormat=props['dm.format'].trim()
+		dmEncoding=props['dm.encoding'].trim()
+		blobPosition=props['blob.position'].trim()
+		blobType=props['blob.type'].trim()
 		blobUtils=ref('blobDetectionUtils')
 		productionParameters=ref('productionParameters')
 	}

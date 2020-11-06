@@ -28,8 +28,8 @@ beans{
     importBeans('spring/custo/tt065/tt065-activation.xml')
     importBeans('spring/custo/tt065/tt065-scheduler.xml')
 
-    def serverBehavior=props['remoteServer.behavior'].toUpperCase()
-    def printerBehavior=props['printer.behavior'].toUpperCase()
+    def serverBehavior=props['remoteServer.behavior'].trim().toUpperCase()
+    def printerBehavior=props['printer.behavior'].trim().toUpperCase()
 
     importBeans('spring/server/server-core5.groovy')
 
@@ -50,9 +50,9 @@ beans{
             storage = ref('storage')
             fileSequenceStorageProvider = ref('fileSequenceStorageProvider')
             remoteServerSimulatorOutputFolder = profilePath + '/simulProductSend'
-            cryptoMode = props['server.simulator.cryptoMode']
-            cryptoModelPreset = props['server.simulator.cryptoModelPreset']
-            hrdEnable = props['hrd.enable']
+            cryptoMode = props['server.simulator.cryptoMode'].trim()
+            cryptoModelPreset = props['server.simulator.cryptoModelPreset'].trim()
+            hrdEnable = props['hrd.enable'].trim()
         }
 
 

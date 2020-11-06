@@ -3,8 +3,8 @@ import com.sicpa.tt077.scl.TT077Bootstrap
 import com.sicpa.tt077.printer.simulator.TT077PrinterAdaptorSimulator
 
 beans {
-    def serverBehavior=props['remoteServer.behavior'].toUpperCase()
-    def printerBehavior=props['printer.behavior'].toUpperCase()
+    def serverBehavior=props['remoteServer.behavior'].trim().toUpperCase()
+    def printerBehavior=props['printer.behavior'].trim().toUpperCase()
 
     addAlias('bootstrapAlias', 'bootstrap')
     bootstrap(TT077Bootstrap) { b ->

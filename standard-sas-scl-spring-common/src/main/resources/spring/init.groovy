@@ -20,7 +20,7 @@ beans{
 	initCustomizableModel()
 	initEventBus()
 	initXstream()
-	initBackup(profilePath,Integer.parseInt(props['backup.max']))
+	initBackup(profilePath,Integer.parseInt(props['backup.max'].trim()))
 	initOperatorLog()
 }
 

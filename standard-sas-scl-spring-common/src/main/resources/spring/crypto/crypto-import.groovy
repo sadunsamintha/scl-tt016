@@ -1,6 +1,6 @@
 beans {
 
-	def serverBehavior=props['remoteServer.behavior'].toUpperCase()
+	def serverBehavior=props['remoteServer.behavior'].trim().toUpperCase()
 
 	importBeans('spring/crypto/crypto-common.xml')
 

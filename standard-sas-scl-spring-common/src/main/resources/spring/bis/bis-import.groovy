@@ -1,6 +1,6 @@
 beans{
 
-	def bisBehavior=props['bis.behavior'].toUpperCase()
+	def bisBehavior=props['bis.behavior'].trim().toUpperCase()
 	if(bisBehavior != "NONE") {
 
 		importBeans('spring/bis/bis-common.groovy')

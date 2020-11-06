@@ -50,8 +50,8 @@ beans{
 
 
 	simulatorRemoteModel(RemoteServerSimulatorModel){ b->
-		numberOfCodesByEncoder=props['server.simulator.codes.by.encoder']
-		useCrypto=props['server.simulator.crypto.enabled']
+		numberOfCodesByEncoder=props['server.simulator.codes.by.encoder'].trim()
+		useCrypto=props['server.simulator.crypto.enabled'].trim()
 		productionParameters=root
 	}
 
@@ -63,9 +63,9 @@ beans{
 		storage=ref('storage')
 		fileSequenceStorageProvider=ref('fileSequenceStorageProvider')
 		remoteServerSimulatorOutputFolder = profilePath+'/simulProductSend'
-		cryptoMode=props['server.simulator.cryptoMode']
-		cryptoModelPreset=props['server.simulator.cryptoModelPreset']
-		hrdEnable=props['hrd.enable']
+		cryptoMode=props['server.simulator.cryptoMode'].trim()
+		cryptoModelPreset=props['server.simulator.cryptoModelPreset'].trim()
+		hrdEnable=props['hrd.enable'].trim()
 	}
 }
 

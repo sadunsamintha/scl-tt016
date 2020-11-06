@@ -1,6 +1,6 @@
 beans{
 
-	def custoId=props['custo.id'].toUpperCase()
+	def custoId=props['custo.id'].trim().toUpperCase()
 	switch(custoId) {
 		case 'SASSCL-CORE':
 			importBeans('spring/custo/core/core.groovy')

@@ -1,6 +1,6 @@
 beans{
 
-	def skuRecognitionBehavior=props['sku.recognition.behavior'].toUpperCase()
+	def skuRecognitionBehavior=props['sku.recognition.behavior'].trim().toUpperCase()
 	if(skuRecognitionBehavior != "NONE") {
 		importBeans('spring/skurecognition/skuRecognition-common.groovy')
 		if(skuRecognitionBehavior == "CHECK") {

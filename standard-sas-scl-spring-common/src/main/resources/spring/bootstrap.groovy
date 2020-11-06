@@ -24,10 +24,10 @@ beans{
 
 	encoderSequenceValidator(EncoderSequenceValidator){
 		currentEncoderFolder=profilePath+'/internal/encoders/current'
-		enabled=props['encoder.sequence.validator.enabled']
+		enabled=props['encoder.sequence.validator.enabled'].trim()
 	}
 
-	def resetStatisticsAtStart=props['statistics.resetAtStart'].toUpperCase()
+	def resetStatisticsAtStart=props['statistics.resetAtStart'].trim().toUpperCase()
 	if (resetStatisticsAtStart == "TRUE") {
 		importBeans('spring/statistics-resetAtEachStartBehavior.xml')
 	}

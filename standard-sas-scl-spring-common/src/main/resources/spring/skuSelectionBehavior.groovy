@@ -4,7 +4,7 @@ import com.sicpa.standard.sasscl.controller.skuselection.impl.SkuSelectionDuring
 
 beans{
 
-	def skuBehavior=props['skuSelection.behavior'].toUpperCase()
+	def skuBehavior=props['skuSelection.behavior'].trim().toUpperCase()
 
 	switch(skuBehavior) {
 		case 'OPERATOR_FULL':

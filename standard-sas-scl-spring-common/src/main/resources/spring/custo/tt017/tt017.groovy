@@ -1,7 +1,7 @@
 import com.sicpa.tt017.scl.TT017Bootstrap
 beans{
 
-	def serverBehavior=props['remoteServer.behavior'].toUpperCase()
+	def serverBehavior=props['remoteServer.behavior'].trim().toUpperCase()
 
 	if(serverBehavior == "STANDARD") {
 		importBeans('spring/server/server-core5.groovy')

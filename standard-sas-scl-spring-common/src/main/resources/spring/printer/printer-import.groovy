@@ -1,5 +1,5 @@
 beans {
-	def printerBehavior=props['printer.behavior'].toUpperCase()
+	def printerBehavior=props['printer.behavior'].trim().toUpperCase()
 
 	importBeans('spring/printer/printer-common.groovy')
 	if(printerBehavior != "NONE") {

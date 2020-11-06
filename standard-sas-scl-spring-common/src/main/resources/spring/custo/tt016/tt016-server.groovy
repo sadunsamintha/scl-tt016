@@ -11,16 +11,16 @@ import com.sicpa.tt016.scl.remote.assembler.SkuConverter
 
 beans{
 	
-	def msasLegacy = props['production.config.server.msaslegacy'].toUpperCase()
+	def msasLegacy = props['production.config.server.msaslegacy'].trim().toUpperCase()
 
 	if(msasLegacy == 'TRUE'){
 		
 		remoteServices(TT016RemoteServicesMSASLegacy){
-			userMachine=props['server.machine.user']
-			passwordMachine=props['server.machine.password']
-			subsystemId=props['server.machine.subsystemId']
-			url=props['server.url']
-			decoderPassword=props['decoderPassword']
+			userMachine=props['server.machine.user'].trim()
+			passwordMachine=props['server.machine.password'].trim()
+			subsystemId=props['server.machine.subsystemId'].trim()
+			url=props['server.url'].trim()
+			decoderPassword=props['decoderPassword'].trim()
 
 		}
 		
@@ -39,10 +39,10 @@ beans{
 	} else {
 	
 		remoteServices(TT016RemoteServices){
-			userMachine=props['server.machine.user']
-			passwordMachine=props['server.machine.password']
-			subsystemId=props['server.machine.subsystemId']
-			url=props['server.url']
+			userMachine=props['server.machine.user'].trim()
+			passwordMachine=props['server.machine.password'].trim()
+			subsystemId=props['server.machine.subsystemId'].trim()
+			url=props['server.url'].trim()
 			withBis=true // we can assume that for all mscl the bis services will be activated
 		}
 		
@@ -66,13 +66,13 @@ beans{
 
 	masterLifeCheckWorker(MasterLifeCheckWorker){b->
 		connector = ref('masterConnector')
-		lifecheckIntervalSec =props['server.lifecheck.delay.sec']
+		lifecheckIntervalSec =props['server.lifecheck.delay.sec'].trim()
 	}
 	
 	skuConverter(SkuConverter){
-		codeTypeId=props['codeTypeId']
-		refeedAvailable=props['refeedAvailable']
-		heightAvailable=props['automated.beam.enabled']
+		codeTypeId=props['codeTypeId'].trim()
+		refeedAvailable=props['refeedAvailable'].trim()
+		heightAvailable=props['automated.beam.enabled'].trim()
 	}
 	
 	productionModeMapping(TT016ProductionModeMapping)

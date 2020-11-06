@@ -8,8 +8,8 @@ beans {
 	importBeans('spring/custo/tt080/tt080-provider.xml')
 	importBeans('spring/custo/tt080/tt080-flowControl.xml')
 
-	def serverBehavior=props['remoteServer.behavior'].toUpperCase()
-    def printerBehavior=props['printer.behavior'].toUpperCase()
+	def serverBehavior=props['remoteServer.behavior'].trim().toUpperCase()
+    def printerBehavior=props['printer.behavior'].trim().toUpperCase()
 
     addAlias('bootstrapAlias', 'bootstrap')
     bootstrap(TT080Bootstrap) { b ->

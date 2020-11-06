@@ -1,6 +1,6 @@
 beans{
 
-	def rb=props['remoteServer.behavior'].toUpperCase()
+	def rb=props['remoteServer.behavior'].trim().toUpperCase()
 
 	importBeans('spring/custo/tt018/server/aop-lifechecker.xml')
 	importBeans('spring/custo/tt018/server/tt018-remoteserver-common.xml')

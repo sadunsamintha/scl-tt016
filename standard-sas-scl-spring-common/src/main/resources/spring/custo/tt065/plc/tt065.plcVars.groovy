@@ -39,7 +39,7 @@ beans {
 	//lineNtf => notif on line
 	//lineGrp => add the var to the edit line var gui, grouped with over var sharing the same group name
 	//cabGrp => add the var to the edit cabinet var gui, grouped with over var sharing the same group name
-	def productionConfigFolder=props['production.config.folder'].toUpperCase()
+	def productionConfigFolder=props['production.config.folder'].trim().toUpperCase()
 
 
 	//LINE PARAM

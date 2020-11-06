@@ -29,8 +29,8 @@ beans{
 	}
 
 	plcValuesLoader(PlcValuesLoader){
-		lineCount=props['line.count']
-		def productionConfigFolder=props['production.config.folder'].toUpperCase()
+		lineCount=props['line.count'].trim()
+		def productionConfigFolder=props['production.config.folder'].trim().toUpperCase()
 		if(productionConfigFolder == "PRODUCTIONCONFIG-SAS"){
 			configFolder=profilePath+'/config/plc/sas'
 		}else{
@@ -97,7 +97,7 @@ beans{
 		plcProvider=ref('plcProvider')
 		plcCabinetVars=ref('plcCabJmxReport')
 		plcLineVars=ref('plcLineJmxReport')
-		lineCount=props['line.count']
+		lineCount=props['line.count'].trim()
 		trilightGreenVarName="#{plcVarMap['NTF_LINE_TRILIGHT_GREEN']}"
 		trilightYellowVarName="#{plcVarMap['NTF_LINE_TRILIGHT_YELLOW']}"
 		trilightRedVarName="#{plcVarMap['NTF_LINE_TRILIGHT_RED']}"

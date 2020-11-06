@@ -6,7 +6,7 @@ import com.sicpa.standard.sasscl.model.BatchJobHistory
 beans {
     importBeans('spring/custo/ttth/plc/ttth.plc-import.groovy')
 
-    def serverBehavior = props['remoteServer.behavior'].toUpperCase()
+    def serverBehavior = props['remoteServer.behavior'].trim().toUpperCase()
 
     addAlias('bootstrapAlias', 'bootstrap')
     bootstrap(TTTHBootstrap) { b ->

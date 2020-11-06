@@ -7,14 +7,14 @@ beans{
 
 	bisParent(){ b->
 		b.abstract=true
-		blockProduction = props['bis.disconnected.production.block']
+		blockProduction = props['bis.disconnected.production.block'].trim()
 		skuFinder=ref('skuFinder')
-		unknownSkuId=props['bis.unknownSkuId']
-		displayAlertMessage=props['bis.displayAlertMessage']
+		unknownSkuId=props['bis.unknownSkuId'].trim()
+		displayAlertMessage=props['bis.displayAlertMessage'].trim()
 		skuBisProvider=ref('skuBisProvider')
 	}
 
-	def skuRecognitionBehavior=props['sku.recognition.behavior'].toUpperCase()
+	def skuRecognitionBehavior=props['sku.recognition.behavior'].trim().toUpperCase()
 	if(skuRecognitionBehavior != "NONE") {
 		importBeans('spring/alert/alertUnknownSkuTask.groovy')
 	}
@@ -23,7 +23,7 @@ beans{
 		b.initMethod='init'
 		bisProvider=ref('bisProvider')
 		credentialProvider=ref('bisCredentialProvider')
-		sendUserCredentialPeriodMinutes=props['bis.credential.sending.period.min']
+		sendUserCredentialPeriodMinutes=props['bis.credential.sending.period.min'].trim()
 	}
 
 	skuBisProvider(SkuBisProvider){ skuListProvider=ref('skuListProvider') }

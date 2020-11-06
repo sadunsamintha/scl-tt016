@@ -1,6 +1,6 @@
 beans{
 	
-	def serverBehavior=props['remoteServer.behavior'].toUpperCase()
+	def serverBehavior=props['remoteServer.behavior'].trim().toUpperCase()
 	
 	importBeans('spring/custo/tt079/tt079-storage-common.xml')
 	

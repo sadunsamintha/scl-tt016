@@ -4,7 +4,7 @@ import com.sicpa.standard.client.common.utils.ConfigUtils
 
 beans{
 
-	brsAdaptor(BrsAdaptorSimulator,ref('simulatorBrsModel'),ref('productionParameters'),props['brs.behavior']){b->
+	brsAdaptor(BrsAdaptorSimulator,ref('simulatorBrsModel'),ref('productionParameters'),props['brs.behavior'].trim()){b->
 		b.scope='prototype'
 	}
 

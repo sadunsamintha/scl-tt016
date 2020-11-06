@@ -7,8 +7,8 @@ beans{
 		remoteServer=ref('remoteServer')
 		productsPackager=ref('productsPackager')
 		subsystemIdProvider=ref('subsystemIdProvider')
-		productionSendBatchSize= props['productionSendBatchSize']
-		productionDataSerializationErrorThreshold=props['productionDataSerializationErrorThreshold']
+		productionSendBatchSize= props['productionSendBatchSize'].trim()
+		productionDataSerializationErrorThreshold=props['productionDataSerializationErrorThreshold'].trim()
 		pp=ref('productionParameters')
 	}
 	

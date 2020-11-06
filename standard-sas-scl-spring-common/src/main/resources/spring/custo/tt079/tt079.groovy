@@ -3,8 +3,8 @@ import com.sicpa.tt079.scl.TT079Bootstrap
 
 beans{
 
-	def serverBehavior=props['remoteServer.behavior'].toUpperCase()
-	def productionConfigFolder=props['production.config.folder'].toUpperCase()
+	def serverBehavior=props['remoteServer.behavior'].trim().toUpperCase()
+	def productionConfigFolder=props['production.config.folder'].trim().toUpperCase()
 
 	addAlias('bootstrapAlias','bootstrap')
 	bootstrap(TT079Bootstrap){b->
@@ -22,7 +22,7 @@ beans{
 	importBeans('spring/custo/tt079/tt079-hrd.xml')
 	
 	if(productionConfigFolder == "PRODUCTIONCONFIG-SAS") {
-		def externalActivation=props['external.activation'].toUpperCase()
+		def externalActivation=props['external.activation'].trim().toUpperCase()
 		
 		if(externalActivation == "TRUE") {
 			importBeans('spring/custo/tt079/tt079-storage-import.groovy')

@@ -1,7 +1,7 @@
 beans{
 
 
-	def brsBehavior=props['brs.behavior'].toUpperCase()
+	def brsBehavior=props['brs.behavior'].trim().toUpperCase()
 
 	if(brsBehavior != "NONE") {
 		importBeans('spring/brs/brs-common.groovy')

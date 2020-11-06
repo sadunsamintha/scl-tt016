@@ -5,10 +5,10 @@ import com.sicpa.standard.sasscl.devices.plc.alert.NoCapsAlertTask
 beans{
 
 	noCapsAlertModel(NoCapsAlertTaskModel) {
-		enabled=props['alert.noCaps.enabled']
-		delayInSec=props['alert.noCaps.delayInSec']
-		threshold=props['alert.noCaps.threshold']
-		sampleSize=props['alert.noCaps.sampleSize']
+		enabled=props['alert.noCaps.enabled'].trim()
+		delayInSec=props['alert.noCaps.delayInSec'].trim()
+		threshold=props['alert.noCaps.threshold'].trim()
+		sampleSize=props['alert.noCaps.sampleSize'].trim()
 	}
 
 	noCapsAlert(NoCapsAlertTask){

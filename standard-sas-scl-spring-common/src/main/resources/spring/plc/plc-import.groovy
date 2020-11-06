@@ -1,6 +1,6 @@
 beans {
 
-	def plcBehavior=props['plc.behavior'].toUpperCase()
+	def plcBehavior=props['plc.behavior'].trim().toUpperCase()
 
 	importBeans('spring/plc/plcVars.groovy')
 	importBeans('spring/plc/plc-common.groovy')
