@@ -141,7 +141,7 @@ public class TT016Bootstrap extends Bootstrap {
 		addPlcVariable("NTF_LINE_JAVA_EJECTION_COUNTER", ".com.stLine[#x].stNotifications.nJavaEjectionCounter", PlcUtils.PLC_TYPE.I,
 				new HashMap<>());
 	}
-
+	
 	public static void addWiperPlcVariable() {
 		addPlcVariable("PARAM_LINE_INHIBIT_WIPER", PlcUtils.LINE_PRM+"bInhibitWiper", PlcUtils.PLC_TYPE.B,
 				new HashMap<String, String>() {{
