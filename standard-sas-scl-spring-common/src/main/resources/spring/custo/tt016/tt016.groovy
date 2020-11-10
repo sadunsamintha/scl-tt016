@@ -127,4 +127,6 @@ beans{
 		fileStorage=ref('storage')
 		codeTypeId=props['codeTypeId'].trim()
 	}
+	
+	importBeans('spring/custo/tt016/tt016-brs-standard.groovy')
 }

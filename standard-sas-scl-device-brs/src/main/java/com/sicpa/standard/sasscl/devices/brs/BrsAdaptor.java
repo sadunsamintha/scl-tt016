@@ -162,13 +162,13 @@ public class BrsAdaptor extends AbstractStartableDevice implements CodeReaderLis
     }
 
 
-    private void startReaders() throws DeviceException {
+    protected void startReaders() throws DeviceException {
         for (CodeReaderController reader : readers) {
             reader.start();
         }
     }
 
-    private void stopReaders() throws DeviceException {
+    protected void stopReaders() throws DeviceException {
         for (CodeReaderController reader : readers) {
             reader.stop();
         }

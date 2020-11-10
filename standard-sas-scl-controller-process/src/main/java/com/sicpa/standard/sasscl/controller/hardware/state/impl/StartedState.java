@@ -1,5 +1,8 @@
 package com.sicpa.standard.sasscl.controller.hardware.state.impl;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.messages.MessageEvent;
 import com.sicpa.standard.sasscl.controller.hardware.HardwareControllerStatus;
@@ -9,9 +12,12 @@ import com.sicpa.standard.sasscl.controller.hardware.state.AbstractHardwareContr
 import com.sicpa.standard.sasscl.devices.DeviceStatus;
 import com.sicpa.standard.sasscl.devices.DeviceStatusEvent;
 import com.sicpa.standard.sasscl.devices.IDevice;
+import com.sicpa.standard.sasscl.devices.IStartableDevice;
 import com.sicpa.standard.sasscl.messages.MessageEventKey;
 
 public class StartedState extends AbstractHardwareControllerState {
+	
+	private static final Logger logger = LoggerFactory.getLogger(StartedState.class);
 
 	protected IHardwareControllerState stoppingState;
 	protected IHardwareControllerState disconnectingState;
@@ -21,6 +27,7 @@ public class StartedState extends AbstractHardwareControllerState {
 
 	@Override
 	public void enter() {
+		logger.info("Entering Started State");
 		super.enter();
 		startPlc();
 		fireStatusChanged(new HardwareControllerStatusEvent(HardwareControllerStatus.STARTED));
@@ -38,6 +45,16 @@ public class StartedState extends AbstractHardwareControllerState {
 				sendDeviceDisconnectWarning(evt.getDevice());
 			} else {
 				setNextState(stoppingState);
+			}
+		}
+
+		if (evt.getStatus().equals(DeviceStatus.CONNECTED) && (evt.getDevice() != null && evt.getDevice().getName().toUpperCase().equals("BRS"))) {
+			for (IStartableDevice device : startableDevices) {
+				if (!device.isBlockProductionStart() && (device.getName() != null && device.getName().toUpperCase().equals("BRS"))){
+	            	if (device.getStatus().isConnected()) {
+	            		startDevice(device);
+	            	}
+	            }
 			}
 		}
 	}

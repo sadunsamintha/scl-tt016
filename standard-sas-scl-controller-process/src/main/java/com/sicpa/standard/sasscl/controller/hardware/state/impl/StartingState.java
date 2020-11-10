@@ -1,5 +1,8 @@
 package com.sicpa.standard.sasscl.controller.hardware.state.impl;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.sicpa.standard.sasscl.controller.hardware.HardwareControllerStatus;
 import com.sicpa.standard.sasscl.controller.hardware.HardwareControllerStatusEvent;
 import com.sicpa.standard.sasscl.controller.hardware.IHardwareControllerState;
@@ -8,6 +11,8 @@ import com.sicpa.standard.sasscl.devices.DeviceStatus;
 import com.sicpa.standard.sasscl.devices.DeviceStatusEvent;
 
 public class StartingState extends AbstractHardwareControllerState {
+	
+	private final static Logger logger = LoggerFactory.getLogger(StartingState.class);
 
 	protected IHardwareControllerState startedState;
 	protected IHardwareControllerState disconnectingState;
@@ -18,6 +23,7 @@ public class StartingState extends AbstractHardwareControllerState {
 
 	@Override
 	public void enter() {
+		logger.info("Entering Starting State");
 		super.enter();
 		fireStatusChanged(new HardwareControllerStatusEvent(HardwareControllerStatus.STARTING));
 		startDevices();
