@@ -1,5 +1,7 @@
 package com.sicpa.ttth.view.report;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -15,6 +17,8 @@ import static com.sicpa.ttth.scl.utils.TTTHCalendarUtils.TH_YEAR_DIFF;
 
 
 public class TTTHReportScreen extends ReportScreen {
+	
+	private static final long serialVersionUID = 1L;
 
     @Override
     public IReportTable getTable() {
@@ -27,6 +31,10 @@ public class TTTHReportScreen extends ReportScreen {
 
     @Override
     protected void getAndShowReport() {
+    	if (getDateFrom().getDate() == null || getDateTo().getDate() == null) {
+			return;
+		}
+    	
         IProductionStatisticsAggregator aggre = productionStatisticsAggregatorFactory.getInstance();
 
         Date from = DateUtils.round(convertBackToGeorgian(getDateFrom().getDate()), Calendar.DAY_OF_MONTH);
@@ -49,6 +57,18 @@ public class TTTHReportScreen extends ReportScreen {
             calendar.setTime(new Date());
             calendar.add(Calendar.YEAR, TH_YEAR_DIFF);
             this.dateFrom.setDate(calendar.getTime());
+            
+            this.dateFrom.addPropertyChangeListener("date", new PropertyChangeListener() {
+                @Override
+                public void propertyChange(PropertyChangeEvent evt) {
+                    Date selectedDate = dateFrom.getDate();
+                    
+                    if (selectedDate != null) {
+                    	dateTo.getMonthView().setLowerBound(selectedDate);
+                        dateTo.setDate(selectedDate);
+                    }
+                }
+            });
         }
         return this.dateFrom;
     }
@@ -63,6 +83,7 @@ public class TTTHReportScreen extends ReportScreen {
             calendar.setTime(new Date());
             calendar.add(Calendar.YEAR, TH_YEAR_DIFF);
             this.dateTo.setDate(calendar.getTime());
+            this.dateTo.getMonthView().setLowerBound(calendar.getTime());
         }
         return this.dateTo;
     }

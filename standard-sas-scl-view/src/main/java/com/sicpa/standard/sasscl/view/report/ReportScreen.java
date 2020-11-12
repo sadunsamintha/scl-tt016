@@ -2,6 +2,8 @@ package com.sicpa.standard.sasscl.view.report;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -79,10 +81,19 @@ public class ReportScreen extends JPanel implements ISecuredComponentGetter {
 		revalidate();
 	}
     
-	public JXDatePicker getDateFrom() {
+    public JXDatePicker getDateFrom() {
 		if (this.dateFrom == null) {
 			this.dateFrom = new JXDatePicker();
 			this.dateFrom.setDate(new Date());
+			
+			this.dateFrom.addPropertyChangeListener("date", new PropertyChangeListener() {
+                @Override
+                public void propertyChange(PropertyChangeEvent evt) {
+                    Date selectedDate = dateFrom.getDate();
+                    dateTo.getMonthView().setLowerBound(selectedDate);
+                    dateTo.setDate(selectedDate);
+                }
+            });
 		}
 		return this.dateFrom;
 	}
@@ -91,6 +102,7 @@ public class ReportScreen extends JPanel implements ISecuredComponentGetter {
 		if (this.dateTo == null) {
 			this.dateTo = new JXDatePicker();
 			this.dateTo.setDate(new Date());
+			this.dateTo.getMonthView().setLowerBound(new Date());
 		}
 		return this.dateTo;
 	}
@@ -143,6 +155,10 @@ public class ReportScreen extends JPanel implements ISecuredComponentGetter {
 	}
 
 	protected void getAndShowReport() {
+		if (getDateFrom().getDate() == null || getDateTo().getDate() == null) {
+			return;
+		}
+		
 		IProductionStatisticsAggregator aggre = productionStatisticsAggregatorFactory.getInstance();
 
 		Date from = DateUtils.round(getDateFrom().getDate(), Calendar.DAY_OF_MONTH);

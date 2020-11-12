@@ -2,6 +2,8 @@ package com.sicpa.standard.sasscl.view.monitoring;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -53,6 +55,15 @@ public abstract class AbstractMonitoringEventPanel extends JPanel {
 		if (this.dateFrom == null) {
 			this.dateFrom = new JXDatePicker();
 			this.dateFrom.setDate(new Date());
+			
+			this.dateFrom.addPropertyChangeListener("date", new PropertyChangeListener() {
+                @Override
+                public void propertyChange(PropertyChangeEvent evt) {
+                    Date selectedDate = dateFrom.getDate();
+                    dateTo.getMonthView().setLowerBound(selectedDate);
+                    dateTo.setDate(selectedDate);
+                }
+            });
 		}
 		return this.dateFrom;
 	}
@@ -61,6 +72,7 @@ public abstract class AbstractMonitoringEventPanel extends JPanel {
 		if (this.dateTo == null) {
 			this.dateTo = new JXDatePicker();
 			this.dateTo.setDate(new Date());
+			this.dateTo.getMonthView().setLowerBound(new Date());
 		}
 		return this.dateTo;
 	}
@@ -81,6 +93,10 @@ public abstract class AbstractMonitoringEventPanel extends JPanel {
 	}
 
 	protected void buttonRefreshActionPerformed() {
+		if (getDateFrom().getDate() == null || getDateTo().getDate() == null) {
+			return;
+		}
+		
 		getBusyPanel().setBusy(true);
 		getTable().clear();
 		TaskExecutor.execute(new Runnable() {
