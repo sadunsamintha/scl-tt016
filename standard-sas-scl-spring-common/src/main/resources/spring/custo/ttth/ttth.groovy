@@ -12,6 +12,8 @@ beans {
     bootstrap(TTTHBootstrap) { b ->
         b.parent = ref('bootstrapAlias')
         dailyBatchRequestRepository = ref('dailyBatchRequestRepository')
+        remoteServer = ref('remoteServer')
+        getCodedCountInterval = props['getCodedCountInterval']
     }
 
     batchJobStatistics(DailyBatchJobStatistics) {}

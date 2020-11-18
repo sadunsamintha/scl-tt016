@@ -1,4 +1,6 @@
 import com.sicpa.standard.sasscl.devices.remote.impl.dtoConverter.*
+import com.sicpa.ttth.remote.server.TTTHRemoteServer
+import com.sicpa.ttth.scl.remote.remoteservices.TTTHRemoteServices
 
 beans{
 
@@ -12,6 +14,18 @@ beans{
 	skuConverter(TTTHSkuConverter) {
 		productionModeMapping=ref('productionModeMapping')
 		dailyBatchRequestRepository=ref('dailyBatchRequestRepository')
+	}
+
+	remoteServices(TTTHRemoteServices){
+		userMachine=props['server.machine.user']
+		passwordMachine=props['server.machine.password']
+		properties=ref('allProperties')
+	}
+
+	addAlias('remoteServerAlias','remoteServer')
+	remoteServer(TTTHRemoteServer){ b->
+		b.parent = ref('remoteServerAlias')
+		ttthRemoteServices = ref('remoteServices')
 	}
 
 }

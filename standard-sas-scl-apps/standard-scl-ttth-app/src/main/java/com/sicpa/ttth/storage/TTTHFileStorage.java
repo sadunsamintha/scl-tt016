@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.sicpa.standard.client.common.storage.ISimpleFileStorage;
+import com.sicpa.standard.client.common.storage.StorageException;
 import com.sicpa.standard.sasscl.common.storage.FileStorage;
 import com.sicpa.standard.sasscl.model.BatchJobHistory;
 import com.sicpa.standard.sasscl.model.statistics.DailyBatchJobStatistics;
@@ -51,7 +52,16 @@ public class TTTHFileStorage extends FileStorage {
 		try {
 			saveData(stats, stats.getBatchJobId() + "-" + FILE_DAILY_BATCH_JOB_STATS);
 		} catch (Exception e) {
-			logger.error("Cannot save daily batch job", e);
+			logger.error("Could not save daily batch job stats", e);
+		}
+	}
+
+	public void deleteDailyBatchJobStats(final String dailyBatchJob) {
+		logger.debug("Deleting {} {}", "Batch Job Statistics " + dailyBatchJob, FILE_DAILY_BATCH_JOB_STATS);
+		try {
+			remove(dailyBatchJob + "-" + FILE_DAILY_BATCH_JOB_STATS);
+		} catch (StorageException e) {
+			logger.error("Could not delete daily batch job stats", e);
 		}
 	}
 

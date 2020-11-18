@@ -2,14 +2,18 @@ package com.sicpa.standard.sasscl.model;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.sicpa.standard.client.common.eventbus.service.EventBusService;
+import com.sicpa.standard.sasscl.event.DailyBatchJobStatsDeleteEvt;
 import com.sicpa.ttth.scl.utils.TTTHDailyBatchJobUtils;
 
 public class BatchJobHistory implements Serializable {
@@ -42,14 +46,21 @@ public class BatchJobHistory implements Serializable {
     }
 
     public void clearOldBatchJobs() {
+        List<String> oldBatchJobs = new ArrayList<>();
         dailyBatchHistory.entrySet().removeIf(e -> {
             try {
-                return TTTHDailyBatchJobUtils.isBatchJobHistoryDated(e.getValue());
+                if (TTTHDailyBatchJobUtils.isBatchJobHistoryDated(e.getValue())) {
+                    oldBatchJobs.add(e.getKey());
+                    return true;
+                } else {
+                    return false;
+                }
             } catch (IOException ex) {
                 logger.error("Failed to validate batch job history", e);
                 return false;
             }
         });
+        EventBusService.post(new DailyBatchJobStatsDeleteEvt(oldBatchJobs));
     }
 
     @Override

@@ -1,6 +1,10 @@
 package com.sicpa.ttth.scl;
 
+import com.google.common.eventbus.Subscribe;
 import java.util.HashMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.messages.MessageEvent;
@@ -8,13 +12,16 @@ import com.sicpa.standard.sasscl.Bootstrap;
 import com.sicpa.standard.sasscl.controller.ProductionParametersEvent;
 import com.sicpa.standard.sasscl.custoBuilder.CustoBuilder;
 import com.sicpa.standard.sasscl.devices.plc.EjectorPlcEnums;
+import com.sicpa.standard.sasscl.devices.remote.AbstractRemoteServer;
 import com.sicpa.standard.sasscl.devices.remote.impl.dtoConverter.DailyBatchRequestRepository;
+import com.sicpa.standard.sasscl.event.DailyBatchJobStatsDeleteEvt;
 import com.sicpa.standard.sasscl.model.BatchJobHistory;
 import com.sicpa.standard.sasscl.model.ProductionMode;
 import com.sicpa.standard.sasscl.model.ProductionParameters;
 import com.sicpa.standard.sasscl.model.statistics.DailyBatchJobStatistics;
 import com.sicpa.standard.sasscl.model.statistics.StatisticsKey;
 import com.sicpa.standard.sasscl.provider.ProductBatchJobIdProvider;
+import com.sicpa.ttth.remote.server.TTTHRemoteServer;
 import com.sicpa.ttth.scl.utils.TTTHDailyBatchJobUtils;
 import com.sicpa.ttth.storage.TTTHFileStorage;
 
@@ -36,6 +43,9 @@ import static com.sicpa.ttth.messages.TTTHMessageEventKey.SKUSELECTION.DAILY_BAT
 public class TTTHBootstrap extends Bootstrap implements ProductBatchJobIdProvider {
 
 	private DailyBatchRequestRepository dailyBatchRequestRepository;
+	private AbstractRemoteServer remoteServer;
+
+	private int getCodedCountInterval;
 
 	@Override
 	public void executeSpringInitTasks(){
@@ -43,10 +53,10 @@ public class TTTHBootstrap extends Bootstrap implements ProductBatchJobIdProvide
 		loadDailyBatchJobStats();
 		loadPreviousBatchJobHistory();
 		super.executeSpringInitTasks();
-		saveDailyBatchJobStats();
 		dailyBatchJobValidityCheck();
 		addSkuSelectionMessages();
 		addErrorMessagesForDailyBatchJobs();
+		getCodedCount();
 	}
 
 	@Override
@@ -109,15 +119,39 @@ public class TTTHBootstrap extends Bootstrap implements ProductBatchJobIdProvide
 		});
 	}
 
-	private void saveDailyBatchJobStats() {
-		CustoBuilder.addActionOnStoppingProduction(() -> {
+	private synchronized void getCodedCount() {
+		ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
+		executorService.scheduleAtFixedRate(() -> {
 			if (productionParameters.getProductionMode().equals(ProductionMode.STANDARD)) {
-				dailyBatchRequestRepository.updateStatistics(statistics.getValues().get(StatisticsKey.TOTAL));
-				((TTTHFileStorage)storage).saveDailyBatchJobStats(dailyBatchRequestRepository.getBatchJobStatistics());
-				((TTTHFileStorage)storage).saveBatchJobHistory(dailyBatchRequestRepository.getBatchJobHistory());
-				dailyBatchRequestRepository.getBatchJobHistory().clearOldBatchJobs();
+				if (remoteServer instanceof TTTHRemoteServer) {
+					Integer value = ((TTTHRemoteServer)remoteServer)
+						.getActualCodedCount(dailyBatchRequestRepository.getBatchJobStatistics().getBatchJobId());
+					if (value != null) {
+						dailyBatchRequestRepository.getBatchJobStatistics().setProductCount(value);
+						saveDailyBatchJobStats();
+					}
+				} else {
+					//Simulator
+					dailyBatchRequestRepository
+						.getBatchJobStatistics()
+						.setProductCount(statistics.getValues().get(StatisticsKey.TOTAL));
+					saveDailyBatchJobStats();
+				}
 			}
-		});
+		}, getCodedCountInterval, getCodedCountInterval, TimeUnit.SECONDS);
+	}
+
+	private void saveDailyBatchJobStats() {
+		((TTTHFileStorage)storage).saveDailyBatchJobStats(dailyBatchRequestRepository.getBatchJobStatistics());
+		((TTTHFileStorage)storage).saveBatchJobHistory(dailyBatchRequestRepository.getBatchJobHistory());
+		dailyBatchRequestRepository.getBatchJobHistory().clearOldBatchJobs();
+	}
+
+	@Subscribe
+	public void deleteOldDailyBatchJobStats(DailyBatchJobStatsDeleteEvt evt) {
+		for (String dailyBatchJob : evt.getDailyBatchJobs()) {
+			((TTTHFileStorage)storage).deleteDailyBatchJobStats(dailyBatchJob);
+		}
 	}
 
 	private void dailyBatchJobValidityCheck() {
@@ -163,5 +197,13 @@ public class TTTHBootstrap extends Bootstrap implements ProductBatchJobIdProvide
 
 	public void setDailyBatchRequestRepository(DailyBatchRequestRepository dailyBatchRequestRepository) {
 		this.dailyBatchRequestRepository = dailyBatchRequestRepository;
+	}
+
+	public void setRemoteServer(AbstractRemoteServer remoteServer) {
+		this.remoteServer = remoteServer;
+	}
+
+	public void setGetCodedCountInterval(int getCodedCountInterval) {
+		this.getCodedCountInterval = getCodedCountInterval;
 	}
 }
