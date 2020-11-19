@@ -131,7 +131,7 @@ public class FileStorage implements IStorage {
 		}
 	}
 
-	private long getSequenceOfEncoder(IEncoder encoder) {
+	protected long getSequenceOfEncoder(IEncoder encoder) {
 		Long res = null;
 		try {
 			res = fileSequenceProvider.loadSequence(Long.valueOf(encoder.getId()));
@@ -610,7 +610,7 @@ public class FileStorage implements IStorage {
 	}
 
 	// serialized a batch and delete production files
-	private void savePackages(List<Product> products, List<File> packagedFiles) throws StorageException {
+	protected void savePackages(List<Product> products, List<File> packagedFiles) throws StorageException {
 		List<PackagedProducts> packagedProducts = productsPackager.getPackagedProducts(products);
 		List<File> done = new ArrayList<>();
 

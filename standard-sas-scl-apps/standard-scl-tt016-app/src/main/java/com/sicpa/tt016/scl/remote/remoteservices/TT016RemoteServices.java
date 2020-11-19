@@ -2,7 +2,17 @@ package com.sicpa.tt016.scl.remote.remoteservices;
 
 import com.sicpa.standard.client.common.timeout.Timeout;
 import com.sicpa.standard.client.common.timeout.TimeoutLifeCheck;
-import com.sicpa.tt016.common.dto.*;
+import com.sicpa.tt016.common.dto.CodingActivationSessionDTO;
+import com.sicpa.tt016.common.dto.EncoderInfoDTO;
+import com.sicpa.tt016.common.dto.EncoderInfoResultDTO;
+import com.sicpa.tt016.common.dto.EncoderSclDTO;
+import com.sicpa.tt016.common.dto.ExportSessionDTO;
+import com.sicpa.tt016.common.dto.IEjectionDTO;
+import com.sicpa.tt016.common.dto.MaintenanceSessionDTO;
+import com.sicpa.tt016.common.dto.OfflineSessionDTO;
+import com.sicpa.tt016.common.dto.RefeedSessionDTO;
+import com.sicpa.tt016.common.dto.SkuDTO;
+import com.sicpa.tt016.common.dto.SkuGrossNetProductCounterDTO;
 import com.sicpa.tt016.common.model.CodeType;
 import com.sicpa.tt016.common.security.CustomPrincipal;
 import com.sicpa.tt016.common.security.authenticator.IMoroccoAuthenticator;
@@ -159,7 +169,13 @@ public class TT016RemoteServices implements ITT016RemoteServices {
 		CodingActivationSessionDTO emptySessionDto = new CodingActivationSessionDTO(emptyList());
 		codingActivation.sendProductionData(PRODUCTION_MODE_REFEED, emptySessionDto, asList(ejected), subsystemId);
 	}
-
+	
+	@Override
+	@Timeout
+	public void sendSkuGrossNetProductCounter(List<SkuGrossNetProductCounterDTO> skuGrossNetProductList) throws InternalException {
+		logger.info("Sending SKU gross net product counter data");
+		codingActivation.sendSkuGrossNetProductCounterMeasure(skuGrossNetProductList);
+	}
 
 	@Override
 	@Timeout

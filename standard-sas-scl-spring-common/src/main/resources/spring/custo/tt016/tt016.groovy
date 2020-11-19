@@ -18,7 +18,7 @@ beans{
 	def serverBehavior=props['remoteServer.behavior'].trim().toUpperCase()
 	def printerBehavior=props['printer.behavior'].trim().toUpperCase()
 	def productionBehavior=props['production.config.folder'].trim().toUpperCase()
-
+	
 	if(serverBehavior == "STANDARD") {
 		importBeans('spring/custo/tt016/tt016-server.groovy')
 	} else {
@@ -86,15 +86,19 @@ beans{
 		wiperEnabled=props['wiper.enabled'].trim()
 		automatedBeamEnabled=props['automated.beam.enabled'].trim()
 	}
-
+	
+	importBeans('spring/custo/tt016/storage/tt016-storage-import.groovy')
+	importBeans('spring/custo/tt016/tt016-production.groovy')
 	importBeans('spring/custo/tt016/tt016-plc.xml')
 	
 	if (productionBehavior == "PRODUCTIONCONFIG-SAS") {
 		importBeans('spring/custo/tt016/tt016-activation-sas.xml')
 		importBeans('spring/custo/tt016/tt016-monitoring-sas.xml')
+		importBeans('spring/custo/tt016/tt016-scheduler-sas.xml')
 	} else {
 		importBeans('spring/custo/tt016/tt016-activation.xml')
 		importBeans('spring/custo/tt016/tt016-monitoring-scl.xml')
+		importBeans('spring/custo/tt016/tt016-scheduler-scl.xml')
 	}
 	
 	importBeans('spring/custo/tt016/tt016-view.xml')
@@ -102,7 +106,6 @@ beans{
 	importBeans('spring/custo/tt016/tt016-coding.xml')
 	importBeans('spring/offlineCounting.xml')
 	importBeans('spring/custo/tt016/tt016-provider.xml')
-	importBeans('spring/custo/tt016/tt016-scheduler.xml')
 	importBeans('spring/custo/tt016/tt016-alertPlcActivationCrossCheckTask.xml')
 
 	addAlias('bisCredentialProvider','remoteServer')

@@ -1,16 +1,22 @@
 package com.sicpa.tt016.devices.plc;
 
+import static com.sicpa.standard.gui.utils.ThreadUtils.waitForNextTimeStamp;
 import static com.sicpa.standard.plc.value.PlcVariable.createBooleanVar;
 import static com.sicpa.standard.sasscl.devices.plc.PlcLineHelper.replaceLinePlaceholder;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.sicpa.standard.client.common.i18n.Messages;
+import com.sicpa.standard.client.common.storage.StorageException;
 import com.sicpa.standard.plc.value.IPlcVariable;
 import com.sicpa.standard.plc.value.PlcVariable;
 import com.sicpa.standard.sasscl.devices.plc.PlcAdaptorException;
@@ -18,6 +24,8 @@ import com.sicpa.standard.sasscl.devices.plc.PlcLineHelper;
 import com.sicpa.standard.sasscl.model.ProductionParameters;
 import com.sicpa.standard.sasscl.provider.impl.PlcProvider;
 import com.sicpa.standard.sasscl.provider.impl.SubsystemIdProvider;
+import com.sicpa.tt016.common.dto.SkuGrossNetProductCounterDTO;
+import com.sicpa.tt016.storage.ITT016Storage;
 
 public class PlcPersistentGrossNetProductCounterManager {
 
@@ -26,8 +34,10 @@ public class PlcPersistentGrossNetProductCounterManager {
     private PlcProvider plcProvider;
     private ProductionParameters productionParameters;
     private SubsystemIdProvider subsystemIdProvider;
+    private ITT016Storage storage;
     
     private boolean getGrossNetProductCount_enabled;
+    private String productionBehaviorVar;
     private String javaProductCounterNtfVarName;
     private String resetJavaProductCounterVarName;
     private String javaEjectionCounterNtfVarName;
@@ -36,6 +46,9 @@ public class PlcPersistentGrossNetProductCounterManager {
     private static HashMap<Integer, Integer> ejectionCountLineMap = new HashMap<Integer, Integer>();
     
     private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+    
+    private static final String SAS_MODE = "PRODUCTIONCONFIG-SAS";
+	private static final String SCL_MODE = "PRODUCTIONCONFIG-SCL";
 
     public void updateProductParamAndCount() {
         try {
@@ -47,36 +60,20 @@ public class PlcPersistentGrossNetProductCounterManager {
         }
     }
     
-    public void log() throws PlcAdaptorException {
+    public void log() throws PlcAdaptorException, StorageException {
     	if (!getGrossNetProductCount_enabled) {
     		return;
     	}
     	
+    	LocalDateTime localDateTime = LocalDateTime.now();
+    	List<SkuGrossNetProductCounterDTO> skuGrossNetProductCounterList = new ArrayList<SkuGrossNetProductCounterDTO>();
+    	
     	for (Integer lineIndex : PlcLineHelper.getLineIndexes()) {
+    		SkuGrossNetProductCounterDTO skuGrossNetProductCounter = new SkuGrossNetProductCounterDTO();
     		int currentProductCount = 0;
             int currentEjectionCount = 0;
             int currentGrossNetCount = 0;
     		
-    		StringBuilder sb = new StringBuilder();
-
-            sb.append("Line:");
-            sb.append(lineIndex);
-            sb.append(", Date:");
-            sb.append(formatter.format(LocalDateTime.now()));
-            
-            sb.append(", SubSystemId:");
-            sb.append(subsystemIdProvider.get());
-            
-            sb.append(", SkuId:");
-            sb.append(productionParameters.getSku().getId());
-            
-            sb.append(", Sku:");
-            sb.append(productionParameters.getSku().getDescription());
-            
-            sb.append(", Mode:");
-            sb.append(Messages.get(productionParameters.getProductionMode().getDescription()));
-            
-            sb.append(", NumProducts:");
             IPlcVariable<Integer> javaProductCounterNtfVar = PlcVariable.createInt32Var(
                     replaceLinePlaceholder(javaProductCounterNtfVarName, lineIndex));
             currentProductCount = plcProvider.get().read(javaProductCounterNtfVar);
@@ -88,9 +85,6 @@ public class PlcPersistentGrossNetProductCounterManager {
             	productCountLineMap.put(lineIndex, currentProductCount);
             }
             
-            sb.append(currentProductCount);
-
-            sb.append(", NumEjections:");
             IPlcVariable<Integer> javaEjectionCounterNtfVar = PlcVariable.createInt32Var(
                     replaceLinePlaceholder(javaEjectionCounterNtfVarName, lineIndex));
             currentEjectionCount = plcProvider.get().read(javaEjectionCounterNtfVar);
@@ -102,14 +96,61 @@ public class PlcPersistentGrossNetProductCounterManager {
             	ejectionCountLineMap.put(lineIndex, currentEjectionCount);
             }
             
-            sb.append(currentEjectionCount);
-            
             currentGrossNetCount = currentProductCount - currentEjectionCount;
             
+            Integer subsystemId = subsystemIdProvider.get().intValue();
+        	Integer skuId = productionParameters.getSku().getId();
+        	Integer codetypeId = new Long(productionParameters.getSku().getCodeType().getId()).intValue();
+        	Date measurementDateTime = Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
+        	String mode = Messages.get(productionParameters.getProductionMode().getDescription());
+        	Integer gross = currentProductCount;
+        	Integer net = currentGrossNetCount;
+            
+        	skuGrossNetProductCounter.setSubsystemId(subsystemId);
+        	skuGrossNetProductCounter.setSkuId(skuId);
+        	skuGrossNetProductCounter.setCodetypeId(codetypeId);
+        	skuGrossNetProductCounter.setMeasurementDateTime(measurementDateTime);
+        	skuGrossNetProductCounter.setMode(mode);
+        	skuGrossNetProductCounter.setGross(gross);
+        	skuGrossNetProductCounter.setNet(net);
+        	skuGrossNetProductCounterList.add(skuGrossNetProductCounter);
+            
+    		StringBuilder sb = new StringBuilder();
+
+            sb.append("Line:");
+            sb.append(lineIndex);
+            
+            sb.append(", Date:");
+            sb.append(formatter.format(localDateTime));
+            
+            sb.append(", SubSystemId:");
+            sb.append(subsystemId);
+            
+            sb.append(", SkuId:");
+            sb.append(skuId);
+            
+            sb.append(", Sku:");
+            sb.append(productionParameters.getSku().getDescription());
+            
+            sb.append(", Mode:");
+            sb.append(mode);
+            
+            sb.append(", NumProducts:");
+            sb.append(gross);
+
+            sb.append(", NumEjections:");
+            sb.append(currentEjectionCount);
+            
             sb.append(", NumNet:");
-            sb.append(currentGrossNetCount);
+            sb.append(net);
             
             logger.info(sb.toString());
+    	}
+    	
+    	if (productionBehaviorVar != null && productionBehaviorVar.toUpperCase().equals(SCL_MODE)) {
+    		waitForNextTimeStamp();
+        	storage.saveSkuGrossNet(skuGrossNetProductCounterList.toArray(new SkuGrossNetProductCounterDTO[skuGrossNetProductCounterList.size()]));
+        	skuGrossNetProductCounterList.clear();
     	}
     }
     
@@ -134,11 +175,19 @@ public class PlcPersistentGrossNetProductCounterManager {
         this.subsystemIdProvider = subsystemIdProvider;
     }
     
+    public void setStorage(ITT016Storage storage) {
+		this.storage = storage;
+	}
+    
     public void setGetGrossNetProductCount_enabled(boolean getGrossNetProductCount_enabled) {
 		this.getGrossNetProductCount_enabled = getGrossNetProductCount_enabled;
 	}
 
-    public void setJavaProductCounterNtfVarName(String javaProductCounterNtfVarName) {
+    public void setProductionBehaviorVar(String productionBehaviorVar) {
+		this.productionBehaviorVar = productionBehaviorVar;
+	}
+
+	public void setJavaProductCounterNtfVarName(String javaProductCounterNtfVarName) {
         this.javaProductCounterNtfVarName = javaProductCounterNtfVarName;
     }
 

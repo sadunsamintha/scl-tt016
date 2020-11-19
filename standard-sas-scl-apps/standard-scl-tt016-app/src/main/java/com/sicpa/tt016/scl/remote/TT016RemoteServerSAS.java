@@ -1,5 +1,14 @@
 package com.sicpa.tt016.scl.remote;
 
+import static com.sicpa.standard.sasscl.monitoring.system.SystemEventType.LAST_SENT_TO_REMOTE_SERVER;
+
+import java.util.List;
+import java.util.Map;
+import java.util.ResourceBundle;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.sicpa.standard.sasscl.common.storage.IStorage;
 import com.sicpa.standard.sasscl.devices.DeviceException;
 import com.sicpa.standard.sasscl.devices.IDeviceStatusListener;
@@ -14,26 +23,19 @@ import com.sicpa.standard.sasscl.model.ProductStatus;
 import com.sicpa.standard.sasscl.monitoring.MonitoringService;
 import com.sicpa.standard.sasscl.monitoring.system.event.BasicSystemEvent;
 import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.ProductionParameterRootNode;
-import com.sicpa.standard.sasscl.sicpadata.generator.IEncoder;
 import com.sicpa.standard.sasscl.sicpadata.reader.IAuthenticator;
-import com.sicpa.tt016.common.dto.*;
-import com.sicpa.tt016.common.dto.EncoderInfoResultDTO.InfoResult;
+import com.sicpa.tt016.common.dto.ActivationSessionDTO;
+import com.sicpa.tt016.common.dto.AgedWineSessionDTO;
+import com.sicpa.tt016.common.dto.ExportSessionDTO;
+import com.sicpa.tt016.common.dto.IEjectionDTO;
+import com.sicpa.tt016.common.dto.MaintenanceSessionDTO;
+import com.sicpa.tt016.common.dto.OfflineSessionDTO;
 import com.sicpa.tt016.master.scl.exceptions.InternalException;
 import com.sicpa.tt016.model.TT016ProductStatus;
 import com.sicpa.tt016.scl.remote.assembler.EncryptionConverter;
 import com.sicpa.tt016.scl.remote.assembler.ProductionDataConverter;
 import com.sicpa.tt016.scl.remote.assembler.SkuConverter;
 import com.sicpa.tt016.scl.remote.remoteservices.ITT016RemoteServicesMSASLegacy;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import static com.sicpa.standard.sasscl.monitoring.system.SystemEventType.LAST_SENT_TO_REMOTE_SERVER;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.ResourceBundle;
 
 public class TT016RemoteServerSAS extends AbstractRemoteServer implements IBisCredentialProvider {
 

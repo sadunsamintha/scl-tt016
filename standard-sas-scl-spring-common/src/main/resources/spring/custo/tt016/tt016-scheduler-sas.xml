@@ -14,5 +14,4 @@
 	</task:scheduled-tasks>
 	
 	<task:scheduler id="PlcPersistentGrossNetProductCounterManager" pool-size="1" />
-
 </beans>

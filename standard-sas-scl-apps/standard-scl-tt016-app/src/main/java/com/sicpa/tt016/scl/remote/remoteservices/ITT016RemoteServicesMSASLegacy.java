@@ -1,6 +1,12 @@
 package com.sicpa.tt016.scl.remote.remoteservices;
 
-import com.sicpa.tt016.common.dto.*;
+import com.sicpa.tt016.common.dto.ActivationSessionDTO;
+import com.sicpa.tt016.common.dto.AgedWineSessionDTO;
+import com.sicpa.tt016.common.dto.ExportSessionDTO;
+import com.sicpa.tt016.common.dto.IEjectionDTO;
+import com.sicpa.tt016.common.dto.MaintenanceSessionDTO;
+import com.sicpa.tt016.common.dto.OfflineSessionDTO;
+import com.sicpa.tt016.common.dto.SkuDTO;
 import com.sicpa.tt016.common.security.authenticator.IMoroccoAuthenticator;
 import com.sicpa.tt016.master.scl.exceptions.InternalException;
 

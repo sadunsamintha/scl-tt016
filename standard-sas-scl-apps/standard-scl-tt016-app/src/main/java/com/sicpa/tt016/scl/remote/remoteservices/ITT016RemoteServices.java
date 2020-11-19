@@ -1,6 +1,16 @@
 package com.sicpa.tt016.scl.remote.remoteservices;
 
-import com.sicpa.tt016.common.dto.*;
+import com.sicpa.tt016.common.dto.CodingActivationSessionDTO;
+import com.sicpa.tt016.common.dto.EncoderInfoDTO;
+import com.sicpa.tt016.common.dto.EncoderInfoResultDTO;
+import com.sicpa.tt016.common.dto.EncoderSclDTO;
+import com.sicpa.tt016.common.dto.ExportSessionDTO;
+import com.sicpa.tt016.common.dto.IEjectionDTO;
+import com.sicpa.tt016.common.dto.MaintenanceSessionDTO;
+import com.sicpa.tt016.common.dto.OfflineSessionDTO;
+import com.sicpa.tt016.common.dto.RefeedSessionDTO;
+import com.sicpa.tt016.common.dto.SkuDTO;
+import com.sicpa.tt016.common.dto.SkuGrossNetProductCounterDTO;
 import com.sicpa.tt016.common.security.authenticator.IMoroccoAuthenticator;
 import com.sicpa.tt016.master.scl.exceptions.InternalException;
 
@@ -43,4 +53,6 @@ public interface ITT016RemoteServices {
 
 	void sendRefeedEjectedProduction(IEjectionDTO ejected)
 			throws InternalException;
+	
+	void sendSkuGrossNetProductCounter(List<SkuGrossNetProductCounterDTO> skuGrossNetProductList) throws InternalException;
 }

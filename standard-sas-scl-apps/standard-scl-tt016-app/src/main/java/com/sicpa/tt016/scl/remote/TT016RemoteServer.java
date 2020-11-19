@@ -18,8 +18,18 @@ import com.sicpa.standard.sasscl.sicpadata.generator.FileSequenceStorageProvider
 import com.sicpa.standard.sasscl.sicpadata.generator.IEncoder;
 import com.sicpa.standard.sasscl.sicpadata.reader.IAuthenticator;
 import com.sicpa.standard.sicpadata.spi.manager.ServiceProviderException;
-import com.sicpa.tt016.common.dto.*;
+import com.sicpa.tt016.common.dto.CodingActivationSessionDTO;
+import com.sicpa.tt016.common.dto.EncoderInfoDTO;
+import com.sicpa.tt016.common.dto.EncoderInfoResultDTO;
 import com.sicpa.tt016.common.dto.EncoderInfoResultDTO.InfoResult;
+import com.sicpa.tt016.common.dto.EncoderSclDTO;
+import com.sicpa.tt016.common.dto.ExportSessionDTO;
+import com.sicpa.tt016.common.dto.IEjectionDTO;
+import com.sicpa.tt016.common.dto.MaintenanceSessionDTO;
+import com.sicpa.tt016.common.dto.OfflineSessionDTO;
+import com.sicpa.tt016.common.dto.RefeedSessionDTO;
+import com.sicpa.tt016.common.dto.SkuGrossNetProductCounterDTO;
+import com.sicpa.tt016.devices.remote.ITT016RemoteServer;
 import com.sicpa.tt016.master.scl.exceptions.InternalException;
 import com.sicpa.tt016.model.TT016ProductStatus;
 import com.sicpa.tt016.scl.remote.assembler.EncryptionConverter;
@@ -32,11 +42,12 @@ import org.slf4j.LoggerFactory;
 import static com.sicpa.standard.sasscl.monitoring.system.SystemEventType.LAST_SENT_TO_REMOTE_SERVER;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-public class TT016RemoteServer extends AbstractRemoteServer implements IBisCredentialProvider {
+public class TT016RemoteServer extends AbstractRemoteServer implements IBisCredentialProvider, ITT016RemoteServer {
 
 	private static final Logger logger = LoggerFactory.getLogger(TT016RemoteServer.class);
 	// http://psdwiki.sicpa-net.ads/pages/viewpage.action?spaceKey=morocco&title=Development+and+Integration+Servers
@@ -162,6 +173,12 @@ public class TT016RemoteServer extends AbstractRemoteServer implements IBisCrede
 		}
 	}
 	
+	@Override
+	public void sendSkuGrossNetProductCounter(SkuGrossNetProductCounterDTO[] skuGrossNetProductArray) throws InternalException {
+		List<SkuGrossNetProductCounterDTO> skuGrossNetProductList = Arrays.asList(skuGrossNetProductArray);
+		remoteServices.sendSkuGrossNetProductCounter(skuGrossNetProductList);
+	}
+	
 	private void registerSendDataSystemEvent(PackagedProducts products) {
 		int productCount = products.getProducts().size();
 		MonitoringService
@@ -216,7 +233,7 @@ public class TT016RemoteServer extends AbstractRemoteServer implements IBisCrede
 
 		remoteServices.sendOfflineProduction(data);
 	}
-
+	
 	@Override
 	public Map<String, ? extends ResourceBundle> getLanguageBundles() throws RemoteServerException {
 		return null;
