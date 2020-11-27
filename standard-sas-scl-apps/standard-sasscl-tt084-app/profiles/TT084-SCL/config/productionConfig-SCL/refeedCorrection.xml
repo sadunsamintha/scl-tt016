@@ -1,4 +1,4 @@
-<ProductionConfig activationBehavior="refeedActivationBehaviorCodeTypeCheck" authenticatorMode="DM_12X26">
+<ProductionConfig activationBehavior="refeedActivationBehaviorCodeTypeCheck" authenticatorMode="DM_8x18">
 
 	<CameraConfig deviceType="COGNEX" id="qc_scl_1" />
 

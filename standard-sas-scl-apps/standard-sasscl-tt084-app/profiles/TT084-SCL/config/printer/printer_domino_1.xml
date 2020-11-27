@@ -16,8 +16,8 @@
   <requestStatusFrequencyInSec>1</requestStatusFrequencyInSec>
   <mPrinterParameters class="com.sicpa.standard.printer.driver.DominoParameter">
   		<mCodeType>DYNAMIC_DATAMATRIX</mCodeType>
-  		<mDataMatrixFormat>DM_12x26</mDataMatrixFormat>
-  		<mDataMatrixEncoding>C40</mDataMatrixEncoding>
+		<mDataMatrixFormat>DM_8x18</mDataMatrixFormat>
+		<mDataMatrixEncoding>ASCII</mDataMatrixEncoding>
   		<mPersistence class ="com.sicpa.standard.printer.controller.model.Persistence">
   			<mType class="com.sicpa.standard.printer.controller.model.PersistenceType">STROKE_BASED</mType>
   			<mValue>1</mValue>

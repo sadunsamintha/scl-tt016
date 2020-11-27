@@ -52,7 +52,7 @@ public class TT084SASSCLGlobalPropertiesTest {
     @Parameters()
     public static Iterable<Object[]> data() throws Throwable{
         return Arrays.asList(new Object[][]{
-                {"TT084", "C40", "DM_12x26", "fr", "productionConfig-SCL", "profiles/TT084-SCL/config", not(nullValue()), not(nullValue())},
+                {"TT084", "ASCII", "DM_8x18", "fr", "productionConfig-SCL", "profiles/TT084-SCL/config", not(nullValue()), not(nullValue())},
                 {"TT084", "C40", "DM_12x26", "fr", "productionConfig-SAS", "profiles/TT084-SAS/config", nullValue(), nullValue()}
         });
     }
