@@ -1,0 +1,24 @@
+<ProductionConfig activationBehavior="maintenanceActivationBehavior" authenticatorMode="DM_12X26">
+
+	<CameraConfig deviceType="COGNEX" id="qc_scl_1" />
+
+	<plcConfig>
+		<cabinet>
+			<!-- variable not related to any line -->
+			<!-- <property key="VAR_NAME" value="VALUE" /> -->
+		</cabinet>
+		<line index="1">
+			<property key="PARAM_LINE_IS_ACTIVE" value="true" />
+			<proprty key="PARAM_LINE_EXPORT_MODE_ENABLED" value="false" />
+			<property key="PARAM_LINE_MAINTENANCE_MODE_ENABLED" value="true" />
+			<property key="PARAM_LINE_REFEED_MODE_ENABLED" value="false" />
+		</line>
+		<line index="2">
+			<property key="PARAM_LINE_IS_ACTIVE" value="false" />
+		</line>
+		<line index="3">
+			<property key="PARAM_LINE_IS_ACTIVE" value="false" />
+		</line>
+	</plcConfig>
+
+</ProductionConfig>
