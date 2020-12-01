@@ -32,7 +32,7 @@ public class DefaultSelectionModel extends AbstractSelectionFlowModel {
 		mapPermissions.put(ProductionMode.STANDARD, SasSclPermission.PRODUCTION_MODE_STANDARD);
 		mapPermissions.put(ProductionMode.MAINTENANCE, SasSclPermission.PRODUCTION_MODE_MAINTENANCE);
 		mapPermissions.put(ProductionMode.EXPORT, SasSclPermission.PRODUCTION_MODE_EXPORT);
-		mapPermissions.put(ProductionMode.COUNTING, SasSclPermission.PRODUCTION_MODE_EXPORT);
+		mapPermissions.put(ProductionMode.COUNTING, SasSclPermission.PRODUCTION_MODE_COUNTING);
 		mapPermissions.put(ProductionMode.REFEED_NORMAL, SasSclPermission.PRODUCTION_MODE_REFEED_NORMAL);
 		mapPermissions.put(ProductionMode.REFEED_CORRECTION, SasSclPermission.PRODUCTION_MODE_REFEED_CORRECTION);
 	}

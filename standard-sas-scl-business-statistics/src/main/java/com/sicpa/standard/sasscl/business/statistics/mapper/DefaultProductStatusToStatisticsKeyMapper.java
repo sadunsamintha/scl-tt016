@@ -1,6 +1,7 @@
 package com.sicpa.standard.sasscl.business.statistics.mapper;
 
 import static com.sicpa.standard.sasscl.model.ProductStatus.AUTHENTICATED;
+import static com.sicpa.standard.sasscl.model.ProductStatus.COUNTING;
 import static com.sicpa.standard.sasscl.model.ProductStatus.EXPORT;
 import static com.sicpa.standard.sasscl.model.ProductStatus.MAINTENANCE;
 import static com.sicpa.standard.sasscl.model.ProductStatus.NOT_AUTHENTICATED;
@@ -48,6 +49,7 @@ public class DefaultProductStatusToStatisticsKeyMapper implements IProductStatus
 		add(AUTHENTICATED, GOOD);
 		add(EXPORT, GOOD);
 		add(REFEED, GOOD);
+		add(COUNTING, GOOD);
 		add(MAINTENANCE, GOOD);
 		add(INK_DETECTED, GOOD);
 	    add(INK_DETECTED, BLOB);
