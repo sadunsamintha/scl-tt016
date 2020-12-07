@@ -95,6 +95,7 @@ logger("com.sicpa.standard.printer.domino.monitoring",          INFO,   ["PRINTE
 logger("com.sicpa.tt016.devices.plc.PlcPersistentProductCounterManager",       INFO,   ["PLC_SKU_PRODUCT_COUNTER"],      true)
 logger("com.sicpa.tt016.devices.plc.PlcPersistentProductCounterManager",       INFO,   ["PLC_SKU_GROSS_NET_PRODUCT_COUNTER"],      true)
 logger("com.sicpa.tt016.devices.plc.PlcPersistentGrossNetProductCounterManager",       INFO,   ["PLC_SKU_GROSS_NET_PRODUCT_COUNTER"],      true)
+logger("com.sicpa.tt016.devices.plc.PlcPersistentGrossNetProductCounterManagerSCL",       INFO,   ["PLC_SKU_GROSS_NET_PRODUCT_COUNTER"],      true)
 
 
 root(ERROR, ["CONSOLE", "SPRING_ERRORS"])

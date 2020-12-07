@@ -22,7 +22,7 @@
         <property name="resetJavaProductCounterVarName" value="#{plcVarMap['REQUEST_RESET_JAVA_PRODUCT_COUNTER']}" />
     </bean>
     
-    <bean id="plcPersistentGrossNetProductCounterManager" class="com.sicpa.tt016.devices.plc.PlcPersistentGrossNetProductCounterManager">
+    <bean id="plcPersistentGrossNetProductCounterManager" class="com.sicpa.tt016.devices.plc.PlcPersistentGrossNetProductCounterManagerSCL">
         <property name="plcProvider" ref="plcProvider" />
         <property name="productionParameters" ref="productionParameters" />
         <property name="subsystemIdProvider" ref="subsystemIdProvider" />

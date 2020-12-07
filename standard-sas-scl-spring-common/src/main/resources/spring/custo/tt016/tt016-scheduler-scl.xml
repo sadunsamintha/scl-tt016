@@ -9,11 +9,11 @@
 	
 	<task:scheduler id="PlcNoCapProducerEjectionStatistics" pool-size="1" />
 	
-	<task:scheduled-tasks scheduler="PlcPersistentGrossNetProductCounterManager">
+	<task:scheduled-tasks scheduler="PlcPersistentGrossNetProductCounterManagerSCL">
 		<task:scheduled ref="plcPersistentGrossNetProductCounterManager" method="log" fixed-delay="#{${getGrossNetProductCount_sec}*1000}" />
 	</task:scheduled-tasks>
 	
-	<task:scheduler id="PlcPersistentGrossNetProductCounterManager" pool-size="1" />
+	<task:scheduler id="PlcPersistentGrossNetProductCounterManagerSCL" pool-size="1" />
 	
 	<task:scheduled-tasks scheduler="TT016Production">
 		<task:scheduled ref="production" method="sendAllSkuGrossNetData" fixed-delay="#{${sendSkuGrossNetData_sec}*1000}" />

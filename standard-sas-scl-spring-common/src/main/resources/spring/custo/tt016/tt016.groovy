@@ -87,21 +87,22 @@ beans{
 		automatedBeamEnabled=props['automated.beam.enabled'].trim()
 	}
 	
-	importBeans('spring/custo/tt016/storage/tt016-storage-import.groovy')
-	importBeans('spring/custo/tt016/tt016-production.groovy')
-	importBeans('spring/custo/tt016/tt016-plc.xml')
-	
 	if (productionBehavior == "PRODUCTIONCONFIG-SAS") {
+		importBeans('spring/custo/tt016/tt016-plc-sas.xml')
 		importBeans('spring/custo/tt016/tt016-activation-sas.xml')
 		importBeans('spring/custo/tt016/tt016-monitoring-sas.xml')
 		importBeans('spring/custo/tt016/tt016-scheduler-sas.xml')
+		importBeans('spring/custo/tt016/tt016-view-sas.xml')
 	} else {
+		importBeans('spring/custo/tt016/tt016-plc-scl.xml')
+		importBeans('spring/custo/tt016/storage/tt016-storage-import.groovy')
+		importBeans('spring/custo/tt016/tt016-production.groovy')
 		importBeans('spring/custo/tt016/tt016-activation.xml')
 		importBeans('spring/custo/tt016/tt016-monitoring-scl.xml')
 		importBeans('spring/custo/tt016/tt016-scheduler-scl.xml')
+		importBeans('spring/custo/tt016/tt016-view-scl.xml')
 	}
 	
-	importBeans('spring/custo/tt016/tt016-view.xml')
 	importBeans('spring/custo/tt016/tt016-postPackage.xml')
 	importBeans('spring/custo/tt016/tt016-coding.xml')
 	importBeans('spring/offlineCounting.xml')

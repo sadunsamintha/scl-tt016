@@ -77,7 +77,7 @@
 	</bean>
 
 	<bean id="selectProductionParametersViewController"
-		  class="com.sicpa.tt016.view.selection.TT016SelectProductionParametersViewController">
+		  class="com.sicpa.tt016.view.selection.TT016SelectProductionParametersViewControllerSAS">
 		<property name="handPickingView" ref="selectProductionParametersHandPickingView" />
 		<property name="barcodeView" ref="selectProductionParametersBarcodeView" />
 		<property name="viewController" ref="mainFrameController" />

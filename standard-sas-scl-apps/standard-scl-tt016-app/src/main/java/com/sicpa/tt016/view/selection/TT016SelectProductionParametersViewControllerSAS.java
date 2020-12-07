@@ -13,7 +13,7 @@ import com.sicpa.tt016.devices.plc.PlcPersistentProductCounterManager;
 
 import static com.sicpa.tt016.messages.TT016MessageEventKey.AUTOMATEDBEAM.SKU_SELECTION_VIEW_ACTIVE;
 
-public class TT016SelectProductionParametersViewController extends SelectProductionParametersViewController {
+public class TT016SelectProductionParametersViewControllerSAS extends SelectProductionParametersViewController {
 
     private PlcPersistentProductCounterManager plcPersistentProductCounterManager;
     private PlcPersistentGrossNetProductCounterManager plcPersistentGrossNetProductCounterManager;
