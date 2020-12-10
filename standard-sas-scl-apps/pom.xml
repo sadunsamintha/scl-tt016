@@ -23,7 +23,7 @@
 		<module>standard-scl-tt017-app</module>
 		<module>standard-scl-ttth-app</module>
 		<module>standard-sasscl-tt084-app</module>
-		<module>standard-sasscl-tt085-app</module>
+		<module>standard-scl-tt085-app</module>
 	</modules>
 
 	<properties>
@@ -181,7 +181,7 @@
 			<activation>
 				<file>
 					<missing>nobuild.txt</missing>
-					<!--<exists>/usr/bin/rpmbuild</exists>-->
+				<!-- <exists>/usr/bin/rpmbuild</exists> -->
 				</file>
 
 			</activation>
