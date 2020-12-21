@@ -12,4 +12,6 @@ beans{
 	bootstrap(TT085Bootstrap){b->
 		b.parent=ref('bootstrapAlias')
 	}
+	
+	importBeans('spring/custo/tt085/tt085-view.xml')
 }
