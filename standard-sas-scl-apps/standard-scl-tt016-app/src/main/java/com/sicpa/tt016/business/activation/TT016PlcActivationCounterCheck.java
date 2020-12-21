@@ -14,6 +14,7 @@ import com.sicpa.standard.sasscl.business.activation.PlcActivationCounterCheck;
 import com.sicpa.standard.sasscl.model.Product;
 import com.sicpa.standard.sasscl.model.ProductionMode;
 import com.sicpa.standard.sasscl.model.ProductionParameters;
+import com.sicpa.tt016.model.TT016ProductStatus;
 import com.sicpa.tt016.model.event.TT016ProductPlcCameraEvent;
 
 public class TT016PlcActivationCounterCheck extends PlcActivationCounterCheck {
@@ -52,9 +53,9 @@ public class TT016PlcActivationCounterCheck extends PlcActivationCounterCheck {
 		
 		return false;
 	}
-	
+		
 	protected boolean acceptTT016ProductNotStandard(Product p) {
-		return !asList(SENT_TO_PRINTER_WASTED, OFFLINE, EJECTED_PRODUCER).contains(p.getStatus());
+		return !asList(SENT_TO_PRINTER_WASTED, OFFLINE, TT016ProductStatus.EJECTED_PRODUCER).contains(p.getStatus());
 	}
 	
 	public ProductionParameters getProductionParameters() {
