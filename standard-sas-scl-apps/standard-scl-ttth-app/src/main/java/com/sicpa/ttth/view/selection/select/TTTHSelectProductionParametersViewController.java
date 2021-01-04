@@ -43,9 +43,7 @@ public class TTTHSelectProductionParametersViewController extends SelectProducti
 				this.pp.setProductionMode(pp.getProductionMode());
 				screensFlow.moveToNext(TTTHScreenFlowTriggers.STANDARD_MODE_TRANSITION);
 			} else {
-				this.pp = pp;
-				addSkuDetailsToMainFrame();
-				mainFrameController.productionParametersChanged();
+				super.productionParametersSelected(pp);
 				screensFlow.moveToNext(ScreensFlowTriggers.PRODUCTION_PARAMETER_SELECTED);
 			}
 		} else {
