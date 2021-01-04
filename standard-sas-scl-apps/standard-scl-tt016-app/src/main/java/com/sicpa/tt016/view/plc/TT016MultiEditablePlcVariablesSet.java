@@ -85,7 +85,8 @@ public class TT016MultiEditablePlcVariablesSet extends MultiEditablePlcVariables
 			Boolean isVisible;
 
 			if (evt.getProductionParameters().getProductionMode().equals(ProductionMode.EXPORT)
-					|| evt.getProductionParameters().getProductionMode().equals(TT016ProductionMode.AGING)) {
+					|| evt.getProductionParameters().getProductionMode().equals(TT016ProductionMode.AGING)
+					|| evt.getProductionParameters().getProductionMode().equals(ProductionMode.REFEED_NORMAL)) {
 				isVisible = false;
 				saveAndSendValueToPlc("PARAM_LINE_INHIBIT_LBL_APP_OR_AIR_DRYER", String.valueOf(true));
 			} else {
