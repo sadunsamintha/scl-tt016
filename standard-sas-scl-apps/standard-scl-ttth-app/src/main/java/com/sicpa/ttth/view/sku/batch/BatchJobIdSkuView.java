@@ -2,6 +2,7 @@ package com.sicpa.ttth.view.sku.batch;
 
 import com.google.common.eventbus.Subscribe;
 import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.util.ArrayList;
 import java.util.Collections;
 import javax.swing.Box;
@@ -12,6 +13,9 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.JTextField;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.PlainDocument;
 import net.miginfocom.swing.MigLayout;
 
 import com.sicpa.standard.client.common.i18n.Messages;
@@ -26,6 +30,12 @@ import com.sicpa.standard.sasscl.model.ProductionParameters;
 import com.sicpa.standard.sasscl.view.LanguageSwitchEvent;
 
 public class BatchJobIdSkuView extends AbstractView<IBatchJobIdSkuListener, BatchJobIdSKUModel> {
+
+    private static final int textFieldWidthSizeS = 30;
+
+    private static final int textFieldWidthSizeM = 75;
+
+    private static final int textFieldWidthSizeL = 105;
 
     private BatchJobIdSkuPanel batchJobIdSkuPanel;
     private DailyBatchRequestRepository dailyBatchRequestRepository;
@@ -84,24 +94,24 @@ public class BatchJobIdSkuView extends AbstractView<IBatchJobIdSkuListener, Batc
     private class BatchJobIdSkuPanel extends JPanel {
 
         private JPanel batchJobIdPanel;
+        private JPanel manualBatchJobEntryPanel;
         private JPanel buttonPanel;
         private JButton manualBatchJobIdButton;
-        private JTextField batchJobIdSeqTextField;
-        private JTextField batchJobIdSkuTextField;
+        private ArrayList<JTextField> batchJobIdTextFields;
         private JButton autoBatchJobIdButton;
         private DirectionButton buttonBack;
 
-        public BatchJobIdSkuPanel() {
+        BatchJobIdSkuPanel() {
             initGui();
         }
 
-        private void initGui() {
+        void initGui() {
             setLayout(new MigLayout("ltr,fill"));
             add(getBatchJobIdPanel(), "push, grow, align center, wrap");
             add(getNavButtonPanel(), "newline push, grow, align center, wrap");
         }
 
-        public JButton getButtonBack() {
+        JButton getButtonBack() {
             if (this.buttonBack == null) {
                 this.buttonBack = new DirectionButton(DirectionButton.Direction.LEFT);
                 this.buttonBack.addActionListener(e -> returnToSelection());
@@ -114,51 +124,58 @@ public class BatchJobIdSkuView extends AbstractView<IBatchJobIdSkuListener, Batc
             return this.buttonBack;
         }
 
-        private JButton getManualBatchJobIDButton() {
-            if (manualBatchJobIdButton == null) {
-                manualBatchJobIdButton = new JButton(Messages.get("sku.button.batch.offline.mode"));
-                manualBatchJobIdButton.setPreferredSize(new Dimension(180, 50));
-                Object[] fields = {
-                    Messages.get("sku.batch.job.seq.label"), getBatchJobSeqTextField(),
-                    Messages.get("sku.id.label"), getBatchJobSkuTextField()
-                };
-                manualBatchJobIdButton.addActionListener(e -> {
-                    getBatchJobSeqTextField().setText("");
-                    getBatchJobSkuTextField().setText("");
-                   int option = JOptionPane.showConfirmDialog(this, fields,
-                       Messages.get("sku.button.batch.offline.mode"),
-                       JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null);
-                   if (option == JOptionPane.YES_OPTION) {
-                       generateBatchJobId(getBatchJobSeqTextField().getText(), getBatchJobSkuTextField().getText());
-                   }
-                });
+        ArrayList<JTextField> getBatchJobIdTextFields() {
+            if (batchJobIdTextFields == null) {
+                batchJobIdTextFields = new ArrayList<>();
+                for (int i = 0; i < 7; i++) {
+                    JTextField batchSegTextField = new JTextField();
+                    if (i == 0) {
+                        //Prod Plan
+                        setTextFieldLimit(batchSegTextField, 8);
+                        batchSegTextField.setPreferredSize(new Dimension(textFieldWidthSizeL, 40));
+                    } else if(i == 1 || i == 4) {
+                        //Batch Job Seq || SKU ID
+                        setTextFieldLimit(batchSegTextField, 4);
+                        batchSegTextField.setPreferredSize(new Dimension(textFieldWidthSizeM, 40));
+                    } else  if (i==2 || i ==6) {
+                        //Line ID
+                        setTextFieldLimit(batchSegTextField, 3);
+                        batchSegTextField.setPreferredSize(new Dimension(textFieldWidthSizeM, 40));
+                    } else if (i == 3) {
+                        //Date
+                        setTextFieldLimit(batchSegTextField, 6);
+                        batchSegTextField.setPreferredSize(new Dimension(textFieldWidthSizeM, 40));
+                    }  else {
+                        //Mode
+                        setTextFieldLimit(batchSegTextField, 1);
+                        batchSegTextField.setPreferredSize(new Dimension(textFieldWidthSizeS, 40));
+                    }
+
+                    if (i == 0 || i == 5) {
+                        VirtualKeyboardPanel virtualKeyboardPanel = VirtualKeyboardPanel.getQWERTYKeyboard(batchSegTextField);
+                        VirtualKeyboardPanel.attachKeyboardDialog(batchSegTextField, virtualKeyboardPanel);
+                    } else {
+                        VirtualKeyboardPanel virtualKeyboardPanel = VirtualKeyboardPanel.getNumericKeyboard(batchSegTextField);
+                        VirtualKeyboardPanel.attachKeyboardDialog(batchSegTextField, virtualKeyboardPanel);
+                    }
+
+                    batchSegTextField.setBackground(SicpaColor.BLUE_ULTRA_LIGHT);
+                    batchJobIdTextFields.add(batchSegTextField);
+                }
             }
-            return manualBatchJobIdButton;
+            return batchJobIdTextFields;
         }
 
-        public JTextField getBatchJobSeqTextField() {
-            if (batchJobIdSeqTextField == null) {
-                batchJobIdSeqTextField = new JTextField(getBatchJobIdSize());
-                batchJobIdSeqTextField.setPreferredSize(new Dimension(120, 40));
-                batchJobIdSeqTextField.setBackground(SicpaColor.BLUE_ULTRA_LIGHT);
-                VirtualKeyboardPanel virtualKeyboardPanel = VirtualKeyboardPanel.getNumericKeyboard(batchJobIdSeqTextField);
-                VirtualKeyboardPanel.attachKeyboardDialog(batchJobIdSeqTextField, virtualKeyboardPanel);
+        JPanel getManualBatchJobEntryPanel() {
+            if (manualBatchJobEntryPanel == null) {
+                manualBatchJobEntryPanel = new JPanel();
+                batchJobIdPanel.setLayout(new GridLayout(1, 5));
+                getBatchJobIdTextFields().forEach(e -> manualBatchJobEntryPanel.add(e));
             }
-            return batchJobIdSeqTextField;
+            return manualBatchJobEntryPanel;
         }
 
-        public JTextField getBatchJobSkuTextField() {
-            if (batchJobIdSkuTextField == null) {
-                batchJobIdSkuTextField = new JTextField(getBatchJobIdSize());
-                batchJobIdSkuTextField.setPreferredSize(new Dimension(120, 40));
-                batchJobIdSkuTextField.setBackground(SicpaColor.BLUE_ULTRA_LIGHT);
-                VirtualKeyboardPanel virtualKeyboardPanel = VirtualKeyboardPanel.getNumericKeyboard(batchJobIdSkuTextField);
-                VirtualKeyboardPanel.attachKeyboardDialog(batchJobIdSkuTextField, virtualKeyboardPanel);
-            }
-            return batchJobIdSkuTextField;
-        }
-
-        private JButton getAutoBatchJobIdButton() {
+        JButton getAutoBatchJobIdButton() {
             if (autoBatchJobIdButton == null) {
                 autoBatchJobIdButton = new JButton(Messages.get("sku.button.batch.auto.mode"));
                 if (productionParameters.getProductionMode().equals(ProductionMode.STANDARD)) {
@@ -218,6 +235,33 @@ public class BatchJobIdSkuView extends AbstractView<IBatchJobIdSkuListener, Batc
             return autoBatchJobIdButton;
         }
 
+        JButton getManualBatchJobIDButton() {
+            if (manualBatchJobIdButton == null) {
+                manualBatchJobIdButton = new JButton(Messages.get("sku.button.batch.offline.mode"));
+                manualBatchJobIdButton.setPreferredSize(new Dimension(180, 50));
+                manualBatchJobIdButton.addActionListener(e -> {
+                    getBatchJobIdTextFields().forEach(f -> f.setText(""));
+                    int option = JOptionPane.showConfirmDialog(this, getManualBatchJobEntryPanel(),
+                        Messages.get("sku.button.batch.offline.mode"),
+                        JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null);
+                    if (option == JOptionPane.YES_OPTION) {
+                        StringBuilder batchJobId = new StringBuilder();
+                        if (getBatchJobIdTextFields().stream().anyMatch(f -> f.getText().isEmpty())) {
+                            JOptionPane.showMessageDialog(this, Messages.get("sku.batch.id.validation.blank"));
+                            return;
+                        }
+                        getBatchJobIdTextFields().forEach(f -> {
+                            batchJobId.append(f.getText());
+                            batchJobId.append("-");
+                        });
+                        batchJobId.deleteCharAt(batchJobId.length() -1);
+                        generateBatchJobId(batchJobId.toString());
+                    }
+                });
+            }
+            return manualBatchJobIdButton;
+        }
+
         public JPanel getBatchJobIdPanel() {
             if (batchJobIdPanel == null) {
                 batchJobIdPanel = new JPanel();
@@ -232,7 +276,7 @@ public class BatchJobIdSkuView extends AbstractView<IBatchJobIdSkuListener, Batc
             return batchJobIdPanel;
         }
 
-        public JPanel getNavButtonPanel() {
+        JPanel getNavButtonPanel() {
             if (buttonPanel == null) {
                 buttonPanel = new JPanel();
                 buttonPanel.setLayout(new MigLayout("ltr,fill,wrap 2"));
@@ -241,7 +285,7 @@ public class BatchJobIdSkuView extends AbstractView<IBatchJobIdSkuListener, Batc
             return buttonPanel;
         }
 
-        public JOptionPane getBatchSelectionPane(String title, Object[] choices) {
+        JOptionPane getBatchSelectionPane(String title, Object[] choices) {
             JOptionPane pane = new JOptionPane(title, JOptionPane.PLAIN_MESSAGE,
                 JOptionPane.OK_CANCEL_OPTION, null,
                 null, null);
@@ -251,6 +295,27 @@ public class BatchJobIdSkuView extends AbstractView<IBatchJobIdSkuListener, Batc
             pane.selectInitialValue();
 
             return pane;
+        }
+
+        void setTextFieldLimit(JTextField textField, int limit) {
+            textField.setDocument(new BatchJobSegLimit(limit));
+        }
+    }
+
+    private class BatchJobSegLimit extends PlainDocument {
+        private int limit;
+
+        BatchJobSegLimit(int limit) {
+            super();
+            this.limit = limit;
+        }
+
+        public void insertString( int offset, String  str, AttributeSet attr ) throws BadLocationException {
+            if (str == null) return;
+
+            if ((getLength() + str.length()) <= limit) {
+                super.insertString(offset, str, attr);
+            }
         }
     }
 
@@ -266,9 +331,9 @@ public class BatchJobIdSkuView extends AbstractView<IBatchJobIdSkuListener, Batc
         }
     }
 
-    private void generateBatchJobId(String batchJobSeq, String batchJobSkuId) {
+    private void generateBatchJobId(String batchJobId) {
         for (IBatchJobIdSkuListener listener : listeners) {
-            listener.generateBatchJobId(batchJobSeq, batchJobSkuId);
+            listener.generateBatchJobId(batchJobId);
         }
     }
 

@@ -3,10 +3,15 @@ package com.sicpa.ttth.scl.utils;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 public class TTTHCalendarUtils {
 
     public static final int TH_YEAR_DIFF = 543;
+
+    private static final int fiscalEndMonth = 8;
+
+    private static final int fiscalEndDay = 30;
 
     private static final SimpleDateFormat sdf = new SimpleDateFormat("dd/MMM/yy");
 
@@ -34,6 +39,19 @@ public class TTTHCalendarUtils {
         else
             return sdfTH.format(cal.getTime());
 
+    }
+
+    public static String getFiscalYear(Date date) {
+        Calendar fiscalEnd = Calendar.getInstance();
+        fiscalEnd.add(Calendar.YEAR, TH_YEAR_DIFF);
+        fiscalEnd.set(Calendar.MONTH, fiscalEndMonth);
+        fiscalEnd.set(Calendar.DAY_OF_MONTH, fiscalEndDay);
+
+        if (date.after(fiscalEnd.getTime())) {
+            fiscalEnd.add(Calendar.YEAR, 1);
+            return new SimpleDateFormat("yy").format(fiscalEnd.getTime());
+        }
+        return new SimpleDateFormat("yy").format(fiscalEnd.getTime());
     }
 
 }

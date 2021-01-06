@@ -91,8 +91,7 @@ public class DailyBatchRequestRepository {
     }
 
     public SKU getDailyBatchSKU(String batchJobId) throws NoSuchElementException {
-        updateStatistics(batchJobId);
-        String skuID = batchJobId.split("-", 5)[3].substring(4);
+        String skuID = batchJobId.split("-", 6)[4];
         return skuListProvider.getAvailableSKUsForProductionMode(ProductionMode.STANDARD)
             .stream()
             .filter(e -> String.valueOf(e.getId()).equals(skuID))

@@ -2,12 +2,9 @@ package com.sicpa.ttth.view.sku.batch;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.NoSuchElementException;
 import java.util.Properties;
 import javax.swing.JOptionPane;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,10 +13,10 @@ import com.sicpa.standard.client.common.i18n.Messages;
 import com.sicpa.standard.sasscl.devices.remote.impl.dtoConverter.DailyBatchRequestRepository;
 import com.sicpa.standard.sasscl.model.SKU;
 import com.sicpa.standard.sasscl.view.AbstractViewFlowController;
+import com.sicpa.ttth.remote.utils.ChecksumUtil;
 import com.sicpa.ttth.storage.TTTHFileStorage;
 import com.sicpa.ttth.view.flow.TTTHDefaultScreensFlow;
 
-import static com.sicpa.ttth.scl.utils.TTTHCalendarUtils.TH_YEAR_DIFF;
 import static com.sicpa.ttth.view.flow.TTTHScreenFlowTriggers.BATCH_ID_TRANSITION;
 
 public class BatchJobIdSkuViewController extends AbstractViewFlowController implements IBatchJobIdSkuListener {
@@ -30,8 +27,6 @@ public class BatchJobIdSkuViewController extends AbstractViewFlowController impl
 	private BatchJobIdSKUModel model;
 	private BatchJobIdSkuView batchJobIdSkuView;
 	private DailyBatchRequestRepository dailyBatchRequestRepository;
-
-	private String siteCode;
 
 	private int batchJobIdSize;
 	private int batchJobSiteSize;
@@ -50,6 +45,7 @@ public class BatchJobIdSkuViewController extends AbstractViewFlowController impl
 		try {
 			SKU sku = dailyBatchRequestRepository.getDailyBatchSKU(strBatchJobId);
 			model.setStrBatchJobId(strBatchJobId);
+			dailyBatchRequestRepository.updateStatistics(strBatchJobId);
 			EventBusService.post(getModel());
 			EventBusService.post(sku);
 		} catch (NoSuchElementException e) {
@@ -66,47 +62,12 @@ public class BatchJobIdSkuViewController extends AbstractViewFlowController impl
 	}
 
 	@Override
-	public void generateBatchJobId(String batchJobSeq, String batchJobSkuId) {
-		String lineID;
-
-		try {
-			lineID = getLineIDFromProp();
-		} catch (IOException e) {
-			JOptionPane.showMessageDialog(batchJobIdSkuView, Messages.get("sku.batch.job.line.id.blank"));
+	public void generateBatchJobId(String batchJobId) {
+		if (!ChecksumUtil.validateCheckSum(batchJobId)) {
+			JOptionPane.showMessageDialog(batchJobIdSkuView, Messages.get("sku.daily.batch.checksum.invalid"));
 			return;
 		}
-
-		String dateStr = getCurrentDateStr();
-
-		if (StringUtils.isBlank(batchJobSeq) || StringUtils.isBlank(batchJobSkuId)) {
-			JOptionPane.showMessageDialog(batchJobIdSkuView, Messages.get("sku.batch.id.validation.blank"));
-			return;
-		}
-
-		if (batchJobSeq.length() > getBatchJobSeqSize()) {
-			JOptionPane.showMessageDialog(batchJobIdSkuView, Messages.format("sku.batch.seq.validation.size", getBatchJobSeqSize()));
-			return;
-		}
-
-		if (!StringUtils.isNumeric(batchJobSeq)) {
-			JOptionPane.showMessageDialog(batchJobIdSkuView,Messages.get("sku.batch.id.validation.format"));
-			return;
-		}
-
-		StringBuilder batchJobId = new StringBuilder();
-		batchJobId.append(siteCode)
-			.append("-")
-			.append(lineID)
-			.append("-")
-			.append(dateStr)
-			.append("-")
-			.append(batchJobSeq)
-			.append(batchJobSkuId)
-			.append("-")
-			.append("A");
-
-		saveBatchJobId(batchJobId.toString());
-
+		saveBatchJobId(batchJobId);
 	}
 
 	@Override
@@ -130,12 +91,6 @@ public class BatchJobIdSkuViewController extends AbstractViewFlowController impl
 		lineID = prop.getProperty("subsystemId");
 
 		return lineID;
-	}
-
-	private String getCurrentDateStr() {
-		Calendar now = Calendar.getInstance();
-		now.add(Calendar.YEAR, TH_YEAR_DIFF);
-		return new SimpleDateFormat("ddMMyy").format(now.getTime());
 	}
 
 	public BatchJobIdSKUModel getModel() {
@@ -164,10 +119,6 @@ public class BatchJobIdSkuViewController extends AbstractViewFlowController impl
 
 	public void setDailyBatchRequestRepository(DailyBatchRequestRepository dailyBatchRequestRepository) {
 		this.dailyBatchRequestRepository = dailyBatchRequestRepository;
-	}
-
-	public void setSiteCode(String siteCode) {
-		this.siteCode = siteCode;
 	}
 
 	public void setBatchJobIdSize(int batchJobIdSize) {
