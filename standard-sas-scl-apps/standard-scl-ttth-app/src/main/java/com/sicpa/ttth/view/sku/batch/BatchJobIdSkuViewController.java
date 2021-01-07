@@ -28,10 +28,6 @@ public class BatchJobIdSkuViewController extends AbstractViewFlowController impl
 	private BatchJobIdSkuView batchJobIdSkuView;
 	private DailyBatchRequestRepository dailyBatchRequestRepository;
 
-	private int batchJobIdSize;
-	private int batchJobSiteSize;
-	private int batchJobSeqSize;
-
 	public BatchJobIdSkuViewController(){
 		this(new BatchJobIdSKUModel());
 	}
@@ -63,11 +59,16 @@ public class BatchJobIdSkuViewController extends AbstractViewFlowController impl
 
 	@Override
 	public void generateBatchJobId(String batchJobId) {
-		if (!ChecksumUtil.validateCheckSum(batchJobId)) {
-			JOptionPane.showMessageDialog(batchJobIdSkuView, Messages.get("sku.daily.batch.checksum.invalid"));
-			return;
+		try {
+			initChecksumUtil();
+			if (!ChecksumUtil.validateCheckSum(batchJobId)) {
+				JOptionPane.showMessageDialog(batchJobIdSkuView, Messages.get("sku.daily.batch.checksum.invalid"));
+				return;
+			}
+			saveBatchJobId(batchJobId);
+		} catch (IOException e) {
+			logger.error("Failed to initialize checksum util. ", e);
 		}
-		saveBatchJobId(batchJobId);
 	}
 
 	@Override
@@ -82,31 +83,20 @@ public class BatchJobIdSkuViewController extends AbstractViewFlowController impl
 		view.refresh();
 	}
 
-	private String getLineIDFromProp() throws IOException  {
-		//Get the line id during run time as it may change depending on line id service.
+	private void initChecksumUtil() throws IOException {
 		Properties prop = new Properties();
-		String lineID;
+		int startingShift;
+		int modular;
 
 		prop.load(new FileInputStream(TTTHFileStorage.GLOBAL_PROPERTIES_PATH));
-		lineID = prop.getProperty("subsystemId");
+		startingShift = Integer.parseInt(prop.getProperty("batch.checksum.startingShift"));
+		modular = Integer.parseInt(prop.getProperty("batch.checksum.modular"));
 
-		return lineID;
+		ChecksumUtil.initialize(startingShift, modular);
 	}
 
 	public BatchJobIdSKUModel getModel() {
 		return model;
-	}
-
-	public int getBatchJobIdSize() {
-		return batchJobIdSize;
-	}
-
-	public int getBatchJobSiteSize() {
-		return batchJobSiteSize;
-	}
-
-	public int getBatchJobSeqSize() {
-		return batchJobSeqSize;
 	}
 
 	public void setScreensFlow(TTTHDefaultScreensFlow screensFlow) {
@@ -119,18 +109,6 @@ public class BatchJobIdSkuViewController extends AbstractViewFlowController impl
 
 	public void setDailyBatchRequestRepository(DailyBatchRequestRepository dailyBatchRequestRepository) {
 		this.dailyBatchRequestRepository = dailyBatchRequestRepository;
-	}
-
-	public void setBatchJobIdSize(int batchJobIdSize) {
-		this.batchJobIdSize = batchJobIdSize;
-	}
-
-	public void setBatchJobSiteSize(int batchJobSiteSize) {
-		this.batchJobSiteSize = batchJobSiteSize;
-	}
-
-	public void setBatchJobSeqSize(int batchJobSeqSize) {
-		this.batchJobSeqSize = batchJobSeqSize;
 	}
 
 }

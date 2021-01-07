@@ -13,7 +13,6 @@ beans{
 		cryptoMode = props['server.simulator.cryptoMode'].trim()
 		cryptoModelPreset = props['server.simulator.cryptoModelPreset'].trim()
 		dailyBatchRequestRepository = ref('dailyBatchRequestRepository')
-		lineID = props['subsystemId'].trim()
 	}
 
 }

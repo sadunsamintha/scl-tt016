@@ -24,7 +24,6 @@ beans {
         model = "#{batchJobIdSkuViewController.model}"
         dailyBatchRequestRepository = ref('dailyBatchRequestRepository')
         productionParameters = ref('productionParameters')
-        batchJobIdSize = props['sku.batch.job.id.maximum.length'].trim()
     }
 
     batchJobIdSkuViewController(BatchJobIdSkuViewController) {
@@ -33,9 +32,6 @@ beans {
         screensFlow = ref('screensFlow')
         batchJobIdSkuView = ref('batchJobIdSkuView')
         dailyBatchRequestRepository = ref('dailyBatchRequestRepository')
-        batchJobIdSize = props['sku.batch.job.id.maximum.length'].trim()
-        batchJobSiteSize = props['sku.batch.job.site.maximum.length'].trim()
-        batchJobSeqSize = props['sku.batch.job.seq.maximum.length'].trim()
     }
 
     barcodeSkuView(BarcodeSkuView) {

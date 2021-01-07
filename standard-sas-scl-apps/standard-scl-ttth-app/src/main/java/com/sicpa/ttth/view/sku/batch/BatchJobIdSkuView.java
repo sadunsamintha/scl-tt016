@@ -19,6 +19,8 @@ import javax.swing.text.PlainDocument;
 import net.miginfocom.swing.MigLayout;
 
 import com.sicpa.standard.client.common.i18n.Messages;
+import com.sicpa.standard.client.common.security.Permission;
+import com.sicpa.standard.client.common.security.SecurityService;
 import com.sicpa.standard.client.common.view.mvc.AbstractView;
 import com.sicpa.standard.gui.components.buttons.shape.DirectionButton;
 import com.sicpa.standard.gui.components.virtualKeyboard.VirtualKeyboardPanel;
@@ -31,6 +33,8 @@ import com.sicpa.standard.sasscl.view.LanguageSwitchEvent;
 
 public class BatchJobIdSkuView extends AbstractView<IBatchJobIdSkuListener, BatchJobIdSKUModel> {
 
+    private static final Permission MANUAL_BATCH_ENTRY = new Permission("MANUAL_BATCH_ENTRY");
+
     private static final int textFieldWidthSizeS = 30;
 
     private static final int textFieldWidthSizeM = 75;
@@ -40,7 +44,6 @@ public class BatchJobIdSkuView extends AbstractView<IBatchJobIdSkuListener, Batc
     private BatchJobIdSkuPanel batchJobIdSkuPanel;
     private DailyBatchRequestRepository dailyBatchRequestRepository;
     private ProductionParameters productionParameters;
-    private int batchJobIdSize;
 
     private String batchJobId;
 
@@ -70,20 +73,12 @@ public class BatchJobIdSkuView extends AbstractView<IBatchJobIdSkuListener, Batc
     @Override
     public void modelChanged() { }
 
-    public int getBatchJobIdSize() {
-        return batchJobIdSize;
-    }
-
     public void setDailyBatchRequestRepository(DailyBatchRequestRepository dailyBatchRequestRepository) {
         this.dailyBatchRequestRepository = dailyBatchRequestRepository;
     }
 
     public void setProductionParameters(ProductionParameters productionParameters) {
         this.productionParameters = productionParameters;
-    }
-
-    public void setBatchJobIdSize(int batchJobIdSize) {
-        this.batchJobIdSize = batchJobIdSize;
     }
 
     @Subscribe
@@ -96,6 +91,7 @@ public class BatchJobIdSkuView extends AbstractView<IBatchJobIdSkuListener, Batc
         private JPanel batchJobIdPanel;
         private JPanel manualBatchJobEntryPanel;
         private JPanel buttonPanel;
+        private JButton offlineBatchJobIdButton;
         private JButton manualBatchJobIdButton;
         private ArrayList<JTextField> batchJobIdTextFields;
         private JButton autoBatchJobIdButton;
@@ -131,7 +127,6 @@ public class BatchJobIdSkuView extends AbstractView<IBatchJobIdSkuListener, Batc
                     JTextField batchSegTextField = new JTextField();
                     if (i == 0) {
                         //Prod Plan
-                        setTextFieldLimit(batchSegTextField, 8);
                         batchSegTextField.setPreferredSize(new Dimension(textFieldWidthSizeL, 40));
                     } else if(i == 1 || i == 4) {
                         //Batch Job Seq || SKU ID
@@ -166,7 +161,7 @@ public class BatchJobIdSkuView extends AbstractView<IBatchJobIdSkuListener, Batc
             return batchJobIdTextFields;
         }
 
-        JPanel getManualBatchJobEntryPanel() {
+        JPanel getBatchJobEntryPanel() {
             if (manualBatchJobEntryPanel == null) {
                 manualBatchJobEntryPanel = new JPanel();
                 batchJobIdPanel.setLayout(new GridLayout(1, 5));
@@ -235,30 +230,41 @@ public class BatchJobIdSkuView extends AbstractView<IBatchJobIdSkuListener, Batc
             return autoBatchJobIdButton;
         }
 
-        JButton getManualBatchJobIDButton() {
-            if (manualBatchJobIdButton == null) {
-                manualBatchJobIdButton = new JButton(Messages.get("sku.button.batch.offline.mode"));
-                manualBatchJobIdButton.setPreferredSize(new Dimension(180, 50));
-                manualBatchJobIdButton.addActionListener(e -> {
+        JButton getOfflineBatchJobIDButton() {
+            if (offlineBatchJobIdButton == null) {
+                offlineBatchJobIdButton = new JButton(Messages.get("sku.button.batch.offline.mode"));
+                offlineBatchJobIdButton.setPreferredSize(new Dimension(180, 50));
+                offlineBatchJobIdButton.addActionListener(e -> {
                     getBatchJobIdTextFields().forEach(f -> f.setText(""));
-                    int option = JOptionPane.showConfirmDialog(this, getManualBatchJobEntryPanel(),
+                    setTextFieldLimit(getBatchJobIdTextFields().get(0), 8);
+                    int option = JOptionPane.showConfirmDialog(this, getBatchJobEntryPanel(),
                         Messages.get("sku.button.batch.offline.mode"),
                         JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null);
                     if (option == JOptionPane.YES_OPTION) {
-                        StringBuilder batchJobId = new StringBuilder();
-                        if (getBatchJobIdTextFields().stream().anyMatch(f -> f.getText().isEmpty())) {
-                            JOptionPane.showMessageDialog(this, Messages.get("sku.batch.id.validation.blank"));
-                            return;
-                        }
-                        getBatchJobIdTextFields().forEach(f -> {
-                            batchJobId.append(f.getText());
-                            batchJobId.append("-");
-                        });
-                        batchJobId.deleteCharAt(batchJobId.length() -1);
-                        generateBatchJobId(batchJobId.toString());
+                        acceptBatchInput();
                     }
                 });
             }
+            return offlineBatchJobIdButton;
+        }
+
+        JButton getManualBatchJobIdButton() {
+            if (manualBatchJobIdButton == null) {
+                manualBatchJobIdButton = new JButton(Messages.get("sku.button.batch.manual.mode"));
+                manualBatchJobIdButton.setPreferredSize(new Dimension(180, 50));
+                manualBatchJobIdButton.addActionListener(e -> {
+                    getBatchJobIdTextFields().forEach(f -> f.setText(""));
+                    setTextFieldLimit(getBatchJobIdTextFields().get(0), 5);
+                    int option = JOptionPane.showConfirmDialog(this, getBatchJobEntryPanel(),
+                        Messages.get("sku.button.batch.manual.mode"),
+                        JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null);
+                    if (option == JOptionPane.YES_OPTION) {
+                        acceptBatchInput();
+                    }
+                });
+
+            }
+
             return manualBatchJobIdButton;
         }
 
@@ -270,7 +276,11 @@ public class BatchJobIdSkuView extends AbstractView<IBatchJobIdSkuListener, Batc
                 batchJobIdPanel.add(getAutoBatchJobIdButton(), "newline push, align center");
                 if (productionParameters.getProductionMode().equals(ProductionMode.STANDARD)) {
                     batchJobIdPanel.add(Box.createRigidArea(new Dimension(0, 18)), "newline push, align center");
-                    batchJobIdPanel.add(getManualBatchJobIDButton(), "newline push, align center");
+                    batchJobIdPanel.add(getOfflineBatchJobIDButton(), "newline push, align center");
+                    if (SecurityService.hasPermission(MANUAL_BATCH_ENTRY)) {
+                        batchJobIdPanel.add(Box.createRigidArea(new Dimension(0, 18)), "newline push, align center");
+                        batchJobIdPanel.add(getManualBatchJobIdButton(), "newline push, align center");
+                    }
                 }
             }
             return batchJobIdPanel;
@@ -299,6 +309,20 @@ public class BatchJobIdSkuView extends AbstractView<IBatchJobIdSkuListener, Batc
 
         void setTextFieldLimit(JTextField textField, int limit) {
             textField.setDocument(new BatchJobSegLimit(limit));
+        }
+
+        void acceptBatchInput() {
+            StringBuilder batchJobId = new StringBuilder();
+            if (getBatchJobIdTextFields().stream().anyMatch(f -> f.getText().isEmpty())) {
+                JOptionPane.showMessageDialog(this, Messages.get("sku.batch.id.validation.blank"));
+                return;
+            }
+            getBatchJobIdTextFields().forEach(f -> {
+                batchJobId.append(f.getText());
+                batchJobId.append("-");
+            });
+            batchJobId.deleteCharAt(batchJobId.length() -1);
+            generateBatchJobId(batchJobId.toString());
         }
     }
 

@@ -17,8 +17,6 @@ public class TTTHRemoteServerSimulator extends RemoteServerSimulator {
 
     private DailyBatchRequestRepository dailyBatchRequestRepository;
 
-    private String lineID;
-
     public TTTHRemoteServerSimulator(RemoteServerSimulatorModel model) {
         super(model);
     }
@@ -50,7 +48,7 @@ public class TTTHRemoteServerSimulator extends RemoteServerSimulator {
             now.add(Calendar.HOUR, -24);
             dailyBatchRequestDto.setBatchJobId(ChecksumUtil.addChecksumToString(
                 TTTHCalendarUtils.getFiscalYear(now.getTime())
-                    + "SIM001-" + "000" + i + "-" + lineID+ "-"
+                    + "SIM001-" + "000" + i + "-123-"
                     + new SimpleDateFormat("yyMMdd").format(now.getTime())
                     + "-" + skuProductDto.getId() + "-" + "A"));
             dailyBatchRequestDto.setSkuProductDto(skuProductDto);
@@ -65,7 +63,4 @@ public class TTTHRemoteServerSimulator extends RemoteServerSimulator {
         this.dailyBatchRequestRepository = dailyBatchRequestRepository;
     }
 
-    public void setLineID(String lineID) {
-        this.lineID = lineID;
-    }
 }

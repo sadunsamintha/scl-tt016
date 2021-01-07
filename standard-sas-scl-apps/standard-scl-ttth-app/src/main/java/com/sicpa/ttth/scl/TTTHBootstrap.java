@@ -122,7 +122,9 @@ public class TTTHBootstrap extends Bootstrap implements ProductBatchJobIdProvide
 	private synchronized void getCodedCount() {
 		ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
 		executorService.scheduleAtFixedRate(() -> {
-			if (productionParameters.getProductionMode().equals(ProductionMode.STANDARD)) {
+			if (productionParameters.getSku() != null &&
+				productionParameters.getProductionMode() != null &&
+ 				productionParameters.getProductionMode().equals(ProductionMode.STANDARD)) {
 				if (remoteServer instanceof TTTHRemoteServer) {
 					Integer value = ((TTTHRemoteServer)remoteServer)
 						.getActualCodedCount(dailyBatchRequestRepository.getBatchJobStatistics().getBatchJobId());
