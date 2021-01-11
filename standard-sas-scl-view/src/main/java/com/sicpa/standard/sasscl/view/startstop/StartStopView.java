@@ -2,16 +2,15 @@ package com.sicpa.standard.sasscl.view.startstop;
 
 import javax.swing.AbstractButton;
 
-import net.miginfocom.swing.MigLayout;
-
 import com.google.common.eventbus.Subscribe;
-import com.sicpa.standard.gui.I18n.GUIi18nManager;
+import com.sicpa.standard.client.common.i18n.Messages;
 import com.sicpa.standard.gui.components.buttons.StartStopButton;
 import com.sicpa.standard.gui.components.buttons.StartStopButton.eStartStop;
-import com.sicpa.standard.gui.screen.machine.AbstractMachineFrame;
 import com.sicpa.standard.gui.utils.ThreadUtils;
 import com.sicpa.standard.sasscl.view.LanguageSwitchEvent;
 import com.sicpa.standard.sasscl.view.productionStatus.ProductionStatusView;
+
+import net.miginfocom.swing.MigLayout;
 
 @SuppressWarnings("serial")
 public class StartStopView extends AbstractStartStopView {
@@ -37,7 +36,7 @@ public class StartStopView extends AbstractStartStopView {
 	public AbstractButton getButtonStart() {
 		if (buttonStart == null) {
 			buttonStart = new StartStopButton(eStartStop.START);
-			buttonStart.setText(GUIi18nManager.get(AbstractMachineFrame.I18N_START));
+			buttonStart.setText(Messages.get("std.gui.machine.start"));
 			buttonStart.setEnabled(false);
 			buttonStart.addActionListener(e -> buttonStartActionPerformed());
 		}
@@ -53,7 +52,7 @@ public class StartStopView extends AbstractStartStopView {
 		if (buttonStop == null) {
 			buttonStop = new StartStopButton(eStartStop.STOP);
 			buttonStop.setEnabled(false);
-			buttonStop.setText(GUIi18nManager.get(AbstractMachineFrame.I18N_STOP));
+			buttonStop.setText(Messages.get("std.gui.machine.stop"));
 			buttonStop.addActionListener(e -> buttonStopActionPerformed());
 		}
 		return buttonStop;
@@ -72,8 +71,8 @@ public class StartStopView extends AbstractStartStopView {
 
 	@Subscribe
 	public void handleLanguageSwitch(LanguageSwitchEvent evt) {
-		getButtonStart().setText(GUIi18nManager.get(AbstractMachineFrame.I18N_START));
-		getButtonStop().setText(GUIi18nManager.get(AbstractMachineFrame.I18N_STOP));
+		getButtonStart().setText(Messages.get("std.gui.machine.start"));
+		getButtonStop().setText(Messages.get("std.gui.machine.stop"));
 	}
 
 	public void setProductionStatusView(ProductionStatusView productionStatusView) {

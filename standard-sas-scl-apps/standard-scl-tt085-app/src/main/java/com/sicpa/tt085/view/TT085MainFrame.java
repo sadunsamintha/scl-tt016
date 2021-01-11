@@ -41,7 +41,6 @@ public class TT085MainFrame extends MainFrame {
 			header.add(getHeaderInfoPanel(), "south");
 			header.add(getLineIdPanel(), "growx, wrap");
 			header.add(getApplicationStatusPanel(), "grow");
-			header.add(new LicencePanel(), "east, growx, gapright 20");
 			JLabel brandLabel = new JLabel("D-TRACE");
 			Font font = new Font(brandLabel.getFont().getName(), Font.BOLD, 30);
 			brandLabel.setFont(font);

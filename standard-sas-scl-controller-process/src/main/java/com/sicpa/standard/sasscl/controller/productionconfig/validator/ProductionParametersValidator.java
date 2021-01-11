@@ -2,6 +2,7 @@ package com.sicpa.standard.sasscl.controller.productionconfig.validator;
 
 
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
+import com.sicpa.standard.client.common.i18n.Messages;
 import com.sicpa.standard.sasscl.controller.productionconfig.IProductionConfig;
 import com.sicpa.standard.sasscl.controller.productionconfig.loader.IProductionConfigLoader;
 import com.sicpa.standard.sasscl.controller.view.event.WarningViewEvent;
@@ -25,7 +26,7 @@ public class ProductionParametersValidator {
         IProductionConfig config = loader.get(productionMode);
         if (config == null) {
             logger.info("configuration_error,production_mode= {} reason=Configuration does not exist for this production mode",productionMode.getDescription());
-            WarningViewEvent wve = new  WarningViewEvent("production.mode.config.does.not.exist",false, new Object[]{productionMode.getDescription()});
+            WarningViewEvent wve = new  WarningViewEvent("production.mode.config.does.not.exist",false, new Object[]{Messages.get(productionMode.getDescription())});
             EventBusService.post(wve);
             return false;
         }
