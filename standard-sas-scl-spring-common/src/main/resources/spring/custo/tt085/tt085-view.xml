@@ -17,5 +17,58 @@
 		<property name="flowControl" ref="flowControl" />
 		<property name="skuListProvider" ref="skuListProvider" />
 	</bean>
+	
+		<bean id="selectProductionParametersViewController"
+		class="com.sicpa.tt085.view.selection.select.TT085SelectProductionParametersViewController">
+		<property name="handPickingView"
+			ref="selectProductionParametersHandPickingView" />
+		<property name="barcodeView"
+			ref="selectProductionParametersBarcodeView" />
+		<property name="viewController" ref="mainFrameController" />
+		<property name="skuListProvider" ref="skuListProvider" />
+		<property name="useBarcodeReader" value="${useBarcodeReader}" />
+		<property name="screensFlow" ref="screensFlow" />
+		<property name="mainFrameController"
+			ref="mainFrameController" />
+	</bean>
+
+	<bean id="selectProductionParametersHandPickingView"
+		class="com.sicpa.tt085.view.selection.select.TT085SelectProductionParametersHandPickingView">
+		<property name="callback"
+			ref="selectProductionParametersViewController" />
+		<property name="selectionModelFactory"
+			ref="selectionModelFactory" />
+		<property name="productionParametersValidator"
+			ref="productionParametersValidator" />
+	</bean>
+
+	<bean id="mainFrameController"
+		class="com.sicpa.tt085.view.selection.select.TT085MainFrameController">
+		<property name="productionParameters"
+			ref="productionParameters" />
+		<property name="lineId" value="${lineId}" />
+		<property name="messageCodeMapper" ref="messagesMapping" />
+		<property name="securedPanels">
+			<list>
+				<ref bean="plcMonitoringView" />
+				<ref bean="advancedControlView" />
+				<ref bean="plcVariablesPanel" />
+				<ref bean="productionStatisticsPanel" />
+				<ref bean="systemEventPanel" />
+				<ref bean="MBeanViewer" />
+				<ref bean="miscPanel" />
+				<ref bean="beanCallPanel" />
+				<ref bean="encodersInfoView" />
+				<ref bean="reportScreen" />
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="selectProductionParametersBarcodeView"
+		  class="com.sicpa.tt085.view.selection.select.TT085SelectProductionParametersBarcodeView" init-method="initGUI">
+		<property name="callback" ref="selectProductionParametersViewController" />
+		<property name="skuListProvider" ref="skuListProvider" />
+	</bean>
+	
 
 </beans>

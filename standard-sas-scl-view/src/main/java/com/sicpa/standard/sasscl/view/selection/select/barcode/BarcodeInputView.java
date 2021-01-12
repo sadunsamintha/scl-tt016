@@ -239,12 +239,38 @@ public class BarcodeInputView extends DefaultIdInputView {
 
 	protected List<Entry> retrieveSkuFromBarcode(final String barcode) {
 		ArrayList<Entry> skus = new ArrayList<>();
-		populateMatchingSKU(barcode, rootNode, null, skus);
+		populateMatchingSKU(barcode, rootNode, null, skus, null);
 		return skus;
 	}
 
+//	protected void populateMatchingSKU(final String barcode, final IProductionParametersNode node,
+//			final IProductionParametersNode parent, final List<Entry> entries) {
+//		if (node instanceof SKUNode) {
+//			SKU sku = (SKU) node.getValue();
+//			logger.debug("sku=" + sku.getDescription() + ",barcodes=" + sku.getBarCodes());
+//
+//			if (sku.containsBarcode(barcode)) {
+//				Entry entry = new Entry();
+//				entry.sku = sku;
+//
+//				if (parent instanceof ProductionModeNode) {
+//					entry.mode = (ProductionMode) parent.getValue();
+//				}
+//
+//				permissionFilterAndAdd(entries,entry);
+//			}
+//		} else {
+//			List<? extends IProductionParametersNode> children = node.getChildren();
+//			if (children != null) {
+//				for (IProductionParametersNode child : children) {
+//					populateMatchingSKU(barcode, child, node, entries);
+//				}
+//			}
+//		}
+//	}
+	
 	protected void populateMatchingSKU(final String barcode, final IProductionParametersNode node,
-			final IProductionParametersNode parent, final List<Entry> entries) {
+			final IProductionParametersNode parent, final List<Entry> entries, ProductionMode productionMode) {
 		if (node instanceof SKUNode) {
 			SKU sku = (SKU) node.getValue();
 			logger.debug("sku=" + sku.getDescription() + ",barcodes=" + sku.getBarCodes());
@@ -252,18 +278,18 @@ public class BarcodeInputView extends DefaultIdInputView {
 			if (sku.containsBarcode(barcode)) {
 				Entry entry = new Entry();
 				entry.sku = sku;
-
-				if (parent instanceof ProductionModeNode) {
-					entry.mode = (ProductionMode) parent.getValue();
-				}
-
+				entry.mode = productionMode;
 				permissionFilterAndAdd(entries,entry);
 			}
 		} else {
 			List<? extends IProductionParametersNode> children = node.getChildren();
 			if (children != null) {
+				ProductionMode mode = productionMode;
 				for (IProductionParametersNode child : children) {
-					populateMatchingSKU(barcode, child, node, entries);
+					if (child instanceof ProductionModeNode) {
+						 mode = (ProductionMode) child.getValue();
+					}
+					populateMatchingSKU(barcode, child, node, entries, mode);
 				}
 			}
 		}

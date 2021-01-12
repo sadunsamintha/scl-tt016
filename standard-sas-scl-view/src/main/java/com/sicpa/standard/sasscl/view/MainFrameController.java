@@ -45,7 +45,7 @@ public class MainFrameController extends MachineViewController {
 
 	private final List<ISecuredComponentGetter> securedPanels = new ArrayList<>();
 	private String lineId;
-	private ProductionParameters productionParameters;
+	protected ProductionParameters productionParameters;
 	private IMessageCodeMapper messageCodeMapper;
 	private boolean filterProductionChangedEvent = false;
 	private FrameCameraImage frameCameraImage;

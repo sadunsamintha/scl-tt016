@@ -22,7 +22,7 @@ import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.Producti
 @SuppressWarnings("serial")
 public class SelectProductionParametersHandPickingView extends JPanel implements ISelectProductionParametersView {
 
-	private ISelectProductionParametersViewListener callback;
+	protected ISelectProductionParametersViewListener callback;
 	protected ProductionParametersSelectionFlowView delegate;
 	private ISelectionModelFactory selectionModelFactory;
 	private ProductionParametersValidator productionParametersValidator;
@@ -64,7 +64,7 @@ public class SelectProductionParametersHandPickingView extends JPanel implements
 		});
 	}
 
-	private void selectionCompleteCallBack(SelectionFlowEvent evt) {
+	protected void selectionCompleteCallBack(SelectionFlowEvent evt) {
 		ProductionMode mode = getProductionMode(evt);
 		SKU sku = getSkuMode(evt);
 
@@ -79,7 +79,7 @@ public class SelectProductionParametersHandPickingView extends JPanel implements
 		callback.productionParametersSelected(pp);
 	}
 
-	private SKU getSkuMode(SelectionFlowEvent evt) {
+	protected SKU getSkuMode(SelectionFlowEvent evt) {
 		for (SelectableItem item : evt.getItems()) {
 			if (item instanceof IProductionParametersNode) {
 				IProductionParametersNode sc = (IProductionParametersNode) item;
@@ -91,7 +91,7 @@ public class SelectProductionParametersHandPickingView extends JPanel implements
 		return null;
 	}
 
-	private ProductionMode getProductionMode(SelectionFlowEvent evt) {
+	protected ProductionMode getProductionMode(SelectionFlowEvent evt) {
 		for (SelectableItem item : evt.getItems()) {
 			if (item instanceof IProductionParametersNode) {
 				IProductionParametersNode sc = (IProductionParametersNode) item;

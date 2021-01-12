@@ -96,7 +96,7 @@ public class SkuConverter implements ISkuConverter {
 		}
 	}
 
-	private void convertPackagingTypeSkuDto(ComponentBehaviorDto<? extends BaseDto<Long>> child,
+	protected void convertPackagingTypeSkuDto(ComponentBehaviorDto<? extends BaseDto<Long>> child,
 											final AbstractProductionParametersNode<?> convertedParentRoot) {
 		PackagingTypeSkuDto packagingTypeSkuDto = (PackagingTypeSkuDto) child.getNodeValue();
 
@@ -106,7 +106,7 @@ public class SkuConverter implements ISkuConverter {
 		convertDMSProductionParameter(child, navigationNode);
 	}
 
-	private void convertNavigationDto(ComponentBehaviorDto<? extends BaseDto<Long>> child,
+	protected void convertNavigationDto(ComponentBehaviorDto<? extends BaseDto<Long>> child,
 									  final AbstractProductionParametersNode<?> convertedParentRoot) {
 		// navigation node only
 		NavigationNode navigationNode = new NavigationNode(child.getNodeValue().getId() + "");

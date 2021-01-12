@@ -6,6 +6,7 @@ beans{
 
 	if(serverBehavior == "STANDARD") {
 		importBeans('spring/server/server-core5.groovy')
+		importBeans('spring/custo/tt085/tt085-server.groovy')
 	}
 
 	addAlias('bootstrapAlias','bootstrap')
