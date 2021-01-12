@@ -241,7 +241,7 @@ public class BatchJobIdSkuView extends AbstractView<IBatchJobIdSkuListener, Batc
                         Messages.get("sku.button.batch.offline.mode"),
                         JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null);
                     if (option == JOptionPane.YES_OPTION) {
-                        acceptBatchInput();
+                        acceptBatchInput(false);
                     }
                 });
             }
@@ -259,7 +259,7 @@ public class BatchJobIdSkuView extends AbstractView<IBatchJobIdSkuListener, Batc
                         Messages.get("sku.button.batch.manual.mode"),
                         JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null);
                     if (option == JOptionPane.YES_OPTION) {
-                        acceptBatchInput();
+                        acceptBatchInput(true);
                     }
                 });
 
@@ -311,12 +311,18 @@ public class BatchJobIdSkuView extends AbstractView<IBatchJobIdSkuListener, Batc
             textField.setDocument(new BatchJobSegLimit(limit));
         }
 
-        void acceptBatchInput() {
+        void acceptBatchInput(boolean isManual) {
             StringBuilder batchJobId = new StringBuilder();
             if (getBatchJobIdTextFields().stream().anyMatch(f -> f.getText().isEmpty())) {
                 JOptionPane.showMessageDialog(this, Messages.get("sku.batch.id.validation.blank"));
                 return;
             }
+            //Prevent manual batches being used for offline mode.
+            if (!isManual && getBatchJobIdTextFields().get(0).getText().length() < 7) {
+                JOptionPane.showMessageDialog(this, Messages.get("sku.daily.batch.checksum.invalid"));
+                return;
+            }
+
             getBatchJobIdTextFields().forEach(f -> {
                 batchJobId.append(f.getText());
                 batchJobId.append("-");
