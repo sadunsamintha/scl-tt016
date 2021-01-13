@@ -1,4 +1,5 @@
 import com.sicpa.tt085.scl.TT085Bootstrap
+import com.sicpa.tt085.scl.business.activation.TT085ExportActivationBehavior
 
 beans{
 
@@ -12,6 +13,11 @@ beans{
 	addAlias('bootstrapAlias','bootstrap')
 	bootstrap(TT085Bootstrap){b->
 		b.parent=ref('bootstrapAlias')
+	}
+	
+	addAlias('exportActivationBehaviorAlias','exportActivationBehavior')
+	exportActivationBehavior(TT085ExportActivationBehavior){b->
+		b.parent=ref('exportActivationBehaviorAlias')
 	}
 	
 	importBeans('spring/custo/tt085/tt085-view.xml')

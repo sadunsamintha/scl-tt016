@@ -16,7 +16,6 @@ import com.sicpa.standard.sasscl.controller.flow.IFlowControl;
 import com.sicpa.standard.sasscl.provider.impl.SkuListProvider;
 import com.sicpa.standard.sasscl.view.MainFrame;
 import com.sicpa.standard.sasscl.view.MainFrameController;
-import com.sicpa.standard.sasscl.view.licence.LicencePanel;
 
 import net.miginfocom.swing.MigLayout;
 

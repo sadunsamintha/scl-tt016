@@ -27,7 +27,7 @@
   </CameraJobConfigNode>
   <CameraJobConfigNode>
     <productCameraJob productId="2">
-      <cameraJobFile cameraJobFileName="StandardDMX.job"/>
+      <cameraJobFile cameraJobFileName="TR_Export.job"/>
     </productCameraJob>
     <children/>
   </CameraJobConfigNode>
