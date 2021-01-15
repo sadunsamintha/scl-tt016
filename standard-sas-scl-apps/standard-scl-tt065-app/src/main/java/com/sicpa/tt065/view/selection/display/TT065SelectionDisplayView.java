@@ -51,7 +51,7 @@ public class TT065SelectionDisplayView extends SelectionDisplayView implements P
 			if (sku.getImage() != null) {
 				getMainPanel().add(toScaledImage(sku.getImage().getImage()), "grow,wrap");
 			}
-			getMainPanel().add(new MultiLineLabel(sku.getDescription()), "grow, w 200, h 135 , spanx");
+			getMainPanel().add(new MultiLineLabel(sku.getDescription()), "grow, w 200, h 175 , spanx");
 		}
 		if (strBatchId != null && !strBatchId.equals("0")){
 			getMainPanel().add(new MultiLineLabel(Messages.get("sku.batch.id.label")+" "+strBatchId), "grow, w 200, h 45 , spanx");

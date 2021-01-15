@@ -74,7 +74,7 @@ public class SelectionDisplayView extends AbstractView<ISelectionDisplayViewList
 			if (sku.getImage() != null) {
 				getMainPanel().add(toScaledImage(sku.getImage().getImage()), "grow,wrap");
 			}
-			getMainPanel().add(new MultiLineLabel(sku.getDescription()), "grow, w 200, h 135 , spanx");
+			getMainPanel().add(new MultiLineLabel(sku.getDescription()), "grow, w 200, h 175 , spanx");
 		}
 
 		if (barcode != null) {
