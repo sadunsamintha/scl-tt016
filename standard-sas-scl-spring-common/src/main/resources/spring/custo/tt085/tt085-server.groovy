@@ -2,6 +2,9 @@ import com.sicpa.tt085.remote.remoteservices.TT085RemoteServices;
 import com.sicpa.tt085.devices.remote.impl.TT085PackageSenderGlobal;
 import com.sicpa.tt085.devices.remote.impl.TT085DefaultProductionModeMapping;
 import com.sicpa.tt085.business.production.impl.TT085Production;
+import com.sicpa.tt085.devices.remoteServer.dto.TT085SkuConverter;
+import com.sicpa.tt085.devices.remote.impl.TT085DefaultProductionModeMapping;
+
 
 beans{
 
@@ -26,5 +29,11 @@ beans{
 		productionDataSerializationErrorThreshold=props['productionDataSerializationErrorThreshold']
 		pp=ref('productionParameters')
 	}
+	
+	skuConverter(TT085SkuConverter){
+		productionModeMapping=ref('productionModeMapping')
+	}
+	
+	productionModeMapping(TT085DefaultProductionModeMapping)
 	
 }

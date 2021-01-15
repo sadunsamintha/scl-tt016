@@ -2,7 +2,7 @@ package com.sicpa.tt085.view.selection.select;
 
 import com.sicpa.standard.sasscl.view.selection.select.SelectProductionParametersBarcodeView;
 import com.sicpa.standard.sasscl.view.selection.select.barcode.BarcodeInputView;
-import com.sicpa.standard.sasscl.view.selection.select.barcode.TT085BarcodeInputView;
+import com.sicpa.tt085.view.selection.select.barcode.TT085BarcodeInputView;
 
 public class TT085SelectProductionParametersBarcodeView extends SelectProductionParametersBarcodeView {
 

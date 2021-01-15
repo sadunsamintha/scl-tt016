@@ -29,6 +29,7 @@ public class DefaultSelectionModel extends AbstractSelectionFlowModel {
 	}
 
 	private void populatePermissions() {
+		mapPermissions.put(ProductionMode.ALL, SasSclPermission.PRODUCTION_MODE_ALL);
 		mapPermissions.put(ProductionMode.STANDARD, SasSclPermission.PRODUCTION_MODE_STANDARD);
 		mapPermissions.put(ProductionMode.MAINTENANCE, SasSclPermission.PRODUCTION_MODE_MAINTENANCE);
 		mapPermissions.put(ProductionMode.EXPORT, SasSclPermission.PRODUCTION_MODE_EXPORT);

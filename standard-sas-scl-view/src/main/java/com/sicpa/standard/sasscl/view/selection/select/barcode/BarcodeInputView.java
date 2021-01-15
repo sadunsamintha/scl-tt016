@@ -190,7 +190,6 @@ public class BarcodeInputView extends DefaultIdInputView {
 				getMainFrame().getController().executeTaskInBackground(() -> {
 					final String barcode = evt.getId().trim();
 					final List<Entry> possibleParams = retrieveSkuFromBarcode(barcode);
-
 					if (possibleParams == null || possibleParams.isEmpty()) {
 						displayTextErrorInCenter();
 						getModel().setError(Messages.get("view.main.barcodepanel.error") + ":\n" + barcode);
@@ -233,8 +232,8 @@ public class BarcodeInputView extends DefaultIdInputView {
 	}
 
 	protected static class Entry {
-		SKU sku;
-		ProductionMode mode;
+		public SKU sku;
+		public ProductionMode mode;
 	}
 
 	protected List<Entry> retrieveSkuFromBarcode(final String barcode) {
@@ -295,7 +294,7 @@ public class BarcodeInputView extends DefaultIdInputView {
 		}
 	}
 
-	private void permissionFilterAndAdd(List<Entry> entries, Entry entry) {
+	protected void permissionFilterAndAdd(List<Entry> entries, Entry entry) {
 		Permission p = dataSelectionModel.getPermissions().get(entry.mode);
 		if (p != null && SecurityService.hasPermission(p)) {
 			entries.add(entry);

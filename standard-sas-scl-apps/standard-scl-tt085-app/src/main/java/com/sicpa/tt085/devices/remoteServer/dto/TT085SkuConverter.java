@@ -44,26 +44,19 @@ public class TT085SkuConverter extends SkuConverter {
 	protected void convertCountryDto(ComponentBehaviorDto<? extends BaseDto<Long>> child,
 			final AbstractProductionParametersNode<?> convertedParentRoot) {
 		TrCountryDto countryDto = (TrCountryDto) child.getNodeValue();
-		TT085Country country = new TT085Country(countryDto.getId(), countryDto.getIso2CharCountryCode(), countryDto.getInternalDescription());
+        String countryDisplayDescription;
+        if(countryDto.getIso2CharCountryCode() != null
+                && !countryDto.getIso2CharCountryCode().isEmpty()
+                && !countryDto.getIso2CharCountryCode().equals("null")) {
+            countryDisplayDescription  = TT085CountryMessages.getInstance().isKnownIsoCode(countryDto.getIso2CharCountryCode()) ?
+                    TT085CountryMessages.getInstance().getCountryName(countryDto.getIso2CharCountryCode()) : countryDto.getInternalDescription();
+        } else {
+            countryDisplayDescription = countryDto.getInternalDescription();
+        }
+		TT085Country country = new TT085Country(countryDto.getId(), countryDto.getIso2CharCountryCode(), countryDisplayDescription);
 		CountryNode cn = new CountryNode(country);
 		convertedParentRoot.addChildren(cn);
 		convertDMSProductionParameter(child, cn);
 	}
-	
 
-//	protected TT021Country getCountry(final ComponentBehaviorDto<? extends BaseDto<Long>> skuDto) {
-//		if (skuDto == null)
-//			return null;
-//		TT021Country country = null; 
-//		for(ComponentBehaviorDto<? extends BaseDto<Long>> node: skuDto.getChildren()) {
-//			if (node.getNodeValue() instanceof TrCountryDto) {
-//				 TrCountryDto countryDto = (TrCountryDto) node.getNodeValue();
-//		            String countryDisplayDescription = countryDto.getInternalDescription();
-//		            country = new TT021Country(countryDto.getId(), countryDto.getIso2CharCountryCode(), countryDisplayDescription);
-//			}
-//			
-//		}
-//		return country;
-//	}
-	
 }
