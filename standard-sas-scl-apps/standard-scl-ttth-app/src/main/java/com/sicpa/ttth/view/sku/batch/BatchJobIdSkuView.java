@@ -8,7 +8,6 @@ import java.util.Collections;
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
@@ -23,6 +22,7 @@ import com.sicpa.standard.client.common.security.Permission;
 import com.sicpa.standard.client.common.security.SecurityService;
 import com.sicpa.standard.client.common.view.mvc.AbstractView;
 import com.sicpa.standard.gui.components.buttons.shape.DirectionButton;
+import com.sicpa.standard.gui.components.text.MultiLineLabel;
 import com.sicpa.standard.gui.components.virtualKeyboard.VirtualKeyboardPanel;
 import com.sicpa.standard.gui.plaf.SicpaColor;
 import com.sicpa.standard.sasscl.devices.remote.impl.dtoConverter.DailyBatchRequestRepository;
@@ -52,7 +52,7 @@ public class BatchJobIdSkuView extends AbstractView<IBatchJobIdSkuListener, Batc
     private void initGUI() {
         setLayout(new MigLayout("ltr,fill"));
         String strSKU = "";
-        add(new JLabel(Messages.get("sku.batch.id.title") + " " + strSKU));
+        add(new MultiLineLabel(Messages.get("sku.batch.id.title") + " " + strSKU), "grow, spanx");
         add(new JSeparator(), "growx, pushx, wrap");
         add(getBatchJobIdSkuPanel(), "span, split 2, pushy, growx, growy");
     }

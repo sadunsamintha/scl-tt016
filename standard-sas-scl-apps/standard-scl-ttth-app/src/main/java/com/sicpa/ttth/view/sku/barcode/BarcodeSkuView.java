@@ -13,6 +13,7 @@ import net.miginfocom.swing.MigLayout;
 import com.sicpa.standard.client.common.i18n.Messages;
 import com.sicpa.standard.client.common.view.mvc.AbstractView;
 import com.sicpa.standard.gui.components.buttons.shape.DirectionButton;
+import com.sicpa.standard.gui.components.text.MultiLineLabel;
 import com.sicpa.standard.gui.components.virtualKeyboard.VirtualKeyboardPanel;
 import com.sicpa.standard.gui.plaf.SicpaColor;
 import com.sicpa.standard.sasscl.view.LanguageSwitchEvent;
@@ -25,7 +26,7 @@ public class BarcodeSkuView extends AbstractView<IBarcodeSkuListener, BarcodeSku
 
     private void initGUI() {
         setLayout(new MigLayout("ltr,fill"));
-        add(new JLabel(Messages.get("sku.barcode.title") + " | SKU: " + model.getSkuName()));
+        add(new MultiLineLabel(Messages.get("sku.barcode.title") + " | SKU: " + model.getSkuName()), "grow, spanx");
         add(new JSeparator(), "growx, pushx, wrap");
         add(getBarcodeSkuPanel(), "span, split 2, pushy, growx, growy");
     }

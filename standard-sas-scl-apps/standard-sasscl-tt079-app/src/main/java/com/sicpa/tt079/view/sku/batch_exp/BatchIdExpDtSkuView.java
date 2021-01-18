@@ -3,6 +3,7 @@ package com.sicpa.tt079.view.sku.batch_exp;
 import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.i18n.Messages;
 import com.sicpa.standard.client.common.view.mvc.AbstractView;
+import com.sicpa.standard.gui.components.text.MultiLineLabel;
 import com.sicpa.standard.gui.components.virtualKeyboard.VirtualKeyboardPanel;
 import com.sicpa.standard.gui.plaf.SicpaColor;
 import com.sicpa.standard.sasscl.model.ProductionMode;
@@ -50,7 +51,7 @@ public class BatchIdExpDtSkuView extends AbstractView<IBatchIdExpDtSkuListener, 
 				strSKU = productionParameters.getSku().getDescription();
 			}
 		}
-		add(new JLabel(Messages.get("sku.batch.id.title")+" "+strSKU));
+		add(new MultiLineLabel(Messages.get("sku.batch.id.title")+" "+strSKU), "grow, spanx");
 		add(new JSeparator(), "growx, pushx, wrap");
 		add(getBatchIdSkuPanel(), "span, split 2, pushy, growx, growy");
 	}
