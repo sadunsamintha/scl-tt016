@@ -39,6 +39,7 @@ public class TT079Bootstrap extends Bootstrap {
             productionParameters.setProductionMode(previous.getProductionMode());
             productionParameters.setProperty(productionBatchId, previous.getProperty(productionBatchId));
             productionParameters.setProperty(productionExpdt, previous.getProperty(productionExpdt));
+            restoreStatistics();
             EventBusService.post(new ProductionParametersEvent(previous));
         }
     }

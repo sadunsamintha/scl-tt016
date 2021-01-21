@@ -27,6 +27,7 @@ public class TT080Bootstrap extends Bootstrap{
       productionParameters.setSku(previous.getSku());
       productionParameters.setProductionMode(previous.getProductionMode());
       productionParameters.setProperty(productionBatchId, previous.getProperty(productionBatchId));
+      restoreStatistics();
       EventBusService.post(new ProductionParametersEvent(previous));
 
       productionBatchProvider.set(previous.getProperty(productionBatchId).getProductionBatchId());

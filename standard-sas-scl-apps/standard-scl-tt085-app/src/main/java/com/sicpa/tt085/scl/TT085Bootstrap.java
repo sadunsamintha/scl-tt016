@@ -23,6 +23,7 @@ public class TT085Bootstrap extends Bootstrap implements CountryProvider {
             productionParameters.setProductionMode(previous.getProductionMode());
             CustoBuilder.addPropertyToClass(ProductionParameters.class, country );
             productionParameters.setProperty(country, previous.getProperty(country));
+            restoreStatistics();
             EventBusService.post(new ProductionParametersEvent(previous));
         }
     }
