@@ -17,7 +17,7 @@
 		<dependency>
 			<groupId>com.sicpa.gssd.tt021_tr.server.ext</groupId>
 			<artifactId>tt021_tr-sca-api</artifactId>
-			<version>1.6.0</version>
+			<version>1.18.5</version>
 		</dependency>
 	</dependencies>
 	

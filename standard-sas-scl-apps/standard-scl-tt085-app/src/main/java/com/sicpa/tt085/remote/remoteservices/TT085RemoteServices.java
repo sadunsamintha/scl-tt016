@@ -1,6 +1,8 @@
 package com.sicpa.tt085.remote.remoteservices;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 
@@ -45,9 +47,10 @@ public class TT085RemoteServices implements ITT085RemoteServices {
 
 	private static final Logger logger = LoggerFactory.getLogger(TT085RemoteServices.class);
 	
-	private final String LOGIN_BUSINESS_SERVICE_URL = "ejb:/standard-msca-services/loginBusinessServiceMSCA!com.sicpa.std.common.api.security.business.LoginServiceHandler";
-	private final String SERVICE_ACTIVATION_BUSINESS_SERVICE = "ejb:/standard-msca-services/trActivationBusinessServiceMSCA!com.sicpa.gssd.tt021_tr.server.ext.sca.api.TrActivationServiceHandler";
-	private final String SERVICE_COMMON_CODING_BUSINESS_SERVICE = "ejb:/standard-msca-services/codingBusinessServiceMSCA!com.sicpa.std.common.api.coding.business.CodingServiceHandler";
+    private final String SERVICES_PREFIX="dms_remote_service.prefix";
+    private final String SERVICE_COMMON_CODING_BUSINESS_SERVICE = "dms.remote_service.codingBusinessService.url";
+    private final String SERVICE_ACTIVATION_BUSINESS_SERVICE = "dms.remote_service.activationBusinessService.url";
+    private final String LOGIN_BUSINESS_SERVICE_URL = "dms.remote_service.loginBusinessService.url";
 	
 	
 	private LoginServiceHandler loginService;
@@ -95,10 +98,7 @@ public class TT085RemoteServices implements ITT085RemoteServices {
 	private void lookupMasterServices() throws NamingException {
 		loginService = createLoginService();
 		codingService = createCodingService();
-//		translationService = createTranslationBean();
-//		configService = createConfigService();
 		activationService = createActivationBean();
-//		eventService = createEventService();
 	}
 	
 	@Override
@@ -119,14 +119,14 @@ public class TT085RemoteServices implements ITT085RemoteServices {
 	}
 	
 	private Object getService(String serviceName) throws NamingException {
-		return context.lookup(serviceName);
+		return context.lookup(properties.getProperty(SERVICES_PREFIX) + properties.getProperty(serviceName));
 	}
 	
 	public void setUserMachine(String userMachine) {
 		this.userMachine = userMachine;
 	}
 
-	public void setPasswordMachine(String passwordMachine) {
+	public void setPasswordMachine(String passwordMachine) {	
 		this.passwordMachine = passwordMachine;
 	}
 	
@@ -271,7 +271,7 @@ public class TT085RemoteServices implements ITT085RemoteServices {
 	@Override
 	public Collection<AvailableLanguageDto> getAvailableLanguages() throws Exception {
 		// TODO Auto-generated method stub
-		return null;
+		return new ArrayList<AvailableLanguageDto>();
 	}
 
 	@Override

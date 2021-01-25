@@ -1,7 +1,7 @@
 <SecurityModel loginDefaultUser="OPERATOR">
 
 <!-- FULL ADMIN -->
-  <User login="ADMIN" password="">
+  <User login="ADMIN" password="1234">
     <Permission name=".*"/>
   </User>
   

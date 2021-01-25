@@ -1,7 +1,7 @@
 package com.sicpa.tt085;
 
 public enum TT085TestUser {
-    OPERATOR("OPERATOR" ), FULL_ADMIN("0");
+    OPERATOR("OPERATOR" ), FULL_ADMIN("ADMIN");
 
     private final String login;
 

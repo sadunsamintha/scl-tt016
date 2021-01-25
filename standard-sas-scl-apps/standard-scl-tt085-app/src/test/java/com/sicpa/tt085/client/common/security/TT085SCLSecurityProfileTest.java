@@ -1,9 +1,11 @@
 package com.sicpa.tt085.client.common.security;
 
-import com.sicpa.standard.client.common.security.SecurityModel;
-import com.sicpa.standard.client.common.security.User;
-import com.sicpa.standard.sasscl.security.SasSclPermission;
-import com.sicpa.tt085.TT085TestSpringContextConfig;
+import static com.sicpa.tt085.TT085TestUser.FULL_ADMIN;
+import static com.sicpa.tt085.TT085TestUser.OPERATOR;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.junit.Assert.assertThat;
 
 import org.hamcrest.CoreMatchers;
 import org.junit.Test;
@@ -13,13 +15,10 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static com.sicpa.tt085.TT085TestUser.FULL_ADMIN;
-import static com.sicpa.tt085.TT085TestUser.OPERATOR;
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.assertThat;
+import com.sicpa.standard.client.common.security.SecurityModel;
+import com.sicpa.standard.client.common.security.User;
+import com.sicpa.standard.sasscl.security.SasSclPermission;
+import com.sicpa.tt085.TT085TestSpringContextConfig;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ActiveProfiles("SCL")
