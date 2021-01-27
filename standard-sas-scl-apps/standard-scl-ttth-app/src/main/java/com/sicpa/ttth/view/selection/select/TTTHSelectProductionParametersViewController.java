@@ -29,6 +29,8 @@ public class TTTHSelectProductionParametersViewController extends SelectProducti
 
 	private ProductionParameters pp;
 
+	private Boolean isBarcodeEnabled;
+
 	public TTTHSelectProductionParametersViewController() {
 		CustoBuilder.addPropertyToClass(ProductionParameters.class, productionBatchJobId);
 	}
@@ -57,7 +59,11 @@ public class TTTHSelectProductionParametersViewController extends SelectProducti
 				this.pp.setSku(pp.getSku());
 				this.pp.setBarcode(pp.getBarcode());
 				this.pp.setProperty(productionBatchJobId, strBatchJobId);
-				EventBusService.post(new BarcodeSkuModel(this.pp.getSku().getDescription(), this.pp.getSku().getBarCodes()));
+				if (isBarcodeEnabled) {
+					EventBusService.post(new BarcodeSkuModel(this.pp.getSku().getDescription(), this.pp.getSku().getBarCodes()));
+				} else {
+					EventBusService.post(new MessageEvent(BARCODE_VERIFIED));
+				}
 				isBatchIDSet = false;
                 addSkuDetailsToMainFrame();
                 screensFlow.moveToNext(TTTHScreenFlowTriggers.BARCODE_TRANSITION);
@@ -133,5 +139,9 @@ public class TTTHSelectProductionParametersViewController extends SelectProducti
 
 	public void setPp(ProductionParameters pp) {
 		this.pp = pp;
+	}
+
+	public void setBarcodeEnabled(Boolean barcodeEnabled) {
+		isBarcodeEnabled = barcodeEnabled;
 	}
 }
