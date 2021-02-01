@@ -29,6 +29,7 @@ public class PlcBooleanVariableRenderer extends JPanel implements IPlcVariableDe
 		setLayout(new MigLayout("ltr"));
 		add(getCheck(), "");
 		add(getLabel(), "");
+		add(new PlcVariableInfoRenderer(desc), "");
 	}
 
 	public JCheckBox getCheck() {

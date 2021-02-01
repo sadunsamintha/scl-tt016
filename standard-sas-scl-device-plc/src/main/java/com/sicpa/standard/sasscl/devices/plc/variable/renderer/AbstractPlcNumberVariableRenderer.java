@@ -1,17 +1,24 @@
 package com.sicpa.standard.sasscl.devices.plc.variable.renderer;
 
+import java.awt.Font;
+
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingUtilities;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.gui.listener.CoalescentChangeListener;
 import com.sicpa.standard.gui.plaf.SicpaFont;
 import com.sicpa.standard.gui.utils.TextUtils;
 import com.sicpa.standard.gui.utils.ThreadUtils;
 import com.sicpa.standard.sasscl.devices.plc.variable.descriptor.PlcVariableDescriptor;
-import net.miginfocom.swing.MigLayout;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import javax.swing.*;
-import java.awt.*;
+import net.miginfocom.swing.MigLayout;
 
 @SuppressWarnings("serial")
 public abstract class AbstractPlcNumberVariableRenderer<TYPE extends Number> extends JPanel implements
@@ -19,7 +26,7 @@ public abstract class AbstractPlcNumberVariableRenderer<TYPE extends Number> ext
 
 	public static final int DEFAULT_FONT_SIZE = 18;
 	public static final int MIN_FONT_SIZE = 8;
-	public static final int LABEL_WIDTH = 370;
+	public static final int LABEL_WIDTH = 340;
 
 	private static final Logger logger = LoggerFactory.getLogger(AbstractPlcNumberVariableRenderer.class);
 	private JLabel labelVarName;
@@ -38,7 +45,12 @@ public abstract class AbstractPlcNumberVariableRenderer<TYPE extends Number> ext
 
 	private void initGUI() {
 		setLayout(new MigLayout("ltr"));
-		add(getLabelVarName(), "w " + LABEL_WIDTH + "!");
+		add(getLabelVarName(), "");
+		
+		int lineSize = SwingUtilities.computeStringWidth(getLabelVarName().getFontMetrics(getLabelVarName().getFont()), getLabelVarName().getText());
+		int infoWidth = Math.abs(LABEL_WIDTH - lineSize);
+		
+		add(new PlcVariableInfoRenderer(desc), "gap right " + infoWidth);
 		add(getSpinner(), "");
 	}
 
