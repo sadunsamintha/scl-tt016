@@ -19,7 +19,8 @@ beans {
         importBeans('spring/custo/tt077/tt077-server-simulator.groovy')
     }
 
-	importBeans('spring/custo/tt077/tt077-hrd.xml')
+    importBeans('spring/custo/tt077/tt077-view.groovy')
+    importBeans('spring/custo/tt077/tt077-hrd.xml')
 
     printerSimulatorAdaptor(TT077PrinterAdaptorSimulator,ref('printerSimulatorController')){b->
         b.scope='prototype'
