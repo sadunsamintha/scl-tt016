@@ -23,6 +23,7 @@ import com.sicpa.standard.sasscl.devices.plc.variable.PlcVariableGroupEvent;
 import com.sicpa.standard.sasscl.messages.MessageEventKey;
 import com.sicpa.standard.sasscl.model.ProductionMode;
 import com.sicpa.standard.sasscl.provider.impl.PlcProvider;
+import com.sicpa.standard.sasscl.view.LanguageSwitchEvent;
 import com.sicpa.standard.sasscl.view.config.plc.MultiEditablePlcVariablesSet;
 import com.sicpa.tt016.model.TT016ProductionMode;
 
@@ -143,7 +144,21 @@ public class TT016MultiEditablePlcVariablesSet extends MultiEditablePlcVariables
 		}
 		return false;
 	}
+	
+	@Override
+	@Subscribe
+	public void handleLanguageSwitch(LanguageSwitchEvent evt) {
+		removeAll();
+		mainPanel = null;
+		scroll = null;
+		initGUI();
+		revalidate();
+		
+		tt016PanelsLines.clear();
+		this.editablePlcVariablesController.reload();
+	}
 
+	@Override
 	@Subscribe
 	public void handleNewPlcGroupEditable(PlcVariableGroupEvent evt) {
 		ThreadUtils.invokeLater(() -> newPlcGroupEditable(evt));
