@@ -1,18 +1,24 @@
 <!-- PRODUCTION MODES: STANDARD = 1, EXPORT = 2, MAINTENANCE = 3, REFEED NORMAL = 5 -->
-<CameraJobFilesConfig setCameraJob="false" useDefaultCameraJobFile="false">
+<CameraJobFilesConfig setCameraJob="true" useDefaultCameraJobFile="false">
   <CameraJobConfigNode>
     <productCameraJob productId="0">
-      <cameraJobFile cameraJobFileName="StandardDMX.job"/>
+      <cameraJobFile cameraJobFileName="TR_NoBlob.job"/>
+    </productCameraJob>
+    <children/>
+  </CameraJobConfigNode>
+  <CameraJobConfigNode>
+    <productCameraJob productId="1">
+      <cameraJobFile cameraJobFileName="TR_NoBlob.job"/>
     </productCameraJob>
     <children>
       <CameraJobConfigNode>
-        <productCameraJob productId="1">
+        <productCameraJob productId="1"> <!-- Put SKU ID of Non-Compliant SKU in productId to use Camera Job with Blob Detection -->
           <cameraJobFile cameraJobFileName="StandardDMX.job"/>
         </productCameraJob>
         <children/>
       </CameraJobConfigNode>
       <CameraJobConfigNode>
-        <productCameraJob productId="2">
+        <productCameraJob productId="2"> <!-- Put SKU ID of Non-Compliant SKU in productId to use Camera Job with Blob Detection -->
           <cameraJobFile cameraJobFileName="StandardDMX.job"/>
         </productCameraJob>
         <children/>
@@ -20,16 +26,10 @@
     </children>
   </CameraJobConfigNode>
   <CameraJobConfigNode>
-    <productCameraJob productId="1">
-      <cameraJobFile cameraJobFileName="StandardDMX.job"/>
-    </productCameraJob>
-    <children/>
-  </CameraJobConfigNode>
-  <CameraJobConfigNode>
     <productCameraJob productId="2">
-      <cameraJobFile cameraJobFileName="TR_Export.job"/>
+      <cameraJobFile cameraJobFileName="TR_NoBlob.job"/>
     </productCameraJob>
     <children/>
   </CameraJobConfigNode>
-  <defaultCameraJobFile cameraJobFileName="defaultCameraJob.job"/>
+  <defaultCameraJobFile cameraJobFileName="TR_NoBlob.job"/>
 </CameraJobFilesConfig>
