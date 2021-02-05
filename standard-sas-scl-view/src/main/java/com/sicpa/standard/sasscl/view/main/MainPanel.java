@@ -67,7 +67,7 @@ public class MainPanel extends JPanel {
 		if (statsView instanceof StatisticsView) {
 			((StatisticsView) statsView).getLabelTitle().setVisible(hasPermission(SasSclPermission.PRODUCTION_VIEW_STATISTICS));
 			((StatisticsView) statsView).getPanelSeparator().setVisible(hasPermission(SasSclPermission.PRODUCTION_VIEW_STATISTICS));
-			((StatisticsView) statsView).getPanelLineStats().setVisible(hasPermission(SasSclPermission.PRODUCTION_VIEW_STATISTICS));
+			((StatisticsView) statsView).getJxLayerLineStats().setVisible(hasPermission(SasSclPermission.PRODUCTION_VIEW_STATISTICS));
 			((StatisticsView) statsView).getPanelTotal().setVisible(hasPermission(SasSclPermission.PRODUCTION_VIEW_STATISTICS));
 		}
 	}

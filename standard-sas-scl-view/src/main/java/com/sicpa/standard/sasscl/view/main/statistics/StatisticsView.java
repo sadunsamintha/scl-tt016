@@ -14,11 +14,15 @@ import java.util.TreeMap;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
+
+import org.jdesktop.jxlayer.JXLayer;
 
 import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.i18n.Messages;
 import com.sicpa.standard.client.common.view.mvc.AbstractView;
+import com.sicpa.standard.gui.components.scroll.SmallScrollBar;
 import com.sicpa.standard.gui.plaf.SicpaColor;
 import com.sicpa.standard.gui.utils.ThreadUtils;
 import com.sicpa.standard.sasscl.model.statistics.ViewStatisticsDescriptor;
@@ -42,6 +46,9 @@ public class StatisticsView extends AbstractView<IStatisticsViewListener, Statis
 	private JPanel panelLineSpeed;
 	
 	private JSeparator panelSeparator;
+	
+	private JScrollPane scrollPaneLineStats;
+	private JXLayer<JScrollPane> jxLayerLineStats;
 
 	private NumberFormat percentFormatter;
 	private NumberFormat numberFormatter;
@@ -64,10 +71,24 @@ public class StatisticsView extends AbstractView<IStatisticsViewListener, Statis
 		setLayout(new MigLayout(""));
 		add(getLabelTitle(), "pushx,spanx , split 2");
 		add(getPanelSeparator(), "growx");
-		add(getPanelLineStats(), "pushx,grow,wrap");
+		add(getJxLayerLineStats(), "pushx,grow,wrap");
 		add(getPanelTotal(), "spanx,pushx,growx");
 		add(getPanelLineSpeed(), "gap top 10, pushx,grow,wrap");
 		add(getLabelUptime(), "");
+	}
+	
+	public JXLayer<JScrollPane> getJxLayerLineStats() {
+		if (jxLayerLineStats == null) {
+			jxLayerLineStats = SmallScrollBar.createLayerSmallScrollBar(getScrollPaneLineStats());
+		}
+		return jxLayerLineStats;
+	}
+	
+	public JScrollPane getScrollPaneLineStats() {
+		if (scrollPaneLineStats == null) {
+			scrollPaneLineStats = new JScrollPane(getPanelLineStats(), JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		}
+		return scrollPaneLineStats;
 	}
 
 	public JLabel getLabelUptime() {
