@@ -1,6 +1,9 @@
-<ProductionConfig activationBehavior="maintenanceActivationBehavior">
+<ProductionConfig activationBehavior="refeedActivationBehaviorCodeTypeCheck" authenticatorMode="SCL_TT021">
 
 	<CameraConfig deviceType="COGNEX" id="qc_scl_1" />
+
+	<!-- to use the brs uncomment the following -->
+	<!-- <BrsConfig /> -->
 
 	<plcConfig>
 		<cabinet>
@@ -9,9 +12,9 @@
 		</cabinet>
 		<line index="1">
 			<property key="PARAM_LINE_IS_ACTIVE" value="true" />
-			<proprty key="PARAM_LINE_EXPORT_MODE_ENABLED" value="false" />
-			<property key="PARAM_LINE_MAINTENANCE_MODE_ENABLED" value="true" />
-			<property key="PARAM_LINE_REFEED_MODE_ENABLED" value="false" />
+			<property key="PARAM_LINE_EXPORT_MODE_ENABLED" value="false" />
+			<property key="PARAM_LINE_MAINTENANCE_MODE_ENABLED" value="false" />
+			<property key="PARAM_LINE_REFEED_MODE_ENABLED" value="true" />
 		</line>
 		<line index="2">
 			<property key="PARAM_LINE_IS_ACTIVE" value="false" />

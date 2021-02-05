@@ -101,6 +101,11 @@ public class TT085PackageSenderGlobal implements IPackageSenderGlobal, CountryPr
             authenticatedProductsDto.add(new AuthenticatedProductDto((long) product.getSku().getId(), codeTypeId,
             		product.getCode().getEncoderId(), product.getCode().getSequence(),
                     product.getActivationDate()));
+            
+            // Set Country for Export Coding
+            if (product.getProperty(country) != null) {
+            	authenticatedProductsResultDto.setCountryId(product.getProperty(country).getId());
+        	}
         }
         populateResultDtoInfo(authenticatedProductsResultDto, products);
         authenticatedProductsResultDto.setProcessedProducts(authenticatedProductsDto);

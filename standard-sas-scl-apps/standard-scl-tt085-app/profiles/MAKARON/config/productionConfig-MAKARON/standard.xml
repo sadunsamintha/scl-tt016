@@ -1,16 +1,19 @@
-<ProductionConfig activationBehavior="maintenanceActivationBehavior">
+<ProductionConfig activationBehavior="standardActivationBehaviorCodeTypeCheck" authenticatorMode="PCC_SAS">
 
-	<CameraConfig deviceType="COGNEX" id="qc_scl_1" />
+	<CameraConfig deviceType="COGNEX" id="qc_sas" />
 
-	<plcConfig>
+	<!-- to use the brs uncomment the following -->
+	<BrsConfig />
+
+	<PlcConfig>
 		<cabinet>
 			<!-- variable not related to any line -->
 			<!-- <property key="VAR_NAME" value="VALUE" /> -->
 		</cabinet>
 		<line index="1">
 			<property key="PARAM_LINE_IS_ACTIVE" value="true" />
-			<proprty key="PARAM_LINE_EXPORT_MODE_ENABLED" value="false" />
-			<property key="PARAM_LINE_MAINTENANCE_MODE_ENABLED" value="true" />
+			<property key="PARAM_LINE_EXPORT_MODE_ENABLED" value="false" />
+			<property key="PARAM_LINE_MAINTENANCE_MODE_ENABLED" value="false" />
 			<property key="PARAM_LINE_REFEED_MODE_ENABLED" value="false" />
 		</line>
 		<line index="2">
@@ -19,6 +22,6 @@
 		<line index="3">
 			<property key="PARAM_LINE_IS_ACTIVE" value="false" />
 		</line>
-	</plcConfig>
+	</PlcConfig>
 
 </ProductionConfig>
