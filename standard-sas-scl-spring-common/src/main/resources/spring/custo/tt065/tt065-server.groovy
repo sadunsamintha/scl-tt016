@@ -6,6 +6,7 @@ import com.sicpa.standard.sasscl.devices.remote.impl.dtoConverter.*
 import com.sicpa.standard.sasscl.devices.remote.impl.remoteservices.*
 import com.sicpa.standard.sasscl.devices.remote.lifecheck.*
 import com.sicpa.tt065.remote.impl.*
+import com.sicpa.tt065.remote.remoteServer.*;
 
 beans{
 
@@ -48,5 +49,7 @@ beans{
 		timeoutSec =props['remoteServerTimeoutCall_sec'].trim()
 		timeoutSecLifeCheck= props['remoteServerLifeCheckTimeoutCall_sec'].trim()
 	}
+
+	remoteServerProductStatusMapping(TT065RemoteServerProductStatusMapping)
 }
 
