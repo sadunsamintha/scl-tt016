@@ -127,7 +127,12 @@ public class TT085BarcodeInputView extends BarcodeInputView implements CountryPr
 		getLabelCorrespondingSKU().setVisible(true);
 		for (Entry entry : entries) {
 			TT085Entry tt085Entry = (TT085Entry) entry;
-			ToggleImageAndTextButton button = new ToggleImageAndTextButton(entry.mode + "\n" + entry.sku + "\n" + tt085Entry.country.getDisplayDescription());
+			ToggleImageAndTextButton button;
+			if(tt085Entry.country!=null) {
+				 button = new ToggleImageAndTextButton(Messages.get(entry.mode.toString()) + "\n" + entry.sku + "\n" + tt085Entry.country.getDisplayDescription());
+			}else {
+				 button = new ToggleImageAndTextButton(Messages.get(entry.mode.toString()) + "\n" + entry.sku);
+			}
 			button.addActionListener(new TT085ButtonEntryActionListener(tt085Entry, barcode));
 			getPanelSelect().add(button, "center");
 		}
