@@ -189,6 +189,7 @@ public class TT016MainAppWithProfile extends TT016MainApp implements IProfileSel
 		config.add("spring/production.groovy");
 		config.add("spring/provider.xml");
 		config.add("spring/camera/camera-cognex-import.groovy");
+		config.add("spring/custo/tt016/d900/camera-d900-import.groovy");
 		config.add("spring/config.xml");
 		config.add("spring/scheduler.xml");
 		config.add("spring/alert/alert.xml");

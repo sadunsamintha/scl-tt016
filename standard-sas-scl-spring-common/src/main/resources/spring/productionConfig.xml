@@ -23,8 +23,11 @@
 
 	<bean id="cameraFactoryMapping" class="com.sicpa.standard.sasscl.controller.productionconfig.factory.mapping.CameraFactoryMapping" />
 
+	<bean id="d900CameraFactoryMapping" class="com.sicpa.standard.sasscl.controller.productionconfig.factory.mapping.D900CameraFactoryMapping" />
+
 	<bean id="deviceFactory" class="com.sicpa.standard.sasscl.controller.productionconfig.factory.DeviceFactory">
 		<property name="cameraFactoryMapping" ref="cameraFactoryMapping" />
+		<property name="d900CameraFactoryMapping" ref="d900CameraFactoryMapping" />
 		<property name="printerFactoryMapping" ref="printerFactoryMapping" />
 		<property name="implementationProvider" ref="implementationProvider" />
 		<property name="deviceModelNamePostfixProperty" ref="deviceModelNamePostfixProperty" />

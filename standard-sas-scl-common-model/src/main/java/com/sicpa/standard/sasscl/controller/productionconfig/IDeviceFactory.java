@@ -14,6 +14,8 @@ public interface IDeviceFactory {
 	 */
 	IStartableDevice getCamera(CameraConfig cameraConfig);
 
+	IStartableDevice getD900Camera(D900CameraConfig cameraConfig);
+
 	IStartableDevice getBis(BisConfig bisConfig);
 
     IStartableDevice getBrs(BrsConfig bisConfig);

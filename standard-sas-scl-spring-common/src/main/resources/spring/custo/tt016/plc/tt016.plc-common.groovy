@@ -14,6 +14,7 @@ import com.sicpa.standard.sasscl.devices.plc.PlcJmxInfo
 import com.sicpa.tt016.devices.plc.TT016PLCGroupVarsBuilder
 
 import static com.sicpa.standard.sasscl.messages.MessageEventKey.PLC.*
+import static com.sicpa.tt016.messages.TT016MessageEventKey.D900.*
 
 import com.sicpa.standard.client.common.ioc.InjectByMethodBean;
 
@@ -184,6 +185,7 @@ beans{
 		null,
 		null,
 		null,
+		null,
 		PLC_ERR_PRINTER_LOC_AFTER_CAM,
 		PLC_ERR_INVALID_PROD_CTRL_EJ_DISTANCE,
 		PLC_ERR_AUDIO_VISUAL_LOC_BEFORE_EJ,
@@ -193,7 +195,7 @@ beans{
 		PLC_ERR_TWO_MODES_SET_AT_SAMETIME,
 		null,
 		null,
-		null,
+		PLC_D900_OFFLINE_ERROR,
 		null,
 		null,
 		null,

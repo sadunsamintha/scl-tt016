@@ -1,0 +1,36 @@
+<com.sicpa.standard.camera.controller.model.CameraModel>
+	<mId>1</mId>
+	<mDriverName>CognexCameraDriver</mDriverName>
+	<mPort>11444</mPort>
+	<mErrorConnections>
+		<com.sicpa.standard.camera.controller.model.ErrorConnection>
+			<mPort>11555</mPort>
+			<mErrorCode>ES</mErrorCode>
+			<mEventType>WARNING</mEventType>
+			<mEventCode>5</mEventCode>
+		</com.sicpa.standard.camera.controller.model.ErrorConnection>
+	</mErrorConnections>
+	<mIp>localhost</mIp>
+	<mConnectionTimeout>500</mConnectionTimeout>
+	<mLifeCheckInterval>500</mLifeCheckInterval>
+	<mTelnetPort>1122</mTelnetPort>
+	<mTelnetUser>admin</mTelnetUser>
+	<mTelnetPassword></mTelnetPassword>
+	<mFTPPort>21</mFTPPort>
+	<mFTPUser>admin</mFTPUser>
+	<mFTPPassword></mFTPPassword>
+	<mImageFileName>image.jpg</mImageFileName>
+	<mImageRetrievalType>NEVER</mImageRetrievalType>
+	<mLoadJob>false</mLoadJob>
+	<mJobFileName>dummyjobUpdated1.job</mJobFileName>
+	<mNoCodeReceivedIteration>1000</mNoCodeReceivedIteration>
+	<mImagePollingInterval>0</mImagePollingInterval>
+	<mSaveImage>false</mSaveImage>
+	<mImageRepositoryPath>c:\</mImageRepositoryPath>
+	<mNumberOfImageToKeep>0</mNumberOfImageToKeep>
+	<mSaveImageType>ALL</mSaveImageType>
+	<mSimulatorMode>true</mSimulatorMode>
+	<mSimulatorSendCodeInterval>200</mSimulatorSendCodeInterval>
+	<mSimulatorSendCodeMode>RANDOM</mSimulatorSendCodeMode>
+	<mCameraParserClass>com.sicpa.standard.camera.parser.CameraCodeParser</mCameraParserClass>
+</com.sicpa.standard.camera.controller.model.CameraModel>

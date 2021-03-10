@@ -35,6 +35,8 @@ public class TT016FileStorage extends FileStorage implements ITT016Storage {
 
 	private final static Logger logger = LoggerFactory.getLogger(TT016FileStorage.class);
 
+	public static final String GLOBAL_PROPERTIES_PATH = "profiles/TT016/config/global.properties";
+
 	private final String dataFolder;
 	private final String internalFolder;
 	private final String quarantineFolder;

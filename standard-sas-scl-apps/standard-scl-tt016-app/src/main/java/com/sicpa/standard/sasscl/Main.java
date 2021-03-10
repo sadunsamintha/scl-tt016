@@ -26,6 +26,7 @@ public class Main {
             if (Boolean.valueOf(prop.getProperty("automated.beam.enabled"))) {
                 TT016Bootstrap.addMotorizedBeamPlcVariables();
             }
+            TT016Bootstrap.addD900PlcVariables();
         } catch (IOException e) {
             logger.error("", e);
         }

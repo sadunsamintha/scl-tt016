@@ -137,6 +137,8 @@ public class SASDefaultMessagesMapping extends DefaultMessagesMapping {
 		addEntry(Alert.PLC_ACTIVATION_CROSS_CHECK_FAILED, "[ALT_06]", ERROR);
 		addEntry(Alert.TOO_MANY_CAMERA_WARNING, "[ALT_07]", WARNING);
 		addEntry(Alert.PLC_TOO_MANY_NO_CAPS, "[ALT_08]", WARNING);
+		addEntry(Alert.TOO_MANY_VIDI_WARNING, "[ALT_09]", ERROR);
+		addEntry(Alert.VIDI_CROSS_CHECK_FAILED, "[ALT_10]", ERROR);
 
 
 		addEntry(Camera.CAMERA_FAIL_LOAD_JOB, "[CA_01]", ERROR);

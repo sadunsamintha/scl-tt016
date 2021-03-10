@@ -227,6 +227,7 @@
 		<module>standard-sas-scl-common-model</module>
 		<module>standard-sas-scl-controller-process</module>
 		<module>standard-sas-scl-device-camera</module>
+		<module>standard-sas-scl-device-d900</module>
 		<module>standard-sas-scl-device-printer</module>
 		<module>standard-sas-scl-device-plc</module>
 		<module>standard-sas-scl-device-brs</module>
@@ -321,6 +322,11 @@
 			<dependency>
 				<groupId>com.sicpa.standard.sasscl</groupId>
 				<artifactId>device-camera</artifactId>
+				<version>2.6.14-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>com.sicpa.standard.sasscl</groupId>
+				<artifactId>device-d900</artifactId>
 				<version>2.6.14-SNAPSHOT</version>
 			</dependency>
 			<dependency>
@@ -431,6 +437,11 @@
 				<groupId>com.sicpa.standard.camera</groupId>
 				<artifactId>standard-camera-cognex</artifactId>
 				<version>1.6.4</version>
+			</dependency>
+			<dependency>
+				<groupId>com.sicpa.standard.camera</groupId>
+				<artifactId>standard-camera-d900</artifactId>
+				<version>1.0.0</version>
 			</dependency>
 			<dependency>
 				<groupId>com.sicpa.standard.camera</groupId>

@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import com.sicpa.standard.sasscl.controller.productionconfig.config.D900CameraConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,11 +41,13 @@ public class ProductionInitiator implements IProductionInitiator {
 	private ActivationBehaviorProvider activationBehaviorProvider;
 
 	private final Map<String, IStartableDevice> cameras = new HashMap<>();
+	private final Map<String, IStartableDevice> d900Cameras = new HashMap<>();
 	private final Map<String, IStartableDevice> printers = new HashMap<>();
 
 	protected void reset() {
 		deviceFactory.reset();
 		cameras.clear();
+		d900Cameras.clear();
 		printers.clear();
 		bisProvider.set(null);
 		brs = null;
@@ -96,6 +99,7 @@ public class ProductionInitiator implements IProductionInitiator {
 	}
 
 	private void createAll() {
+		createD900Camera();
 		createCamera();
 		createPrinter();
 		createPlc();
@@ -123,6 +127,7 @@ public class ProductionInitiator implements IProductionInitiator {
 	private void injectDevicesIntoHardwareController() {
 		Set<IStartableDevice> devices = new HashSet<IStartableDevice>();
 		devices.addAll(cameras.values());
+		devices.addAll(d900Cameras.values());
 		devices.addAll(printers.values());
 
 		if (bisProvider.get() != null) {
@@ -165,6 +170,17 @@ public class ProductionInitiator implements IProductionInitiator {
 			IStartableDevice camera = deviceFactory.getCamera(cameraConfig);
 			logger.debug("camera created:{}", camera.getName());
 			cameras.put(cameraConfig.getId(), camera);
+		}
+	}
+
+	private void createD900Camera() {
+		logger.debug("creating D900cameras");
+		if(productionConfig.getD900CameraConfigs()!= null){
+			for (D900CameraConfig cameraConfig : productionConfig.getD900CameraConfigs()) {
+				IStartableDevice d900camera = deviceFactory.getD900Camera(cameraConfig);
+				logger.debug("D900 camera created:{}", d900camera.getName());
+				d900Cameras.put(cameraConfig.getId(), d900camera);
+			}
 		}
 	}
 

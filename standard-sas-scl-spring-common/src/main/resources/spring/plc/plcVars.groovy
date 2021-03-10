@@ -89,6 +89,7 @@ beans {
 	plcMap['PARAM_LINE_INDEXED_PRODUCTS']=[v:LINE_PRM+'bIndexedProducts' ,t:B ,lineGrp:'misc']
 	plcMap['PARAM_LINE_INHIBIT_PRINTER']=[v:LINE_PRM+'bInhibitPrinter' ,t:B ,lineGrp:'printer']
 	plcMap['PARAM_LINE_INHIBIT_CAMERA']=[v:LINE_PRM+'bInhibitCamera' ,t:B ,lineGrp:'camera']
+	plcMap['PARAM_LINE_INHIBIT_BIS']=[v:LINE_PRM+'bInhibitBIS' ,t:B ,lineGrp:'camera']
 	plcMap['PARAM_LINE_INHIBIT_PC_EJECTION_RECEPTION']=[v:LINE_PRM+'bInhibitPCEjectionReception' ,t:B ,lineGrp:'ejection']
 	plcMap['PARAM_LINE_INHIBIT_EJECTION_EMISSION']=[v:LINE_PRM+'bInhibitEjectionEmission' ,t:B ,lineGrp:'ejection']
 	plcMap['PARAM_LINE_INHIBIT_EJECTION_AUDIO_VISUALS']=[v:LINE_PRM+'bInhibitEjectionAudiovisuals' ,t:B ,lineGrp:'ejection']

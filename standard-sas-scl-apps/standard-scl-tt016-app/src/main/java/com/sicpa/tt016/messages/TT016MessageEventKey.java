@@ -9,6 +9,11 @@ public interface TT016MessageEventKey {
         String EXCEPTION_CODE_IN_AGING = "activation.err.aging.code";
     }
 
+    interface D900{
+        String PLC_D900_OFFLINE_ERROR_MSG_CODE = "D9C_01";
+        String PLC_D900_OFFLINE_ERROR = "VIDI.ERROR.CAMERA_OFFLINE";
+    }
+
     interface AUTOMATEDBEAM {
         String AUTOMATED_BEAM_HEAD_TO_HOME_MSG_CODE = "[ABI_01]";
         String AUTOMATED_BEAM_HEAD_TO_HOME = "plc.motor.sku.height.home";

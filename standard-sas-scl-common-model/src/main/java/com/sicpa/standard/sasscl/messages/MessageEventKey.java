@@ -122,6 +122,9 @@ public interface MessageEventKey {
 		String TOO_MANY_CAMERA_ERROR = "CAMERA.ERR.TOO_MANY_ERROR";
 		String TOO_MANY_CAMERA_WARNING = "CAMERA.WARNING.WARNING";
 
+		String TOO_MANY_VIDI_WARNING = "VIDI.ERROR.TOO_MANY_ERROR";
+		String VIDI_CROSS_CHECK_FAILED = "VIDI.ERROR.CROSSCHECK.FAILED";
+
 		String DUPLICATED_CODE = "CAMERA.ERR.DUPLICATED_CODE";
 		String CAMERA_TRIGGER_TOO_FAST = "CAMERA.ERR.TRIGGER.TOO_FAST";
 		String TOO_MUCH_CAMERA_IDLE_TIME = "CAMERA.ERR.TOO_MUCH_IDLE_TIME";
@@ -143,6 +146,7 @@ public interface MessageEventKey {
 
 	public static interface Simulator {
 		String CAMERA = "simulator.camera";
+		String D900 = "simulator.d900";
 		String PRINTER = "simulator.printer";
 		String PLC = "simulator.plc";
 		String REMOTE_SERVER = "simulator.remoteserver";

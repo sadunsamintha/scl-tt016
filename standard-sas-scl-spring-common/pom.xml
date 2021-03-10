@@ -86,6 +86,14 @@
 			<groupId>com.sicpa.standard.sasscl</groupId>
 			<artifactId>view</artifactId>
 		</dependency>
+        <dependency>
+            <groupId>com.sicpa.standard.camera</groupId>
+            <artifactId>standard-camera-d900</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.sicpa.standard.sasscl</groupId>
+            <artifactId>device-d900</artifactId>
+        </dependency>
 
-	</dependencies>
+    </dependencies>
 </project>

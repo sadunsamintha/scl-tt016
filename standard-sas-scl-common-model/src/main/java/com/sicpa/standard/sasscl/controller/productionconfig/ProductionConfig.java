@@ -15,8 +15,9 @@ public class ProductionConfig implements IProductionConfig {
 
 	protected final List<CameraConfig> cameraConfigs = new ArrayList<CameraConfig>();
 	protected final List<PrinterConfig> printerConfigs = new ArrayList<PrinterConfig>();
+	protected final List<D900CameraConfig> d900CameraConfigs = new ArrayList<D900CameraConfig>();
 
-    protected BrsConfig brsConfig;
+	protected BrsConfig brsConfig;
 	protected BisConfig bisConfig;
 
 	protected PlcConfig plcConfig;
@@ -26,6 +27,10 @@ public class ProductionConfig implements IProductionConfig {
 
 	public List<CameraConfig> getCameraConfigs() {
 		return cameraConfigs;
+	}
+
+	public List<D900CameraConfig> getD900CameraConfigs() {
+		return d900CameraConfigs;
 	}
 
 	public List<PrinterConfig> getPrinterConfigs() {

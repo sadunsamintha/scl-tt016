@@ -19,6 +19,7 @@ public class DeviceFactory implements IDeviceFactory {
 	private final Cache cache = new Cache();
 
 	private ICameraFactoryMapping cameraFactoryMapping;
+	private ID900CameraFactoryMapping d900CameraFactoryMapping;
 	private IPrinterFactoryMapping printerFactoryMapping;
 
 	private IDeviceModelNamePostfixProperty deviceModelNamePostfixProperty;
@@ -31,6 +32,21 @@ public class DeviceFactory implements IDeviceFactory {
 		if (value == null) {
 			deviceModelNamePostfixProperty.set(cameraConfig.getId());
 			String beanName = cameraFactoryMapping.getCameraBeanName(cameraConfig.getCameraType());
+			logger.info("retreiving camera from implProvider {}", beanName);
+			value = (IStartableDevice) implementationProvider.getImplementation(beanName);
+			value.setName(cameraConfig.getId());
+			cache.put(cameraConfig.getId(), IStartableDevice.class, value);
+			createConfigurator(value, cameraConfig);
+		}
+		return value;
+	}
+
+	@Override
+	public IStartableDevice getD900Camera(D900CameraConfig cameraConfig) {
+		IStartableDevice value = cache.get(cameraConfig.getId(), IStartableDevice.class);
+		if (value == null) {
+			deviceModelNamePostfixProperty.set(cameraConfig.getId());
+			String beanName = d900CameraFactoryMapping.getD900CameraBeanName(cameraConfig.getCameraType());
 			logger.info("retreiving camera from implProvider {}", beanName);
 			value = (IStartableDevice) implementationProvider.getImplementation(beanName);
 			value.setName(cameraConfig.getId());
@@ -120,6 +136,10 @@ public class DeviceFactory implements IDeviceFactory {
 
 	public void setCameraFactoryMapping(ICameraFactoryMapping cameraFactoryMapping) {
 		this.cameraFactoryMapping = cameraFactoryMapping;
+	}
+
+	public void setD900CameraFactoryMapping(ID900CameraFactoryMapping cameraFactoryMapping) {
+		this.d900CameraFactoryMapping = cameraFactoryMapping;
 	}
 
 	public void setPrinterFactoryMapping(IPrinterFactoryMapping printerFactoryMapping) {

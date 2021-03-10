@@ -19,6 +19,12 @@ public interface IProductionConfig {
 	Collection<CameraConfig> getCameraConfigs();
 
 	/**
+	 *
+	 * @return the config of the D900 cameras that will be created for the production
+	 */
+	Collection<D900CameraConfig> getD900CameraConfigs();
+
+	/**
 	 * 
 	 * @return the config of the printers that will be created for the production
 	 */

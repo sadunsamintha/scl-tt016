@@ -20,9 +20,7 @@ import static com.sicpa.standard.sasscl.custoBuilder.CustoBuilder.setMessageType
 import static com.sicpa.standard.sasscl.custoBuilder.CustoBuilder.setProductionModePermission;
 import static com.sicpa.standard.sasscl.custoBuilder.CustoBuilder.setStateNextPossibleStates;
 import static com.sicpa.standard.sasscl.ioc.BeansName.PRODUCTION_CONFIG_MAPPING;
-import static com.sicpa.standard.sasscl.messages.ActionMessageType.ERROR_DEVICE;
-import static com.sicpa.standard.sasscl.messages.ActionMessageType.ERROR_DISPLAY;
-import static com.sicpa.standard.sasscl.messages.ActionMessageType.WARNING;
+import static com.sicpa.standard.sasscl.messages.ActionMessageType.*;
 import static com.sicpa.standard.sasscl.messages.MessageEventKey.Activation.EXCEPTION_CODE_IN_EXPORT;
 import static com.sicpa.standard.sasscl.messages.MessageEventKey.BRS.BRS_WRONG_SKU;
 import static com.sicpa.tt016.controller.flow.TT016ActivityTrigger.TRG_STOP_REASON_SELECTED;
@@ -50,6 +48,7 @@ import static com.sicpa.tt016.messages.TT016MessageEventKey.AUTOMATEDBEAM.AUTOMA
 import static com.sicpa.tt016.messages.TT016MessageEventKey.AUTOMATEDBEAM.AUTOMATED_BEAM_INVALID_HEIGHT_DETECTED_MSG_CODE;
 import static com.sicpa.tt016.messages.TT016MessageEventKey.AUTOMATEDBEAM.AUTOMATED_BEAM_SAFETY_SENSOR_TRIG;
 import static com.sicpa.tt016.messages.TT016MessageEventKey.AUTOMATEDBEAM.AUTOMATED_BEAM_SAFETY_SENSOR_TRIG_MSG_CODE;
+import static com.sicpa.tt016.messages.TT016MessageEventKey.D900.*;
 import static com.sicpa.tt016.model.statistics.TT016StatisticsKey.EJECTED_PRODUCER;
 import static com.sicpa.tt016.model.statistics.TT016StatisticsKey.INK_DETECTED;
 import static com.sicpa.tt016.view.TT016ScreenFlowTriggers.STOP_PRODUCTION;
@@ -70,10 +69,7 @@ import com.sicpa.standard.sasscl.Bootstrap;
 import com.sicpa.standard.sasscl.controller.flow.statemachine.FlowTransition;
 import com.sicpa.standard.sasscl.controller.productionconfig.mapping.IProductionConfigMapping;
 import com.sicpa.standard.sasscl.custoBuilder.CustoBuilder;
-import com.sicpa.standard.sasscl.devices.plc.AutomatedBeamHeightManager;
-import com.sicpa.standard.sasscl.devices.plc.AutomatedBeamNtfHandler;
-import com.sicpa.standard.sasscl.devices.plc.AutomatedBeamPlcEnums;
-import com.sicpa.standard.sasscl.devices.plc.PlcUtils;
+import com.sicpa.standard.sasscl.devices.plc.*;
 import com.sicpa.standard.sasscl.ioc.BeansName;
 import com.sicpa.standard.sasscl.messages.ActionEventWarning;
 import com.sicpa.standard.sasscl.messages.ActionMessageType;
@@ -119,6 +115,7 @@ public class TT016Bootstrap extends Bootstrap {
 			initializeAlarmListenersForBeam();
 			sendSKUHeightToBeam();
 		}
+		addErrorMessagesForD900();
 		addAgingProductionMode();
 		super.executeSpringInitTasks();
 		noStopIfDmxDetectedInExport();
@@ -181,6 +178,20 @@ public class TT016Bootstrap extends Bootstrap {
 		}
 	}
 
+	public static void addD900PlcVariables() {
+		for (D900PlcEnums var : D900PlcEnums.values()) {
+			if( var == D900PlcEnums.PARAM_LINE_BIS_DELAY ||
+				var == D900PlcEnums.PARAM_LINE_BIS_DISTANCE ||
+				var == D900PlcEnums.PARAM_LINE_BIS_LENGTH){
+				CustoBuilder.addPlcVariable(var.toString(), var.getNameOnPlc(), var.getPlc_type(), new HashMap<String, String>() {{
+					put("lineGrp", "camera");
+				}});
+			} else {
+				CustoBuilder.addPlcVariable(var.toString(), var.getNameOnPlc(), var.getPlc_type(), new HashMap<>());
+			}
+		}
+	}
+
 	private void convertLegacyEncodersIfAny() {
 		legacyEncoderConverter.convertLegacyEncoders();
 	}
@@ -191,6 +202,10 @@ public class TT016Bootstrap extends Bootstrap {
 
 	private void addWarningCodeFoundInAgingMode() {
 		addMessage(EXCEPTION_CODE_IN_AGING, EXCEPTION_CODE_IN_AGING_MSG_CODE, WARNING);
+	}
+
+	private void addErrorMessagesForD900() {
+		CustoBuilder.addMessage(PLC_D900_OFFLINE_ERROR, PLC_D900_OFFLINE_ERROR_MSG_CODE, ERROR);
 	}
 
 	private void addErrorMessagesForAutomatedBeam() {
