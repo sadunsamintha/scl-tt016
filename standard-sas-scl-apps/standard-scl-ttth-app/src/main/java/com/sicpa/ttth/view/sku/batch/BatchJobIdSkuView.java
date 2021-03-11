@@ -5,13 +5,7 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.util.ArrayList;
 import java.util.Collections;
-import javax.swing.Box;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JSeparator;
-import javax.swing.JTextField;
+import javax.swing.*;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.PlainDocument;
@@ -105,6 +99,8 @@ public class BatchJobIdSkuView extends AbstractView<IBatchJobIdSkuListener, Batc
             setLayout(new MigLayout("ltr,fill"));
             add(getBatchJobIdPanel(), "push, grow, align center, wrap");
             add(getNavButtonPanel(), "newline push, grow, align center, wrap");
+            UIManager.put("OptionPane.cancelButtonText", Messages.get("std.gui.spinner.virtualKeyboard.cancel"));
+            UIManager.put("OptionPane.okButtonText", Messages.get("std.gui.spinner.virtualKeyboard.ok"));
         }
 
         JButton getButtonBack() {
@@ -182,7 +178,7 @@ public class BatchJobIdSkuView extends AbstractView<IBatchJobIdSkuListener, Batc
                         autoBatchJobIdButton.addActionListener(e -> {
                             JOptionPane pane = getBatchSelectionPane(Messages.get("sku.button.batch.auto.mode"), choices.toArray());
                             JDialog dialog = pane.createDialog(this, Messages.get("sku.button.batch.auto.mode"));
-                            dialog.setSize(350, 180);
+                            dialog.setSize(380, 180);
                             dialog.setVisible(true);
                             dialog.dispose();
                             batchJobId = (String) pane.getInputValue();
@@ -205,7 +201,7 @@ public class BatchJobIdSkuView extends AbstractView<IBatchJobIdSkuListener, Batc
                         autoBatchJobIdButton.addActionListener(e -> {
                             JOptionPane pane = getBatchSelectionPane(Messages.get("sku.button.batch.auto.mode"), choices.toArray());
                             JDialog dialog = pane.createDialog(this, Messages.get("sku.button.batch.auto.mode.prompt"));
-                            dialog.setSize(350, 180);
+                            dialog.setSize(380, 180);
                             dialog.setVisible(true);
                             dialog.dispose();
                             batchJobId = (String) pane.getInputValue();
