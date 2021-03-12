@@ -1,4 +1,4 @@
-<ProductionConfig activationBehavior="standardActivationBehaviorCodeTypeCheck" authenticatorMode="DM_8x18">
+<ProductionConfig activationBehavior="standardActivationBehaviorCodeTypeCheck" authenticatorMode="DM_8X18">
 
 	<CameraConfig deviceType="COGNEX" id="qc_scl_1" />
 

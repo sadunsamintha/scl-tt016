@@ -1,6 +1,6 @@
 <ProductionConfig activationBehavior="countingActivationBehavior">
 
-	<CameraConfig deviceType="COGNEX" id="qc_scl_1" />
+	<CameraConfig deviceType="COGNEX" id="qc_sas" />
 
 	<PlcConfig line1File="line1Config.xml" line1Index="1">
 		<property key=".com.stLine[1].bLine_is_active" value="true" />
