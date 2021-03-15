@@ -97,6 +97,7 @@ public class TT016Bootstrap extends Bootstrap {
 	private AutomatedBeamHeightManager automatedBeamHeightManager;
 	private AutomatedBeamNtfHandler automatedBeamNtfHandler;
 	private int codeTypeId;
+	private boolean isHsOutMode;
 	private boolean isBeamEnabled;
 	private boolean isBeamInvalidHeightError;
 	private List<DisallowedConfiguration> disallowedConfigurations;
@@ -121,7 +122,9 @@ public class TT016Bootstrap extends Bootstrap {
 		noStopIfDmxDetectedInExport();
 		selectStopReasonWhenProductionStop();
 		setUnknownSkuCodeType();
-		addProducerEjectionStatistic();
+		if (!isHsOutMode) {
+			addProducerEjectionStatistic();
+		}
 		addInkDetectedStatistic();
 		sendEjectionTypeForProductionMode();
 		addDisallowedConfigurations(BeanProvider.getBean(BeansName.ALL_PROPERTIES));
@@ -326,6 +329,10 @@ public class TT016Bootstrap extends Bootstrap {
 
 	public void setCodeTypeId(int codeTypeId) {
 		this.codeTypeId = codeTypeId;
+	}
+
+	public void setHsOutMode(boolean hsOutMode) {
+		isHsOutMode = hsOutMode;
 	}
 
 	public void setBeamEnabled(boolean beamEnabled) {

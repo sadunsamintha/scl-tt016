@@ -18,7 +18,8 @@ beans{
 	def serverBehavior=props['remoteServer.behavior'].trim().toUpperCase()
 	def printerBehavior=props['printer.behavior'].trim().toUpperCase()
 	def productionBehavior=props['production.config.folder'].trim().toUpperCase()
-	
+	def hsOutBehavior=props['camera.hsout.enabled'].trim().toUpperCase()
+
 	if(serverBehavior == "STANDARD") {
 		importBeans('spring/custo/tt016/tt016-server.groovy')
 	} else {
@@ -64,6 +65,7 @@ beans{
 		stopReasonViewController=ref('stopReasonViewController')
 		codeTypeId=props['codeTypeId'].trim()
 		beamEnabled=props['automated.beam.enabled'].trim()
+		hsOutMode=props['camera.hsout.enabled'].trim()
 		beamInvalidHeightError=props['alert.invalid.height.error'].trim()
 		unknownSkuProvider=ref('unknownSkuProvider')
 		ejectionTypeSender=ref('ejectionTypeSender')
@@ -97,17 +99,22 @@ beans{
 		importBeans('spring/custo/tt016/tt016-plc-scl.xml')
 		importBeans('spring/custo/tt016/storage/tt016-storage-import.groovy')
 		importBeans('spring/custo/tt016/tt016-production.groovy')
-		importBeans('spring/custo/tt016/tt016-activation.xml')
 		importBeans('spring/custo/tt016/tt016-monitoring-scl.xml')
 		importBeans('spring/custo/tt016/tt016-scheduler-scl.xml')
 		importBeans('spring/custo/tt016/tt016-view-scl.xml')
+		if (hsOutBehavior == "FALSE") {
+			importBeans('spring/custo/tt016/tt016-view-scl-custo-activation.groovy')
+			importBeans('spring/custo/tt016/tt016-activation.xml')
+		}
 	}
-	
-	importBeans('spring/custo/tt016/tt016-postPackage.xml')
+
 	importBeans('spring/custo/tt016/tt016-coding.xml')
 	importBeans('spring/offlineCounting.xml')
 	importBeans('spring/custo/tt016/tt016-provider.xml')
 	importBeans('spring/custo/tt016/tt016-alertPlcActivationCrossCheckTask.xml')
+	if (hsOutBehavior == "FALSE") {
+		importBeans('spring/custo/tt016/tt016-postPackage.xml')
+	}
 
 	addAlias('bisCredentialProvider','remoteServer')
 
