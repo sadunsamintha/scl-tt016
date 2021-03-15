@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:util="http://www.springframework.org/schema/util"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+
+	<bean id="mainFrame" class="com.sicpa.tt084.sasscl.view.TT084MainFrameGetter">
+		<property name="viewController" ref="mainFrameController" />
+		<property name="startStopView" ref="startStopView" />
+		<property name="exitView" ref="exitView" />
+		<property name="optionsView" ref="optionsView" />
+		<property name="selectionChangeView" ref="selectionChangeView" />
+		<property name="messagesView" ref="messagesView" />
+		<property name="mainPanelGetter" ref="mainPanelGetter" />
+		<property name="snapshotView" ref="snapshotView" />
+		<property name="flowControl" ref="flowControl" />
+		<property name="skuListProvider" ref="skuListProvider" />
+	</bean>
+
+</beans>
