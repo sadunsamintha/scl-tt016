@@ -227,7 +227,7 @@
 		<module>standard-sas-scl-common-model</module>
 		<module>standard-sas-scl-controller-process</module>
 		<module>standard-sas-scl-device-camera</module>
-		<module>standard-sas-scl-device-d900</module>
+		<module>standard-sas-scl-device-D900</module>
 		<module>standard-sas-scl-device-printer</module>
 		<module>standard-sas-scl-device-plc</module>
 		<module>standard-sas-scl-device-brs</module>
