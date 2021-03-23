@@ -17,4 +17,6 @@ beans{
 
 	importBeans('spring/custo/tt084/tt084-view.xml')
 
+	importBeans('spring/custo/tt084/tt084-hrd.xml')
+
 }
