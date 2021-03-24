@@ -13,10 +13,10 @@
 	<requestMonitoringMediumFrequency>3600000</requestMonitoringMediumFrequency>
 	<requestMonitoringHighFrequency>300000</requestMonitoringHighFrequency>
 	<requestStatusPeriod>500</requestStatusPeriod>
-	<allowedInkTags>79000-*</allowedInkTags>
-	<allowedSolventTags>77001-*</allowedSolventTags>
-	<fontType>PIXEL_7x5</fontType>
-	<nozzleMode>OPEN_AUTO_CLOSE_MANUAL</nozzleMode>
+	<allowedInkTags></allowedInkTags>
+	<allowedSolventTags></allowedSolventTags>
+	<fontType>PIXEL_5x5</fontType>
+	<nozzleMode>OPEN_MANUAL_CLOSE_AUTO</nozzleMode>
 	<nozzleCloseDelayMs>1000</nozzleCloseDelayMs>
 	<printerParameters class="com.sicpa.standard.printer.leibinger.model.LeibingerParameter">
 		<codeType>DYNAMIC_DATAMATRIX</codeType>
@@ -25,24 +25,24 @@
 	</printerParameters>
 	<invertedBitmapLogo>false</invertedBitmapLogo>
 	<reversedBitmapLogo>false</reversedBitmapLogo>
-	<wysiwyg>false</wysiwyg>
-	<encoderResolution>22000</encoderResolution>
+	<wysiwyg>true</wysiwyg>
+	<encoderResolution>10000</encoderResolution>
 	<inverted>0</inverted>
 	<rotation>0</rotation>
-	<invertedDataMatrix>false</invertedDataMatrix>
+	<invertedDataMatrix>true</invertedDataMatrix>
 	<reversedDataMatrix>false</reversedDataMatrix>
-	<invertedText>false</invertedText>	
+	<invertedText>false</invertedText>
 	<reversedText>true</reversedText>
-	<encoderSignal>1</encoderSignal>
+	<encoderSignal>3</encoderSignal>
 	<printGoSignal>1</printGoSignal>
 	<printHeight>95</printHeight>
-	<flightTimeCompensationMicrometers>0</flightTimeCompensationMicrometers>
-	<printMode>1</printMode>
+	<flightTimeCompensationMicrometers>4000</flightTimeCompensationMicrometers>
+	<printMode>4</printMode>
 	<strokeDistanceMicrometers>500</strokeDistanceMicrometers>
-	<printGoDelayMicrometers>0</printGoDelayMicrometers>
+	<printGoDelayMicrometers>9000</printGoDelayMicrometers>
 	<printGoDistance>0</printGoDistance>
 	<printGoRepetition>0</printGoRepetition>
 	<securePing>true</securePing>
-    <backwardLock>1</backwardLock>
-    <printGoHoldOff>60000</printGoHoldOff>
+	<backwardLock>1</backwardLock>
+	<printGoHoldOff>60000</printGoHoldOff>
 </LeibingerPrinterModel>
