@@ -28,26 +28,7 @@ import static com.sicpa.tt016.messages.TT016MessageEventKey.ACTIVATION.EXCEPTION
 import static com.sicpa.tt016.messages.TT016MessageEventKey.ACTIVATION.EXCEPTION_CODE_IN_AGING_MSG_CODE;
 import static com.sicpa.tt016.messages.TT016MessageEventKey.ACTIVATION.NO_INK_IN_REFEED_MODE;
 import static com.sicpa.tt016.messages.TT016MessageEventKey.ACTIVATION.NO_INK_IN_REFEED_MODE_MSG_CODE;
-import static com.sicpa.tt016.messages.TT016MessageEventKey.AUTOMATEDBEAM.AUTOMATED_BEAM_ADJUST_HEIGHT;
-import static com.sicpa.tt016.messages.TT016MessageEventKey.AUTOMATEDBEAM.AUTOMATED_BEAM_ADJUST_HEIGHT_MSG_CODE;
-import static com.sicpa.tt016.messages.TT016MessageEventKey.AUTOMATEDBEAM.AUTOMATED_BEAM_AWAITING_RESET;
-import static com.sicpa.tt016.messages.TT016MessageEventKey.AUTOMATEDBEAM.AUTOMATED_BEAM_AWAITING_RESET_MSG_CODE;
-import static com.sicpa.tt016.messages.TT016MessageEventKey.AUTOMATEDBEAM.AUTOMATED_BEAM_ERROR_STATE;
-import static com.sicpa.tt016.messages.TT016MessageEventKey.AUTOMATEDBEAM.AUTOMATED_BEAM_ERROR_STATE_MSG_CODE;
-import static com.sicpa.tt016.messages.TT016MessageEventKey.AUTOMATEDBEAM.AUTOMATED_BEAM_ESTOP_STATE;
-import static com.sicpa.tt016.messages.TT016MessageEventKey.AUTOMATEDBEAM.AUTOMATED_BEAM_ESTOP_STATE_MSG_CODE;
-import static com.sicpa.tt016.messages.TT016MessageEventKey.AUTOMATEDBEAM.AUTOMATED_BEAM_ESTOP_SWITCH_STATE_ENGAGED;
-import static com.sicpa.tt016.messages.TT016MessageEventKey.AUTOMATEDBEAM.AUTOMATED_BEAM_ESTOP_SWITCH_STATE_MSG_CODE;
-import static com.sicpa.tt016.messages.TT016MessageEventKey.AUTOMATEDBEAM.AUTOMATED_BEAM_ESTOP_SWITCH_STATE_RELEASED;
-import static com.sicpa.tt016.messages.TT016MessageEventKey.AUTOMATEDBEAM.AUTOMATED_BEAM_ESTOP_SWITCH_STATE_RELEASED_MSG_CODE;
-import static com.sicpa.tt016.messages.TT016MessageEventKey.AUTOMATEDBEAM.AUTOMATED_BEAM_HEAD_TO_HOME;
-import static com.sicpa.tt016.messages.TT016MessageEventKey.AUTOMATEDBEAM.AUTOMATED_BEAM_HEAD_TO_HOME_MSG_CODE;
-import static com.sicpa.tt016.messages.TT016MessageEventKey.AUTOMATEDBEAM.AUTOMATED_BEAM_HEIGHT_SET;
-import static com.sicpa.tt016.messages.TT016MessageEventKey.AUTOMATEDBEAM.AUTOMATED_BEAM_HEIGHT_SET_MSG_CODE;
-import static com.sicpa.tt016.messages.TT016MessageEventKey.AUTOMATEDBEAM.AUTOMATED_BEAM_INVALID_HEIGHT_DETECTED;
-import static com.sicpa.tt016.messages.TT016MessageEventKey.AUTOMATEDBEAM.AUTOMATED_BEAM_INVALID_HEIGHT_DETECTED_MSG_CODE;
-import static com.sicpa.tt016.messages.TT016MessageEventKey.AUTOMATEDBEAM.AUTOMATED_BEAM_SAFETY_SENSOR_TRIG;
-import static com.sicpa.tt016.messages.TT016MessageEventKey.AUTOMATEDBEAM.AUTOMATED_BEAM_SAFETY_SENSOR_TRIG_MSG_CODE;
+import static com.sicpa.tt016.messages.TT016MessageEventKey.AUTOMATEDBEAM.*;
 import static com.sicpa.tt016.messages.TT016MessageEventKey.D900.*;
 import static com.sicpa.tt016.model.statistics.TT016StatisticsKey.EJECTED_PRODUCER;
 import static com.sicpa.tt016.model.statistics.TT016StatisticsKey.INK_DETECTED;
@@ -183,16 +164,8 @@ public class TT016Bootstrap extends Bootstrap {
 
 	public static void addD900PlcVariables() {
 		for (D900PlcEnums var : D900PlcEnums.values()) {
-			if( var == D900PlcEnums.PARAM_LINE_BIS_DELAY ||
-				var == D900PlcEnums.PARAM_LINE_BIS_DISTANCE ||
-				var == D900PlcEnums.PARAM_LINE_BIS_LENGTH){
-				CustoBuilder.addPlcVariable(var.toString(), var.getNameOnPlc(), var.getPlc_type(), new HashMap<String, String>() {{
-					put("lineGrp", "camera");
-				}});
-			} else {
-				CustoBuilder.addPlcVariable(var.toString(), var.getNameOnPlc(), var.getPlc_type(), new HashMap<>());
-			}
-		}
+            CustoBuilder.addPlcVariable(var.toString(), var.getNameOnPlc(), var.getPlc_type(), new HashMap<>());
+        }
 	}
 
 	private void convertLegacyEncodersIfAny() {
@@ -221,6 +194,8 @@ public class TT016Bootstrap extends Bootstrap {
 		CustoBuilder.addMessage(AUTOMATED_BEAM_ESTOP_STATE, AUTOMATED_BEAM_ESTOP_STATE_MSG_CODE, ERROR_DEVICE);
 		CustoBuilder.addMessage(AUTOMATED_BEAM_ESTOP_SWITCH_STATE_ENGAGED, AUTOMATED_BEAM_ESTOP_SWITCH_STATE_MSG_CODE, ERROR_DEVICE);
 		CustoBuilder.addMessage(AUTOMATED_BEAM_ESTOP_SWITCH_STATE_RELEASED, AUTOMATED_BEAM_ESTOP_SWITCH_STATE_RELEASED_MSG_CODE, WARNING);
+		CustoBuilder.addMessage(PLC_AUTOMATED_BEAM_POWER_ERROR, PLC_AUTOMATED_BEAM_POWER_ERROR_MSG_CODE, ERROR);
+		CustoBuilder.addMessage(PLC_AUTOMATED_BEAM_VELOCITY_ERROR, PLC_AUTOMATED_BEAM_VELOCITY_ERROR_MSG_CODE, ERROR);
 
 		ActionMessageType invalidHeightMessageType = WARNING;
 		if (isBeamInvalidHeightError) {

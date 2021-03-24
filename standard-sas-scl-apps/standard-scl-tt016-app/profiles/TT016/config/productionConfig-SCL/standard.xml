@@ -3,7 +3,7 @@
 	<!--<PrinterConfig deviceType="DOMINO" id="Domino" validatedBy="Cognex" />-->
 	<PrinterConfig deviceType="LEIBINGER" id="Leibinger" validatedBy="Cognex" />
 	<CameraConfig deviceType="COGNEX" id="Cognex" />
-	<D900CameraConfig deviceType="D900" id="d900_scl_1" />
+	<!--<D900CameraConfig deviceType="D900" id="d900_scl_1" />-->
 	<!--<BisConfig /> -->
 
 	<BrsConfig />

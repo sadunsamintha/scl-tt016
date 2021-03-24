@@ -15,6 +15,7 @@ import com.sicpa.tt016.devices.plc.TT016PLCGroupVarsBuilder
 
 import static com.sicpa.standard.sasscl.messages.MessageEventKey.PLC.*
 import static com.sicpa.tt016.messages.TT016MessageEventKey.D900.*
+import static com.sicpa.tt016.messages.TT016MessageEventKey.AUTOMATEDBEAM.*
 
 import com.sicpa.standard.client.common.ioc.InjectByMethodBean;
 
@@ -196,8 +197,8 @@ beans{
 		null,
 		null,
 		PLC_D900_OFFLINE_ERROR,
-		null,
-		null,
+		PLC_AUTOMATED_BEAM_POWER_ERROR,
+		PLC_AUTOMATED_BEAM_VELOCITY_ERROR,
 		null,
 		null,
 		null,

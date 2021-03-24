@@ -35,6 +35,10 @@ public interface TT016MessageEventKey {
         String AUTOMATED_BEAM_ESTOP_SWITCH_STATE_ENGAGED = "plc.motor.estop.switch.state.engaged";
         String AUTOMATED_BEAM_ESTOP_SWITCH_STATE_RELEASED_MSG_CODE = "[ABI_06]";
         String AUTOMATED_BEAM_ESTOP_SWITCH_STATE_RELEASED = "plc.motor.estop.switch.state.released";
+        String PLC_AUTOMATED_BEAM_POWER_ERROR_MSG_CODE = "[ABE_01]";
+        String PLC_AUTOMATED_BEAM_POWER_ERROR = "plc.motor.power.error";
+        String PLC_AUTOMATED_BEAM_VELOCITY_ERROR_MSG_CODE = "[ABE_02]";
+        String PLC_AUTOMATED_BEAM_VELOCITY_ERROR = "plc.motor.velocity.error";
         String SKU_SELECTION_VIEW_ACTIVE = "sku.selection.view.active";
     }
 }
