@@ -11,4 +11,6 @@ beans {
     productionStatisticsAggregatorFactory(TTTHProductionStatisticsAggregatorFactory) {
         language=props['language'].trim()
     }
+
+    importBeans('spring/custo/ttth/ttth-monitoring.xml')
 }

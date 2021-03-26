@@ -8,6 +8,7 @@ import com.sicpa.standard.sasscl.model.statistics.StatisticsKey;
 import com.sicpa.standard.sasscl.monitoring.impl.Monitoring;
 import com.sicpa.standard.sasscl.monitoring.statistics.incremental.IncrementalStatistics;
 import com.sicpa.standard.sasscl.provider.ProductBatchJobIdProvider;
+import com.sicpa.ttth.monitoring.statistics.incremental.TTTHIncrementalStatistics;
 
 public class TTTHMonitoring extends Monitoring implements ProductBatchJobIdProvider {
 
@@ -18,11 +19,11 @@ public class TTTHMonitoring extends Monitoring implements ProductBatchJobIdProvi
     @Override
     protected void createNewIncrementalStatistics(boolean savingAtMidnight) {
         IncrementalStatistics previous = incrementalStatistics;
-        incrementalStatistics = new IncrementalStatistics();
+        incrementalStatistics = new TTTHIncrementalStatistics();
         incrementalStatistics.setSubsystemId(subsystemIdProvider.get());
         incrementalStatistics.setProductionParameters(productionParameters);
         //Set the batch job id.
-        incrementalStatistics.setBatch(productionParameters.getProperty(productionBatchJobId));
+        ((TTTHIncrementalStatistics)incrementalStatistics).setBatch(productionParameters.getProperty(productionBatchJobId));
         incrementalStatistics.setStartTime(savingAtMidnight ? getMidnightNextDay(previous.getStartTime()) : new Date());
 
         if (previous != null) {

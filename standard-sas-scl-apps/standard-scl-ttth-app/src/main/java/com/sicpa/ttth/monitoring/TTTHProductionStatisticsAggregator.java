@@ -4,6 +4,7 @@ import com.sicpa.standard.sasscl.model.ProductionMode;
 import com.sicpa.standard.sasscl.monitoring.statistics.incremental.IncrementalStatistics;
 import com.sicpa.standard.sasscl.view.monitoring.ProductionStatisticsAggregator;
 import com.sicpa.standard.sasscl.view.report.ReportData;
+import com.sicpa.ttth.monitoring.statistics.incremental.TTTHIncrementalStatistics;
 import com.sicpa.ttth.view.report.TTTHReportData;
 
 public class TTTHProductionStatisticsAggregator extends ProductionStatisticsAggregator {
@@ -24,7 +25,7 @@ public class TTTHProductionStatisticsAggregator extends ProductionStatisticsAggr
         if (productionModeDesc.equals(ProductionMode.STANDARD.getDescription())
             || productionModeDesc.equals(ProductionMode.REFEED_NORMAL.getDescription())
             || productionModeDesc.equals(ProductionMode.REFEED_CORRECTION.getDescription())) {
-            batchJobId = incrStats.getBatch();
+            batchJobId = ((TTTHIncrementalStatistics)incrStats).getBatch();
         }
 
         ((TTTHReportData) reportData).setBatchJobId(batchJobId);

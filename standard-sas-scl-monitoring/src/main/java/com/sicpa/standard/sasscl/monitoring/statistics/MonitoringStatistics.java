@@ -30,8 +30,6 @@ public abstract class MonitoringStatistics implements IMonitorObject, Serializab
 	protected final List<String> errors = new ArrayList<String>();
 	protected ProductionParameters productionParameters;
 
-	protected String batch;
-
 	protected long subsystemId;
 	protected Date lastProductScannedTime;
 
@@ -114,16 +112,8 @@ public abstract class MonitoringStatistics implements IMonitorObject, Serializab
 		return this.productionParameters;
 	}
 
-	public String getBatch() {
-		return batch;
-	}
-
 	public void setProductionParameters(final ProductionParameters productionParameters) {
 		this.productionParameters = productionParameters;
-	}
-
-	public void setBatch(String batch) {
-		this.batch = batch;
 	}
 
 	public void setStartTime(final Date startTime) {
