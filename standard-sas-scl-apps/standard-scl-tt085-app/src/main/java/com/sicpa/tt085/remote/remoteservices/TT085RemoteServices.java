@@ -300,7 +300,6 @@ public class TT085RemoteServices implements ITT085RemoteServices {
 
 	@Override
 	public String getCryptoPassword() {
-		// TODO Auto-generated method stub
-		return null;
+		return "admin";
 	}
 }
