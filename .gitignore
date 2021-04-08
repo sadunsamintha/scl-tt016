@@ -157,14 +157,14 @@ standard-sas-scl-apps/standard-scl-tt085-app/target
 
 standard-sas-app/documentation
 standard-sas-scl-apps/standard-scl-ttth-app/log
-standard-sas-scl-apps/standard-scl-ttth-app/profiles/TTTH/backup-config
-standard-sas-scl-apps/standard-scl-ttth-app/profiles/TTTH/data
-standard-sas-scl-apps/standard-scl-ttth-app/profiles/TTTH/dataSimulator
-standard-sas-scl-apps/standard-scl-ttth-app/profiles/TTTH/internal
-standard-sas-scl-apps/standard-scl-ttth-app/profiles/TTTH/internalSimulator
-standard-sas-scl-apps/standard-scl-ttth-app/profiles/TTTH/simulProductSend/
-standard-sas-scl-apps/standard-scl-ttth-app/profiles/TTTH/monitoring
-standard-sas-scl-apps/standard-scl-ttth-app/profiles/TTTH/quarantine
+standard-sas-scl-apps/standard-scl-ttth-app/profiles/TTTH-SCL/backup-config
+standard-sas-scl-apps/standard-scl-ttth-app/profiles/TTTH-SCL/data
+standard-sas-scl-apps/standard-scl-ttth-app/profiles/TTTH-SCL/dataSimulator
+standard-sas-scl-apps/standard-scl-ttth-app/profiles/TTTH-SCL/internal
+standard-sas-scl-apps/standard-scl-ttth-app/profiles/TTTH-SCL/internalSimulator
+standard-sas-scl-apps/standard-scl-ttth-app/profiles/TTTH-SCL/simulProductSend/
+standard-sas-scl-apps/standard-scl-ttth-app/profiles/TTTH-SCL/monitoring
+standard-sas-scl-apps/standard-scl-ttth-app/profiles/TTTH-SCL/quarantine
 standard-sas-scl-apps/standard-scl-ttth-app/uncaught-error/
 standard-sas-scl-apps/standard-scl-ttth-app/target
 

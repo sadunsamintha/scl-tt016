@@ -4,8 +4,11 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
 public class TTTHCalendarUtils {
+
+    public static final String timeZoneTH = "GMT+7";
 
     public static final int TH_YEAR_DIFF = 543;
 
@@ -21,10 +24,10 @@ public class TTTHCalendarUtils {
 
     private static final SimpleDateFormat sdfTHDetailed = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 
-
     public static String convertToBuddhistCal(String date, boolean isDetailed) throws ParseException {
 
         Calendar cal = Calendar.getInstance();
+        SimpleDateFormat sdfThTimeZone;
 
         if (isDetailed)
             cal.setTime(sdfDetailed.parse(date));
@@ -34,11 +37,16 @@ public class TTTHCalendarUtils {
 
         cal.add(Calendar.YEAR, TH_YEAR_DIFF);
 
-        if (isDetailed)
-            return sdfTHDetailed.format(cal.getTime());
-        else
-            return sdfTH.format(cal.getTime());
-
+        if (isDetailed) {
+            sdfThTimeZone = new SimpleDateFormat(sdfTHDetailed.toPattern());
+            sdfThTimeZone.setTimeZone(TimeZone.getTimeZone(timeZoneTH));
+            return sdfThTimeZone.format(cal.getTime());
+        }
+        else {
+            sdfThTimeZone = new SimpleDateFormat(sdfTH.toPattern());
+            sdfThTimeZone.setTimeZone(TimeZone.getTimeZone(timeZoneTH));
+            return sdfThTimeZone.format(cal.getTime());
+        }
     }
 
     public static String getFiscalYear(Date date) {
