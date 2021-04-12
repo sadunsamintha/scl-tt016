@@ -91,8 +91,11 @@ public class BarcodeInputView extends DefaultIdInputView {
 			getButtonOk().setVisible(true);
 			getTextId().setText("");
 			getTextId().requestFocusInWindow();
-			
-			add(getButtonSelectSku(), "newline, align left, w 120, h 40!, gapleft 10, gaptop 172");
+
+			JPanel buttonBottomPanel = new JPanel(new MigLayout());
+			buttonBottomPanel.add(getButtonBack(),"w 100 , h 40!");
+			buttonBottomPanel.add(getButtonSelectSku(), "w 120, h 40!");
+			add(buttonBottomPanel, "newline, align left, gaptop 150, h 60!");
 			revalidate();
 			repaint();
 		});
@@ -379,7 +382,7 @@ public class BarcodeInputView extends DefaultIdInputView {
 	}
 
 	private void buttonBackActionPerformed() {
-		reset(this.rootNode);
+		callback.selectionCanceled();
 	}
 	
 	public JButton getButtonSelectSku() {

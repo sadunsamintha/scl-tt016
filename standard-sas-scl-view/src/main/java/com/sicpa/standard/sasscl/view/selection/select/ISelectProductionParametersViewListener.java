@@ -8,4 +8,5 @@ public interface ISelectProductionParametersViewListener {
 	
 	void goToProductionMode();
 
+	void selectionCanceled();
 }

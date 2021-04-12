@@ -141,5 +141,10 @@ public class SelectProductionParametersViewController extends AbstractViewFlowCo
 		//after select SKU view
 		setUseBarcodeReader(true);
 	}
-	
+
+	@Override
+	public void selectionCanceled(){
+		mainFrameController.productionParametersChanged();
+		screensFlow.moveToNext(ScreensFlowTriggers.PRODUCTION_PARAMETER_SELECTED);
+	}
 }

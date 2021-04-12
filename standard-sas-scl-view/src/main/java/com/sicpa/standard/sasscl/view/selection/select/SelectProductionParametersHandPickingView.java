@@ -1,23 +1,25 @@
 package com.sicpa.standard.sasscl.view.selection.select;
 
-import javax.swing.JPanel;
-
-import com.sicpa.standard.sasscl.controller.productionconfig.validator.ProductionParametersValidator;
-import com.sicpa.standard.sasscl.view.selection.select.productionparameters.ProductionParametersSelectionFlowView;
-import net.miginfocom.swing.MigLayout;
-
+import com.sicpa.standard.client.common.ioc.BeanProvider;
 import com.sicpa.standard.gui.screen.machine.component.SelectionFlow.SelectableItem;
 import com.sicpa.standard.gui.screen.machine.component.SelectionFlow.flow.AbstractSelectionFlowModel;
-import com.sicpa.standard.gui.screen.machine.component.SelectionFlow.flow.DefaultSelectionFlowView;
 import com.sicpa.standard.gui.screen.machine.component.SelectionFlow.flow.SelectionFlowAdapter;
 import com.sicpa.standard.gui.screen.machine.component.SelectionFlow.flow.SelectionFlowEvent;
 import com.sicpa.standard.sasscl.common.log.OperatorLogger;
+import com.sicpa.standard.sasscl.controller.productionconfig.validator.ProductionParametersValidator;
 import com.sicpa.standard.sasscl.model.ProductionMode;
 import com.sicpa.standard.sasscl.model.ProductionParameters;
 import com.sicpa.standard.sasscl.model.SKU;
 import com.sicpa.standard.sasscl.productionParameterSelection.ISelectionModelFactory;
 import com.sicpa.standard.sasscl.productionParameterSelection.node.IProductionParametersNode;
 import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.ProductionParameterRootNode;
+import com.sicpa.standard.sasscl.view.selection.change.SelectionChangeView;
+import com.sicpa.standard.sasscl.view.selection.select.productionparameters.ProductionParametersSelectionFlowView;
+import com.sicpa.standard.sasscl.view.startstop.StartStopView;
+import net.miginfocom.swing.MigLayout;
+
+import javax.swing.*;
+import java.awt.*;
 
 @SuppressWarnings("serial")
 public class SelectProductionParametersHandPickingView extends JPanel implements ISelectProductionParametersView {
@@ -26,6 +28,8 @@ public class SelectProductionParametersHandPickingView extends JPanel implements
 	protected ProductionParametersSelectionFlowView delegate;
 	private ISelectionModelFactory selectionModelFactory;
 	private ProductionParametersValidator productionParametersValidator;
+	private final String START_STOP_VIEW_NAME = "startStopView";
+	private final String SELECT_CHANGE_VIEW_NAME = "selectionChangeView";
 
 	public SelectProductionParametersHandPickingView() {
 		initGUI();
@@ -48,8 +52,9 @@ public class SelectProductionParametersHandPickingView extends JPanel implements
 		getDelegate().setModel(model);
 		getDelegate().setProductionParametersValidator(productionParametersValidator);
 		addSelectionCompleteCallback(model);
+		addCancelSelectionCallback(model);
 
-		getDelegate().setBackButtonVisibleForFirstScreen(false);
+		getDelegate().setBackButtonVisibleForFirstScreen(true);
 		getDelegate().init();
 	}
 
@@ -59,6 +64,19 @@ public class SelectProductionParametersHandPickingView extends JPanel implements
 			public void selectionComplete(SelectionFlowEvent evt) {
 				if (getDelegate().isShowing()) {
 					selectionCompleteCallBack(evt);
+				}
+			}
+		});
+	}
+
+	private void addCancelSelectionCallback(AbstractSelectionFlowModel model) {
+		model.addSelectionFlowListener(new SelectionFlowAdapter() {
+			@Override
+			public void cancelSelection() {
+				if (getDelegate().isShowing() && !((SelectProductionParametersViewController)callback).useBarcodeReader) {
+					cancelSelectionCallBack();
+				} else if(getDelegate().isShowing() && ((SelectProductionParametersViewController)callback).useBarcodeReader){
+					displayBarcodeScreen();
 				}
 			}
 		});
@@ -77,6 +95,14 @@ public class SelectProductionParametersHandPickingView extends JPanel implements
 
 		ProductionParameters pp = new ProductionParameters(mode, sku, "");
 		callback.productionParametersSelected(pp);
+	}
+
+	protected void cancelSelectionCallBack() {
+		StartStopView ssv = (StartStopView) getComponentByBeanName(START_STOP_VIEW_NAME);
+		ssv.getButtonStart().setEnabled(true);
+		SelectionChangeView scv = (SelectionChangeView) getComponentByBeanName(SELECT_CHANGE_VIEW_NAME);
+		scv.getButtonChangeContext().setEnabled(true);
+		callback.selectionCanceled();
 	}
 
 	protected SKU getSkuMode(SelectionFlowEvent evt) {
@@ -124,5 +150,14 @@ public class SelectProductionParametersHandPickingView extends JPanel implements
 
 	public void setProductionParametersValidator(ProductionParametersValidator productionParametersValidator) {
 		this.productionParametersValidator = productionParametersValidator;
+	}
+
+	private Component getComponentByBeanName(String beanName){
+		Component component = (Component) BeanProvider.getBean(beanName);
+		return component;
+	}
+
+	private void displayBarcodeScreen() {
+		((SelectProductionParametersViewController)callback).displayView();
 	}
 }
