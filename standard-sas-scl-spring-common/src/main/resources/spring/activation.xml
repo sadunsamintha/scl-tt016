@@ -61,6 +61,7 @@
 		<property name="productFinalizer" ref="productFinalizer" />
 		<property name="authenticatorModeProvider" ref="authenticatorModeProvider" />
 		<property name="productionConfigProvider" ref="productionConfigProvider" />
+		<property name="productionBehaviorVar" value="${production.config.folder}" />
 	</bean>
 
 	<bean id="refeedActivationBehaviorCodeTypeCheck" parent="refeedActivationBehavior">
