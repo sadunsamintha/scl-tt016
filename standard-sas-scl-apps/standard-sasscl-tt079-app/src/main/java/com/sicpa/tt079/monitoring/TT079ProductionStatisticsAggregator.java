@@ -23,7 +23,7 @@ public class TT079ProductionStatisticsAggregator extends ProductionStatisticsAgg
         Integer inkDetected = 0;
 
         for (Map.Entry<StatisticsKey, Integer> entry : incrStats.getProductsStatistics().getValues().entrySet()) {
-            if (entry.getKey().toString().endsWith(TT079StatisticsKey.INK_DETECTED.getDescription())) {
+            if (entry.getKey().toString().endsWith(StatisticsKey.BLOB.getDescription())) {
                 inkDetected += entry.getValue();
             }
         }
