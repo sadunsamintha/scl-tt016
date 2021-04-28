@@ -8,6 +8,7 @@ import static com.sicpa.standard.sasscl.custoBuilder.CustoBuilder.addScreen;
 import static com.sicpa.standard.sasscl.custoBuilder.CustoBuilder.addScreenTransitions;
 import static com.sicpa.standard.sasscl.view.ScreensFlowTriggers.*;
 import static com.sicpa.tt065.view.TT065ScreenFlowTriggers.BATCH_ID_REGISTERED;
+import static com.sicpa.standard.sasscl.view.ScreensFlowTriggers.REQUEST_SELECTION_CANCEL;
 
 /**
  * Overwritting class of DefaultScreensFlow to manage
@@ -37,7 +38,9 @@ public class TT065DefaultScreensFlow extends DefaultScreensFlow {
 		addTransitions(exitScreen);
 
 		addScreen(batchIdScreen);
-		addScreenTransitions(selectionScreen, new ScreenTransition(PRODUCTION_PARAMETER_SELECTED, batchIdScreen));
+		addScreenTransitions(selectionScreen, 
+				new ScreenTransition(PRODUCTION_PARAMETER_SELECTED, batchIdScreen),
+				new ScreenTransition(REQUEST_SELECTION_CANCEL, mainScreen));
 		addScreenTransitions(batchIdScreen, new ScreenTransition(BATCH_ID_REGISTERED,
 				mainScreen));
 	}

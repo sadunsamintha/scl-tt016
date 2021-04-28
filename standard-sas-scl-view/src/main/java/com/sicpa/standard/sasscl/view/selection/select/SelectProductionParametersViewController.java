@@ -145,6 +145,6 @@ public class SelectProductionParametersViewController extends AbstractViewFlowCo
 	@Override
 	public void selectionCanceled(){
 		mainFrameController.productionParametersChanged();
-		screensFlow.moveToNext(ScreensFlowTriggers.PRODUCTION_PARAMETER_SELECTED);
+		screensFlow.moveToNext(ScreensFlowTriggers.REQUEST_SELECTION_CANCEL);
 	}
 }

@@ -37,7 +37,9 @@ public class TT080ScreensFlow extends DefaultScreensFlow {
 		addTransitions(exitScreen);
 
 		addScreen(batchIdScreen);
-		addScreenTransitions(selectionScreen, new ScreenTransition(PRODUCTION_PARAMETER_SELECTED, batchIdScreen));
+		addScreenTransitions(selectionScreen, 
+				new ScreenTransition(PRODUCTION_PARAMETER_SELECTED, batchIdScreen),
+				new ScreenTransition(REQUEST_SELECTION_CANCEL, mainScreen));
 		addScreenTransitions(batchIdScreen, new ScreenTransition(BATCH_ID_REGISTERED,
 				mainScreen));
 	}

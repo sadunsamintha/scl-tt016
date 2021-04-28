@@ -9,6 +9,7 @@ import static com.sicpa.standard.sasscl.custoBuilder.CustoBuilder.addScreenTrans
 import static com.sicpa.standard.sasscl.view.ScreensFlowTriggers.EXIT;
 import static com.sicpa.standard.sasscl.view.ScreensFlowTriggers.PRODUCTION_PARAMETER_SELECTED;
 import static com.sicpa.standard.sasscl.view.ScreensFlowTriggers.REQUEST_SELECTION;
+import static com.sicpa.standard.sasscl.view.ScreensFlowTriggers.REQUEST_SELECTION_CANCEL;
 import static com.sicpa.ttth.view.flow.TTTHScreenFlowTriggers.BARCODE_TRANSITION;
 import static com.sicpa.ttth.view.flow.TTTHScreenFlowTriggers.BATCH_ID_TRANSITION;
 import static com.sicpa.ttth.view.flow.TTTHScreenFlowTriggers.STANDARD_MODE_TRANSITION;
@@ -48,6 +49,7 @@ public class TTTHDefaultScreensFlow extends DefaultScreensFlow {
 		addScreenTransitions(selectionScreen, new ScreenTransition(STANDARD_MODE_TRANSITION, batchJobIdScreen));
 		addScreenTransitions(selectionScreen, new ScreenTransition(BARCODE_TRANSITION, barcodeScreen));
 		addScreenTransitions(selectionScreen, new ScreenTransition(PRODUCTION_PARAMETER_SELECTED, mainScreen));
+		addScreenTransitions(selectionScreen, new ScreenTransition(REQUEST_SELECTION_CANCEL, mainScreen));
 
 	}
 

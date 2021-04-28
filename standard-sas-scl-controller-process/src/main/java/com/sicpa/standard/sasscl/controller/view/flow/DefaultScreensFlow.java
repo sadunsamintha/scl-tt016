@@ -3,6 +3,7 @@ package com.sicpa.standard.sasscl.controller.view.flow;
 import static com.sicpa.standard.sasscl.view.ScreensFlowTriggers.EXIT;
 import static com.sicpa.standard.sasscl.view.ScreensFlowTriggers.PRODUCTION_PARAMETER_SELECTED;
 import static com.sicpa.standard.sasscl.view.ScreensFlowTriggers.REQUEST_SELECTION;
+import static com.sicpa.standard.sasscl.view.ScreensFlowTriggers.REQUEST_SELECTION_CANCEL;
 
 import com.sicpa.standard.client.common.view.screensflow.IScreenGetter;
 import com.sicpa.standard.client.common.view.screensflow.ScreenTransition;
@@ -30,6 +31,7 @@ public class DefaultScreensFlow extends ScreensFlow {
 				new ScreenTransition(EXIT, exitScreen));
 
 		addTransitions(selectionScreen,
+				new ScreenTransition(REQUEST_SELECTION_CANCEL, mainScreen),
 				new ScreenTransition(PRODUCTION_PARAMETER_SELECTED, mainScreen),
 				new ScreenTransition(EXIT, exitScreen));
 

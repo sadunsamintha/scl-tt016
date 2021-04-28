@@ -35,10 +35,16 @@ public class TT079DefaultScreensFlow extends DefaultScreensFlow {
 		addTransitions(exitScreen);
 
 		addScreen(batchIdScreen);
-		addScreenTransitions(selectionScreen, new ScreenTransition(PRODUCTION_PARAMETER_SELECTED, batchIdScreen));
-		addScreenTransitions(batchIdScreen, new ScreenTransition(BATCH_ID_EXP_DT_REGISTERED,
-				mainScreen));
-		addScreenTransitions(batchIdScreen, new ScreenTransition(BACK_TO_SELECTION, selectionScreen));
+		
+		addScreenTransitions(selectionScreen,
+				new ScreenTransition(PRODUCTION_PARAMETER_SELECTED, batchIdScreen),
+				new ScreenTransition(REQUEST_SELECTION_CANCEL, mainScreen),
+				new ScreenTransition(EXIT, exitScreen));
+		
+		addScreenTransitions(batchIdScreen, 
+				new ScreenTransition(BATCH_ID_EXP_DT_REGISTERED,mainScreen),
+				new ScreenTransition(BACK_TO_SELECTION, selectionScreen));
+		
 	}
 
 	public void setBatchIdScreen(IScreenGetter batchIdScreen) {
