@@ -1,10 +1,13 @@
 package com.sicpa.standard.sasscl.view.report;
 
+import com.google.protobuf.TextFormat.ParseException;
 import com.sicpa.standard.client.common.i18n.Messages;
 import com.sicpa.standard.gui.components.renderers.SicpaTableCellRenderer;
 import com.sicpa.standard.gui.components.scroll.SmallScrollBar;
 import com.sicpa.standard.gui.components.table.BeanReaderJTable;
 import com.sicpa.standard.gui.utils.ThreadUtils;
+import com.sicpa.standard.sasscl.view.utils.TimeZoneUtil;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -124,8 +127,22 @@ public class ReportTable extends JPanel implements IReportTable {
     protected void setReportDataWrapperData(Map<ReportKey, ReportData> map, List<ReportDataWrapper> data) {
         for (Entry<ReportKey, ReportData> entry : map.entrySet()) {
             ReportDataWrapper reportDataWrapper = createReportDataWrapper();
-
-            reportDataWrapper.setPeriod(entry.getKey().getDate());
+            try {
+                String dateStr = entry.getKey().getDate();
+                if (dateStr.length() > 40) {
+                    //Date string contains two date.
+                    String[] dateStrArr = dateStr.split(" - ");
+                    for (int i = 0; i < dateStrArr.length; i++) {
+                        dateStrArr[i] = TimeZoneUtil.covertToConfigTimeZone(dateStrArr[i]);
+                    }
+                    reportDataWrapper.setPeriod(dateStrArr[0] + " - " + dateStrArr[1]);
+                } else {
+                    reportDataWrapper.setPeriod(entry.getKey().getDate());
+                }
+            } catch (Exception e) {
+                logger.error("Failed to convert to config time zone. Falling back to default", e);
+                reportDataWrapper.setPeriod(entry.getKey().getDate());
+            }
             reportDataWrapper.setProductionMode(entry.getKey().getProductionMode());
             reportDataWrapper.setSku(entry.getKey().getSku());
             reportDataWrapper.setProductNumber(entry.getValue().getGood(), entry.getValue().getBad());

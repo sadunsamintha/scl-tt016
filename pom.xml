@@ -494,7 +494,12 @@
 	        <dependency>
 				<groupId>com.sicpa.standard.gui</groupId>
 				<artifactId>standard-gui-screen</artifactId>
-				<version>1.2.11</version>
+				<version>1.2.11-SASSCL</version>
+			</dependency>
+			<dependency>
+				<groupId>com.sicpa.standard.gui</groupId>
+				<artifactId>standard-gui-laf</artifactId>
+				<version>1.2.11-SASSCL</version>
 			</dependency>
 
 			<dependency>

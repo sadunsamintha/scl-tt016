@@ -25,6 +25,7 @@ import com.sicpa.standard.sasscl.monitoring.MonitoringService;
 import com.sicpa.standard.sasscl.monitoring.system.SystemEventLevel;
 import com.sicpa.standard.sasscl.monitoring.system.event.BasicSystemEvent;
 import com.sicpa.standard.sasscl.security.SasSclPermission;
+import com.sicpa.standard.sasscl.view.utils.TimeZoneUtil;
 
 public class SystemEventPanel extends AbstractMonitoringEventPanel implements ISecuredComponentGetter {
 
@@ -118,7 +119,14 @@ public class SystemEventPanel extends AbstractMonitoringEventPanel implements IS
 			label.setFont(label.getFont().deriveFont(10f));
 
 			if (value instanceof Date) {
-				label.setText(this.dateFormatter.format((Date) value));
+				String dateStr = this.dateFormatter.format((Date) value);
+				try {
+					// The date sting contains html tags and needs formatting.
+					label.setText(TimeZoneUtil				.covertToConfigTimeZone(dateStr.replaceAll("\\<.*?>"," ")));
+				} catch (Exception e) {
+					logger.error("Failed to convert to config time zone. Falling back to default", e);
+					label.setText(dateStr);
+				}
 			}
 
 			BasicSystemEvent data = t.getObjectAtRow(row);

@@ -13,6 +13,8 @@ import com.sicpa.standard.sasscl.monitoring.MonitoringService;
 import com.sicpa.standard.sasscl.monitoring.statistics.MonitoredProductStatisticsValues;
 import com.sicpa.standard.sasscl.monitoring.statistics.incremental.IncrementalStatistics;
 import com.sicpa.standard.sasscl.security.SasSclPermission;
+import com.sicpa.standard.sasscl.view.utils.TimeZoneUtil;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -118,7 +120,14 @@ public class ProductionStatisticsPanel extends AbstractMonitoringEventPanel impl
 			label.setFont(label.getFont().deriveFont(10f));
 
 			if (value instanceof Date) {
-				label.setText(this.dateFormatter.format((Date) value));
+				String dateStr = this.dateFormatter.format((Date) value);
+				try {
+					// The date sting contains html tags and needs formatting.
+					label.setText(TimeZoneUtil.covertToConfigTimeZone(dateStr.replaceAll("\\<.*?>"," ")));
+				} catch (Exception e) {
+					logger.error("Failed to convert to config time zone. Falling back to default", e);
+					label.setText(dateStr);
+				}
 			} else if (value instanceof List<?>) {
 				String text = "<html>";
 				for (Object o : (List<?>) value) {
