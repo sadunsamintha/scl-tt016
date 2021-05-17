@@ -68,6 +68,7 @@ beans {
         mainFrameController = ref('mainFrameController')
         pp = ref('productionParameters')
         barcodeEnabled = props['barcode.verification'].trim()
+        flowControl=ref('flowControl')
     }
 
     startStopView(TTTHStartStopView) { b ->

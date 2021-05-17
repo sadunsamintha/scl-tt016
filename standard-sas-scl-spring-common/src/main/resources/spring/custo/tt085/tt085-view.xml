@@ -20,17 +20,18 @@
 	
 		<bean id="selectProductionParametersViewController"
 		class="com.sicpa.tt085.view.selection.select.TT085SelectProductionParametersViewController">
-		<property name="handPickingView"
-			ref="selectProductionParametersHandPickingView" />
-		<property name="barcodeView"
-			ref="selectProductionParametersBarcodeView" />
-		<property name="viewController" ref="mainFrameController" />
-		<property name="skuListProvider" ref="skuListProvider" />
-		<property name="useBarcodeReader" value="${useBarcodeReader}" />
-		<property name="screensFlow" ref="screensFlow" />
-		<property name="mainFrameController"
-			ref="mainFrameController" />
-	</bean>
+			<property name="handPickingView"
+				ref="selectProductionParametersHandPickingView" />
+			<property name="barcodeView"
+				ref="selectProductionParametersBarcodeView" />
+			<property name="viewController" ref="mainFrameController" />
+			<property name="skuListProvider" ref="skuListProvider" />
+			<property name="useBarcodeReader" value="${useBarcodeReader}" />
+			<property name="screensFlow" ref="screensFlow" />
+			<property name="mainFrameController"
+				ref="mainFrameController" />
+			<property name="flowControl" ref="flowControl" />
+		</bean>
 
 	<bean id="selectProductionParametersHandPickingView"
 		class="com.sicpa.tt085.view.selection.select.TT085SelectProductionParametersHandPickingView">

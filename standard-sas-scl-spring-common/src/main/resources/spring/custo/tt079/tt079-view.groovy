@@ -45,6 +45,7 @@ beans{
 		useBarcodeReader=props['useBarcodeReader'].trim()
 		screensFlow=ref('screensFlow')
 		mainFrameController=ref('mainFrameController')
+		flowControl=ref('flowControl')
 	}
 	
 	//SELECTION DISPLAY

@@ -256,6 +256,7 @@
 		<property name="useBarcodeReader" value="${useBarcodeReader}" />
 		<property name="screensFlow" ref="screensFlow" />
 		<property name="mainFrameController" ref="mainFrameController" />
+		<property name="flowControl" ref="flowControl" />
 	</bean>
 	<!-- snapshotView -->
 

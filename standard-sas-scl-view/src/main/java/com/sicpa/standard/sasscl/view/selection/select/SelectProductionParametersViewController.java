@@ -10,6 +10,7 @@ import com.sicpa.standard.client.common.view.screensflow.IScreensFlow;
 import com.sicpa.standard.sasscl.common.log.OperatorLogger;
 import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState;
 import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowStateChangedEvent;
+import com.sicpa.standard.sasscl.controller.flow.IFlowControl;
 import com.sicpa.standard.sasscl.model.ProductionParameters;
 import com.sicpa.standard.sasscl.provider.impl.SkuListProvider;
 import com.sicpa.standard.sasscl.view.AbstractViewFlowController;
@@ -21,6 +22,7 @@ public class SelectProductionParametersViewController extends AbstractViewFlowCo
 
 	protected ISelectProductionParametersView handPickingView;
 	protected ISelectProductionParametersView barcodeView;
+	protected IFlowControl flowControl;
 	protected boolean useBarcodeReader;
 
 	protected SkuListProvider skuListProvider;
@@ -28,7 +30,7 @@ public class SelectProductionParametersViewController extends AbstractViewFlowCo
 	protected MainFrameController mainFrameController;
 
 	protected IScreensFlow screensFlow;
-	
+
 	protected boolean noSelectionState;
 
 	public SelectProductionParametersViewController() {
@@ -89,7 +91,7 @@ public class SelectProductionParametersViewController extends AbstractViewFlowCo
 	public void setUseBarcodeReader(boolean useBarcodeReader) {
 		this.useBarcodeReader = useBarcodeReader;
 	}
-	
+
 	private void addLoginListener() {
 		SecurityService.addLoginListener(new ILoginListener() {
 			@Override
@@ -103,18 +105,18 @@ public class SelectProductionParametersViewController extends AbstractViewFlowCo
 			}
 		});
 	}
-	
+
 	private void fireUserChanged() {
 		SwingUtilities.invokeLater(() -> userChanged());
 	}
-	
+
 	protected void userChanged() {
 		if(isNoSelectionState()) {
 			super.displayView();
 			((ISelectProductionParametersView) getComponent()).displaySelectionScreen(skuListProvider.get());
 		}
 	}
-	
+
 	@Subscribe
 	public void handleApplicationFlowStateChangeEvent(ApplicationFlowStateChangedEvent event) {
 		if (event.getCurrentState().equals(ApplicationFlowState.STT_SELECT_NO_PREVIOUS) || event.getCurrentState().equals(ApplicationFlowState.STT_SELECT_WITH_PREVIOUS)) {
@@ -142,9 +144,18 @@ public class SelectProductionParametersViewController extends AbstractViewFlowCo
 		setUseBarcodeReader(true);
 	}
 
-	@Override
-	public void selectionCanceled(){
-		mainFrameController.productionParametersChanged();
-		screensFlow.moveToNext(ScreensFlowTriggers.REQUEST_SELECTION_CANCEL);
-	}
+  @Override
+  public void selectionCanceled() {
+    if (mainFrameController.getProductionMode() != null) {
+      mainFrameController.productionParametersChanged();
+      screensFlow.moveToNext(ScreensFlowTriggers.REQUEST_SELECTION_CANCEL);
+    } else {
+      screensFlow.moveToNext(ScreensFlowTriggers.REQUEST_SELECTION_CANCEL);
+      flowControl.notifyExitSelectionScreen();
+    }
+  }
+
+  public void setFlowControl(IFlowControl flowControl) {
+    this.flowControl = flowControl;
+  }
 }

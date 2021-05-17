@@ -80,6 +80,7 @@
 		<property name="plcPersistentProductCounterManager" ref="plcPersistentProductCounterManager" />
 		<property name="plcPersistentGrossNetProductCounterManager" ref="plcPersistentGrossNetProductCounterManager" />
 		<property name="productionParameters" ref="productionParameters" />
+		<property name="flowControl" ref="flowControl" />
 	</bean>
 
 	<bean id="selectionDisplayView" class="com.sicpa.tt016.view.selection.display.TT016SelectionDisplayView">

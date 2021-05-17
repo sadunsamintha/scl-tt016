@@ -33,7 +33,7 @@ public class SelectionChangeViewController implements ISelectionChangeViewListen
 		this.model = model;
 		enableChangeContextState = new ArrayList<ApplicationFlowState>(Arrays.asList(
 				ApplicationFlowState.STT_CONNECTED, ApplicationFlowState.STT_RECOVERING,
-				ApplicationFlowState.STT_CONNECTING));
+				ApplicationFlowState.STT_CONNECTING, ApplicationFlowState.STT_NO_SELECTION));
 	}
 
 	public SelectionChangeViewModel getModel() {
