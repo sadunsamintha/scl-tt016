@@ -1,5 +1,6 @@
 package com.sicpa.standard.sasscl.business.production;
 
+import com.sicpa.standard.sasscl.devices.remote.IRemoteServer;
 
 public interface IProduction {
 
@@ -29,4 +30,6 @@ public interface IProduction {
 	 * call when the application is exiting to send all production data
 	 */
 	void onExitSendAllProductionData();
+	
+	public IRemoteServer getRemoteServer();
 }

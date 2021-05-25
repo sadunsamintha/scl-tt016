@@ -78,7 +78,15 @@ public class ExecutorExit implements IStateAction {
 	}
 
 	protected void exitJVM() {
-		System.exit(0);
+		if(production.getRemoteServer().isConnected()) {
+			System.exit(0);
+		}else {
+			logger.info("Executing halt");
+			switchOffAndDisconnect();
+			production.saveProductionData();
+			storage.saveStatistics(statistics.getValues());
+			Runtime.getRuntime().halt(0);  // Add halt because while remoteserver lost connection the app is freezing in ProductionSendingView.
+		}
 	}
 
 	public void setHardwareController(IHardwareController hardwareController) {

@@ -328,4 +328,9 @@ public class Production implements IProduction {
 	public void setRemoteServer(IRemoteServer remoteServer) {
 		this.remoteServer = remoteServer;
 	}
+
+	public IRemoteServer getRemoteServer() {
+		return remoteServer;
+	}
+	
 }
