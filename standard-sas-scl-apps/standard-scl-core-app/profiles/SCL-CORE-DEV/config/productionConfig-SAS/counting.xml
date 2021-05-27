@@ -1,14 +1,21 @@
 <ProductionConfig activationBehavior="countingActivationBehavior">
-
-	<CameraConfig deviceType="COGNEX" id="qc_scl_1" />
-
-	<PlcConfig line1File="line1Config.xml" line1Index="1">
-		<property key=".com.stLine[1].bLine_is_active" value="true" />
-		<property key=".com.stLine[2].bLine_is_active" value="false" />
-
-		<property key=".com.stLine[1].stParameters.bExportModeEnabled" value="true" />
-		<property key=".com.stLine[1].stParameters.bMaintenanceModeEnabled" value="false" />
-		<property key=".com.stLine[1].stParameters.bRefeedModeEnabled" value="false" />
-	</PlcConfig>
-
+	<CameraConfig deviceType="COGNEX" id="qc_sas"/>
+	<plcConfig>
+		<cabinet>
+			<!-- variable not related to any line -->
+			<!-- <property key="VAR_NAME" value="VALUE" /> -->
+		</cabinet>
+		<line index="1">
+			<property key="PARAM_LINE_IS_ACTIVE" value="true"/>
+			<proprty key="PARAM_LINE_EXPORT_MODE_ENABLED" value="false"/>
+			<property key="PARAM_LINE_MAINTENANCE_MODE_ENABLED" value="true"/>
+			<property key="PARAM_LINE_REFEED_MODE_ENABLED" value="false"/>
+		</line>
+		<line index="2">
+			<property key="PARAM_LINE_IS_ACTIVE" value="false"/>
+		</line>
+		<line index="3">
+			<property key="PARAM_LINE_IS_ACTIVE" value="false"/>
+		</line>
+	</plcConfig>
 </ProductionConfig>
