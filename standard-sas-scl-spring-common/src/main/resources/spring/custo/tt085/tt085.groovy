@@ -9,6 +9,9 @@ beans{
 		importBeans('spring/server/server-core5.groovy')
 		importBeans('spring/custo/tt085/tt085-server.groovy')
 	}
+	if(serverBehavior == "SIMULATOR") {
+		importBeans('spring/custo/tt085/tt085-server-simulator.groovy')
+	}
 
 	addAlias('bootstrapAlias','bootstrap')
 	bootstrap(TT085Bootstrap){b->

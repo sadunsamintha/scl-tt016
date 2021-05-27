@@ -12,12 +12,21 @@ import javax.swing.JPanel;
 
 import org.jdesktop.swingx.graphics.GraphicsUtilities;
 
+import com.sicpa.standard.client.common.eventbus.service.EventBusService;
+import com.sicpa.standard.client.common.messages.MessageEvent;
+import com.sicpa.standard.client.common.security.Permission;
 import com.sicpa.standard.sasscl.controller.flow.IFlowControl;
+import com.sicpa.standard.sasscl.messages.MessageEventKey;
+import com.sicpa.standard.sasscl.productionParameterSelection.selectionmodel.DefaultSelectionModel;
 import com.sicpa.standard.sasscl.provider.impl.SkuListProvider;
+import com.sicpa.standard.sasscl.security.SasSclPermission;
 import com.sicpa.standard.sasscl.view.MainFrame;
 import com.sicpa.standard.sasscl.view.MainFrameController;
+import com.sicpa.tt085.productionParameterSelection.selectionmodel.TT085DefaultSelectionModel;
 
 import net.miginfocom.swing.MigLayout;
+
+import static com.sicpa.standard.client.common.security.SecurityService.hasPermission;
 
 public class TT085MainFrame extends MainFrame {
 
@@ -65,6 +74,29 @@ public class TT085MainFrame extends MainFrame {
 			this.powerByLabel.setIcon(new ImageIcon(img));
 		}
 		return this.powerByLabel;
+	}
+
+	@Override
+	protected void userChanged() {
+
+		this.dataSelectionModel = new TT085DefaultSelectionModel(skuListProvider.get());
+		Permission p = dataSelectionModel.getPermissions().get(getMainFrameController().getProductionMode());
+		if(p!=null && !hasPermission(p)) {
+			if (skuListProvider.get() == null) {
+				EventBusService.post(new MessageEvent(MessageEventKey.ProductionParameters.NONE_AVAILABLE));
+			} else {
+				flowControl.notifyEnterSelectionScreen();
+			}
+		}
+
+		resetAndRebuildAccessiblePanel();
+
+		// set the button visible according to the user credentials
+		changeSelectionView.setVisible(hasPermission(SasSclPermission.PRODUCTION_CHANGE_PARAMETERS));
+		exitView.setVisible(hasPermission(SasSclPermission.EXIT));
+		snapshotView.setVisible(hasPermission(SasSclPermission.SCREENSHOT));
+		startStopView.setVisible(hasPermission(SasSclPermission.PRODUCTION_START)
+				&& hasPermission(SasSclPermission.PRODUCTION_STOP));
 	}
 
 }

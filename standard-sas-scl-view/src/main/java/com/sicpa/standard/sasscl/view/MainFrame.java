@@ -59,7 +59,7 @@ public class MainFrame extends AbstractMachineFrame {
 	protected JComponent exitView;
 	protected JComponent optionsView;
 	private JComponent messagesView;
-	private JComponent snapshotView;
+	protected JComponent snapshotView;
 	protected SkuListProvider skuListProvider;
 	protected IFlowControl flowControl;
 
@@ -120,7 +120,7 @@ public class MainFrame extends AbstractMachineFrame {
 		});
 	}
 
-	private MainFrameController getMainFrameController() {
+	protected MainFrameController getMainFrameController() {
 		return (MainFrameController) controller;
 	}
 
@@ -157,7 +157,7 @@ public class MainFrame extends AbstractMachineFrame {
 				&& hasPermission(SasSclPermission.PRODUCTION_STOP));
 	}
 
-	private void resetAndRebuildAccessiblePanel() {
+	protected void resetAndRebuildAccessiblePanel() {
 		configs = null;
 
 		JPanel[] comps = new JPanel[getConfigPanels().length + 1];

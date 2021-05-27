@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import com.sicpa.gssd.tt021_tr.server.ext.sca.api.TrAuthenticatedProductsResultDto;
 import com.sicpa.gssd.tt021_tr.server.ext.sca.api.TrCountedProductsResultDto;
+import com.sicpa.standard.sasscl.custoBuilder.CustoBuilder;
 import com.sicpa.standard.sasscl.devices.remote.datasender.DataRegisteringException;
 import com.sicpa.standard.sasscl.devices.remote.datasender.IPackageSender;
 import com.sicpa.standard.sasscl.devices.remote.datasender.IPackageSenderGlobal;
@@ -65,6 +66,7 @@ public class TT085PackageSenderGlobal implements IPackageSenderGlobal, CountryPr
 			logger.error("No sender found for the package type in file: " + products.getFileName());
 			return;
 		}
+		CustoBuilder.addPropertyToClass(Product.class, country );
 		packageSenders.get(products.getProductStatus()).sendPackage(products);
 	}
 
