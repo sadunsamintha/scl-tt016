@@ -1,6 +1,11 @@
 package com.sicpa.tt016.devices.plc;
 
 import com.google.common.eventbus.Subscribe;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.sasscl.controller.flow.ApplicationFlowStateChangedEvent;
 import com.sicpa.standard.sasscl.devices.plc.IPlcListener;
@@ -8,11 +13,6 @@ import com.sicpa.standard.sasscl.devices.plc.PlcLineHelper;
 import com.sicpa.standard.sasscl.devices.plc.event.PlcEvent;
 import com.sicpa.standard.sasscl.provider.impl.PlcProvider;
 import com.sicpa.tt016.model.event.PlcCameraResultEvent;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState.STT_STARTED;
 import static com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState.STT_STARTING;
@@ -31,11 +31,14 @@ public class PlcCameraProductStatusListener implements IPlcListener {
 
 	@Override
 	public void onPlcEvent(PlcEvent event) {
+
 		if (isProductionStartingOrStarted.get()) {
 			logger.debug("PLC camera result received: {}", Integer.toHexString((Integer) event.getValue()));
 
 			EventBusService.post(new PlcCameraResultEvent(PlcCameraResultParser.getPlcCameraResultEvent((Integer) event
 					.getValue())));
+		} else {
+			logger.warn("Production is not starting/started. The plc camera event is not published: {}", event);
 		}
 	}
 

@@ -7,10 +7,13 @@
  */
 package com.sicpa.standard.sasscl.devices.plc.event;
 
+import lombok.ToString;
+
 /**
  * Encapsulate PLC event
  * 
  */
+@ToString
 public class PlcEvent {
 
 	/**

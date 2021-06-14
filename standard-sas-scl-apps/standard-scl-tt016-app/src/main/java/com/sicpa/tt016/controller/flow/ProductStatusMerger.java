@@ -1,16 +1,11 @@
 package com.sicpa.tt016.controller.flow;
 
-import static com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState.STT_STARTING;
-import static com.sicpa.standard.sasscl.model.ProductStatus.SENT_TO_PRINTER_WASTED;
-import static com.sicpa.standard.sasscl.monitoring.system.SystemEventType.PRODUCT_SCANNED;
-
+import com.google.common.eventbus.Subscribe;
 import java.util.LinkedList;
 import java.util.Queue;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.eventbus.Subscribe;
 import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.sasscl.business.activation.NewProductEvent;
 import com.sicpa.standard.sasscl.business.activation.impl.activationBehavior.standard.StandardActivationBehavior;
@@ -32,6 +27,10 @@ import com.sicpa.tt016.model.TT016ProductStatus;
 import com.sicpa.tt016.model.event.PlcCameraResultEvent;
 import com.sicpa.tt016.model.event.TT016NewProductEvent;
 import com.sicpa.tt016.model.event.TT016ProductPlcCameraEvent;
+
+import static com.sicpa.standard.sasscl.controller.flow.ApplicationFlowState.STT_STARTING;
+import static com.sicpa.standard.sasscl.model.ProductStatus.SENT_TO_PRINTER_WASTED;
+import static com.sicpa.standard.sasscl.monitoring.system.SystemEventType.PRODUCT_SCANNED;
 
 public class ProductStatusMerger extends StandardActivationBehavior {
 
@@ -81,7 +80,15 @@ public class ProductStatusMerger extends StandardActivationBehavior {
 
 			plcCameraResults.add(plcCameraResult);
 
+			if (logger.isDebugEnabled()) {
+				logger.debug("List of plc camera results left for processing: {}", plcCameraResults);
+			}
+
 			if (isCameraStatusAvailable()) {
+
+				if (logger.isDebugEnabled()) {
+					logger.debug("QC results are available. Begin status merging.");
+				}
 				mergeProductStatuses();
 			}
 		}
@@ -119,7 +126,15 @@ public class ProductStatusMerger extends StandardActivationBehavior {
 		synchronized (lock) {
 			cameraResults.add(cameraResult);
 
+			if(logger.isDebugEnabled()) {
+				logger.debug("List of qc camera results left for processing: {}", cameraResults);
+			}
+
 			if (isPlcCameraStatusAvailable()) {
+
+				if(logger.isDebugEnabled()) {
+					logger.debug("PLC results are available. Begin status merging.");
+				}
 				mergeProductStatuses();
 			}
 		}
@@ -143,12 +158,6 @@ public class ProductStatusMerger extends StandardActivationBehavior {
 		if (!isPlcCameraProductStatusNotDefined(plcCameraProductStatus)) {
 			if (isPlcCameraProductStatusEjected(plcCameraProductStatus)) {
 				setProductAsEjected(product);
-			} else if (isPlcCameraProductStatusAcquisitionError(plcCameraProductStatus)) {
-				setProductAsUnread(product);
-			} else if (isPlcCameraProductStatusInkDetected(plcCameraProductStatus)) {
-				setProductAsInkDetected(product);
-			} else if (isPlcCameraProductStatusNoInk(plcCameraProductStatus)) {
-				setProductAsUnread(product);
 			} else {
 				ProductValidator.validate(product, plcCameraResult);
 			}
