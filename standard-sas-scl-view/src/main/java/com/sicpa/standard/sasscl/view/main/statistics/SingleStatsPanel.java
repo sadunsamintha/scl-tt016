@@ -6,6 +6,7 @@ import javax.swing.JPanel;
 import com.sicpa.standard.client.common.i18n.Messages;
 import com.sicpa.standard.sasscl.model.statistics.ViewStatisticsDescriptor;
 
+import lombok.Getter;
 import net.miginfocom.swing.MigLayout;
 
 @SuppressWarnings("serial")
@@ -13,6 +14,8 @@ public class SingleStatsPanel extends JPanel {
 
 	private JLabel labelCount;
 	private JLabel labelPercent;
+	@Getter
+	private JLabel label;
 	
 	public SingleStatsPanel(ViewStatisticsDescriptor descriptor) {
 		setLayout(new MigLayout("fill, inset 0 0 0 0"));
@@ -21,7 +24,7 @@ public class SingleStatsPanel extends JPanel {
 		text = Messages.get("line." + descriptor.getLine()) + " - ";
 		text += Messages.get(descriptor.getKey());
 
-		JLabel label = new JLabel(text);
+		label = new JLabel(text);
 		label.setForeground(descriptor.getColor());
 		add(label, " w 280!");
 

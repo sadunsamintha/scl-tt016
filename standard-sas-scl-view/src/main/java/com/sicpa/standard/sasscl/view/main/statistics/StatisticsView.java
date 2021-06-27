@@ -288,6 +288,7 @@ public class StatisticsView extends AbstractView<IStatisticsViewListener, Statis
 		panelSpeedByLineIndex.clear();
 		getPanelLineStats().removeAll();
 		getPanelLineSpeed().removeAll();
+		getPanelTotal().getLabel().setText(Messages.get("stats.display.total"));
 		uptimeFormatter = new UptimeFormatter();
 		percentFormatter = NumberFormat.getNumberInstance();
 		percentFormatter.setMinimumFractionDigits(2);
