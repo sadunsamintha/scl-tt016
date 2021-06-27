@@ -30,7 +30,8 @@ beans {
 	
     def productionModes = [
         [mode: STANDARD, ct: [1, 2]],
-        [mode: EXPORT, ct: [4, 5]]
+        [mode: EXPORT, ct: [4, 5]],
+        [mode:MAINTENANCE],
     ]
 
     int skuId = 0

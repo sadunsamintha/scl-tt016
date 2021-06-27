@@ -30,7 +30,7 @@
         <property name="getGrossNetProductCount_enabled" value="${getGrossNetProductCount_enabled}" />
         <property name="productionBehaviorVar" value="${production.config.folder}" />
         <property name="javaProductCounterNtfVarName" value="#{plcVarMap['NTF_LINE_JAVA_PRODUCT_COUNTER']}" />
-        <property name="javaEjectionCounterNtfVarName" value="#{plcVarMap['NTF_LINE_JAVA_EJECTION_COUNTER']}" />
+        <property name="javaGrossNettCounterNtfVarName" value="#{plcVarMap['NTF_LINE_JAVA_GROSSNETT_COUNTER']}" />
         <property name="resetJavaProductCounterVarName" value="#{plcVarMap['REQUEST_RESET_JAVA_PRODUCT_COUNTER']}" />
     </bean>
     

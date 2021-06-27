@@ -14,10 +14,15 @@ import java.util.Map;
 
 public class TT016ReportTable extends ReportTable {
 
-    @Override
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	@Override
     protected String[] getFieldsGroupByProduct() {
         return new String[] { "period", "productionMode", "sku", "runningTime", "total", "good", "bad", "inkDetected",
-                "ejectedProducer" };
+                "ejectedProducer", "gross", "nett" };
     }
 
     @Override
@@ -26,13 +31,14 @@ public class TT016ReportTable extends ReportTable {
                 Messages.get("production.report.productionMode"), Messages.get("production.report.sku"),
                 Messages.get("production.report.runningTime"), Messages.get("production.report.total"),
                 Messages.get("production.report.good"), Messages.get("production.report.bad"),
-                Messages.get("production.report.inkDetected"), Messages.get("production.report.ejectedProducer")
+                Messages.get("production.report.inkDetected"), Messages.get("production.report.ejectedProducer"),
+                Messages.get("production.report.gross"), Messages.get("production.report.nett") 
         };
     }
 
     @Override
     protected String[] getFields() {
-        return new String[] { "Period", "RunningTime", "Total", "Good", "Bad", "inkDetected", "ejectedProducer" };
+        return new String[] { "Period", "RunningTime", "Total", "Good", "Bad", "inkDetected", "ejectedProducer","gross","nett"};
     }
 
     @Override
@@ -40,7 +46,8 @@ public class TT016ReportTable extends ReportTable {
         return new String[] { Messages.get("production.report.period"),
                 Messages.get("production.report.runningTime"), Messages.get("production.report.total"),
                 Messages.get("production.report.good"), Messages.get("production.report.bad"),
-                Messages.get("production.report.inkDetected"), Messages.get("production.report.ejectedProducer")
+                Messages.get("production.report.inkDetected"), Messages.get("production.report.ejectedProducer"),
+                Messages.get("production.report.gross"), Messages.get("production.report.nett")
         };
     }
 
@@ -63,7 +70,8 @@ public class TT016ReportTable extends ReportTable {
 
             reportDataWrapper.setStatisticsData(tt016Entry.getGood(), tt016Entry.getBad(), tt016Entry.getInkDetected(),
                     tt016Entry.getEjectedProducer());
-
+            reportDataWrapper.setGross(tt016Entry.getGross());
+            reportDataWrapper.setNett(tt016Entry.getNett());
             data.add(reportDataWrapper);
         }
     }

@@ -47,6 +47,8 @@ import com.sicpa.standard.client.common.eventbus.service.EventBusService;
 import com.sicpa.standard.client.common.ioc.BeanProvider;
 import com.sicpa.standard.client.common.view.screensflow.ScreenTransition;
 import com.sicpa.standard.sasscl.Bootstrap;
+import com.sicpa.standard.sasscl.business.statistics.StatisticsRestoredEvent;
+import com.sicpa.standard.sasscl.controller.ProductionParametersEvent;
 import com.sicpa.standard.sasscl.controller.flow.statemachine.FlowTransition;
 import com.sicpa.standard.sasscl.controller.productionconfig.mapping.IProductionConfigMapping;
 import com.sicpa.standard.sasscl.custoBuilder.CustoBuilder;
@@ -56,9 +58,12 @@ import com.sicpa.standard.sasscl.messages.ActionEventWarning;
 import com.sicpa.standard.sasscl.messages.ActionMessageType;
 import com.sicpa.standard.sasscl.model.CodeType;
 import com.sicpa.standard.sasscl.model.ProductStatus;
+import com.sicpa.standard.sasscl.model.ProductionParameters;
 import com.sicpa.standard.sasscl.model.statistics.StatisticsKey;
+import com.sicpa.standard.sasscl.model.statistics.StatisticsValues;
 import com.sicpa.standard.sasscl.view.main.MainPanelGetter;
 import com.sicpa.tt016.business.ejection.EjectionTypeSender;
+import com.sicpa.tt016.devices.plc.PlcPersistentGrossNetProductCounterManagerSCL;
 import com.sicpa.tt016.model.DisallowedConfiguration;
 import com.sicpa.tt016.model.TT016Permission;
 import com.sicpa.tt016.model.TT016ProductStatus;
@@ -68,6 +73,8 @@ import com.sicpa.tt016.monitoring.mbean.TT016SclAppLegacyMBean;
 import com.sicpa.tt016.provider.impl.TT016UnknownSkuProvider;
 import com.sicpa.tt016.util.LegacyEncoderConverter;
 import com.sicpa.tt016.view.selection.stop.StopReasonViewController;
+
+import lombok.Setter;
 
 public class TT016Bootstrap extends Bootstrap {
 
@@ -86,10 +93,11 @@ public class TT016Bootstrap extends Bootstrap {
 	private TT016SasAppLegacyMBean sasAppLegacyMBean;
 	private TT016SclAppLegacyMBean sclAppLegacyMBean;
 	private String productionBehaviorVar;
+	@Setter
+	private PlcPersistentGrossNetProductCounterManagerSCL plcPersistentGrossNetProductCounterManager;
 	
 	private static final String SAS_MODE = "PRODUCTIONCONFIG-SAS";
-	private static final String SCL_MODE = "PRODUCTIONCONFIG-SCL";
-
+	
 	@Override
 	public void executeSpringInitTasks() {
 		if (isBeamEnabled) {
@@ -122,6 +130,12 @@ public class TT016Bootstrap extends Bootstrap {
 		addPlcVariable("NTF_LINE_JAVA_EJECTION_COUNTER", ".com.stLine[#x].stNotifications.nJavaEjectionCounter", PlcUtils.PLC_TYPE.I,
 				new HashMap<>());
 	}
+	
+	public static void addPlcVariableJavaNettCounter() {
+		addPlcVariable("NTF_LINE_JAVA_GROSSNETT_COUNTER", PlcUtils.LINE_NTF+"nJavaNettCounter", PlcUtils.PLC_TYPE.I,
+				new HashMap<>());
+	}
+
 	
 	public static void addWiperPlcVariable() {
 		addPlcVariable("PARAM_LINE_INHIBIT_WIPER", PlcUtils.LINE_PRM+"bInhibitWiper", PlcUtils.PLC_TYPE.B,
@@ -289,6 +303,18 @@ public class TT016Bootstrap extends Bootstrap {
 		disallowedConfigurations.forEach(
 				d -> d.validate(configuration, (k,p) -> EventBusService.post(new ActionEventWarning(k,null,p))));
 	}
+	
+    protected void restorePreviousSelectedProductionParams() {
+        ProductionParameters previous = storage.getSelectedProductionParameters();
+        if (productionParametersValidator.validate(previous)) {
+            productionParameters.setBarcode(previous.getBarcode());
+            productionParameters.setSku(previous.getSku());
+            productionParameters.setProductionMode(previous.getProductionMode());
+            plcPersistentGrossNetProductCounterManager.updateProductParamAndCount();
+            EventBusService.post(new ProductionParametersEvent(previous));
+            restoreStatistics();
+        }
+    }
 	
 	public void setMainPanelGetter(MainPanelGetter mainPanelGetter) {
 		this.mainPanelGetter = mainPanelGetter;

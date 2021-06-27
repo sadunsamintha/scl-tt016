@@ -80,6 +80,7 @@ beans{
 		} else {
 			sclAppLegacyMBean=ref('legacyStatsMBean')
 		}
+		plcPersistentGrossNetProductCounterManager = ref('plcPersistentGrossNetProductCounterManager')
 	}
 
 	addAlias('plcValuesLoaderAlias','plcValuesLoader')
@@ -140,4 +141,6 @@ beans{
 	}
 	
 	importBeans('spring/custo/tt016/tt016-brs-standard.groovy')
+	
+	importBeans('spring/custo/tt016/tt016-monitoring.groovy')
 }

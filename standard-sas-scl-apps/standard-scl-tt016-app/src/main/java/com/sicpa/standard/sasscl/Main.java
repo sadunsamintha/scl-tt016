@@ -18,8 +18,9 @@ public class Main {
     public static void main(final String[] args) {
         Properties prop = new Properties();
         TT016Bootstrap.addPlcVariableJavaEjectionCounter();
-        try {
-            prop.load(new FileInputStream(GLOBAL_PROPERTIES_PATH));
+        TT016Bootstrap.addPlcVariableJavaNettCounter();
+        try (FileInputStream fileInputStream = new FileInputStream(GLOBAL_PROPERTIES_PATH)) {
+            prop.load(fileInputStream);
             if (Boolean.valueOf(prop.getProperty("wiper.enabled"))) {
                 TT016Bootstrap.addWiperPlcVariable();
             }

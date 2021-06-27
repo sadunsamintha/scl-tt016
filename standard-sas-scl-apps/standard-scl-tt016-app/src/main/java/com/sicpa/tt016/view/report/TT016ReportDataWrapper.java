@@ -2,10 +2,21 @@ package com.sicpa.tt016.view.report;
 
 import com.sicpa.standard.sasscl.view.report.ReportDataWrapper;
 
+import lombok.Getter;
+import lombok.Setter;
+
 public class TT016ReportDataWrapper extends ReportDataWrapper {
 
     private int inkDetected;
     private int ejectedProducer;
+    
+    @Setter
+    @Getter
+    private int gross;
+    
+    @Setter
+    @Getter
+    private int nett;
 
     public int getInkDetected() {
         return inkDetected;

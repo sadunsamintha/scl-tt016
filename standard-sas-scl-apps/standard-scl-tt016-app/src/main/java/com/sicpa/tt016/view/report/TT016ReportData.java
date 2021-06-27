@@ -2,10 +2,20 @@ package com.sicpa.tt016.view.report;
 
 import com.sicpa.standard.sasscl.view.report.ReportData;
 
+import lombok.Getter;
+import lombok.Setter;
+
 public class TT016ReportData extends ReportData {
 
     private int inkDetected;
     private int ejectedProducer;
+    @Setter
+    @Getter
+    private int nett;
+    
+    @Setter
+    @Getter
+    private int gross;
 
     @Override
     public void addData(ReportData data) {
@@ -15,12 +25,14 @@ public class TT016ReportData extends ReportData {
 
         inkDetected += reportData.getInkDetected();
         ejectedProducer += reportData.getEjectedProducer();
+        gross +=reportData.getGross();
+        nett += reportData.getNett();
     }
 
     @Override
     public String toString() {
         return "ReportData [bad=" + bad + ", good=" + good + ", inkDetected=" + inkDetected + ", ejectedProducer="
-                + ejectedProducer + ", running=" + runningTime + "]";
+                + ejectedProducer + ", running=" + runningTime + ", gross=" + gross + ", nett=" + nett + "]";
     }
 
     public int getInkDetected() {
