@@ -4,6 +4,8 @@ import com.google.common.eventbus.Subscribe;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Pattern;
+
+import com.sicpa.standard.sasscl.model.ProductionMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,7 +43,7 @@ public class BatchIdSkuViewController extends TT080ViewFlowController implements
 
 	private static final int MAX_FIELD_SIZE = 100;
 	private static final Pattern ALL_SYMBOLS_RESTRICTION_PATTERN =  Pattern.compile("[%@!()*~^!#$%&+/ ]");
-
+	protected ProductionParameters productionParameters;
 
 	private volatile HardwareControllerStatus status;
 
@@ -80,6 +82,13 @@ public class BatchIdSkuViewController extends TT080ViewFlowController implements
 
 			super.displayView();
 			batchIdButtonPressed.set(true);
+			if( (getProductionMode().getDescription().equalsIgnoreCase(ProductionMode.EXPORT.getDescription())) ||
+					(getProductionMode().getDescription().equalsIgnoreCase(ProductionMode.EXPORT_CODING.getDescription())) ||
+					((getProductionMode().getDescription().equalsIgnoreCase(ProductionMode.MAINTENANCE.getDescription())))){
+				srv.batchIdSkuPanel.getBatchIdText().setText("0");
+				srv.batchIdSkuPanel.getSaveBatchIdButton().doClick();
+			}
+
 		}
 	}
 
@@ -140,4 +149,20 @@ public class BatchIdSkuViewController extends TT080ViewFlowController implements
 		return model;
 	}
 
+	public ProductionMode getProductionMode(){
+
+		if ((productionParameters != null) && (productionParameters.getProductionMode() != null)) {
+			return productionParameters.getProductionMode();
+		} else {
+			return null;
+		}
+	}
+
+	public ProductionParameters getProductionParameters() {
+		return productionParameters;
+	}
+
+	public void setProductionParameters(ProductionParameters productionParameters) {
+		this.productionParameters = productionParameters;
+	}
 }

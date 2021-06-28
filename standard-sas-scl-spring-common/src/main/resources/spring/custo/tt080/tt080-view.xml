@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
 	<bean id="productionParameters" class="com.sicpa.standard.sasscl.model.ProductionParameters" />
 
@@ -34,6 +34,7 @@
 		<property name="viewController" ref="mainFrameController" />
 		<property name="screensFlow" ref="screensFlow" />
 		<property name="flowControl" ref="flowControl" />
+		<property name="productionParameters" ref="productionParameters" />
 	</bean>
 
 	<bean id="screensFlow" class="com.sicpa.tt080.scl.view.flow.TT080ScreensFlow" init-method="buildScreensFlow">

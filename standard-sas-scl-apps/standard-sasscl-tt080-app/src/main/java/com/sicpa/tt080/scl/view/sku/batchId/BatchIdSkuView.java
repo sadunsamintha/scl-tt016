@@ -10,6 +10,7 @@ import com.sicpa.standard.sasscl.model.ProductionParameters;
 import com.sicpa.standard.sasscl.provider.ProductBatchIdProvider;
 
 import com.sicpa.standard.sasscl.utils.ConfigUtilEx;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import net.miginfocom.swing.MigLayout;
 import org.slf4j.Logger;
@@ -75,11 +76,12 @@ public class BatchIdSkuView extends AbstractView<IBatchIdSkuListener, BatchIdSku
 		frame.setVisible(true);
 	}
 
-	private class BatchIdSkuPanel extends JPanel{
+	public class BatchIdSkuPanel extends JPanel{
 
 		private JButton saveBatchIdButton;
 		private JPanel contentPanel;
 		private JLabel batchIdLabel;
+		@Getter
 		private JTextField batchIdText;
 		private JLabel creditNoteLabel;
 		private JTextField creditNoteText;
@@ -95,7 +97,7 @@ public class BatchIdSkuView extends AbstractView<IBatchIdSkuListener, BatchIdSku
 		}
 
 
-		private JButton getSaveBatchIdButton() {
+		public JButton getSaveBatchIdButton() {
 			if (saveBatchIdButton==null) {
 				saveBatchIdButton = new JButton(Messages.get("sku.batch.id.button.save.label"));
 				saveBatchIdButton.addActionListener(e -> saveBatchIdSelected(batchIdText.getText()));
