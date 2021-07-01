@@ -114,17 +114,17 @@ public class PlcPersistentGrossNetProductCounterManagerSCL {
             
             Integer subsystemId = subsystemIdProvider.get().intValue();
             Integer skuId = null;
-            Long codetypeId = null;
+            Integer codetypeId = null;
             if(productionParameters.getSku()!=null) {
             	 skuId = productionParameters.getSku().getId();
-            	 codetypeId = new Long(productionParameters.getSku().getCodeType().getId());
+            	 codetypeId = (int) productionParameters.getSku().getCodeType().getId();
             }
         	Date measurementDateTime = Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
         	String mode = Messages.get(productionParameters.getProductionMode().getDescription());
             
         	skuGrossNetProductCounter.setSubsystemId(subsystemId);
         	skuGrossNetProductCounter.setSkuId(skuId);
-        	skuGrossNetProductCounter.setCodetypeId(codetypeId.intValue());
+        	skuGrossNetProductCounter.setCodetypeId(codetypeId);
         	skuGrossNetProductCounter.setMeasurementDateTime(measurementDateTime);
         	skuGrossNetProductCounter.setMode(mode);
         	skuGrossNetProductCounter.setGross(currentProductCount);
