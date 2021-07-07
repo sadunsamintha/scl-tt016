@@ -1,8 +1,23 @@
 package com.sicpa.tt016.scl.remote.assembler;
 
+import static com.sicpa.tt016.common.dto.NonActivationSessionDTO.AGED_WINE_SESSION;
+import static com.sicpa.tt016.common.dto.NonActivationSessionDTO.EXPORT_SESSION;
+import static com.sicpa.tt016.common.dto.NonActivationSessionDTO.MAINTENANCE_SESSION;
+import static com.sicpa.tt016.common.dto.NonActivationSessionDTO.OFFLINE_SESSION;
+import static com.sicpa.tt016.common.dto.NonActivationSessionDTO.REFEED_SESSION;
+import static com.sicpa.tt016.common.model.EjectionReason.UNREADABLE_WITH_CODE_INT;
+import static com.sicpa.tt016.common.model.ProductStatus.VALID_ACTIV_INT;
+import static com.sicpa.tt016.common.model.ProductStatus.VALID_TYPE_MISMATCH_INT;
+import static com.sicpa.tt016.scl.remote.remoteservices.ITT016RemoteServices.PRODUCTION_MODE_REFEED;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 import com.sicpa.standard.sasscl.model.PackagedProducts;
 import com.sicpa.standard.sasscl.model.Product;
 import com.sicpa.standard.sasscl.model.ProductStatus;
+import com.sicpa.standard.sasscl.model.ProductionMode;
 import com.sicpa.tt016.common.dto.ActivationDTO;
 import com.sicpa.tt016.common.dto.ActivationEjectionDTO;
 import com.sicpa.tt016.common.dto.ActivationSessionDTO;
@@ -20,17 +35,6 @@ import com.sicpa.tt016.common.model.EjectionReason;
 import com.sicpa.tt016.common.model.SKU;
 import com.sicpa.tt016.common.model.Subsystem;
 import com.sicpa.tt016.model.TT016ProductStatus;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import static com.sicpa.tt016.common.dto.NonActivationSessionDTO.*;
-import static com.sicpa.tt016.common.model.EjectionReason.*;
-import static com.sicpa.tt016.common.model.ProductStatus.VALID_ACTIV_INT;
-import static com.sicpa.tt016.common.model.ProductStatus.VALID_TYPE_MISMATCH_INT;
-import static com.sicpa.tt016.scl.remote.remoteservices.ITT016RemoteServices.PRODUCTION_MODE_STANDARD;
-import static com.sicpa.tt016.scl.remote.remoteservices.ITT016RemoteServices.PRODUCTION_MODE_REFEED;
 public class ProductionDataConverter {
 
     private final int OFFLINE_PRODUCTION_NO_SKU_ID = -1;
@@ -110,15 +114,20 @@ public class ProductionDataConverter {
         return codeTypeId;
     }
 
-    public IEjectionDTO convertEjection(PackagedProducts products, int subsystemId) {
+    public IEjectionDTO convertEjection(PackagedProducts products, int subsystemId, ProductionMode productionMode) {
         int qty = products.getProducts().size();
-        CodeType ct = new CodeType(getCodeTypeId(products));
-        SKU sku = new SKU(getSkuId(products));
+        CodeType ct = null;
+		SKU sku = null;
+        if(!productionMode.equals(ProductionMode.MAINTENANCE)) {
+        	 ct = new CodeType(getCodeTypeId(products));
+             sku = new SKU(getSkuId(products));
+        }
+        
         Subsystem subsystem = new Subsystem(subsystemId);
 
-        ActivationEjection ejection = new ActivationEjection(0L, qty,
+		ActivationEjection ejection = new ActivationEjection(0L, qty,
                 new EjectionReason(getEjectionReasonId(products.getProductStatus())), new Date(), ct, sku, subsystem,
-                PRODUCTION_MODE_STANDARD);
+                productionMode.getId());
 
         ActivationEjectionDTO ejectionDTO = new ActivationEjectionDTO(ejection);
         ejectionDTO.setTimestamps(getDates(products));

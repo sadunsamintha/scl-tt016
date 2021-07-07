@@ -63,6 +63,7 @@ import com.sicpa.standard.sasscl.model.statistics.StatisticsKey;
 import com.sicpa.standard.sasscl.model.statistics.StatisticsValues;
 import com.sicpa.standard.sasscl.view.main.MainPanelGetter;
 import com.sicpa.tt016.business.ejection.EjectionTypeSender;
+import com.sicpa.tt016.devices.plc.PlcPersistentGrossNetProductCounterManager;
 import com.sicpa.tt016.devices.plc.PlcPersistentGrossNetProductCounterManagerSCL;
 import com.sicpa.tt016.model.DisallowedConfiguration;
 import com.sicpa.tt016.model.TT016Permission;
@@ -94,7 +95,7 @@ public class TT016Bootstrap extends Bootstrap {
 	private TT016SclAppLegacyMBean sclAppLegacyMBean;
 	private String productionBehaviorVar;
 	@Setter
-	private PlcPersistentGrossNetProductCounterManagerSCL plcPersistentGrossNetProductCounterManager;
+	private Object plcPersistentGrossNetProductCounterManager;
 	
 	private static final String SAS_MODE = "PRODUCTIONCONFIG-SAS";
 	
@@ -310,9 +311,13 @@ public class TT016Bootstrap extends Bootstrap {
             productionParameters.setBarcode(previous.getBarcode());
             productionParameters.setSku(previous.getSku());
             productionParameters.setProductionMode(previous.getProductionMode());
-            plcPersistentGrossNetProductCounterManager.updateProductParamAndCount();
             EventBusService.post(new ProductionParametersEvent(previous));
             restoreStatistics();
+            if(productionBehaviorVar.equals(SAS_MODE)) {
+            	((PlcPersistentGrossNetProductCounterManager) plcPersistentGrossNetProductCounterManager).updateProductParamAndCount();
+            }else {
+            	((PlcPersistentGrossNetProductCounterManagerSCL) plcPersistentGrossNetProductCounterManager).updateProductParamAndCount();
+            }
         }
     }
 	

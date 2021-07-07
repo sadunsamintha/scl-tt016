@@ -11,6 +11,8 @@ import com.sicpa.standard.sasscl.devices.remote.connector.AbstractMasterConnecto
 import com.sicpa.standard.sasscl.model.EncoderInfo;
 import com.sicpa.standard.sasscl.model.PackagedProducts;
 import com.sicpa.standard.sasscl.model.ProductStatus;
+import com.sicpa.standard.sasscl.model.ProductionMode;
+import com.sicpa.standard.sasscl.model.ProductionParameters;
 import com.sicpa.standard.sasscl.monitoring.MonitoringService;
 import com.sicpa.standard.sasscl.monitoring.system.event.BasicSystemEvent;
 import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.ProductionParameterRootNode;
@@ -36,6 +38,9 @@ import com.sicpa.tt016.scl.remote.assembler.EncryptionConverter;
 import com.sicpa.tt016.scl.remote.assembler.ProductionDataConverter;
 import com.sicpa.tt016.scl.remote.assembler.SkuConverter;
 import com.sicpa.tt016.scl.remote.remoteservices.ITT016RemoteServices;
+
+import lombok.Setter;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,7 +68,10 @@ public class TT016RemoteServer extends AbstractRemoteServer implements IBisCrede
 	private final ProductionDataConverter productionDataConverter = new ProductionDataConverter();
 	
 	protected FileSequenceStorageProvider fileSequenceStorageProvider;
-
+	
+	@Setter
+	protected ProductionParameters productionParameters;
+	
 	@Override
 	public boolean isConnected() {
 		return connector.isConnected();
@@ -153,7 +161,7 @@ public class TT016RemoteServer extends AbstractRemoteServer implements IBisCrede
 					|| products.getProductStatus().equals(ProductStatus.INK_DETECTED)
 					|| products.getProductStatus().equals(ProductStatus.NOT_AUTHENTICATED)
 					|| products.getProductStatus().equals(ProductStatus.UNREAD)) {
-				sendEjectedData(products);
+				sendEjectedData(products, productionParameters.getProductionMode());
 			} else if (products.getProductStatus().equals(ProductStatus.EXPORT)) {
 				sendExportData(products);
 			} else if (products.getProductStatus().equals(ProductStatus.MAINTENANCE)) {
@@ -197,8 +205,8 @@ public class TT016RemoteServer extends AbstractRemoteServer implements IBisCrede
 		remoteServices.sendRefeedProduction(data);
 	}
 
-	private void sendEjectedData(PackagedProducts products) throws InternalException {
-		IEjectionDTO data = productionDataConverter.convertEjection(products, remoteServices.getSubsystemId());
+	private void sendEjectedData(PackagedProducts products, ProductionMode productionMode) throws InternalException {
+		IEjectionDTO data = productionDataConverter.convertEjection(products, remoteServices.getSubsystemId(), productionMode);
 		remoteServices.sendEjectedProduction(data);
 	}
 	

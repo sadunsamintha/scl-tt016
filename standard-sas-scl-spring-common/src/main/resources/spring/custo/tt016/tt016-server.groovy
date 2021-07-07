@@ -29,6 +29,7 @@ beans{
 			connector=ref('masterConnector')
 			skuConverter=ref('skuConverter')
 			storage=ref('storage')
+			productionParameters = ref('productionParameters')
 		}
 		
 		masterConnector(TT016MasterConnectorSAS){
@@ -52,6 +53,7 @@ beans{
 			skuConverter=ref('skuConverter')
 			storage=ref('storage')
 			fileSequenceStorageProvider=ref('fileSequenceStorageProvider')
+			productionParameters = ref('productionParameters')
 		}
 
 		masterConnector(TT016MasterConnector){

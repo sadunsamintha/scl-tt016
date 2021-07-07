@@ -20,6 +20,7 @@ import com.sicpa.standard.sasscl.devices.remote.connector.AbstractMasterConnecto
 import com.sicpa.standard.sasscl.model.EncoderInfo;
 import com.sicpa.standard.sasscl.model.PackagedProducts;
 import com.sicpa.standard.sasscl.model.ProductStatus;
+import com.sicpa.standard.sasscl.model.ProductionParameters;
 import com.sicpa.standard.sasscl.monitoring.MonitoringService;
 import com.sicpa.standard.sasscl.monitoring.system.event.BasicSystemEvent;
 import com.sicpa.standard.sasscl.productionParameterSelection.node.impl.ProductionParameterRootNode;
@@ -37,9 +38,11 @@ import com.sicpa.tt016.scl.remote.assembler.ProductionDataConverter;
 import com.sicpa.tt016.scl.remote.assembler.SkuConverter;
 import com.sicpa.tt016.scl.remote.remoteservices.ITT016RemoteServicesMSASLegacy;
 
+import lombok.Setter;
+
 public class TT016RemoteServerSAS extends AbstractRemoteServer implements IBisCredentialProvider {
 
-	private static final Logger logger = LoggerFactory.getLogger(TT016RemoteServer.class);
+	private static final Logger logger = LoggerFactory.getLogger(TT016RemoteServerSAS.class);
 
 	private static final String BIS_USER_NAME = "TRAINER";
 
@@ -50,6 +53,9 @@ public class TT016RemoteServerSAS extends AbstractRemoteServer implements IBisCr
 	private SkuConverter skuConverter;
 	private final EncryptionConverter encryptionConverter = new EncryptionConverter();
 	private final ProductionDataConverter productionDataConverter = new ProductionDataConverter();
+	
+	@Setter
+	protected ProductionParameters productionParameters;
 
 	@Override
 	public boolean isConnected() {
@@ -138,7 +144,7 @@ public class TT016RemoteServerSAS extends AbstractRemoteServer implements IBisCr
 	}
 
 	private void sendEjectedData(PackagedProducts products) throws InternalException {
-		IEjectionDTO data = productionDataConverter.convertEjection(products, remoteServices.getSubsystemId());
+		IEjectionDTO data = productionDataConverter.convertEjection(products, remoteServices.getSubsystemId(), productionParameters.getProductionMode());
 		remoteServices.sendEjectedProduction(data);
 	}
 	
