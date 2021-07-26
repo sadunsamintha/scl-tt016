@@ -66,7 +66,7 @@ public class TT079SelectionDisplayView extends SelectionDisplayView implements P
 			getMainPanel().add(new MultiLineLabel(sku.getDescription()), "grow, w 200, h 175 , spanx");
 		}
 		if (StringUtils.isNotBlank(strBatchId)){
-			getMainPanel().add(new MultiLineLabel(Messages.get("sku.batch.id.label")+" "+strBatchId), "grow, w 200, h 45 , spanx");
+			getMainPanel().add(new MultiLineLabel(Messages.get("sku.batch.id.label")+" "+strBatchId), "grow, w 200, h 80 , spanx");
 		}
 		if (expDt!=null){
 			String sExpDt = DateUtils.format("dd/MM/yyyy", expDt);
