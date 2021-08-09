@@ -1,0 +1,16 @@
+<ProductionConfig activationBehavior="productStatusMergerSAS" authenticatorMode="SAS">
+
+	<CameraConfig deviceType="COGNEX" id="Cognex" />
+	
+	<BrsConfig />
+
+	<PlcConfig>
+		<cabinet>
+			<property key="PARAM_CAB_MULTILINE_REQ_MODE_ENABLED" value="true" />
+		</cabinet>
+		<line index="1">
+			<property key="PARAM_LINE_IS_ACTIVE" value="true" />
+		</line>
+	</PlcConfig>
+
+</ProductionConfig>

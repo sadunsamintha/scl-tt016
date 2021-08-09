@@ -1,0 +1,12 @@
+<ProductionConfig activationBehavior="maintenanceActivationBehavior">
+
+	<CameraConfig deviceType="COGNEX" id="Cognex" />
+
+	<plcConfig>
+		<line index="1">
+			<property key="PARAM_LINE_IS_ACTIVE" value="true" />
+			<property key="PARAM_LINE_MAINTENANCE_MODE_ENABLED" value="true" />
+		</line>
+	</plcConfig>
+
+</ProductionConfig>

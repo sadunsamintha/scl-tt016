@@ -1,0 +1,34 @@
+<StatisticsValues>
+  <mapValues>
+    <entry>
+      <StatisticsKey description="inkDetected">
+        <line>Cognex</line>
+      </StatisticsKey>
+      <int>0</int>
+    </entry>
+    <entry>
+      <StatisticsKey description="ejectedProducer">
+        <line>Cognex</line>
+      </StatisticsKey>
+      <int>0</int>
+    </entry>
+    <entry>
+      <StatisticsKey description="good">
+        <line>Cognex</line>
+      </StatisticsKey>
+      <int>0</int>
+    </entry>
+    <entry>
+      <StatisticsKey description="blobActivated">
+        <line>Cognex</line>
+      </StatisticsKey>
+      <int>0</int>
+    </entry>
+    <entry>
+      <StatisticsKey description="bad">
+        <line>Cognex</line>
+      </StatisticsKey>
+      <int>0</int>
+    </entry>
+  </mapValues>
+</StatisticsValues>

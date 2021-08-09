@@ -1,6 +1,0 @@
-<com.sicpa.tt018.scl.camera.simulator.AlbaniaCameraSimulatorConfig>
-  <codeGetMethod>requested</codeGetMethod>
-  <percentageBadCode>10</percentageBadCode>
-  <percentageBlobCode>1</percentageBlobCode>
-  <readCodeInterval>50</readCodeInterval>
-</com.sicpa.tt018.scl.camera.simulator.AlbaniaCameraSimulatorConfig>

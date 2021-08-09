@@ -1,9 +1,0 @@
-<com.sicpa.standard.plc.controller.model.PlcModel>
-	<mIp>172.16.0.171.1.1</mIp>
-	<mDriverName>PlcBeckhoffDriver</mDriverName>
-	<mParameters />
-	<mLifeCheckType>ON_READ_WRITE_VALUE_SYNC_CHECK</mLifeCheckType>
-	<mLittleEndian>true</mLittleEndian>
-	<mUseSimulator>false</mUseSimulator>
-	<mExecutionMode>MULTITHREADED</mExecutionMode>
-</com.sicpa.standard.plc.controller.model.PlcModel>

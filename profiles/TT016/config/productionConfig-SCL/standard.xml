@@ -1,0 +1,20 @@
+<ProductionConfig activationBehavior="productStatusMerger" authenticatorMode="SCL">
+
+	<!--<PrinterConfig deviceType="DOMINO" id="Domino" validatedBy="Cognex" />-->
+	<PrinterConfig deviceType="LEIBINGER" id="Leibinger" validatedBy="Cognex" />
+	<CameraConfig deviceType="COGNEX" id="Cognex" />
+	<!--<D900CameraConfig deviceType="D900" id="d900_scl_1" />-->
+	<!--<BisConfig /> -->
+
+	<BrsConfig />
+
+	<PlcConfig>
+		<cabinet>
+			<property key="PARAM_CAB_MULTILINE_REQ_MODE_ENABLED" value="true" />
+		</cabinet>
+		<line index="1">
+			<property key="PARAM_LINE_IS_ACTIVE" value="true" />
+		</line>
+	</PlcConfig>
+
+</ProductionConfig>

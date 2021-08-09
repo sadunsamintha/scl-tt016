@@ -1,0 +1,11 @@
+<com.sicpa.tt016.remote.stdCrypto.TT016EncoderNoEncryptionSimulator>
+  <id>683557728</id>
+  <batchId>0</batchId>
+  <subsystemId>123456</subsystemId>
+  <year>2021</year>
+  <codeTypeId>99</codeTypeId>
+  <onClientDate>2021-08-05 09:19:28.899 UTC</onClientDate>
+  <sequence defined-in="com.sicpa.standard.sasscl.sicpadata.generator.AbstractEncoder">0</sequence>
+  <max>10000</max>
+  <sequence>0</sequence>
+</com.sicpa.tt016.remote.stdCrypto.TT016EncoderNoEncryptionSimulator>
